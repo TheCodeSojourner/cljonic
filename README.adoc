@@ -1,0 +1,56 @@
+= cljonic 
+:doctype: book
+:source-highlighter: rouge
+:cpp: C++
+
+image::logo.png[cljonic, 200, 200, align="center"]
+
+[.text-center]
+*Header-Only Embedded-Systems C++ Clojure-esque Functional Programming Library*
+
+== Pronunciation
+[.big]#*cljonic* /klə-jŏn′ĭk/#
+
+== Obligatory Word Definition
+
+[.big]#*Laconic*#
+
+* Expressing much in few words; brief and pithy; concise; brusque
+
+== Detailed Documentation
+Detailed documentation is available in this repository at *doc/html/index.html*.
+
+== Motivation
+*Clojure* is one of the most expressive and concise programming languages. *Clojure* is *laconic* in nature. *Clojure* is an *immutable-by-default*, *practical* and *stable* *functional programming language* based on the *Lisp* programming language. Unfortunately, *Clojure* is not well suited for some programming domains. One example is the *embedded system* domain. Especially, *embedded system* domains with tight memory and cpu constraints that do not allow use of the *heap*, and that only offer *{cpp}* programming tools.
+
+*{cpp}*, on the other hand, is kind of the opposite of *Clojure*. *{cpp}* is a language that *does not* tend to be *Laconic* in nature, and *does* tend to be *verbose* in nature.  Furthermore, *{cpp}* is not immutable-by-default, and it is not considered a functional programming language, although it has some functional-programming-oriented features like *lambdas* and standard libraries like *ranges*, *views*, *optional* and *expected*.  Finally, *{cpp}* is a *BIG* language that is constantly in flux, has a large and growing set of features, offers a lot of ways to do things, and makes it *easy to do things poorly*.
+
+Most *embedded system developers* are not computer language experts, they do not have time to keep up with the latest *{cpp}* language features, and their educational background is *not* heavy in the nuances of optimal *Modern* *{cpp}* usage.  When it comes to the use of *Modern* *{cpp}*, they are often mostly *self-taught*, and have learned on the job.
+
+Many *embedded system* projects *do not* require heavy use of the *{cpp}* features designed for memory and cpu utilization optimization. Many projects have a small amount of code that must be *finely tuned*, and quite a bit of code that is *not performance critical*.  
+
+The motivation behind *cljonic* is to provide a *Clojure-esque* functional programming library for *{cpp}* embedded system developers that is *laconic*, *immutable-by-default*, *practical*, and *stable*.  *Cljonic* should also be *easy to learn and understand* and *easy to use properly* for the *safe* implementation of the *non-performance-critical* code of an *embedded system*.
+
+== Desired Developer Experience
+The *cljonic* developer should be able to write *safe* code that is *easy to read*, *easy to understand* and *easy to maintain*.  These goals will enable *embedded system* projects to be *completed more quickly*, with 
+*fewer bugs*, and maintained and enhanced with *less long term effort*. 
+
+== Implementation Characteristics
+* The performance of these characteristics should be acceptable if the *average collection size is small*, and the *cljonic* library is used for *non-performance-critical code*.
+
+* In order to provide the *cljonic* immutable-by-default feature, and because the *heap* can't be used in the *targeted* embedded systems, *cljonic* uses copying.  
+
+* In order to meet the *safe* Desired Developer Experience goal, *cljonic* does bounds checking on all collection accesses. 
+
+== Required Resources
+* *C++ 23*, or higher, for *Modern {cpp}* features
+* *clang-format* for code formatting
+* *cppcheck* for code analysis
+* *doxygen* for code documentation
+* *gcov* for code coverage analysis
+* *genhtml* for code coverage analysis
+* *lcov* for code coverage analysis
+* *lizard* for code metrics
+** https://github.com/terryyin/lizard
+** According to the lizard documentation, it only supports C++14. Another tool that supports *Cyclomatic Complexity* and *Function LoC* would be better.
+* *valgrind* for code analysis
