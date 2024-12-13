@@ -195,7 +195,7 @@ auto v2{Vector<int, 10>(1, 2, 3, 4)};
 auto e0{Equal(v1)};                    // returns true whenever only one parameter is specified
 auto e1{Equal(v1, v2)};                // returns true
 auto e2{Equal(1, 2)};                  // returns false
-auto e3{Equal(1.1, 2.1)};              // returns false
+// auto e3{Equal(1.1, 2.1)};           // compilation error: Floating point types should not be compared for equality
 // auto e{Equal()};                    // compilation error: Must specify at least one parameter
 // auto e{Equal(1.1, "Hello")};        // compilation error: Types are not comparable
 

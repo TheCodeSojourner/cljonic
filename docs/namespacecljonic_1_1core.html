@@ -127,7 +127,7 @@ template&lt;typename T , typename... Ts&gt; </div>
 <div class="line"><span class="keyword">auto</span> <a class="code hl_class" href="classcljonic_1_1_vector.html">e0</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#aef78af2c2c21fb353547beb9ef433db6">Equal</a>(<a class="code hl_class" href="classcljonic_1_1_vector.html">v1</a>)};                    <span class="comment">// returns true whenever only one parameter is specified</span></div>
 <div class="line"><span class="keyword">auto</span> <a class="code hl_class" href="classcljonic_1_1_vector.html">e1</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#aef78af2c2c21fb353547beb9ef433db6">Equal</a>(<a class="code hl_class" href="classcljonic_1_1_vector.html">v1</a>, <a class="code hl_class" href="classcljonic_1_1_vector.html">v2</a>)};                <span class="comment">// returns true</span></div>
 <div class="line"><span class="keyword">auto</span> <a class="code hl_class" href="classcljonic_1_1_vector.html">e2</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#aef78af2c2c21fb353547beb9ef433db6">Equal</a>(1, 2)};                  <span class="comment">// returns false</span></div>
-<div class="line"><span class="keyword">auto</span> <a class="code hl_class" href="classcljonic_1_1_vector.html">e3</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#aef78af2c2c21fb353547beb9ef433db6">Equal</a>(1.1, 2.1)};              <span class="comment">// returns false</span></div>
+<div class="line"><span class="comment">// auto e3{Equal(1.1, 2.1)};           // compilation error: Floating point types should not be compared for equality</span></div>
 <div class="line"><span class="comment">// auto e{Equal()};                    // compilation error: Must specify at least one parameter</span></div>
 <div class="line"><span class="comment">// auto e{Equal(1.1, &quot;Hello&quot;)};        // compilation error: Types are not comparable</span></div>
 <div class="line"> </div>
@@ -144,7 +144,7 @@ template&lt;typename T , typename... Ts&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 13 2024 15:59:53 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Dec 13 2024 16:04:59 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
