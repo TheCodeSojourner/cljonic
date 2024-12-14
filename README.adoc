@@ -21,6 +21,9 @@ image::logo.png[cljonic, 200, 200, align="center"]
 Detailed documentation is available https://thecodesojourner.github.io/cljonic/[here].
 
 == Motivation
+
+NOTE: If you are interested in a Big-Machine *{cpp} Clojure* implementation see the https://github.com/jank-lang/jank[Jank] project.
+
 *Clojure* is one of the most expressive and concise programming languages. *Clojure* is *laconic* in nature. *Clojure* is an *immutable-by-default*, *practical* and *stable* *functional programming language* based on the *Lisp* programming language. Unfortunately, *Clojure* is not well suited for some programming domains. One example is the *embedded system* domain. Especially, *embedded system* domains with tight memory and cpu constraints that do not allow use of the *heap*, and that only offer *{cpp}* programming tools.
 
 *{cpp}*, on the other hand, is kind of the opposite of *Clojure*. *{cpp}* is a language that *does not* tend to be *Laconic* in nature, and *does* tend to be *verbose* in nature.  Furthermore, *{cpp}* is not immutable-by-default, and it is not considered a functional programming language, although it has some functional-programming-oriented features like *lambdas* and standard libraries like *ranges*, *views*, *optional* and *expected*.  Finally, *{cpp}* is a *BIG* language that is constantly in flux, has a large and growing set of features, offers a lot of ways to do things, and makes it *easy to do things poorly*.
