@@ -36,9 +36,10 @@ The *cljonic* developer should be able to write *safe* code that is *easy to rea
 *fewer bugs*, and maintained and enhanced with *less long term effort*. 
 
 == Implementation Characteristics
-* The performance of these characteristics should be acceptable if the *average collection size is small*, and the *cljonic* library is used for *non-performance-critical code*.
 
-* In order to provide the *cljonic* immutable-by-default feature, and because the *heap* can't be used in the *targeted* embedded systems, *cljonic* uses copying.  
+NOTE: The performance of these implementation characteristics should be acceptable if the *average collection size is small*, and the *cljonic* library is used for *non-performance-critical code*.
+
+* In order to provide the *cljonic immutable-by-default* feature, and because the *heap* can't be used in the *targeted* embedded systems, *cljonic* uses copying.  
 
 * In order to meet the *safe* Desired Developer Experience goal, *cljonic* does bounds checking on all collection accesses. 
 
