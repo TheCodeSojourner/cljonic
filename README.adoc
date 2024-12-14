@@ -18,7 +18,7 @@ image::logo.png[cljonic, 200, 200, align="center"]
 * Expressing much in few words; brief and pithy; concise; brusque
 
 == Detailed Documentation
-Detailed documentation is available in this repository at *doc/html/index.html*.
+Detailed documentation is available https://thecodesojourner.github.io/cljonic/[here].
 
 == Motivation
 *Clojure* is one of the most expressive and concise programming languages. *Clojure* is *laconic* in nature. *Clojure* is an *immutable-by-default*, *practical* and *stable* *functional programming language* based on the *Lisp* programming language. Unfortunately, *Clojure* is not well suited for some programming domains. One example is the *embedded system* domain. Especially, *embedded system* domains with tight memory and cpu constraints that do not allow use of the *heap*, and that only offer *{cpp}* programming tools.
