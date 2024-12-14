@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Dec 12 05:44:57 PM MST 2024
+// This file was generated Sat Dec 14 04:49:51 PM MST 2024
 
 namespace cljonic {
 
@@ -278,48 +278,5 @@ template <typename... Args>
 Vector(Args...) -> Vector<std::common_type_t<Args...>, sizeof...(Args)>;
 
 } // namespace cljonic
-
-namespace cljonic {
-
-namespace core {
-template <typename T, typename... Ts>
-auto Equal(const T& t, const Ts&... ts) {
-
-if constexpr(AllCljonicCollections<T, Ts...>) {
-static_assert(AllSameCljonicCollectionType<T, Ts...>,
-              "Cljonic collection types are not all the same (e.g., Vector, Set, or String)");
-static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
-              "Cljonic floating point collection value types should not be compared for equality");
-static_assert(AllEqualityComparableValueTypes<T, Ts...>,
-              "Cljonic collection value types are not all equality comparable");
-if constexpr(AllCljonicSets<T, Ts...>) {
-constexpr auto EqualSets = [&](const auto& c1, const auto& c2) {
-using CountType = decltype(c1.Count());
-auto result{c1.Count() == c2.Count()};
-for(CountType i = 0; (result and (i < c1.Count())); ++i)
-result = c2.Contains(c1[i]);
-return result;
-};
-return (EqualSets(t, ts) and ...);
-} else {
-constexpr auto EqualCollections = [&](const auto& c1, const auto& c2) {
-using CountType = decltype(c1.Count());
-auto result{c1.Count() == c2.Count()};
-for(CountType i = 0; (result and (i < c1.Count())); ++i)
-result = AreEqual(c1[i], c2[i]);
-return result;
-};
-return (EqualCollections(t, ts) and ...);
-}
-} else {
-static_assert(not AnyFloatingPointTypes<T, Ts...>, "Floating point types should not be compared for equality");
-static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all types are equality comparable");
-return (AreEqual(t, ts) and ...);
-}
-}
-
-}
-
-} // namespace cljonic::core
 
 #endif // CLJONIC_H_

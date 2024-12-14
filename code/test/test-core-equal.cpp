@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "cljonic-core.hpp"
+#include "cljonic-core-equal.hpp"
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
 #include "cljonic-vector.hpp"
