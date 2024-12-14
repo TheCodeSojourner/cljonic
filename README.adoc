@@ -57,6 +57,8 @@ NOTE: The performance of these implementation characteristics should be acceptab
 * In order to meet the *safe* Desired Developer Experience goal, *cljonic* does bounds checking on all collection accesses. 
 
 == Required Resources
+* *AsciiDoc* for project documentation
+** https://asciidoctor.org/docs/asciidoc-writers-guide/
 * *C++ 23*, or higher, for *Modern {cpp}* features
 * *clang-format* for code formatting
 * *cppcheck* for code analysis
