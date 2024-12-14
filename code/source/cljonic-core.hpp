@@ -33,7 +33,7 @@
  *
  * In this post:
  *
- *     https://www.gamasutra.com/view/news/169296/Indepth_Functional_programming_in_C.php
+ *     https://www.gamedeveloper.com/programming/in-depth-functional-programming-in-c-
  *
  * the author makes the following statements:
  *

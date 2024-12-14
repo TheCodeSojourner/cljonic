@@ -24,6 +24,16 @@ Detailed documentation is available https://thecodesojourner.github.io/cljonic/[
 
 NOTE: If you are interested in a Big-Machine *{cpp} Clojure* implementation see the https://github.com/jank-lang/jank[Jank] project.
 
+.*John Carmack* - https://www.gamedeveloper.com/programming/in-depth-functional-programming-in-c-
+____
+"A large fraction of the flaws in software development are due to programmers not fully understanding all the
+possible states their code may execute in. ... Programming in a functional style makes the state presented to your code 
+explicit, which makes it much easier to reason about [(i.e., Fewer mistakes, and less debugging)] ...
+
+No matter what language you work in, programming in a functional style provides benefits. You should do it whenever it 
+is convenient, and you should think hard about the decision when it isn't convenient."
+____
+
 *Clojure* is one of the most expressive and concise programming languages. *Clojure* is *laconic* in nature. *Clojure* is an *immutable-by-default*, *practical* and *stable* *functional programming language* based on the *Lisp* programming language. Unfortunately, *Clojure* is not well suited for some programming domains. One example is the *embedded system* domain. Especially, *embedded system* domains with tight memory and cpu constraints that do not allow use of the *heap*, and that only offer *{cpp}* programming tools.
 
 *{cpp}*, on the other hand, is kind of the opposite of *Clojure*. *{cpp}* is a language that *does not* tend to be *Laconic* in nature, and *does* tend to be *verbose* in nature.  Furthermore, *{cpp}* is not immutable-by-default, and it is not considered a functional programming language, although it has some functional-programming-oriented features like *lambdas* and standard libraries like *ranges*, *views*, *optional* and *expected*.  Finally, *{cpp}* is a *BIG* language that is constantly in flux, has a large and growing set of features, offers a lot of ways to do things, and makes it *easy to do things poorly*.
