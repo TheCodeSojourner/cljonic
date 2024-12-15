@@ -6,9 +6,9 @@ namespace cljonic
 
 enum class CljonicCollectionType
 {
+    Array,
     Set,
-    String,
-    Vector
+    String
 };
 
 } // namespace cljonic

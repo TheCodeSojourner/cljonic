@@ -20,8 +20,8 @@ using namespace cljonic::core;
 
 int main()
 {
-    auto v1{Vector<int, 10>{1, 2, 3, 4}};
-    auto v2{Vector<int, 10>{1, 2, 3, 4}};
+    auto v1{Array<int, 10>{1, 2, 3, 4}};
+    auto v2{Array<int, 10>{1, 2, 3, 4}};
     auto e0{Equal(v1)};           // returns true whenever only one parameter is specified
     auto e1{Equal(v1, v2)};       // returns true
     auto e2{Equal(1, 2)};         // returns false
@@ -36,14 +36,14 @@ int main()
 template <typename T, typename... Ts>
 auto Equal(const T& t, const Ts&... ts)
 {
-    /* An invocation of Equal with only one argument, like Equal(1) or Equal(myVector), returns true because
+    /* An invocation of Equal with only one argument, like Equal(1) or Equal(myArray), returns true because
      * when only one argument is provided to "and" the single argument is trivially equal to itself,
      * and the result is true.
      */
     if constexpr (AllCljonicCollections<T, Ts...>)
     {
         static_assert(AllSameCljonicCollectionType<T, Ts...>,
-                      "Cljonic collection types are not all the same (e.g., Vector, Set, or String)");
+                      "Cljonic collection types are not all the same (e.g., Array, Set, or String)");
         static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
                       "Cljonic floating point collection value types should not be compared for equality");
         static_assert(AllEqualityComparableValueTypes<T, Ts...>,

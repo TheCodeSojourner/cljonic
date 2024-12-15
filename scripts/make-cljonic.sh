@@ -12,9 +12,9 @@ cd code/source
 cat cljonic-collection-type.hpp \
     cljonic-concepts.hpp \
     cljonic-shared.hpp \
+    cljonic-array.hpp \
     cljonic-set.hpp \
     cljonic-string.hpp \
-    cljonic-vector.hpp \
     cljonic-core.hpp \
     cljonic-core-equal.hpp > /tmp/cljonic-glued.hpp
 

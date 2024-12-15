@@ -113,7 +113,7 @@ Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;std::size_t MaxElements&gt;<br />
-class cljonic::String&lt; MaxElements &gt;</div><p><a class="anchor" id="String"></a>The <b><a class="el" href="classcljonic_1_1_string.html">String</a></b> type is a fundamental collection type in cljonic. It is implemented as a C array of char, and <b>does not use dynamic memory</b>. A <b><a class="el" href="classcljonic_1_1_string.html">String</a></b> has a specified maximum number of <b>ordered</b> char elements. Many Core functions accept <a class="el" href="classcljonic_1_1_string.html">String</a> arguments. </p>
+class cljonic::String&lt; MaxElements &gt;</div><p><a class="anchor" id="String"></a>The <b><a class="el" href="classcljonic_1_1_string.html">String</a></b> type is a fundamental collection type in cljonic. It is implemented as a C array of char, and <b>does not use dynamic memory</b>. A <b><a class="el" href="classcljonic_1_1_string.html">String</a></b> has a specified maximum number of <b>ordered</b> char elements, which are always <b>NUL</b> terminated. Many <a class="el" href="namespacecljonic.html#Namespace_Core">Core</a> functions accept <a class="el" href="classcljonic_1_1_string.html">String</a> arguments. </p>
 
 <p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00017">17</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
@@ -130,27 +130,26 @@ template&lt;std::size_t MaxElements&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p><a class="anchor" id="Core_String"></a> The <b><a class="el" href="classcljonic_1_1_string.html">String</a></b> constructor returns an instance of <a class="el" href="classcljonic_1_1_string.html">String</a> initialized with the chars in its argument(s). If the number of chars in its argument(s) exceeds the maximum number of elements, the extras are silently ignored. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<p>The <b><a class="el" href="classcljonic_1_1_string.html">String</a></b> constructor returns an instance of <a class="el" href="classcljonic_1_1_string.html">String</a> initialized with the chars in its argument(s). If the number of chars in its argument(s) exceeds the maximum number of elements, the extras are silently ignored. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
-<div class="line"><span class="keyword">auto</span> s0{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;10&gt;</a>{}};                       <span class="comment">// s0 is empty</span></div>
-<div class="line"><span class="keyword">auto</span> s1{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;10&gt;</a>{<span class="stringliteral">&quot;Hello&quot;</span>}};                <span class="comment">// s1 is sparse</span></div>
-<div class="line"><span class="keyword">auto</span> s2{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;5&gt;</a>{<span class="stringliteral">&quot;Hello&quot;</span>}};                 <span class="comment">// s2 is full</span></div>
-<div class="line"><span class="keyword">auto</span> s3{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;5&gt;</a>{<span class="stringliteral">&quot;Hello, World&quot;</span>}};          <span class="comment">// s3 is full, and contains &quot;Hello&quot;</span></div>
-<div class="line"><span class="keyword">auto</span> s4{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;3&gt;</a>{<span class="charliteral">&#39;H&#39;</span>, <span class="charliteral">&#39;e&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;o&#39;</span>}}; <span class="comment">// s4 is sparse</span></div>
-<div class="line"><span class="keyword">auto</span> s5{<a class="code hl_class" href="classcljonic_1_1_string.html">String</a>{<span class="stringliteral">&quot;Hello&quot;</span>}};                    <span class="comment">// s5 is full</span></div>
-<div class="line"><span class="keyword">auto</span> s6{<a class="code hl_class" href="classcljonic_1_1_string.html">String</a>{<span class="charliteral">&#39;H&#39;</span>, <span class="charliteral">&#39;e&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;o&#39;</span>}};    <span class="comment">// s5 is full</span></div>
+<div class="line">    <span class="keyword">auto</span> s0{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;10&gt;</a>{}};                       <span class="comment">// s0 is empty</span></div>
+<div class="line">    <span class="keyword">auto</span> s1{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;10&gt;</a>{<span class="stringliteral">&quot;Hello&quot;</span>}};                <span class="comment">// s1 is sparse</span></div>
+<div class="line">    <span class="keyword">auto</span> s2{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;5&gt;</a>{<span class="stringliteral">&quot;Hello&quot;</span>}};                 <span class="comment">// s2 is full</span></div>
+<div class="line">    <span class="keyword">auto</span> s3{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;5&gt;</a>{<span class="stringliteral">&quot;Hello, World&quot;</span>}};          <span class="comment">// s3 is full, and contains &quot;Hello&quot;</span></div>
+<div class="line">    <span class="keyword">auto</span> s4{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;3&gt;</a>{<span class="charliteral">&#39;H&#39;</span>, <span class="charliteral">&#39;e&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;o&#39;</span>}}; <span class="comment">// s4 is sparse</span></div>
+<div class="line">    <span class="keyword">auto</span> s5{<a class="code hl_class" href="classcljonic_1_1_string.html">String</a>{<span class="stringliteral">&quot;Hello&quot;</span>}};                    <span class="comment">// s5 is full</span></div>
+<div class="line">    <span class="keyword">auto</span> s6{<a class="code hl_class" href="classcljonic_1_1_string.html">String</a>{<span class="charliteral">&#39;H&#39;</span>, <span class="charliteral">&#39;e&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;o&#39;</span>}};    <span class="comment">// s5 is full</span></div>
 <div class="line"> </div>
-<div class="line"><span class="keywordflow">return</span> 0;</div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 <div class="ttc" id="aclasscljonic_1_1_string_html"><div class="ttname"><a href="classcljonic_1_1_string.html">cljonic::String</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-string_8hpp_source.html#l00017">cljonic-string.hpp:18</a></div></div>
-<div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-type_8hpp_source.html#l00004">cljonic-collection-type.hpp:5</a></div></div>
+<div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00009">cljonic-array.hpp:10</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00054">54</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00053">53</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -168,7 +167,7 @@ template&lt;std::size_t MaxElements&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00055">55</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00054">54</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -186,7 +185,7 @@ template&lt;std::size_t MaxElements&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00056">56</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00055">55</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -216,7 +215,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00058">58</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00057">57</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -246,7 +245,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00064">64</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00063">63</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -276,7 +275,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00076">76</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00075">75</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -362,7 +361,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00095">95</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00094">94</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -392,7 +391,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00090">90</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00089">89</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -402,7 +401,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Dec 14 2024 17:01:20 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Dec 14 2024 17:51:22 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

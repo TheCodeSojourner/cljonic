@@ -7,5 +7,6 @@ var searchData=
   ['anyfloatingpointtypes_4',['AnyFloatingPointTypes',['../namespacecljonic.html#aced65bfe90f0db3da520486459434d00',1,'cljonic']]],
   ['anyfloatingpointvaluetypes_5',['AnyFloatingPointValueTypes',['../namespacecljonic.html#a06b15aac75e92d768e32c6f9b518b53a',1,'cljonic']]],
   ['areequal_6',['AreEqual',['../namespacecljonic.html#ae0be5ccfbd864b9b463c2188dd33dffd',1,'cljonic']]],
-  ['array_20range_20repeat_20set_20and_20string_7',['Array, Range, Repeat, Set, And String',['../index.html#autotoc_md8',1,'']]]
+  ['array_7',['array',['../classcljonic_1_1_array.html',1,'cljonic::Array&lt; T, MaxElements &gt;'],['../classcljonic_1_1_array.html#a596b1b2a653e290baa5c23fe23c2b909',1,'cljonic::Array::Array()'],['../classcljonic_1_1_array.html#ad7d00cf4e7b584dd71b8466d1e7b0d17',1,'cljonic::Array::Array(const std::initializer_list&lt; const T &gt; elements)'],['../classcljonic_1_1_array.html#acd43ca26ef629c951aa322e1f636ed74',1,'cljonic::Array::Array(const Array &amp;other)=default'],['../classcljonic_1_1_array.html#a41fdf7ec891ac84f0fc605c73ef46e56',1,'cljonic::Array::Array(Array &amp;&amp;other)=default'],['../namespacecljonic.html#ac8a1780765f9453dd427a6b6f341320b',1,'cljonic::Array(Args...) -&gt; Array&lt; std::common_type_t&lt; Args... &gt;, sizeof...(Args)&gt;'],['../namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a4410ec34d9e6c1a68100ca0ce033fb17',1,'cljonic::Array']]],
+  ['array_20range_20repeat_20set_20and_20string_8',['Array, Range, Repeat, Set, And String',['../index.html#autotoc_md8',1,'']]]
 ];

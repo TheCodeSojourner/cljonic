@@ -66,11 +66,11 @@
  *
  * ## Collection Types
  *
- * - \ref Type_Array  "cljonic::Array"
- * - \ref Type_Range  "cljonic::Range"
- * - \ref Type_Repeat "cljonic::Repeat"
- * - \ref Type_Set    "cljonic::Set"
- * - \ref Type_String "cljonic::String"
+ * - \ref Array  "cljonic::Array"
+ * - \ref Range  "cljonic::Range"
+ * - \ref Repeat "cljonic::Repeat"
+ * - \ref Set    "cljonic::Set"
+ * - \ref String "cljonic::String"
  *
  * ## Core Functions
  *
@@ -170,5 +170,20 @@
  * \ref String_TrimRight "TrimRight"
  * - \ref String_Uppercase "Uppercase"
  */
+
+/** \anchor Namespace_Core
+ * The \b Core namespace provides the vast majority of \b cljonic functions.  Many \b Core functions deal with
+ * \ref Array, \ref Range, \ref Repeat, \ref Set, and \ref String, collections. The variety and capability of the
+ * \b Core functions provide much of the overall value of the <b>cljonic functional style of programming</b>.
+ */
+
+namespace cljonic
+{
+
+namespace core
+{
+} // namespace core
+
+} // namespace cljonic
 
 #endif // CLJONIC_CORE_HPP

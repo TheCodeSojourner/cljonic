@@ -16,14 +16,14 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Sat Dec 14 05:01:21 PM MST 2024
+// This file was generated Sat Dec 14 05:51:22 PM MST 2024
 
 namespace cljonic {
 
 enum class CljonicCollectionType {
+    Array,
     Set,
-    String,
-    Vector
+    String
 };
 
 }
@@ -84,6 +84,59 @@ static_assert(std::equality_comparable_with<T, U>, "Types are not equality compa
 return (t == u);
 }
 }
+
+} // namespace cljonic
+
+#include <cstring>
+#include <initializer_list>
+#include <type_traits>
+
+namespace cljonic {
+
+template <typename T, std::size_t MaxElements>
+class Array {
+using MaxElementsType = decltype(MaxElements);
+
+MaxElementsType m_elementCount;
+T m_elementDefault;
+T m_elements[MaxElements];
+
+void InitializeElementDefault() noexcept {
+m_elementDefault = T{};
+}
+
+public:
+using cljonic_collection = std::true_type;
+using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>;
+using value_type = T;
+
+Array() : m_elementCount(0) {
+InitializeElementDefault();
+}
+
+Array(const std::initializer_list<const T> elements) : m_elementCount(0) {
+InitializeElementDefault();
+for(const auto& element : elements) {
+if(m_elementCount == MaxElements)
+break;
+m_elements[m_elementCount++] = element;
+}
+}
+
+Array(const Array& other) = default;
+Array(Array&& other) = default;
+
+const T& operator[](const MaxElementsType index) const noexcept {
+return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+}
+
+[[nodiscard]] MaxElementsType Count() const noexcept {
+return m_elementCount;
+}
+};
+
+template <typename... Args>
+Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
 
 } // namespace cljonic
 
@@ -226,58 +279,12 @@ String(Args...) -> String<sizeof...(Args)>;
 
 } // namespace cljonic
 
-#include <cstring>
-#include <initializer_list>
-#include <type_traits>
-
 namespace cljonic {
 
-template <typename T, std::size_t MaxElements>
-class Vector {
-using MaxElementsType = decltype(MaxElements);
-
-MaxElementsType m_elementCount;
-T m_elementDefault;
-T m_elements[MaxElements];
-
-void InitializeElementDefault() noexcept {
-m_elementDefault = T{};
+namespace core {
 }
 
-public:
-using cljonic_collection = std::true_type;
-using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Vector>;
-using value_type = T;
-
-Vector() : m_elementCount(0) {
-InitializeElementDefault();
 }
-
-Vector(const std::initializer_list<const T> elements) : m_elementCount(0) {
-InitializeElementDefault();
-for(const auto& element : elements) {
-if(m_elementCount == MaxElements)
-break;
-m_elements[m_elementCount++] = element;
-}
-}
-
-Vector(const Vector& other) = default;
-Vector(Vector&& other) = default;
-
-const T& operator[](const MaxElementsType index) const noexcept {
-return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
-}
-
-[[nodiscard]] MaxElementsType Count() const noexcept {
-return m_elementCount;
-}
-};
-
-template <typename... Args>
-Vector(Args...) -> Vector<std::common_type_t<Args...>, sizeof...(Args)>;
-
-} // namespace cljonic
 
 namespace cljonic {
 
@@ -287,7 +294,7 @@ auto Equal(const T& t, const Ts&... ts) {
 
 if constexpr(AllCljonicCollections<T, Ts...>) {
 static_assert(AllSameCljonicCollectionType<T, Ts...>,
-              "Cljonic collection types are not all the same (e.g., Vector, Set, or String)");
+              "Cljonic collection types are not all the same (e.g., Array, Set, or String)");
 static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
               "Cljonic floating point collection value types should not be compared for equality");
 static_assert(AllEqualityComparableValueTypes<T, Ts...>,
