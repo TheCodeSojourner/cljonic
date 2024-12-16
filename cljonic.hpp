@@ -16,12 +16,13 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Dec 16 02:07:48 PM MST 2024
+// This file was generated Mon Dec 16 02:12:10 PM MST 2024
 
 namespace cljonic {
 
 enum class CljonicCollectionType {
     Array,
+    Range,
     Set,
     String
 };
