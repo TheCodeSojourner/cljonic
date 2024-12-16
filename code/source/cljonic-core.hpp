@@ -9,7 +9,7 @@
  * library that includes unit tests with nearly <b>100% coverage</b>, and is designed to be efficiently maintained.
  *
  * The motivation for \b cljonic comes from observations made about the pragmatic use of C++ for embedded systems
- * software development, the progression of the C++ language (e.g., C++11, C++14, C++17, C++20, C++23), and the counsel
+ * software development, the progression of the C++ language (e.g., C++11, C++14, C++17, C++20), and the counsel
  * of software development "experts", in many different programming languages, that <b>a functional programming style
  * should be eagerly embraced by all developers</b>.
  *

@@ -59,7 +59,7 @@ NOTE: The performance of these implementation characteristics should be acceptab
 == Required Resources
 * *AsciiDoc* for project documentation
 ** https://asciidoctor.org/docs/asciidoc-writers-guide/
-* *C++ 23*, or higher, for *Modern {cpp}* features
+* *C++ 20*, or higher, for *Modern {cpp}* features
 * *clang-format* for code formatting
 * *cppcheck* for code analysis
 * *doxygen* for code documentation
