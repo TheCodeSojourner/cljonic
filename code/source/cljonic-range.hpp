@@ -81,7 +81,7 @@ class Range
             InitializeMembers(0, 0, 0, step);
         else
         {
-            const int count{(start - end) / -step};
+            const int count{((end - start) / step) + ((((end - start) % step) == 0) ? 0 : 1)};
             InitializeMembers(count, start, (start - (count * step)), step);
         }
     }

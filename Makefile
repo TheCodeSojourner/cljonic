@@ -45,7 +45,7 @@ format: FORCE
 
 ########################################################################################################################
 ## Prepare for git commit by doing 'make clean format'
-git: clean format doc cljonic
+git: clean format cljonic doc
 	@echo
 	@echo "==============================================================================="
 	@echo "== git status"

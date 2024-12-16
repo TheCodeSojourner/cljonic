@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Dec 16 02:53:37 PM MST 2024
+// This file was generated Mon Dec 16 03:51:46 PM MST 2024
 
 namespace cljonic {
 
@@ -199,7 +199,7 @@ constexpr void InitializeStartEndStepWithNegativeStep(const int start, const int
 if(start <= end)
 InitializeMembers(0, 0, 0, step);
 else {
-const int count{(start - end) / -step};
+const int count{((end - start) / step) + ((((end - start) % step) == 0) ? 0 : 1)};
 InitializeMembers(count, start, (start - (count * step)), step);
 }
 }
