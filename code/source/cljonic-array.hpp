@@ -34,11 +34,11 @@ class Array
 
     int main()
     {
-        auto a0{Array<int, 10>{}};                // a0 is empty
-        auto a1{Array<int, 10>{1, 2, 3, 4}};      // a1 is sparse
-        auto a2{Array<int, 4>{1, 2, 3, 4}};       // a2 is full
-        auto a3{Array<int, 4>{1, 2, 3, 4, 5, 6}}; // a3 is full, and the values 5 and 6 are ignored
-        auto a4{Array{1, 2, 3, 4}};               // a4 is full of four int values
+        const auto a0{Array<int, 10>{}};                // a0 is immutable and empty
+        const auto a1{Array<int, 10>{1, 2, 3, 4}};      // a1 is immutable and sparse
+        const auto a2{Array<int, 4>{1, 2, 3, 4}};       // a2 is immutable and full
+        const auto a3{Array<int, 4>{1, 2, 3, 4, 5, 6}}; // a3 is immutable and full, and the values 5 and 6 are ignored
+        const auto a4{Array{1, 2, 3, 4}};               // a4 is immutable and full of four int values
 
         return 0;
     }
