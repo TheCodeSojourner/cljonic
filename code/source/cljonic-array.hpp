@@ -51,6 +51,7 @@ class Array
     */
     using cljonic_collection = std::true_type;
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>;
+    using size_type = MaxElementsType;
     using value_type = T;
 
     Array() : m_elementCount(0)

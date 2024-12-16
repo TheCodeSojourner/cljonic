@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Sat Dec 14 05:51:22 PM MST 2024
+// This file was generated Mon Dec 16 08:19:02 AM MST 2024
 
 namespace cljonic {
 
@@ -108,6 +108,7 @@ m_elementDefault = T{};
 public:
 using cljonic_collection = std::true_type;
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>;
+using size_type = MaxElementsType;
 using value_type = T;
 
 Array() : m_elementCount(0) {
@@ -175,6 +176,7 @@ return result;
 public:
 using cljonic_collection = std::true_type;
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Set>;
+using size_type = MaxElementsType;
 using value_type = T;
 
 Set() : m_elementCount(0) {
@@ -233,6 +235,7 @@ m_elementDefault = '\0';
 public:
 using cljonic_collection = std::true_type;
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>;
+using size_type = MaxElementsType;
 using value_type = char;
 
 String() : m_elementCount(0) {

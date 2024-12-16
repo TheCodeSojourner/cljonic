@@ -71,6 +71,7 @@ class Set
     */
     using cljonic_collection = std::true_type;
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Set>;
+    using size_type = MaxElementsType;
     using value_type = T;
 
     Set() : m_elementCount(0)
