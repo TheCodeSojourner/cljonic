@@ -74,12 +74,12 @@ class Set
     using size_type = MaxElementsType;
     using value_type = T;
 
-    Set() : m_elementCount(0)
+    Set() noexcept : m_elementCount(0)
     {
         InitializeElementDefault();
     }
 
-    Set(const std::initializer_list<const T> elements) : m_elementCount(0)
+    Set(const std::initializer_list<const T> elements) noexcept : m_elementCount(0)
     {
         InitializeElementDefault();
         for (const auto& element : elements)

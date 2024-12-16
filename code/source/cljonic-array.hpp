@@ -54,12 +54,12 @@ class Array
     using size_type = MaxElementsType;
     using value_type = T;
 
-    Array() : m_elementCount(0)
+    Array() noexcept : m_elementCount(0)
     {
         InitializeElementDefault();
     }
 
-    Array(const std::initializer_list<const T> elements) : m_elementCount(0)
+    Array(const std::initializer_list<const T> elements) noexcept : m_elementCount(0)
     {
         InitializeElementDefault();
         for (const auto& element : elements)

@@ -55,13 +55,13 @@ class String
     using size_type = MaxElementsType;
     using value_type = char;
 
-    String() : m_elementCount(0)
+    String() noexcept : m_elementCount(0)
     {
         InitializeElementDefault();
         m_elements[0] = '\0';
     }
 
-    String(const std::initializer_list<const char> elements) : m_elementCount(0)
+    String(const std::initializer_list<const char> elements) noexcept : m_elementCount(0)
     {
         InitializeElementDefault();
         for (const auto& element : elements)
@@ -73,7 +73,7 @@ class String
         m_elements[m_elementCount] = '\0';
     }
 
-    explicit String(const char* c_str) : m_elementCount(0)
+    explicit String(const char* c_str) noexcept : m_elementCount(0)
     {
         InitializeElementDefault();
         while ((m_elementCount < MaxElements) and ('\0' != c_str[m_elementCount]))
