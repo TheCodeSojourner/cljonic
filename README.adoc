@@ -8,6 +8,8 @@ image::logo.png[cljonic, 200, 200, align="center"]
 [.text-center]
 *Header-Only Embedded-Systems C++ Clojure-esque Functional Programming Library*
 
+NOTE: If you are interested in a "big-machine" *{cpp} Clojure* implementation see the https://github.com/jank-lang/jank[Jank] project.
+
 == Pronunciation
 [.big]#*cljonic* /klə-jŏn′ĭk/#
 
@@ -21,8 +23,6 @@ image::logo.png[cljonic, 200, 200, align="center"]
 Detailed documentation is available https://thecodesojourner.github.io/cljonic/[here].
 
 == Motivation
-
-NOTE: If you are interested in a Big-Machine *{cpp} Clojure* implementation see the https://github.com/jank-lang/jank[Jank] project.
 
 .*John Carmack* - https://www.gamedeveloper.com/programming/in-depth-functional-programming-in-c-
 ____
