@@ -22,11 +22,6 @@ class String
     char m_elementDefault;
     char m_elements[MaxElements + 1]; // +1 for the null terminator
 
-    void InitializeElementDefault() noexcept
-    {
-        m_elementDefault = '\0';
-    }
-
   public:
     /**
     * The \b String constructor returns an instance of String initialized with the chars in its argument(s). If the
@@ -55,15 +50,13 @@ class String
     using size_type = MaxElementsType;
     using value_type = char;
 
-    String() noexcept : m_elementCount(0)
+    String() noexcept : m_elementCount(0), m_elementDefault('\0')
     {
-        InitializeElementDefault();
         m_elements[0] = '\0';
     }
 
-    String(const std::initializer_list<const char> elements) noexcept : m_elementCount(0)
+    String(const std::initializer_list<const char> elements) noexcept : m_elementCount(0), m_elementDefault('\0')
     {
-        InitializeElementDefault();
         for (const auto& element : elements)
         {
             if (m_elementCount == MaxElements)
@@ -73,9 +66,8 @@ class String
         m_elements[m_elementCount] = '\0';
     }
 
-    explicit String(const char* c_str) noexcept : m_elementCount(0)
+    explicit String(const char* c_str) noexcept : m_elementCount(0), m_elementDefault('\0')
     {
-        InitializeElementDefault();
         while ((m_elementCount < MaxElements) and ('\0' != c_str[m_elementCount]))
         {
             m_elements[m_elementCount] = c_str[m_elementCount];

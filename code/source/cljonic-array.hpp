@@ -23,11 +23,6 @@ class Array
     T m_elementDefault;
     T m_elements[MaxElements];
 
-    void InitializeElementDefault() noexcept
-    {
-        m_elementDefault = T{};
-    }
-
   public:
     /**
     * The \b Array constructor returns an instance of Array initialized with its arguments. If the number of arguments
@@ -54,14 +49,12 @@ class Array
     using size_type = MaxElementsType;
     using value_type = T;
 
-    Array() noexcept : m_elementCount(0)
+    Array() noexcept : m_elementCount(0), m_elementDefault(T{})
     {
-        InitializeElementDefault();
     }
 
-    Array(const std::initializer_list<const T> elements) noexcept : m_elementCount(0)
+    Array(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{})
     {
-        InitializeElementDefault();
         for (const auto& element : elements)
         {
             if (m_elementCount == MaxElements)

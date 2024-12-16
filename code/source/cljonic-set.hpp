@@ -32,11 +32,6 @@ class Set
     T m_elementDefault;
     T m_elements[MaxElements];
 
-    void InitializeElementDefault() noexcept
-    {
-        m_elementDefault = T{};
-    }
-
     bool IsUniqueElement(const T& element) const noexcept
     {
         auto result{true};
@@ -74,14 +69,12 @@ class Set
     using size_type = MaxElementsType;
     using value_type = T;
 
-    Set() noexcept : m_elementCount(0)
+    Set() noexcept : m_elementCount(0), m_elementDefault(T{})
     {
-        InitializeElementDefault();
     }
 
-    Set(const std::initializer_list<const T> elements) noexcept : m_elementCount(0)
+    Set(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{})
     {
-        InitializeElementDefault();
         for (const auto& element : elements)
         {
             if (m_elementCount == MaxElements)

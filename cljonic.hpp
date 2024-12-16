@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Dec 16 08:24:33 AM MST 2024
+// This file was generated Mon Dec 16 09:56:07 AM MST 2024
 
 namespace cljonic {
 
@@ -101,22 +101,16 @@ MaxElementsType m_elementCount;
 T m_elementDefault;
 T m_elements[MaxElements];
 
-void InitializeElementDefault() noexcept {
-m_elementDefault = T{};
-}
-
 public:
 using cljonic_collection = std::true_type;
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>;
 using size_type = MaxElementsType;
 using value_type = T;
 
-Array() noexcept : m_elementCount(0) {
-InitializeElementDefault();
+Array() noexcept : m_elementCount(0), m_elementDefault(T{}) {
 }
 
-Array(const std::initializer_list<const T> elements) noexcept : m_elementCount(0) {
-InitializeElementDefault();
+Array(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{}) {
 for(const auto& element : elements) {
 if(m_elementCount == MaxElements)
 break;
@@ -162,10 +156,6 @@ MaxElementsType m_elementCount;
 T m_elementDefault;
 T m_elements[MaxElements];
 
-void InitializeElementDefault() noexcept {
-m_elementDefault = T{};
-}
-
 bool IsUniqueElement(const T& element) const noexcept {
 auto result{true};
 for(MaxElementsType i = 0; (result and (i < m_elementCount)); ++i)
@@ -179,12 +169,10 @@ using cljonic_collection_type = std::integral_constant<CljonicCollectionType, Cl
 using size_type = MaxElementsType;
 using value_type = T;
 
-Set() noexcept : m_elementCount(0) {
-InitializeElementDefault();
+Set() noexcept : m_elementCount(0), m_elementDefault(T{}) {
 }
 
-Set(const std::initializer_list<const T> elements) noexcept : m_elementCount(0) {
-InitializeElementDefault();
+Set(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{}) {
 for(const auto& element : elements) {
 if(m_elementCount == MaxElements)
 break;
@@ -228,23 +216,17 @@ MaxElementsType m_elementCount;
 char m_elementDefault;
 char m_elements[MaxElements + 1];
 
-void InitializeElementDefault() noexcept {
-m_elementDefault = '\0';
-}
-
 public:
 using cljonic_collection = std::true_type;
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>;
 using size_type = MaxElementsType;
 using value_type = char;
 
-String() noexcept : m_elementCount(0) {
-InitializeElementDefault();
+String() noexcept : m_elementCount(0), m_elementDefault('\0') {
 m_elements[0] = '\0';
 }
 
-String(const std::initializer_list<const char> elements) noexcept : m_elementCount(0) {
-InitializeElementDefault();
+String(const std::initializer_list<const char> elements) noexcept : m_elementCount(0), m_elementDefault('\0') {
 for(const auto& element : elements) {
 if(m_elementCount == MaxElements)
 break;
@@ -253,8 +235,7 @@ m_elements[m_elementCount++] = element;
 m_elements[m_elementCount] = '\0';
 }
 
-explicit String(const char* c_str) noexcept : m_elementCount(0) {
-InitializeElementDefault();
+explicit String(const char* c_str) noexcept : m_elementCount(0), m_elementDefault('\0') {
 while((m_elementCount < MaxElements) and ('\0' != c_str[m_elementCount])) {
 m_elements[m_elementCount] = c_str[m_elementCount];
 m_elementCount += 1;
