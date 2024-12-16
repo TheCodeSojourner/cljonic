@@ -13,6 +13,7 @@ cat cljonic-collection-type.hpp \
     cljonic-concepts.hpp \
     cljonic-shared.hpp \
     cljonic-array.hpp \
+    cljonic-range.hpp \
     cljonic-set.hpp \
     cljonic-string.hpp \
     cljonic-core.hpp \
