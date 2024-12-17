@@ -112,10 +112,10 @@ class Range
   public:
     /**
     * There are four \b Range constructors:
-    *     <b>Range()</b> returns a \b Range from \b 0 (zero) to \b std::numeric_limits<int>::max()
-    *     <b>Range(end)</b> returns a \b Range from \b 0 (zero) to \b end-1
-    *     <b>Range(start, end)</b> returns a \b Range from \b start to \b end-1
-    *     <b>Range(start, end, step)</b> returns the \b Range \b start,  \b start+1*step, \b start+2*step, etc., while
+    *     - <b>Range()</b> returns a \b Range from \b 0 (zero) to \b std::numeric_limits<int>::max()
+    *     - <b>Range(end)</b> returns a \b Range from \b 0 (zero) to \b end-1
+    *     - <b>Range(start, end)</b> returns a \b Range from \b start to \b end-1
+    *     - <b>Range(start, end, step)</b> returns the \b Range \b start,  \b start+1*step, \b start+2*step, etc., while
     *     \b start+N*step < \b end.
     ~~~~~{.cpp}
     #include "cljonic.hpp"
