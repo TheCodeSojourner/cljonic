@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Dec 17 03:36:18 PM MST 2024
+// This file was generated Tue Dec 17 03:57:05 PM MST 2024
 
 namespace cljonic {
 
@@ -47,14 +47,18 @@ concept IsCljonicRange = std::same_as<typename T::cljonic_collection_type,
                                       std::integral_constant<CljonicCollectionType, CljonicCollectionType::Range>>;
 
 template <typename T>
+concept IsCljonicRepeat = std::same_as<typename T::cljonic_collection_type,
+                                       std::integral_constant<CljonicCollectionType, CljonicCollectionType::Repeat>>;
+
+template <typename T>
 concept IsCljonicSet = std::same_as<typename T::cljonic_collection_type,
                                     std::integral_constant<CljonicCollectionType, CljonicCollectionType::Set>>;
 
 template <typename T>
-concept IsCljonicArrayOrRange = IsCljonicArray<T> or IsCljonicRange<T>;
+concept IsCljonicArrayRangeOrRepeat = IsCljonicArray<T> or IsCljonicRange<T> or IsCljonicRepeat<T>;
 
 template <typename T, typename... Ts>
-concept AllCljonicArrayOrRange = (IsCljonicArrayOrRange<T> and ... and IsCljonicArrayOrRange<Ts>);
+concept AllCljonicArrayRangeOrRepeat = (IsCljonicArrayRangeOrRepeat<T> and ... and IsCljonicArrayRangeOrRepeat<Ts>);
 
 template <typename T, typename... Ts>
 concept AllCljonicCollections = (IsCljonicCollection<T> and ... and IsCljonicCollection<Ts>);
@@ -553,8 +557,8 @@ template <typename T, typename... Ts>
 auto Equal(const T& t, const Ts&... ts) {
 
 if constexpr(AllCljonicCollections<T, Ts...>) {
-static_assert(AllCljonicArrayOrRange<T, Ts...> or AllSameCljonicCollectionType<T, Ts...>,
-              "Cljonic collection types are not all the same, or all Array or Range types");
+static_assert(AllCljonicArrayRangeOrRepeat<T, Ts...> or AllSameCljonicCollectionType<T, Ts...>,
+              "Cljonic collection types are not all the same, or all Array, Range or Repeat types");
 static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
               "Cljonic floating point collection value types should not be compared for equality");
 static_assert(AllEqualityComparableValueTypes<T, Ts...>,

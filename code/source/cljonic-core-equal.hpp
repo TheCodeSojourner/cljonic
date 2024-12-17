@@ -51,8 +51,8 @@ auto Equal(const T& t, const Ts&... ts)
      */
     if constexpr (AllCljonicCollections<T, Ts...>)
     {
-        static_assert(AllCljonicArrayOrRange<T, Ts...> or AllSameCljonicCollectionType<T, Ts...>,
-                      "Cljonic collection types are not all the same, or all Array or Range types");
+        static_assert(AllCljonicArrayRangeOrRepeat<T, Ts...> or AllSameCljonicCollectionType<T, Ts...>,
+                      "Cljonic collection types are not all the same, or all Array, Range or Repeat types");
         static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
                       "Cljonic floating point collection value types should not be compared for equality");
         static_assert(AllEqualityComparableValueTypes<T, Ts...>,
