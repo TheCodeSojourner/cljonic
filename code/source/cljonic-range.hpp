@@ -45,6 +45,11 @@ class Range
     int m_elementEnd;
     int m_elementStep;
 
+    constexpr int Count(const int start, const int end, const int step) noexcept
+    {
+        return ((end - start) / step) + ((((end - start) % step) == 0) ? 0 : 1);
+    }
+
     constexpr void InitializeMembers(const int count, const int start, const int end, const int step) noexcept
     {
         m_elementCount = static_cast<std::size_t>(count);
@@ -81,7 +86,7 @@ class Range
             InitializeMembers(0, 0, 0, step);
         else
         {
-            const int count{((end - start) / step) + ((((end - start) % step) == 0) ? 0 : 1)};
+            const int count{Count(start, end, step)};
             InitializeMembers(count, start, (start - (count * step)), step);
         }
     }
@@ -92,7 +97,7 @@ class Range
             InitializeMembers(0, 0, 0, step);
         else
         {
-            const int count{((end - start) / step) + 1};
+            const int count{Count(start, end, step)};
             InitializeMembers(count, start, (start + (count * step)), step);
         }
     }

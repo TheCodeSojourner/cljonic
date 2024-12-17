@@ -60,6 +60,7 @@ NOTE: The performance of these implementation characteristics should be acceptab
 * *AsciiDoc* for project documentation
 ** https://asciidoctor.org/docs/asciidoc-writers-guide/
 * *C++ 20*, or higher, for *Modern {cpp}* features
+* *catch* v2.13.9 for testing
 * *clang-format* for code formatting
 * *cppcheck* for code analysis
 * *doxygen* for code documentation

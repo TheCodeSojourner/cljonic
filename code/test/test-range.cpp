@@ -305,4 +305,77 @@ SCENARIO("Range", "[CljonicRange]")
         CHECK(0 == r[-1]);
         CHECK(0 == r[MAX_INT]);
     }
+
+    {
+        const auto r{Range(0, 10, 2)};
+        CHECK(5 == r.Count());
+        CHECK(0 == r[0]);
+        CHECK(2 == r[1]);
+        CHECK(4 == r[2]);
+        CHECK(6 == r[3]);
+        CHECK(8 == r[4]);
+        CHECK(0 == r[MAX_INT - 1]);
+        CHECK(0 == r[-1]);
+        CHECK(0 == r[MAX_INT]);
+    }
+
+    {
+        const auto r{Range(1, 10, 3)};
+        CHECK(3 == r.Count());
+        CHECK(1 == r[0]);
+        CHECK(4 == r[1]);
+        CHECK(7 == r[2]);
+        CHECK(0 == r[MAX_INT - 1]);
+        CHECK(0 == r[-1]);
+        CHECK(0 == r[MAX_INT]);
+    }
+
+    {
+        const auto r{Range(5, 6, 1)};
+        CHECK(1 == r.Count());
+        CHECK(5 == r[0]);
+        CHECK(0 == r[MAX_INT - 1]);
+        CHECK(0 == r[-1]);
+        CHECK(0 == r[MAX_INT]);
+    }
+
+    {
+        const auto r{Range(0, 5, 1)};
+        CHECK(5 == r.Count());
+        CHECK(0 == r[0]);
+        CHECK(1 == r[1]);
+        CHECK(2 == r[2]);
+        CHECK(3 == r[3]);
+        CHECK(4 == r[4]);
+        CHECK(0 == r[MAX_INT - 1]);
+        CHECK(0 == r[-1]);
+        CHECK(0 == r[MAX_INT]);
+    }
+
+    {
+        const auto r{Range(10, 5, 2)};
+        CHECK(0 == r.Count());
+        CHECK(0 == r[0]);
+        CHECK(0 == r[MAX_INT - 1]);
+        CHECK(0 == r[-1]);
+        CHECK(0 == r[MAX_INT]);
+    }
+
+    {
+        const auto r{Range(0, 0, 1)};
+        CHECK(0 == r.Count());
+        CHECK(0 == r[0]);
+        CHECK(0 == r[MAX_INT - 1]);
+        CHECK(0 == r[-1]);
+        CHECK(0 == r[MAX_INT]);
+    }
+
+    {
+        const auto r{Range(0, 10, 20)};
+        CHECK(1 == r.Count());
+        CHECK(0 == r[0]);
+        CHECK(0 == r[MAX_INT - 1]);
+        CHECK(0 == r[-1]);
+        CHECK(0 == r[MAX_INT]);
+    }
 }
