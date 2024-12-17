@@ -8,6 +8,7 @@ enum class CljonicCollectionType
 {
     Array,
     Range,
+    Repeat,
     Set,
     String
 };

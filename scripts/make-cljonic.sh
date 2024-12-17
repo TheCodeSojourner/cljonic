@@ -14,6 +14,7 @@ cat cljonic-collection-type.hpp \
     cljonic-shared.hpp \
     cljonic-array.hpp \
     cljonic-range.hpp \
+    cljonic-repeat.hpp \
     cljonic-set.hpp \
     cljonic-string.hpp \
     cljonic-core.hpp \

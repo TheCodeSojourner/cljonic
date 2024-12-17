@@ -16,13 +16,14 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Dec 17 12:21:47 PM MST 2024
+// This file was generated Tue Dec 17 03:36:18 PM MST 2024
 
 namespace cljonic {
 
 enum class CljonicCollectionType {
     Array,
     Range,
+    Repeat,
     Set,
     String
 };
@@ -295,6 +296,74 @@ int operator[](const size_type index) const noexcept {
 return ((0 == m_elementCount) or (index >= m_elementCount))
            ? m_elementDefault
            : (m_elementStart + (static_cast<int>(index) * m_elementStep));
+}
+
+[[nodiscard]] size_type Count() const noexcept {
+return m_elementCount;
+}
+};
+
+} // namespace cljonic
+
+#include <type_traits>
+
+namespace cljonic {
+
+template <typename T>
+class Repeat {
+std::size_t m_elementCount;
+T m_elementDefault;
+T m_elementValue;
+
+class Iterator {
+const Repeat& m_repeat;
+std::size_t m_index;
+
+public:
+Iterator(const Repeat& repeat, const std::size_t index) : m_repeat(repeat), m_index(index) {
+}
+
+int operator*() const {
+return m_repeat[m_index];
+}
+
+Iterator& operator++() {
+++m_index;
+return *this;
+}
+
+bool operator!=(const Iterator& other) const {
+return m_index != other.m_index;
+}
+};
+
+public:
+using cljonic_collection = std::true_type;
+using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Repeat>;
+using size_type = std::size_t;
+using value_type = T;
+
+explicit Repeat(const T& t) noexcept
+    : m_elementCount{std::numeric_limits<std::size_t>::max()}, m_elementDefault{T{}}, m_elementValue{t} {
+}
+
+explicit Repeat(const size_type count, const T& t) noexcept
+    : m_elementCount{count}, m_elementDefault{T{}}, m_elementValue{t} {
+}
+
+Repeat(const Repeat& other) = default;
+Repeat(Repeat&& other) = default;
+
+[[nodiscard]] Iterator begin() const {
+return Iterator{*this, 0};
+}
+
+[[nodiscard]] Iterator end() const {
+return Iterator{*this, m_elementCount};
+}
+
+const T& operator[](const size_type index) const noexcept {
+return ((m_elementCount <= 0) or (index >= m_elementCount)) ? m_elementDefault : m_elementValue;
 }
 
 [[nodiscard]] size_type Count() const noexcept {
