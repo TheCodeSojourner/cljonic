@@ -63,9 +63,9 @@ help: FORCE
 	@echo
 	@echo "Usage:"
 	@echo "    'make'                generates this help information"
-	@echo "    'make all'            rebuilds and executes unit test program"
-	@echo "    'make clean'          deletes build artifacts"
-	@echo "    'make coverage        rebuilds, in gcov mode, executes unit test program, and generates coverage"
+	@echo "    'make all'            cleans, and rebuilds and executes unit test program"
+	@echo "    'make clean'          deletes build environment and artifacts"
+	@echo "    'make coverage        does a 'make all' in gcov mode, executes unit test program, and generates coverage"
 	@echo "    'make cppcheck'       executes cppcheck on source files"
 	@echo "    'make cljonic'        builds the cljonic.hpp single header file"
 	@echo "    'make doc'            generate doxygen documentation"

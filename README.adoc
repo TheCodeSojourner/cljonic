@@ -46,9 +46,19 @@ Many *embedded system* projects *do not* require heavy use of the *{cpp}* featur
 
 The motivation behind *cljonic* is to provide a *Clojure-esque* functional programming library for *{cpp}* embedded system developers that is *laconic*, *immutable-by-default*, *practical*, and *stable*.  *Cljonic* should also be *easy to learn and understand* and *easy to use properly* for the *safe* implementation of the *non-performance-critical* code of an *embedded system*.
 
-== Desired Developer Experience
-The *cljonic* developer should be able to write *safe* code that is *easy to read*, *easy to understand* and *easy to maintain*.  These goals will enable *embedded system* projects to be *completed more quickly*, with 
+== Desired Developer Experience When Using cljonic
+The developer using *cljonic* should be able to write *safe* code that is *easy to read*, *easy to understand* and *easy to maintain*.  These goals will enable *embedded system* projects to be *completed more quickly*, with 
 *fewer bugs*, and maintained and enhanced with *less long term effort*. 
+
+== Developer Experience When Developing cljonic
+*cljonic* has a *Makefile* in the root directory.  For *help* on the available development processes, simply execute `make` from a command-line while in the root directory , which will display the available options.
+
+After cloning the repository, the developer should first execute `make all`. Next, assuming no files are added to the
+repository, only modified, the developer should execute `make test`. Assuming all tests pass, executing `make cljonic` will generate the *cljonic* single header file.  Finally, executing `make git` will prepare the repository for a *git* commit.
+
+NOTE: Adding files to the *code/source* or *code/test* directories will require the developer to re-execute `make all`.
+
+NOTE: Adding files to the *code/source* directory will require the developer to update the *scripts/make-cljonic.sh* file.
 
 == Implementation Characteristics
 
