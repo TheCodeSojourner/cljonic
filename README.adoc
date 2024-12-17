@@ -53,7 +53,7 @@ The developer using *cljonic* should be able to write *safe* code that is *easy 
 == Developer Experience When Developing cljonic
 *cljonic* has a *Makefile* in the root directory.  For *help* on the available development processes, simply execute `make` from a command-line while in the root directory , which will display the available options.
 
-After cloning the repository, the developer should first execute `make all`. Next, assuming no files are added to the
+*After cloning the repository*, the developer should first execute `make all`. Next, assuming no files are added to the
 repository, only modified, the developer should execute `make test`. Assuming all tests pass, executing `make cljonic` will generate the *cljonic* single header file.  Finally, executing `make git` will prepare the repository for a *git* commit.
 
 NOTE: Adding files to the *code/source* or *code/test* directories will require the developer to re-execute `make all`.
