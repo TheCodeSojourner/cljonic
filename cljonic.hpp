@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Dec 17 10:45:06 AM MST 2024
+// This file was generated Tue Dec 17 10:53:47 AM MST 2024
 
 namespace cljonic {
 
@@ -155,27 +155,7 @@ Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
 namespace cljonic {
 
 class Range {
-class Iterator {
-const Range& m_range;
-std::size_t m_index;
-
-public:
-Iterator(const Range& range, const std::size_t index) : m_range(range), m_index(index) {
-}
-
-int operator*() const {
-return m_range[m_index];
-}
-
-Iterator& operator++() {
-++m_index;
-return *this;
-}
-
-bool operator!=(const Iterator& other) const {
-return m_index != other.m_index;
-}
-};
+using Iterator = CollectionIterator<Range>;
 
 std::size_t m_elementCount;
 int m_elementDefault;
