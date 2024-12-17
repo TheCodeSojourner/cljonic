@@ -12,8 +12,22 @@ template <typename T>
 concept IsCljonicCollection = std::same_as<typename T::cljonic_collection, std::true_type>;
 
 template <typename T>
+concept IsCljonicArray = std::same_as<typename T::cljonic_collection_type,
+                                      std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>>;
+
+template <typename T>
+concept IsCljonicRange = std::same_as<typename T::cljonic_collection_type,
+                                      std::integral_constant<CljonicCollectionType, CljonicCollectionType::Range>>;
+
+template <typename T>
 concept IsCljonicSet = std::same_as<typename T::cljonic_collection_type,
                                     std::integral_constant<CljonicCollectionType, CljonicCollectionType::Set>>;
+
+template <typename T>
+concept IsCljonicArrayOrRange = IsCljonicArray<T> or IsCljonicRange<T>;
+
+template <typename T, typename... Ts>
+concept AllCljonicArrayOrRange = (IsCljonicArrayOrRange<T> and ... and IsCljonicArrayOrRange<Ts>);
 
 template <typename T, typename... Ts>
 concept AllCljonicCollections = (IsCljonicCollection<T> and ... and IsCljonicCollection<Ts>);

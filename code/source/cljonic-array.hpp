@@ -9,8 +9,8 @@
 namespace cljonic
 {
 /** \anchor Array
- * The \b Array type is a fundamental collection type in cljonic.  It is implemented as a C array, and <b>does
- * not use heap memory</b>.  An \b Array has a specified maximum number of \b ordered elements each of the same
+ * The \b Array type is a fundamental immutable collection type in cljonic.  It is implemented as a C array, and
+ * <b>does not use heap memory</b>.  An \b Array has a specified maximum number of \b ordered elements each  of the same
  * specified type (i.e., It is homogenous).  <b>Note that one could create an Array of a \b UNION or \b std::variant to
  * get something like heterogeneity.</b>  Many \ref Namespace_Core "Core" functions accept Array arguments.
  */
@@ -34,11 +34,11 @@ class Array
 
     int main()
     {
-        const auto a0{Array<int, 10>{}};                // a0 is immutable and empty
-        const auto a1{Array<int, 10>{1, 2, 3, 4}};      // a1 is immutable and sparse
-        const auto a2{Array<int, 4>{1, 2, 3, 4}};       // a2 is immutable and full
-        const auto a3{Array<int, 4>{1, 2, 3, 4, 5, 6}}; // a3 is immutable and full, and the values 5 and 6 are ignored
-        const auto a4{Array{1, 2, 3, 4}};               // a4 is immutable and full of four int values
+        const auto a0{Array<int, 10>{}};                // immutable and empty
+        const auto a1{Array<int, 10>{1, 2, 3, 4}};      // immutable and sparse
+        const auto a2{Array<int, 4>{1, 2, 3, 4}};       // immutable and full
+        const auto a3{Array<int, 4>{1, 2, 3, 4, 5, 6}}; // immutable and full, and the values 5 and 6 are ignored
+        const auto a4{Array{1, 2, 3, 4}};               // immutable and full of four int values
 
         return 0;
     }

@@ -20,14 +20,23 @@ using namespace cljonic::core;
 
 int main()
 {
-    auto v1{Array<int, 10>{1, 2, 3, 4}};
-    auto v2{Array<int, 10>{1, 2, 3, 4}};
-    auto e0{Equal(v1)};           // returns true whenever only one parameter is specified
-    auto e1{Equal(v1, v2)};       // returns true
-    auto e2{Equal(1, 2)};         // returns false
-    // auto e3{Equal(1.1, 2.1)};  // compilation error: Floating point types should not be compared for equality
-    // auto e{Equal()};           // compilation error: Must specify at least one parameter
-    // auto e{Equal(1, "Hello")}; // compilation error: Types are not comparable
+    const auto a1{Array<int, 10>{1, 2, 3, 4}};
+    const auto a2{Array<int, 10>{1, 2, 3, 4}};
+    const auto a3{Array{0, 1, 2, 3, 4}};
+    const auto s1{Set{1, 2, 3}};
+    const auto str1{String{"abc"}};
+    const auto str2{String<3>{'a', 'b', 'c'}};
+    const auto e0{Equal(a1)};            // true whenever only one parameter is specified
+    const auto e1{Equal(a1, a2)};        // true
+    const auto e2{Equal(1, 2)};          // false
+    const auto e3{Equal(Range())};       // true
+    const auto e4{Equal(Range(5), a3)};  // true
+    const auto e5{Equal(Range(10), a3)}; // false
+    const auto e6{Equal(s1, s1)};        // true
+    const auto e7{Equal(str1, str2)};    // true
+    // const auto e{Equal(1.1, 2.1)};    // error: Floating point types should not be compared for equality
+    // const auto e{Equal()};            // error: Must specify at least one parameter
+    // const auto e{Equal(1, "Hello")};  // error: Types are not comparable
 
     return 0;
 }
@@ -42,8 +51,8 @@ auto Equal(const T& t, const Ts&... ts)
      */
     if constexpr (AllCljonicCollections<T, Ts...>)
     {
-        static_assert(AllSameCljonicCollectionType<T, Ts...>,
-                      "Cljonic collection types are not all the same (e.g., Array, Set, or String)");
+        static_assert(AllCljonicArrayOrRange<T, Ts...> or AllSameCljonicCollectionType<T, Ts...>,
+                      "Cljonic collection types are not all the same, or all Array or Range types");
         static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
                       "Cljonic floating point collection value types should not be compared for equality");
         static_assert(AllEqualityComparableValueTypes<T, Ts...>,

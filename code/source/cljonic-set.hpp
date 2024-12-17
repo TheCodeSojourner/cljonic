@@ -12,10 +12,11 @@ namespace cljonic
 {
 
 /** \anchor Set
- * The \b Set type is a fundamental collection type in cljonic.  It is implemented as a C array, and <b>does not
- * use dynamic memory</b>. A \b Set has a specified maximum number of \b unique \b unordered elements each of the same
- * specified type (i.e., It is homogenous).  <b>Note that one could create a Set of a \b UNION or \b std::variant to get
- * something like heterogeneity.</b>  Many \ref Namespace_Core "Core" functions accept Set arguments.
+ * The \b Set type is a fundamental immutable collection type in cljonic.  It is implemented as a C array, and
+ * <b>does not use dynamic memory</b>. A \b Set has a specified maximum number of \b unique \b unordered elements each
+ * of the same specified type (i.e., It is homogenous).  <b>Note that one could create a Set of a \b UNION or
+ * \b std::variant to get something like heterogeneity.</b>  Many \ref Namespace_Core "Core" functions accept Set
+ * arguments.
  */
 template <typename T, std::size_t MaxElements>
 class Set

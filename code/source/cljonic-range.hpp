@@ -1,5 +1,5 @@
-#ifndef CLJONIC_ARRAY_HPP
-#define CLJONIC_ARRAY_HPP
+#ifndef CLJONIC_RANGE_HPP
+#define CLJONIC_RANGE_HPP
 
 #include <type_traits>
 #include "cljonic-collection-type.hpp"
@@ -7,8 +7,8 @@
 namespace cljonic
 {
 /** \anchor Range
- * The \b Range type is a fundamental collection type in cljonic.  It is implemented as a \b lazy \b sequence of
- * \b "int". Many \ref Namespace_Core "Core" functions accept Range arguments.
+ * The \b Range type is a fundamental immutable collection type in cljonic.  It is implemented as a \b lazy \b sequence
+ * of \b "int". Many \ref Namespace_Core "Core" functions accept Range arguments.
  */
 class Range
 {
@@ -209,4 +209,4 @@ class Range
 
 } // namespace cljonic
 
-#endif // CLJONIC_ARRAY_HPP
+#endif // CLJONIC_RANGE_HPP

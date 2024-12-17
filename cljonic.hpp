@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Dec 17 07:09:35 AM MST 2024
+// This file was generated Tue Dec 17 10:11:40 AM MST 2024
 
 namespace cljonic {
 
@@ -38,8 +38,22 @@ template <typename T>
 concept IsCljonicCollection = std::same_as<typename T::cljonic_collection, std::true_type>;
 
 template <typename T>
+concept IsCljonicArray = std::same_as<typename T::cljonic_collection_type,
+                                      std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>>;
+
+template <typename T>
+concept IsCljonicRange = std::same_as<typename T::cljonic_collection_type,
+                                      std::integral_constant<CljonicCollectionType, CljonicCollectionType::Range>>;
+
+template <typename T>
 concept IsCljonicSet = std::same_as<typename T::cljonic_collection_type,
                                     std::integral_constant<CljonicCollectionType, CljonicCollectionType::Set>>;
+
+template <typename T>
+concept IsCljonicArrayOrRange = IsCljonicArray<T> or IsCljonicRange<T>;
+
+template <typename T, typename... Ts>
+concept AllCljonicArrayOrRange = (IsCljonicArrayOrRange<T> and ... and IsCljonicArrayOrRange<Ts>);
 
 template <typename T, typename... Ts>
 concept AllCljonicCollections = (IsCljonicCollection<T> and ... and IsCljonicCollection<Ts>);
@@ -169,6 +183,10 @@ int m_elementStart;
 int m_elementEnd;
 int m_elementStep;
 
+constexpr int Count(const int start, const int end, const int step) noexcept {
+return ((end - start) / step) + ((((end - start) % step) == 0) ? 0 : 1);
+}
+
 constexpr void InitializeMembers(const int count, const int start, const int end, const int step) noexcept {
 m_elementCount = static_cast<std::size_t>(count);
 m_elementDefault = 0;
@@ -199,7 +217,7 @@ constexpr void InitializeStartEndStepWithNegativeStep(const int start, const int
 if(start <= end)
 InitializeMembers(0, 0, 0, step);
 else {
-const int count{((end - start) / step) + ((((end - start) % step) == 0) ? 0 : 1)};
+const int count{Count(start, end, step)};
 InitializeMembers(count, start, (start - (count * step)), step);
 }
 }
@@ -208,7 +226,7 @@ constexpr void InitializeStartEndStepWithPositiveStep(const int start, const int
 if(end <= start)
 InitializeMembers(0, 0, 0, step);
 else {
-const int count{((end - start) / step) + 1};
+const int count{Count(start, end, step)};
 InitializeMembers(count, start, (start + (count * step)), step);
 }
 }
@@ -284,7 +302,6 @@ return m_elementCount;
 #include <type_traits>
 
 namespace cljonic {
-
 template <typename T, std::size_t MaxElements>
 class Set {
 static_assert(not std::floating_point<T>,
@@ -420,8 +437,8 @@ template <typename T, typename... Ts>
 auto Equal(const T& t, const Ts&... ts) {
 
 if constexpr(AllCljonicCollections<T, Ts...>) {
-static_assert(AllSameCljonicCollectionType<T, Ts...>,
-              "Cljonic collection types are not all the same (e.g., Array, Set, or String)");
+static_assert(AllCljonicArrayOrRange<T, Ts...> or AllSameCljonicCollectionType<T, Ts...>,
+              "Cljonic collection types are not all the same, or all Array or Range types");
 static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
               "Cljonic floating point collection value types should not be compared for equality");
 static_assert(AllEqualityComparableValueTypes<T, Ts...>,

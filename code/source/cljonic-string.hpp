@@ -9,8 +9,8 @@
 namespace cljonic
 {
 /** \anchor String
- * The \b String type is a fundamental collection type in cljonic.  It is implemented as a C array of char, and
- * <b>does not use dynamic memory</b>. A \b String has a specified maximum number of \b ordered char elements, which
+ * The \b String type is a fundamental immutable collection type in cljonic.  It is implemented as a C array of char,
+ * and <b>does not use dynamic memory</b>. A \b String has a specified maximum number of \b ordered char elements, which
  * are always \b NUL terminated. Many \ref Namespace_Core "Core" functions accept String arguments.
  */
 template <std::size_t MaxElements>
