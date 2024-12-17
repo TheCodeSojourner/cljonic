@@ -56,9 +56,9 @@ The developer using *cljonic* should be able to write *safe* code that is *easy 
 *After cloning the repository*, the developer should first execute `make all`. Next, assuming no files are added to the
 repository, only modified, the developer should execute `make test`. Assuming all tests pass, executing `make cljonic` will generate the *cljonic* single header file.  Finally, executing `make git` will prepare the repository for a *git* commit.
 
-NOTE: Adding files to the *code/source* or *code/test* directories will require the developer to re-execute `make all`.
+NOTE: Whenever new files are added to the *code/source* or *code/test* directories, the developer must run `make all` again.
 
-NOTE: Adding files to the *code/source* directory will require the developer to update the *scripts/make-cljonic.sh* file.
+NOTE: Whenever new files are added to the *code/source* directory, the developer must update the *scripts/make-cljonic.sh* file.
 
 == Implementation Characteristics
 
