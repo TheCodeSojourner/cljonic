@@ -10,6 +10,8 @@ image::logo.png[cljonic, 200, 200, align="center"]
 
 NOTE: If you are interested in a "big-machine" *{cpp} Clojure* implementation see the https://github.com/jank-lang/jank[Jank] project.
 
+IMPORTANT: I am *NOT* a *Modern {cpp}* expert, and I am *ONLY* moderately competent in *Clojure*. If you have suggestions for improvement, *PLEASE* feel free to create issues, and I'll do my best to address them.
+
 == Pronunciation
 [.big]#*cljonic* /klə-jŏn′ĭk/#
 
