@@ -33,13 +33,13 @@ class String
 
     int main()
     {
-        const auto s0{String<10>{}};                       // s0 is immutable and empty
-        const auto s1{String<10>{"Hello"}};                // s1 is immutable and sparse
-        const auto s2{String<5>{"Hello"}};                 // s2 is immutable and full
-        const auto s3{String<5>{"Hello, World"}};          // s3 is immutable and full, and contains "Hello"
-        const auto s4{String<3>{'H', 'e', 'l', 'l', 'o'}}; // s4 is immutable and sparse
-        const auto s5{String{"Hello"}};                    // s5 is immutable and full
-        const auto s6{String{'H', 'e', 'l', 'l', 'o'}};    // s5 is immutable and full
+        const auto s0{String<10>{}};                       // immutable, empty
+        const auto s1{String<10>{"Hello"}};                // immutable, sparse
+        const auto s2{String<5>{"Hello"}};                 // immutable, full
+        const auto s3{String<5>{"Hello, World"}};          // immutable, full, and contains "Hello"
+        const auto s4{String<3>{'H', 'e', 'l', 'l', 'o'}}; // immutable, sparse
+        const auto s5{String{"Hello"}};                    // immutable, full
+        const auto s6{String{'H', 'e', 'l', 'l', 'o'}};    // immutable, full
 
         return 0;
     }

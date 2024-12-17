@@ -138,13 +138,13 @@ template&lt;std::size_t MaxElements&gt; </div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s0{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;10&gt;</a>{}};                       <span class="comment">// s0 is immutable and empty</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s1{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;10&gt;</a>{<span class="stringliteral">&quot;Hello&quot;</span>}};                <span class="comment">// s1 is immutable and sparse</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s2{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;5&gt;</a>{<span class="stringliteral">&quot;Hello&quot;</span>}};                 <span class="comment">// s2 is immutable and full</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s3{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;5&gt;</a>{<span class="stringliteral">&quot;Hello, World&quot;</span>}};          <span class="comment">// s3 is immutable and full, and contains &quot;Hello&quot;</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s4{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;3&gt;</a>{<span class="charliteral">&#39;H&#39;</span>, <span class="charliteral">&#39;e&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;o&#39;</span>}}; <span class="comment">// s4 is immutable and sparse</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s5{<a class="code hl_class" href="classcljonic_1_1_string.html">String</a>{<span class="stringliteral">&quot;Hello&quot;</span>}};                    <span class="comment">// s5 is immutable and full</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s6{<a class="code hl_class" href="classcljonic_1_1_string.html">String</a>{<span class="charliteral">&#39;H&#39;</span>, <span class="charliteral">&#39;e&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;o&#39;</span>}};    <span class="comment">// s5 is immutable and full</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s0{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;10&gt;</a>{}};                       <span class="comment">// immutable, empty</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s1{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;10&gt;</a>{<span class="stringliteral">&quot;Hello&quot;</span>}};                <span class="comment">// immutable, sparse</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s2{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;5&gt;</a>{<span class="stringliteral">&quot;Hello&quot;</span>}};                 <span class="comment">// immutable, full</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s3{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;5&gt;</a>{<span class="stringliteral">&quot;Hello, World&quot;</span>}};          <span class="comment">// immutable, full, and contains &quot;Hello&quot;</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s4{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;3&gt;</a>{<span class="charliteral">&#39;H&#39;</span>, <span class="charliteral">&#39;e&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;o&#39;</span>}}; <span class="comment">// immutable, sparse</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s5{<a class="code hl_class" href="classcljonic_1_1_string.html">String</a>{<span class="stringliteral">&quot;Hello&quot;</span>}};                    <span class="comment">// immutable, full</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s6{<a class="code hl_class" href="classcljonic_1_1_string.html">String</a>{<span class="charliteral">&#39;H&#39;</span>, <span class="charliteral">&#39;e&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;l&#39;</span>, <span class="charliteral">&#39;o&#39;</span>}};    <span class="comment">// immutable, full</span></div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
@@ -421,7 +421,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Dec 17 2024 10:11:40 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Tue Dec 17 2024 10:16:52 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

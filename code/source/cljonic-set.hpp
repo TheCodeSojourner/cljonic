@@ -53,13 +53,13 @@ class Set
 
     int main()
     {
-        const auto s0{Set<int, 10>{}};                // s0 is immutable and empty
-        const auto s1{Set<int, 10>{1, 2, 3, 4}};      // s1 is immutable and sparse
-        const auto s2{Set<int, 4>{1, 2, 3, 4}};       // s2 is immutable and full
-        const auto s3{Set<int, 4>{1, 2, 3, 4, 5, 6}}; // s3 is immutable and full, but 5 and 6 are ignored
-        const auto s4{Set<int, 4>{1, 2, 1, 4, 5, 6}}; // s4 is immutable and full with 1, 2, 4, 5
-        const auto s5{Set{1, 2, 3, 4}};               // s5 is immutable and full of four int values
-        const auto s6{Set{1, 2, 1, 4}};               // s6 is immutable and full of three unique int values
+        const auto s0{Set<int, 10>{}};                // immutable, empty
+        const auto s1{Set<int, 10>{1, 2, 3, 4}};      // immutable, sparse
+        const auto s2{Set<int, 4>{1, 2, 3, 4}};       // immutable, full
+        const auto s3{Set<int, 4>{1, 2, 3, 4, 5, 6}}; // immutable, full, but 5 and 6 are ignored
+        const auto s4{Set<int, 4>{1, 2, 1, 4, 5, 6}}; // immutable, full with 1, 2, 4, 5
+        const auto s5{Set{1, 2, 3, 4}};               // immutable, full of four int values
+        const auto s6{Set{1, 2, 1, 4}};               // immutable, full of three unique int values
 
         return 0;
     }

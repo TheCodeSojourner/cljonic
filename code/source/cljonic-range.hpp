@@ -129,20 +129,20 @@ class Range
 
     int main()
     {
-        const auto r0{Range()};             // r0 is immutable and goes from 0 to std::numeric_limits<int>::max() by 1
-        const auto r1{Range(0)};            // r1 is immutable and is empty
-        const auto r2{Range(-10)};          // r2 is immutable and is empty
-        const auto r3{Range(10)};           // r3 is immutable and goes from 0 to 9 by 1
-        const auto r4{Range(-3, -10)};      // r4 is immutable and is empty
-        const auto r5{Range(-3, -3)};       // r5 is immutable and is empty
-        const auto r6{Range(-3, 10)};       // r6 is immutable and goes from -3 to 9 by 1
-        const auto r7{Range(10, 10, 0)};    // r7 is immutable and is empty
-        const auto r8{Range(10, 20, 0)};    // r8 is immutable and has std::numeric_limits<int>::max() of 10
-        const auto r9{Range(20, 10, 0)};    // r9 is immutable and has std::numeric_limits<int>::max() of 10
-        const auto r10{Range(3, 10, 4)};    // r10 is immutable and has two elements: 3 and 7
-        const auto r11{Range(3, 10, 3)};    // r11 is immutable and has three elements: 3, 6 and 9
-        const auto r12{Range(100, 0, -10)}; // r12 is immutable and has ten elements: 100, 90, 80, ... and 10
-        const auto r13{Range(10, -10, -1)}; // r13 is immutable and has twenty elements: 10, 9, ..., 0, -1, ... -9
+        const auto r0{Range()};             // immutable, goes from 0 to std::numeric_limits<int>::max() by 1
+        const auto r1{Range(0)};            // immutable, empty
+        const auto r2{Range(-10)};          // immutable, empty
+        const auto r3{Range(10)};           // immutable, goes from 0 to 9 by 1
+        const auto r4{Range(-3, -10)};      // immutable, empty
+        const auto r5{Range(-3, -3)};       // immutable, empty
+        const auto r6{Range(-3, 10)};       // immutable, goes from -3 to 9 by 1
+        const auto r7{Range(10, 10, 0)};    // immutable, empty
+        const auto r8{Range(10, 20, 0)};    // immutable, has std::numeric_limits<int>::max() of 10
+        const auto r9{Range(20, 10, 0)};    // immutable, has std::numeric_limits<int>::max() of 10
+        const auto r10{Range(3, 10, 4)};    // immutable, has two elements: 3 and 7
+        const auto r11{Range(3, 10, 3)};    // immutable, has three elements: 3, 6 and 9
+        const auto r12{Range(100, 0, -10)}; // immutable, has ten elements: 100, 90, 80, ... and 10
+        const auto r13{Range(10, -10, -1)}; // immutable, has twenty elements: 10, 9, ..., 0, -1, ... -9
 
         return 0;
     }
