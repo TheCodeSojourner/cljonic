@@ -53,7 +53,7 @@ class Array
     {
     }
 
-    Array(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{})
+    explicit Array(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{})
     {
         for (const auto& element : elements)
         {

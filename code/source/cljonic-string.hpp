@@ -55,7 +55,8 @@ class String
         m_elements[0] = '\0';
     }
 
-    String(const std::initializer_list<const char> elements) noexcept : m_elementCount(0), m_elementDefault('\0')
+    explicit String(const std::initializer_list<const char> elements) noexcept
+        : m_elementCount(0), m_elementDefault('\0')
     {
         for (const auto& element : elements)
         {

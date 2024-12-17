@@ -7,6 +7,14 @@ using namespace cljonic;
 
 SCENARIO("String", "[CljonicString]")
 {
+    char s[10];
+    s[0] = 'H';
+    s[1] = 'e';
+    s[2] = 'l';
+    s[3] = 'l';
+    s[4] = 'o';
+    s[5] = '\0';
+
     auto s0{String<10>{}};
     auto s1{String<10>{"Hello"}};
     auto s2{String<5>{"Hello"}};
@@ -16,6 +24,7 @@ SCENARIO("String", "[CljonicString]")
     auto s6{String<5>{'H', 'e', 'l', 'l', 'o'}};
     auto s7{String<4>{'H', 'e', 'l', 'l', 'o'}};
     auto s8{String{'H', 'e', 'l', 'l', 'o'}};
+    auto s9{String{s}};
 
     CHECK(0 == s0.Count());
     CHECK(5 == s1.Count());
@@ -26,6 +35,7 @@ SCENARIO("String", "[CljonicString]")
     CHECK(5 == s6.Count());
     CHECK(4 == s7.Count());
     CHECK(5 == s8.Count());
+    CHECK(5 == s9.Count());
 
     CHECK('\0' == s0[0]);
 
@@ -82,4 +92,11 @@ SCENARIO("String", "[CljonicString]")
     CHECK('l' == s8[3]);
     CHECK('o' == s8[4]);
     CHECK('\0' == s8[5]);
+
+    CHECK('H' == s9[0]);
+    CHECK('e' == s9[1]);
+    CHECK('l' == s9[2]);
+    CHECK('l' == s9[3]);
+    CHECK('o' == s9[4]);
+    CHECK('\0' == s9[5]);
 }

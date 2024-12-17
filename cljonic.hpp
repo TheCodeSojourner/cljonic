@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Dec 17 10:16:52 AM MST 2024
+// This file was generated Tue Dec 17 10:45:06 AM MST 2024
 
 namespace cljonic {
 
@@ -125,7 +125,7 @@ using value_type = T;
 Array() noexcept : m_elementCount(0), m_elementDefault(T{}) {
 }
 
-Array(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{}) {
+explicit Array(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{}) {
 for(const auto& element : elements) {
 if(m_elementCount == MaxElements)
 break;
@@ -332,7 +332,7 @@ using value_type = T;
 Set() noexcept : m_elementCount(0), m_elementDefault(T{}) {
 }
 
-Set(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{}) {
+explicit Set(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{}) {
 for(const auto& element : elements) {
 if(m_elementCount == MaxElements)
 break;
@@ -386,7 +386,8 @@ String() noexcept : m_elementCount(0), m_elementDefault('\0') {
 m_elements[0] = '\0';
 }
 
-String(const std::initializer_list<const char> elements) noexcept : m_elementCount(0), m_elementDefault('\0') {
+explicit String(const std::initializer_list<const char> elements) noexcept
+    : m_elementCount(0), m_elementDefault('\0') {
 for(const auto& element : elements) {
 if(m_elementCount == MaxElements)
 break;
