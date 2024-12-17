@@ -59,4 +59,12 @@ SCENARIO("Repeat", "[CljonicRepeat]")
         CHECK(0 == std::get<int>(r[-1]));
         CHECK(0 == std::get<int>(r[MAX_INDEX]));
     }
+
+    {
+        const auto r{Repeat(5, 1)};
+        for (const auto& element : r)
+        {
+            CHECK(1 == element);
+        }
+    }
 }

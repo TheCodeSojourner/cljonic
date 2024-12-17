@@ -23,6 +23,9 @@ int main()
     const auto a1{Array<int, 10>{1, 2, 3, 4}};
     const auto a2{Array<int, 10>{1, 2, 3, 4}};
     const auto a3{Array{0, 1, 2, 3, 4}};
+    const auto a4{Array{0}};
+    const auto ra1{Range(1)};
+    const auto re1{Repeat(1, 0)};
     const auto s1{Set{1, 2, 3}};
     const auto str1{String{"abc"}};
     const auto str2{String<3>{'a', 'b', 'c'}};
@@ -34,6 +37,7 @@ int main()
     const auto e5{Equal(Range(10), a3)}; // false
     const auto e6{Equal(s1, s1)};        // true
     const auto e7{Equal(str1, str2)};    // true
+    const auto e8{Equal(a4, ra1, re1)};  // true
     // const auto e{Equal(1.1, 2.1)};    // error: Floating point types should not be compared for equality
     // const auto e{Equal()};            // error: Must specify at least one parameter
     // const auto e{Equal(1, "Hello")};  // error: Types are not comparable
