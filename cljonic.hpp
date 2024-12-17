@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Dec 17 10:53:47 AM MST 2024
+// This file was generated Tue Dec 17 12:21:47 PM MST 2024
 
 namespace cljonic {
 
@@ -136,6 +136,14 @@ m_elements[m_elementCount++] = element;
 Array(const Array& other) = default;
 Array(Array&& other) = default;
 
+const T* begin() const noexcept {
+return m_elements;
+}
+
+const T* end() const noexcept {
+return m_elements + m_elementCount;
+}
+
 const T& operator[](const MaxElementsType index) const noexcept {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 }
@@ -155,13 +163,33 @@ Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
 namespace cljonic {
 
 class Range {
-using Iterator = CollectionIterator<Range>;
-
 std::size_t m_elementCount;
 int m_elementDefault;
 int m_elementStart;
 int m_elementEnd;
 int m_elementStep;
+
+class Iterator {
+const Range& m_range;
+std::size_t m_index;
+
+public:
+Iterator(const Range& range, const std::size_t index) : m_range(range), m_index(index) {
+}
+
+int operator*() const {
+return m_range[m_index];
+}
+
+Iterator& operator++() {
+++m_index;
+return *this;
+}
+
+bool operator!=(const Iterator& other) const {
+return m_index != other.m_index;
+}
+};
 
 constexpr int Count(const int start, const int end, const int step) noexcept {
 return ((end - start) / step) + ((((end - start) % step) == 0) ? 0 : 1);
@@ -324,6 +352,14 @@ m_elements[m_elementCount++] = element;
 Set(const Set& other) = default;
 Set(Set&& other) = default;
 
+const T* begin() const noexcept {
+return m_elements;
+}
+
+const T* end() const noexcept {
+return m_elements + m_elementCount;
+}
+
 const T& operator[](const MaxElementsType index) const noexcept {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 }
@@ -356,6 +392,28 @@ MaxElementsType m_elementCount;
 char m_elementDefault;
 char m_elements[MaxElements + 1];
 
+class Iterator {
+const String& m_string;
+std::size_t m_index;
+
+public:
+Iterator(const String& string, const std::size_t index) : m_string(string), m_index(index) {
+}
+
+char operator*() const {
+return m_string[m_index];
+}
+
+Iterator& operator++() {
+++m_index;
+return *this;
+}
+
+bool operator!=(const Iterator& other) const {
+return m_index != other.m_index;
+}
+};
+
 public:
 using cljonic_collection = std::true_type;
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>;
@@ -386,6 +444,14 @@ m_elements[m_elementCount] = '\0';
 
 String(const String& other) = default;
 String(String&& other) = default;
+
+[[nodiscard]] Iterator begin() const {
+return Iterator{*this, 0};
+}
+
+[[nodiscard]] Iterator end() const {
+return Iterator{*this, m_elementCount};
+}
 
 char operator[](const MaxElementsType index) const noexcept {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;

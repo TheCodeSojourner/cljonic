@@ -99,4 +99,14 @@ SCENARIO("String", "[CljonicString]")
     CHECK('l' == s9[3]);
     CHECK('o' == s9[4]);
     CHECK('\0' == s9[5]);
+
+    {
+        const auto s{String{"1234"}};
+        auto i{'1'};
+        for (const auto& element : s)
+        {
+            CHECK(i == element);
+            ++i;
+        }
+    }
 }

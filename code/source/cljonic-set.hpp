@@ -88,6 +88,16 @@ class Set
     Set(const Set& other) = default; // Copy constructor
     Set(Set&& other) = default;      // Move constructor
 
+    const T* begin() const noexcept
+    {
+        return m_elements;
+    }
+
+    const T* end() const noexcept
+    {
+        return m_elements + m_elementCount;
+    }
+
     const T& operator[](const MaxElementsType index) const noexcept
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;

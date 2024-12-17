@@ -22,6 +22,33 @@ class String
     char m_elementDefault;
     char m_elements[MaxElements + 1]; // +1 for the null terminator
 
+    class Iterator
+    {
+        const String& m_string;
+        std::size_t m_index;
+
+      public:
+        Iterator(const String& string, const std::size_t index) : m_string(string), m_index(index)
+        {
+        }
+
+        char operator*() const
+        {
+            return m_string[m_index];
+        }
+
+        Iterator& operator++()
+        {
+            ++m_index;
+            return *this;
+        }
+
+        bool operator!=(const Iterator& other) const
+        {
+            return m_index != other.m_index;
+        }
+    };
+
   public:
     /**
     * The \b String constructor returns an instance of String initialized with the chars in its argument(s). If the
@@ -79,6 +106,16 @@ class String
 
     String(const String& other) = default; // Copy constructor
     String(String&& other) = default;      // Move constructor
+
+    [[nodiscard]] Iterator begin() const
+    {
+        return Iterator{*this, 0};
+    }
+
+    [[nodiscard]] Iterator end() const
+    {
+        return Iterator{*this, m_elementCount};
+    }
 
     char operator[](const MaxElementsType index) const noexcept
     {

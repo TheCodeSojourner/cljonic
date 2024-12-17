@@ -200,4 +200,15 @@ SCENARIO("Array", "[CljonicArray]")
         CHECK(std::string{"4"} == *std::get_if<const char*>(&a4[3]));
         CHECK(0 == *std::get_if<int>(&a4[4]));
     }
+
+    {
+        const auto a{Array<int, 10>{1, 2, 3, 4}};
+        auto i{1};
+        for (const auto& element : a)
+        {
+            CHECK(i == element);
+            ++i;
+        }
+        // *a.begin() = 1; // Error: assignment of read-only location '* a.Array<int, 10>::begin() const'
+    }
 }

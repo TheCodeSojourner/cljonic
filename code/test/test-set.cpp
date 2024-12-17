@@ -196,4 +196,15 @@ SCENARIO("Set", "[CljonicSet]")
         CHECK(not s6.Contains(T{'3'}));
         CHECK(s6.Contains(T{"4"}));
     }
+
+    {
+        const auto s{Set<int, 10>{1, 2, 3, 4}};
+        auto i{1};
+        for (const auto& element : s)
+        {
+            CHECK(i == element);
+            ++i;
+        }
+        // *s.begin() = 1; // Error: assignment of read-only location '* s.Array<int, 10>::begin() const'
+    }
 }
