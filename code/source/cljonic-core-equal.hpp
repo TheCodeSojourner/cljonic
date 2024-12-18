@@ -47,7 +47,7 @@ int main()
 ~~~~~
 */
 template <typename T, typename... Ts>
-auto Equal(const T& t, const Ts&... ts)
+auto Equal(const T& t, const Ts&... ts) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 

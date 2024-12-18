@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Dec 18 11:51:47 AM MST 2024
+// This file was generated Wed Dec 18 12:05:00 PM MST 2024
 
 namespace cljonic {
 
@@ -550,7 +550,7 @@ namespace cljonic {
 
 namespace core {
 template <typename T, typename... Ts>
-auto Equal(const T& t, const Ts&... ts) {
+auto Equal(const T& t, const Ts&... ts) noexcept {
 
 if constexpr(AllCljonicCollections<T, Ts...>) {
 static_assert(AllCljonicArrayRangeOrRepeat<T, Ts...> or AllSameCljonicCollectionType<T, Ts...>,
