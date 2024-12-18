@@ -15,7 +15,6 @@ class Range
     std::size_t m_elementCount;
     int m_elementDefault;
     int m_elementStart;
-    int m_elementEnd;
     int m_elementStep;
 
     class Iterator
@@ -50,64 +49,63 @@ class Range
         return ((end - start) / step) + ((((end - start) % step) == 0) ? 0 : 1);
     }
 
-    constexpr void InitializeMembers(const int count, const int start, const int end, const int step) noexcept
+    constexpr void InitializeMembers(const int count, const int start, const int step) noexcept
     {
         m_elementCount = static_cast<std::size_t>(count);
         m_elementDefault = 0;
         m_elementStart = start;
-        m_elementEnd = end;
         m_elementStep = step;
     }
 
     constexpr void Initialize() noexcept
     {
-        InitializeMembers(std::numeric_limits<int>::max(), 0, std::numeric_limits<int>::max(), 1);
+        InitializeMembers(std::numeric_limits<int>::max(), 0, 1);
     }
 
     constexpr void InitializeEnd(const int end) noexcept
     {
         if (end <= 0)
-            InitializeMembers(0, 0, 0, 1);
+            InitializeMembers(0, 0, 1);
         else
-            InitializeMembers(end, 0, (end - 1), 1);
+            InitializeMembers(end, 0, 1);
     }
 
     constexpr void InitializeStartEnd(const int start, const int end) noexcept
     {
         if (end <= start)
-            InitializeMembers(0, 0, 0, 1);
+            InitializeMembers(0, 0, 1);
         else
-            InitializeMembers((end - start), start, (end - 1), 1);
+            InitializeMembers((end - start), start, 1);
     }
 
     constexpr void InitializeStartEndStepWithNegativeStep(const int start, const int end, const int step) noexcept
     {
         if (start <= end)
-            InitializeMembers(0, 0, 0, step);
+            InitializeMembers(0, 0, step);
         else
         {
             const int count{Count(start, end, step)};
-            InitializeMembers(count, start, (start - (count * step)), step);
+            InitializeMembers(count, start, step);
         }
     }
 
     constexpr void InitializeStartEndStepWithPositiveStep(const int start, const int end, const int step) noexcept
     {
         if (end <= start)
-            InitializeMembers(0, 0, 0, step);
+            InitializeMembers(0, 0, step);
         else
         {
             const int count{Count(start, end, step)};
-            InitializeMembers(count, start, (start + (count * step)), step);
+            InitializeMembers(count, start, step);
         }
     }
 
     constexpr void InitializeStartEndStep(const int start, const int end, const int step) noexcept
     {
         if ((0 == step) and (start == end))
-            InitializeMembers(0, 0, 0, 0);
+            InitializeMembers(0, 0, 0);
         else if (0 == step)
-            InitializeMembers(std::numeric_limits<int>::max(), start, start, 0);
+            InitializeMembers(std::numeric_limits<int>::max(), start, 0);
         else if (step < 0)
             InitializeStartEndStepWithNegativeStep(start, end, step);
         else
@@ -154,29 +152,25 @@ class Range
     using value_type = int;
 
     Range() noexcept
-        : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementEnd{0},
-          m_elementStep{0}
+        : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0}
     {
         Initialize();
     }
 
     explicit Range(const int end) noexcept
-        : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementEnd{0},
-          m_elementStep{0}
+        : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0}
     {
         InitializeEnd(end);
     }
 
     explicit Range(const int start, const int end) noexcept
-        : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementEnd{0},
-          m_elementStep{0}
+        : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0}
     {
         InitializeStartEnd(start, end);
     }
 
     explicit Range(const int start, const int end, const int step) noexcept
-        : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementEnd{0},
-          m_elementStep{0}
+        : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0}
     {
         InitializeStartEndStep(start, end, step);
     }
