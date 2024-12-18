@@ -13,9 +13,9 @@ namespace cljonic
 template <typename T>
 class Repeat
 {
-    std::size_t m_elementCount;
-    T m_elementDefault;
-    T m_elementValue;
+    const std::size_t m_elementCount;
+    const T m_elementDefault;
+    const T m_elementValue;
 
     class Iterator
     {

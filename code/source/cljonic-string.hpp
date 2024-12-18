@@ -19,7 +19,7 @@ class String
     using MaxElementsType = decltype(MaxElements);
 
     MaxElementsType m_elementCount;
-    char m_elementDefault;
+    const char m_elementDefault;
     char m_elements[MaxElements + 1]; // +1 for the null terminator
 
     class Iterator

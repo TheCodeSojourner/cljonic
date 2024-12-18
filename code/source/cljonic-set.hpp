@@ -30,7 +30,7 @@ class Set
     using MaxElementsType = decltype(MaxElements);
 
     MaxElementsType m_elementCount;
-    T m_elementDefault;
+    const T m_elementDefault;
     T m_elements[MaxElements];
 
     bool IsUniqueElement(const T& element) const noexcept

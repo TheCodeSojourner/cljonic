@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Dec 18 11:29:40 AM MST 2024
+// This file was generated Wed Dec 18 11:40:55 AM MST 2024
 
 namespace cljonic {
 
@@ -118,7 +118,7 @@ class Array {
 using MaxElementsType = decltype(MaxElements);
 
 MaxElementsType m_elementCount;
-T m_elementDefault;
+const T m_elementDefault;
 T m_elements[MaxElements];
 
 public:
@@ -309,9 +309,9 @@ namespace cljonic {
 
 template <typename T>
 class Repeat {
-std::size_t m_elementCount;
-T m_elementDefault;
-T m_elementValue;
+const std::size_t m_elementCount;
+const T m_elementDefault;
+const T m_elementValue;
 
 class Iterator {
 const Repeat& m_repeat;
@@ -388,7 +388,7 @@ static_assert(std::equality_comparable<T>, "A Set type must be equality comparab
 using MaxElementsType = decltype(MaxElements);
 
 MaxElementsType m_elementCount;
-T m_elementDefault;
+const T m_elementDefault;
 T m_elements[MaxElements];
 
 bool IsUniqueElement(const T& element) const noexcept {
@@ -456,7 +456,7 @@ class String {
 using MaxElementsType = decltype(MaxElements);
 
 MaxElementsType m_elementCount;
-char m_elementDefault;
+const char m_elementDefault;
 char m_elements[MaxElements + 1];
 
 class Iterator {
