@@ -4,7 +4,7 @@ generate_metrics () {
     echo "Generating Metrics"
     echo
     HPPS=$(find 'code/source' -type f -name '*.hpp')
-    lizard --CCN 3 --length 15 --arguments 4 -Tnloc=12 $HPPS
+    lizard --CCN 3 --length 15 --arguments 4 -Tnloc=12 --warnings_only $HPPS
 }
 
 render_header () {

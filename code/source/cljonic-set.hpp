@@ -76,6 +76,7 @@ class Set
 
     explicit Set(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{})
     {
+        // #lizard forgives -- The complexity of this function is acceptable
         for (const auto& element : elements)
         {
             if (m_elementCount == MaxElements)

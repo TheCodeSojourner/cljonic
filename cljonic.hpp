@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Dec 18 11:40:55 AM MST 2024
+// This file was generated Wed Dec 18 11:51:47 AM MST 2024
 
 namespace cljonic {
 
@@ -243,6 +243,7 @@ InitializeMembers(count, start, step);
 }
 
 constexpr void InitializeStartEndStep(const int start, const int end, const int step) noexcept {
+
 if((0 == step) and (start == end))
 InitializeMembers(0, 0, 0);
 else if(0 == step)
@@ -408,6 +409,7 @@ Set() noexcept : m_elementCount(0), m_elementDefault(T{}) {
 }
 
 explicit Set(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{}) {
+
 for(const auto& element : elements) {
 if(m_elementCount == MaxElements)
 break;

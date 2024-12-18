@@ -102,6 +102,7 @@ class Range
 
     constexpr void InitializeStartEndStep(const int start, const int end, const int step) noexcept
     {
+        // #lizard forgives -- The complexity of this function is acceptable
         if ((0 == step) and (start == end))
             InitializeMembers(0, 0, 0);
         else if (0 == step)

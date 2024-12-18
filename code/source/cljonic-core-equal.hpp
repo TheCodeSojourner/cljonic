@@ -49,6 +49,8 @@ int main()
 template <typename T, typename... Ts>
 auto Equal(const T& t, const Ts&... ts)
 {
+    // #lizard forgives -- The length and complexity of this function is acceptable
+
     /* An invocation of Equal with only one argument, like Equal(1) or Equal(myArray), returns true because
      * when only one argument is provided to "and" the single argument is trivially equal to itself,
      * and the result is true.
