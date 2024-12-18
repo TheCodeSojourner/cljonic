@@ -21,15 +21,15 @@
  * subset used is a small subset of the \b C programming language with a bit of C++'s <b>Object Oriented</b>
  * capabilities.  This begs a question:
  *
- * <b>Is there a pragmatic subset of Modern C++ that would allow embedded systems developers to produce even higher
- * quality code even more efficiently and predictably that is cheaper to maintain over time?</b>
+ * <b>Is there a pragmatic subset of Modern C++ that enables embedded systems developers to produce higher-quality, more
+ * efficient, and maintainable code?</b>
  *
  * Changes to C++ have provided valuable capabilities that are time consuming to master, hence it is both valuable to
  * development organizations for their developers to use new C++ capabilities, and too expensive to train all of their
  * developers to be experts in their use.  This, too, begs another question:
  *
- * <b>Is there a cost-effective way to utilize a small subset of an organization's embedded systems software developers
- * (i.e., One or two) to make new C++ capabilities available to the entire team?</b>
+ * <b>Can one or two embedded systems software developers cost-effectively introduce new C++ capabilities to the entire
+ * team?</b>
  *
  * In this post:
  *
