@@ -43,6 +43,12 @@ doc: FORCE
 	@echo
 
 ########################################################################################################################
+## Generate list of files containing functions with 'lizard forgives', which disables metrics notifications
+forgives: FORCE
+	@scripts/make-forgives.sh
+	@echo
+
+########################################################################################################################
 ## Format all files with clang-format
 format: FORCE
 	@echo
@@ -79,11 +85,12 @@ help: FORCE
 	@echo "    'make cljonic'        builds the cljonic.hpp single header file"
 	@echo "    'make doc'            generate doxygen documentation"
 	@echo "    'make format'         formats all files with clang-format"
+	@echo "    'make forgives'       generates list of code/source files with disabled metrics notifications"
 	@echo "    'make git'            prepare for git commit by doing 'make clean format doc cljonic'"
 	@echo "    'make help'           generates this help information"
 	@echo "    'make lcov'           does 'make test' then displays coverage analysis HTML in browser [1] [2]"
 	@echo "    'make memcheck'       does 'make all' then executes unit test program in memcheck mode"
-	@echo "    'make metrics'        generates metrics for source code with lizard"
+	@echo "    'make metrics'        generates metrics violations for code/source"
 	@echo "    'make test'           builds only required files, and executes unit test program"
 	@echo
 	@echo "Note that 'make' will accept multiple targets, which it will evaluate in order.  For example"

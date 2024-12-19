@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Dec 19 03:05:17 PM MST 2024
+// This file was generated Thu Dec 19 03:27:11 PM MST 2024
 
 namespace cljonic {
 
@@ -581,45 +581,7 @@ namespace cljonic {
 namespace core {
 template <typename T, typename... Ts>
 auto Equal(const T& t, const Ts&... ts) noexcept {
-
-if constexpr(sizeof...(Ts) <= 0) {
-if constexpr(IsCljonicCollection<T>)
-static_assert((not std::floating_point<typename T::value_type>),
-              "cljonic floating point collection value types should not be compared for equality");
-else
-static_assert((not std::floating_point<T>), "Floating point types should not be compared for equality");
-return true;
-} else if constexpr(AllCljonicCollections<T, Ts...>) {
-static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
-              "cljonic collection types are not all the same, or all Array, Range or Repeat types");
-static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
-              "cljonic floating point collection value types should not be compared for equality");
-static_assert(AllEqualityComparableValueTypes<T, Ts...>,
-              "cljonic collection value types are not all equality comparable");
-if constexpr(AllCljonicSets<T, Ts...>) {
-constexpr auto EqualSets = [&](const auto& c1, const auto& c2) {
-using CountType = decltype(c1.Count());
-auto result{c1.Count() == c2.Count()};
-for(CountType i = 0; (result and (i < c1.Count())); ++i)
-result = c2.Contains(c1[i]);
-return result;
-};
-return (EqualSets(t, ts) and ...);
-} else {
-constexpr auto EqualCollections = [&](const auto& c1, const auto& c2) {
-using CountType = decltype(c1.Count());
-auto result{c1.Count() == c2.Count()};
-for(CountType i = 0; (result and (i < c1.Count())); ++i)
-result = AreEqual(c1[i], c2[i]);
-return result;
-};
-return (EqualCollections(t, ts) and ...);
-}
-} else {
-static_assert(not AnyFloatingPointTypes<T, Ts...>, "Floating point types should not be compared for equality");
-static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all types are equality comparable");
-return (AreEqual(t, ts) and ...);
-}
+return EqualBy(std::equal_to<>{}, t, ts...);
 }
 
 }
