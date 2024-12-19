@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Dec 19 02:47:27 PM MST 2024
+// This file was generated Thu Dec 19 03:05:17 PM MST 2024
 
 namespace cljonic {
 
@@ -582,9 +582,14 @@ namespace core {
 template <typename T, typename... Ts>
 auto Equal(const T& t, const Ts&... ts) noexcept {
 
-if constexpr(sizeof...(Ts) <= 0)
+if constexpr(sizeof...(Ts) <= 0) {
+if constexpr(IsCljonicCollection<T>)
+static_assert((not std::floating_point<typename T::value_type>),
+              "cljonic floating point collection value types should not be compared for equality");
+else
+static_assert((not std::floating_point<T>), "Floating point types should not be compared for equality");
 return true;
-else if constexpr(AllCljonicCollections<T, Ts...>) {
+} else if constexpr(AllCljonicCollections<T, Ts...>) {
 static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
               "cljonic collection types are not all the same, or all Array, Range or Repeat types");
 static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
@@ -627,9 +632,14 @@ namespace core {
 template <typename F, typename T, typename... Ts>
 auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept {
 
-if constexpr(sizeof...(Ts) <= 0)
+if constexpr(sizeof...(Ts) <= 0) {
+if constexpr(IsCljonicCollection<T>)
+static_assert((not std::floating_point<typename T::value_type>),
+              "cljonic floating point collection value types should not be compared for equality");
+else
+static_assert((not std::floating_point<T>), "Floating point types should not be compared for equality");
 return true;
-else if constexpr(AllCljonicCollections<T, Ts...>) {
+} else if constexpr(AllCljonicCollections<T, Ts...>) {
 static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
               "cljonic collection types are not all the same, or all Array, Range or Repeat types");
 static_assert(not AnyFloatingPointValueTypes<T, Ts...>,

@@ -48,12 +48,18 @@ const auto EBFInvalidParameterTypei = EBFInvalidParameterType<int>();
 
 SCENARIO("EqualBy", "[CljonicCoreEqualBy]")
 {
-
     // all of the following tests are commented out because they will generate expected compiler errors
     // because the functions passed to EqualBy are not valid
     // {
     //     CHECK(true == EqualBy(EBFInvalidReturnTypei, '1', '1'));
     //     CHECK(true == EqualBy(EBFInvalidParameterTypei, '1', '1'));
+    // }
+
+    // the following test is commented out because it will generate expected compiler error
+    // because the type of the single parameter involves floating point
+    // {
+    //     CHECK(true == EqualBy(EBFc, 1.1f));
+    //     CHECK(true == EqualBy(EBFc, 1.1));
     // }
 
     {

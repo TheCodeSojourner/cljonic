@@ -52,7 +52,14 @@ auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
      * and the result is true.
      */
     if constexpr (sizeof...(Ts) <= 0)
+    {
+        if constexpr (IsCljonicCollection<T>)
+            static_assert((not std::floating_point<typename T::value_type>),
+                          "cljonic floating point collection value types should not be compared for equality");
+        else
+            static_assert((not std::floating_point<T>), "Floating point types should not be compared for equality");
         return true;
+    }
     else if constexpr (AllCljonicCollections<T, Ts...>)
     {
         static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
