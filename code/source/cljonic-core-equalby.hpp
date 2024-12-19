@@ -11,8 +11,9 @@ namespace core
 {
 
 /** \anchor Core_EqualBy
-* The \b EqualBy function returns true if the values of the two arguments are equal, as defined by \b ebf, else false.
-* \b dbf returns true if its two args are equal.
+* The \b EqualBy function returns true if there are three or more arguments, and the second through last argument values
+* are equal, as defined by the first argument, which must be a binary predicate, else false. If there are only two
+* arguments the function always returns true, and the first argument is never called.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -27,10 +28,10 @@ int main()
     const auto r14{Range(1, 4)};
     const auto r04{Range(4)};
     const auto r{Repeat(4, 1)};
-    const auto b0{EqualBy(EBF, 1)};        // true because there's only one element to compare
+    const auto b0{EqualBy(EBF, 1.1)};      // true whenever one parameter is specified, even if it's a floating point
     const auto b1{EqualBy(EBF, 1, 1)};     // true
     const auto b2{EqualBy(EBF, 1, 2)};     // false
-    const auto b3{EqualBy(EBF, a)};        // true because there's only one element to compare
+    const auto b3{EqualBy(EBF, a)};        // true whenever one parameter is specified
     const auto b4{EqualBy(EBF, a, r)};     // true
     const auto b5{EqualBy(EBF, a, a13)};   // false
     const auto b6{EqualBy(EBF, a, a13)};   // false
@@ -50,7 +51,9 @@ auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
      * when only one argument is provided to "and" the single argument is trivially equal to itself,
      * and the result is true.
      */
-    if constexpr (AllCljonicCollections<T, Ts...>)
+    if constexpr (sizeof...(Ts) <= 0)
+        return true;
+    else if constexpr (AllCljonicCollections<T, Ts...>)
     {
         static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
                       "cljonic collection types are not all the same, or all Array, Range or Repeat types");
@@ -58,9 +61,13 @@ auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
                       "cljonic floating point collection value types should not be compared for equality");
         static_assert(IsBinaryPredicateForAllCljonicCollections<F, T, Ts...>,
                       "Function is not a valid binary predicate for all cljonic collection value types");
-        if constexpr (AllCljonicSets<T, Ts...>)
+        if constexpr (sizeof...(Ts) <= 0)
         {
-            constexpr auto EqualSets = [&](const auto& c1, const auto& c2)
+            return true;
+        }
+        else if constexpr (AllCljonicSets<T, Ts...>)
+        {
+            auto EqualSets = [&](const auto& c1, const auto& c2)
             {
                 using CountType = decltype(c1.Count());
                 auto result{c1.Count() == c2.Count()};
@@ -87,7 +94,8 @@ auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
     {
         static_assert(not AnyFloatingPointTypes<T, Ts...>, "Floating point types should not be compared for equality");
         static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all types are equality comparable");
-        static_assert(IsBinaryPredicate<F, T, Ts...>, "Function is not a valid binary predicate for all parameters");
+        static_assert(IsBinaryPredicateForAll<F, T, Ts...>,
+                      "Function is not a valid binary predicate for all parameters");
         auto EqualParameters = [&](const auto& p1, const auto& p2) { return AreEqualBy(f, p1, p2); };
         return (EqualParameters(t, ts) and ...);
     }

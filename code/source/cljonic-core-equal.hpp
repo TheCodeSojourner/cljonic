@@ -11,7 +11,8 @@ namespace core
 {
 
 /** \anchor Core_Equal
-* The \b Equal function returns true if the values of its arguments are equal, else false.
+* The \b Equal function returns true if there is only one argument, or the values of its arguments are equal, else
+false.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -29,7 +30,7 @@ int main()
     const auto s1{Set{1, 2, 3}};
     const auto str1{String{"abc"}};
     const auto str2{String<3>{'a', 'b', 'c'}};
-    const auto e0{Equal(a1)};            // true whenever only one parameter is specified
+    const auto e0{Equal(1.1)};           // true whenever one parameter is specified, even if it's a floating point
     const auto e1{Equal(a1, a2)};        // true
     const auto e2{Equal(1, 2)};          // false
     const auto e3{Equal(Range())};       // true
@@ -55,7 +56,9 @@ auto Equal(const T& t, const Ts&... ts) noexcept
      * when only one argument is provided to "and" the single argument is trivially equal to itself,
      * and the result is true.
      */
-    if constexpr (AllCljonicCollections<T, Ts...>)
+    if constexpr (sizeof...(Ts) <= 0)
+        return true;
+    else if constexpr (AllCljonicCollections<T, Ts...>)
     {
         static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
                       "cljonic collection types are not all the same, or all Array, Range or Repeat types");

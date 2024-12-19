@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Dec 19 10:27:53 AM MST 2024
+// This file was generated Thu Dec 19 02:47:27 PM MST 2024
 
 namespace cljonic {
 
@@ -35,8 +35,13 @@ enum class CljonicCollectionType {
 
 namespace cljonic {
 
-template <typename F, typename T, typename... Ts>
-concept IsBinaryPredicate = (std::predicate<F, T, Ts> && ...);
+template <typename P, typename T, typename U>
+concept IsBinaryPredicate = requires(P p, T a, U b) {
+{ p(a, b) } -> std::convertible_to<bool>;
+};
+
+template <typename P, typename T, typename... Ts>
+concept IsBinaryPredicateForAll = (IsBinaryPredicate<P, T, Ts> && ...);
 
 template <typename T>
 concept IsCljonicArray = std::same_as<typename T::cljonic_collection_type,
@@ -92,7 +97,7 @@ concept CString = std::same_as<T, const char*> or std::same_as<T, char*>;
 
 template <typename F, IsCljonicCollection T, IsCljonicCollection... Ts>
 constexpr bool IsBinaryPredicateForAllCljonicCollections =
-    (IsBinaryPredicate<F, typename T::value_type, typename Ts::value_type> and ...);
+    (IsBinaryPredicateForAll<F, typename T::value_type, typename Ts::value_type> and ...);
 
 } // namespace cljonic
 
@@ -102,7 +107,7 @@ constexpr bool IsBinaryPredicateForAllCljonicCollections =
 namespace cljonic {
 
 template <typename F, typename T, typename U>
-auto AreEqualBy(F& f, const T& t, const U& u) {
+auto AreEqualBy(const F& f, const T& t, const U& u) {
 static_assert(std::predicate<F, T, U>, "Function is not a valid binary predicate for the parameters");
 return f(t, u);
 }
@@ -577,7 +582,9 @@ namespace core {
 template <typename T, typename... Ts>
 auto Equal(const T& t, const Ts&... ts) noexcept {
 
-if constexpr(AllCljonicCollections<T, Ts...>) {
+if constexpr(sizeof...(Ts) <= 0)
+return true;
+else if constexpr(AllCljonicCollections<T, Ts...>) {
 static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
               "cljonic collection types are not all the same, or all Array, Range or Repeat types");
 static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
@@ -618,17 +625,21 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename T, typename... Ts>
-auto EqualBy(F& f, const T& t, const Ts&... ts) noexcept {
+auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept {
 
-if constexpr(AllCljonicCollections<T, Ts...>) {
+if constexpr(sizeof...(Ts) <= 0)
+return true;
+else if constexpr(AllCljonicCollections<T, Ts...>) {
 static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
               "cljonic collection types are not all the same, or all Array, Range or Repeat types");
 static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
               "cljonic floating point collection value types should not be compared for equality");
 static_assert(IsBinaryPredicateForAllCljonicCollections<F, T, Ts...>,
               "Function is not a valid binary predicate for all cljonic collection value types");
-if constexpr(AllCljonicSets<T, Ts...>) {
-constexpr auto EqualSets = [&](const auto& c1, const auto& c2) {
+if constexpr(sizeof...(Ts) <= 0) {
+return true;
+} else if constexpr(AllCljonicSets<T, Ts...>) {
+auto EqualSets = [&](const auto& c1, const auto& c2) {
 using CountType = decltype(c1.Count());
 auto result{c1.Count() == c2.Count()};
 for(CountType i = 0; (result and (i < c1.Count())); ++i)
@@ -637,7 +648,7 @@ return result;
 };
 return (EqualSets(t, ts) and ...);
 } else {
-constexpr auto EqualCollections = [&](const auto& c1, const auto& c2) {
+auto EqualCollections = [&](const auto& c1, const auto& c2) {
 using CountType = decltype(c1.Count());
 auto result{c1.Count() == c2.Count()};
 for(CountType i = 0; (result and (i < c1.Count())); ++i)
@@ -649,8 +660,9 @@ return (EqualCollections(t, ts) and ...);
 } else {
 static_assert(not AnyFloatingPointTypes<T, Ts...>, "Floating point types should not be compared for equality");
 static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all types are equality comparable");
-static_assert(IsBinaryPredicate<F, T, Ts...>, "Function is not a valid binary predicate for all parameters");
-constexpr auto EqualParameters = [&](const auto& p1, const auto& p2) { return AreEqualBy(f, p1, p2); };
+static_assert(IsBinaryPredicateForAll<F, T, Ts...>,
+              "Function is not a valid binary predicate for all parameters");
+auto EqualParameters = [&](const auto& p1, const auto& p2) { return AreEqualBy(f, p1, p2); };
 return (EqualParameters(t, ts) and ...);
 }
 }

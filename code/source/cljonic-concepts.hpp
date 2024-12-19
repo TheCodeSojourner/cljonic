@@ -8,8 +8,13 @@
 namespace cljonic
 {
 
-template <typename F, typename T, typename... Ts>
-concept IsBinaryPredicate = (std::predicate<F, T, Ts> && ...);
+template <typename P, typename T, typename U>
+concept IsBinaryPredicate = requires(P p, T a, U b) {
+    { p(a, b) } -> std::convertible_to<bool>;
+};
+
+template <typename P, typename T, typename... Ts>
+concept IsBinaryPredicateForAll = (IsBinaryPredicate<P, T, Ts> && ...);
 
 template <typename T>
 concept IsCljonicArray = std::same_as<typename T::cljonic_collection_type,
@@ -65,7 +70,7 @@ concept CString = std::same_as<T, const char*> or std::same_as<T, char*>;
 
 template <typename F, IsCljonicCollection T, IsCljonicCollection... Ts>
 constexpr bool IsBinaryPredicateForAllCljonicCollections =
-    (IsBinaryPredicate<F, typename T::value_type, typename Ts::value_type> and ...);
+    (IsBinaryPredicateForAll<F, typename T::value_type, typename Ts::value_type> and ...);
 
 } // namespace cljonic
 
