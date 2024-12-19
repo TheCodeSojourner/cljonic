@@ -95,9 +95,13 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="concepts" name="concepts"></a>
 Concepts</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1_is_cljonic_collection.html">cljonic::IsCljonicCollection</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1_is_binary_predicate.html">cljonic::IsBinaryPredicate</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1_is_binary_predicate_for_all.html">cljonic::IsBinaryPredicateForAll</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1_is_cljonic_array.html">cljonic::IsCljonicArray</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1_is_cljonic_collection.html">cljonic::IsCljonicCollection</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1_is_cljonic_range.html">cljonic::IsCljonicRange</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -120,6 +124,9 @@ Concepts</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:a943ad6be58c2209121e2152edbc5c1a4" id="r_a943ad6be58c2209121e2152edbc5c1a4"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Ts&gt; </td></tr>
+<tr class="memitem:a943ad6be58c2209121e2152edbc5c1a4"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a943ad6be58c2209121e2152edbc5c1a4">cljonic::AllEqualityComparableTypes</a> = (std::equality_comparable_with&lt;T, Ts&gt; and ...)</td></tr>
+<tr class="separator:a943ad6be58c2209121e2152edbc5c1a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab94caca08c5f55dceabd7846d917865" id="r_aab94caca08c5f55dceabd7846d917865"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Ts&gt; </td></tr>
 <tr class="memitem:aab94caca08c5f55dceabd7846d917865"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#aab94caca08c5f55dceabd7846d917865">cljonic::AllEqualityComparableValueTypes</a></td></tr>
 <tr class="separator:aab94caca08c5f55dceabd7846d917865"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -129,14 +136,14 @@ Variables</h2></td></tr>
 <tr class="memitem:a06b15aac75e92d768e32c6f9b518b53a" id="r_a06b15aac75e92d768e32c6f9b518b53a"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Ts&gt; </td></tr>
 <tr class="memitem:a06b15aac75e92d768e32c6f9b518b53a"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a06b15aac75e92d768e32c6f9b518b53a">cljonic::AnyFloatingPointValueTypes</a></td></tr>
 <tr class="separator:a06b15aac75e92d768e32c6f9b518b53a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a943ad6be58c2209121e2152edbc5c1a4" id="r_a943ad6be58c2209121e2152edbc5c1a4"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Ts&gt; </td></tr>
-<tr class="memitem:a943ad6be58c2209121e2152edbc5c1a4"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a943ad6be58c2209121e2152edbc5c1a4">cljonic::AllEqualityComparableTypes</a> = (std::equality_comparable_with&lt;T, Ts&gt; and ...)</td></tr>
-<tr class="separator:a943ad6be58c2209121e2152edbc5c1a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c8bd3b0fd8138f5fb72f03dac87bf50" id="r_a9c8bd3b0fd8138f5fb72f03dac87bf50"><td class="memTemplParams" colspan="2">template&lt;typename F , IsCljonicCollection T, IsCljonicCollection... Ts&gt; </td></tr>
+<tr class="memitem:a9c8bd3b0fd8138f5fb72f03dac87bf50"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a9c8bd3b0fd8138f5fb72f03dac87bf50">cljonic::IsBinaryPredicateForAllCljonicCollections</a></td></tr>
+<tr class="separator:a9c8bd3b0fd8138f5fb72f03dac87bf50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Dec 18 2024 12:23:43 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Thu Dec 19 2024 15:28:46 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

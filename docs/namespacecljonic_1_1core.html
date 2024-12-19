@@ -86,6 +86,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ab67cad28f66047452bc5908ad466d482" id="r_ab67cad28f66047452bc5908ad466d482"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Ts&gt; </td></tr>
 <tr class="memitem:ab67cad28f66047452bc5908ad466d482"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#ab67cad28f66047452bc5908ad466d482">Equal</a> (const T &amp;t, const Ts &amp;... ts) noexcept</td></tr>
 <tr class="separator:ab67cad28f66047452bc5908ad466d482"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b9f3eabfae19001e8c5591ba0ed9550" id="r_a3b9f3eabfae19001e8c5591ba0ed9550"><td class="memTemplParams" colspan="2">template&lt;typename F , typename T , typename... Ts&gt; </td></tr>
+<tr class="memitem:a3b9f3eabfae19001e8c5591ba0ed9550"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#a3b9f3eabfae19001e8c5591ba0ed9550">EqualBy</a> (const F &amp;f, const T &amp;t, const Ts &amp;... ts) noexcept</td></tr>
+<tr class="separator:a3b9f3eabfae19001e8c5591ba0ed9550"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ab67cad28f66047452bc5908ad466d482" name="ab67cad28f66047452bc5908ad466d482"></a>
@@ -123,7 +126,7 @@ template&lt;typename T , typename... Ts&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p><a class="anchor" id="Core_Equal"></a> The <b>Equal</b> function returns true if the values of its arguments are equal, else false. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<p><a class="anchor" id="Core_Equal"></a> The <b>Equal</b> function returns true if there is only one argument, or the values of its arguments are equal, else false. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
@@ -139,7 +142,7 @@ template&lt;typename T , typename... Ts&gt; </div>
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s1{<a class="code hl_class" href="classcljonic_1_1_set.html">Set</a>{1, 2, 3}};</div>
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> str1{<a class="code hl_class" href="classcljonic_1_1_string.html">String</a>{<span class="stringliteral">&quot;abc&quot;</span>}};</div>
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> str2{<a class="code hl_class" href="classcljonic_1_1_string.html">String&lt;3&gt;</a>{<span class="charliteral">&#39;a&#39;</span>, <span class="charliteral">&#39;b&#39;</span>, <span class="charliteral">&#39;c&#39;</span>}};</div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> e0{<a class="code hl_function" href="namespacecljonic_1_1core.html#ab67cad28f66047452bc5908ad466d482">Equal</a>(a1)};            <span class="comment">// true whenever only one parameter is specified</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> e0{<a class="code hl_function" href="namespacecljonic_1_1core.html#ab67cad28f66047452bc5908ad466d482">Equal</a>(1.1)};           <span class="comment">// true whenever one parameter is specified, even if it&#39;s a floating point</span></div>
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> e1{<a class="code hl_function" href="namespacecljonic_1_1core.html#ab67cad28f66047452bc5908ad466d482">Equal</a>(a1, a2)};        <span class="comment">// true</span></div>
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> e2{<a class="code hl_function" href="namespacecljonic_1_1core.html#ab67cad28f66047452bc5908ad466d482">Equal</a>(1, 2)};          <span class="comment">// false</span></div>
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> e3{<a class="code hl_function" href="namespacecljonic_1_1core.html#ab67cad28f66047452bc5908ad466d482">Equal</a>(<a class="code hl_class" href="classcljonic_1_1_range.html">Range</a>())};       <span class="comment">// true</span></div>
@@ -159,7 +162,7 @@ template&lt;typename T , typename... Ts&gt; </div>
 <div class="ttc" id="aclasscljonic_1_1_repeat_html"><div class="ttname"><a href="classcljonic_1_1_repeat.html">cljonic::Repeat</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00014">cljonic-repeat.hpp:15</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_set_html"><div class="ttname"><a href="classcljonic_1_1_set.html">cljonic::Set</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-set_8hpp_source.html#l00022">cljonic-set.hpp:23</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_string_html"><div class="ttname"><a href="classcljonic_1_1_string.html">cljonic::String</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-string_8hpp_source.html#l00017">cljonic-string.hpp:18</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1core_html"><div class="ttname"><a href="namespacecljonic_1_1core.html">cljonic::core</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-equal_8hpp_source.html#l00010">cljonic-core-equal.hpp:11</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html"><div class="ttname"><a href="namespacecljonic_1_1core.html">cljonic::core</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-equal_8hpp_source.html#l00009">cljonic-core-equal.hpp:10</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1core_html_ab67cad28f66047452bc5908ad466d482"><div class="ttname"><a href="namespacecljonic_1_1core.html#ab67cad28f66047452bc5908ad466d482">cljonic::core::Equal</a></div><div class="ttdeci">auto Equal(const T &amp;t, const Ts &amp;... ts) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-equal_8hpp_source.html#l00050">cljonic-core-equal.hpp:50</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00009">cljonic-array.hpp:10</a></div></div>
 </div><!-- fragment --> 
@@ -167,10 +170,82 @@ template&lt;typename T , typename... Ts&gt; </div>
 
 </div>
 </div>
+<a id="a3b9f3eabfae19001e8c5591ba0ed9550" name="a3b9f3eabfae19001e8c5591ba0ed9550"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b9f3eabfae19001e8c5591ba0ed9550">&#9670;&#160;</a></span>EqualBy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F , typename T , typename... Ts&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::EqualBy </td>
+          <td>(</td>
+          <td class="paramtype">const F &amp;&#160;</td>
+          <td class="paramname"><em>f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Ts &amp;...&#160;</td>
+          <td class="paramname"><em>ts</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="anchor" id="Core_EqualBy"></a> The <b>EqualBy</b> function returns true if there are three or more arguments, and the second through last argument values are equal, as defined by the first argument, which must be a binary predicate, else false. If there are only two arguments the function always returns true, and the first argument is never called. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main()</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">constexpr</span> <span class="keyword">auto</span> EBF = [](<span class="keyword">const</span> <span class="keywordtype">int</span> a, <span class="keyword">const</span> <span class="keywordtype">int</span> b){ <span class="keywordflow">return</span> a == b; };</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> a{<a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>{1, 1, 1, 1}};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> a13{<a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>{1, 2, 3}};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r14{<a class="code hl_class" href="classcljonic_1_1_range.html">Range</a>(1, 4)};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r04{<a class="code hl_class" href="classcljonic_1_1_range.html">Range</a>(4)};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r{<a class="code hl_class" href="classcljonic_1_1_repeat.html">Repeat</a>(4, 1)};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> b0{<a class="code hl_function" href="namespacecljonic_1_1core.html#a3b9f3eabfae19001e8c5591ba0ed9550">EqualBy</a>(EBF, 1.1)};      <span class="comment">// true whenever one parameter is specified, even if it&#39;s a floating point</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> b1{<a class="code hl_function" href="namespacecljonic_1_1core.html#a3b9f3eabfae19001e8c5591ba0ed9550">EqualBy</a>(EBF, 1, 1)};     <span class="comment">// true</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> b2{<a class="code hl_function" href="namespacecljonic_1_1core.html#a3b9f3eabfae19001e8c5591ba0ed9550">EqualBy</a>(EBF, 1, 2)};     <span class="comment">// false</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> b3{<a class="code hl_function" href="namespacecljonic_1_1core.html#a3b9f3eabfae19001e8c5591ba0ed9550">EqualBy</a>(EBF, a)};        <span class="comment">// true whenever one parameter is specified</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> b4{<a class="code hl_function" href="namespacecljonic_1_1core.html#a3b9f3eabfae19001e8c5591ba0ed9550">EqualBy</a>(EBF, a, r)};     <span class="comment">// true</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> b5{<a class="code hl_function" href="namespacecljonic_1_1core.html#a3b9f3eabfae19001e8c5591ba0ed9550">EqualBy</a>(EBF, a, a13)};   <span class="comment">// false</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> b6{<a class="code hl_function" href="namespacecljonic_1_1core.html#a3b9f3eabfae19001e8c5591ba0ed9550">EqualBy</a>(EBF, a, a13)};   <span class="comment">// false</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> b7{<a class="code hl_function" href="namespacecljonic_1_1core.html#a3b9f3eabfae19001e8c5591ba0ed9550">EqualBy</a>(EBF, r14, a13)}; <span class="comment">// true</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> b8{<a class="code hl_function" href="namespacecljonic_1_1core.html#a3b9f3eabfae19001e8c5591ba0ed9550">EqualBy</a>(EBF, r04, a)};   <span class="comment">// false</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a3b9f3eabfae19001e8c5591ba0ed9550"><div class="ttname"><a href="namespacecljonic_1_1core.html#a3b9f3eabfae19001e8c5591ba0ed9550">cljonic::core::EqualBy</a></div><div class="ttdeci">auto EqualBy(const F &amp;f, const T &amp;t, const Ts &amp;... ts) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-equalby_8hpp_source.html#l00046">cljonic-core-equalby.hpp:46</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-core-equalby_8hpp_source.html#l00046">46</a> of file <a class="el" href="cljonic-core-equalby_8hpp_source.html">cljonic-core-equalby.hpp</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Dec 18 2024 12:23:43 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Thu Dec 19 2024 15:28:46 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

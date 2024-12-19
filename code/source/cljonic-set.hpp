@@ -33,6 +33,14 @@ class Set
     const T m_elementDefault;
     T m_elements[MaxElements];
 
+    bool IsUniqueElementBy(const auto& f, const T& element) const noexcept
+    {
+        auto result{true};
+        for (MaxElementsType i = 0; (result and (i < m_elementCount)); ++i)
+            result = not AreEqualBy(f, element, m_elements[i]);
+        return result;
+    }
+
     bool IsUniqueElement(const T& element) const noexcept
     {
         auto result{true};
@@ -107,6 +115,11 @@ class Set
     [[nodiscard]] MaxElementsType Count() const noexcept
     {
         return m_elementCount;
+    }
+
+    bool ContainsBy(const auto& f, const T& element) const noexcept
+    {
+        return not IsUniqueElementBy(f, element);
     }
 
     bool Contains(const T& element) const noexcept

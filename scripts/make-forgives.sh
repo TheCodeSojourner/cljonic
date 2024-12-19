@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
-generate_metrics () {
-    echo "Generating Metrics Violations"
+generate_forgives () {
+    echo "Generating List Of code/source Files With Disabled Metrics Notification Functions"
     echo
-    HPPS=$(find 'code/source' -type f -name '*.hpp')
-    lizard --CCN 3 --length 15 --arguments 4 -Tnloc=12 --warnings_only $HPPS
+    grep 'lizard forgives' code/source/*
     echo
     echo "Done"
 }
@@ -12,7 +11,7 @@ generate_metrics () {
 render_header () {
     echo
     echo '========================================'
-    echo '== make metrics_source'
+    echo '== make forgives'
     echo '========================================'
 }
 
@@ -20,5 +19,5 @@ render_header () {
 ## Main
 ################################################################################
 render_header
-generate_metrics 
+generate_forgives
 exit 0
