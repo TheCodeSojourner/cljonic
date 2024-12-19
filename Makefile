@@ -10,36 +10,45 @@ default: help
 ########################################################################################################################
 ## Rebuild and execute unit test program
 all: FORCE
+	@scripts/make-format.sh
 	@scripts/make-all.sh unit-test
 	@echo
 
 ########################################################################################################################
 ## Delete build artifacts
 clean: FORCE
+	@scripts/make-format.sh
 	@scripts/make-clean.sh
 	@echo
 
 ########################################################################################################################
 ## Rebuild, in gcov mode, execute unit test program, and generates coverage
 coverage: FORCE
+	@scripts/make-format.sh
 	@scripts/make-coverage.sh
 	@echo
 
 ########################################################################################################################
 ## Execute cppcheck on source files
 cppcheck: FORCE
+	@scripts/make-format.sh
 	@scripts/make-cppcheck.sh
 	@echo
 
 ########################################################################################################################
 ## Generate doxygen documentation
 doc: FORCE
+	@scripts/make-format.sh
 	@scripts/make-doc.sh
 	@echo
 
 ########################################################################################################################
 ## Format all files with clang-format
 format: FORCE
+	@echo
+	@echo "========================================"
+	@echo "== make format"
+	@echo "========================================"
 	@scripts/make-format.sh
 	@echo
 
@@ -91,6 +100,7 @@ help: FORCE
 ########################################################################################################################
 ## Does 'make test' then displays coverage analysis HTML in browser
 lcov: FORCE
+	@scripts/make-format.sh
 	@scripts/make-lcov.sh
 	@sensible-browser build/html/index.html 2>/dev/null >/dev/null &
 	@echo
@@ -104,18 +114,21 @@ memcheck: FORCE
 ########################################################################################################################
 ## Generates metrics for source code with lizard
 metrics: FORCE
+	@scripts/make-format.sh
 	@scripts/make-metrics-source.sh
 	@echo
 
 ########################################################################################################################
 ## Builds the cljonic.hpp single header file
 cljonic: FORCE
+	@scripts/make-format.sh
 	@scripts/make-cljonic.sh
 	@echo
 
 ########################################################################################################################
 ## Builds only required files, and executes unit test program
 test: FORCE
+	@scripts/make-format.sh
 	@scripts/make-unit-test.sh unit-test
 	@echo
 

@@ -1,11 +1,19 @@
 #ifndef CLJONIC_COMMON_HPP
 #define CLJONIC_COMMON_HPP
 
+#include <concepts>
 #include <cstring>
 #include "cljonic-concepts.hpp"
 
 namespace cljonic
 {
+
+template <typename F, typename T, typename U>
+auto AreEqualBy(const F& f, const T& t, const U& u)
+{
+    static_assert(std::predicate<F, T, U>, "Function is not a valid binary predicate for the parameters");
+    return f(t, u);
+}
 
 template <typename T, typename U>
 auto AreEqual(const T& t, const U& u)

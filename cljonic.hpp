@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Dec 18 12:23:43 PM MST 2024
+// This file was generated Thu Dec 19 10:27:53 AM MST 2024
 
 namespace cljonic {
 
@@ -35,12 +35,15 @@ enum class CljonicCollectionType {
 
 namespace cljonic {
 
-template <typename T>
-concept IsCljonicCollection = std::same_as<typename T::cljonic_collection, std::true_type>;
+template <typename F, typename T, typename... Ts>
+concept IsBinaryPredicate = (std::predicate<F, T, Ts> && ...);
 
 template <typename T>
 concept IsCljonicArray = std::same_as<typename T::cljonic_collection_type,
                                       std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>>;
+
+template <typename T>
+concept IsCljonicCollection = std::same_as<typename T::cljonic_collection, std::true_type>;
 
 template <typename T>
 concept IsCljonicRange = std::same_as<typename T::cljonic_collection_type,
@@ -67,31 +70,42 @@ template <typename T, typename... Ts>
 concept AllCljonicSets = (IsCljonicSet<T> and ... and IsCljonicSet<Ts>);
 
 template <typename T, typename... Ts>
+constexpr bool AllEqualityComparableTypes = (std::equality_comparable_with<T, Ts> and ...);
+
+template <typename T, typename... Ts>
 constexpr bool AllEqualityComparableValueTypes =
     (std::equality_comparable_with<typename T::value_type, typename Ts::value_type> and ...);
+
+template <typename T, typename... Ts>
+constexpr bool AnyFloatingPointTypes = (std::floating_point<T> or ... or std::floating_point<Ts>);
 
 template <typename T, typename... Ts>
 concept AllSameCljonicCollectionType =
     (std::same_as<typename T::cljonic_collection_type, typename Ts::cljonic_collection_type> and ...);
 
 template <typename T, typename... Ts>
-constexpr bool AnyFloatingPointTypes = (std::floating_point<T> or ... or std::floating_point<Ts>);
-
-template <typename T, typename... Ts>
 constexpr bool AnyFloatingPointValueTypes =
     (std::floating_point<typename T::value_type> or ... or std::floating_point<typename Ts::value_type>);
-
-template <typename T, typename... Ts>
-constexpr bool AllEqualityComparableTypes = (std::equality_comparable_with<T, Ts> and ...);
 
 template <typename T>
 concept CString = std::same_as<T, const char*> or std::same_as<T, char*>;
 
+template <typename F, IsCljonicCollection T, IsCljonicCollection... Ts>
+constexpr bool IsBinaryPredicateForAllCljonicCollections =
+    (IsBinaryPredicate<F, typename T::value_type, typename Ts::value_type> and ...);
+
 } // namespace cljonic
 
+#include <concepts>
 #include <cstring>
 
 namespace cljonic {
+
+template <typename F, typename T, typename U>
+auto AreEqualBy(F& f, const T& t, const U& u) {
+static_assert(std::predicate<F, T, U>, "Function is not a valid binary predicate for the parameters");
+return f(t, u);
+}
 
 template <typename T, typename U>
 auto AreEqual(const T& t, const U& u) {
@@ -392,6 +406,13 @@ MaxElementsType m_elementCount;
 const T m_elementDefault;
 T m_elements[MaxElements];
 
+bool IsUniqueElementBy(const auto& f, const T& element) const noexcept {
+auto result{true};
+for(MaxElementsType i = 0; (result and (i < m_elementCount)); ++i)
+result = not AreEqualBy(f, element, m_elements[i]);
+return result;
+}
+
 bool IsUniqueElement(const T& element) const noexcept {
 auto result{true};
 for(MaxElementsType i = 0; (result and (i < m_elementCount)); ++i)
@@ -435,6 +456,10 @@ return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 
 [[nodiscard]] MaxElementsType Count() const noexcept {
 return m_elementCount;
+}
+
+bool ContainsBy(const auto& f, const T& element) const noexcept {
+return not IsUniqueElementBy(f, element);
 }
 
 bool Contains(const T& element) const noexcept {
@@ -553,12 +578,12 @@ template <typename T, typename... Ts>
 auto Equal(const T& t, const Ts&... ts) noexcept {
 
 if constexpr(AllCljonicCollections<T, Ts...>) {
-static_assert(AllCljonicArrayRangeOrRepeat<T, Ts...> or AllSameCljonicCollectionType<T, Ts...>,
-              "Cljonic collection types are not all the same, or all Array, Range or Repeat types");
+static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
+              "cljonic collection types are not all the same, or all Array, Range or Repeat types");
 static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
-              "Cljonic floating point collection value types should not be compared for equality");
+              "cljonic floating point collection value types should not be compared for equality");
 static_assert(AllEqualityComparableValueTypes<T, Ts...>,
-              "Cljonic collection value types are not all equality comparable");
+              "cljonic collection value types are not all equality comparable");
 if constexpr(AllCljonicSets<T, Ts...>) {
 constexpr auto EqualSets = [&](const auto& c1, const auto& c2) {
 using CountType = decltype(c1.Count());
@@ -582,6 +607,51 @@ return (EqualCollections(t, ts) and ...);
 static_assert(not AnyFloatingPointTypes<T, Ts...>, "Floating point types should not be compared for equality");
 static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all types are equality comparable");
 return (AreEqual(t, ts) and ...);
+}
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename T, typename... Ts>
+auto EqualBy(F& f, const T& t, const Ts&... ts) noexcept {
+
+if constexpr(AllCljonicCollections<T, Ts...>) {
+static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
+              "cljonic collection types are not all the same, or all Array, Range or Repeat types");
+static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
+              "cljonic floating point collection value types should not be compared for equality");
+static_assert(IsBinaryPredicateForAllCljonicCollections<F, T, Ts...>,
+              "Function is not a valid binary predicate for all cljonic collection value types");
+if constexpr(AllCljonicSets<T, Ts...>) {
+constexpr auto EqualSets = [&](const auto& c1, const auto& c2) {
+using CountType = decltype(c1.Count());
+auto result{c1.Count() == c2.Count()};
+for(CountType i = 0; (result and (i < c1.Count())); ++i)
+result = c2.ContainsBy(f, c1[i]);
+return result;
+};
+return (EqualSets(t, ts) and ...);
+} else {
+constexpr auto EqualCollections = [&](const auto& c1, const auto& c2) {
+using CountType = decltype(c1.Count());
+auto result{c1.Count() == c2.Count()};
+for(CountType i = 0; (result and (i < c1.Count())); ++i)
+result = AreEqualBy(f, c1[i], c2[i]);
+return result;
+};
+return (EqualCollections(t, ts) and ...);
+}
+} else {
+static_assert(not AnyFloatingPointTypes<T, Ts...>, "Floating point types should not be compared for equality");
+static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all types are equality comparable");
+static_assert(IsBinaryPredicate<F, T, Ts...>, "Function is not a valid binary predicate for all parameters");
+constexpr auto EqualParameters = [&](const auto& p1, const auto& p2) { return AreEqualBy(f, p1, p2); };
+return (EqualParameters(t, ts) and ...);
 }
 }
 

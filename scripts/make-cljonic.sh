@@ -18,7 +18,8 @@ cat cljonic-collection-type.hpp \
     cljonic-set.hpp \
     cljonic-string.hpp \
     cljonic-core.hpp \
-    cljonic-core-equal.hpp > /tmp/cljonic-glued.hpp
+    cljonic-core-equal.hpp\
+    cljonic-core-equalby.hpp > /tmp/cljonic-glued.hpp
 
 # remove all the comments
 g++ -fpreprocessed -dD -E -o /tmp/cljonic.hpp /tmp/cljonic-glued.hpp

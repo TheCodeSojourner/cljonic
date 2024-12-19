@@ -3,7 +3,6 @@
 LAST_EXIT_CODE=0
 
 format_files () {
-    echo -n "Formatting Files ... "
     CPPS=$(find 'code' -type f -name '*.cpp')
     HPPS=$(find 'code' -type f -name '*.hpp')
     clang-format \
@@ -13,7 +12,6 @@ format_files () {
         $HPPS \
         2>/dev/null >/dev/null
     LAST_EXIT_CODE=$?
-    echo "Done"
 }
 
 handle_error () { # <message>
@@ -23,16 +21,8 @@ handle_error () { # <message>
     fi
 }
 
-render_header () {
-    echo
-    echo '========================================'
-    echo '== make format'
-    echo '========================================'
-}
-
 ################################################################################
 ## Main
 ################################################################################
-render_header
 format_files ; handle_error "Formatting Files"
 exit 0
