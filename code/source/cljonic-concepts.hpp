@@ -38,6 +38,11 @@ concept IsCljonicSet = std::same_as<typename T::cljonic_collection_type,
 template <typename T>
 concept IsCljonicArrayRangeOrRepeat = IsCljonicArray<T> or IsCljonicRange<T> or IsCljonicRepeat<T>;
 
+template <typename P, typename T>
+concept IsUnaryPredicate = requires(P p, T t) {
+    { p(t) } -> std::convertible_to<bool>;
+};
+
 template <typename T, typename... Ts>
 concept AllCljonicArrayRangeOrRepeat = (IsCljonicArrayRangeOrRepeat<T> and ... and IsCljonicArrayRangeOrRepeat<Ts>);
 

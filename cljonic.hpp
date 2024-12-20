@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Dec 20 10:58:41 AM MST 2024
+// This file was generated Fri Dec 20 03:13:44 PM MST 2024
 
 namespace cljonic {
 
@@ -64,6 +64,11 @@ concept IsCljonicSet = std::same_as<typename T::cljonic_collection_type,
 
 template <typename T>
 concept IsCljonicArrayRangeOrRepeat = IsCljonicArray<T> or IsCljonicRange<T> or IsCljonicRepeat<T>;
+
+template <typename P, typename T>
+concept IsUnaryPredicate = requires(P p, T t) {
+{ p(t) } -> std::convertible_to<bool>;
+};
 
 template <typename T, typename... Ts>
 concept AllCljonicArrayRangeOrRepeat = (IsCljonicArrayRangeOrRepeat<T> and ... and IsCljonicArrayRangeOrRepeat<Ts>);
@@ -636,6 +641,25 @@ static_assert(IsBinaryPredicateForAll<F, T, Ts...>,
 auto EqualParameters = [&](const auto& p1, const auto& p2) { return AreEqualBy(f, p1, p2); };
 return (EqualParameters(t, ts) and ...);
 }
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename T>
+auto Every(const F& f, const T& t) noexcept {
+static_assert(IsUnaryPredicate<F, typename T::value_type>,
+              "Function is not a valid unary predicate for the collection value type");
+static_assert(IsCljonicCollection<T>, "cljonic collection required");
+using CountType = decltype(t.Count());
+auto result{true};
+for(CountType i = 0; (result and (i < t.Count())); ++i)
+result = f(t[i]);
+return result;
 }
 
 }
