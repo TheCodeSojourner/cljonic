@@ -9,7 +9,7 @@ namespace core
 
 /** \anchor Core_Every
 * The \b Every function returns true if the first parameter, which must be a \b unary \b predicte, returns true when
-* called with every element of the second parameter, which must be a \b cljonic \collection, else false. Also returns
+* called with every element of the second parameter, which must be a \b cljonic \b collection, else false. Also returns
 * \b true if the second parameter is an empty \b cljonic \b collection.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
