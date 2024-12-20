@@ -12,5 +12,6 @@ var searchData=
   ['cljonic_3a_3aiscljoniccollection_9',['IsCljonicCollection',['../conceptcljonic_1_1_is_cljonic_collection.html',1,'cljonic']]],
   ['cljonic_3a_3aiscljonicrange_10',['IsCljonicRange',['../conceptcljonic_1_1_is_cljonic_range.html',1,'cljonic']]],
   ['cljonic_3a_3aiscljonicrepeat_11',['IsCljonicRepeat',['../conceptcljonic_1_1_is_cljonic_repeat.html',1,'cljonic']]],
-  ['cljonic_3a_3aiscljonicset_12',['IsCljonicSet',['../conceptcljonic_1_1_is_cljonic_set.html',1,'cljonic']]]
+  ['cljonic_3a_3aiscljonicset_12',['IsCljonicSet',['../conceptcljonic_1_1_is_cljonic_set.html',1,'cljonic']]],
+  ['cljonic_3a_3anotcstring_13',['NotCString',['../conceptcljonic_1_1_not_c_string.html',1,'cljonic']]]
 ];

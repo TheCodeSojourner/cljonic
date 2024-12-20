@@ -89,6 +89,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a3b9f3eabfae19001e8c5591ba0ed9550" id="r_a3b9f3eabfae19001e8c5591ba0ed9550"><td class="memTemplParams" colspan="2">template&lt;typename F , typename T , typename... Ts&gt; </td></tr>
 <tr class="memitem:a3b9f3eabfae19001e8c5591ba0ed9550"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#a3b9f3eabfae19001e8c5591ba0ed9550">EqualBy</a> (const F &amp;f, const T &amp;t, const Ts &amp;... ts) noexcept</td></tr>
 <tr class="separator:a3b9f3eabfae19001e8c5591ba0ed9550"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f45a795878d35b55dcc94d3b8b4b90d" id="r_a8f45a795878d35b55dcc94d3b8b4b90d"><td class="memTemplParams" colspan="2">template&lt;typename F , typename T &gt; </td></tr>
+<tr class="memitem:a8f45a795878d35b55dcc94d3b8b4b90d"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#a8f45a795878d35b55dcc94d3b8b4b90d">Every</a> (const F &amp;f, const T &amp;t) noexcept</td></tr>
+<tr class="separator:a8f45a795878d35b55dcc94d3b8b4b90d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ab67cad28f66047452bc5908ad466d482" name="ab67cad28f66047452bc5908ad466d482"></a>
@@ -242,10 +245,65 @@ template&lt;typename F , typename T , typename... Ts&gt; </div>
 
 </div>
 </div>
+<a id="a8f45a795878d35b55dcc94d3b8b4b90d" name="a8f45a795878d35b55dcc94d3b8b4b90d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f45a795878d35b55dcc94d3b8b4b90d">&#9670;&#160;</a></span>Every()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F , typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::Every </td>
+          <td>(</td>
+          <td class="paramtype">const F &amp;&#160;</td>
+          <td class="paramname"><em>f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>t</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="anchor" id="Core_Every"></a> The <b>Every</b> function returns true if the first parameter, which must be a <b>unary</b> <b>predicte</b>, returns true when called with every element of the second parameter, which must be a <b>cljonic</b> collection, else false. Returns false if second parameter is an empty <b>cljonic</b> collection. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main()</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">constexpr</span> <span class="keyword">auto</span> Less10 = [](<span class="keyword">const</span> <span class="keywordtype">int</span> i){ <span class="keywordflow">return</span> i &lt; 10; };</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> b0{<a class="code hl_function" href="namespacecljonic_1_1core.html#a8f45a795878d35b55dcc94d3b8b4b90d">Every</a>(Less10, <a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>{})}; <span class="comment">// true</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> b1{<a class="code hl_function" href="namespacecljonic_1_1core.html#a8f45a795878d35b55dcc94d3b8b4b90d">Every</a>(Less10, <a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>{10})}; <span class="comment">// false</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> b2{<a class="code hl_function" href="namespacecljonic_1_1core.html#a8f45a795878d35b55dcc94d3b8b4b90d">Every</a>(Less10, <a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>{1, 2, 3, 4, 5, 6, 7, 8, 9})}; <span class="comment">// true</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a8f45a795878d35b55dcc94d3b8b4b90d"><div class="ttname"><a href="namespacecljonic_1_1core.html#a8f45a795878d35b55dcc94d3b8b4b90d">cljonic::core::Every</a></div><div class="ttdeci">auto Every(const F &amp;f, const T &amp;t) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-every_8hpp_source.html#l00032">cljonic-core-every.hpp:32</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-core-every_8hpp_source.html#l00032">32</a> of file <a class="el" href="cljonic-core-every_8hpp_source.html">cljonic-core-every.hpp</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Dec 19 2024 15:28:46 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Dec 20 2024 10:51:12 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

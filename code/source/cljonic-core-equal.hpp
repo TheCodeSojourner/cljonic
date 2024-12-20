@@ -49,7 +49,7 @@ int main()
 template <typename T, typename... Ts>
 auto Equal(const T& t, const Ts&... ts) noexcept
 {
-    return EqualBy(std::equal_to<>{}, t, ts...);
+    return EqualBy([](const auto& a, const auto& b) { return AreEqual(a, b); }, t, ts...);
 }
 
 } // namespace core

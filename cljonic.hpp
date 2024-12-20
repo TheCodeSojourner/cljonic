@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Dec 19 03:28:46 PM MST 2024
+// This file was generated Fri Dec 20 10:51:12 AM MST 2024
 
 namespace cljonic {
 
@@ -95,6 +95,9 @@ constexpr bool AnyFloatingPointValueTypes =
 template <typename T>
 concept CString = std::same_as<T, const char*> or std::same_as<T, char*>;
 
+template <typename T>
+concept NotCString = (not CString<T>);
+
 template <typename F, IsCljonicCollection T, IsCljonicCollection... Ts>
 constexpr bool IsBinaryPredicateForAllCljonicCollections =
     (IsBinaryPredicateForAll<F, typename T::value_type, typename Ts::value_type> and ...);
@@ -107,21 +110,17 @@ constexpr bool IsBinaryPredicateForAllCljonicCollections =
 namespace cljonic {
 
 template <typename F, typename T, typename U>
-auto AreEqualBy(const F& f, const T& t, const U& u) {
+bool AreEqualBy(const F& f, const T& t, const U& u) {
 static_assert(std::predicate<F, T, U>, "Function is not a valid binary predicate for the parameters");
 return f(t, u);
 }
 
-template <typename T, typename U>
-auto AreEqual(const T& t, const U& u) {
-if constexpr(CString<T> and CString<U>)
-return (std::strcmp(t, u) == 0);
-else {
-static_assert((not std::floating_point<T>) and (not std::floating_point<U>),
-              "Floating point types should not be equality compared");
-static_assert(std::equality_comparable_with<T, U>, "Types are not equality comparable");
-return (t == u);
+bool AreEqual(NotCString auto a, NotCString auto b) {
+return a == b;
 }
+
+bool AreEqual(CString auto a, CString auto b) {
+return std::strcmp(a, b) == 0;
 }
 
 } // namespace cljonic
@@ -581,7 +580,7 @@ namespace cljonic {
 namespace core {
 template <typename T, typename... Ts>
 auto Equal(const T& t, const Ts&... ts) noexcept {
-return EqualBy(std::equal_to<>{}, t, ts...);
+return EqualBy([](const auto& a, const auto& b) { return AreEqual(a, b); }, t, ts...);
 }
 
 }

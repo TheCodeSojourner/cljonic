@@ -116,7 +116,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    {</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        <span class="keyword">auto</span> result{<span class="keyword">true</span>};</div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        <span class="keywordflow">for</span> (MaxElementsType i = 0; (result and (i &lt; m_elementCount)); ++i)</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>            result = not <a class="code hl_function" href="namespacecljonic.html#a93dfcb03658b857cd18af368403dda75">AreEqualBy</a>(f, element, m_elements[i]);</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>            result = not <a class="code hl_function" href="namespacecljonic.html#a3333f17d041586aa89c833dc8cf3f86b">AreEqualBy</a>(f, element, m_elements[i]);</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        <span class="keywordflow">return</span> result;</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    }</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
@@ -124,7 +124,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    {</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        <span class="keyword">auto</span> result{<span class="keyword">true</span>};</div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        <span class="keywordflow">for</span> (MaxElementsType i = 0; (result and (i &lt; m_elementCount)); ++i)</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>            result = not <a class="code hl_function" href="namespacecljonic.html#ae0be5ccfbd864b9b463c2188dd33dffd">AreEqual</a>(element, m_elements[i]);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>            result = not <a class="code hl_function" href="namespacecljonic.html#a284b6a3ebad065286766d9c06374f069">AreEqual</a>(element, m_elements[i]);</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        <span class="keywordflow">return</span> result;</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    }</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
@@ -226,12 +226,12 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="acljonic-collection-type_8hpp_html"><div class="ttname"><a href="cljonic-collection-type_8hpp.html">cljonic-collection-type.hpp</a></div></div>
 <div class="ttc" id="acljonic-shared_8hpp_html"><div class="ttname"><a href="cljonic-shared_8hpp.html">cljonic-shared.hpp</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00009">cljonic-array.hpp:10</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_a93dfcb03658b857cd18af368403dda75"><div class="ttname"><a href="namespacecljonic.html#a93dfcb03658b857cd18af368403dda75">cljonic::AreEqualBy</a></div><div class="ttdeci">auto AreEqualBy(const F &amp;f, const T &amp;t, const U &amp;u)</div><div class="ttdef"><b>Definition</b> <a href="cljonic-shared_8hpp_source.html#l00012">cljonic-shared.hpp:12</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_ae0be5ccfbd864b9b463c2188dd33dffd"><div class="ttname"><a href="namespacecljonic.html#ae0be5ccfbd864b9b463c2188dd33dffd">cljonic::AreEqual</a></div><div class="ttdeci">auto AreEqual(const T &amp;t, const U &amp;u)</div><div class="ttdef"><b>Definition</b> <a href="cljonic-shared_8hpp_source.html#l00019">cljonic-shared.hpp:19</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a284b6a3ebad065286766d9c06374f069"><div class="ttname"><a href="namespacecljonic.html#a284b6a3ebad065286766d9c06374f069">cljonic::AreEqual</a></div><div class="ttdeci">bool AreEqual(NotCString auto a, NotCString auto b)</div><div class="ttdef"><b>Definition</b> <a href="cljonic-shared_8hpp_source.html#l00018">cljonic-shared.hpp:18</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a3333f17d041586aa89c833dc8cf3f86b"><div class="ttname"><a href="namespacecljonic.html#a3333f17d041586aa89c833dc8cf3f86b">cljonic::AreEqualBy</a></div><div class="ttdeci">bool AreEqualBy(const F &amp;f, const T &amp;t, const U &amp;u)</div><div class="ttdef"><b>Definition</b> <a href="cljonic-shared_8hpp_source.html#l00012">cljonic-shared.hpp:12</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Dec 19 2024 15:28:46 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Dec 20 2024 10:51:12 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

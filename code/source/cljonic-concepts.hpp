@@ -68,6 +68,9 @@ constexpr bool AnyFloatingPointValueTypes =
 template <typename T>
 concept CString = std::same_as<T, const char*> or std::same_as<T, char*>;
 
+template <typename T>
+concept NotCString = (not CString<T>);
+
 template <typename F, IsCljonicCollection T, IsCljonicCollection... Ts>
 constexpr bool IsBinaryPredicateForAllCljonicCollections =
     (IsBinaryPredicateForAll<F, typename T::value_type, typename Ts::value_type> and ...);
