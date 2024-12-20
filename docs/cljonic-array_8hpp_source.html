@@ -105,89 +105,87 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    T m_elements[MaxElements];</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>  <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#ab366015f171146525a01ad22f514c8e3">   47</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classcljonic_1_1_array.html#ab366015f171146525a01ad22f514c8e3">cljonic_collection</a> = std::true_type;</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#a839d2769a8df4d8775ab00ae72448e83">   48</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classcljonic_1_1_array.html#a839d2769a8df4d8775ab00ae72448e83">cljonic_collection_type</a> = std::integral_constant&lt;CljonicCollectionType, CljonicCollectionType::Array&gt;;</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#adcd4ffc251f3e77679c03a4ad9360bb1">   49</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classcljonic_1_1_array.html#adcd4ffc251f3e77679c03a4ad9360bb1">size_type</a> = MaxElementsType;</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#ac9d378c15f5eb4c6e5e2f0aba3179164">   50</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classcljonic_1_1_array.html#ac9d378c15f5eb4c6e5e2f0aba3179164">value_type</a> = T;</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
-<div class="foldopen" id="foldopen00052" data-start="{" data-end="}">
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#a28c48900d212cbff52a8ef3fb1f7b47a">   52</a></span>    <a class="code hl_function" href="classcljonic_1_1_array.html#a28c48900d212cbff52a8ef3fb1f7b47a">Array</a>() noexcept : m_elementCount(0), m_elementDefault(T{})</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    {</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    }</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#a839d2769a8df4d8775ab00ae72448e83">   47</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classcljonic_1_1_array.html#a839d2769a8df4d8775ab00ae72448e83">cljonic_collection_type</a> = std::integral_constant&lt;CljonicCollectionType, CljonicCollectionType::Array&gt;;</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#adcd4ffc251f3e77679c03a4ad9360bb1">   48</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classcljonic_1_1_array.html#adcd4ffc251f3e77679c03a4ad9360bb1">size_type</a> = MaxElementsType;</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#ac9d378c15f5eb4c6e5e2f0aba3179164">   49</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classcljonic_1_1_array.html#ac9d378c15f5eb4c6e5e2f0aba3179164">value_type</a> = T;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
+<div class="foldopen" id="foldopen00051" data-start="{" data-end="}">
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#a28c48900d212cbff52a8ef3fb1f7b47a">   51</a></span>    <a class="code hl_function" href="classcljonic_1_1_array.html#a28c48900d212cbff52a8ef3fb1f7b47a">Array</a>() noexcept : m_elementCount(0), m_elementDefault(T{})</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    {</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    }</div>
 </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
-<div class="foldopen" id="foldopen00056" data-start="{" data-end="}">
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#ac976d3fe004769e179b43d65255a5d8c">   56</a></span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classcljonic_1_1_array.html#ac976d3fe004769e179b43d65255a5d8c">Array</a>(<span class="keyword">const</span> std::initializer_list&lt;const T&gt; elements) noexcept : m_elementCount(0), m_elementDefault(T{})</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    {</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; element : elements)</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        {</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>            <span class="keywordflow">if</span> (m_elementCount == MaxElements)</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>                <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            m_elements[m_elementCount++] = element;</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        }</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    }</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
+<div class="foldopen" id="foldopen00055" data-start="{" data-end="}">
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#ac976d3fe004769e179b43d65255a5d8c">   55</a></span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classcljonic_1_1_array.html#ac976d3fe004769e179b43d65255a5d8c">Array</a>(<span class="keyword">const</span> std::initializer_list&lt;const T&gt; elements) noexcept : m_elementCount(0), m_elementDefault(T{})</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    {</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; element : elements)</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        {</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            <span class="keywordflow">if</span> (m_elementCount == MaxElements)</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>                <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>            m_elements[m_elementCount++] = element;</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>        }</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    }</div>
 </div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#acd43ca26ef629c951aa322e1f636ed74">   66</a></span>    <a class="code hl_function" href="classcljonic_1_1_array.html#acd43ca26ef629c951aa322e1f636ed74">Array</a>(<span class="keyword">const</span> <a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>&amp; other) = <span class="keywordflow">default</span>; <span class="comment">// Copy constructor</span></div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#a41fdf7ec891ac84f0fc605c73ef46e56">   67</a></span>    <a class="code hl_function" href="classcljonic_1_1_array.html#a41fdf7ec891ac84f0fc605c73ef46e56">Array</a>(<a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>&amp;&amp; other) = <span class="keywordflow">default</span>;      <span class="comment">// Move constructor</span></div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
-<div class="foldopen" id="foldopen00069" data-start="{" data-end="}">
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#a741fc507b176a103fab978218ead7820">   69</a></span>    <span class="keyword">const</span> T* <a class="code hl_function" href="classcljonic_1_1_array.html#a741fc507b176a103fab978218ead7820">begin</a>() const noexcept</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    {</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        <span class="keywordflow">return</span> m_elements;</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    }</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#acd43ca26ef629c951aa322e1f636ed74">   65</a></span>    <a class="code hl_function" href="classcljonic_1_1_array.html#acd43ca26ef629c951aa322e1f636ed74">Array</a>(<span class="keyword">const</span> <a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>&amp; other) = <span class="keywordflow">default</span>; <span class="comment">// Copy constructor</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#a41fdf7ec891ac84f0fc605c73ef46e56">   66</a></span>    <a class="code hl_function" href="classcljonic_1_1_array.html#a41fdf7ec891ac84f0fc605c73ef46e56">Array</a>(<a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>&amp;&amp; other) = <span class="keywordflow">default</span>;      <span class="comment">// Move constructor</span></div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="foldopen" id="foldopen00068" data-start="{" data-end="}">
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#a741fc507b176a103fab978218ead7820">   68</a></span>    <span class="keyword">const</span> T* <a class="code hl_function" href="classcljonic_1_1_array.html#a741fc507b176a103fab978218ead7820">begin</a>() const noexcept</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    {</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>        <span class="keywordflow">return</span> m_elements;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    }</div>
 </div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
-<div class="foldopen" id="foldopen00074" data-start="{" data-end="}">
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#a9fb903bdabb7ba3f364f5cb049ea2d6d">   74</a></span>    <span class="keyword">const</span> T* <a class="code hl_function" href="classcljonic_1_1_array.html#a9fb903bdabb7ba3f364f5cb049ea2d6d">end</a>() const noexcept</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    {</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        <span class="keywordflow">return</span> m_elements + m_elementCount;</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    }</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
+<div class="foldopen" id="foldopen00073" data-start="{" data-end="}">
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#a9fb903bdabb7ba3f364f5cb049ea2d6d">   73</a></span>    <span class="keyword">const</span> T* <a class="code hl_function" href="classcljonic_1_1_array.html#a9fb903bdabb7ba3f364f5cb049ea2d6d">end</a>() const noexcept</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    {</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>        <span class="keywordflow">return</span> m_elements + m_elementCount;</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    }</div>
 </div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
-<div class="foldopen" id="foldopen00079" data-start="{" data-end="}">
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#a8a298f3f22a2554f277421df23b9d416">   79</a></span>    <span class="keyword">const</span> T&amp; <a class="code hl_function" href="classcljonic_1_1_array.html#a8a298f3f22a2554f277421df23b9d416">operator[]</a>(<span class="keyword">const</span> MaxElementsType index) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    {</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        <span class="keywordflow">return</span> (index &lt; m_elementCount) ? m_elements[index] : m_elementDefault;</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    }</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="foldopen" id="foldopen00078" data-start="{" data-end="}">
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#a8a298f3f22a2554f277421df23b9d416">   78</a></span>    <span class="keyword">const</span> T&amp; <a class="code hl_function" href="classcljonic_1_1_array.html#a8a298f3f22a2554f277421df23b9d416">operator[]</a>(<span class="keyword">const</span> MaxElementsType index) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    {</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        <span class="keywordflow">return</span> (index &lt; m_elementCount) ? m_elements[index] : m_elementDefault;</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    }</div>
 </div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
-<div class="foldopen" id="foldopen00084" data-start="{" data-end="}">
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#ac44c4ffe161b48c1e6bfcc153d5dad14">   84</a></span>    [[nodiscard]] MaxElementsType <a class="code hl_function" href="classcljonic_1_1_array.html#ac44c4ffe161b48c1e6bfcc153d5dad14">Count</a>() const noexcept</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    {</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        <span class="keywordflow">return</span> m_elementCount;</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    }</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
+<div class="foldopen" id="foldopen00083" data-start="{" data-end="}">
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#ac44c4ffe161b48c1e6bfcc153d5dad14">   83</a></span>    [[nodiscard]] MaxElementsType <a class="code hl_function" href="classcljonic_1_1_array.html#ac44c4ffe161b48c1e6bfcc153d5dad14">Count</a>() const noexcept</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    {</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>        <span class="keywordflow">return</span> m_elementCount;</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    }</div>
 </div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>}; <span class="comment">// class Array</span></div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>}; <span class="comment">// class Array</span></div>
 </div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="comment">// Support declarations like: auto v{Array{1, 2, 3}}; // Equivalent to auto v{Array&lt;int, 3&gt;{1, 2, 3}};</span></div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="namespacecljonic.html#ac8a1780765f9453dd427a6b6f341320b">   92</a></span><a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>(Args...) -&gt; <a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>&lt;std::common_type_t&lt;Args...&gt;, <span class="keyword">sizeof</span>...(Args)&gt;;</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>} <span class="comment">// namespace cljonic</span></div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="comment">// Support declarations like: auto v{Array{1, 2, 3}}; // Equivalent to auto v{Array&lt;int, 3&gt;{1, 2, 3}};</span></div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno"><a class="line" href="namespacecljonic.html#ac8a1780765f9453dd427a6b6f341320b">   91</a></span><a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>(Args...) -&gt; <a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>&lt;std::common_type_t&lt;Args...&gt;, <span class="keyword">sizeof</span>...(Args)&gt;;</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>} <span class="comment">// namespace cljonic</span></div>
 </div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="preprocessor">#endif </span><span class="comment">// CLJONIC_ARRAY_HPP</span></div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="preprocessor">#endif </span><span class="comment">// CLJONIC_ARRAY_HPP</span></div>
 <div class="ttc" id="aclasscljonic_1_1_array_html"><div class="ttname"><a href="classcljonic_1_1_array.html">cljonic::Array</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00018">cljonic-array.hpp:19</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_array_html_a28c48900d212cbff52a8ef3fb1f7b47a"><div class="ttname"><a href="classcljonic_1_1_array.html#a28c48900d212cbff52a8ef3fb1f7b47a">cljonic::Array::Array</a></div><div class="ttdeci">Array() noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00052">cljonic-array.hpp:52</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_array_html_a28c48900d212cbff52a8ef3fb1f7b47a"><div class="ttname"><a href="classcljonic_1_1_array.html#a28c48900d212cbff52a8ef3fb1f7b47a">cljonic::Array::Array</a></div><div class="ttdeci">Array() noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00051">cljonic-array.hpp:51</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_array_html_a41fdf7ec891ac84f0fc605c73ef46e56"><div class="ttname"><a href="classcljonic_1_1_array.html#a41fdf7ec891ac84f0fc605c73ef46e56">cljonic::Array::Array</a></div><div class="ttdeci">Array(Array &amp;&amp;other)=default</div></div>
-<div class="ttc" id="aclasscljonic_1_1_array_html_a741fc507b176a103fab978218ead7820"><div class="ttname"><a href="classcljonic_1_1_array.html#a741fc507b176a103fab978218ead7820">cljonic::Array::begin</a></div><div class="ttdeci">const T * begin() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00069">cljonic-array.hpp:69</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_array_html_a839d2769a8df4d8775ab00ae72448e83"><div class="ttname"><a href="classcljonic_1_1_array.html#a839d2769a8df4d8775ab00ae72448e83">cljonic::Array::cljonic_collection_type</a></div><div class="ttdeci">std::integral_constant&lt; CljonicCollectionType, CljonicCollectionType::Array &gt; cljonic_collection_type</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00048">cljonic-array.hpp:48</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_array_html_a8a298f3f22a2554f277421df23b9d416"><div class="ttname"><a href="classcljonic_1_1_array.html#a8a298f3f22a2554f277421df23b9d416">cljonic::Array::operator[]</a></div><div class="ttdeci">const T &amp; operator[](const MaxElementsType index) const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00079">cljonic-array.hpp:79</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_array_html_a9fb903bdabb7ba3f364f5cb049ea2d6d"><div class="ttname"><a href="classcljonic_1_1_array.html#a9fb903bdabb7ba3f364f5cb049ea2d6d">cljonic::Array::end</a></div><div class="ttdeci">const T * end() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00074">cljonic-array.hpp:74</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_array_html_ab366015f171146525a01ad22f514c8e3"><div class="ttname"><a href="classcljonic_1_1_array.html#ab366015f171146525a01ad22f514c8e3">cljonic::Array::cljonic_collection</a></div><div class="ttdeci">std::true_type cljonic_collection</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00047">cljonic-array.hpp:47</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_array_html_ac44c4ffe161b48c1e6bfcc153d5dad14"><div class="ttname"><a href="classcljonic_1_1_array.html#ac44c4ffe161b48c1e6bfcc153d5dad14">cljonic::Array::Count</a></div><div class="ttdeci">MaxElementsType Count() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00084">cljonic-array.hpp:84</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_array_html_ac976d3fe004769e179b43d65255a5d8c"><div class="ttname"><a href="classcljonic_1_1_array.html#ac976d3fe004769e179b43d65255a5d8c">cljonic::Array::Array</a></div><div class="ttdeci">Array(const std::initializer_list&lt; const T &gt; elements) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00056">cljonic-array.hpp:56</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_array_html_ac9d378c15f5eb4c6e5e2f0aba3179164"><div class="ttname"><a href="classcljonic_1_1_array.html#ac9d378c15f5eb4c6e5e2f0aba3179164">cljonic::Array::value_type</a></div><div class="ttdeci">T value_type</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00050">cljonic-array.hpp:50</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_array_html_a741fc507b176a103fab978218ead7820"><div class="ttname"><a href="classcljonic_1_1_array.html#a741fc507b176a103fab978218ead7820">cljonic::Array::begin</a></div><div class="ttdeci">const T * begin() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00068">cljonic-array.hpp:68</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_array_html_a839d2769a8df4d8775ab00ae72448e83"><div class="ttname"><a href="classcljonic_1_1_array.html#a839d2769a8df4d8775ab00ae72448e83">cljonic::Array::cljonic_collection_type</a></div><div class="ttdeci">std::integral_constant&lt; CljonicCollectionType, CljonicCollectionType::Array &gt; cljonic_collection_type</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00047">cljonic-array.hpp:47</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_array_html_a8a298f3f22a2554f277421df23b9d416"><div class="ttname"><a href="classcljonic_1_1_array.html#a8a298f3f22a2554f277421df23b9d416">cljonic::Array::operator[]</a></div><div class="ttdeci">const T &amp; operator[](const MaxElementsType index) const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00078">cljonic-array.hpp:78</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_array_html_a9fb903bdabb7ba3f364f5cb049ea2d6d"><div class="ttname"><a href="classcljonic_1_1_array.html#a9fb903bdabb7ba3f364f5cb049ea2d6d">cljonic::Array::end</a></div><div class="ttdeci">const T * end() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00073">cljonic-array.hpp:73</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_array_html_ac44c4ffe161b48c1e6bfcc153d5dad14"><div class="ttname"><a href="classcljonic_1_1_array.html#ac44c4ffe161b48c1e6bfcc153d5dad14">cljonic::Array::Count</a></div><div class="ttdeci">MaxElementsType Count() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00083">cljonic-array.hpp:83</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_array_html_ac976d3fe004769e179b43d65255a5d8c"><div class="ttname"><a href="classcljonic_1_1_array.html#ac976d3fe004769e179b43d65255a5d8c">cljonic::Array::Array</a></div><div class="ttdeci">Array(const std::initializer_list&lt; const T &gt; elements) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00055">cljonic-array.hpp:55</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_array_html_ac9d378c15f5eb4c6e5e2f0aba3179164"><div class="ttname"><a href="classcljonic_1_1_array.html#ac9d378c15f5eb4c6e5e2f0aba3179164">cljonic::Array::value_type</a></div><div class="ttdeci">T value_type</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00049">cljonic-array.hpp:49</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_array_html_acd43ca26ef629c951aa322e1f636ed74"><div class="ttname"><a href="classcljonic_1_1_array.html#acd43ca26ef629c951aa322e1f636ed74">cljonic::Array::Array</a></div><div class="ttdeci">Array(const Array &amp;other)=default</div></div>
-<div class="ttc" id="aclasscljonic_1_1_array_html_adcd4ffc251f3e77679c03a4ad9360bb1"><div class="ttname"><a href="classcljonic_1_1_array.html#adcd4ffc251f3e77679c03a4ad9360bb1">cljonic::Array::size_type</a></div><div class="ttdeci">MaxElementsType size_type</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00049">cljonic-array.hpp:49</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_array_html_adcd4ffc251f3e77679c03a4ad9360bb1"><div class="ttname"><a href="classcljonic_1_1_array.html#adcd4ffc251f3e77679c03a4ad9360bb1">cljonic::Array::size_type</a></div><div class="ttdeci">MaxElementsType size_type</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00048">cljonic-array.hpp:48</a></div></div>
 <div class="ttc" id="acljonic-collection-type_8hpp_html"><div class="ttname"><a href="cljonic-collection-type_8hpp.html">cljonic-collection-type.hpp</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00009">cljonic-array.hpp:10</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 20 2024 15:51:50 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Dec 20 2024 16:04:51 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

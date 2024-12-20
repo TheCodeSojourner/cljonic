@@ -67,7 +67,6 @@ class Repeat
     }
     ~~~~~
     */
-    using cljonic_collection = std::true_type;
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Repeat>;
     using size_type = std::size_t;
     using value_type = T;

@@ -30,14 +30,13 @@ var searchData=
   ['cljonic_3a_3aiscljonicset_27',['IsCljonicSet',['../conceptcljonic_1_1_is_cljonic_set.html',1,'cljonic']]],
   ['cljonic_3a_3aisunarypredicate_28',['IsUnaryPredicate',['../conceptcljonic_1_1_is_unary_predicate.html',1,'cljonic']]],
   ['cljonic_3a_3anotcstring_29',['NotCString',['../conceptcljonic_1_1_not_c_string.html',1,'cljonic']]],
-  ['cljonic_5fcollection_30',['cljonic_collection',['../classcljonic_1_1_array.html#ab366015f171146525a01ad22f514c8e3',1,'cljonic::Array::cljonic_collection'],['../classcljonic_1_1_string.html#a561087b71a8301c3ea7e773146199625',1,'cljonic::String::cljonic_collection'],['../classcljonic_1_1_set.html#a843af48123b4bb864852c69fb9f14dda',1,'cljonic::Set::cljonic_collection'],['../classcljonic_1_1_repeat.html#a7355c978ff046156e1be99ec205bb071',1,'cljonic::Repeat::cljonic_collection'],['../classcljonic_1_1_range.html#ab8d47fcf616d6bbb8768778dda3502d8',1,'cljonic::Range::cljonic_collection']]],
-  ['cljonic_5fcollection_5ftype_31',['cljonic_collection_type',['../classcljonic_1_1_repeat.html#ae922a28ef7aa62ce5ea338c5880cf2e1',1,'cljonic::Repeat::cljonic_collection_type'],['../classcljonic_1_1_string.html#a3d7cb2731e7a160fb00329819f1f79f1',1,'cljonic::String::cljonic_collection_type'],['../classcljonic_1_1_set.html#a3aaee6b5d6c23c5971bff701c7cdae0d',1,'cljonic::Set::cljonic_collection_type'],['../classcljonic_1_1_range.html#aec6f8184d20dd0991d01bdc38642530f',1,'cljonic::Range::cljonic_collection_type'],['../classcljonic_1_1_array.html#a839d2769a8df4d8775ab00ae72448e83',1,'cljonic::Array::cljonic_collection_type']]],
-  ['cljoniccollectiontype_32',['CljonicCollectionType',['../namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6',1,'cljonic']]],
-  ['collection_20types_33',['Collection Types',['../index.html#autotoc_md2',1,'']]],
-  ['composition_34',['Composition',['../index.html#autotoc_md4',1,'']]],
-  ['contains_35',['Contains',['../classcljonic_1_1_set.html#a6fd44e7a90c7f0b0bd41e4251671ca71',1,'cljonic::Set']]],
-  ['containsby_36',['ContainsBy',['../classcljonic_1_1_set.html#ac26dfac24718d319096210c81344d8f8',1,'cljonic::Set']]],
-  ['control_37',['Control',['../index.html#autotoc_md5',1,'']]],
-  ['core_20functions_38',['Core Functions',['../index.html#autotoc_md3',1,'']]],
-  ['count_39',['count',['../classcljonic_1_1_array.html#ac44c4ffe161b48c1e6bfcc153d5dad14',1,'cljonic::Array::Count()'],['../classcljonic_1_1_range.html#aa6798fcb12574cad2d907166167e628f',1,'cljonic::Range::Count()'],['../classcljonic_1_1_repeat.html#a34c9349a2d561fdae56d8f27cf5035b9',1,'cljonic::Repeat::Count()'],['../classcljonic_1_1_set.html#af1b187af70578fd962b731cade9c8e8b',1,'cljonic::Set::Count()'],['../classcljonic_1_1_string.html#a82d05153a7a948455a644a42d7829ca4',1,'cljonic::String::Count()']]]
+  ['cljonic_5fcollection_5ftype_30',['cljonic_collection_type',['../classcljonic_1_1_range.html#aec6f8184d20dd0991d01bdc38642530f',1,'cljonic::Range::cljonic_collection_type'],['../classcljonic_1_1_string.html#a3d7cb2731e7a160fb00329819f1f79f1',1,'cljonic::String::cljonic_collection_type'],['../classcljonic_1_1_set.html#a3aaee6b5d6c23c5971bff701c7cdae0d',1,'cljonic::Set::cljonic_collection_type'],['../classcljonic_1_1_repeat.html#ae922a28ef7aa62ce5ea338c5880cf2e1',1,'cljonic::Repeat::cljonic_collection_type'],['../classcljonic_1_1_array.html#a839d2769a8df4d8775ab00ae72448e83',1,'cljonic::Array::cljonic_collection_type']]],
+  ['cljoniccollectiontype_31',['CljonicCollectionType',['../namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6',1,'cljonic']]],
+  ['collection_20types_32',['Collection Types',['../index.html#autotoc_md2',1,'']]],
+  ['composition_33',['Composition',['../index.html#autotoc_md4',1,'']]],
+  ['contains_34',['Contains',['../classcljonic_1_1_set.html#a6fd44e7a90c7f0b0bd41e4251671ca71',1,'cljonic::Set']]],
+  ['containsby_35',['ContainsBy',['../classcljonic_1_1_set.html#ac26dfac24718d319096210c81344d8f8',1,'cljonic::Set']]],
+  ['control_36',['Control',['../index.html#autotoc_md5',1,'']]],
+  ['core_20functions_37',['Core Functions',['../index.html#autotoc_md3',1,'']]],
+  ['count_38',['count',['../classcljonic_1_1_string.html#a82d05153a7a948455a644a42d7829ca4',1,'cljonic::String::Count()'],['../classcljonic_1_1_set.html#af1b187af70578fd962b731cade9c8e8b',1,'cljonic::Set::Count()'],['../classcljonic_1_1_repeat.html#a34c9349a2d561fdae56d8f27cf5035b9',1,'cljonic::Repeat::Count()'],['../classcljonic_1_1_range.html#aa6798fcb12574cad2d907166167e628f',1,'cljonic::Range::Count()'],['../classcljonic_1_1_array.html#ac44c4ffe161b48c1e6bfcc153d5dad14',1,'cljonic::Array::Count()']]]
 ];

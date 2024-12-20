@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Dec 20 03:51:49 PM MST 2024
+// This file was generated Fri Dec 20 04:04:51 PM MST 2024
 
 namespace cljonic {
 
@@ -48,7 +48,7 @@ concept IsCljonicArray = std::same_as<typename T::cljonic_collection_type,
                                       std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>>;
 
 template <typename T>
-concept IsCljonicCollection = std::same_as<typename T::cljonic_collection, std::true_type>;
+concept IsCljonicCollection = requires { typename T::cljonic_collection_type; };
 
 template <typename T>
 concept IsCljonicRange = std::same_as<typename T::cljonic_collection_type,
@@ -145,7 +145,6 @@ const T m_elementDefault;
 T m_elements[MaxElements];
 
 public:
-using cljonic_collection = std::true_type;
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>;
 using size_type = MaxElementsType;
 using value_type = T;
@@ -278,7 +277,6 @@ InitializeStartEndStepWithPositiveStep(start, end, step);
 }
 
 public:
-using cljonic_collection = std::true_type;
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Range>;
 using size_type = std::size_t;
 using value_type = int;
@@ -360,7 +358,6 @@ return m_index != other.m_index;
 };
 
 public:
-using cljonic_collection = std::true_type;
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Repeat>;
 using size_type = std::size_t;
 using value_type = T;
@@ -430,7 +427,6 @@ return result;
 }
 
 public:
-using cljonic_collection = std::true_type;
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Set>;
 using size_type = MaxElementsType;
 using value_type = T;
@@ -518,7 +514,6 @@ return m_index != other.m_index;
 };
 
 public:
-using cljonic_collection = std::true_type;
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>;
 using size_type = MaxElementsType;
 using value_type = char;

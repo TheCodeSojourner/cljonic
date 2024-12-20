@@ -72,7 +72,6 @@ class String
     }
     ~~~~~
     */
-    using cljonic_collection = std::true_type;
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>;
     using size_type = MaxElementsType;
     using value_type = char;

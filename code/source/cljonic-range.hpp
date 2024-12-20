@@ -147,7 +147,6 @@ class Range
     }
     ~~~~~
     */
-    using cljonic_collection = std::true_type;
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Range>;
     using size_type = std::size_t;
     using value_type = int;

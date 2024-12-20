@@ -21,7 +21,7 @@ concept IsCljonicArray = std::same_as<typename T::cljonic_collection_type,
                                       std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>>;
 
 template <typename T>
-concept IsCljonicCollection = std::same_as<typename T::cljonic_collection, std::true_type>;
+concept IsCljonicCollection = requires { typename T::cljonic_collection_type; };
 
 template <typename T>
 concept IsCljonicRange = std::same_as<typename T::cljonic_collection_type,
