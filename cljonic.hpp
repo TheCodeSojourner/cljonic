@@ -16,7 +16,34 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Sat Dec 21 02:31:09 PM MST 2024
+// This file was generated Sat Dec 21 02:33:25 PM MST 2024
+
+namespace cljonic {
+
+template <typename T>
+class CollectionIterator {
+const T& m_collection;
+std::size_t m_index;
+
+public:
+CollectionIterator(const T& collection, const std::size_t index) : m_collection(collection), m_index(index) {
+}
+
+auto operator*() const -> decltype(m_collection[m_index]) {
+return m_collection[m_index];
+}
+
+CollectionIterator& operator++() {
+++m_index;
+return *this;
+}
+
+bool operator!=(const CollectionIterator& other) const {
+return m_index != other.m_index;
+}
+};
+
+} // namespace cljonic
 
 namespace cljonic {
 

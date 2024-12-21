@@ -9,7 +9,8 @@ echo -n 'Building "cljonic.hpp" ... '
 cd code/source
 
 # glue all the cljonic files together
-cat cljonic-collection-type.hpp \
+cat cljonic-collection-iterator.hpp \
+    cljonic-collection-type.hpp \
     cljonic-concepts.hpp \
     cljonic-shared.hpp \
     cljonic-array.hpp \
