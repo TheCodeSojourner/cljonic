@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['range_0',['Range',['../classcljonic_1_1_range.html',1,'cljonic']]],
-  ['repeat_1',['Repeat',['../classcljonic_1_1_repeat.html',1,'cljonic']]]
+  ['collectioniterator_0',['CollectionIterator',['../classcljonic_1_1_collection_iterator.html',1,'cljonic']]]
 ];

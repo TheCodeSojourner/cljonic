@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Sat Dec 21 02:17:35 PM MST 2024
+// This file was generated Sat Dec 21 02:31:09 PM MST 2024
 
 namespace cljonic {
 
@@ -193,32 +193,12 @@ Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
 namespace cljonic {
 
 class Range {
+using Iterator = CollectionIterator<Range>;
+
 std::size_t m_elementCount;
 int m_elementDefault;
 int m_elementStart;
 int m_elementStep;
-
-class Iterator {
-const Range& m_range;
-std::size_t m_index;
-
-public:
-Iterator(const Range& range, const std::size_t index) : m_range(range), m_index(index) {
-}
-
-int operator*() const {
-return m_range[m_index];
-}
-
-Iterator& operator++() {
-++m_index;
-return *this;
-}
-
-bool operator!=(const Iterator& other) const {
-return m_index != other.m_index;
-}
-};
 
 constexpr int Count(const int start, const int end, const int step) noexcept {
 return ((end - start) / step) + ((((end - start) % step) == 0) ? 0 : 1);
@@ -334,31 +314,11 @@ namespace cljonic {
 
 template <typename T>
 class Repeat {
+using Iterator = CollectionIterator<Repeat>;
+
 const std::size_t m_elementCount;
 const T m_elementDefault;
 const T m_elementValue;
-
-class Iterator {
-const Repeat& m_repeat;
-std::size_t m_index;
-
-public:
-Iterator(const Repeat& repeat, const std::size_t index) : m_repeat(repeat), m_index(index) {
-}
-
-int operator*() const {
-return m_repeat[m_index];
-}
-
-Iterator& operator++() {
-++m_index;
-return *this;
-}
-
-bool operator!=(const Iterator& other) const {
-return m_index != other.m_index;
-}
-};
 
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Repeat>;
@@ -492,33 +452,12 @@ namespace cljonic {
 
 template <std::size_t MaxElements>
 class String {
+using Iterator = CollectionIterator<String>;
 using MaxElementsType = decltype(MaxElements);
 
 MaxElementsType m_elementCount;
 const char m_elementDefault;
 char m_elements[MaxElements + 1];
-
-class Iterator {
-const String& m_string;
-std::size_t m_index;
-
-public:
-Iterator(const String& string, const std::size_t index) : m_string(string), m_index(index) {
-}
-
-char operator*() const {
-return m_string[m_index];
-}
-
-Iterator& operator++() {
-++m_index;
-return *this;
-}
-
-bool operator!=(const Iterator& other) const {
-return m_index != other.m_index;
-}
-};
 
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>;

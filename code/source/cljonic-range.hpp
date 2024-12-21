@@ -2,6 +2,7 @@
 #define CLJONIC_RANGE_HPP
 
 #include <type_traits>
+#include "cljonic-collection-iterator.hpp"
 #include "cljonic-collection-type.hpp"
 
 namespace cljonic
@@ -12,37 +13,12 @@ namespace cljonic
  */
 class Range
 {
+    using Iterator = CollectionIterator<Range>;
+
     std::size_t m_elementCount;
     int m_elementDefault;
     int m_elementStart;
     int m_elementStep;
-
-    class Iterator
-    {
-        const Range& m_range;
-        std::size_t m_index;
-
-      public:
-        Iterator(const Range& range, const std::size_t index) : m_range(range), m_index(index)
-        {
-        }
-
-        int operator*() const
-        {
-            return m_range[m_index];
-        }
-
-        Iterator& operator++()
-        {
-            ++m_index;
-            return *this;
-        }
-
-        bool operator!=(const Iterator& other) const
-        {
-            return m_index != other.m_index;
-        }
-    };
 
     constexpr int Count(const int start, const int end, const int step) noexcept
     {

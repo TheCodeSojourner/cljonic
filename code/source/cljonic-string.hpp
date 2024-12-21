@@ -4,6 +4,7 @@
 #include <cstring>
 #include <initializer_list>
 #include <type_traits>
+#include "cljonic-collection-iterator.hpp"
 #include "cljonic-collection-type.hpp"
 
 namespace cljonic
@@ -18,38 +19,12 @@ namespace cljonic
 template <std::size_t MaxElements>
 class String
 {
+    using Iterator = CollectionIterator<String>;
     using MaxElementsType = decltype(MaxElements);
 
     MaxElementsType m_elementCount;
     const char m_elementDefault;
     char m_elements[MaxElements + 1]; // +1 for the null terminator
-
-    class Iterator
-    {
-        const String& m_string;
-        std::size_t m_index;
-
-      public:
-        Iterator(const String& string, const std::size_t index) : m_string(string), m_index(index)
-        {
-        }
-
-        char operator*() const
-        {
-            return m_string[m_index];
-        }
-
-        Iterator& operator++()
-        {
-            ++m_index;
-            return *this;
-        }
-
-        bool operator!=(const Iterator& other) const
-        {
-            return m_index != other.m_index;
-        }
-    };
 
   public:
     /**

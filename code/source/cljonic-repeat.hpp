@@ -2,6 +2,7 @@
 #define CLJONIC_REPEAT_HPP
 
 #include <type_traits>
+#include "cljonic-collection-iterator.hpp"
 #include "cljonic-collection-type.hpp"
 
 namespace cljonic
@@ -13,36 +14,11 @@ namespace cljonic
 template <typename T>
 class Repeat
 {
+    using Iterator = CollectionIterator<Repeat>;
+
     const std::size_t m_elementCount;
     const T m_elementDefault;
     const T m_elementValue;
-
-    class Iterator
-    {
-        const Repeat& m_repeat;
-        std::size_t m_index;
-
-      public:
-        Iterator(const Repeat& repeat, const std::size_t index) : m_repeat(repeat), m_index(index)
-        {
-        }
-
-        int operator*() const
-        {
-            return m_repeat[m_index];
-        }
-
-        Iterator& operator++()
-        {
-            ++m_index;
-            return *this;
-        }
-
-        bool operator!=(const Iterator& other) const
-        {
-            return m_index != other.m_index;
-        }
-    };
 
   public:
     /**
