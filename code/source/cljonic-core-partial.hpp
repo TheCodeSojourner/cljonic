@@ -10,8 +10,8 @@ namespace core
 {
 
 /** \anchor Core_Partial
-* The \b Partial function takes a function, named \b fn, and one or more of the parameters of \b fn, in order, and
-* returns a function that takes the rest of the parameters of \b fn.
+* The \b Partial function takes a function, named \b f, and one or more of the parameters of \b f, in order, and
+* returns a function that takes the rest of the parameters of \b f.
 *
 * This is useful for creating a set of functions based upon a base function, and a set of initial values to the base
 * function.
