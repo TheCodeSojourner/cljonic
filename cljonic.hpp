@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Sat Dec 21 01:37:14 PM MST 2024
+// This file was generated Sat Dec 21 01:57:51 PM MST 2024
 
 namespace cljonic {
 
@@ -135,7 +135,6 @@ return std::strcmp(a, b) == 0;
 #include <type_traits>
 
 namespace cljonic {
-
 template <typename T, std::size_t MaxElements>
 class Array {
 using MaxElementsType = decltype(MaxElements);
@@ -173,6 +172,10 @@ return m_elements + m_elementCount;
 
 const T& operator[](const MaxElementsType index) const noexcept {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+}
+
+const T& operator()(const MaxElementsType index) const noexcept {
+return this->operator[](index);
 }
 
 [[nodiscard]] MaxElementsType Count() const noexcept {

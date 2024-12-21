@@ -211,4 +211,14 @@ SCENARIO("Array", "[CljonicArray]")
         }
         // *a.begin() = 1; // Error: assignment of read-only location '* a.Array<int, 10>::begin() const'
     }
+
+    {
+        // an Array is a function of it indexable elements
+        const auto a{Array<int, 10>{1, 2, 3, 4}};
+        CHECK(1 == a(0));
+        CHECK(2 == a(1));
+        CHECK(3 == a(2));
+        CHECK(4 == a(3));
+        CHECK(0 == a(4)); // index out-of-bounds so return default element, which is 0 in this case
+    }
 }
