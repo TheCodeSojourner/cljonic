@@ -207,4 +207,14 @@ SCENARIO("Set", "[CljonicSet]")
         }
         // *s.begin() = 1; // Error: assignment of read-only location '* s.Array<int, 10>::begin() const'
     }
+
+    {
+        // a Set is a function of its elements
+        const auto s{Set<int, 10>{1, 2, 3, 4}};
+        CHECK(1 == s(1));
+        CHECK(2 == s(2));
+        CHECK(3 == s(3));
+        CHECK(4 == s(4));
+        CHECK(0 == s(5)); // value is not in the Set so return default element, which is 0 in this case
+    }
 }

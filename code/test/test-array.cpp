@@ -213,7 +213,7 @@ SCENARIO("Array", "[CljonicArray]")
     }
 
     {
-        // an Array is a function of it indexable elements
+        // an Array is a function of its index
         const auto a{Array<int, 10>{1, 2, 3, 4}};
         CHECK(1 == a(0));
         CHECK(2 == a(1));

@@ -15,8 +15,9 @@ namespace cljonic
  * The \b Set type is a fundamental immutable collection type in cljonic.  It is implemented as a C array, and
  * <b>does not use dynamic memory</b>. A \b Set has a specified maximum number of \b unique \b unordered elements each
  * of the same specified type (i.e., It is homogenous).  <b>Note that one could create a Set of a \b UNION or
- * \b std::variant to get something like heterogeneity.</b>  Many \ref Namespace_Core "Core" functions accept Set
- * arguments.
+ * \b std::variant to get something like heterogeneity.</b> A \b Set is a function of its elements. A \b Set called with
+ * a value not contained within the set will return its \b default \b element.  Many \ref Namespace_Core "Core"
+ * functions accept Set arguments.
  */
 template <typename T, std::size_t MaxElements>
 class Set
@@ -109,6 +110,11 @@ class Set
     const T& operator[](const MaxElementsType index) const noexcept
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+    }
+
+    const T& operator()(const T& t) const noexcept
+    {
+        return Contains(t) ? t : m_elementDefault;
     }
 
     [[nodiscard]] MaxElementsType Count() const noexcept
