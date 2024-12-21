@@ -100,7 +100,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>{</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keywordflow">return</span> [f = std::forward&lt;F&gt;(f), ... args = std::forward&lt;Args&gt;(args)](<span class="keyword">auto</span>&amp;&amp;... rest)</div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    {</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        <span class="keyword">static_assert</span>(std::invocable&lt;F, Args..., <span class="keyword">decltype</span>(rest)...&gt;,</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        <span class="keyword">static_assert</span>(std::regular_invocable&lt;F, Args..., <span class="keyword">decltype</span>(rest)...&gt;,</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>                      <span class="stringliteral">&quot;Partial function cannot be called with the specified arguments&quot;</span>);</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        <span class="keywordflow">return</span> f(args..., std::forward&lt;<span class="keyword">decltype</span>(rest)&gt;(rest)...);</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    };</div>
@@ -117,7 +117,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Dec 21 2024 13:24:01 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Dec 21 2024 13:37:14 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

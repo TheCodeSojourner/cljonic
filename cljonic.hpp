@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Sat Dec 21 01:24:01 PM MST 2024
+// This file was generated Sat Dec 21 01:37:14 PM MST 2024
 
 namespace cljonic {
 
@@ -669,7 +669,7 @@ namespace core {
 template <typename F, typename... Args>
 auto Partial(F&& f, Args&&... args) {
 return [f = std::forward<F>(f), ... args = std::forward<Args>(args)](auto&&... rest) {
-static_assert(std::invocable<F, Args..., decltype(rest)...>,
+static_assert(std::regular_invocable<F, Args..., decltype(rest)...>,
               "Partial function cannot be called with the specified arguments");
 return f(args..., std::forward<decltype(rest)>(rest)...);
 };
