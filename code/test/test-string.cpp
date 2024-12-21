@@ -109,4 +109,14 @@ SCENARIO("String", "[CljonicString]")
             ++i;
         }
     }
+
+    {
+        // a String is a function of its index
+        const auto s{String{"1234"}};
+        CHECK('1' == s(0));
+        CHECK('2' == s(1));
+        CHECK('3' == s(2));
+        CHECK('4' == s(3));
+        CHECK('\0' == s(4)); // index out-of-bounds so return default element, which is '\0' in this case
+    }
 }

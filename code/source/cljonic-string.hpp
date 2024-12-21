@@ -11,7 +11,9 @@ namespace cljonic
 /** \anchor String
  * The \b String type is a fundamental immutable collection type in cljonic.  It is implemented as a C array of char,
  * and <b>does not use dynamic memory</b>. A \b String has a specified maximum number of \b ordered char elements, which
- * are always \b NUL terminated. Many \ref Namespace_Core "Core" functions accept String arguments.
+ * are always \b NUL terminated. A \b String is a function of its indexable elements. A \b String called with an
+ * out-of-bounds index will return its \b default \b element (i.e., a NUL char). Many \ref Namespace_Core "Core"
+ * functions accept String arguments.
  */
 template <std::size_t MaxElements>
 class String
@@ -119,6 +121,11 @@ class String
     char operator[](const MaxElementsType index) const noexcept
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+    }
+
+    char operator()(const MaxElementsType index) const noexcept
+    {
+        return this->operator[](index);
     }
 
     [[nodiscard]] MaxElementsType Count() const noexcept

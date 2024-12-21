@@ -113,14 +113,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac16fd744c65a5bf9be4520a68be1c4c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45eea810db98c41162541fad1192d4f9" id="r_a45eea810db98c41162541fad1192d4f9"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_string.html#a45eea810db98c41162541fad1192d4f9">operator[]</a> (const MaxElementsType index) const noexcept</td></tr>
 <tr class="separator:a45eea810db98c41162541fad1192d4f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47191942124981717092cc4a899f48c0" id="r_a47191942124981717092cc4a899f48c0"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_string.html#a47191942124981717092cc4a899f48c0">operator()</a> (const MaxElementsType index) const noexcept</td></tr>
+<tr class="separator:a47191942124981717092cc4a899f48c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82d05153a7a948455a644a42d7829ca4" id="r_a82d05153a7a948455a644a42d7829ca4"><td class="memItemLeft" align="right" valign="top">MaxElementsType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_string.html#a82d05153a7a948455a644a42d7829ca4">Count</a> () const noexcept</td></tr>
 <tr class="separator:a82d05153a7a948455a644a42d7829ca4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;std::size_t MaxElements&gt;<br />
-class cljonic::String&lt; MaxElements &gt;</div><p><a class="anchor" id="String"></a>The <b><a class="el" href="classcljonic_1_1_string.html">String</a></b> type is a fundamental immutable collection type in cljonic. It is implemented as a C array of char, and <b>does not use dynamic memory</b>. A <b><a class="el" href="classcljonic_1_1_string.html">String</a></b> has a specified maximum number of <b>ordered</b> char elements, which are always <b>NUL</b> terminated. Many <a class="el" href="namespacecljonic.html#Namespace_Core">Core</a> functions accept <a class="el" href="classcljonic_1_1_string.html">String</a> arguments. </p>
+class cljonic::String&lt; MaxElements &gt;</div><p><a class="anchor" id="String"></a>The <b><a class="el" href="classcljonic_1_1_string.html">String</a></b> type is a fundamental immutable collection type in cljonic. It is implemented as a C array of char, and <b>does not use dynamic memory</b>. A <b><a class="el" href="classcljonic_1_1_string.html">String</a></b> has a specified maximum number of <b>ordered</b> char elements, which are always <b>NUL</b> terminated. A <b><a class="el" href="classcljonic_1_1_string.html">String</a></b> is a function of its indexable elements. A <b><a class="el" href="classcljonic_1_1_string.html">String</a></b> called with an out-of-bounds index will return its <b>default</b> <b>element</b> (i.e., a NUL char). Many <a class="el" href="namespacecljonic.html#Namespace_Core">Core</a> functions accept <a class="el" href="classcljonic_1_1_string.html">String</a> arguments. </p>
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00017">17</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00019">19</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a3d7cb2731e7a160fb00329819f1f79f1" name="a3d7cb2731e7a160fb00329819f1f79f1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3d7cb2731e7a160fb00329819f1f79f1">&#9670;&#160;</a></span>cljonic_collection_type</h2>
@@ -151,10 +153,10 @@ template&lt;std::size_t MaxElements&gt; </div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclasscljonic_1_1_string_html"><div class="ttname"><a href="classcljonic_1_1_string.html">cljonic::String</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-string_8hpp_source.html#l00017">cljonic-string.hpp:18</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_string_html"><div class="ttname"><a href="classcljonic_1_1_string.html">cljonic::String</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-string_8hpp_source.html#l00019">cljonic-string.hpp:20</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00009">cljonic-array.hpp:10</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00075">75</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00077">77</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -172,7 +174,7 @@ template&lt;std::size_t MaxElements&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00076">76</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00078">78</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -190,7 +192,7 @@ template&lt;std::size_t MaxElements&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00077">77</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00079">79</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -220,7 +222,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00079">79</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00081">81</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -250,7 +252,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00084">84</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00086">86</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -280,7 +282,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00096">96</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00098">98</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -366,7 +368,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00109">109</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00111">111</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -395,7 +397,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00124">124</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00131">131</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -424,7 +426,37 @@ template&lt;std::size_t MaxElements&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00114">114</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00116">116</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a47191942124981717092cc4a899f48c0" name="a47191942124981717092cc4a899f48c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47191942124981717092cc4a899f48c0">&#9670;&#160;</a></span>operator()()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::size_t MaxElements&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">char <a class="el" href="classcljonic_1_1_string.html">cljonic::String</a>&lt; MaxElements &gt;::operator() </td>
+          <td>(</td>
+          <td class="paramtype">const MaxElementsType&#160;</td>
+          <td class="paramname"><em>index</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00126">126</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -454,7 +486,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00119">119</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00121">121</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -464,7 +496,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Dec 21 2024 14:09:32 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Dec 21 2024 14:17:35 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

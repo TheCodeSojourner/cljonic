@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Sat Dec 21 02:09:32 PM MST 2024
+// This file was generated Sat Dec 21 02:17:35 PM MST 2024
 
 namespace cljonic {
 
@@ -560,6 +560,10 @@ return Iterator{*this, m_elementCount};
 
 char operator[](const MaxElementsType index) const noexcept {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+}
+
+char operator()(const MaxElementsType index) const noexcept {
+return this->operator[](index);
 }
 
 [[nodiscard]] MaxElementsType Count() const noexcept {
