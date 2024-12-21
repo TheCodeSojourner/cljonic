@@ -37,7 +37,7 @@ class Set
     bool IsUniqueElementBy(const auto& f, const T& element) const noexcept
     {
         auto result{true};
-        for (MaxElementsType i = 0; (result and (i < m_elementCount)); ++i)
+        for (MaxElementsType i{0}; (result and (i < m_elementCount)); ++i)
             result = not AreEqualBy(f, element, m_elements[i]);
         return result;
     }
@@ -45,7 +45,7 @@ class Set
     bool IsUniqueElement(const T& element) const noexcept
     {
         auto result{true};
-        for (MaxElementsType i = 0; (result and (i < m_elementCount)); ++i)
+        for (MaxElementsType i{0}; (result and (i < m_elementCount)); ++i)
             result = not AreEqual(element, m_elements[i]);
         return result;
     }

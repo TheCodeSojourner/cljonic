@@ -30,6 +30,19 @@ class CollectionIterator
     {
         return m_index != other.m_index;
     }
+
+    CollectionIterator& operator+=(int value)
+    {
+        m_index += value;
+        return *this;
+    }
+
+    CollectionIterator operator+(int value) const
+    {
+        CollectionIterator temp = *this;
+        temp += value;
+        return temp;
+    }
 }; // CollectionIterator
 
 } // namespace cljonic

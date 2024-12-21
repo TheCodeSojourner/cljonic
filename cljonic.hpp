@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Sat Dec 21 02:33:25 PM MST 2024
+// This file was generated Sat Dec 21 04:09:29 PM MST 2024
 
 namespace cljonic {
 
@@ -40,6 +40,17 @@ return *this;
 
 bool operator!=(const CollectionIterator& other) const {
 return m_index != other.m_index;
+}
+
+CollectionIterator& operator+=(int value) {
+m_index += value;
+return *this;
+}
+
+CollectionIterator operator+(int value) const {
+CollectionIterator temp = *this;
+temp += value;
+return temp;
 }
 };
 
@@ -404,14 +415,14 @@ T m_elements[MaxElements];
 
 bool IsUniqueElementBy(const auto& f, const T& element) const noexcept {
 auto result{true};
-for(MaxElementsType i = 0; (result and (i < m_elementCount)); ++i)
+for(MaxElementsType i{0}; (result and (i < m_elementCount)); ++i)
 result = not AreEqualBy(f, element, m_elements[i]);
 return result;
 }
 
 bool IsUniqueElement(const T& element) const noexcept {
 auto result{true};
-for(MaxElementsType i = 0; (result and (i < m_elementCount)); ++i)
+for(MaxElementsType i{0}; (result and (i < m_elementCount)); ++i)
 result = not AreEqual(element, m_elements[i]);
 return result;
 }
@@ -590,7 +601,7 @@ return true;
 auto EqualSets = [&](const auto& c1, const auto& c2) {
 using CountType = decltype(c1.Count());
 auto result{c1.Count() == c2.Count()};
-for(CountType i = 0; (result and (i < c1.Count())); ++i)
+for(CountType i{0}; (result and (i < c1.Count())); ++i)
 result = c2.ContainsBy(f, c1[i]);
 return result;
 };
@@ -599,7 +610,7 @@ return (EqualSets(t, ts) and ...);
 auto EqualCollections = [&](const auto& c1, const auto& c2) {
 using CountType = decltype(c1.Count());
 auto result{c1.Count() == c2.Count()};
-for(CountType i = 0; (result and (i < c1.Count())); ++i)
+for(CountType i{0}; (result and (i < c1.Count())); ++i)
 result = AreEqualBy(f, c1[i], c2[i]);
 return result;
 };
@@ -629,7 +640,7 @@ static_assert(IsUnaryPredicate<F, typename T::value_type>,
 static_assert(IsCljonicCollection<T>, "cljonic collection required");
 using CountType = decltype(t.Count());
 auto result{true};
-for(CountType i = 0; (result and (i < t.Count())); ++i)
+for(CountType i{0}; (result and (i < t.Count())); ++i)
 result = f(t[i]);
 return result;
 }

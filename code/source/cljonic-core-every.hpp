@@ -49,7 +49,7 @@ auto Every(const F& f, const T& t) noexcept
     static_assert(IsCljonicCollection<T>, "cljonic collection required");
     using CountType = decltype(t.Count());
     auto result{true};
-    for (CountType i = 0; (result and (i < t.Count())); ++i)
+    for (CountType i{0}; (result and (i < t.Count())); ++i)
         result = f(t[i]);
     return result;
 }
