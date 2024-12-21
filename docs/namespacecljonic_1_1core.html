@@ -92,6 +92,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a8f45a795878d35b55dcc94d3b8b4b90d" id="r_a8f45a795878d35b55dcc94d3b8b4b90d"><td class="memTemplParams" colspan="2">template&lt;typename F , typename T &gt; </td></tr>
 <tr class="memitem:a8f45a795878d35b55dcc94d3b8b4b90d"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#a8f45a795878d35b55dcc94d3b8b4b90d">Every</a> (const F &amp;f, const T &amp;t) noexcept</td></tr>
 <tr class="separator:a8f45a795878d35b55dcc94d3b8b4b90d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bab09821b95566f32b62d7500a149c3" id="r_a0bab09821b95566f32b62d7500a149c3"><td class="memTemplParams" colspan="2">template&lt;typename F , typename... Args&gt; </td></tr>
+<tr class="memitem:a0bab09821b95566f32b62d7500a149c3"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#a0bab09821b95566f32b62d7500a149c3">Partial</a> (F &amp;&amp;f, Args &amp;&amp;... args)</td></tr>
+<tr class="separator:a0bab09821b95566f32b62d7500a149c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ab67cad28f66047452bc5908ad466d482" name="ab67cad28f66047452bc5908ad466d482"></a>
@@ -313,10 +316,66 @@ template&lt;typename F , typename T &gt; </div>
 
 </div>
 </div>
+<a id="a0bab09821b95566f32b62d7500a149c3" name="a0bab09821b95566f32b62d7500a149c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bab09821b95566f32b62d7500a149c3">&#9670;&#160;</a></span>Partial()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F , typename... Args&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::Partial </td>
+          <td>(</td>
+          <td class="paramtype">F &amp;&amp;&#160;</td>
+          <td class="paramname"><em>f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="anchor" id="Core_Partial"></a> The <b>Partial</b> function takes a function, named <b>fn</b>, and one or more of the parameters of <b>fn</b>, in order, and returns a function that takes the rest of the parameters of <b>fn</b>.</p>
+<p>This is useful for creating a set of functions based upon a base function, and a set of initial values to the base function. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">auto</span> multiply2 = [](<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y) { <span class="keywordflow">return</span> x * y; };</div>
+<div class="line"><span class="keyword">auto</span> multiply3 = [](<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keywordtype">int</span> z) { <span class="keywordflow">return</span> x * y * z; };</div>
+<div class="line"><span class="keyword">auto</span> multiply2_10 = <a class="code hl_function" href="namespacecljonic_1_1core.html#a0bab09821b95566f32b62d7500a149c3">Partial</a>(multiply2, 10);</div>
+<div class="line"><span class="keyword">auto</span> multiply3_10 = <a class="code hl_function" href="namespacecljonic_1_1core.html#a0bab09821b95566f32b62d7500a149c3">Partial</a>(multiply3, 10);</div>
+<div class="line"><span class="keyword">auto</span> multiply3_10_11 = <a class="code hl_function" href="namespacecljonic_1_1core.html#a0bab09821b95566f32b62d7500a149c3">Partial</a>(multiply3, 10, 11);</div>
+<div class="line"><span class="keyword">auto</span> multiply3_10_11_12 = <a class="code hl_function" href="namespacecljonic_1_1core.html#a0bab09821b95566f32b62d7500a149c3">Partial</a>(multiply3, 10, 11, 12);</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main()</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">// const auto v{multiply2_10(1, 2)}; // Error: Partial function cannot be called with the specified arguments</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> v0{multiply2_10(2)};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> v1{multiply3_10(2, 4)};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> v2{multiply3_10_11(2)};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> v3{multiply3_10_11_12()};</div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a0bab09821b95566f32b62d7500a149c3"><div class="ttname"><a href="namespacecljonic_1_1core.html#a0bab09821b95566f32b62d7500a149c3">cljonic::core::Partial</a></div><div class="ttdeci">auto Partial(F &amp;&amp;f, Args &amp;&amp;... args)</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-partial_8hpp_source.html#l00044">cljonic-core-partial.hpp:44</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-core-partial_8hpp_source.html#l00044">44</a> of file <a class="el" href="cljonic-core-partial_8hpp_source.html">cljonic-core-partial.hpp</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 20 2024 16:04:51 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Dec 20 2024 18:10:10 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

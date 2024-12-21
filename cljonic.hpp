@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Dec 20 04:04:51 PM MST 2024
+// This file was generated Fri Dec 20 06:10:10 PM MST 2024
 
 namespace cljonic {
 
@@ -655,6 +655,24 @@ auto result{true};
 for(CountType i = 0; (result and (i < t.Count())); ++i)
 result = f(t[i]);
 return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+#include <tuple>
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename... Args>
+auto Partial(F&& f, Args&&... args) {
+return [f, args...](auto&&... rest) {
+static_assert(std::invocable<F, Args..., decltype(rest)...>,
+              "Partial function cannot be called with the specified arguments");
+return std::apply(f, std::tuple_cat(std::make_tuple(args...), std::forward_as_tuple(rest...)));
+};
 }
 
 }
