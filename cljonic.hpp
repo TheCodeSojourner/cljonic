@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Dec 23 09:50:55 AM MST 2024
+// This file was generated Mon Dec 23 10:11:12 AM MST 2024
 
 namespace cljonic {
 
@@ -660,8 +660,6 @@ return result;
 }
 
 } // namespace cljonic::core
-
-#include <tuple>
 
 namespace cljonic {
 

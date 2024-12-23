@@ -61,4 +61,10 @@ SCENARIO("Reduce", "[CljonicCoreReduce]")
     // Compiler Error: Function cannot be called with parameters of function result type, and collection value type
     // const auto strs{Array{1, 2, 3, 4}};
     // CHECK(10 == Reduce([]([[maybe_unused]] const int a, [[maybe_unused]] const int b) { return "Hello"; }, 11, a));
+
+    // Compiler Error: Second parameter must be a cljonic collection
+    // CHECK(5 == Reduce([](const int a, const char b) { return a + b; }, 5));
+
+    // Compiler Error: Third parameter must be a cljonic collection
+    // CHECK(5 == Reduce([](const int count, [[maybe_unused]] const char b) { return count + 1; }, 0, 5));
 }

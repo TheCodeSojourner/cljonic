@@ -1,7 +1,7 @@
 #ifndef CLJONIC_CORE_REDUCE_HPP
 #define CLJONIC_CORE_REDUCE_HPP
 
-#include <tuple>
+#include "cljonic-concepts.hpp"
 
 namespace cljonic
 {
@@ -10,18 +10,19 @@ namespace core
 {
 
 /** \anchor Core_Reduce
-* Two overloads of \b Reduce are implemented.
+* There are two overloads of \b Reduce.
 *
-* The first overload of \b Reduce starts by calling \b f on the first two elements of \b c, then calls \b f with the
-* result of the first call and the third element of \b c, then calls \b f with the result of the second call and the
-* fourth element of \b c, and continues this process until all elements of \b c have been used in a call to \b f.
-* If \b c has only one element it is returned, and \b f is never called. If \b c has no elements the \b default
-* \b element of \b c is returned, and \b f is never called.
+* The first overload of \b Reduce starts by calling \b f on the first two elements of \b c, which must be a \b cljonic
+* \b collection, then calls \b f with the result of the first call and the third element of \b c, then calls \b f with
+* the result of the second call and the fourth element of \b c, and continues this process until all elements of \b c
+* have been used in a call to \b f. If \b c has only one element it is returned, and \b f is never called. If \b c has
+* no elements the \b default \b element of \b c is returned, and \b f is never called.
 *
-* The second overload of \b Reduce starts by calling \b f with an initial value and the first element of \b c, then
-* calls \b f with the result of the first call and the second element of \b c, then calls \b f with the result of the
-* second call and the third element of \b c, and continues this process until all elements of \b c have been used in a
-* call to \b f. If \b c has no elements the initial value is returned, and \b f is never called.
+* The second overload of \b Reduce starts by calling \b f with an initial value and the first element of \b c, which
+* must be a \b cljonic \b collection, then calls \b f with the result of the first call and the second element of \b c,
+* then calls \b f with the result of the second call and the third element of \b c, and continues this process until
+* all elements of \b c have been used in a call to \b f. If \b c has no elements the initial value is returned, and
+* \b f is never called.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -71,6 +72,12 @@ int main()
     // const auto strs{Array{1, 2, 3, 4}};
     // CHECK(10 == Reduce([]([[maybe_unused]] const int a, [[maybe_unused]] const int b) { return "Hello"; }, 11, a));
 
+    // Compiler Error: Second parameter must be a cljonic collection
+    // CHECK(5 == Reduce([](const int a, const char b) { return a + b; }, 5));
+
+    // Compiler Error: Third parameter must be a cljonic collection
+    // CHECK(5 == Reduce([](const int count, [[maybe_unused]] const char b) { return count + 1; }, 0, 5));
+
     return 0;
 }
 ~~~~~
@@ -78,6 +85,7 @@ int main()
 template <typename F, typename C>
 auto Reduce(F&& f, const C& c)
 {
+    static_assert(IsCljonicCollection<C>, "Second parameter must be a cljonic collection");
     static_assert(std::regular_invocable<F, typename C::value_type, typename C::value_type>,
                   "Function cannot be called with two parameters of the collection value type");
     static_assert(std::regular_invocable<F,
@@ -91,6 +99,7 @@ auto Reduce(F&& f, const C& c)
 template <typename F, typename T, typename C>
 auto Reduce(F&& f, const T& t, const C& c)
 {
+    static_assert(IsCljonicCollection<C>, "Third parameter must be a cljonic collection");
     static_assert(std::regular_invocable<F, T, typename C::value_type>,
                   "Function cannot be called with parameters of initial value type, and collection value type");
     static_assert(std::regular_invocable<F, std::invoke_result_t<F, T, typename C::value_type>, typename C::value_type>,

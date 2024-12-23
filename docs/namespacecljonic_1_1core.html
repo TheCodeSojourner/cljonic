@@ -372,9 +372,9 @@ template&lt;typename F , typename... Args&gt; </div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_a0bab09821b95566f32b62d7500a149c3"><div class="ttname"><a href="namespacecljonic_1_1core.html#a0bab09821b95566f32b62d7500a149c3">cljonic::core::Partial</a></div><div class="ttdeci">auto Partial(F &amp;&amp;f, Args &amp;&amp;... args)</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-partial_8hpp_source.html#l00044">cljonic-core-partial.hpp:44</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a0bab09821b95566f32b62d7500a149c3"><div class="ttname"><a href="namespacecljonic_1_1core.html#a0bab09821b95566f32b62d7500a149c3">cljonic::core::Partial</a></div><div class="ttdeci">auto Partial(F &amp;&amp;f, Args &amp;&amp;... args)</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-partial_8hpp_source.html#l00042">cljonic-core-partial.hpp:42</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-core-partial_8hpp_source.html#l00044">44</a> of file <a class="el" href="cljonic-core-partial_8hpp_source.html">cljonic-core-partial.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-core-partial_8hpp_source.html#l00042">42</a> of file <a class="el" href="cljonic-core-partial_8hpp_source.html">cljonic-core-partial.hpp</a>.</p>
 
 </div>
 </div>
@@ -405,9 +405,9 @@ template&lt;typename F , typename C &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p><a class="anchor" id="Core_Reduce"></a> Two overloads of <b>Reduce</b> are implemented.</p>
-<p>The first overload of <b>Reduce</b> starts by calling <b>f</b> on the first two elements of <b>c</b>, then calls <b>f</b> with the result of the first call and the third element of <b>c</b>, then calls <b>f</b> with the result of the second call and the fourth element of <b>c</b>, and continues this process until all elements of <b>c</b> have been used in a call to <b>f</b>. If <b>c</b> has only one element it is returned, and <b>f</b> is never called. If <b>c</b> has no elements the <b>default</b> <b>element</b> of <b>c</b> is returned, and <b>f</b> is never called.</p>
-<p>The second overload of <b>Reduce</b> starts by calling <b>f</b> with an initial value and the first element of <b>c</b>, then calls <b>f</b> with the result of the first call and the second element of <b>c</b>, then calls <b>f</b> with the result of the second call and the third element of <b>c</b>, and continues this process until all elements of <b>c</b> have been used in a call to <b>f</b>. If <b>c</b> has no elements the initial value is returned, and <b>f</b> is never called. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<p><a class="anchor" id="Core_Reduce"></a> There are two overloads of <b>Reduce</b>.</p>
+<p>The first overload of <b>Reduce</b> starts by calling <b>f</b> on the first two elements of <b>c</b>, which must be a <b>cljonic</b> <b>collection</b>, then calls <b>f</b> with the result of the first call and the third element of <b>c</b>, then calls <b>f</b> with the result of the second call and the fourth element of <b>c</b>, and continues this process until all elements of <b>c</b> have been used in a call to <b>f</b>. If <b>c</b> has only one element it is returned, and <b>f</b> is never called. If <b>c</b> has no elements the <b>default</b> <b>element</b> of <b>c</b> is returned, and <b>f</b> is never called.</p>
+<p>The second overload of <b>Reduce</b> starts by calling <b>f</b> with an initial value and the first element of <b>c</b>, which must be a <b>cljonic</b> <b>collection</b>, then calls <b>f</b> with the result of the first call and the second element of <b>c</b>, then calls <b>f</b> with the result of the second call and the third element of <b>c</b>, and continues this process until all elements of <b>c</b> have been used in a call to <b>f</b>. If <b>c</b> has no elements the initial value is returned, and <b>f</b> is never called. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
@@ -455,11 +455,17 @@ template&lt;typename F , typename C &gt; </div>
 <div class="line">    <span class="comment">// const auto strs{Array{1, 2, 3, 4}};</span></div>
 <div class="line">    <span class="comment">// CHECK(10 == Reduce([]([[maybe_unused]] const int a, [[maybe_unused]] const int b) { return &quot;Hello&quot;; }, 11, a));</span></div>
 <div class="line"> </div>
+<div class="line">    <span class="comment">// Compiler Error: Second parameter must be a cljonic collection</span></div>
+<div class="line">    <span class="comment">// CHECK(5 == Reduce([](const int a, const char b) { return a + b; }, 5));</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Compiler Error: Third parameter must be a cljonic collection</span></div>
+<div class="line">    <span class="comment">// CHECK(5 == Reduce([](const int count, [[maybe_unused]] const char b) { return count + 1; }, 0, 5));</span></div>
+<div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_aa7c064451f236e5be882e3050167c847"><div class="ttname"><a href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">cljonic::core::Reduce</a></div><div class="ttdeci">auto Reduce(F &amp;&amp;f, const C &amp;c)</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-reduce_8hpp_source.html#l00079">cljonic-core-reduce.hpp:79</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_aa7c064451f236e5be882e3050167c847"><div class="ttname"><a href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">cljonic::core::Reduce</a></div><div class="ttdeci">auto Reduce(F &amp;&amp;f, const C &amp;c)</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-reduce_8hpp_source.html#l00086">cljonic-core-reduce.hpp:86</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-core-reduce_8hpp_source.html#l00079">79</a> of file <a class="el" href="cljonic-core-reduce_8hpp_source.html">cljonic-core-reduce.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-core-reduce_8hpp_source.html#l00086">86</a> of file <a class="el" href="cljonic-core-reduce_8hpp_source.html">cljonic-core-reduce.hpp</a>.</p>
 
 </div>
 </div>
@@ -497,14 +503,14 @@ template&lt;typename F , typename T , typename C &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-core-reduce_8hpp_source.html#l00092">92</a> of file <a class="el" href="cljonic-core-reduce_8hpp_source.html">cljonic-core-reduce.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-core-reduce_8hpp_source.html#l00100">100</a> of file <a class="el" href="cljonic-core-reduce_8hpp_source.html">cljonic-core-reduce.hpp</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Dec 23 2024 09:50:55 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Mon Dec 23 2024 10:11:12 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

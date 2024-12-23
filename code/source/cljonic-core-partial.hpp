@@ -1,8 +1,6 @@
 #ifndef CLJONIC_CORE_PARTIAL_HPP
 #define CLJONIC_CORE_PARTIAL_HPP
 
-#include <tuple>
-
 namespace cljonic
 {
 
