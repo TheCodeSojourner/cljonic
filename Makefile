@@ -11,6 +11,8 @@ default: help
 ## Rebuild and execute unit test program
 all: FORCE
 	@scripts/make-format.sh
+	@scripts/make-cljonic.sh
+	@scripts/make-noheap.sh
 	@scripts/make-all.sh unit-test
 	@echo
 
@@ -19,6 +21,13 @@ all: FORCE
 clean: FORCE
 	@scripts/make-format.sh
 	@scripts/make-clean.sh
+	@echo
+
+########################################################################################################################
+## Builds the cljonic.hpp single header file
+cljonic: FORCE
+	@scripts/make-format.sh
+	@scripts/make-cljonic.sh
 	@echo
 
 ########################################################################################################################
@@ -91,6 +100,7 @@ help: FORCE
 	@echo "    'make lcov'           does 'make test' then displays coverage analysis HTML in browser [1] [2]"
 	@echo "    'make memcheck'       does 'make all' then executes unit test program in memcheck mode"
 	@echo "    'make metrics'        generates metrics violations for code/source"
+	@echo "    'make noheap'         verify that cljonic will compile without heap allocation allowed"
 	@echo "    'make test'           builds only required files, and executes unit test program"
 	@echo
 	@echo "Note that 'make' will accept multiple targets, which it will evaluate in order.  For example"
@@ -126,10 +136,10 @@ metrics: FORCE
 	@echo
 
 ########################################################################################################################
-## Builds the cljonic.hpp single header file
-cljonic: FORCE
-	@scripts/make-format.sh
+## Verify that cljonic will compile without heap allocation allowed
+noheap: FORCE
 	@scripts/make-cljonic.sh
+	@scripts/make-noheap.sh
 	@echo
 
 ########################################################################################################################
