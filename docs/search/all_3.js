@@ -1,7 +1,4 @@
 var searchData=
 [
-  ['end_0',['end',['../classcljonic_1_1_array.html#a9fb903bdabb7ba3f364f5cb049ea2d6d',1,'cljonic::Array::end()'],['../classcljonic_1_1_range.html#a7c37faa169f1bacd3639c6dbbb541374',1,'cljonic::Range::end()'],['../classcljonic_1_1_repeat.html#ab6ce2027dd73b7c98b72fc17067e7eae',1,'cljonic::Repeat::end()'],['../classcljonic_1_1_set.html#a4ceeaffd8c1220875d44d05ef7780765',1,'cljonic::Set::end()'],['../classcljonic_1_1_string.html#ac16fd744c65a5bf9be4520a68be1c4c5',1,'cljonic::String::end()']]],
-  ['equal_1',['Equal',['../namespacecljonic_1_1core.html#ab67cad28f66047452bc5908ad466d482',1,'cljonic::core']]],
-  ['equalby_2',['EqualBy',['../namespacecljonic_1_1core.html#a3b9f3eabfae19001e8c5591ba0ed9550',1,'cljonic::core']]],
-  ['every_3',['Every',['../namespacecljonic_1_1core.html#a8f45a795878d35b55dcc94d3b8b4b90d',1,'cljonic::core']]]
+  ['defaultelement_0',['defaultelement',['../classcljonic_1_1_array.html#a4fe2087ea830f87bc8bb412ab6229b09',1,'cljonic::Array::DefaultElement()'],['../classcljonic_1_1_range.html#a8df6e93ea1cc18039b4c9d96013b2d0c',1,'cljonic::Range::DefaultElement()'],['../classcljonic_1_1_repeat.html#a55bf07327974706e1ac07553b2bb83c2',1,'cljonic::Repeat::DefaultElement()']]]
 ];

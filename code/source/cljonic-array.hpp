@@ -91,6 +91,11 @@ class Array
     {
         return m_elementCount;
     }
+
+    const T& DefaultElement() const noexcept
+    {
+        return m_elementDefault;
+    }
 }; // class Array
 
 // Support declarations like: auto v{Array{1, 2, 3}}; // Equivalent to auto v{Array<int, 3>{1, 2, 3}};

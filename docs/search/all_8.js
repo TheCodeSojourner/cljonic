@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['range_0',['range',['../classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655',1,'cljonic::Range::Range() noexcept'],['../classcljonic_1_1_range.html#a42667636f358732ff850422d5f341650',1,'cljonic::Range::Range(const int end) noexcept'],['../classcljonic_1_1_range.html#a3f2c954b09064a8a772a744fd902ea67',1,'cljonic::Range::Range(const int start, const int end) noexcept'],['../classcljonic_1_1_range.html#a176b7a831b2a894a588566d85ab60e95',1,'cljonic::Range::Range(const int start, const int end, const int step) noexcept'],['../classcljonic_1_1_range.html#a655a70d4fc38cc09474f7cce8401e530',1,'cljonic::Range::Range(const Range &amp;other)=default'],['../classcljonic_1_1_range.html#a264a383785b2be187997443a378edc61',1,'cljonic::Range::Range(Range &amp;&amp;other)=default'],['../classcljonic_1_1_range.html',1,'cljonic::Range'],['../namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a87ba2ecc8b6915e8bd6f5089918229fd',1,'cljonic::Range']]],
-  ['range_20repeat_20set_20and_20string_1',['Array, Range, Repeat, Set, And String',['../index.html#autotoc_md8',1,'']]],
-  ['regex_20functions_2',['Regex Functions',['../index.html#autotoc_md9',1,'']]],
-  ['repeat_3',['repeat',['../classcljonic_1_1_repeat.html#a70b78fb67a161b39e464d5264898bf1a',1,'cljonic::Repeat::Repeat()'],['../namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a7020426cfb0a204051be4b3053d2acc8',1,'cljonic::Repeat'],['../classcljonic_1_1_repeat.html#a088b9d044b98a33d441875244cadf22a',1,'cljonic::Repeat::Repeat(Repeat &amp;&amp;other)=default'],['../classcljonic_1_1_repeat.html#aeab0f51ddf7ff15f3443bfcaee36f8cf',1,'cljonic::Repeat::Repeat(const Repeat &amp;other)=default'],['../classcljonic_1_1_repeat.html#a3c2ce14eb32ea0fd788513fa78719d55',1,'cljonic::Repeat::Repeat(const size_type count, const T &amp;t) noexcept'],['../classcljonic_1_1_repeat.html',1,'cljonic::Repeat&lt; T &gt;']]],
-  ['repeat_20set_20and_20string_4',['Array, Range, Repeat, Set, And String',['../index.html#autotoc_md8',1,'']]]
+  ['partial_0',['Partial',['../namespacecljonic_1_1core.html#a0bab09821b95566f32b62d7500a149c3',1,'cljonic::core']]],
+  ['predicate_1',['Predicate',['../index.html#autotoc_md6',1,'']]],
+  ['primitive_2',['Primitive',['../index.html#autotoc_md7',1,'']]]
 ];

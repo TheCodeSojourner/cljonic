@@ -175,6 +175,11 @@ class Range
     {
         return m_elementCount;
     }
+
+    int DefaultElement() const noexcept
+    {
+        return m_elementDefault;
+    }
 }; // class Range
 
 } // namespace cljonic

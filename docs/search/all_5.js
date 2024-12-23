@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['isbinarypredicateforallcljoniccollections_0',['IsBinaryPredicateForAllCljonicCollections',['../namespacecljonic.html#a9c8bd3b0fd8138f5fb72f03dac87bf50',1,'cljonic']]]
+  ['functions_0',['functions',['../index.html#autotoc_md3',1,'Core Functions'],['../index.html#autotoc_md9',1,'Regex Functions'],['../index.html#autotoc_md10',1,'Set Functions'],['../index.html#autotoc_md11',1,'String Functions']]]
 ];

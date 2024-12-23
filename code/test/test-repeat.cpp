@@ -16,6 +16,7 @@ SCENARIO("Repeat", "[CljonicRepeat]")
         CHECK(1 == r[MAX_INDEX - 1]);
         CHECK(0 == r[-1]);
         CHECK(0 == r[MAX_INDEX]);
+        CHECK(0 == r.DefaultElement());
     }
 
     {

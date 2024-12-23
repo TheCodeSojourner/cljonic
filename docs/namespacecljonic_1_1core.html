@@ -95,6 +95,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a0bab09821b95566f32b62d7500a149c3" id="r_a0bab09821b95566f32b62d7500a149c3"><td class="memTemplParams" colspan="2">template&lt;typename F , typename... Args&gt; </td></tr>
 <tr class="memitem:a0bab09821b95566f32b62d7500a149c3"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#a0bab09821b95566f32b62d7500a149c3">Partial</a> (F &amp;&amp;f, Args &amp;&amp;... args)</td></tr>
 <tr class="separator:a0bab09821b95566f32b62d7500a149c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7c064451f236e5be882e3050167c847" id="r_aa7c064451f236e5be882e3050167c847"><td class="memTemplParams" colspan="2">template&lt;typename F , typename C &gt; </td></tr>
+<tr class="memitem:aa7c064451f236e5be882e3050167c847"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a> (F &amp;&amp;f, const C &amp;c)</td></tr>
+<tr class="separator:aa7c064451f236e5be882e3050167c847"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff06cd303d0c59456b91b8f0e8ee48ca" id="r_aff06cd303d0c59456b91b8f0e8ee48ca"><td class="memTemplParams" colspan="2">template&lt;typename F , typename T , typename C &gt; </td></tr>
+<tr class="memitem:aff06cd303d0c59456b91b8f0e8ee48ca"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#aff06cd303d0c59456b91b8f0e8ee48ca">Reduce</a> (F &amp;&amp;f, const T &amp;t, const C &amp;c)</td></tr>
+<tr class="separator:aff06cd303d0c59456b91b8f0e8ee48ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ab67cad28f66047452bc5908ad466d482" name="ab67cad28f66047452bc5908ad466d482"></a>
@@ -372,10 +378,133 @@ template&lt;typename F , typename... Args&gt; </div>
 
 </div>
 </div>
+<a id="aa7c064451f236e5be882e3050167c847" name="aa7c064451f236e5be882e3050167c847"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7c064451f236e5be882e3050167c847">&#9670;&#160;</a></span>Reduce() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F , typename C &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::Reduce </td>
+          <td>(</td>
+          <td class="paramtype">F &amp;&amp;&#160;</td>
+          <td class="paramname"><em>f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const C &amp;&#160;</td>
+          <td class="paramname"><em>c</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="anchor" id="Core_Reduce"></a> Two overloads of <b>Reduce</b> are implemented.</p>
+<p>The first overload of <b>Reduce</b> starts by calling <b>f</b> on the first two elements of <b>c</b>, then calls <b>f</b> with the result of the first call and the third element of <b>c</b>, then calls <b>f</b> with the result of the second call and the fourth element of <b>c</b>, and continues this process until all elements of <b>c</b> have been used in a call to <b>f</b>. If <b>c</b> has only one element it is returned, and <b>f</b> is never called. If <b>c</b> has no elements the <b>default</b> <b>element</b> of <b>c</b> is returned, and <b>f</b> is never called.</p>
+<p>The second overload of <b>Reduce</b> starts by calling <b>f</b> with an initial value and the first element of <b>c</b>, then calls <b>f</b> with the result of the first call and the second element of <b>c</b>, then calls <b>f</b> with the result of the second call and the third element of <b>c</b>, and continues this process until all elements of <b>c</b> have been used in a call to <b>f</b>. If <b>c</b> has no elements the initial value is returned, and <b>f</b> is never called. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main()</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">auto</span> Add = [](<span class="keyword">const</span> <span class="keyword">auto</span>&amp; a, <span class="keyword">const</span> <span class="keyword">auto</span>&amp; b) { <span class="keywordflow">return</span> a + b; };</div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> aAddEmpty{<a class="code hl_class" href="classcljonic_1_1_array.html">Array&lt;int, 5&gt;</a>{}};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> nAddEmpty{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(add, aAddEmpty)};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> nAddEmptyI{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(add, 11, aAddEmpty)};</div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> aAddOne{<a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>{11}};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> nAdd{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(add, aAddOne)};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> nAddI{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(add, 11, aAddOne)};</div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> a{<a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>{1, 2, 3, 4}};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> n0{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(Add, a)};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> n1{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(Add, 11, a)};</div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> rng{<a class="code hl_class" href="classcljonic_1_1_range.html">Range</a>(5)};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> n2{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(Add, rng)};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> n3{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(Add, 11, rng)};</div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> rpt{<a class="code hl_class" href="classcljonic_1_1_repeat.html">Repeat</a>(5, 5)};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> n4{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(Add, rpt)};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> n5{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(Add, 11, rpt)};</div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> s{<a class="code hl_class" href="classcljonic_1_1_string.html">String</a>{<span class="stringliteral">&quot;Hello&quot;</span>}};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> n6{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>([](<span class="keyword">const</span> <span class="keywordtype">int</span> count, <span class="keyword">const</span> <span class="keywordtype">char</span> b) { <span class="keywordflow">return</span> count + 1; }, 0, s)};</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Compiler Error: Function cannot be called with two parameters of the collection value type</span></div>
+<div class="line">    <span class="comment">// const auto ints{Array{1, 2, 3, 4}};</span></div>
+<div class="line">    <span class="comment">// CHECK(10 == Reduce([](const char* a, const int b) { return a[0] + b; }, a));</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Compiler Error: Function cannot be called with parameters of function result type, and collection value type</span></div>
+<div class="line">    <span class="comment">// const auto strs{Array{1, 2, 3, 4}};</span></div>
+<div class="line">    <span class="comment">// CHECK(10 == Reduce([]([[maybe_unused]] const int a, [[maybe_unused]] const int b) { return &quot;Hello&quot;; }, a));</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Compiler Error: Function cannot be called with parameters of initial value type, and collection value type</span></div>
+<div class="line">    <span class="comment">// const auto strs{Array{1, 2, 3, 4}};</span></div>
+<div class="line">    <span class="comment">// CHECK(10 == Reduce([](const int a, const int b) { return a + b; }, &quot;Hello&quot;, a));</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Compiler Error: Function cannot be called with parameters of function result type, and collection value type</span></div>
+<div class="line">    <span class="comment">// const auto strs{Array{1, 2, 3, 4}};</span></div>
+<div class="line">    <span class="comment">// CHECK(10 == Reduce([]([[maybe_unused]] const int a, [[maybe_unused]] const int b) { return &quot;Hello&quot;; }, 11, a));</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_aa7c064451f236e5be882e3050167c847"><div class="ttname"><a href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">cljonic::core::Reduce</a></div><div class="ttdeci">auto Reduce(F &amp;&amp;f, const C &amp;c)</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-reduce_8hpp_source.html#l00079">cljonic-core-reduce.hpp:79</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-core-reduce_8hpp_source.html#l00079">79</a> of file <a class="el" href="cljonic-core-reduce_8hpp_source.html">cljonic-core-reduce.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aff06cd303d0c59456b91b8f0e8ee48ca" name="aff06cd303d0c59456b91b8f0e8ee48ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff06cd303d0c59456b91b8f0e8ee48ca">&#9670;&#160;</a></span>Reduce() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F , typename T , typename C &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::Reduce </td>
+          <td>(</td>
+          <td class="paramtype">F &amp;&amp;&#160;</td>
+          <td class="paramname"><em>f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const C &amp;&#160;</td>
+          <td class="paramname"><em>c</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-core-reduce_8hpp_source.html#l00092">92</a> of file <a class="el" href="cljonic-core-reduce_8hpp_source.html">cljonic-core-reduce.hpp</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Dec 21 2024 16:09:29 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Mon Dec 23 2024 09:50:55 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

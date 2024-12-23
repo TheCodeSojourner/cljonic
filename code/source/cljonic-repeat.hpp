@@ -79,6 +79,11 @@ class Repeat
     {
         return m_elementCount;
     }
+
+    const T& DefaultElement() const noexcept
+    {
+        return m_elementDefault;
+    }
 }; // class Repeat
 
 } // namespace cljonic

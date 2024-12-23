@@ -16,6 +16,7 @@ SCENARIO("Range", "[CljonicRange]")
         CHECK((MAX_INT - 1) == r[MAX_INT - 1]);
         CHECK(0 == r[-1]);
         CHECK(0 == r[MAX_INT]);
+        CHECK(0 == r.DefaultElement());
     }
 
     {

@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Sat Dec 21 04:09:29 PM MST 2024
+// This file was generated Mon Dec 23 09:50:55 AM MST 2024
 
 namespace cljonic {
 
@@ -219,6 +219,10 @@ return this->operator[](index);
 [[nodiscard]] MaxElementsType Count() const noexcept {
 return m_elementCount;
 }
+
+const T& DefaultElement() const noexcept {
+return m_elementDefault;
+}
 };
 
 template <typename... Args>
@@ -342,6 +346,10 @@ return ((0 == m_elementCount) or (index >= m_elementCount))
 [[nodiscard]] size_type Count() const noexcept {
 return m_elementCount;
 }
+
+int DefaultElement() const noexcept {
+return m_elementDefault;
+}
 };
 
 } // namespace cljonic
@@ -388,6 +396,10 @@ return ((m_elementCount <= 0) or (index >= m_elementCount)) ? m_elementDefault :
 
 [[nodiscard]] size_type Count() const noexcept {
 return m_elementCount;
+}
+
+const T& DefaultElement() const noexcept {
+return m_elementDefault;
 }
 };
 
