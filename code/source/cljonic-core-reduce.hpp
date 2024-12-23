@@ -1,6 +1,7 @@
 #ifndef CLJONIC_CORE_REDUCE_HPP
 #define CLJONIC_CORE_REDUCE_HPP
 
+#include <numeric>
 #include "cljonic-concepts.hpp"
 
 namespace cljonic
@@ -33,13 +34,12 @@ int main()
 {
     auto Add = [](const auto& a, const auto& b) { return a + b; };
 
-    const auto aAddEmpty{Array<int, 5>{}};
-    const auto nAddEmpty{Reduce(add, aAddEmpty)};
-    const auto nAddEmptyI{Reduce(add, 11, aAddEmpty)};
+    const auto aAddEmpty{Array<int, 5>{}};             // an empty Array
+    const auto nAddEmpty{Reduce(Add, aAddEmpty)};      // default element value (i.e, 0) is returned, Add not called
+    const auto nAddEmptyI{Reduce(Add, 11, aAddEmpty)}; // initial value (i.e., 11) is returned, Add not called
 
-    const auto aAddOne{Array{11}};
-    const auto nAdd{Reduce(add, aAddOne)};
-    const auto nAddI{Reduce(add, 11, aAddOne)};
+    const auto aAddOne{Array{11}};              // a single-element Array
+    const auto nAdd{Reduce(Add, aAddOne)};      // single-element value is returned, Ass not called
 
     const auto a{Array{1, 2, 3, 4}};
     const auto n0{Reduce(Add, a)};

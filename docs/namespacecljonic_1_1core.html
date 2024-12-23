@@ -416,13 +416,12 @@ template&lt;typename F , typename C &gt; </div>
 <div class="line">{</div>
 <div class="line">    <span class="keyword">auto</span> Add = [](<span class="keyword">const</span> <span class="keyword">auto</span>&amp; a, <span class="keyword">const</span> <span class="keyword">auto</span>&amp; b) { <span class="keywordflow">return</span> a + b; };</div>
 <div class="line"> </div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> aAddEmpty{<a class="code hl_class" href="classcljonic_1_1_array.html">Array&lt;int, 5&gt;</a>{}};</div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> nAddEmpty{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(add, aAddEmpty)};</div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> nAddEmptyI{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(add, 11, aAddEmpty)};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> aAddEmpty{<a class="code hl_class" href="classcljonic_1_1_array.html">Array&lt;int, 5&gt;</a>{}};             <span class="comment">// an empty Array</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> nAddEmpty{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(Add, aAddEmpty)};      <span class="comment">// default element value (i.e, 0) is returned, Add not called</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> nAddEmptyI{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(Add, 11, aAddEmpty)}; <span class="comment">// initial value (i.e., 11) is returned, Add not called</span></div>
 <div class="line"> </div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> aAddOne{<a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>{11}};</div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> nAdd{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(add, aAddOne)};</div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> nAddI{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(add, 11, aAddOne)};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> aAddOne{<a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>{11}};              <span class="comment">// a single-element Array</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> nAdd{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(Add, aAddOne)};      <span class="comment">// single-element value is returned, Ass not called</span></div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> a{<a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>{1, 2, 3, 4}};</div>
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> n0{<a class="code hl_function" href="namespacecljonic_1_1core.html#aa7c064451f236e5be882e3050167c847">Reduce</a>(Add, a)};</div>
@@ -510,7 +509,7 @@ template&lt;typename F , typename T , typename C &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Dec 23 2024 10:54:55 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Mon Dec 23 2024 11:12:19 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

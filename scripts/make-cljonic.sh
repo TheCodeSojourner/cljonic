@@ -22,7 +22,8 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-equal.hpp \
     cljonic-core-equalby.hpp \
     cljonic-core-every.hpp \
-    cljonic-core-partial.hpp > /tmp/cljonic-glued.hpp
+    cljonic-core-partial.hpp \
+    cljonic-core-reduce.hpp > /tmp/cljonic-glued.hpp
 
 # remove all the comments
 g++ -fpreprocessed -dD -E -o /tmp/cljonic.hpp /tmp/cljonic-glued.hpp
