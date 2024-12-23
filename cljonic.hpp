@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Dec 23 04:16:16 PM MST 2024
+// This file was generated Mon Dec 23 04:25:54 PM MST 2024
 
 namespace cljonic {
 
@@ -261,6 +261,8 @@ namespace cljonic {
 
 template <int... StartEndStep>
 class Range {
+static_assert(sizeof...(StartEndStep) <= 3, "Number of Range parameters must be less than or equal to three");
+
 using Iterator = CollectionIterator<Range>;
 using SizeType = std::size_t;
 

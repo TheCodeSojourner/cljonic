@@ -15,6 +15,8 @@ namespace cljonic
 template <int... StartEndStep>
 class Range
 {
+    static_assert(sizeof...(StartEndStep) <= 3, "Number of Range parameters must be less than or equal to three");
+
     using Iterator = CollectionIterator<Range>;
     using SizeType = std::size_t;
 
@@ -140,6 +142,9 @@ class Range
         const auto r11{Range<3, 10, 3>{}};    // immutable, has three elements: 3, 6 and 9
         const auto r12{Range<100, 0, -10>{}}; // immutable, has ten elements: 100, 90, 80, ... and 10
         const auto r13{Range<10, -10, -1>{}}; // immutable, has twenty elements: 10, 9, ..., 0, -1, ... -9
+
+        // Compiler Error: Number of Range parameters must be less than or equal to three
+        // const auto r{Range<10, -10, -1, 1>{}};
 
         return 0;
     }
