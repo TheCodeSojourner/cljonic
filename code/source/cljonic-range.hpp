@@ -180,6 +180,11 @@ class Range
     {
         return m_elementDefault;
     }
+
+    static constexpr std::size_t MaxSize() noexcept
+    {
+        return MaxElements;
+    }
 }; // class Range
 
 } // namespace cljonic

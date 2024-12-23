@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Dec 23 11:12:19 AM MST 2024
+// This file was generated Mon Dec 23 12:49:20 PM MST 2024
 
 namespace cljonic {
 
@@ -166,6 +166,24 @@ bool AreEqual(CString auto a, CString auto b) {
 return std::strcmp(a, b) == 0;
 }
 
+constexpr auto Min(auto a, auto b) {
+return (a < b) ? a : b;
+}
+
+template <typename T>
+constexpr auto TypeMaxSize() {
+return T::MaxSize();
+}
+
+template <typename C, typename... Cs>
+constexpr auto MinTypeMaxSize() {
+if constexpr(sizeof...(Cs) == 0) {
+return TypeMaxSize<C>();
+} else {
+return Min(TypeMaxSize<C>(), TypeMaxSize<Cs>()...);
+}
+}
+
 } // namespace cljonic
 
 #include <cstring>
@@ -189,12 +207,10 @@ using value_type = T;
 Array() noexcept : m_elementCount(0), m_elementDefault(T{}) {
 }
 
-explicit Array(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{}) {
-for(const auto& element : elements) {
-if(m_elementCount == MaxElements)
-break;
-m_elements[m_elementCount++] = element;
-}
+explicit Array(const std::initializer_list<const T> elements) noexcept
+    : m_elementCount(Min(MaxElements, elements.size())), m_elementDefault(T{}) {
+for(size_type i{0}; i < m_elementCount; ++i)
+m_elements[i] = *(elements.begin() + i);
 }
 
 Array(const Array& other) = default;
@@ -216,12 +232,21 @@ const T& operator()(const MaxElementsType index) const noexcept {
 return this->operator[](index);
 }
 
+void MConj(const T& t) noexcept {
+if(m_elementCount < MaxElements)
+m_elements[m_elementCount++] = t;
+}
+
 [[nodiscard]] MaxElementsType Count() const noexcept {
 return m_elementCount;
 }
 
 const T& DefaultElement() const noexcept {
 return m_elementDefault;
+}
+
+static constexpr std::size_t MaxSize() noexcept {
+return MaxElements;
 }
 };
 
@@ -350,6 +375,10 @@ return m_elementCount;
 int DefaultElement() const noexcept {
 return m_elementDefault;
 }
+
+static constexpr std::size_t MaxSize() noexcept {
+return MaxElements;
+}
 };
 
 } // namespace cljonic
@@ -400,6 +429,10 @@ return m_elementCount;
 
 const T& DefaultElement() const noexcept {
 return m_elementDefault;
+}
+
+static constexpr std::size_t MaxSize() noexcept {
+return MaxElements;
 }
 };
 
@@ -487,6 +520,14 @@ return not IsUniqueElementBy(f, element);
 bool Contains(const T& element) const noexcept {
 return not IsUniqueElement(element);
 }
+
+int DefaultElement() const noexcept {
+return m_elementDefault;
+}
+
+static constexpr std::size_t MaxSize() noexcept {
+return MaxElements;
+}
 };
 
 template <typename... Args>
@@ -557,6 +598,14 @@ return this->operator[](index);
 
 [[nodiscard]] MaxElementsType Count() const noexcept {
 return m_elementCount;
+}
+
+int DefaultElement() const noexcept {
+return m_elementDefault;
+}
+
+static constexpr std::size_t MaxSize() noexcept {
+return MaxElements;
 }
 };
 
@@ -661,6 +710,13 @@ return result;
 
 } // namespace cljonic::core
 
+namespace cljonic {
+
+namespace core {
+}
+
+}
+
 #include <utility>
 
 namespace cljonic {
@@ -680,6 +736,7 @@ return f(args..., std::forward<decltype(rest)>(rest)...);
 } // namespace cljonic::core
 
 #include <numeric>
+#include <tuple>
 
 namespace cljonic {
 

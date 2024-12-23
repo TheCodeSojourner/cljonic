@@ -5,6 +5,7 @@
 #include <initializer_list>
 #include <type_traits>
 #include "cljonic-collection-type.hpp"
+#include "cljonic-shared.hpp"
 
 namespace cljonic
 {
@@ -54,14 +55,11 @@ class Array
     {
     }
 
-    explicit Array(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{})
+    explicit Array(const std::initializer_list<const T> elements) noexcept
+        : m_elementCount(Min(MaxElements, elements.size())), m_elementDefault(T{})
     {
-        for (const auto& element : elements)
-        {
-            if (m_elementCount == MaxElements)
-                break;
-            m_elements[m_elementCount++] = element;
-        }
+        for (size_type i{0}; i < m_elementCount; ++i)
+            m_elements[i] = *(elements.begin() + i);
     }
 
     Array(const Array& other) = default; // Copy constructor
@@ -87,6 +85,12 @@ class Array
         return this->operator[](index);
     }
 
+    void MConj(const T& t) noexcept
+    {
+        if (m_elementCount < MaxElements)
+            m_elements[m_elementCount++] = t;
+    }
+
     [[nodiscard]] MaxElementsType Count() const noexcept
     {
         return m_elementCount;
@@ -95,6 +99,11 @@ class Array
     const T& DefaultElement() const noexcept
     {
         return m_elementDefault;
+    }
+
+    static constexpr std::size_t MaxSize() noexcept
+    {
+        return MaxElements;
     }
 }; // class Array
 

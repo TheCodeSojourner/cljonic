@@ -107,6 +107,16 @@ class String
     {
         return m_elementCount;
     }
+
+    int DefaultElement() const noexcept
+    {
+        return m_elementDefault;
+    }
+
+    static constexpr std::size_t MaxSize() noexcept
+    {
+        return MaxElements;
+    }
 }; // class String
 
 // Support declarations like 'auto v{String{"Hello"}};', which is equivalent to 'auto v{String<5>{"Hello"}};'

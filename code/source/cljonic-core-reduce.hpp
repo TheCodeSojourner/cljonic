@@ -1,6 +1,7 @@
 #ifndef CLJONIC_CORE_REDUCE_HPP
 #define CLJONIC_CORE_REDUCE_HPP
 
+#include <tuple>
 #include <numeric>
 #include "cljonic-concepts.hpp"
 

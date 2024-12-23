@@ -131,6 +131,16 @@ class Set
     {
         return not IsUniqueElement(element);
     }
+
+    int DefaultElement() const noexcept
+    {
+        return m_elementDefault;
+    }
+
+    static constexpr std::size_t MaxSize() noexcept
+    {
+        return MaxElements;
+    }
 }; // class Set
 
 // Support declarations like: auto v{Set{1, 2, 3}}; // Equivalent to auto v{Set<int, 3>{1, 2, 3}};
