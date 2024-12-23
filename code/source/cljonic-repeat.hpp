@@ -84,11 +84,6 @@ class Repeat
     {
         return m_elementDefault;
     }
-
-    static constexpr std::size_t MaxSize() noexcept
-    {
-        return MaxElements;
-    }
 }; // class Repeat
 
 } // namespace cljonic

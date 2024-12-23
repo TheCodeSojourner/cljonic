@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Dec 23 12:49:20 PM MST 2024
+// This file was generated Mon Dec 23 04:07:49 PM MST 2024
 
 namespace cljonic {
 
@@ -259,20 +259,36 @@ Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
 
 namespace cljonic {
 
+template <int... StartEndStep>
 class Range {
 using Iterator = CollectionIterator<Range>;
+using SizeType = std::size_t;
 
-std::size_t m_elementCount;
+SizeType m_elementCount;
 int m_elementDefault;
 int m_elementStart;
 int m_elementStep;
 
-constexpr int Count(const int start, const int end, const int step) noexcept {
-return ((end - start) / step) + ((((end - start) % step) == 0) ? 0 : 1);
+static constexpr auto RangeCount(const int start, const int end, const int step) noexcept {
+return (0 == step) ? 0 : ((end - start) / step) + ((((end - start) % step) == 0) ? 0 : 1);
 }
 
+static constexpr int values[] = {StartEndStep...};
+
+static constexpr auto MaxElements = []() constexpr {
+if constexpr(sizeof...(StartEndStep) == 1)
+return static_cast<SizeType>(values[0]);
+else if constexpr(sizeof...(StartEndStep) == 2)
+return static_cast<SizeType>(values[1] - values[0]);
+else if constexpr(sizeof...(StartEndStep) == 3) {
+return static_cast<SizeType>(RangeCount(StartEndStep...));
+} else {
+return std::numeric_limits<SizeType>::max();
+}
+}();
+
 constexpr void InitializeMembers(const int count, const int start, const int step) noexcept {
-m_elementCount = static_cast<std::size_t>(count);
+m_elementCount = static_cast<SizeType>(count);
 m_elementDefault = 0;
 m_elementStart = start;
 m_elementStep = step;
@@ -300,7 +316,7 @@ constexpr void InitializeStartEndStepWithNegativeStep(const int start, const int
 if(start <= end)
 InitializeMembers(0, 0, step);
 else {
-const int count{Count(start, end, step)};
+const int count{RangeCount(start, end, step)};
 InitializeMembers(count, start, step);
 }
 }
@@ -309,7 +325,7 @@ constexpr void InitializeStartEndStepWithPositiveStep(const int start, const int
 if(end <= start)
 InitializeMembers(0, 0, step);
 else {
-const int count{Count(start, end, step)};
+const int count{RangeCount(start, end, step)};
 InitializeMembers(count, start, step);
 }
 }
@@ -328,31 +344,22 @@ InitializeStartEndStepWithPositiveStep(start, end, step);
 
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Range>;
-using size_type = std::size_t;
+using size_type = SizeType;
 using value_type = int;
 
 Range() noexcept
     : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0} {
+
+if constexpr(sizeof...(StartEndStep) == 1) {
+InitializeEnd(values[0]);
+} else if constexpr(sizeof...(StartEndStep) == 2) {
+InitializeStartEnd(values[0], values[1]);
+} else if constexpr(sizeof...(StartEndStep) == 3) {
+InitializeStartEndStep(values[0], values[1], values[2]);
+} else {
 Initialize();
 }
-
-explicit Range(const int end) noexcept
-    : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0} {
-InitializeEnd(end);
 }
-
-explicit Range(const int start, const int end) noexcept
-    : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0} {
-InitializeStartEnd(start, end);
-}
-
-explicit Range(const int start, const int end, const int step) noexcept
-    : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0} {
-InitializeStartEndStep(start, end, step);
-}
-
-Range(const Range& other) = default;
-Range(Range&& other) = default;
 
 [[nodiscard]] Iterator begin() const {
 return Iterator{*this, 0};
@@ -376,7 +383,7 @@ int DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
-static constexpr std::size_t MaxSize() noexcept {
+static constexpr auto MaxSize() noexcept {
 return MaxElements;
 }
 };
@@ -429,10 +436,6 @@ return m_elementCount;
 
 const T& DefaultElement() const noexcept {
 return m_elementDefault;
-}
-
-static constexpr std::size_t MaxSize() noexcept {
-return MaxElements;
 }
 };
 

@@ -35,7 +35,7 @@ SCENARIO("Reduce", "[CljonicCoreReduce]")
     CHECK(10 == Reduce(Add, a));
     CHECK(21 == Reduce(Add, 11, a));
 
-    const auto rng{Range(5)};
+    const auto rng{Range<5>{}};
     CHECK(10 == Reduce(Add, rng));
     CHECK(21 == Reduce(Add, 11, rng));
 

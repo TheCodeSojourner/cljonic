@@ -46,7 +46,7 @@ int main()
     const auto n0{Reduce(Add, a)};
     const auto n1{Reduce(Add, 11, a)};
 
-    const auto rng{Range(5)};
+    const auto rng{Range<5>{}};
     const auto n2{Reduce(Add, rng)};
     const auto n3{Reduce(Add, 11, rng)};
 
