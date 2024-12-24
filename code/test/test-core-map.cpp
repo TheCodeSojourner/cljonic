@@ -24,5 +24,5 @@ SCENARIO("Map", "[CljonicCoreMap]")
     CHECK(Equal(Array{2, 4, 6, 8}, Map(TwoTimes, Set{1, 2, 3, 4})));
     CHECK(Equal(Array{1, 3, 5, 7}, Map(Add2, Set{1, 2, 3, 4}, Range{})));
     CHECK(Equal(Array{2, 3, 4, 5}, Map(Add2, Set{1, 2, 3, 4}, Repeat{1})));
-    CHECK(Equal(Array{2, 5, 8, 13}, Map(Add3, Set{1, 2, 3, 4}, Range{}, Repeat{1})));
+    CHECK(Equal(Array{4, 6, 8, 10}, Map(Add3, Set{1, 2, 3, 4}, Range{}, Repeat{3})));
 }

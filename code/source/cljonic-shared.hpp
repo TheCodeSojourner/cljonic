@@ -30,22 +30,16 @@ constexpr auto Min(auto a, auto b)
     return (a < b) ? a : b;
 }
 
-template <typename T>
-constexpr auto TypeMaxSize()
-{
-    return T::MaxSize();
-}
-
 template <typename C, typename... Cs>
 constexpr auto MinTypeMaxSize()
 {
     if constexpr (sizeof...(Cs) == 0)
     {
-        return TypeMaxSize<C>();
+        return C::MaxSize();
     }
     else
     {
-        return Min(TypeMaxSize<C>(), TypeMaxSize<Cs>()...);
+        return (Min(C::MaxSize(), Cs::MaxSize()), ...);
     }
 }
 

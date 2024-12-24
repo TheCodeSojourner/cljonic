@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Dec 23 06:58:14 PM MST 2024
+// This file was generated Tue Dec 24 12:42:28 PM MST 2024
 
 namespace cljonic {
 
@@ -170,17 +170,12 @@ constexpr auto Min(auto a, auto b) {
 return (a < b) ? a : b;
 }
 
-template <typename T>
-constexpr auto TypeMaxSize() {
-return T::MaxSize();
-}
-
 template <typename C, typename... Cs>
 constexpr auto MinTypeMaxSize() {
 if constexpr(sizeof...(Cs) == 0) {
-return TypeMaxSize<C>();
+return C::MaxSize();
 } else {
-return Min(TypeMaxSize<C>(), TypeMaxSize<Cs>()...);
+return (Min(C::MaxSize(), Cs::MaxSize()), ...);
 }
 }
 
