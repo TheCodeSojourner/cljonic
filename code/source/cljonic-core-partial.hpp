@@ -47,6 +47,7 @@ auto Partial(F&& f, Args&&... args)
     {
         static_assert(std::regular_invocable<F, Args..., decltype(rest)...>,
                       "Partial function cannot be called with the specified arguments");
+
         return f(args..., std::forward<decltype(rest)>(rest)...);
     };
 }
