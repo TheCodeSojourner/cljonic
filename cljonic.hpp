@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Dec 24 01:29:47 PM MST 2024
+// This file was generated Tue Dec 24 01:35:48 PM MST 2024
 
 namespace cljonic {
 
@@ -406,7 +406,7 @@ using cljonic_collection_type = std::integral_constant<CljonicCollectionType, Cl
 using size_type = std::size_t;
 using value_type = T;
 
-Repeat(const T& t) noexcept : m_elementCount{MaxElements}, m_elementDefault{T{}}, m_elementValue{t} {
+explicit Repeat(const T& t) noexcept : m_elementCount{MaxElements}, m_elementDefault{T{}}, m_elementValue{t} {
 }
 
 Repeat(const Repeat& other) = default;

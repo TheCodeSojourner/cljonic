@@ -49,7 +49,7 @@ class Repeat
     using size_type = std::size_t;
     using value_type = T;
 
-    Repeat(const T& t) noexcept : m_elementCount{MaxElements}, m_elementDefault{T{}}, m_elementValue{t}
+    explicit Repeat(const T& t) noexcept : m_elementCount{MaxElements}, m_elementDefault{T{}}, m_elementValue{t}
     {
     }
 
