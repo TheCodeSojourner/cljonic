@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Dec 24 01:08:00 PM MST 2024
+// This file was generated Tue Dec 24 01:22:51 PM MST 2024
 
 namespace cljonic {
 
@@ -743,6 +743,7 @@ auto Partial(F&& f, Args&&... args) {
 return [f = std::forward<F>(f), ... args = std::forward<Args>(args)](auto&&... rest) {
 static_assert(std::regular_invocable<F, Args..., decltype(rest)...>,
               "Partial function cannot be called with the specified arguments");
+
 return f(args..., std::forward<decltype(rest)>(rest)...);
 };
 }
@@ -760,12 +761,14 @@ namespace core {
 template <typename F, typename C>
 auto Reduce(F&& f, const C& c) {
 static_assert(IsCljonicCollection<C>, "Second parameter must be a cljonic collection");
+
 static_assert(std::regular_invocable<F, typename C::value_type, typename C::value_type>,
               "Function cannot be called with two parameters of the collection value type");
-static_assert(std::regular_invocable<F,
-                                     std::invoke_result_t<F, typename C::value_type, typename C::value_type>,
-                                     typename C::value_type>,
+
+using ResultType = std::invoke_result_t<F, typename C::value_type, typename C::value_type>;
+static_assert(std::regular_invocable<F, ResultType, typename C::value_type>,
               "Function cannot be called with parameters of function result type, and collection value type");
+
 return (0 == c.Count()) ? c.DefaultElement()
                         : std::accumulate((c.begin() + 1), c.end(), *c.begin(), std::forward<F>(f));
 }
@@ -773,10 +776,14 @@ return (0 == c.Count()) ? c.DefaultElement()
 template <typename F, typename T, typename C>
 auto Reduce(F&& f, const T& t, const C& c) {
 static_assert(IsCljonicCollection<C>, "Third parameter must be a cljonic collection");
+
 static_assert(std::regular_invocable<F, T, typename C::value_type>,
               "Function cannot be called with parameters of initial value type, and collection value type");
-static_assert(std::regular_invocable<F, std::invoke_result_t<F, T, typename C::value_type>, typename C::value_type>,
+
+using ResultType = std::invoke_result_t<F, T, typename C::value_type>;
+static_assert(std::regular_invocable<F, ResultType, typename C::value_type>,
               "Function cannot be called with parameters of function result type, and collection value type");
+
 return (0 == c.Count()) ? t : std::accumulate(c.begin(), c.end(), t, std::forward<F>(f));
 }
 
