@@ -576,21 +576,21 @@ SCENARIO("EqualBy", "[CljonicCoreEqualBy]")
 
         CHECK(true == EqualBy(EBFi, Repeat(1)));
         // CHECK(true == EqualBy(EBFi, Repeat(1), Repeat(1))); // this will take a LONG time to run
-        CHECK(true == EqualBy(EBFi, Repeat(10, 1), Repeat(10, 1), Repeat(10, 1)));
-        CHECK(false == EqualBy(EBFi, Repeat(10, 1), Repeat(10, 2), Repeat(10, 1)));
-        CHECK(false == EqualBy(EBFi, Repeat(10, 1), Repeat(1), Repeat(10, 1)));
+        CHECK(true == EqualBy(EBFi, Repeat<10, int>{1}, Repeat<10, int>{1}, Repeat<10, int>{1}));
+        CHECK(false == EqualBy(EBFi, Repeat<10, int>{1}, Repeat<10, int>{2}, Repeat<10, int>{1}));
+        CHECK(false == EqualBy(EBFi, Repeat<10, int>{1}, Repeat(1), Repeat<10, int>{1}));
         CHECK(true == EqualBy(EBFv, Repeat(T{'x'})));
-        CHECK(true == EqualBy(EBFv, Repeat(10, T{'x'}), Repeat(10, T{'x'}), Repeat(10, T{'x'})));
-        CHECK(false == EqualBy(EBFv, Repeat(10, T{'x'}), Repeat(10, T{'y'}), Repeat(10, T{'x'})));
-        CHECK(false == EqualBy(EBFv, Repeat(10, T{'x'}), Repeat(T{'x'}), Repeat(10, T{'x'})));
+        CHECK(true == EqualBy(EBFv, Repeat<10, T>{T{'x'}}, Repeat<10, T>{T{'x'}}, Repeat<10, T>{T{'x'}}));
+        CHECK(false == EqualBy(EBFv, Repeat<10, T>{T{'x'}}, Repeat<10, T>{T{'y'}}, Repeat<10, T>{T{'x'}}));
+        CHECK(false == EqualBy(EBFv, Repeat<10, T>{T{'x'}}, Repeat(T{'x'}), Repeat<10, T>{T{'x'}}));
     }
 
     {
-        auto c{Repeat(10, 1)};
+        auto c{Repeat<10, int>{1}};
         CHECK(true == EqualBy(EBFi, c));
         CHECK(true == EqualBy(EBFi, c, c, c));
-        CHECK(true == EqualBy(EBFi, c, Repeat(10, 1), Repeat(10, 1)));
-        CHECK(false == EqualBy(EBFi, c, Repeat(10, 1), Repeat(100, 'x')));
+        CHECK(true == EqualBy(EBFi, c, Repeat<10, int>{1}, Repeat<10, int>{1}));
+        CHECK(false == EqualBy(EBFi, c, Repeat<10, int>{1}, Repeat<100, int>{'x'}));
     }
 
     {
@@ -598,12 +598,12 @@ SCENARIO("EqualBy", "[CljonicCoreEqualBy]")
         CHECK(false == EqualBy(EBFi, Range<10>{}, Array{0, 1, 2, 3, 4}));
         CHECK(true == EqualBy(EBFi, Array{0, 1, 2, 3, 4}, Range<0, 5, 1>{}, Array{0, 1, 2, 3, 4}));
         CHECK(true == EqualBy(EBFi, Array{5, 3, 1}, Range<5, 0, -2>{}));
-        CHECK(true == EqualBy(EBFi, Range<1>{}, Array{0}, Repeat(1, 0)));
-        CHECK(true == EqualBy(EBFi, Array{4, 4, 4, 4}, Repeat(4, 4)));
-        CHECK(false == EqualBy(EBFi, Range<2>{}, Array{0}, Repeat(1, 0)));
-        CHECK(false == EqualBy(EBFi, Range<1>{}, Array{0, 1}, Repeat(1, 0)));
-        CHECK(false == EqualBy(EBFi, Range<1>{}, Array{0}, Repeat(2, 0)));
-        CHECK(false == EqualBy(EBFi, Array{4, 4, 4}, Repeat(4, 4)));
-        CHECK(false == EqualBy(EBFi, Array{4, 4, 4, 4}, Repeat(4, 5)));
+        CHECK(true == EqualBy(EBFi, Range<1>{}, Array{0}, Repeat<1, int>{0}));
+        CHECK(true == EqualBy(EBFi, Array{4, 4, 4, 4}, Repeat<4, int>{4}));
+        CHECK(false == EqualBy(EBFi, Range<2>{}, Array{0}, Repeat<1, int>{0}));
+        CHECK(false == EqualBy(EBFi, Range<1>{}, Array{0, 1}, Repeat<1, int>{0}));
+        CHECK(false == EqualBy(EBFi, Range<1>{}, Array{0}, Repeat<2, int>{0}));
+        CHECK(false == EqualBy(EBFi, Array{4, 4, 4}, Repeat<4, int>{4}));
+        CHECK(false == EqualBy(EBFi, Array{4, 4, 4, 4}, Repeat<4, int>{5}));
     }
 }

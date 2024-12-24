@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Dec 23 04:25:54 PM MST 2024
+// This file was generated Mon Dec 23 06:19:09 PM MST 2024
 
 namespace cljonic {
 
@@ -396,7 +396,7 @@ return MaxElements;
 
 namespace cljonic {
 
-template <typename T>
+template <std::size_t MaxElements, typename T>
 class Repeat {
 using Iterator = CollectionIterator<Repeat>;
 
@@ -409,12 +409,7 @@ using cljonic_collection_type = std::integral_constant<CljonicCollectionType, Cl
 using size_type = std::size_t;
 using value_type = T;
 
-explicit Repeat(const T& t) noexcept
-    : m_elementCount{std::numeric_limits<std::size_t>::max()}, m_elementDefault{T{}}, m_elementValue{t} {
-}
-
-explicit Repeat(const size_type count, const T& t) noexcept
-    : m_elementCount{count}, m_elementDefault{T{}}, m_elementValue{t} {
+Repeat(const T& t) noexcept : m_elementCount{MaxElements}, m_elementDefault{T{}}, m_elementValue{t} {
 }
 
 Repeat(const Repeat& other) = default;
@@ -439,7 +434,14 @@ return m_elementCount;
 const T& DefaultElement() const noexcept {
 return m_elementDefault;
 }
+
+static constexpr auto MaxSize() noexcept {
+return MaxElements;
+}
 };
+
+template <typename T>
+Repeat(T) -> Repeat<std::numeric_limits<std::size_t>::max(), T>;
 
 } // namespace cljonic
 
