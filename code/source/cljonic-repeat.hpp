@@ -27,6 +27,10 @@ class Repeat
     *     - <b>Repeat{value}</b> returns a \b Repeat of value \b std::numeric_limits<std::size_t>::max() times
     *     - <b>Repeat<count, valueType>{value}</b> returns a \b Repeat of value, which is of type valueType,
     *     \b count times
+    *
+    * Note: The \b Repeat type, unlike \b Array and \b Set, specifies the number of elements \b before the type. This is
+    *       consistent with \b Clojure where something like <b>(repeat 10 "Hello")<\b> is used to create a repeating
+    *       sequence of ten instances of the value "Hello".
     ~~~~~{.cpp}
     #include "cljonic.hpp"
 
