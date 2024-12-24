@@ -50,7 +50,7 @@ auto Map(F&& f, const C& c, const Cs&... cs)
                   "Function cannot be called with values from the specified cljonic collections");
     using ResultType = decltype(f(std::declval<typename C::value_type>(), std::declval<typename Cs::value_type>()...));
     using SizeType = decltype(c.Count());
-    auto result{Array<ResultType, MinTypeMaxSize<C, Cs...>()>{}};
+    auto result{Array<ResultType, MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()>{}};
     for (SizeType i{0}; i < c.Count(); ++i)
         result.MConj(f(c[i], cs[i]...));
     return result;

@@ -31,15 +31,15 @@ constexpr auto Min(auto a, auto b)
 }
 
 template <typename C, typename... Cs>
-constexpr auto MinTypeMaxSize()
+constexpr auto MinimumOfCljonicCollectionMaximumCounts()
 {
     if constexpr (sizeof...(Cs) == 0)
     {
-        return C::MaxSize();
+        return C::MaximumCount();
     }
     else
     {
-        return (Min(C::MaxSize(), Cs::MaxSize()), ...);
+        return (Min(C::MaximumCount(), Cs::MaximumCount()), ...);
     }
 }
 

@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Dec 24 12:42:28 PM MST 2024
+// This file was generated Tue Dec 24 12:53:34 PM MST 2024
 
 namespace cljonic {
 
@@ -171,11 +171,11 @@ return (a < b) ? a : b;
 }
 
 template <typename C, typename... Cs>
-constexpr auto MinTypeMaxSize() {
+constexpr auto MinimumOfCljonicCollectionMaximumCounts() {
 if constexpr(sizeof...(Cs) == 0) {
-return C::MaxSize();
+return C::MaximumCount();
 } else {
-return (Min(C::MaxSize(), Cs::MaxSize()), ...);
+return (Min(C::MaximumCount(), Cs::MaximumCount()), ...);
 }
 }
 
@@ -240,7 +240,7 @@ const T& DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
-static constexpr std::size_t MaxSize() noexcept {
+static constexpr std::size_t MaximumCount() noexcept {
 return MaxElements;
 }
 };
@@ -381,7 +381,7 @@ int DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
-static constexpr auto MaxSize() noexcept {
+static constexpr auto MaximumCount() noexcept {
 return MaxElements;
 }
 };
@@ -431,7 +431,7 @@ const T& DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
-static constexpr auto MaxSize() noexcept {
+static constexpr auto MaximumCount() noexcept {
 return MaxElements;
 }
 };
@@ -528,7 +528,7 @@ int DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
-static constexpr std::size_t MaxSize() noexcept {
+static constexpr std::size_t MaximumCount() noexcept {
 return MaxElements;
 }
 };
@@ -607,7 +607,7 @@ int DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
-static constexpr std::size_t MaxSize() noexcept {
+static constexpr std::size_t MaximumCount() noexcept {
 return MaxElements;
 }
 };
@@ -723,7 +723,7 @@ static_assert(std::invocable<F, typename C::value_type, typename Cs::value_type.
               "Function cannot be called with values from the specified cljonic collections");
 using ResultType = decltype(f(std::declval<typename C::value_type>(), std::declval<typename Cs::value_type>()...));
 using SizeType = decltype(c.Count());
-auto result{Array<ResultType, MinTypeMaxSize<C, Cs...>()>{}};
+auto result{Array<ResultType, MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()>{}};
 for(SizeType i{0}; i < c.Count(); ++i)
 result.MConj(f(c[i], cs[i]...));
 return result;

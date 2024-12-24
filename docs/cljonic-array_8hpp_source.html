@@ -179,7 +179,7 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
 <div class="foldopen" id="foldopen00104" data-start="{" data-end="}">
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#ae5166c4ae9776ea3befeb290c59c180f">  104</a></span>    <span class="keyword">static</span> <span class="keyword">constexpr</span> std::size_t <a class="code hl_function" href="classcljonic_1_1_array.html#ae5166c4ae9776ea3befeb290c59c180f">MaxSize</a>() noexcept</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno"><a class="line" href="classcljonic_1_1_array.html#a15e00d38f015c1dc12aa1bf3443a59cd">  104</a></span>    <span class="keyword">static</span> <span class="keyword">constexpr</span> std::size_t <a class="code hl_function" href="classcljonic_1_1_array.html#a15e00d38f015c1dc12aa1bf3443a59cd">MaximumCount</a>() noexcept</div>
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    {</div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        <span class="keywordflow">return</span> MaxElements;</div>
 <div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>    }</div>
@@ -197,6 +197,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span><span class="preprocessor">#endif </span><span class="comment">// CLJONIC_ARRAY_HPP</span></div>
 <div class="ttc" id="aclasscljonic_1_1_array_html"><div class="ttname"><a href="classcljonic_1_1_array.html">cljonic::Array</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00021">cljonic-array.hpp:22</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_array_html_a0fcbc27f4c8dd98228844ecb8a8965ec"><div class="ttname"><a href="classcljonic_1_1_array.html#a0fcbc27f4c8dd98228844ecb8a8965ec">cljonic::Array::MConj</a></div><div class="ttdeci">void MConj(const T &amp;t) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00088">cljonic-array.hpp:88</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_array_html_a15e00d38f015c1dc12aa1bf3443a59cd"><div class="ttname"><a href="classcljonic_1_1_array.html#a15e00d38f015c1dc12aa1bf3443a59cd">cljonic::Array::MaximumCount</a></div><div class="ttdeci">static constexpr std::size_t MaximumCount() noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00104">cljonic-array.hpp:104</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_array_html_a28c48900d212cbff52a8ef3fb1f7b47a"><div class="ttname"><a href="classcljonic_1_1_array.html#a28c48900d212cbff52a8ef3fb1f7b47a">cljonic::Array::Array</a></div><div class="ttdeci">Array() noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00054">cljonic-array.hpp:54</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_array_html_a41fdf7ec891ac84f0fc605c73ef46e56"><div class="ttname"><a href="classcljonic_1_1_array.html#a41fdf7ec891ac84f0fc605c73ef46e56">cljonic::Array::Array</a></div><div class="ttdeci">Array(Array &amp;&amp;other)=default</div></div>
 <div class="ttc" id="aclasscljonic_1_1_array_html_a4fe2087ea830f87bc8bb412ab6229b09"><div class="ttname"><a href="classcljonic_1_1_array.html#a4fe2087ea830f87bc8bb412ab6229b09">cljonic::Array::DefaultElement</a></div><div class="ttdeci">const T &amp; DefaultElement() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00099">cljonic-array.hpp:99</a></div></div>
@@ -210,7 +211,6 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aclasscljonic_1_1_array_html_acd43ca26ef629c951aa322e1f636ed74"><div class="ttname"><a href="classcljonic_1_1_array.html#acd43ca26ef629c951aa322e1f636ed74">cljonic::Array::Array</a></div><div class="ttdeci">Array(const Array &amp;other)=default</div></div>
 <div class="ttc" id="aclasscljonic_1_1_array_html_adcd4ffc251f3e77679c03a4ad9360bb1"><div class="ttname"><a href="classcljonic_1_1_array.html#adcd4ffc251f3e77679c03a4ad9360bb1">cljonic::Array::size_type</a></div><div class="ttdeci">MaxElementsType size_type</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00051">cljonic-array.hpp:51</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_array_html_ae4761d30e4dbe63947423800c84fe82b"><div class="ttname"><a href="classcljonic_1_1_array.html#ae4761d30e4dbe63947423800c84fe82b">cljonic::Array::operator()</a></div><div class="ttdeci">const T &amp; operator()(const MaxElementsType index) const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00083">cljonic-array.hpp:83</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_array_html_ae5166c4ae9776ea3befeb290c59c180f"><div class="ttname"><a href="classcljonic_1_1_array.html#ae5166c4ae9776ea3befeb290c59c180f">cljonic::Array::MaxSize</a></div><div class="ttdeci">static constexpr std::size_t MaxSize() noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00104">cljonic-array.hpp:104</a></div></div>
 <div class="ttc" id="acljonic-collection-type_8hpp_html"><div class="ttname"><a href="cljonic-collection-type_8hpp.html">cljonic-collection-type.hpp</a></div></div>
 <div class="ttc" id="acljonic-shared_8hpp_html"><div class="ttname"><a href="cljonic-shared_8hpp.html">cljonic-shared.hpp</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00010">cljonic-array.hpp:11</a></div></div>
@@ -218,7 +218,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Dec 24 2024 12:42:28 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Tue Dec 24 2024 12:53:34 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

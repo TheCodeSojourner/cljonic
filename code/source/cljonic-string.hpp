@@ -113,7 +113,7 @@ class String
         return m_elementDefault;
     }
 
-    static constexpr std::size_t MaxSize() noexcept
+    static constexpr std::size_t MaximumCount() noexcept
     {
         return MaxElements;
     }

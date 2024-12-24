@@ -205,7 +205,7 @@ class Range
         return m_elementDefault;
     }
 
-    static constexpr auto MaxSize() noexcept
+    static constexpr auto MaximumCount() noexcept
     {
         return MaxElements;
     }
