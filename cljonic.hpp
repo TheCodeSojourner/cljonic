@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Dec 23 06:19:09 PM MST 2024
+// This file was generated Mon Dec 23 06:58:14 PM MST 2024
 
 namespace cljonic {
 
@@ -255,7 +255,8 @@ Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
 
 } // namespace cljonic
 
-#include <type_traits>
+#include <concepts>
+#include <limits>
 
 namespace cljonic {
 
@@ -720,9 +721,22 @@ return result;
 namespace cljonic {
 
 namespace core {
+template <typename F, typename C, typename... Cs>
+auto Map(F&& f, const C& c, const Cs&... cs) {
+static_assert(AllCljonicCollections<C, Cs...>, "The second through last parameters must be cljonic collections");
+static_assert(std::invocable<F, typename C::value_type, typename Cs::value_type...>,
+              "Function cannot be called with values from the specified cljonic collections");
+using ResultType = decltype(f(std::declval<typename C::value_type>(), std::declval<typename Cs::value_type>()...));
+using SizeType = decltype(c.Count());
+auto result{Array<ResultType, MinTypeMaxSize<C, Cs...>()>{}};
+for(SizeType i{0}; i < c.Count(); ++i)
+result.MConj(f(c[i], cs[i]...));
+return result;
 }
 
 }
+
+} // namespace cljonic::core
 
 #include <utility>
 
