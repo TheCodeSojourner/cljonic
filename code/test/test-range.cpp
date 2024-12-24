@@ -9,7 +9,7 @@ static constexpr int MAX_INT{std::numeric_limits<int>::max()};
 SCENARIO("Range", "[CljonicRange]")
 {
     {
-        const auto r{Range()};
+        const auto r{Range<>{}};
         CHECK(MAX_INT == r.Count());
         CHECK(0 == r[0]);
         CHECK(1 == r[1]);
@@ -20,7 +20,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(0)};
+        const auto r{Range<0>{}};
         CHECK(0 == r.Count());
         CHECK(0 == r[0]);
         CHECK(0 == r[1]);
@@ -30,7 +30,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(-10)};
+        const auto r{Range<-10>{}};
         CHECK(0 == r.Count());
         CHECK(0 == r[0]);
         CHECK(0 == r[1]);
@@ -40,7 +40,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(10)};
+        const auto r{Range<10>{}};
         CHECK(10 == r.Count());
         CHECK(0 == r[0]);
         CHECK(1 == r[1]);
@@ -65,7 +65,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(-3, -10)};
+        const auto r{Range<-3, -10>{}};
         CHECK(0 == r.Count());
         CHECK(0 == r[0]);
         CHECK(0 == r[1]);
@@ -75,7 +75,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(-3, -3)};
+        const auto r{Range<-3, -3>{}};
         CHECK(0 == r.Count());
         CHECK(0 == r[0]);
         CHECK(0 == r[1]);
@@ -85,7 +85,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(-3, 10)};
+        const auto r{Range<-3, 10>{}};
         CHECK(13 == r.Count());
         CHECK(-3 == r[0]);
         CHECK(-2 == r[1]);
@@ -106,7 +106,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(10, 10, 0)};
+        const auto r{Range<10, 10, 0>{}};
         CHECK(0 == r.Count());
         CHECK(0 == r[0]);
         CHECK(0 == r[1]);
@@ -116,7 +116,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(10, 20, 0)};
+        const auto r{Range<10, 20, 0>{}};
         CHECK(MAX_INT == r.Count());
         CHECK(10 == r[0]);
         CHECK(10 == r[1]);
@@ -126,7 +126,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(20, 10, 0)};
+        const auto r{Range<20, 10, 0>{}};
         CHECK(MAX_INT == r.Count());
         CHECK(20 == r[0]);
         CHECK(20 == r[1]);
@@ -136,7 +136,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(3, 10, 4)};
+        const auto r{Range<3, 10, 4>{}};
         CHECK(2 == r.Count());
         CHECK(3 == r[0]);
         CHECK(7 == r[1]);
@@ -146,7 +146,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(3, 10, 3)};
+        const auto r{Range<3, 10, 3>{}};
         CHECK(3 == r.Count());
         CHECK(3 == r[0]);
         CHECK(6 == r[1]);
@@ -157,7 +157,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(100, 0, -10)};
+        const auto r{Range<100, 0, -10>{}};
         CHECK(10 == r.Count());
         CHECK(100 == r[0]);
         CHECK(90 == r[1]);
@@ -175,7 +175,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(10, -10, -1)};
+        const auto r{Range<10, -10, -1>{}};
         CHECK(20 == r.Count());
         CHECK(10 == r[0]);
         CHECK(9 == r[1]);
@@ -203,7 +203,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(10, 0, -1)};
+        const auto r{Range<10, 0, -1>{}};
         CHECK(10 == r.Count());
         CHECK(10 == r[0]);
         CHECK(9 == r[1]);
@@ -221,7 +221,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(5, -5, -2)};
+        const auto r{Range<5, -5, -2>{}};
         CHECK(5 == r.Count());
         CHECK(5 == r[0]);
         CHECK(3 == r[1]);
@@ -234,7 +234,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(-5, 5, -1)};
+        const auto r{Range<-5, 5, -1>{}};
         CHECK(0 == r.Count());
         CHECK(0 == r[0]);
         CHECK(0 == r[MAX_INT - 1]);
@@ -243,7 +243,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(-1, -10, -2)};
+        const auto r{Range<-1, -10, -2>{}};
         CHECK(5 == r.Count());
         CHECK(-1 == r[0]);
         CHECK(-3 == r[1]);
@@ -256,7 +256,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(4, 0, -1)};
+        const auto r{Range<4, 0, -1>{}};
         CHECK(4 == r.Count());
         CHECK(4 == r[0]);
         CHECK(3 == r[1]);
@@ -268,7 +268,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(0, -5, -1)};
+        const auto r{Range<0, -5, -1>{}};
         CHECK(5 == r.Count());
         CHECK(0 == r[0]);
         CHECK(-1 == r[1]);
@@ -281,7 +281,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(10, 0, -15)};
+        const auto r{Range<10, 0, -15>{}};
         CHECK(1 == r.Count());
         CHECK(10 == r[0]);
         CHECK(0 == r[MAX_INT - 1]);
@@ -290,7 +290,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(-5, -10, -6)};
+        const auto r{Range<-5, -10, -6>{}};
         CHECK(1 == r.Count());
         CHECK(-5 == r[0]);
         CHECK(0 == r[MAX_INT - 1]);
@@ -299,7 +299,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(-5, -10, 6)};
+        const auto r{Range<-5, -10, 6>{}};
         CHECK(0 == r.Count());
         CHECK(0 == r[0]);
         CHECK(0 == r[MAX_INT - 1]);
@@ -308,7 +308,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(0, 10, 2)};
+        const auto r{Range<0, 10, 2>{}};
         CHECK(5 == r.Count());
         CHECK(0 == r[0]);
         CHECK(2 == r[1]);
@@ -321,7 +321,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(1, 10, 3)};
+        const auto r{Range<1, 10, 3>{}};
         CHECK(3 == r.Count());
         CHECK(1 == r[0]);
         CHECK(4 == r[1]);
@@ -332,7 +332,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(5, 6, 1)};
+        const auto r{Range<5, 6, 1>{}};
         CHECK(1 == r.Count());
         CHECK(5 == r[0]);
         CHECK(0 == r[MAX_INT - 1]);
@@ -341,7 +341,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(0, 5, 1)};
+        const auto r{Range<0, 5, 1>{}};
         CHECK(5 == r.Count());
         CHECK(0 == r[0]);
         CHECK(1 == r[1]);
@@ -354,7 +354,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(10, 5, 2)};
+        const auto r{Range<10, 5, 2>{}};
         CHECK(0 == r.Count());
         CHECK(0 == r[0]);
         CHECK(0 == r[MAX_INT - 1]);
@@ -363,7 +363,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(0, 0, 1)};
+        const auto r{Range<0, 0, 1>{}};
         CHECK(0 == r.Count());
         CHECK(0 == r[0]);
         CHECK(0 == r[MAX_INT - 1]);
@@ -372,7 +372,7 @@ SCENARIO("Range", "[CljonicRange]")
     }
 
     {
-        const auto r{Range(0, 10, 20)};
+        const auto r{Range<0, 10, 20>{}};
         CHECK(1 == r.Count());
         CHECK(0 == r[0]);
         CHECK(0 == r[MAX_INT - 1]);

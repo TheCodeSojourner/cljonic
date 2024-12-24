@@ -18,13 +18,13 @@ SCENARIO("Every", "[CljonicCoreEvery]")
     CHECK(false == Every(Less10, Array{10}));
     CHECK(true == Every(Less10, Array{1, 2, 3}));
 
-    CHECK(true == Every(Less10, Range(0)));
-    CHECK(false == Every(Less10, Range(11)));
-    CHECK(true == Every(Less10, Range(10)));
+    CHECK(true == Every(Less10, Range<0>{}));
+    CHECK(false == Every(Less10, Range<11>{}));
+    CHECK(true == Every(Less10, Range<10>{}));
 
-    CHECK(true == Every(Less10, Repeat(0, 10)));
-    CHECK(false == Every(Less10, Repeat(10, 10)));
-    CHECK(true == Every(Less10, Repeat(4, 1)));
+    CHECK(true == Every(Less10, Repeat<0, int>{10}));
+    CHECK(false == Every(Less10, Repeat<10, int>{10}));
+    CHECK(true == Every(Less10, Repeat<3, int>{1}));
 
     CHECK(true == Every(Less10, Set<int, 5>{}));
     CHECK(false == Every(Less10, Set{10, 11, 12}));

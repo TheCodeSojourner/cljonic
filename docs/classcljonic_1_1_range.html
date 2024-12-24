@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cljonic: cljonic::Range Class Reference</title>
+<title>cljonic: cljonic::Range&lt; StartEndStep &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -78,8 +78,9 @@ $(function() {
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classcljonic_1_1_range-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">cljonic::Range Class Reference</div></div>
+  <div class="headertitle"><div class="title">cljonic::Range&lt; StartEndStep &gt; Class Template Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
@@ -87,354 +88,141 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:aec6f8184d20dd0991d01bdc38642530f" id="r_aec6f8184d20dd0991d01bdc38642530f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#aec6f8184d20dd0991d01bdc38642530f">cljonic_collection_type</a> = std::integral_constant&lt; <a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6">CljonicCollectionType</a>, <a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a87ba2ecc8b6915e8bd6f5089918229fd">CljonicCollectionType::Range</a> &gt;</td></tr>
-<tr class="separator:aec6f8184d20dd0991d01bdc38642530f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a07968300a5228a4c9ca1837018fce1d0" id="r_a07968300a5228a4c9ca1837018fce1d0"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a07968300a5228a4c9ca1837018fce1d0">size_type</a> = std::size_t</td></tr>
-<tr class="separator:a07968300a5228a4c9ca1837018fce1d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02dff91ca1e6c5a3b2daa1be13aa03b7" id="r_a02dff91ca1e6c5a3b2daa1be13aa03b7"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a02dff91ca1e6c5a3b2daa1be13aa03b7">value_type</a> = int</td></tr>
-<tr class="separator:a02dff91ca1e6c5a3b2daa1be13aa03b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73f8a2a8b19d39dd4ff7448e242385d0" id="r_a73f8a2a8b19d39dd4ff7448e242385d0"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a73f8a2a8b19d39dd4ff7448e242385d0">cljonic_collection_type</a> = std::integral_constant&lt; <a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6">CljonicCollectionType</a>, <a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a87ba2ecc8b6915e8bd6f5089918229fd">CljonicCollectionType::Range</a> &gt;</td></tr>
+<tr class="separator:a73f8a2a8b19d39dd4ff7448e242385d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd0d46f90fd5d84c0a8e3604696eaf50" id="r_acd0d46f90fd5d84c0a8e3604696eaf50"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#acd0d46f90fd5d84c0a8e3604696eaf50">size_type</a> = SizeType</td></tr>
+<tr class="separator:acd0d46f90fd5d84c0a8e3604696eaf50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdbf141009a48817b1fba7d63814f7d5" id="r_abdbf141009a48817b1fba7d63814f7d5"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#abdbf141009a48817b1fba7d63814f7d5">value_type</a> = int</td></tr>
+<tr class="separator:abdbf141009a48817b1fba7d63814f7d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af11ee80d5d35b515dc9734f6563e2655" id="r_af11ee80d5d35b515dc9734f6563e2655"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range</a> () noexcept</td></tr>
-<tr class="separator:af11ee80d5d35b515dc9734f6563e2655"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42667636f358732ff850422d5f341650" id="r_a42667636f358732ff850422d5f341650"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a42667636f358732ff850422d5f341650">Range</a> (const int <a class="el" href="classcljonic_1_1_range.html#a7c37faa169f1bacd3639c6dbbb541374">end</a>) noexcept</td></tr>
-<tr class="separator:a42667636f358732ff850422d5f341650"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f2c954b09064a8a772a744fd902ea67" id="r_a3f2c954b09064a8a772a744fd902ea67"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a3f2c954b09064a8a772a744fd902ea67">Range</a> (const int start, const int <a class="el" href="classcljonic_1_1_range.html#a7c37faa169f1bacd3639c6dbbb541374">end</a>) noexcept</td></tr>
-<tr class="separator:a3f2c954b09064a8a772a744fd902ea67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a176b7a831b2a894a588566d85ab60e95" id="r_a176b7a831b2a894a588566d85ab60e95"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a176b7a831b2a894a588566d85ab60e95">Range</a> (const int start, const int <a class="el" href="classcljonic_1_1_range.html#a7c37faa169f1bacd3639c6dbbb541374">end</a>, const int step) noexcept</td></tr>
-<tr class="separator:a176b7a831b2a894a588566d85ab60e95"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a655a70d4fc38cc09474f7cce8401e530" id="r_a655a70d4fc38cc09474f7cce8401e530"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a655a70d4fc38cc09474f7cce8401e530">Range</a> (const <a class="el" href="classcljonic_1_1_range.html">Range</a> &amp;other)=default</td></tr>
-<tr class="separator:a655a70d4fc38cc09474f7cce8401e530"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a264a383785b2be187997443a378edc61" id="r_a264a383785b2be187997443a378edc61"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a264a383785b2be187997443a378edc61">Range</a> (<a class="el" href="classcljonic_1_1_range.html">Range</a> &amp;&amp;other)=default</td></tr>
-<tr class="separator:a264a383785b2be187997443a378edc61"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4121256ad7bda9a840d53561485e1b49" id="r_a4121256ad7bda9a840d53561485e1b49"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcljonic_1_1_collection_iterator.html">Iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a4121256ad7bda9a840d53561485e1b49">begin</a> () const</td></tr>
-<tr class="separator:a4121256ad7bda9a840d53561485e1b49"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c37faa169f1bacd3639c6dbbb541374" id="r_a7c37faa169f1bacd3639c6dbbb541374"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcljonic_1_1_collection_iterator.html">Iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a7c37faa169f1bacd3639c6dbbb541374">end</a> () const</td></tr>
-<tr class="separator:a7c37faa169f1bacd3639c6dbbb541374"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5e94d66d1782493262f0be9d8b1ef2b" id="r_ad5e94d66d1782493262f0be9d8b1ef2b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#ad5e94d66d1782493262f0be9d8b1ef2b">operator[]</a> (const <a class="el" href="classcljonic_1_1_range.html#a07968300a5228a4c9ca1837018fce1d0">size_type</a> index) const noexcept</td></tr>
-<tr class="separator:ad5e94d66d1782493262f0be9d8b1ef2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa6798fcb12574cad2d907166167e628f" id="r_aa6798fcb12574cad2d907166167e628f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcljonic_1_1_range.html#a07968300a5228a4c9ca1837018fce1d0">size_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#aa6798fcb12574cad2d907166167e628f">Count</a> () const noexcept</td></tr>
-<tr class="separator:aa6798fcb12574cad2d907166167e628f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8df6e93ea1cc18039b4c9d96013b2d0c" id="r_a8df6e93ea1cc18039b4c9d96013b2d0c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a8df6e93ea1cc18039b4c9d96013b2d0c">DefaultElement</a> () const noexcept</td></tr>
-<tr class="separator:a8df6e93ea1cc18039b4c9d96013b2d0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e4ee669ba49e9b4fbe191829c81092c" id="r_a9e4ee669ba49e9b4fbe191829c81092c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a9e4ee669ba49e9b4fbe191829c81092c">Range</a> () noexcept</td></tr>
+<tr class="separator:a9e4ee669ba49e9b4fbe191829c81092c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a388a8a440c82ded8acad5368b44f6019" id="r_a388a8a440c82ded8acad5368b44f6019"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcljonic_1_1_collection_iterator.html">Iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a388a8a440c82ded8acad5368b44f6019">begin</a> () const</td></tr>
+<tr class="separator:a388a8a440c82ded8acad5368b44f6019"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04d348f0fcb0516b5bdba20e5dd3c977" id="r_a04d348f0fcb0516b5bdba20e5dd3c977"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcljonic_1_1_collection_iterator.html">Iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a04d348f0fcb0516b5bdba20e5dd3c977">end</a> () const</td></tr>
+<tr class="separator:a04d348f0fcb0516b5bdba20e5dd3c977"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3cf522529b4c90c208bb9b7bf402658c" id="r_a3cf522529b4c90c208bb9b7bf402658c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a3cf522529b4c90c208bb9b7bf402658c">operator[]</a> (const <a class="el" href="classcljonic_1_1_range.html#acd0d46f90fd5d84c0a8e3604696eaf50">size_type</a> index) const noexcept</td></tr>
+<tr class="separator:a3cf522529b4c90c208bb9b7bf402658c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5af81adc8090f95793916837a950b5c1" id="r_a5af81adc8090f95793916837a950b5c1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcljonic_1_1_range.html#acd0d46f90fd5d84c0a8e3604696eaf50">size_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a5af81adc8090f95793916837a950b5c1">Count</a> () const noexcept</td></tr>
+<tr class="separator:a5af81adc8090f95793916837a950b5c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abee19635875a42f23f8fbc0aae38507d" id="r_abee19635875a42f23f8fbc0aae38507d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#abee19635875a42f23f8fbc0aae38507d">DefaultElement</a> () const noexcept</td></tr>
+<tr class="separator:abee19635875a42f23f8fbc0aae38507d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a68d3f22bb5b2b98eb2436d40a1fd3fc8" id="r_a68d3f22bb5b2b98eb2436d40a1fd3fc8"><td class="memItemLeft" align="right" valign="top">static constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html#a68d3f22bb5b2b98eb2436d40a1fd3fc8">MaxSize</a> () noexcept</td></tr>
+<tr class="separator:a68d3f22bb5b2b98eb2436d40a1fd3fc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="anchor" id="Range"></a>The <b><a class="el" href="classcljonic_1_1_range.html">Range</a></b> type is a fundamental immutable collection type in cljonic. It is implemented as a <b>lazy</b> <b>sequence</b> of <b>"int"</b>. Many <a class="el" href="namespacecljonic.html#Namespace_Core">Core</a> functions accept <a class="el" href="classcljonic_1_1_range.html">Range</a> arguments. </p>
+<div class="textblock"><div class="compoundTemplParams">template&lt;int... StartEndStep&gt;<br />
+class cljonic::Range&lt; StartEndStep &gt;</div><p><a class="anchor" id="Range"></a>The <b><a class="el" href="classcljonic_1_1_range.html">Range</a></b> type is a fundamental immutable collection type in cljonic. It is implemented as a <b>lazy</b> <b>sequence</b> of <b>"int"</b>. Many <a class="el" href="namespacecljonic.html#Namespace_Core">Core</a> functions accept <a class="el" href="classcljonic_1_1_range.html">Range</a> arguments. </p>
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00014">14</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00018">18</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="aec6f8184d20dd0991d01bdc38642530f" name="aec6f8184d20dd0991d01bdc38642530f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aec6f8184d20dd0991d01bdc38642530f">&#9670;&#160;</a></span>cljonic_collection_type</h2>
+<a id="a73f8a2a8b19d39dd4ff7448e242385d0" name="a73f8a2a8b19d39dd4ff7448e242385d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a73f8a2a8b19d39dd4ff7448e242385d0">&#9670;&#160;</a></span>cljonic_collection_type</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;int... StartEndStep&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classcljonic_1_1_range.html#aec6f8184d20dd0991d01bdc38642530f">cljonic::Range::cljonic_collection_type</a> =  std::integral_constant&lt;<a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6">CljonicCollectionType</a>, <a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a87ba2ecc8b6915e8bd6f5089918229fd">CljonicCollectionType::Range</a>&gt;</td>
+          <td class="memname">using <a class="el" href="classcljonic_1_1_range.html">cljonic::Range</a>&lt; StartEndStep &gt;::cljonic_collection_type =  std::integral_constant&lt;<a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6">CljonicCollectionType</a>, <a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a87ba2ecc8b6915e8bd6f5089918229fd">CljonicCollectionType::Range</a>&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>There are four <b><a class="el" href="classcljonic_1_1_range.html">Range</a></b> constructors:</p><ul>
-<li><b><a class="el" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range()</a></b> returns a <b><a class="el" href="classcljonic_1_1_range.html">Range</a></b> from <b>0</b> (zero) to <b>std::numeric_limits&lt;int&gt;::max()</b> </li>
-<li><b>Range(end)</b> returns a <b><a class="el" href="classcljonic_1_1_range.html">Range</a></b> from <b>0</b> (zero) to <b>end-1</b> </li>
-<li><b>Range(start, end)</b> returns a <b><a class="el" href="classcljonic_1_1_range.html">Range</a></b> from <b>start</b> to <b>end-1</b> </li>
-<li><b>Range(start, end, step)</b> returns the <b><a class="el" href="classcljonic_1_1_range.html">Range</a></b> <b>start</b>, <b>start+1*step</b>, <b>start+2*step</b>, etc., while <b>start+N*step</b> &lt; <b>end</b>. <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
-<div class="line"> </div>
-<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
-<div class="line"> </div>
-<div class="line"><span class="keywordtype">int</span> main()</div>
-<div class="line">{</div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r0{<a class="code hl_function" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range</a>()};             <span class="comment">// immutable, goes from 0 to std::numeric_limits&lt;int&gt;::max() by 1</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r1{<a class="code hl_function" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range</a>(0)};            <span class="comment">// immutable, empty</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r2{<a class="code hl_function" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range</a>(-10)};          <span class="comment">// immutable, empty</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r3{<a class="code hl_function" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range</a>(10)};           <span class="comment">// immutable, goes from 0 to 9 by 1</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r4{<a class="code hl_function" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range</a>(-3, -10)};      <span class="comment">// immutable, empty</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r5{<a class="code hl_function" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range</a>(-3, -3)};       <span class="comment">// immutable, empty</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r6{<a class="code hl_function" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range</a>(-3, 10)};       <span class="comment">// immutable, goes from -3 to 9 by 1</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r7{<a class="code hl_function" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range</a>(10, 10, 0)};    <span class="comment">// immutable, empty</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r8{<a class="code hl_function" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range</a>(10, 20, 0)};    <span class="comment">// immutable, has std::numeric_limits&lt;int&gt;::max() of 10</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r9{<a class="code hl_function" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range</a>(20, 10, 0)};    <span class="comment">// immutable, has std::numeric_limits&lt;int&gt;::max() of 10</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r10{<a class="code hl_function" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range</a>(3, 10, 4)};    <span class="comment">// immutable, has two elements: 3 and 7</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r11{<a class="code hl_function" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range</a>(3, 10, 3)};    <span class="comment">// immutable, has three elements: 3, 6 and 9</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r12{<a class="code hl_function" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range</a>(100, 0, -10)}; <span class="comment">// immutable, has ten elements: 100, 90, 80, ... and 10</span></div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> r13{<a class="code hl_function" href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">Range</a>(10, -10, -1)}; <span class="comment">// immutable, has twenty elements: 10, 9, ..., 0, -1, ... -9</span></div>
-<div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> 0;</div>
-<div class="line">}</div>
-<div class="ttc" id="aclasscljonic_1_1_range_html_af11ee80d5d35b515dc9734f6563e2655"><div class="ttname"><a href="classcljonic_1_1_range.html#af11ee80d5d35b515dc9734f6563e2655">cljonic::Range::Range</a></div><div class="ttdeci">Range() noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-range_8hpp_source.html#l00130">cljonic-range.hpp:130</a></div></div>
-<div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00009">cljonic-array.hpp:10</a></div></div>
-</div><!-- fragment --> </li>
-</ul>
+<pre class="fragment">  There are four ways to create a \b Range:
+      - &lt;b&gt;Range{}}&lt;/b&gt; returns a \b Range from \b 0 (zero) to \b std::numeric_limits&lt;int&gt;::max() by one
+      - &lt;b&gt;Range&lt;end&gt;{}&lt;/b&gt; returns a \b Range from \b 0 (zero) to \b end-1 by one
+      - &lt;b&gt;Range&lt;start, end&gt;{}&lt;/b&gt; returns a \b Range from \b start to \b end-1 by one
+      - &lt;b&gt;Range&lt;start, end, step&gt;{}&lt;/b&gt; returns the \b Range \b start,  \b start+1*step, \b start+2*step, etc.,
+while
+      \b start+N*step is less than \b end.
+~~~~~{.cpp}
+#include "cljonic.hpp"
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00126">126</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+using namespace cljonic;
+
+int main()
+{
+    const auto r0{Range{}};               // immutable, goes from 0 to std::numeric_limits&lt;int&gt;::max() by 1
+    const auto r1{Range&lt;0&gt;{}};            // immutable, empty
+    const auto r2{Range&lt;-10&gt;{}};          // immutable, empty
+    const auto r3{Range&lt;10&gt;{}};           // immutable, goes from 0 to 9 by 1
+    const auto r4{Range&lt;-3, -10&gt;{}};      // immutable, empty
+    const auto r5{Range&lt;-3, -3&gt;{}};       // immutable, empty
+    const auto r6{Range&lt;-3, 10&gt;{}};       // immutable, goes from -3 to 9 by 1
+    const auto r7{Range&lt;10, 10, 0&gt;{}};    // immutable, empty
+    const auto r8{Range&lt;10, 20, 0&gt;{}};    // immutable, has std::numeric_limits&lt;int&gt;::max() of 10
+    const auto r9{Range&lt;20, 10, 0&gt;{}};    // immutable, has std::numeric_limits&lt;int&gt;::max() of 20
+    const auto r10{Range&lt;3, 10, 4&gt;{}};    // immutable, has two elements: 3 and 7
+    const auto r11{Range&lt;3, 10, 3&gt;{}};    // immutable, has three elements: 3, 6 and 9
+    const auto r12{Range&lt;100, 0, -10&gt;{}}; // immutable, has ten elements: 100, 90, 80, ... and 10
+    const auto r13{Range&lt;10, -10, -1&gt;{}}; // immutable, has twenty elements: 10, 9, ..., 0, -1, ... -9
+</pre><p> Compiler Error: Number of <a class="el" href="classcljonic_1_1_range.html">Range</a> parameters must be less than or equal to three const auto r{<a class="el" href="classcljonic_1_1_range.html">Range</a>&lt;10, -10, -1, 1&gt;{}}; </p><pre class="fragment">    return 0;
+}
+~~~~~
+</pre> 
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00155">155</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a07968300a5228a4c9ca1837018fce1d0" name="a07968300a5228a4c9ca1837018fce1d0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a07968300a5228a4c9ca1837018fce1d0">&#9670;&#160;</a></span>size_type</h2>
+<a id="acd0d46f90fd5d84c0a8e3604696eaf50" name="acd0d46f90fd5d84c0a8e3604696eaf50"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd0d46f90fd5d84c0a8e3604696eaf50">&#9670;&#160;</a></span>size_type</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;int... StartEndStep&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classcljonic_1_1_range.html#a07968300a5228a4c9ca1837018fce1d0">cljonic::Range::size_type</a> =  std::size_t</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00127">127</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a02dff91ca1e6c5a3b2daa1be13aa03b7" name="a02dff91ca1e6c5a3b2daa1be13aa03b7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a02dff91ca1e6c5a3b2daa1be13aa03b7">&#9670;&#160;</a></span>value_type</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="classcljonic_1_1_range.html#a02dff91ca1e6c5a3b2daa1be13aa03b7">cljonic::Range::value_type</a> =  int</td>
+          <td class="memname">using <a class="el" href="classcljonic_1_1_range.html">cljonic::Range</a>&lt; StartEndStep &gt;::size_type =  SizeType</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00128">128</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00156">156</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="af11ee80d5d35b515dc9734f6563e2655" name="af11ee80d5d35b515dc9734f6563e2655"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af11ee80d5d35b515dc9734f6563e2655">&#9670;&#160;</a></span>Range() <span class="overload">[1/6]</span></h2>
+<a id="abdbf141009a48817b1fba7d63814f7d5" name="abdbf141009a48817b1fba7d63814f7d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abdbf141009a48817b1fba7d63814f7d5">&#9670;&#160;</a></span>value_type</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
+<div class="memtemplate">
+template&lt;int... StartEndStep&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">cljonic::Range::Range </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td class="memname">using <a class="el" href="classcljonic_1_1_range.html">cljonic::Range</a>&lt; StartEndStep &gt;::value_type =  int</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00130">130</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a42667636f358732ff850422d5f341650" name="a42667636f358732ff850422d5f341650"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a42667636f358732ff850422d5f341650">&#9670;&#160;</a></span>Range() <span class="overload">[2/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">cljonic::Range::Range </td>
-          <td>(</td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>end</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00136">136</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a3f2c954b09064a8a772a744fd902ea67" name="a3f2c954b09064a8a772a744fd902ea67"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f2c954b09064a8a772a744fd902ea67">&#9670;&#160;</a></span>Range() <span class="overload">[3/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">cljonic::Range::Range </td>
-          <td>(</td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>start</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>end</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00142">142</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a176b7a831b2a894a588566d85ab60e95" name="a176b7a831b2a894a588566d85ab60e95"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a176b7a831b2a894a588566d85ab60e95">&#9670;&#160;</a></span>Range() <span class="overload">[4/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">cljonic::Range::Range </td>
-          <td>(</td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>start</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>end</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>step</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00148">148</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a655a70d4fc38cc09474f7cce8401e530" name="a655a70d4fc38cc09474f7cce8401e530"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a655a70d4fc38cc09474f7cce8401e530">&#9670;&#160;</a></span>Range() <span class="overload">[5/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">cljonic::Range::Range </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcljonic_1_1_range.html">Range</a> &amp;&#160;</td>
-          <td class="paramname"><em>other</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">default</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a264a383785b2be187997443a378edc61" name="a264a383785b2be187997443a378edc61"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a264a383785b2be187997443a378edc61">&#9670;&#160;</a></span>Range() <span class="overload">[6/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">cljonic::Range::Range </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcljonic_1_1_range.html">Range</a> &amp;&amp;&#160;</td>
-          <td class="paramname"><em>other</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">default</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a4121256ad7bda9a840d53561485e1b49" name="a4121256ad7bda9a840d53561485e1b49"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4121256ad7bda9a840d53561485e1b49">&#9670;&#160;</a></span>begin()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcljonic_1_1_collection_iterator.html">Iterator</a> cljonic::Range::begin </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00157">157</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
-<a id="aa6798fcb12574cad2d907166167e628f" name="aa6798fcb12574cad2d907166167e628f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa6798fcb12574cad2d907166167e628f">&#9670;&#160;</a></span>Count()</h2>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a9e4ee669ba49e9b4fbe191829c81092c" name="a9e4ee669ba49e9b4fbe191829c81092c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e4ee669ba49e9b4fbe191829c81092c">&#9670;&#160;</a></span>Range()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;int... StartEndStep&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcljonic_1_1_range.html#a07968300a5228a4c9ca1837018fce1d0">size_type</a> cljonic::Range::Count </td>
+          <td class="memname"><a class="el" href="classcljonic_1_1_range.html">cljonic::Range</a>&lt; StartEndStep &gt;::Range </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td> const</td>
+          <td></td>
         </tr>
       </table>
   </td>
@@ -444,48 +232,24 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00174">174</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00159">159</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a8df6e93ea1cc18039b4c9d96013b2d0c" name="a8df6e93ea1cc18039b4c9d96013b2d0c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8df6e93ea1cc18039b4c9d96013b2d0c">&#9670;&#160;</a></span>DefaultElement()</h2>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a388a8a440c82ded8acad5368b44f6019" name="a388a8a440c82ded8acad5368b44f6019"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a388a8a440c82ded8acad5368b44f6019">&#9670;&#160;</a></span>begin()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;int... StartEndStep&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int cljonic::Range::DefaultElement </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00179">179</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a7c37faa169f1bacd3639c6dbbb541374" name="a7c37faa169f1bacd3639c6dbbb541374"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c37faa169f1bacd3639c6dbbb541374">&#9670;&#160;</a></span>end()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcljonic_1_1_collection_iterator.html">Iterator</a> cljonic::Range::end </td>
+          <td class="memname"><a class="el" href="classcljonic_1_1_collection_iterator.html">Iterator</a> <a class="el" href="classcljonic_1_1_range.html">cljonic::Range</a>&lt; StartEndStep &gt;::begin </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -498,23 +262,141 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00162">162</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00181">181</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
-<a id="ad5e94d66d1782493262f0be9d8b1ef2b" name="ad5e94d66d1782493262f0be9d8b1ef2b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad5e94d66d1782493262f0be9d8b1ef2b">&#9670;&#160;</a></span>operator[]()</h2>
+<a id="a5af81adc8090f95793916837a950b5c1" name="a5af81adc8090f95793916837a950b5c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5af81adc8090f95793916837a950b5c1">&#9670;&#160;</a></span>Count()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;int... StartEndStep&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int cljonic::Range::operator[] </td>
+          <td class="memname"><a class="el" href="classcljonic_1_1_range.html#acd0d46f90fd5d84c0a8e3604696eaf50">size_type</a> <a class="el" href="classcljonic_1_1_range.html">cljonic::Range</a>&lt; StartEndStep &gt;::Count </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcljonic_1_1_range.html#a07968300a5228a4c9ca1837018fce1d0">size_type</a>&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00198">198</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+
+</div>
+</div>
+<a id="abee19635875a42f23f8fbc0aae38507d" name="abee19635875a42f23f8fbc0aae38507d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abee19635875a42f23f8fbc0aae38507d">&#9670;&#160;</a></span>DefaultElement()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int... StartEndStep&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classcljonic_1_1_range.html">cljonic::Range</a>&lt; StartEndStep &gt;::DefaultElement </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00203">203</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a04d348f0fcb0516b5bdba20e5dd3c977" name="a04d348f0fcb0516b5bdba20e5dd3c977"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04d348f0fcb0516b5bdba20e5dd3c977">&#9670;&#160;</a></span>end()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int... StartEndStep&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcljonic_1_1_collection_iterator.html">Iterator</a> <a class="el" href="classcljonic_1_1_range.html">cljonic::Range</a>&lt; StartEndStep &gt;::end </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00186">186</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a68d3f22bb5b2b98eb2436d40a1fd3fc8" name="a68d3f22bb5b2b98eb2436d40a1fd3fc8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68d3f22bb5b2b98eb2436d40a1fd3fc8">&#9670;&#160;</a></span>MaxSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int... StartEndStep&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static constexpr auto <a class="el" href="classcljonic_1_1_range.html">cljonic::Range</a>&lt; StartEndStep &gt;::MaxSize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00208">208</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a3cf522529b4c90c208bb9b7bf402658c" name="a3cf522529b4c90c208bb9b7bf402658c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3cf522529b4c90c208bb9b7bf402658c">&#9670;&#160;</a></span>operator[]()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int... StartEndStep&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classcljonic_1_1_range.html">cljonic::Range</a>&lt; StartEndStep &gt;::operator[] </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcljonic_1_1_range.html#acd0d46f90fd5d84c0a8e3604696eaf50">size_type</a>&#160;</td>
           <td class="paramname"><em>index</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -526,7 +408,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00167">167</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00191">191</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
@@ -536,7 +418,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Dec 23 2024 11:12:19 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Tue Dec 24 2024 12:42:28 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

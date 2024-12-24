@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Dec 23 11:12:19 AM MST 2024
+// This file was generated Tue Dec 24 12:42:28 PM MST 2024
 
 namespace cljonic {
 
@@ -166,6 +166,19 @@ bool AreEqual(CString auto a, CString auto b) {
 return std::strcmp(a, b) == 0;
 }
 
+constexpr auto Min(auto a, auto b) {
+return (a < b) ? a : b;
+}
+
+template <typename C, typename... Cs>
+constexpr auto MinTypeMaxSize() {
+if constexpr(sizeof...(Cs) == 0) {
+return C::MaxSize();
+} else {
+return (Min(C::MaxSize(), Cs::MaxSize()), ...);
+}
+}
+
 } // namespace cljonic
 
 #include <cstring>
@@ -189,12 +202,10 @@ using value_type = T;
 Array() noexcept : m_elementCount(0), m_elementDefault(T{}) {
 }
 
-explicit Array(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{}) {
-for(const auto& element : elements) {
-if(m_elementCount == MaxElements)
-break;
-m_elements[m_elementCount++] = element;
-}
+explicit Array(const std::initializer_list<const T> elements) noexcept
+    : m_elementCount(Min(MaxElements, elements.size())), m_elementDefault(T{}) {
+for(size_type i{0}; i < m_elementCount; ++i)
+m_elements[i] = *(elements.begin() + i);
 }
 
 Array(const Array& other) = default;
@@ -216,12 +227,21 @@ const T& operator()(const MaxElementsType index) const noexcept {
 return this->operator[](index);
 }
 
+void MConj(const T& t) noexcept {
+if(m_elementCount < MaxElements)
+m_elements[m_elementCount++] = t;
+}
+
 [[nodiscard]] MaxElementsType Count() const noexcept {
 return m_elementCount;
 }
 
 const T& DefaultElement() const noexcept {
 return m_elementDefault;
+}
+
+static constexpr std::size_t MaxSize() noexcept {
+return MaxElements;
 }
 };
 
@@ -230,24 +250,43 @@ Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
 
 } // namespace cljonic
 
-#include <type_traits>
+#include <concepts>
+#include <limits>
 
 namespace cljonic {
 
+template <int... StartEndStep>
 class Range {
-using Iterator = CollectionIterator<Range>;
+static_assert(sizeof...(StartEndStep) <= 3, "Number of Range parameters must be less than or equal to three");
 
-std::size_t m_elementCount;
+using Iterator = CollectionIterator<Range>;
+using SizeType = std::size_t;
+
+SizeType m_elementCount;
 int m_elementDefault;
 int m_elementStart;
 int m_elementStep;
 
-constexpr int Count(const int start, const int end, const int step) noexcept {
-return ((end - start) / step) + ((((end - start) % step) == 0) ? 0 : 1);
+static constexpr auto RangeCount(const int start, const int end, const int step) noexcept {
+return (0 == step) ? 0 : ((end - start) / step) + ((((end - start) % step) == 0) ? 0 : 1);
 }
 
+static constexpr int values[] = {StartEndStep...};
+
+static constexpr auto MaxElements = []() constexpr {
+if constexpr(sizeof...(StartEndStep) == 1)
+return static_cast<SizeType>(values[0]);
+else if constexpr(sizeof...(StartEndStep) == 2)
+return static_cast<SizeType>(values[1] - values[0]);
+else if constexpr(sizeof...(StartEndStep) == 3) {
+return static_cast<SizeType>(RangeCount(StartEndStep...));
+} else {
+return std::numeric_limits<SizeType>::max();
+}
+}();
+
 constexpr void InitializeMembers(const int count, const int start, const int step) noexcept {
-m_elementCount = static_cast<std::size_t>(count);
+m_elementCount = static_cast<SizeType>(count);
 m_elementDefault = 0;
 m_elementStart = start;
 m_elementStep = step;
@@ -275,7 +314,7 @@ constexpr void InitializeStartEndStepWithNegativeStep(const int start, const int
 if(start <= end)
 InitializeMembers(0, 0, step);
 else {
-const int count{Count(start, end, step)};
+const int count{RangeCount(start, end, step)};
 InitializeMembers(count, start, step);
 }
 }
@@ -284,7 +323,7 @@ constexpr void InitializeStartEndStepWithPositiveStep(const int start, const int
 if(end <= start)
 InitializeMembers(0, 0, step);
 else {
-const int count{Count(start, end, step)};
+const int count{RangeCount(start, end, step)};
 InitializeMembers(count, start, step);
 }
 }
@@ -303,31 +342,22 @@ InitializeStartEndStepWithPositiveStep(start, end, step);
 
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Range>;
-using size_type = std::size_t;
+using size_type = SizeType;
 using value_type = int;
 
 Range() noexcept
     : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0} {
+
+if constexpr(sizeof...(StartEndStep) == 1) {
+InitializeEnd(values[0]);
+} else if constexpr(sizeof...(StartEndStep) == 2) {
+InitializeStartEnd(values[0], values[1]);
+} else if constexpr(sizeof...(StartEndStep) == 3) {
+InitializeStartEndStep(values[0], values[1], values[2]);
+} else {
 Initialize();
 }
-
-explicit Range(const int end) noexcept
-    : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0} {
-InitializeEnd(end);
 }
-
-explicit Range(const int start, const int end) noexcept
-    : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0} {
-InitializeStartEnd(start, end);
-}
-
-explicit Range(const int start, const int end, const int step) noexcept
-    : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0} {
-InitializeStartEndStep(start, end, step);
-}
-
-Range(const Range& other) = default;
-Range(Range&& other) = default;
 
 [[nodiscard]] Iterator begin() const {
 return Iterator{*this, 0};
@@ -350,6 +380,10 @@ return m_elementCount;
 int DefaultElement() const noexcept {
 return m_elementDefault;
 }
+
+static constexpr auto MaxSize() noexcept {
+return MaxElements;
+}
 };
 
 } // namespace cljonic
@@ -358,7 +392,7 @@ return m_elementDefault;
 
 namespace cljonic {
 
-template <typename T>
+template <std::size_t MaxElements, typename T>
 class Repeat {
 using Iterator = CollectionIterator<Repeat>;
 
@@ -371,12 +405,7 @@ using cljonic_collection_type = std::integral_constant<CljonicCollectionType, Cl
 using size_type = std::size_t;
 using value_type = T;
 
-explicit Repeat(const T& t) noexcept
-    : m_elementCount{std::numeric_limits<std::size_t>::max()}, m_elementDefault{T{}}, m_elementValue{t} {
-}
-
-explicit Repeat(const size_type count, const T& t) noexcept
-    : m_elementCount{count}, m_elementDefault{T{}}, m_elementValue{t} {
+Repeat(const T& t) noexcept : m_elementCount{MaxElements}, m_elementDefault{T{}}, m_elementValue{t} {
 }
 
 Repeat(const Repeat& other) = default;
@@ -401,7 +430,14 @@ return m_elementCount;
 const T& DefaultElement() const noexcept {
 return m_elementDefault;
 }
+
+static constexpr auto MaxSize() noexcept {
+return MaxElements;
+}
 };
+
+template <typename T>
+Repeat(T) -> Repeat<std::numeric_limits<std::size_t>::max(), T>;
 
 } // namespace cljonic
 
@@ -487,6 +523,14 @@ return not IsUniqueElementBy(f, element);
 bool Contains(const T& element) const noexcept {
 return not IsUniqueElement(element);
 }
+
+int DefaultElement() const noexcept {
+return m_elementDefault;
+}
+
+static constexpr std::size_t MaxSize() noexcept {
+return MaxElements;
+}
 };
 
 template <typename... Args>
@@ -557,6 +601,14 @@ return this->operator[](index);
 
 [[nodiscard]] MaxElementsType Count() const noexcept {
 return m_elementCount;
+}
+
+int DefaultElement() const noexcept {
+return m_elementDefault;
+}
+
+static constexpr std::size_t MaxSize() noexcept {
+return MaxElements;
 }
 };
 
@@ -661,6 +713,26 @@ return result;
 
 } // namespace cljonic::core
 
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C, typename... Cs>
+auto Map(F&& f, const C& c, const Cs&... cs) {
+static_assert(AllCljonicCollections<C, Cs...>, "The second through last parameters must be cljonic collections");
+static_assert(std::invocable<F, typename C::value_type, typename Cs::value_type...>,
+              "Function cannot be called with values from the specified cljonic collections");
+using ResultType = decltype(f(std::declval<typename C::value_type>(), std::declval<typename Cs::value_type>()...));
+using SizeType = decltype(c.Count());
+auto result{Array<ResultType, MinTypeMaxSize<C, Cs...>()>{}};
+for(SizeType i{0}; i < c.Count(); ++i)
+result.MConj(f(c[i], cs[i]...));
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
 #include <utility>
 
 namespace cljonic {
@@ -680,6 +752,7 @@ return f(args..., std::forward<decltype(rest)>(rest)...);
 } // namespace cljonic::core
 
 #include <numeric>
+#include <tuple>
 
 namespace cljonic {
 

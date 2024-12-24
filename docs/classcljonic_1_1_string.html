@@ -78,6 +78,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classcljonic_1_1_string-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">cljonic::String&lt; MaxElements &gt; Class Template Reference</div></div>
 </div><!--header-->
@@ -116,6 +117,13 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a47191942124981717092cc4a899f48c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82d05153a7a948455a644a42d7829ca4" id="r_a82d05153a7a948455a644a42d7829ca4"><td class="memItemLeft" align="right" valign="top">MaxElementsType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_string.html#a82d05153a7a948455a644a42d7829ca4">Count</a> () const noexcept</td></tr>
 <tr class="separator:a82d05153a7a948455a644a42d7829ca4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb8ed1308f800a52b86336befba5f170" id="r_aeb8ed1308f800a52b86336befba5f170"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_string.html#aeb8ed1308f800a52b86336befba5f170">DefaultElement</a> () const noexcept</td></tr>
+<tr class="separator:aeb8ed1308f800a52b86336befba5f170"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a6135daf786e4367a35b501d0b37f834b" id="r_a6135daf786e4367a35b501d0b37f834b"><td class="memItemLeft" align="right" valign="top">static constexpr std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_string.html#a6135daf786e4367a35b501d0b37f834b">MaxSize</a> () noexcept</td></tr>
+<tr class="separator:a6135daf786e4367a35b501d0b37f834b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;std::size_t MaxElements&gt;<br />
@@ -153,7 +161,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 <div class="ttc" id="aclasscljonic_1_1_string_html"><div class="ttname"><a href="classcljonic_1_1_string.html">cljonic::String</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-string_8hpp_source.html#l00020">cljonic-string.hpp:21</a></div></div>
-<div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00009">cljonic-array.hpp:10</a></div></div>
+<div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00010">cljonic-array.hpp:11</a></div></div>
 </div><!-- fragment --> 
 <p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00052">52</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
@@ -400,6 +408,35 @@ template&lt;std::size_t MaxElements&gt; </div>
 
 </div>
 </div>
+<a id="aeb8ed1308f800a52b86336befba5f170" name="aeb8ed1308f800a52b86336befba5f170"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb8ed1308f800a52b86336befba5f170">&#9670;&#160;</a></span>DefaultElement()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::size_t MaxElements&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classcljonic_1_1_string.html">cljonic::String</a>&lt; MaxElements &gt;::DefaultElement </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00111">111</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+
+</div>
+</div>
 <a id="ac16fd744c65a5bf9be4520a68be1c4c5" name="ac16fd744c65a5bf9be4520a68be1c4c5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac16fd744c65a5bf9be4520a68be1c4c5">&#9670;&#160;</a></span>end()</h2>
 
@@ -426,6 +463,35 @@ template&lt;std::size_t MaxElements&gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00091">91</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a6135daf786e4367a35b501d0b37f834b" name="a6135daf786e4367a35b501d0b37f834b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6135daf786e4367a35b501d0b37f834b">&#9670;&#160;</a></span>MaxSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::size_t MaxElements&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static constexpr std::size_t <a class="el" href="classcljonic_1_1_string.html">cljonic::String</a>&lt; MaxElements &gt;::MaxSize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00116">116</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -495,7 +561,7 @@ template&lt;std::size_t MaxElements&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Dec 23 2024 11:12:19 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Tue Dec 24 2024 12:42:28 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

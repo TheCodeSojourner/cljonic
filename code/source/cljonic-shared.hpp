@@ -25,6 +25,24 @@ bool AreEqual(CString auto a, CString auto b)
     return std::strcmp(a, b) == 0;
 }
 
+constexpr auto Min(auto a, auto b)
+{
+    return (a < b) ? a : b;
+}
+
+template <typename C, typename... Cs>
+constexpr auto MinTypeMaxSize()
+{
+    if constexpr (sizeof...(Cs) == 0)
+    {
+        return C::MaxSize();
+    }
+    else
+    {
+        return (Min(C::MaxSize(), Cs::MaxSize()), ...);
+    }
+}
+
 } // namespace cljonic
 
 #endif // CLJONIC_COMMON_HPP

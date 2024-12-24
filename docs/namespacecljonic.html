@@ -153,6 +153,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ac8a1780765f9453dd427a6b6f341320b" id="r_ac8a1780765f9453dd427a6b6f341320b"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
 <tr class="memitem:ac8a1780765f9453dd427a6b6f341320b"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#ac8a1780765f9453dd427a6b6f341320b">Array</a> (Args...) -&gt; <a class="el" href="classcljonic_1_1_array.html">Array</a>&lt; std::common_type_t&lt; Args... &gt;, sizeof...(Args)&gt;</td></tr>
 <tr class="separator:ac8a1780765f9453dd427a6b6f341320b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a2410098ebaacdc3b0acbb294cfc727" id="r_a1a2410098ebaacdc3b0acbb294cfc727"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a1a2410098ebaacdc3b0acbb294cfc727"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a1a2410098ebaacdc3b0acbb294cfc727">Repeat</a> (T) -&gt; <a class="el" href="classcljonic_1_1_repeat.html">Repeat</a>&lt; std::numeric_limits&lt; std::size_t &gt;::max(), T &gt;</td></tr>
+<tr class="separator:a1a2410098ebaacdc3b0acbb294cfc727"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6363670b51f5ee431b4bd5d973af5c90" id="r_a6363670b51f5ee431b4bd5d973af5c90"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
 <tr class="memitem:a6363670b51f5ee431b4bd5d973af5c90"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a6363670b51f5ee431b4bd5d973af5c90">Set</a> (Args...) -&gt; <a class="el" href="classcljonic_1_1_set.html">Set</a>&lt; std::common_type_t&lt; Args... &gt;, sizeof...(Args)&gt;</td></tr>
 <tr class="separator:a6363670b51f5ee431b4bd5d973af5c90"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -163,6 +166,11 @@ Functions</h2></td></tr>
 <tr class="separator:a284b6a3ebad065286766d9c06374f069"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8cca814c6a67cf7136742525d56110d9" id="r_a8cca814c6a67cf7136742525d56110d9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a8cca814c6a67cf7136742525d56110d9">AreEqual</a> (CString auto a, CString auto b)</td></tr>
 <tr class="separator:a8cca814c6a67cf7136742525d56110d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5f77707b01cc257d99f8478798530ed" id="r_ab5f77707b01cc257d99f8478798530ed"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#ab5f77707b01cc257d99f8478798530ed">Min</a> (auto a, auto b)</td></tr>
+<tr class="separator:ab5f77707b01cc257d99f8478798530ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3e1db4bde212cdb5619e74082b509d3" id="r_ab3e1db4bde212cdb5619e74082b509d3"><td class="memTemplParams" colspan="2">template&lt;typename C , typename... Cs&gt; </td></tr>
+<tr class="memitem:ab3e1db4bde212cdb5619e74082b509d3"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#ab3e1db4bde212cdb5619e74082b509d3">MinTypeMaxSize</a> ()</td></tr>
+<tr class="separator:ab3e1db4bde212cdb5619e74082b509d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ee7bd0842fdd734e78cfa6214fa739d" id="r_a9ee7bd0842fdd734e78cfa6214fa739d"><td class="memTemplParams" colspan="2">template&lt;std::size_t N&gt; </td></tr>
 <tr class="memitem:a9ee7bd0842fdd734e78cfa6214fa739d"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a9ee7bd0842fdd734e78cfa6214fa739d">String</a> (const char(&amp;)[N]) -&gt; <a class="el" href="classcljonic_1_1_string.html">String</a>&lt; N - 1 &gt;</td></tr>
 <tr class="separator:a9ee7bd0842fdd734e78cfa6214fa739d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -335,6 +343,93 @@ template&lt;typename... Args&gt; </div>
           <td class="paramtype">Args...&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td> -&gt;  <a class="el" href="classcljonic_1_1_array.html">Array</a>&lt; std::common_type_t&lt; Args... &gt;, sizeof...(Args)&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab5f77707b01cc257d99f8478798530ed" name="ab5f77707b01cc257d99f8478798530ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5f77707b01cc257d99f8478798530ed">&#9670;&#160;</a></span>Min()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto cljonic::Min </td>
+          <td>(</td>
+          <td class="paramtype">auto&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">auto&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-shared_8hpp_source.html#l00028">28</a> of file <a class="el" href="cljonic-shared_8hpp_source.html">cljonic-shared.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ab3e1db4bde212cdb5619e74082b509d3" name="ab3e1db4bde212cdb5619e74082b509d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3e1db4bde212cdb5619e74082b509d3">&#9670;&#160;</a></span>MinTypeMaxSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename C , typename... Cs&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto cljonic::MinTypeMaxSize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-shared_8hpp_source.html#l00034">34</a> of file <a class="el" href="cljonic-shared_8hpp_source.html">cljonic-shared.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a1a2410098ebaacdc3b0acbb294cfc727" name="a1a2410098ebaacdc3b0acbb294cfc727"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a2410098ebaacdc3b0acbb294cfc727">&#9670;&#160;</a></span>Repeat()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcljonic_1_1_repeat.html">cljonic::Repeat</a> </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td> -&gt;  <a class="el" href="classcljonic_1_1_repeat.html">Repeat</a>&lt; std::numeric_limits&lt; std::size_t &gt;::max(), T &gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -542,7 +637,7 @@ template&lt;typename F , IsCljonicCollection T, IsCljonicCollection... Ts&gt; </
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Dec 23 2024 11:12:19 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Tue Dec 24 2024 12:42:28 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

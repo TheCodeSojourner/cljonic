@@ -20,7 +20,7 @@ SCENARIO("Repeat", "[CljonicRepeat]")
     }
 
     {
-        const auto r{Repeat(5, 1)};
+        const auto r{Repeat<5, int>{1}};
         CHECK(5 == r.Count());
         CHECK(1 == r[0]);
         CHECK(1 == r[1]);
@@ -48,7 +48,7 @@ SCENARIO("Repeat", "[CljonicRepeat]")
     {
         using T = std::variant<int, double, char, const char*>;
 
-        const auto r{Repeat(5, T{'x'})};
+        const auto r{Repeat<5, T>{T{'x'}}};
         CHECK(5 == r.Count());
         CHECK('x' == std::get<char>(r[0]));
         CHECK('x' == std::get<char>(r[1]));
@@ -62,7 +62,7 @@ SCENARIO("Repeat", "[CljonicRepeat]")
     }
 
     {
-        const auto r{Repeat(5, 1)};
+        const auto r{Repeat<5, int>{1}};
         for (const auto& element : r)
         {
             CHECK(1 == element);
