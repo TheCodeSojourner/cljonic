@@ -1,7 +1,8 @@
 #ifndef CLJONIC_REPEAT_HPP
 #define CLJONIC_REPEAT_HPP
 
-#include <type_traits>
+#include <concepts>
+#include <limits>
 #include "cljonic-collection-iterator.hpp"
 #include "cljonic-collection-type.hpp"
 

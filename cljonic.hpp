@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Dec 24 01:22:51 PM MST 2024
+// This file was generated Tue Dec 24 01:29:47 PM MST 2024
 
 namespace cljonic {
 
@@ -388,7 +388,8 @@ return MaxElements;
 
 } // namespace cljonic
 
-#include <type_traits>
+#include <concepts>
+#include <limits>
 
 namespace cljonic {
 
