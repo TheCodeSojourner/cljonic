@@ -11,10 +11,11 @@ var searchData=
   ['cljonic_2dcore_2dmap_2ehpp_8',['cljonic-core-map.hpp',['../cljonic-core-map_8hpp.html',1,'']]],
   ['cljonic_2dcore_2dpartial_2ehpp_9',['cljonic-core-partial.hpp',['../cljonic-core-partial_8hpp.html',1,'']]],
   ['cljonic_2dcore_2dreduce_2ehpp_10',['cljonic-core-reduce.hpp',['../cljonic-core-reduce_8hpp.html',1,'']]],
-  ['cljonic_2dcore_2ehpp_11',['cljonic-core.hpp',['../cljonic-core_8hpp.html',1,'']]],
-  ['cljonic_2drange_2ehpp_12',['cljonic-range.hpp',['../cljonic-range_8hpp.html',1,'']]],
-  ['cljonic_2drepeat_2ehpp_13',['cljonic-repeat.hpp',['../cljonic-repeat_8hpp.html',1,'']]],
-  ['cljonic_2dset_2ehpp_14',['cljonic-set.hpp',['../cljonic-set_8hpp.html',1,'']]],
-  ['cljonic_2dshared_2ehpp_15',['cljonic-shared.hpp',['../cljonic-shared_8hpp.html',1,'']]],
-  ['cljonic_2dstring_2ehpp_16',['cljonic-string.hpp',['../cljonic-string_8hpp.html',1,'']]]
+  ['cljonic_2dcore_2dtake_2ehpp_11',['cljonic-core-take.hpp',['../cljonic-core-take_8hpp.html',1,'']]],
+  ['cljonic_2dcore_2ehpp_12',['cljonic-core.hpp',['../cljonic-core_8hpp.html',1,'']]],
+  ['cljonic_2drange_2ehpp_13',['cljonic-range.hpp',['../cljonic-range_8hpp.html',1,'']]],
+  ['cljonic_2drepeat_2ehpp_14',['cljonic-repeat.hpp',['../cljonic-repeat_8hpp.html',1,'']]],
+  ['cljonic_2dset_2ehpp_15',['cljonic-set.hpp',['../cljonic-set_8hpp.html',1,'']]],
+  ['cljonic_2dshared_2ehpp_16',['cljonic-shared.hpp',['../cljonic-shared_8hpp.html',1,'']]],
+  ['cljonic_2dstring_2ehpp_17',['cljonic-string.hpp',['../cljonic-string_8hpp.html',1,'']]]
 ];

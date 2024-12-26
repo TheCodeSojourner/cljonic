@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Dec 26 10:57:31 AM MST 2024
+// This file was generated Thu Dec 26 11:51:17 AM MST 2024
 
 namespace cljonic {
 
@@ -817,6 +817,25 @@ static_assert(std::regular_invocable<F, ResultType, typename C::value_type>,
               "Function cannot be called with parameters of function result type, and collection value type");
 
 return (0 == c.Count()) ? t : std::accumulate(c.begin(), c.end(), t, std::forward<F>(f));
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+auto Take(const std::size_t count, const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "The second parameter must be a cljonic collection");
+
+using CountType = decltype(c.Count());
+auto result{Array<typename C::value_type, c.MaximumCount()>{}};
+auto maxIndex{Min(count, c.Count())};
+for(CountType i{0}; (i < maxIndex); ++i)
+result.MConj(c[i]);
+return result;
 }
 
 }

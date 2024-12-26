@@ -107,6 +107,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aff06cd303d0c59456b91b8f0e8ee48ca" id="r_aff06cd303d0c59456b91b8f0e8ee48ca"><td class="memTemplParams" colspan="2">template&lt;typename F , typename T , typename C &gt; </td></tr>
 <tr class="memitem:aff06cd303d0c59456b91b8f0e8ee48ca"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#aff06cd303d0c59456b91b8f0e8ee48ca">Reduce</a> (F &amp;&amp;f, const T &amp;t, const C &amp;c)</td></tr>
 <tr class="separator:aff06cd303d0c59456b91b8f0e8ee48ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae081024098bd6f39aa0cf08537a325e6" id="r_ae081024098bd6f39aa0cf08537a325e6"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
+<tr class="memitem:ae081024098bd6f39aa0cf08537a325e6"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#ae081024098bd6f39aa0cf08537a325e6">Take</a> (const std::size_t count, const C &amp;c) noexcept</td></tr>
+<tr class="separator:ae081024098bd6f39aa0cf08537a325e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ab67cad28f66047452bc5908ad466d482" name="ab67cad28f66047452bc5908ad466d482"></a>
@@ -647,10 +650,70 @@ template&lt;typename F , typename T , typename C &gt; </div>
 
 </div>
 </div>
+<a id="ae081024098bd6f39aa0cf08537a325e6" name="ae081024098bd6f39aa0cf08537a325e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae081024098bd6f39aa0cf08537a325e6">&#9670;&#160;</a></span>Take()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename C &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::Take </td>
+          <td>(</td>
+          <td class="paramtype">const std::size_t&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const C &amp;&#160;</td>
+          <td class="paramname"><em>c</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="anchor" id="Core_Take"></a> The <b>Take</b> function returns a <b>cljonic</b> <b><a class="el" href="classcljonic_1_1_array.html">Array</a></b> with the same <b>MaximumCount</b> as its second parameter, which must be a <b>cljonic</b> <b>collection</b>, containing the number of elements given by its first parameter copied from its second parameter to its result, in order. If its second parameter contains fewer elements than the first parameter specifies the returned <b><a class="el" href="classcljonic_1_1_array.html">Array</a></b> will contain all the elements of its first parameter, in order. If the second parameter contains more elements than the first parameter specifies the returned <b><a class="el" href="classcljonic_1_1_array.html">Array</a></b> will contain only the number of elements specified by the first parameter copied from the second parameter to the result, in order. If the second parameter is empty, the returned <b><a class="el" href="classcljonic_1_1_array.html">Array</a></b> will also be empty. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main()</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> a{<a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> t0{<a class="code hl_function" href="namespacecljonic_1_1core.html#ae081024098bd6f39aa0cf08537a325e6">Take</a>(0, a)};                                <span class="comment">// immutable, empty Array</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> t1{<a class="code hl_function" href="namespacecljonic_1_1core.html#ae081024098bd6f39aa0cf08537a325e6">Take</a>(1, a)};                                <span class="comment">// immutable, sparse Array, with 0</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> t5{<a class="code hl_function" href="namespacecljonic_1_1core.html#ae081024098bd6f39aa0cf08537a325e6">Take</a>(5, a)};                                <span class="comment">// immutable, sparse Array, with 0 to 4</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> t50{<a class="code hl_function" href="namespacecljonic_1_1core.html#ae081024098bd6f39aa0cf08537a325e6">Take</a>(50, a)};                              <span class="comment">// immutable, full Array, with 0 to 0</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> tEmpty{<a class="code hl_function" href="namespacecljonic_1_1core.html#ae081024098bd6f39aa0cf08537a325e6">Take</a>(50, <a class="code hl_class" href="classcljonic_1_1_range.html">Range&lt;0&gt;</a>{})};                  <span class="comment">// immutable, empty Array</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> tRpt7{<a class="code hl_function" href="namespacecljonic_1_1core.html#ae081024098bd6f39aa0cf08537a325e6">Take</a>(50, <a class="code hl_class" href="classcljonic_1_1_repeat.html">Repeat&lt;7, const char*&gt;</a>{<span class="stringliteral">&quot;11&quot;</span>})}; <span class="comment">// immutable, full Array, with seven &quot;11&quot;s</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> tSet5{<a class="code hl_function" href="namespacecljonic_1_1core.html#ae081024098bd6f39aa0cf08537a325e6">Take</a>(5, <a class="code hl_class" href="classcljonic_1_1_set.html">Set</a>{<span class="charliteral">&#39;a&#39;</span>, <span class="charliteral">&#39;b&#39;</span>})};                 <span class="comment">// immutable, sparse Array, with &#39;a&#39; and &#39;b&#39;</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> tStr3{<a class="code hl_function" href="namespacecljonic_1_1core.html#ae081024098bd6f39aa0cf08537a325e6">Take</a>(3, <a class="code hl_class" href="classcljonic_1_1_string.html">String</a>{<span class="stringliteral">&quot;Hello&quot;</span>})};               <span class="comment">// immutable, sparse Array, with &#39;H&#39;, &#39;e&#39;, and &#39;l&#39;</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_ae081024098bd6f39aa0cf08537a325e6"><div class="ttname"><a href="namespacecljonic_1_1core.html#ae081024098bd6f39aa0cf08537a325e6">cljonic::core::Take</a></div><div class="ttdeci">auto Take(const std::size_t count, const C &amp;c) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-take_8hpp_source.html#l00041">cljonic-core-take.hpp:41</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-core-take_8hpp_source.html#l00041">41</a> of file <a class="el" href="cljonic-core-take_8hpp_source.html">cljonic-core-take.hpp</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Dec 26 2024 10:57:31 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Thu Dec 26 2024 11:51:18 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

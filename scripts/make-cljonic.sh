@@ -25,7 +25,8 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-filter.hpp \
     cljonic-core-map.hpp \
     cljonic-core-partial.hpp \
-    cljonic-core-reduce.hpp > /tmp/cljonic-glued.hpp
+    cljonic-core-reduce.hpp \
+    cljonic-core-take.hpp > /tmp/cljonic-glued.hpp
 
 # remove all the comments
 g++ -fpreprocessed -dD -E -o /tmp/cljonic.hpp /tmp/cljonic-glued.hpp
