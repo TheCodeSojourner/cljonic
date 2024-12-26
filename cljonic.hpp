@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Dec 26 10:08:59 AM MST 2024
+// This file was generated Thu Dec 26 10:18:21 AM MST 2024
 
 namespace cljonic {
 
@@ -707,6 +707,25 @@ using CountType = decltype(t.Count());
 auto result{true};
 for(CountType i{0}; (result and (i < t.Count())); ++i)
 result = f(t[i]);
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C>
+auto Filter(const F& f, const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "cljonic collection required");
+static_assert(IsUnaryPredicate<F, typename C::value_type>,
+              "Function is not a valid unary predicate for the collection value type");
+auto result{Array<typename C::value_type, c.MaximumCount()>{}};
+for(const auto& element : c)
+if(f(element))
+result.MConj(element);
 return result;
 }
 
