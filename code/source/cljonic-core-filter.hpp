@@ -8,7 +8,7 @@ namespace core
 {
 
 /** \anchor Core_Filter
-* The \b Filter function calls \b f, which must be a \b unary \b predicate, with each element of \c, which must be a
+* The \b Filter function calls \b f, which must be a \b unary \b predicate, with each element of \b c, which must be a
 * \b cljonic \b collection, and if \b f returns true a copy of the element is added to \b Filter's result, which is a
 * \b cljonic \b Array with the same \b MaximumCount as \b c.
 ~~~~~{.cpp}
