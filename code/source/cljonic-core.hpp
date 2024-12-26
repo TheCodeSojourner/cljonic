@@ -111,7 +111,7 @@
  * - \ref Core_Sub "Sub",
  * - \ref Core_Uppercase "Uppercase"
  *
- * ### Array, Range, Repeat, Set, And String
+ * ### Seq (i.e., Sequence: Array, Range, Repeat, Set, And/Or String)
  *
  * - \ref Core_Clone "Clone", \ref Core_Compose "Compose", \ref Core_Concat "Concat", \ref Core_Conj "Conj", \ref
  * Core_Conj_M "Conj_M", \ref Core_Count "Count", \ref Core_Count_M "Count_M", \ref Core_Cycle "Cycle"
