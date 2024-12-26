@@ -92,34 +92,36 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">namespace </span>core</div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>{</div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> F, <span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> F, <span class="keyword">typename</span> C&gt;</div>
 <div class="foldopen" id="foldopen00045" data-start="{" data-end="}">
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#a8f45a795878d35b55dcc94d3b8b4b90d">   45</a></span><span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#a8f45a795878d35b55dcc94d3b8b4b90d">Every</a>(<span class="keyword">const</span> F&amp; f, <span class="keyword">const</span> T&amp; t) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#a3d09bfcba3bd5eb20364219d5258c4cf">   45</a></span><span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#a3d09bfcba3bd5eb20364219d5258c4cf">Every</a>(<span class="keyword">const</span> F&amp; f, <span class="keyword">const</span> C&amp; c) <span class="keyword">noexcept</span></div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>{</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keyword">static_assert</span>(<a class="code hl_concept" href="conceptcljonic_1_1_is_unary_predicate.html">IsUnaryPredicate&lt;F, typename T::value_type&gt;</a>,</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>                  <span class="stringliteral">&quot;Function is not a valid unary predicate for the collection value type&quot;</span>);</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keyword">static_assert</span>(<a class="code hl_concept" href="conceptcljonic_1_1_is_cljonic_collection.html">IsCljonicCollection&lt;T&gt;</a>, <span class="stringliteral">&quot;cljonic collection required&quot;</span>);</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keyword">using </span>CountType = <span class="keyword">decltype</span>(t.Count());</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keyword">auto</span> result{<span class="keyword">true</span>};</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keywordflow">for</span> (CountType i{0}; (result and (i &lt; t.Count())); ++i)</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        result = f(t[i]);</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>}</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keyword">static_assert</span>(<a class="code hl_concept" href="conceptcljonic_1_1_is_cljonic_collection.html">IsCljonicCollection&lt;C&gt;</a>, <span class="stringliteral">&quot;The second parameter must be a cljonic collection&quot;</span>);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keyword">static_assert</span>(<a class="code hl_concept" href="conceptcljonic_1_1_is_unary_predicate.html">IsUnaryPredicate&lt;F, typename C::value_type&gt;</a>,</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>                  <span class="stringliteral">&quot;Function is not a valid unary predicate for the collection value type&quot;</span>);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keyword">using </span>CountType = <span class="keyword">decltype</span>(c.Count());</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keyword">auto</span> result{<span class="keyword">true</span>};</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keywordflow">for</span> (CountType i{0}; (result and (i &lt; c.Count())); ++i)</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        result = f(c[i]);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>}</div>
 </div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>} <span class="comment">// namespace core</span></div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>} <span class="comment">// namespace cljonic</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>} <span class="comment">// namespace core</span></div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="preprocessor">#endif </span><span class="comment">// CLJONIC_CORE_EVERY_HPP</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>} <span class="comment">// namespace cljonic</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="preprocessor">#endif </span><span class="comment">// CLJONIC_CORE_EVERY_HPP</span></div>
 <div class="ttc" id="aconceptcljonic_1_1_is_cljonic_collection_html"><div class="ttname"><a href="conceptcljonic_1_1_is_cljonic_collection.html">cljonic::IsCljonicCollection</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00024">cljonic-concepts.hpp:24</a></div></div>
 <div class="ttc" id="aconceptcljonic_1_1_is_unary_predicate_html"><div class="ttname"><a href="conceptcljonic_1_1_is_unary_predicate.html">cljonic::IsUnaryPredicate</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00042">cljonic-concepts.hpp:42</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_a8f45a795878d35b55dcc94d3b8b4b90d"><div class="ttname"><a href="namespacecljonic_1_1core.html#a8f45a795878d35b55dcc94d3b8b4b90d">cljonic::core::Every</a></div><div class="ttdeci">auto Every(const F &amp;f, const T &amp;t) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-every_8hpp_source.html#l00045">cljonic-core-every.hpp:45</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a3d09bfcba3bd5eb20364219d5258c4cf"><div class="ttname"><a href="namespacecljonic_1_1core.html#a3d09bfcba3bd5eb20364219d5258c4cf">cljonic::core::Every</a></div><div class="ttdeci">auto Every(const F &amp;f, const C &amp;c) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-every_8hpp_source.html#l00045">cljonic-core-every.hpp:45</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00010">cljonic-array.hpp:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Dec 26 2024 10:18:21 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Thu Dec 26 2024 10:55:25 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

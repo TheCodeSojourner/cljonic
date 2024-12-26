@@ -14,17 +14,21 @@ namespace core
 /** \anchor Core_Reduce
 * There are two overloads of \b Reduce.
 *
-* The first overload of \b Reduce starts by calling \b f on the first two elements of \b c, which must be a \b cljonic
-* \b collection, then calls \b f with the result of the first call and the third element of \b c, then calls \b f with
-* the result of the second call and the fourth element of \b c, and continues this process until all elements of \b c
-* have been used in a call to \b f. If \b c has only one element it is returned, and \b f is never called. If \b c has
-* no elements the \b default \b element of \b c is returned, and \b f is never called.
+* The first overload of \b Reduce starts by calling its first parameter, which must be a function, with the first two
+* elements of its second parameter, which must be a \b cljonic \b collection, then calls its first parameter with the
+* result of the first call and the third element of its second parameter, then calls its first parameter with the result
+* of the second call and the fourth element of its second parameter, and continues this process until all elements of
+* its second parameter have been used in a call to its first parameter. If the second parameter has only one element it
+* is returned, and its first parameter is never called. If its second parameter has no elements the \b default
+* \b element of its second parameter is returned, and its first parameter is never called.
 *
-* The second overload of \b Reduce starts by calling \b f with an initial value and the first element of \b c, which
-* must be a \b cljonic \b collection, then calls \b f with the result of the first call and the second element of \b c,
-* then calls \b f with the result of the second call and the third element of \b c, and continues this process until
-* all elements of \b c have been used in a call to \b f. If \b c has no elements the initial value is returned, and
-* \b f is never called.
+* The second overload of \b Reduce starts by calling its first parameter, which must be a function, with its second
+* parameter, which is an initial value, and the first element of its thrid parameter, which must be a \b cljonic
+* \b collection, then calls its first parameter with the result of the first call and the second element of its third
+* parameter, then calls its first parameter with the result of the second call and the third element of its third
+* parameter, and continues this process until all elements of its third parameter have been used in a call to its first
+* parameter. If the third parameter has no elements the second parameter is returned, and the first parameter is never
+* called.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 

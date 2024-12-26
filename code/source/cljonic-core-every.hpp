@@ -9,8 +9,8 @@ namespace core
 
 /** \anchor Core_Every
 * The \b Every function returns true if the first parameter, which must be a \b unary \b predicte, returns true when
-* called with every element of the second parameter, which must be a \b cljonic \b collection, else false. Also returns
-* \b true if the second parameter is an empty \b cljonic \b collection.
+* it is called with every element of the second parameter, which must be a \b cljonic \b collection, else false. Also
+* returns \b true if the second parameter is empty.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -41,16 +41,18 @@ int main()
 }
 ~~~~~
 */
-template <typename F, typename T>
-auto Every(const F& f, const T& t) noexcept
+template <typename F, typename C>
+auto Every(const F& f, const C& c) noexcept
 {
-    static_assert(IsUnaryPredicate<F, typename T::value_type>,
+    static_assert(IsCljonicCollection<C>, "The second parameter must be a cljonic collection");
+
+    static_assert(IsUnaryPredicate<F, typename C::value_type>,
                   "Function is not a valid unary predicate for the collection value type");
-    static_assert(IsCljonicCollection<T>, "cljonic collection required");
-    using CountType = decltype(t.Count());
+
+    using CountType = decltype(c.Count());
     auto result{true};
-    for (CountType i{0}; (result and (i < t.Count())); ++i)
-        result = f(t[i]);
+    for (CountType i{0}; (result and (i < c.Count())); ++i)
+        result = f(c[i]);
     return result;
 }
 

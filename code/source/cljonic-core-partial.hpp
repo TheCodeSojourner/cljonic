@@ -10,8 +10,9 @@ namespace core
 {
 
 /** \anchor Core_Partial
-* The \b Partial function takes a function, named \b f, and one or more of the parameters of \b f, in order, and
-* returns a function that takes the rest of the parameters of \b f.
+* The \b Partial function is a so-called \b Higher-Order \b Function that takes a function as its first parameter, and
+* one or more valid parameters of that function, in order, and returns a function that takes the rest of the allowed
+* parameters of the first parameter function.
 *
 * This is useful for creating a set of functions based upon a base function, and a set of initial values to the base
 * function.

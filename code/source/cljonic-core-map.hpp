@@ -8,8 +8,10 @@ namespace core
 {
 
 /** \anchor Core_Map
-* The \b Map function returns a \b cljonic \b Array of the values returned by calling the function \b f on consecutive
-* elements of one or more \b cljonic \b collections.
+* The \b Map function returns a \b cljonic \b Array of the values returned by calling its first parameter, which must
+* be a function, with the first elements of the rest of its parameters, which must be one or more \b cljonic
+* \b collections, followed by the second elements of the rest of its parameters, and so on.  The returned \b Array has
+* the same \b MaximumCount as the \b smallest \b MaximumCount of all of the \b cljonic \b collection parameters.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -46,8 +48,10 @@ template <typename F, typename C, typename... Cs>
 auto Map(F&& f, const C& c, const Cs&... cs)
 {
     static_assert(AllCljonicCollections<C, Cs...>, "The second through last parameters must be cljonic collections");
+
     static_assert(std::invocable<F, typename C::value_type, typename Cs::value_type...>,
                   "Function cannot be called with values from the specified cljonic collections");
+
     using ResultType = decltype(f(std::declval<typename C::value_type>(), std::declval<typename Cs::value_type>()...));
     using SizeType = decltype(c.Count());
     auto result{Array<ResultType, MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()>{}};

@@ -11,9 +11,9 @@ namespace core
 {
 
 /** \anchor Core_EqualBy
-* The \b EqualBy function returns true if there are three or more arguments, and the second through last argument values
-* are equal, as defined by the first argument, which must be a binary predicate, else false. If there are only two
-* arguments the function always returns true, and the first argument is never called.
+* The \b EqualBy function returns true if it is called with three or more arguments and the second through last
+* arguments are equal as defined by the first argument, which must be a binary predicate, else false. If it is called
+* with only two arguments the function always returns true, and the first argument is never called.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -64,10 +64,13 @@ auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
     {
         static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
                       "cljonic collection types are not all the same, or all Array, Range or Repeat types");
+
         static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
                       "cljonic floating point collection value types should not be compared for equality");
+
         static_assert(IsBinaryPredicateForAllCljonicCollections<F, T, Ts...>,
                       "Function is not a valid binary predicate for all cljonic collection value types");
+
         if constexpr (sizeof...(Ts) <= 0)
         {
             return true;
@@ -100,9 +103,12 @@ auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
     else
     {
         static_assert(not AnyFloatingPointTypes<T, Ts...>, "Floating point types should not be compared for equality");
+
         static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all types are equality comparable");
+
         static_assert(IsBinaryPredicateForAll<F, T, Ts...>,
                       "Function is not a valid binary predicate for all parameters");
+
         auto EqualParameters = [&](const auto& p1, const auto& p2) { return AreEqualBy(f, p1, p2); };
         return (EqualParameters(t, ts) and ...);
     }

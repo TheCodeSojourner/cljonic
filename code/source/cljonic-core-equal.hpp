@@ -10,8 +10,8 @@ namespace core
 {
 
 /** \anchor Core_Equal
-* The \b Equal function returns true if there is only one argument, or the values of its arguments are equal, else
-false.
+* The \b Equal function returns true if it is called with two or more equal arguments, else false. If it is called with
+* only one argument the function always returns true.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 

@@ -8,9 +8,10 @@ namespace core
 {
 
 /** \anchor Core_Filter
-* The \b Filter function calls \b f, which must be a \b unary \b predicate, with each element of \b c, which must be a
-* \b cljonic \b collection, and if \b f returns true a copy of the element is added to \b Filter's result, which is a
-* \b cljonic \b Array with the same \b MaximumCount as \b c.
+* The \b Filter function calls its first parameter, which must be a \b unary \b predicate, with each element of its
+* second parameter, which must be a \b cljonic \b collection, and if the result is true a copy of the element is
+* concatenated to the end of \b Filter's result, which is a \b cljonic \b Array with the same \b MaximumCount the
+* second parameter.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -43,9 +44,11 @@ int main()
 template <typename F, typename C>
 auto Filter(const F& f, const C& c) noexcept
 {
-    static_assert(IsCljonicCollection<C>, "cljonic collection required");
+    static_assert(IsCljonicCollection<C>, "The second parameter must be a cljonic collection");
+
     static_assert(IsUnaryPredicate<F, typename C::value_type>,
                   "Function is not a valid unary predicate for the collection value type");
+
     auto result{Array<typename C::value_type, c.MaximumCount()>{}};
     for (const auto& element : c)
         if (f(element))
