@@ -9,6 +9,7 @@ echo -n 'Building "cljonic.hpp" ... '
 cd code/source
 
 # glue all the cljonic files together
+# seq requires take so it must be first
 cat cljonic-collection-iterator.hpp \
     cljonic-collection-type.hpp \
     cljonic-concepts.hpp \
@@ -26,7 +27,8 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-map.hpp \
     cljonic-core-partial.hpp \
     cljonic-core-reduce.hpp \
-    cljonic-core-take.hpp > /tmp/cljonic-glued.hpp
+    cljonic-core-take.hpp \
+    cljonic-core-seq.hpp > /tmp/cljonic-glued.hpp
 
 # remove all the comments
 g++ -fpreprocessed -dD -E -o /tmp/cljonic.hpp /tmp/cljonic-glued.hpp

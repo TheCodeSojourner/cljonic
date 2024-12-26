@@ -113,7 +113,7 @@
  *
  * ### Seq (i.e., Sequence: Array, Range, Repeat, Set, And/Or String)
  *
- * - \ref Core_Clone "Clone", \ref Core_Compose "Compose", \ref Core_Concat "Concat", \ref Core_Conj "Conj", \ref
+ * - \ref Core_Compose "Compose", \ref Core_Concat "Concat", \ref Core_Conj "Conj", \ref
  * Core_Conj_M "Conj_M", \ref Core_Count "Count", \ref Core_Count_M "Count_M", \ref Core_Cycle "Cycle"
  * - \ref Core_Dedupe "Dedupe", \ref Core_DedupeBy "DedupeBy", \ref Core_DefaultElement "DefaultElement",
  * \ref Core_DefaultElement_M "DefaultElement_M", \ref Core_Different "Different", \ref Core_Distinct "Distinct",
@@ -133,9 +133,9 @@
  * - \ref Core_Partition "Partition", \ref Core_PartitionAll "PartitionAll", \ref Core_PartitionBy "PartitionBy"
  * - \ref Core_Reduce "Reduce", \ref Core_Reductions "Reductions", \ref Core_Remove "Remove",
  * \ref Core_Replace "Replace", \ref Core_ReplaceBy "ReplaceBy", \ref Core_Reverse "Reverse"
- * - \ref Core_Same "Same", \ref Core_Second "Second", \ref Core_Some "Some", \ref Core_Sort "Sort",
- * \ref Core_SortBy "SortBy", \ref Core_SplitBy "SplitBy", \ref Core_SplitAt "SplitAt", \ref Core_Size "Size",
- * \ref Core_Subs "Subs"
+ * - \ref Core_Same "Same", \ref Core_Second "Second", \ref Core_Seq "Seq", \ref Core_Some "Some",
+ * \ref Core_Sort "Sort", \ref Core_SortBy "SortBy", \ref Core_SplitBy "SplitBy", \ref Core_SplitAt "SplitAt",
+ * \ref Core_Size "Size", \ref Core_Subs "Subs"
  * - \ref Core_Take "Take", \ref Core_TakeLast "TakeLast", \ref Core_TakeNth "TakeNth", \ref Core_TakeWhile "TakeWhile"
  *
  * ## Regex Functions

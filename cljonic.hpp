@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Dec 26 11:51:17 AM MST 2024
+// This file was generated Thu Dec 26 12:30:22 PM MST 2024
 
 namespace cljonic {
 
@@ -836,6 +836,18 @@ auto maxIndex{Min(count, c.Count())};
 for(CountType i{0}; (i < maxIndex); ++i)
 result.MConj(c[i]);
 return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+auto Seq(const C& c) noexcept {
+return Take(c.MaximumCount(), c);
 }
 
 }
