@@ -38,7 +38,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-auto Take(const std::size_t count, const C& c) noexcept
+constexpr auto Take(const std::size_t count, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "The second parameter must be a cljonic collection");
 

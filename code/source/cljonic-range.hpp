@@ -17,6 +17,7 @@ namespace cljonic
 template <int... StartEndStep>
 class Range
 {
+  private:
     static_assert(sizeof...(StartEndStep) <= 3, "Number of Range parameters must be less than or equal to three");
 
     using Iterator = CollectionIterator<Range>;
@@ -74,7 +75,7 @@ class Range
     constexpr void InitializeStartEnd(const int start, const int end) noexcept
     {
         if (end <= start)
-            InitializeMembers(0, 0, 1);
+            InitializeMembers(0, 0, 1); // LCOV_EXCL_LINE - This line of code may only execute at compile-time
         else
             InitializeMembers((end - start), start, 1);
     }
@@ -82,7 +83,7 @@ class Range
     constexpr void InitializeStartEndStepWithNegativeStep(const int start, const int end, const int step) noexcept
     {
         if (start <= end)
-            InitializeMembers(0, 0, step);
+            InitializeMembers(0, 0, step); // LCOV_EXCL_LINE - This line of code may only execute at compile-time
         else
         {
             const int count{RangeCount(start, end, step)};
@@ -93,7 +94,7 @@ class Range
     constexpr void InitializeStartEndStepWithPositiveStep(const int start, const int end, const int step) noexcept
     {
         if (end <= start)
-            InitializeMembers(0, 0, step);
+            InitializeMembers(0, 0, step); // LCOV_EXCL_LINE - This line of code may only execute at compile-time
         else
         {
             const int count{RangeCount(start, end, step)};
@@ -156,7 +157,7 @@ class Range
     using size_type = SizeType;
     using value_type = int;
 
-    Range() noexcept
+    constexpr Range() noexcept
         : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0}
     {
         // #lizard forgives -- The complexity and length of this function is acceptable
@@ -178,29 +179,32 @@ class Range
         }
     }
 
-    [[nodiscard]] Iterator begin() const noexcept
+    constexpr Range(const Range& other) = default; // Copy constructor
+    constexpr Range(Range&& other) = default;      // Move constructor
+
+    [[nodiscard]] constexpr Iterator begin() const noexcept
     {
         return Iterator{*this, 0};
     }
 
-    [[nodiscard]] Iterator end() const noexcept
+    [[nodiscard]] constexpr Iterator end() const noexcept
     {
         return Iterator{*this, m_elementCount};
     }
 
-    int operator[](const size_type index) const noexcept
+    constexpr int operator[](const size_type index) const noexcept
     {
         return ((0 == m_elementCount) or (index >= m_elementCount))
                    ? m_elementDefault
                    : (m_elementStart + (static_cast<int>(index) * m_elementStep));
     }
 
-    [[nodiscard]] size_type Count() const noexcept
+    [[nodiscard]] constexpr size_type Count() const noexcept
     {
         return m_elementCount;
     }
 
-    int DefaultElement() const noexcept
+    constexpr int DefaultElement() const noexcept
     {
         return m_elementDefault;
     }

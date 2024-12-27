@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Dec 27 12:57:40 PM MST 2024
+// This file was generated Fri Dec 27 02:18:29 PM MST 2024
 
 namespace cljonic {
 
@@ -26,28 +26,29 @@ const T& m_collection;
 std::size_t m_index;
 
 public:
-CollectionIterator(const T& collection, const std::size_t index) noexcept : m_collection(collection), m_index(index) {
+constexpr CollectionIterator(const T& collection, const std::size_t index) noexcept
+    : m_collection(collection), m_index(index) {
 }
 
-auto operator*() const noexcept -> decltype(m_collection[m_index]) {
+constexpr auto operator*() const noexcept -> decltype(m_collection[m_index]) {
 return m_collection[m_index];
 }
 
-CollectionIterator& operator++() noexcept {
+constexpr CollectionIterator& operator++() noexcept {
 ++m_index;
 return *this;
 }
 
-bool operator!=(const CollectionIterator& other) const noexcept {
+constexpr bool operator!=(const CollectionIterator& other) const noexcept {
 return m_index != other.m_index;
 }
 
-CollectionIterator& operator+=(int value) noexcept {
+constexpr CollectionIterator& operator+=(int value) noexcept {
 m_index += value;
 return *this;
 }
 
-CollectionIterator operator+(int value) const noexcept {
+constexpr CollectionIterator operator+(int value) const noexcept {
 CollectionIterator temp = *this;
 temp += value;
 return temp;
@@ -210,16 +211,16 @@ constexpr bool IsBinaryPredicateForAllCljonicCollections =
 namespace cljonic {
 
 template <typename F, typename T, typename U>
-bool AreEqualBy(const F& f, const T& t, const U& u) noexcept {
+constexpr bool AreEqualBy(const F& f, const T& t, const U& u) noexcept {
 static_assert(std::predicate<F, T, U>, "Function is not a valid binary predicate for the parameters");
 return f(t, u);
 }
 
-bool AreEqual(NotCString auto a, NotCString auto b) noexcept {
+constexpr bool AreEqual(NotCString auto a, NotCString auto b) noexcept {
 return a == b;
 }
 
-bool AreEqual(CString auto a, CString auto b) noexcept {
+constexpr bool AreEqual(CString auto a, CString auto b) noexcept {
 return std::strcmp(a, b) == 0;
 }
 
@@ -256,44 +257,44 @@ using cljonic_collection_type = std::integral_constant<CljonicCollectionType, Cl
 using size_type = MaxElementsType;
 using value_type = T;
 
-Array() noexcept : m_elementCount(0), m_elementDefault(T{}) {
+constexpr Array() noexcept : m_elementCount(0), m_elementDefault(T{}) {
 }
 
-explicit Array(const std::initializer_list<const T> elements) noexcept
+constexpr explicit Array(const std::initializer_list<const T> elements) noexcept
     : m_elementCount(Min(MaxElements, elements.size())), m_elementDefault(T{}) {
 for(size_type i{0}; i < m_elementCount; ++i)
 m_elements[i] = *(elements.begin() + i);
 }
 
-Array(const Array& other) = default;
-Array(Array&& other) = default;
+constexpr Array(const Array& other) = default;
+constexpr Array(Array&& other) = default;
 
-const T* begin() const noexcept {
+constexpr const T* begin() const noexcept {
 return m_elements;
 }
 
-const T* end() const noexcept {
+constexpr const T* end() const noexcept {
 return m_elements + m_elementCount;
 }
 
-const T& operator[](const MaxElementsType index) const noexcept {
+constexpr const T& operator[](const MaxElementsType index) const noexcept {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 }
 
-const T& operator()(const MaxElementsType index) const noexcept {
+constexpr const T& operator()(const MaxElementsType index) const noexcept {
 return this->operator[](index);
 }
 
-void MConj(const T& t) noexcept {
+constexpr void MConj(const T& t) noexcept {
 if(m_elementCount < MaxElements)
 m_elements[m_elementCount++] = t;
 }
 
-[[nodiscard]] MaxElementsType Count() const noexcept {
+[[nodiscard]] constexpr MaxElementsType Count() const noexcept {
 return m_elementCount;
 }
 
-const T& DefaultElement() const noexcept {
+constexpr const T& DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
@@ -314,6 +315,7 @@ namespace cljonic {
 
 template <int... StartEndStep>
 class Range {
+private:
 static_assert(sizeof...(StartEndStep) <= 3, "Number of Range parameters must be less than or equal to three");
 
 using Iterator = CollectionIterator<Range>;
@@ -402,7 +404,7 @@ using cljonic_collection_type = std::integral_constant<CljonicCollectionType, Cl
 using size_type = SizeType;
 using value_type = int;
 
-Range() noexcept
+constexpr Range() noexcept
     : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0} {
 
 if constexpr(sizeof...(StartEndStep) == 1) {
@@ -416,25 +418,28 @@ Initialize();
 }
 }
 
-[[nodiscard]] Iterator begin() const noexcept {
+constexpr Range(const Range& other) = default;
+constexpr Range(Range&& other) = default;
+
+[[nodiscard]] constexpr Iterator begin() const noexcept {
 return Iterator{*this, 0};
 }
 
-[[nodiscard]] Iterator end() const noexcept {
+[[nodiscard]] constexpr Iterator end() const noexcept {
 return Iterator{*this, m_elementCount};
 }
 
-int operator[](const size_type index) const noexcept {
+constexpr int operator[](const size_type index) const noexcept {
 return ((0 == m_elementCount) or (index >= m_elementCount))
            ? m_elementDefault
            : (m_elementStart + (static_cast<int>(index) * m_elementStep));
 }
 
-[[nodiscard]] size_type Count() const noexcept {
+[[nodiscard]] constexpr size_type Count() const noexcept {
 return m_elementCount;
 }
 
-int DefaultElement() const noexcept {
+constexpr int DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
@@ -463,29 +468,30 @@ using cljonic_collection_type = std::integral_constant<CljonicCollectionType, Cl
 using size_type = std::size_t;
 using value_type = T;
 
-explicit Repeat(const T& t) noexcept : m_elementCount{MaxElements}, m_elementDefault{T{}}, m_elementValue{t} {
+constexpr explicit Repeat(const T& t) noexcept
+    : m_elementCount{MaxElements}, m_elementDefault{T{}}, m_elementValue{t} {
 }
 
-Repeat(const Repeat& other) = default;
-Repeat(Repeat&& other) = default;
+constexpr Repeat(const Repeat& other) = default;
+constexpr Repeat(Repeat&& other) = default;
 
-[[nodiscard]] Iterator begin() const noexcept {
+[[nodiscard]] constexpr Iterator begin() const noexcept {
 return Iterator{*this, 0};
 }
 
-[[nodiscard]] Iterator end() const noexcept {
+[[nodiscard]] constexpr Iterator end() const noexcept {
 return Iterator{*this, m_elementCount};
 }
 
-const T& operator[](const size_type index) const noexcept {
+constexpr const T& operator[](const size_type index) const noexcept {
 return ((m_elementCount <= 0) or (index >= m_elementCount)) ? m_elementDefault : m_elementValue;
 }
 
-[[nodiscard]] size_type Count() const noexcept {
+[[nodiscard]] constexpr size_type Count() const noexcept {
 return m_elementCount;
 }
 
-const T& DefaultElement() const noexcept {
+constexpr const T& DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
@@ -519,14 +525,14 @@ MaxElementsType m_elementCount;
 const T m_elementDefault;
 T m_elements[MaxElements];
 
-bool IsUniqueElementBy(const auto& f, const T& element) const noexcept {
+constexpr bool IsUniqueElementBy(const auto& f, const T& element) const noexcept {
 auto result{true};
 for(MaxElementsType i{0}; (result and (i < m_elementCount)); ++i)
 result = not AreEqualBy(f, element, m_elements[i]);
 return result;
 }
 
-bool IsUniqueElement(const T& element) const noexcept {
+constexpr bool IsUniqueElement(const T& element) const noexcept {
 auto result{true};
 for(MaxElementsType i{0}; (result and (i < m_elementCount)); ++i)
 result = not AreEqual(element, m_elements[i]);
@@ -538,10 +544,11 @@ using cljonic_collection_type = std::integral_constant<CljonicCollectionType, Cl
 using size_type = MaxElementsType;
 using value_type = T;
 
-Set() noexcept : m_elementCount(0), m_elementDefault(T{}) {
+constexpr Set() noexcept : m_elementCount(0), m_elementDefault(T{}) {
 }
 
-explicit Set(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{}) {
+constexpr explicit Set(const std::initializer_list<const T> elements) noexcept
+    : m_elementCount(0), m_elementDefault(T{}) {
 
 for(const auto& element : elements) {
 if(m_elementCount == MaxElements)
@@ -551,38 +558,38 @@ m_elements[m_elementCount++] = element;
 }
 }
 
-Set(const Set& other) = default;
-Set(Set&& other) = default;
+constexpr Set(const Set& other) = default;
+constexpr Set(Set&& other) = default;
 
-const T* begin() const noexcept {
+constexpr const T* begin() const noexcept {
 return m_elements;
 }
 
-const T* end() const noexcept {
+constexpr const T* end() const noexcept {
 return m_elements + m_elementCount;
 }
 
-const T& operator[](const MaxElementsType index) const noexcept {
+constexpr const T& operator[](const MaxElementsType index) const noexcept {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 }
 
-const T& operator()(const T& t) const noexcept {
+constexpr const T& operator()(const T& t) const noexcept {
 return Contains(t) ? t : m_elementDefault;
 }
 
-[[nodiscard]] MaxElementsType Count() const noexcept {
+[[nodiscard]] constexpr MaxElementsType Count() const noexcept {
 return m_elementCount;
 }
 
-bool ContainsBy(const auto& f, const T& element) const noexcept {
+constexpr bool ContainsBy(const auto& f, const T& element) const noexcept {
 return not IsUniqueElementBy(f, element);
 }
 
-bool Contains(const T& element) const noexcept {
+constexpr bool Contains(const T& element) const noexcept {
 return not IsUniqueElement(element);
 }
 
-int DefaultElement() const noexcept {
+constexpr int DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
@@ -616,11 +623,11 @@ using cljonic_collection_type = std::integral_constant<CljonicCollectionType, Cl
 using size_type = MaxElementsType;
 using value_type = char;
 
-String() noexcept : m_elementCount(0), m_elementDefault('\0') {
+constexpr String() noexcept : m_elementCount(0), m_elementDefault('\0') {
 m_elements[0] = '\0';
 }
 
-explicit String(const std::initializer_list<const char> elements) noexcept
+constexpr explicit String(const std::initializer_list<const char> elements) noexcept
     : m_elementCount(0), m_elementDefault('\0') {
 for(const auto& element : elements) {
 if(m_elementCount == MaxElements)
@@ -630,7 +637,7 @@ m_elements[m_elementCount++] = element;
 m_elements[m_elementCount] = '\0';
 }
 
-explicit String(const char* c_str) noexcept : m_elementCount(0), m_elementDefault('\0') {
+constexpr explicit String(const char* c_str) noexcept : m_elementCount(0), m_elementDefault('\0') {
 while((m_elementCount < MaxElements) and ('\0' != c_str[m_elementCount])) {
 m_elements[m_elementCount] = c_str[m_elementCount];
 m_elementCount += 1;
@@ -638,30 +645,30 @@ m_elementCount += 1;
 m_elements[m_elementCount] = '\0';
 }
 
-String(const String& other) = default;
-String(String&& other) = default;
+constexpr String(const String& other) = default;
+constexpr String(String&& other) = default;
 
-[[nodiscard]] Iterator begin() const noexcept {
+[[nodiscard]] constexpr Iterator begin() const noexcept {
 return Iterator{*this, 0};
 }
 
-[[nodiscard]] Iterator end() const noexcept {
+[[nodiscard]] constexpr Iterator end() const noexcept {
 return Iterator{*this, m_elementCount};
 }
 
-char operator[](const MaxElementsType index) const noexcept {
+constexpr char operator[](const MaxElementsType index) const noexcept {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 }
 
-char operator()(const MaxElementsType index) const noexcept {
+constexpr char operator()(const MaxElementsType index) const noexcept {
 return this->operator[](index);
 }
 
-[[nodiscard]] MaxElementsType Count() const noexcept {
+[[nodiscard]] constexpr MaxElementsType Count() const noexcept {
 return m_elementCount;
 }
 
-int DefaultElement() const noexcept {
+constexpr int DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
@@ -718,7 +725,7 @@ namespace cljonic {
 
 namespace core {
 template <typename T, typename... Ts>
-auto Equal(const T& t, const Ts&... ts) noexcept {
+constexpr auto Equal(const T& t, const Ts&... ts) noexcept {
 return EqualBy([](const auto& a, const auto& b) { return AreEqual(a, b); }, t, ts...);
 }
 
@@ -730,7 +737,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename T, typename... Ts>
-auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept {
+constexpr auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept {
 
 if constexpr(sizeof...(Ts) <= 0) {
 if constexpr(IsCljonicCollection<T>)
@@ -791,7 +798,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-auto Every(const F& f, const C& c) noexcept {
+constexpr auto Every(const F& f, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "The second parameter must be a cljonic collection");
 
 static_assert(IsUnaryPredicate<F, typename C::value_type>,
@@ -812,7 +819,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-auto Filter(const F& f, const C& c) noexcept {
+constexpr auto Filter(const F& f, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "The second parameter must be a cljonic collection");
 
 static_assert(IsUnaryPredicate<F, typename C::value_type>,
@@ -833,7 +840,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C, typename... Cs>
-auto Map(F&& f, const C& c, const Cs&... cs) noexcept {
+constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept {
 static_assert(AllCljonicCollections<C, Cs...>, "The second through last parameters must be cljonic collections");
 
 static_assert(std::invocable<F, typename C::value_type, typename Cs::value_type...>,
@@ -857,7 +864,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename... Args>
-auto Partial(F&& f, Args&&... args) noexcept {
+constexpr auto Partial(F&& f, Args&&... args) noexcept {
 return [f = std::forward<F>(f), ... args = std::forward<Args>(args)](auto&&... rest) {
 static_assert(std::regular_invocable<F, Args..., decltype(rest)...>,
               "Partial function cannot be called with the specified arguments");
@@ -892,7 +899,7 @@ return (0 == c.Count()) ? c.DefaultElement()
 }
 
 template <typename F, typename T, typename C>
-auto Reduce(F&& f, const T& t, const C& c) noexcept {
+constexpr auto Reduce(F&& f, const T& t, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Third parameter must be a cljonic collection");
 
 static_assert(std::regular_invocable<F, T, typename C::value_type>,
@@ -913,7 +920,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-auto Take(const std::size_t count, const C& c) noexcept {
+constexpr auto Take(const std::size_t count, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "The second parameter must be a cljonic collection");
 
 using CountType = decltype(c.Count());
@@ -932,7 +939,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-auto Seq(const C& c) noexcept {
+constexpr auto Seq(const C& c) noexcept {
 return Take(c.MaximumCount(), c);
 }
 

@@ -109,86 +109,87 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#aac0e9acea7c5df0917ed2f17bbae9d10">   54</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classcljonic_1_1_repeat.html#aac0e9acea7c5df0917ed2f17bbae9d10">value_type</a> = T;</div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
 <div class="foldopen" id="foldopen00056" data-start="{" data-end="}">
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#acd7a0629e38caf77f2d9765b8cf91d89">   56</a></span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classcljonic_1_1_repeat.html#acd7a0629e38caf77f2d9765b8cf91d89">Repeat</a>(<span class="keyword">const</span> T&amp; t) noexcept : m_elementCount{MaxElements}, m_elementDefault{T{}}, m_elementValue{t}</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    {</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    }</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#a7028bbf064e21772dce79bdc57cafb37">   56</a></span>    <span class="keyword">constexpr</span> <span class="keyword">explicit</span> <a class="code hl_function" href="classcljonic_1_1_repeat.html#a7028bbf064e21772dce79bdc57cafb37">Repeat</a>(<span class="keyword">const</span> T&amp; t) noexcept</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        : m_elementCount{MaxElements}, m_elementDefault{T{}}, m_elementValue{t}</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    {</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    }</div>
 </div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#a917efeb0c2febddd74a2eea5a2999a5c">   60</a></span>    <a class="code hl_function" href="classcljonic_1_1_repeat.html#a917efeb0c2febddd74a2eea5a2999a5c">Repeat</a>(<span class="keyword">const</span> <a class="code hl_class" href="classcljonic_1_1_repeat.html">Repeat</a>&amp; other) = <span class="keywordflow">default</span>; <span class="comment">// Copy constructor</span></div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#a70608da0c564acfadf345c6a4e9c8927">   61</a></span>    <a class="code hl_function" href="classcljonic_1_1_repeat.html#a70608da0c564acfadf345c6a4e9c8927">Repeat</a>(<a class="code hl_class" href="classcljonic_1_1_repeat.html">Repeat</a>&amp;&amp; other) = <span class="keywordflow">default</span>;      <span class="comment">// Move constructor</span></div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
-<div class="foldopen" id="foldopen00063" data-start="{" data-end="}">
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#aeaf58e28de9fdf85d7086f6b6b93f99c">   63</a></span>    [[nodiscard]] <a class="code hl_class" href="classcljonic_1_1_collection_iterator.html">Iterator</a> <a class="code hl_function" href="classcljonic_1_1_repeat.html#aeaf58e28de9fdf85d7086f6b6b93f99c">begin</a>() const noexcept</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    {</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        <span class="keywordflow">return</span> <a class="code hl_class" href="classcljonic_1_1_collection_iterator.html">Iterator</a>{*<span class="keyword">this</span>, 0};</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    }</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#acce255a4ee61f1635181e1e15cb760f2">   61</a></span>    <span class="keyword">constexpr</span> <a class="code hl_function" href="classcljonic_1_1_repeat.html#acce255a4ee61f1635181e1e15cb760f2">Repeat</a>(<span class="keyword">const</span> <a class="code hl_class" href="classcljonic_1_1_repeat.html">Repeat</a>&amp; other) = <span class="keywordflow">default</span>; <span class="comment">// Copy constructor</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#aff4093b463af5a0393e21ad873d08332">   62</a></span>    <span class="keyword">constexpr</span> <a class="code hl_function" href="classcljonic_1_1_repeat.html#aff4093b463af5a0393e21ad873d08332">Repeat</a>(<a class="code hl_class" href="classcljonic_1_1_repeat.html">Repeat</a>&amp;&amp; other) = <span class="keywordflow">default</span>;      <span class="comment">// Move constructor</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
+<div class="foldopen" id="foldopen00064" data-start="{" data-end="}">
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#aeab91cb3602a7f0c8e0003ec343d8853">   64</a></span>    [[nodiscard]] <span class="keyword">constexpr</span> <a class="code hl_class" href="classcljonic_1_1_collection_iterator.html">Iterator</a> <a class="code hl_function" href="classcljonic_1_1_repeat.html#aeab91cb3602a7f0c8e0003ec343d8853">begin</a>() const noexcept</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    {</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        <span class="keywordflow">return</span> <a class="code hl_class" href="classcljonic_1_1_collection_iterator.html">Iterator</a>{*<span class="keyword">this</span>, 0};</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    }</div>
 </div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
-<div class="foldopen" id="foldopen00068" data-start="{" data-end="}">
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#a4f004436bccca8043364c62400474b96">   68</a></span>    [[nodiscard]] <a class="code hl_class" href="classcljonic_1_1_collection_iterator.html">Iterator</a> <a class="code hl_function" href="classcljonic_1_1_repeat.html#a4f004436bccca8043364c62400474b96">end</a>() const noexcept</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    {</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>        <span class="keywordflow">return</span> <a class="code hl_class" href="classcljonic_1_1_collection_iterator.html">Iterator</a>{*<span class="keyword">this</span>, m_elementCount};</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    }</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
+<div class="foldopen" id="foldopen00069" data-start="{" data-end="}">
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#ab76eede1df7566e77b6fddfd18820bf9">   69</a></span>    [[nodiscard]] <span class="keyword">constexpr</span> <a class="code hl_class" href="classcljonic_1_1_collection_iterator.html">Iterator</a> <a class="code hl_function" href="classcljonic_1_1_repeat.html#ab76eede1df7566e77b6fddfd18820bf9">end</a>() const noexcept</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    {</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        <span class="keywordflow">return</span> <a class="code hl_class" href="classcljonic_1_1_collection_iterator.html">Iterator</a>{*<span class="keyword">this</span>, m_elementCount};</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    }</div>
 </div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
-<div class="foldopen" id="foldopen00073" data-start="{" data-end="}">
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#a7a20735f9024fa8af990f7be5bceb5ae">   73</a></span>    <span class="keyword">const</span> T&amp; <a class="code hl_function" href="classcljonic_1_1_repeat.html#a7a20735f9024fa8af990f7be5bceb5ae">operator[]</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="classcljonic_1_1_repeat.html#a35ea6093e9e3a62c0f989a50a87aa4b5">size_type</a> index) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    {</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>        <span class="keywordflow">return</span> ((m_elementCount &lt;= 0) or (index &gt;= m_elementCount)) ? m_elementDefault : m_elementValue;</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    }</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
+<div class="foldopen" id="foldopen00074" data-start="{" data-end="}">
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#a7a3467f1e1b87bba1d2f3591a62f74bd">   74</a></span>    <span class="keyword">constexpr</span> <span class="keyword">const</span> T&amp; <a class="code hl_function" href="classcljonic_1_1_repeat.html#a7a3467f1e1b87bba1d2f3591a62f74bd">operator[]</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="classcljonic_1_1_repeat.html#a35ea6093e9e3a62c0f989a50a87aa4b5">size_type</a> index) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    {</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        <span class="keywordflow">return</span> ((m_elementCount &lt;= 0) or (index &gt;= m_elementCount)) ? m_elementDefault : m_elementValue;</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    }</div>
 </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
-<div class="foldopen" id="foldopen00078" data-start="{" data-end="}">
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#a034dc13a8282f152ba3721b84d37744e">   78</a></span>    [[nodiscard]] <a class="code hl_typedef" href="classcljonic_1_1_repeat.html#a35ea6093e9e3a62c0f989a50a87aa4b5">size_type</a> <a class="code hl_function" href="classcljonic_1_1_repeat.html#a034dc13a8282f152ba3721b84d37744e">Count</a>() const noexcept</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    {</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        <span class="keywordflow">return</span> m_elementCount;</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    }</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="foldopen" id="foldopen00079" data-start="{" data-end="}">
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#aab0adfc8a2f96d08b3dd6cabe5f54bb6">   79</a></span>    [[nodiscard]] <span class="keyword">constexpr</span> <a class="code hl_typedef" href="classcljonic_1_1_repeat.html#a35ea6093e9e3a62c0f989a50a87aa4b5">size_type</a> <a class="code hl_function" href="classcljonic_1_1_repeat.html#aab0adfc8a2f96d08b3dd6cabe5f54bb6">Count</a>() const noexcept</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    {</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        <span class="keywordflow">return</span> m_elementCount;</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    }</div>
 </div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
-<div class="foldopen" id="foldopen00083" data-start="{" data-end="}">
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#a2f93fcb27f0e5edcd305a1ee39e6c293">   83</a></span>    <span class="keyword">const</span> T&amp; <a class="code hl_function" href="classcljonic_1_1_repeat.html#a2f93fcb27f0e5edcd305a1ee39e6c293">DefaultElement</a>() const noexcept</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    {</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>        <span class="keywordflow">return</span> m_elementDefault;</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    }</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
+<div class="foldopen" id="foldopen00084" data-start="{" data-end="}">
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#aaae348b1caf007e45446dd85a3562944">   84</a></span>    <span class="keyword">constexpr</span> <span class="keyword">const</span> T&amp; <a class="code hl_function" href="classcljonic_1_1_repeat.html#aaae348b1caf007e45446dd85a3562944">DefaultElement</a>() const noexcept</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    {</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        <span class="keywordflow">return</span> m_elementDefault;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    }</div>
 </div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
-<div class="foldopen" id="foldopen00088" data-start="{" data-end="}">
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#a0b9ef9361b4b292aace70b6d2b866457">   88</a></span>    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="classcljonic_1_1_repeat.html#a0b9ef9361b4b292aace70b6d2b866457">MaximumCount</a>() noexcept</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    {</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>        <span class="keywordflow">return</span> MaxElements;</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    }</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
+<div class="foldopen" id="foldopen00089" data-start="{" data-end="}">
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#a0b9ef9361b4b292aace70b6d2b866457">   89</a></span>    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="classcljonic_1_1_repeat.html#a0b9ef9361b4b292aace70b6d2b866457">MaximumCount</a>() noexcept</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    {</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        <span class="keywordflow">return</span> MaxElements;</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    }</div>
 </div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>}; <span class="comment">// class Repeat</span></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>}; <span class="comment">// class Repeat</span></div>
 </div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span><span class="comment">// deduction guide to transform Repeat{1} into Repeat&lt;std::numeric_limits&lt;std::size_t&gt;::max(), int&gt;(1)</span></div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno"><a class="line" href="namespacecljonic.html#a1a2410098ebaacdc3b0acbb294cfc727">   96</a></span><a class="code hl_class" href="classcljonic_1_1_repeat.html">Repeat</a>(T) -&gt; <a class="code hl_class" href="classcljonic_1_1_repeat.html">Repeat&lt;std::numeric_limits&lt;std::size_t&gt;::max</a>(), T&gt;;</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>} <span class="comment">// namespace cljonic</span></div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span><span class="preprocessor">#endif </span><span class="comment">// CLJONIC_REPEAT_HPP</span></div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="comment">// deduction guide to transform Repeat{1} into Repeat&lt;std::numeric_limits&lt;std::size_t&gt;::max(), int&gt;(1)</span></div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno"><a class="line" href="namespacecljonic.html#a1a2410098ebaacdc3b0acbb294cfc727">   97</a></span><a class="code hl_class" href="classcljonic_1_1_repeat.html">Repeat</a>(T) -&gt; <a class="code hl_class" href="classcljonic_1_1_repeat.html">Repeat&lt;std::numeric_limits&lt;std::size_t&gt;::max</a>(), T&gt;;</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>} <span class="comment">// namespace cljonic</span></div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span> </div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span><span class="preprocessor">#endif </span><span class="comment">// CLJONIC_REPEAT_HPP</span></div>
 <div class="ttc" id="aclasscljonic_1_1_collection_iterator_html"><div class="ttname"><a href="classcljonic_1_1_collection_iterator.html">cljonic::CollectionIterator</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-iterator_8hpp_source.html#l00008">cljonic-collection-iterator.hpp:9</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_repeat_html"><div class="ttname"><a href="classcljonic_1_1_repeat.html">cljonic::Repeat</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00016">cljonic-repeat.hpp:17</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_repeat_html_a034dc13a8282f152ba3721b84d37744e"><div class="ttname"><a href="classcljonic_1_1_repeat.html#a034dc13a8282f152ba3721b84d37744e">cljonic::Repeat::Count</a></div><div class="ttdeci">size_type Count() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00078">cljonic-repeat.hpp:78</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_repeat_html_a0b9ef9361b4b292aace70b6d2b866457"><div class="ttname"><a href="classcljonic_1_1_repeat.html#a0b9ef9361b4b292aace70b6d2b866457">cljonic::Repeat::MaximumCount</a></div><div class="ttdeci">static constexpr auto MaximumCount() noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00088">cljonic-repeat.hpp:88</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_repeat_html_a2f93fcb27f0e5edcd305a1ee39e6c293"><div class="ttname"><a href="classcljonic_1_1_repeat.html#a2f93fcb27f0e5edcd305a1ee39e6c293">cljonic::Repeat::DefaultElement</a></div><div class="ttdeci">const T &amp; DefaultElement() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00083">cljonic-repeat.hpp:83</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_repeat_html_a0b9ef9361b4b292aace70b6d2b866457"><div class="ttname"><a href="classcljonic_1_1_repeat.html#a0b9ef9361b4b292aace70b6d2b866457">cljonic::Repeat::MaximumCount</a></div><div class="ttdeci">static constexpr auto MaximumCount() noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00089">cljonic-repeat.hpp:89</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_repeat_html_a35ea6093e9e3a62c0f989a50a87aa4b5"><div class="ttname"><a href="classcljonic_1_1_repeat.html#a35ea6093e9e3a62c0f989a50a87aa4b5">cljonic::Repeat::size_type</a></div><div class="ttdeci">std::size_t size_type</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00053">cljonic-repeat.hpp:53</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_repeat_html_a4f004436bccca8043364c62400474b96"><div class="ttname"><a href="classcljonic_1_1_repeat.html#a4f004436bccca8043364c62400474b96">cljonic::Repeat::end</a></div><div class="ttdeci">Iterator end() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00068">cljonic-repeat.hpp:68</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_repeat_html_a70608da0c564acfadf345c6a4e9c8927"><div class="ttname"><a href="classcljonic_1_1_repeat.html#a70608da0c564acfadf345c6a4e9c8927">cljonic::Repeat::Repeat</a></div><div class="ttdeci">Repeat(Repeat &amp;&amp;other)=default</div></div>
-<div class="ttc" id="aclasscljonic_1_1_repeat_html_a7a20735f9024fa8af990f7be5bceb5ae"><div class="ttname"><a href="classcljonic_1_1_repeat.html#a7a20735f9024fa8af990f7be5bceb5ae">cljonic::Repeat::operator[]</a></div><div class="ttdeci">const T &amp; operator[](const size_type index) const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00073">cljonic-repeat.hpp:73</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_repeat_html_a917efeb0c2febddd74a2eea5a2999a5c"><div class="ttname"><a href="classcljonic_1_1_repeat.html#a917efeb0c2febddd74a2eea5a2999a5c">cljonic::Repeat::Repeat</a></div><div class="ttdeci">Repeat(const Repeat &amp;other)=default</div></div>
+<div class="ttc" id="aclasscljonic_1_1_repeat_html_a7028bbf064e21772dce79bdc57cafb37"><div class="ttname"><a href="classcljonic_1_1_repeat.html#a7028bbf064e21772dce79bdc57cafb37">cljonic::Repeat::Repeat</a></div><div class="ttdeci">constexpr Repeat(const T &amp;t) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00056">cljonic-repeat.hpp:56</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_repeat_html_a7a3467f1e1b87bba1d2f3591a62f74bd"><div class="ttname"><a href="classcljonic_1_1_repeat.html#a7a3467f1e1b87bba1d2f3591a62f74bd">cljonic::Repeat::operator[]</a></div><div class="ttdeci">constexpr const T &amp; operator[](const size_type index) const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00074">cljonic-repeat.hpp:74</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_repeat_html_aaae348b1caf007e45446dd85a3562944"><div class="ttname"><a href="classcljonic_1_1_repeat.html#aaae348b1caf007e45446dd85a3562944">cljonic::Repeat::DefaultElement</a></div><div class="ttdeci">constexpr const T &amp; DefaultElement() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00084">cljonic-repeat.hpp:84</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_repeat_html_aab0adfc8a2f96d08b3dd6cabe5f54bb6"><div class="ttname"><a href="classcljonic_1_1_repeat.html#aab0adfc8a2f96d08b3dd6cabe5f54bb6">cljonic::Repeat::Count</a></div><div class="ttdeci">constexpr size_type Count() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00079">cljonic-repeat.hpp:79</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_repeat_html_aac0e9acea7c5df0917ed2f17bbae9d10"><div class="ttname"><a href="classcljonic_1_1_repeat.html#aac0e9acea7c5df0917ed2f17bbae9d10">cljonic::Repeat::value_type</a></div><div class="ttdeci">T value_type</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00054">cljonic-repeat.hpp:54</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_repeat_html_acd7a0629e38caf77f2d9765b8cf91d89"><div class="ttname"><a href="classcljonic_1_1_repeat.html#acd7a0629e38caf77f2d9765b8cf91d89">cljonic::Repeat::Repeat</a></div><div class="ttdeci">Repeat(const T &amp;t) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00056">cljonic-repeat.hpp:56</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_repeat_html_aeaf58e28de9fdf85d7086f6b6b93f99c"><div class="ttname"><a href="classcljonic_1_1_repeat.html#aeaf58e28de9fdf85d7086f6b6b93f99c">cljonic::Repeat::begin</a></div><div class="ttdeci">Iterator begin() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00063">cljonic-repeat.hpp:63</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_repeat_html_ab76eede1df7566e77b6fddfd18820bf9"><div class="ttname"><a href="classcljonic_1_1_repeat.html#ab76eede1df7566e77b6fddfd18820bf9">cljonic::Repeat::end</a></div><div class="ttdeci">constexpr Iterator end() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00069">cljonic-repeat.hpp:69</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_repeat_html_acce255a4ee61f1635181e1e15cb760f2"><div class="ttname"><a href="classcljonic_1_1_repeat.html#acce255a4ee61f1635181e1e15cb760f2">cljonic::Repeat::Repeat</a></div><div class="ttdeci">constexpr Repeat(const Repeat &amp;other)=default</div></div>
+<div class="ttc" id="aclasscljonic_1_1_repeat_html_aeab91cb3602a7f0c8e0003ec343d8853"><div class="ttname"><a href="classcljonic_1_1_repeat.html#aeab91cb3602a7f0c8e0003ec343d8853">cljonic::Repeat::begin</a></div><div class="ttdeci">constexpr Iterator begin() const noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00064">cljonic-repeat.hpp:64</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_repeat_html_aec7ce22ee3a96d67e2a2cd1f2d828500"><div class="ttname"><a href="classcljonic_1_1_repeat.html#aec7ce22ee3a96d67e2a2cd1f2d828500">cljonic::Repeat::cljonic_collection_type</a></div><div class="ttdeci">std::integral_constant&lt; CljonicCollectionType, CljonicCollectionType::Repeat &gt; cljonic_collection_type</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00052">cljonic-repeat.hpp:52</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_repeat_html_aff4093b463af5a0393e21ad873d08332"><div class="ttname"><a href="classcljonic_1_1_repeat.html#aff4093b463af5a0393e21ad873d08332">cljonic::Repeat::Repeat</a></div><div class="ttdeci">constexpr Repeat(Repeat &amp;&amp;other)=default</div></div>
 <div class="ttc" id="acljonic-collection-iterator_8hpp_html"><div class="ttname"><a href="cljonic-collection-iterator_8hpp.html">cljonic-collection-iterator.hpp</a></div></div>
 <div class="ttc" id="acljonic-collection-type_8hpp_html"><div class="ttname"><a href="cljonic-collection-type_8hpp.html">cljonic-collection-type.hpp</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00010">cljonic-array.hpp:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 27 2024 12:57:40 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Dec 27 2024 14:18:30 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

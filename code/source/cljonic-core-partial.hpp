@@ -42,7 +42,7 @@ int main()
 ~~~~~
 */
 template <typename F, typename... Args>
-auto Partial(F&& f, Args&&... args) noexcept
+constexpr auto Partial(F&& f, Args&&... args) noexcept
 {
     return [f = std::forward<F>(f), ... args = std::forward<Args>(args)](auto&&... rest)
     {

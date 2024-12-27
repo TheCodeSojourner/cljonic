@@ -47,7 +47,7 @@ int main()
 ~~~~~
 */
 template <typename T, typename... Ts>
-auto Equal(const T& t, const Ts&... ts) noexcept
+constexpr auto Equal(const T& t, const Ts&... ts) noexcept
 {
     return EqualBy([](const auto& a, const auto& b) { return AreEqual(a, b); }, t, ts...);
 }

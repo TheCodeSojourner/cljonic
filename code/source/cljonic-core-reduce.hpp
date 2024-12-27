@@ -104,7 +104,7 @@ auto Reduce(F&& f, const C& c) noexcept
 }
 
 template <typename F, typename T, typename C>
-auto Reduce(F&& f, const T& t, const C& c) noexcept
+constexpr auto Reduce(F&& f, const T& t, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Third parameter must be a cljonic collection");
 

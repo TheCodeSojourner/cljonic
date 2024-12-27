@@ -45,7 +45,7 @@ return 0;
 ~~~~~
 */
 template <typename F, typename C, typename... Cs>
-auto Map(F&& f, const C& c, const Cs&... cs) noexcept
+constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept
 {
     static_assert(AllCljonicCollections<C, Cs...>, "The second through last parameters must be cljonic collections");
 

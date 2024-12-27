@@ -51,52 +51,52 @@ class Array
     using size_type = MaxElementsType;
     using value_type = T;
 
-    Array() noexcept : m_elementCount(0), m_elementDefault(T{})
+    constexpr Array() noexcept : m_elementCount(0), m_elementDefault(T{})
     {
     }
 
-    explicit Array(const std::initializer_list<const T> elements) noexcept
+    constexpr explicit Array(const std::initializer_list<const T> elements) noexcept
         : m_elementCount(Min(MaxElements, elements.size())), m_elementDefault(T{})
     {
         for (size_type i{0}; i < m_elementCount; ++i)
             m_elements[i] = *(elements.begin() + i);
     }
 
-    Array(const Array& other) = default; // Copy constructor
-    Array(Array&& other) = default;      // Move constructor
+    constexpr Array(const Array& other) = default; // Copy constructor
+    constexpr Array(Array&& other) = default;      // Move constructor
 
-    const T* begin() const noexcept
+    constexpr const T* begin() const noexcept
     {
         return m_elements;
     }
 
-    const T* end() const noexcept
+    constexpr const T* end() const noexcept
     {
         return m_elements + m_elementCount;
     }
 
-    const T& operator[](const MaxElementsType index) const noexcept
+    constexpr const T& operator[](const MaxElementsType index) const noexcept
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
     }
 
-    const T& operator()(const MaxElementsType index) const noexcept
+    constexpr const T& operator()(const MaxElementsType index) const noexcept
     {
         return this->operator[](index);
     }
 
-    void MConj(const T& t) noexcept
+    constexpr void MConj(const T& t) noexcept
     {
         if (m_elementCount < MaxElements)
             m_elements[m_elementCount++] = t;
     }
 
-    [[nodiscard]] MaxElementsType Count() const noexcept
+    [[nodiscard]] constexpr MaxElementsType Count() const noexcept
     {
         return m_elementCount;
     }
 
-    const T& DefaultElement() const noexcept
+    constexpr const T& DefaultElement() const noexcept
     {
         return m_elementDefault;
     }

@@ -205,6 +205,7 @@ SCENARIO("Set", "[CljonicSet]")
             CHECK(i == element);
             ++i;
         }
+        CHECK(0 == s[4]);
         // *s.begin() = 1; // Error: assignment of read-only location '* s.Array<int, 10>::begin() const'
     }
 

@@ -53,34 +53,35 @@ class Repeat
     using size_type = std::size_t;
     using value_type = T;
 
-    explicit Repeat(const T& t) noexcept : m_elementCount{MaxElements}, m_elementDefault{T{}}, m_elementValue{t}
+    constexpr explicit Repeat(const T& t) noexcept
+        : m_elementCount{MaxElements}, m_elementDefault{T{}}, m_elementValue{t}
     {
     }
 
-    Repeat(const Repeat& other) = default; // Copy constructor
-    Repeat(Repeat&& other) = default;      // Move constructor
+    constexpr Repeat(const Repeat& other) = default; // Copy constructor
+    constexpr Repeat(Repeat&& other) = default;      // Move constructor
 
-    [[nodiscard]] Iterator begin() const noexcept
+    [[nodiscard]] constexpr Iterator begin() const noexcept
     {
         return Iterator{*this, 0};
     }
 
-    [[nodiscard]] Iterator end() const noexcept
+    [[nodiscard]] constexpr Iterator end() const noexcept
     {
         return Iterator{*this, m_elementCount};
     }
 
-    const T& operator[](const size_type index) const noexcept
+    constexpr const T& operator[](const size_type index) const noexcept
     {
         return ((m_elementCount <= 0) or (index >= m_elementCount)) ? m_elementDefault : m_elementValue;
     }
 
-    [[nodiscard]] size_type Count() const noexcept
+    [[nodiscard]] constexpr size_type Count() const noexcept
     {
         return m_elementCount;
     }
 
-    const T& DefaultElement() const noexcept
+    constexpr const T& DefaultElement() const noexcept
     {
         return m_elementDefault;
     }

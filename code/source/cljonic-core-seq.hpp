@@ -31,7 +31,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-auto Seq(const C& c) noexcept
+constexpr auto Seq(const C& c) noexcept
 {
     return Take(c.MaximumCount(), c);
 }

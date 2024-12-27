@@ -161,13 +161,13 @@ Functions</h2></td></tr>
 <tr class="memitem:a6363670b51f5ee431b4bd5d973af5c90" id="r_a6363670b51f5ee431b4bd5d973af5c90"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
 <tr class="memitem:a6363670b51f5ee431b4bd5d973af5c90"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a6363670b51f5ee431b4bd5d973af5c90">Set</a> (Args...) -&gt; <a class="el" href="classcljonic_1_1_set.html">Set</a>&lt; std::common_type_t&lt; Args... &gt;, sizeof...(Args)&gt;</td></tr>
 <tr class="separator:a6363670b51f5ee431b4bd5d973af5c90"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0cc3728e9d58c23c2ce52d07cf6f5a74" id="r_a0cc3728e9d58c23c2ce52d07cf6f5a74"><td class="memTemplParams" colspan="2">template&lt;typename F , typename T , typename U &gt; </td></tr>
-<tr class="memitem:a0cc3728e9d58c23c2ce52d07cf6f5a74"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a0cc3728e9d58c23c2ce52d07cf6f5a74">AreEqualBy</a> (const F &amp;f, const T &amp;t, const U &amp;u) noexcept</td></tr>
-<tr class="separator:a0cc3728e9d58c23c2ce52d07cf6f5a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7893962d764065cc6bf951984d31f296" id="r_a7893962d764065cc6bf951984d31f296"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a7893962d764065cc6bf951984d31f296">AreEqual</a> (NotCString auto a, NotCString auto b) noexcept</td></tr>
-<tr class="separator:a7893962d764065cc6bf951984d31f296"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abfa6fd4634d484674668cc4d6181391c" id="r_abfa6fd4634d484674668cc4d6181391c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#abfa6fd4634d484674668cc4d6181391c">AreEqual</a> (CString auto a, CString auto b) noexcept</td></tr>
-<tr class="separator:abfa6fd4634d484674668cc4d6181391c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bb21392e393491beb96169bd6179682" id="r_a0bb21392e393491beb96169bd6179682"><td class="memTemplParams" colspan="2">template&lt;typename F , typename T , typename U &gt; </td></tr>
+<tr class="memitem:a0bb21392e393491beb96169bd6179682"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a0bb21392e393491beb96169bd6179682">AreEqualBy</a> (const F &amp;f, const T &amp;t, const U &amp;u) noexcept</td></tr>
+<tr class="separator:a0bb21392e393491beb96169bd6179682"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe98e7e9842fd86571e1bc24929aaddf" id="r_abe98e7e9842fd86571e1bc24929aaddf"><td class="memItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#abe98e7e9842fd86571e1bc24929aaddf">AreEqual</a> (NotCString auto a, NotCString auto b) noexcept</td></tr>
+<tr class="separator:abe98e7e9842fd86571e1bc24929aaddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa03e6edddfc6c8f90fcf7bd2c1a81d69" id="r_aa03e6edddfc6c8f90fcf7bd2c1a81d69"><td class="memItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#aa03e6edddfc6c8f90fcf7bd2c1a81d69">AreEqual</a> (CString auto a, CString auto b) noexcept</td></tr>
+<tr class="separator:aa03e6edddfc6c8f90fcf7bd2c1a81d69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68ae4196c3f5a186b700523f5ca2b816" id="r_a68ae4196c3f5a186b700523f5ca2b816"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a68ae4196c3f5a186b700523f5ca2b816">Min</a> (auto a, auto b) noexcept</td></tr>
 <tr class="separator:a68ae4196c3f5a186b700523f5ca2b816"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56236f4c354b1a6cbfe113b26fc17f1d" id="r_a56236f4c354b1a6cbfe113b26fc17f1d"><td class="memTemplParams" colspan="2">template&lt;typename C , typename... Cs&gt; </td></tr>
@@ -233,8 +233,8 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="abfa6fd4634d484674668cc4d6181391c" name="abfa6fd4634d484674668cc4d6181391c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abfa6fd4634d484674668cc4d6181391c">&#9670;&#160;</a></span>AreEqual() <span class="overload">[1/2]</span></h2>
+<a id="aa03e6edddfc6c8f90fcf7bd2c1a81d69" name="aa03e6edddfc6c8f90fcf7bd2c1a81d69"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa03e6edddfc6c8f90fcf7bd2c1a81d69">&#9670;&#160;</a></span>AreEqual() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -243,7 +243,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool cljonic::AreEqual </td>
+          <td class="memname">constexpr bool cljonic::AreEqual </td>
           <td>(</td>
           <td class="paramtype">CString auto&#160;</td>
           <td class="paramname"><em>a</em>, </td>
@@ -262,7 +262,7 @@ Variables</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -271,8 +271,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a7893962d764065cc6bf951984d31f296" name="a7893962d764065cc6bf951984d31f296"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7893962d764065cc6bf951984d31f296">&#9670;&#160;</a></span>AreEqual() <span class="overload">[2/2]</span></h2>
+<a id="abe98e7e9842fd86571e1bc24929aaddf" name="abe98e7e9842fd86571e1bc24929aaddf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe98e7e9842fd86571e1bc24929aaddf">&#9670;&#160;</a></span>AreEqual() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -281,7 +281,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool cljonic::AreEqual </td>
+          <td class="memname">constexpr bool cljonic::AreEqual </td>
           <td>(</td>
           <td class="paramtype">NotCString auto&#160;</td>
           <td class="paramname"><em>a</em>, </td>
@@ -300,7 +300,7 @@ Variables</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -309,8 +309,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a0cc3728e9d58c23c2ce52d07cf6f5a74" name="a0cc3728e9d58c23c2ce52d07cf6f5a74"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0cc3728e9d58c23c2ce52d07cf6f5a74">&#9670;&#160;</a></span>AreEqualBy()</h2>
+<a id="a0bb21392e393491beb96169bd6179682" name="a0bb21392e393491beb96169bd6179682"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bb21392e393491beb96169bd6179682">&#9670;&#160;</a></span>AreEqualBy()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -321,7 +321,7 @@ template&lt;typename F , typename T , typename U &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool cljonic::AreEqualBy </td>
+          <td class="memname">constexpr bool cljonic::AreEqualBy </td>
           <td>(</td>
           <td class="paramtype">const F &amp;&#160;</td>
           <td class="paramname"><em>f</em>, </td>
@@ -346,7 +346,7 @@ template&lt;typename F , typename T , typename U &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -663,7 +663,7 @@ template&lt;typename F , IsCljonicCollection T, IsCljonicCollection... Ts&gt; </
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 27 2024 12:57:40 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Dec 27 2024 14:18:30 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

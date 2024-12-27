@@ -53,24 +53,24 @@ class String
     using size_type = MaxElementsType;
     using value_type = char;
 
-    String() noexcept : m_elementCount(0), m_elementDefault('\0')
+    constexpr String() noexcept : m_elementCount(0), m_elementDefault('\0')
     {
         m_elements[0] = '\0';
     }
 
-    explicit String(const std::initializer_list<const char> elements) noexcept
+    constexpr explicit String(const std::initializer_list<const char> elements) noexcept
         : m_elementCount(0), m_elementDefault('\0')
     {
         for (const auto& element : elements)
         {
             if (m_elementCount == MaxElements)
-                break;
+                break; // LCOV_EXCL_LINE - This line of code may only execute at compile-time
             m_elements[m_elementCount++] = element;
         }
         m_elements[m_elementCount] = '\0';
     }
 
-    explicit String(const char* c_str) noexcept : m_elementCount(0), m_elementDefault('\0')
+    constexpr explicit String(const char* c_str) noexcept : m_elementCount(0), m_elementDefault('\0')
     {
         while ((m_elementCount < MaxElements) and ('\0' != c_str[m_elementCount]))
         {
@@ -80,35 +80,35 @@ class String
         m_elements[m_elementCount] = '\0';
     }
 
-    String(const String& other) = default; // Copy constructor
-    String(String&& other) = default;      // Move constructor
+    constexpr String(const String& other) = default; // Copy constructor
+    constexpr String(String&& other) = default;      // Move constructor
 
-    [[nodiscard]] Iterator begin() const noexcept
+    [[nodiscard]] constexpr Iterator begin() const noexcept
     {
         return Iterator{*this, 0};
     }
 
-    [[nodiscard]] Iterator end() const noexcept
+    [[nodiscard]] constexpr Iterator end() const noexcept
     {
         return Iterator{*this, m_elementCount};
     }
 
-    char operator[](const MaxElementsType index) const noexcept
+    constexpr char operator[](const MaxElementsType index) const noexcept
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
     }
 
-    char operator()(const MaxElementsType index) const noexcept
+    constexpr char operator()(const MaxElementsType index) const noexcept
     {
         return this->operator[](index);
     }
 
-    [[nodiscard]] MaxElementsType Count() const noexcept
+    [[nodiscard]] constexpr MaxElementsType Count() const noexcept
     {
         return m_elementCount;
     }
 
-    int DefaultElement() const noexcept
+    constexpr int DefaultElement() const noexcept
     {
         return m_elementDefault;
     }

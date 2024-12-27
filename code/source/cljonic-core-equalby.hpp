@@ -43,7 +43,7 @@ int main()
 ~~~~~
 */
 template <typename F, typename T, typename... Ts>
-auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
+constexpr auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 

@@ -34,7 +34,7 @@ class Set
     const T m_elementDefault;
     T m_elements[MaxElements];
 
-    bool IsUniqueElementBy(const auto& f, const T& element) const noexcept
+    constexpr bool IsUniqueElementBy(const auto& f, const T& element) const noexcept
     {
         auto result{true};
         for (MaxElementsType i{0}; (result and (i < m_elementCount)); ++i)
@@ -42,7 +42,7 @@ class Set
         return result;
     }
 
-    bool IsUniqueElement(const T& element) const noexcept
+    constexpr bool IsUniqueElement(const T& element) const noexcept
     {
         auto result{true};
         for (MaxElementsType i{0}; (result and (i < m_elementCount)); ++i)
@@ -78,61 +78,62 @@ class Set
     using size_type = MaxElementsType;
     using value_type = T;
 
-    Set() noexcept : m_elementCount(0), m_elementDefault(T{})
+    constexpr Set() noexcept : m_elementCount(0), m_elementDefault(T{})
     {
     }
 
-    explicit Set(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{})
+    constexpr explicit Set(const std::initializer_list<const T> elements) noexcept
+        : m_elementCount(0), m_elementDefault(T{})
     {
         // #lizard forgives -- The complexity of this function is acceptable
         for (const auto& element : elements)
         {
             if (m_elementCount == MaxElements)
-                break;
+                break; // LCOV_EXCL_LINE - This line of code may only execute at compile-time
             if (IsUniqueElement(element))
                 m_elements[m_elementCount++] = element;
         }
     }
 
-    Set(const Set& other) = default; // Copy constructor
-    Set(Set&& other) = default;      // Move constructor
+    constexpr Set(const Set& other) = default; // Copy constructor
+    constexpr Set(Set&& other) = default;      // Move constructor
 
-    const T* begin() const noexcept
+    constexpr const T* begin() const noexcept
     {
         return m_elements;
     }
 
-    const T* end() const noexcept
+    constexpr const T* end() const noexcept
     {
         return m_elements + m_elementCount;
     }
 
-    const T& operator[](const MaxElementsType index) const noexcept
+    constexpr const T& operator[](const MaxElementsType index) const noexcept
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
     }
 
-    const T& operator()(const T& t) const noexcept
+    constexpr const T& operator()(const T& t) const noexcept
     {
         return Contains(t) ? t : m_elementDefault;
     }
 
-    [[nodiscard]] MaxElementsType Count() const noexcept
+    [[nodiscard]] constexpr MaxElementsType Count() const noexcept
     {
         return m_elementCount;
     }
 
-    bool ContainsBy(const auto& f, const T& element) const noexcept
+    constexpr bool ContainsBy(const auto& f, const T& element) const noexcept
     {
         return not IsUniqueElementBy(f, element);
     }
 
-    bool Contains(const T& element) const noexcept
+    constexpr bool Contains(const T& element) const noexcept
     {
         return not IsUniqueElement(element);
     }
 
-    int DefaultElement() const noexcept
+    constexpr int DefaultElement() const noexcept
     {
         return m_elementDefault;
     }

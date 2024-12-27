@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['take_0',['Take',['../namespacecljonic_1_1core.html#ae081024098bd6f39aa0cf08537a325e6',1,'cljonic::core']]]
+  ['take_0',['Take',['../namespacecljonic_1_1core.html#a23d51ea634372e512dbe8d01feeb1ade',1,'cljonic::core']]]
 ];

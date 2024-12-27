@@ -9,18 +9,18 @@ namespace cljonic
 {
 
 template <typename F, typename T, typename U>
-bool AreEqualBy(const F& f, const T& t, const U& u) noexcept
+constexpr bool AreEqualBy(const F& f, const T& t, const U& u) noexcept
 {
     static_assert(std::predicate<F, T, U>, "Function is not a valid binary predicate for the parameters");
     return f(t, u);
 }
 
-bool AreEqual(NotCString auto a, NotCString auto b) noexcept
+constexpr bool AreEqual(NotCString auto a, NotCString auto b) noexcept
 {
     return a == b;
 }
 
-bool AreEqual(CString auto a, CString auto b) noexcept
+constexpr bool AreEqual(CString auto a, CString auto b) noexcept
 {
     return std::strcmp(a, b) == 0;
 }
