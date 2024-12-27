@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Dec 27 10:29:43 AM MST 2024
+// This file was generated Fri Dec 27 11:14:03 AM MST 2024
 
 namespace cljonic {
 
@@ -691,6 +691,7 @@ namespace core {
 namespace cljonic {
 
 namespace core {
+
 template <typename F, typename... Fs>
 static constexpr auto InnerCompose(F&& f, Fs&&... fs) noexcept {
 if constexpr(sizeof...(fs) == 0) {
@@ -699,7 +700,6 @@ return std::forward<F>(f);
 return [=]<typename... T>(T&&... args) { return f(InnerCompose(std::forward<Fs>(fs)...)(std::forward<T>(args)...)); };
 }
 }
-
 template <typename... Fs>
 constexpr auto Compose(Fs&&... fs) noexcept {
 static_assert(sizeof...(Fs) >= 2, "Compose requires at least two function parameters");

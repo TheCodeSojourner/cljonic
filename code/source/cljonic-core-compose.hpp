@@ -10,6 +10,20 @@ namespace cljonic
 namespace core
 {
 
+template <typename F, typename... Fs>
+static constexpr auto InnerCompose(F&& f, Fs&&... fs) noexcept
+{
+    if constexpr (sizeof...(fs) == 0)
+    {
+        return std::forward<F>(f);
+    }
+    else
+    {
+        return [=]<typename... T>(T&&... args)
+        { return f(InnerCompose(std::forward<Fs>(fs)...)(std::forward<T>(args)...)); };
+    }
+}
+
 /** \anchor Core_Compose
 * The \b Compose function is a so-called \b Higher-Order \b Function that takes a list of two or more functions and
 * returns a function that is the composition of the list of functions.  The function returned takes the same number of
@@ -72,20 +86,6 @@ int main()
 }
 ~~~~~
 */
-template <typename F, typename... Fs>
-static constexpr auto InnerCompose(F&& f, Fs&&... fs) noexcept
-{
-    if constexpr (sizeof...(fs) == 0)
-    {
-        return std::forward<F>(f);
-    }
-    else
-    {
-        return [=]<typename... T>(T&&... args)
-        { return f(InnerCompose(std::forward<Fs>(fs)...)(std::forward<T>(args)...)); };
-    }
-}
-
 template <typename... Fs>
 constexpr auto Compose(Fs&&... fs) noexcept
 {
