@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Dec 27 12:43:37 PM MST 2024
+// This file was generated Fri Dec 27 12:57:40 PM MST 2024
 
 namespace cljonic {
 
@@ -26,28 +26,28 @@ const T& m_collection;
 std::size_t m_index;
 
 public:
-CollectionIterator(const T& collection, const std::size_t index) : m_collection(collection), m_index(index) {
+CollectionIterator(const T& collection, const std::size_t index) noexcept : m_collection(collection), m_index(index) {
 }
 
-auto operator*() const -> decltype(m_collection[m_index]) {
+auto operator*() const noexcept -> decltype(m_collection[m_index]) {
 return m_collection[m_index];
 }
 
-CollectionIterator& operator++() {
+CollectionIterator& operator++() noexcept {
 ++m_index;
 return *this;
 }
 
-bool operator!=(const CollectionIterator& other) const {
+bool operator!=(const CollectionIterator& other) const noexcept {
 return m_index != other.m_index;
 }
 
-CollectionIterator& operator+=(int value) {
+CollectionIterator& operator+=(int value) noexcept {
 m_index += value;
 return *this;
 }
 
-CollectionIterator operator+(int value) const {
+CollectionIterator operator+(int value) const noexcept {
 CollectionIterator temp = *this;
 temp += value;
 return temp;
@@ -210,20 +210,20 @@ constexpr bool IsBinaryPredicateForAllCljonicCollections =
 namespace cljonic {
 
 template <typename F, typename T, typename U>
-bool AreEqualBy(const F& f, const T& t, const U& u) {
+bool AreEqualBy(const F& f, const T& t, const U& u) noexcept {
 static_assert(std::predicate<F, T, U>, "Function is not a valid binary predicate for the parameters");
 return f(t, u);
 }
 
-bool AreEqual(NotCString auto a, NotCString auto b) {
+bool AreEqual(NotCString auto a, NotCString auto b) noexcept {
 return a == b;
 }
 
-bool AreEqual(CString auto a, CString auto b) {
+bool AreEqual(CString auto a, CString auto b) noexcept {
 return std::strcmp(a, b) == 0;
 }
 
-constexpr auto Min(auto a, auto b) {
+constexpr auto Min(auto a, auto b) noexcept {
 return (a < b) ? a : b;
 }
 
@@ -416,11 +416,11 @@ Initialize();
 }
 }
 
-[[nodiscard]] Iterator begin() const {
+[[nodiscard]] Iterator begin() const noexcept {
 return Iterator{*this, 0};
 }
 
-[[nodiscard]] Iterator end() const {
+[[nodiscard]] Iterator end() const noexcept {
 return Iterator{*this, m_elementCount};
 }
 
@@ -469,11 +469,11 @@ explicit Repeat(const T& t) noexcept : m_elementCount{MaxElements}, m_elementDef
 Repeat(const Repeat& other) = default;
 Repeat(Repeat&& other) = default;
 
-[[nodiscard]] Iterator begin() const {
+[[nodiscard]] Iterator begin() const noexcept {
 return Iterator{*this, 0};
 }
 
-[[nodiscard]] Iterator end() const {
+[[nodiscard]] Iterator end() const noexcept {
 return Iterator{*this, m_elementCount};
 }
 
@@ -641,11 +641,11 @@ m_elements[m_elementCount] = '\0';
 String(const String& other) = default;
 String(String&& other) = default;
 
-[[nodiscard]] Iterator begin() const {
+[[nodiscard]] Iterator begin() const noexcept {
 return Iterator{*this, 0};
 }
 
-[[nodiscard]] Iterator end() const {
+[[nodiscard]] Iterator end() const noexcept {
 return Iterator{*this, m_elementCount};
 }
 
@@ -697,7 +697,7 @@ static constexpr auto InnerCompose(F&& f, Fs&&... fs) noexcept {
 if constexpr(sizeof...(fs) == 0) {
 return std::forward<F>(f);
 } else {
-return [=]<typename... T>(T&&... args) { return f(InnerCompose(std::forward<Fs>(fs)...)(std::forward<T>(args)...)); };
+return [=]<typename... T>(T&&... args) noexcept { return f(InnerCompose(std::forward<Fs>(fs)...)(std::forward<T>(args)...)); };
 }
 }
 template <typename... Fs>
@@ -833,7 +833,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C, typename... Cs>
-auto Map(F&& f, const C& c, const Cs&... cs) {
+auto Map(F&& f, const C& c, const Cs&... cs) noexcept {
 static_assert(AllCljonicCollections<C, Cs...>, "The second through last parameters must be cljonic collections");
 
 static_assert(std::invocable<F, typename C::value_type, typename Cs::value_type...>,
@@ -857,7 +857,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename... Args>
-auto Partial(F&& f, Args&&... args) {
+auto Partial(F&& f, Args&&... args) noexcept {
 return [f = std::forward<F>(f), ... args = std::forward<Args>(args)](auto&&... rest) {
 static_assert(std::regular_invocable<F, Args..., decltype(rest)...>,
               "Partial function cannot be called with the specified arguments");
@@ -877,7 +877,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-auto Reduce(F&& f, const C& c) {
+auto Reduce(F&& f, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Second parameter must be a cljonic collection");
 
 static_assert(std::regular_invocable<F, typename C::value_type, typename C::value_type>,
@@ -892,7 +892,7 @@ return (0 == c.Count()) ? c.DefaultElement()
 }
 
 template <typename F, typename T, typename C>
-auto Reduce(F&& f, const T& t, const C& c) {
+auto Reduce(F&& f, const T& t, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Third parameter must be a cljonic collection");
 
 static_assert(std::regular_invocable<F, T, typename C::value_type>,

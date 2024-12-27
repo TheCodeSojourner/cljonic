@@ -20,7 +20,7 @@ static constexpr auto InnerCompose(F&& f, Fs&&... fs) noexcept
     }
     else
     {
-        return [=]<typename... T>(T&&... args)
+        return [=]<typename... T>(T&&... args) noexcept
         { return f(InnerCompose(std::forward<Fs>(fs)...)(std::forward<T>(args)...)); };
     }
 }

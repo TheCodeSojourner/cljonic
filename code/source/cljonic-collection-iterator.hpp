@@ -11,33 +11,33 @@ class CollectionIterator
     std::size_t m_index;
 
   public:
-    CollectionIterator(const T& collection, const std::size_t index) : m_collection(collection), m_index(index)
+    CollectionIterator(const T& collection, const std::size_t index) noexcept : m_collection(collection), m_index(index)
     {
     }
 
-    auto operator*() const -> decltype(m_collection[m_index])
+    auto operator*() const noexcept -> decltype(m_collection[m_index])
     {
         return m_collection[m_index];
     }
 
-    CollectionIterator& operator++()
+    CollectionIterator& operator++() noexcept
     {
         ++m_index;
         return *this;
     }
 
-    bool operator!=(const CollectionIterator& other) const
+    bool operator!=(const CollectionIterator& other) const noexcept
     {
         return m_index != other.m_index;
     }
 
-    CollectionIterator& operator+=(int value)
+    CollectionIterator& operator+=(int value) noexcept
     {
         m_index += value;
         return *this;
     }
 
-    CollectionIterator operator+(int value) const
+    CollectionIterator operator+(int value) const noexcept
     {
         CollectionIterator temp = *this;
         temp += value;

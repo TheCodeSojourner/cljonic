@@ -42,7 +42,7 @@ var searchData=
   ['cljonic_5fcollection_5ftype_39',['cljonic_collection_type',['../classcljonic_1_1_array.html#a839d2769a8df4d8775ab00ae72448e83',1,'cljonic::Array::cljonic_collection_type'],['../classcljonic_1_1_range.html#a73f8a2a8b19d39dd4ff7448e242385d0',1,'cljonic::Range::cljonic_collection_type'],['../classcljonic_1_1_repeat.html#aec7ce22ee3a96d67e2a2cd1f2d828500',1,'cljonic::Repeat::cljonic_collection_type'],['../classcljonic_1_1_set.html#a3aaee6b5d6c23c5971bff701c7cdae0d',1,'cljonic::Set::cljonic_collection_type'],['../classcljonic_1_1_string.html#a3d7cb2731e7a160fb00329819f1f79f1',1,'cljonic::String::cljonic_collection_type']]],
   ['cljoniccollectiontype_40',['CljonicCollectionType',['../namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6',1,'cljonic']]],
   ['collection_20types_41',['Collection Types',['../index.html#autotoc_md2',1,'']]],
-  ['collectioniterator_42',['collectioniterator',['../classcljonic_1_1_collection_iterator.html#af6b9140984627fb4f449186f0e72f100',1,'cljonic::CollectionIterator::CollectionIterator()'],['../classcljonic_1_1_collection_iterator.html',1,'cljonic::CollectionIterator&lt; T &gt;']]],
+  ['collectioniterator_42',['collectioniterator',['../classcljonic_1_1_collection_iterator.html#ad4d8282039efb0e37d8a81c717dc1fba',1,'cljonic::CollectionIterator::CollectionIterator()'],['../classcljonic_1_1_collection_iterator.html',1,'cljonic::CollectionIterator&lt; T &gt;']]],
   ['compose_43',['Compose',['../namespacecljonic_1_1core.html#aeeebe3fbcccc5337ab519dac72cae3db',1,'cljonic::core']]],
   ['composition_44',['Composition',['../index.html#autotoc_md4',1,'']]],
   ['contains_45',['Contains',['../classcljonic_1_1_set.html#a6fd44e7a90c7f0b0bd41e4251671ca71',1,'cljonic::Set']]],

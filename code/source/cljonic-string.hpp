@@ -83,12 +83,12 @@ class String
     String(const String& other) = default; // Copy constructor
     String(String&& other) = default;      // Move constructor
 
-    [[nodiscard]] Iterator begin() const
+    [[nodiscard]] Iterator begin() const noexcept
     {
         return Iterator{*this, 0};
     }
 
-    [[nodiscard]] Iterator end() const
+    [[nodiscard]] Iterator end() const noexcept
     {
         return Iterator{*this, m_elementCount};
     }

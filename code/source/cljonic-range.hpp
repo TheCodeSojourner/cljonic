@@ -178,12 +178,12 @@ class Range
         }
     }
 
-    [[nodiscard]] Iterator begin() const
+    [[nodiscard]] Iterator begin() const noexcept
     {
         return Iterator{*this, 0};
     }
 
-    [[nodiscard]] Iterator end() const
+    [[nodiscard]] Iterator end() const noexcept
     {
         return Iterator{*this, m_elementCount};
     }
