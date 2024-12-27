@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Dec 26 12:30:22 PM MST 2024
+// This file was generated Fri Dec 27 10:22:08 AM MST 2024
 
 namespace cljonic {
 
@@ -71,7 +71,61 @@ enum class CljonicCollectionType {
 #include <concepts>
 #include <limits>
 
+namespace each_function_is_invocable_with_next_return_type {
+
+template <typename F>
+struct ReturnType;
+
+template <typename R, typename... Args>
+struct ReturnType<R(Args...)> {
+using type = R;
+};
+
+template <typename R, typename... Args>
+struct ReturnType<R (*)(Args...)> {
+using type = R;
+};
+
+template <typename R, typename... Args>
+struct ReturnType<R (&)(Args...)> {
+using type = R;
+};
+
+template <typename R, typename... Args>
+struct ReturnType<R(Args...) noexcept> {
+using type = R;
+};
+
+template <typename R, typename... Args>
+struct ReturnType<R (*)(Args...) noexcept> {
+using type = R;
+};
+
+template <typename R, typename... Args>
+struct ReturnType<R (&)(Args...) noexcept> {
+using type = R;
+};
+
+template <typename F, typename... Fs>
+struct AreInvocableWithReturn;
+
+template <typename F1, typename F2, typename... Fs>
+struct AreInvocableWithReturn<F1, F2, Fs...> {
+
+static constexpr bool value =
+    std::regular_invocable<F1, typename ReturnType<F2>::type> and AreInvocableWithReturn<F2, Fs...>::value;
+};
+
+template <typename F>
+struct AreInvocableWithReturn<F> {
+static constexpr bool value = true;
+};
+
+} // namespace each_function_is_invocable_with_next_return_type
+
 namespace cljonic {
+
+using namespace each_function_is_invocable_with_next_return_type;
 
 template <typename P, typename T, typename U>
 concept IsBinaryPredicate = requires(P p, T a, U b) {
@@ -137,6 +191,9 @@ constexpr bool AnyFloatingPointValueTypes =
 
 template <typename T>
 concept CString = std::same_as<T, const char*> or std::same_as<T, char*>;
+
+template <typename... Fs>
+concept EachFunctionIsInvocableWithNextReturnType = AreInvocableWithReturn<Fs...>::value;
 
 template <typename T>
 concept NotCString = (not CString<T>);
@@ -627,6 +684,35 @@ namespace core {
 }
 
 }
+
+#include <concepts>
+#include <utility>
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename... Fs>
+static constexpr auto InnerCompose(F&& f, Fs&&... fs) noexcept {
+if constexpr(sizeof...(fs) == 0) {
+return std::forward<F>(f);
+} else {
+return [=]<typename... T>(T&&... args) { return f(InnerCompose(std::forward<Fs>(fs)...)(std::forward<T>(args)...)); };
+}
+}
+
+template <typename... Fs>
+constexpr auto Compose(Fs&&... fs) noexcept {
+static_assert(sizeof...(Fs) >= 2, "Compose requires at least two function parameters");
+
+static_assert(EachFunctionIsInvocableWithNextReturnType<Fs...>,
+              "Each Compose function must be callable with the return type of the next function");
+
+return InnerCompose(std::forward<Fs>(fs)...);
+}
+
+}
+
+} // namespace cljonic::core
 
 namespace cljonic {
 
