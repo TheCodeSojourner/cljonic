@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Dec 27 02:18:29 PM MST 2024
+// This file was generated Fri Dec 27 02:22:23 PM MST 2024
 
 namespace cljonic {
 
@@ -884,7 +884,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-auto Reduce(F&& f, const C& c) noexcept {
+constexpr auto Reduce(F&& f, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Second parameter must be a cljonic collection");
 
 static_assert(std::regular_invocable<F, typename C::value_type, typename C::value_type>,
