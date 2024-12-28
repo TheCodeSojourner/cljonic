@@ -43,6 +43,19 @@ constexpr auto MinimumOfCljonicCollectionMaximumCounts()
     }
 }
 
+template <typename C, typename... Cs>
+constexpr auto SumOfCljonicCollectionMaximumCounts()
+{
+    if constexpr (sizeof...(Cs) == 0)
+    {
+        return C::MaximumCount();
+    }
+    else
+    {
+        return (C::MaximumCount() + ... + Cs::MaximumCount());
+    }
+}
+
 } // namespace cljonic
 
 #endif // CLJONIC_COMMON_HPP

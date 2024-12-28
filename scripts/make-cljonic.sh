@@ -21,6 +21,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-string.hpp \
     cljonic-core.hpp \
     cljonic-core-compose.hpp \
+    cljonic-core-concat.hpp \
     cljonic-core-equal.hpp \
     cljonic-core-equalby.hpp \
     cljonic-core-every.hpp \

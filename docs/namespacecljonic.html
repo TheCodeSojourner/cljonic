@@ -75,6 +75,7 @@ $(function() {
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#concepts">Concepts</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
@@ -137,6 +138,15 @@ Concepts</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1_not_c_string.html">NotCString</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:afba6951e2d42a9481e192e7406dd163d" id="r_afba6951e2d42a9481e192e7406dd163d"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , typename... Ts&gt; </td></tr>
+<tr class="memitem:afba6951e2d42a9481e192e7406dd163d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">using</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#afba6951e2d42a9481e192e7406dd163d">FindCommonType</a> = <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="structinner__find__common__type_1_1_inner_find_common_type.html">InnerFindCommonType</a>&lt; <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a>, Ts... &gt;::type</td></tr>
+<tr class="separator:afba6951e2d42a9481e192e7406dd163d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1168b9dccf2e5557903d0a1e6dd94680" id="r_a1168b9dccf2e5557903d0a1e6dd94680"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , typename... Ts&gt; </td></tr>
+<tr class="memitem:a1168b9dccf2e5557903d0a1e6dd94680"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">using</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a1168b9dccf2e5557903d0a1e6dd94680">FindCommonValueType</a> = <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="structinner__find__common__type_1_1_inner_find_common_type.html">InnerFindCommonType</a>&lt; <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> T::value_type, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> Ts::value_type... &gt;::type</td></tr>
+<tr class="separator:a1168b9dccf2e5557903d0a1e6dd94680"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a28bdbcc4eb4cd3dcb5f5c875c1dafbd6" id="r_a28bdbcc4eb4cd3dcb5f5c875c1dafbd6"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6">CljonicCollectionType</a> { <br />
@@ -153,54 +163,100 @@ Enumerations</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ac8a1780765f9453dd427a6b6f341320b" id="r_ac8a1780765f9453dd427a6b6f341320b"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:ac8a1780765f9453dd427a6b6f341320b"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#ac8a1780765f9453dd427a6b6f341320b">Array</a> (Args...) -&gt; <a class="el" href="classcljonic_1_1_array.html">Array</a>&lt; std::common_type_t&lt; Args... &gt;, sizeof...(Args)&gt;</td></tr>
+<tr class="memitem:ac8a1780765f9453dd427a6b6f341320b"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#ac8a1780765f9453dd427a6b6f341320b">Array</a> (Args...) -&gt; <a class="el" href="classcljonic_1_1_array.html">Array</a>&lt; std::common_type_t&lt; Args... &gt;, sizeof...(<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Args</a>)&gt;</td></tr>
 <tr class="separator:ac8a1780765f9453dd427a6b6f341320b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a2410098ebaacdc3b0acbb294cfc727" id="r_a1a2410098ebaacdc3b0acbb294cfc727"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a1a2410098ebaacdc3b0acbb294cfc727"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a1a2410098ebaacdc3b0acbb294cfc727">Repeat</a> (T) -&gt; <a class="el" href="classcljonic_1_1_repeat.html">Repeat</a>&lt; std::numeric_limits&lt; std::size_t &gt;::max(), T &gt;</td></tr>
+<tr class="memitem:a1a2410098ebaacdc3b0acbb294cfc727" id="r_a1a2410098ebaacdc3b0acbb294cfc727"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &gt; </td></tr>
+<tr class="memitem:a1a2410098ebaacdc3b0acbb294cfc727"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a1a2410098ebaacdc3b0acbb294cfc727">Repeat</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a>) -&gt; <a class="el" href="classcljonic_1_1_repeat.html">Repeat</a>&lt; std::numeric_limits&lt; std::size_t &gt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">::max</a>(), <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &gt;</td></tr>
 <tr class="separator:a1a2410098ebaacdc3b0acbb294cfc727"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6363670b51f5ee431b4bd5d973af5c90" id="r_a6363670b51f5ee431b4bd5d973af5c90"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:a6363670b51f5ee431b4bd5d973af5c90"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a6363670b51f5ee431b4bd5d973af5c90">Set</a> (Args...) -&gt; <a class="el" href="classcljonic_1_1_set.html">Set</a>&lt; std::common_type_t&lt; Args... &gt;, sizeof...(Args)&gt;</td></tr>
+<tr class="memitem:a6363670b51f5ee431b4bd5d973af5c90"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a6363670b51f5ee431b4bd5d973af5c90">Set</a> (Args...) -&gt; <a class="el" href="classcljonic_1_1_set.html">Set</a>&lt; std::common_type_t&lt; Args... &gt;, sizeof...(<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Args</a>)&gt;</td></tr>
 <tr class="separator:a6363670b51f5ee431b4bd5d973af5c90"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0bb21392e393491beb96169bd6179682" id="r_a0bb21392e393491beb96169bd6179682"><td class="memTemplParams" colspan="2">template&lt;typename F , typename T , typename U &gt; </td></tr>
-<tr class="memitem:a0bb21392e393491beb96169bd6179682"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a0bb21392e393491beb96169bd6179682">AreEqualBy</a> (const F &amp;f, const T &amp;t, const U &amp;u) noexcept</td></tr>
+<tr class="memitem:a0bb21392e393491beb96169bd6179682" id="r_a0bb21392e393491beb96169bd6179682"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> &gt; </td></tr>
+<tr class="memitem:a0bb21392e393491beb96169bd6179682"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a0bb21392e393491beb96169bd6179682">AreEqualBy</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">t</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">u</a>) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
 <tr class="separator:a0bb21392e393491beb96169bd6179682"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe98e7e9842fd86571e1bc24929aaddf" id="r_abe98e7e9842fd86571e1bc24929aaddf"><td class="memItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#abe98e7e9842fd86571e1bc24929aaddf">AreEqual</a> (NotCString auto a, NotCString auto b) noexcept</td></tr>
+<tr class="memitem:abe98e7e9842fd86571e1bc24929aaddf" id="r_abe98e7e9842fd86571e1bc24929aaddf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#abe98e7e9842fd86571e1bc24929aaddf">AreEqual</a> (NotCString <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">a</a>, NotCString <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">b</a>) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
 <tr class="separator:abe98e7e9842fd86571e1bc24929aaddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa03e6edddfc6c8f90fcf7bd2c1a81d69" id="r_aa03e6edddfc6c8f90fcf7bd2c1a81d69"><td class="memItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#aa03e6edddfc6c8f90fcf7bd2c1a81d69">AreEqual</a> (CString auto a, CString auto b) noexcept</td></tr>
+<tr class="memitem:aa03e6edddfc6c8f90fcf7bd2c1a81d69" id="r_aa03e6edddfc6c8f90fcf7bd2c1a81d69"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#aa03e6edddfc6c8f90fcf7bd2c1a81d69">AreEqual</a> (CString <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">a</a>, CString <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">b</a>) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
 <tr class="separator:aa03e6edddfc6c8f90fcf7bd2c1a81d69"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68ae4196c3f5a186b700523f5ca2b816" id="r_a68ae4196c3f5a186b700523f5ca2b816"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a68ae4196c3f5a186b700523f5ca2b816">Min</a> (auto a, auto b) noexcept</td></tr>
+<tr class="memitem:a68ae4196c3f5a186b700523f5ca2b816" id="r_a68ae4196c3f5a186b700523f5ca2b816"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a68ae4196c3f5a186b700523f5ca2b816">Min</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">a</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">b</a>) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
 <tr class="separator:a68ae4196c3f5a186b700523f5ca2b816"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56236f4c354b1a6cbfe113b26fc17f1d" id="r_a56236f4c354b1a6cbfe113b26fc17f1d"><td class="memTemplParams" colspan="2">template&lt;typename C , typename... Cs&gt; </td></tr>
-<tr class="memitem:a56236f4c354b1a6cbfe113b26fc17f1d"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a56236f4c354b1a6cbfe113b26fc17f1d">MinimumOfCljonicCollectionMaximumCounts</a> ()</td></tr>
+<tr class="memitem:a56236f4c354b1a6cbfe113b26fc17f1d" id="r_a56236f4c354b1a6cbfe113b26fc17f1d"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">C</a> , typename... Cs&gt; </td></tr>
+<tr class="memitem:a56236f4c354b1a6cbfe113b26fc17f1d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a56236f4c354b1a6cbfe113b26fc17f1d">MinimumOfCljonicCollectionMaximumCounts</a> ()</td></tr>
 <tr class="separator:a56236f4c354b1a6cbfe113b26fc17f1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70f00fd349f32c7c1c5187aa7c958e7b" id="r_a70f00fd349f32c7c1c5187aa7c958e7b"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">C</a> , typename... Cs&gt; </td></tr>
+<tr class="memitem:a70f00fd349f32c7c1c5187aa7c958e7b"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a70f00fd349f32c7c1c5187aa7c958e7b">SumOfCljonicCollectionMaximumCounts</a> ()</td></tr>
+<tr class="separator:a70f00fd349f32c7c1c5187aa7c958e7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ee7bd0842fdd734e78cfa6214fa739d" id="r_a9ee7bd0842fdd734e78cfa6214fa739d"><td class="memTemplParams" colspan="2">template&lt;std::size_t N&gt; </td></tr>
-<tr class="memitem:a9ee7bd0842fdd734e78cfa6214fa739d"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a9ee7bd0842fdd734e78cfa6214fa739d">String</a> (const char(&amp;)[N]) -&gt; <a class="el" href="classcljonic_1_1_string.html">String</a>&lt; N - 1 &gt;</td></tr>
+<tr class="memitem:a9ee7bd0842fdd734e78cfa6214fa739d"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a9ee7bd0842fdd734e78cfa6214fa739d">String</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">char</a>(&amp;)[<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">N</a>]) -&gt; <a class="el" href="classcljonic_1_1_string.html">String</a>&lt; <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">N</a> - 1 &gt;</td></tr>
 <tr class="separator:a9ee7bd0842fdd734e78cfa6214fa739d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1c945cc584844dc0452cdf4547d53b8" id="r_ae1c945cc584844dc0452cdf4547d53b8"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:ae1c945cc584844dc0452cdf4547d53b8"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#ae1c945cc584844dc0452cdf4547d53b8">String</a> (Args...) -&gt; <a class="el" href="classcljonic_1_1_string.html">String</a>&lt; sizeof...(Args)&gt;</td></tr>
+<tr class="memitem:ae1c945cc584844dc0452cdf4547d53b8"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#ae1c945cc584844dc0452cdf4547d53b8">String</a> (Args...) -&gt; <a class="el" href="classcljonic_1_1_string.html">String</a>&lt; sizeof...(<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Args</a>)&gt;</td></tr>
 <tr class="separator:ae1c945cc584844dc0452cdf4547d53b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a943ad6be58c2209121e2152edbc5c1a4" id="r_a943ad6be58c2209121e2152edbc5c1a4"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Ts&gt; </td></tr>
-<tr class="memitem:a943ad6be58c2209121e2152edbc5c1a4"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a943ad6be58c2209121e2152edbc5c1a4">AllEqualityComparableTypes</a> = (std::equality_comparable_with&lt;T, Ts&gt; and ...)</td></tr>
+<tr class="memitem:ac1734fb139d2b39c04e650f3d0a75eef" id="r_ac1734fb139d2b39c04e650f3d0a75eef"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Ts&gt; </td></tr>
+<tr class="memitem:ac1734fb139d2b39c04e650f3d0a75eef"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">AllConvertibleTypes</a> = (std::convertible_to&lt;T, Ts&gt; and ...)</td></tr>
+<tr class="separator:ac1734fb139d2b39c04e650f3d0a75eef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f107bf91ee0b1c753a558a1aea9640f" id="r_a7f107bf91ee0b1c753a558a1aea9640f"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , typename... Ts&gt; </td></tr>
+<tr class="memitem:a7f107bf91ee0b1c753a558a1aea9640f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a7f107bf91ee0b1c753a558a1aea9640f">AllConvertibleValueTypes</a></td></tr>
+<tr class="separator:a7f107bf91ee0b1c753a558a1aea9640f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a943ad6be58c2209121e2152edbc5c1a4" id="r_a943ad6be58c2209121e2152edbc5c1a4"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , typename... Ts&gt; </td></tr>
+<tr class="memitem:a943ad6be58c2209121e2152edbc5c1a4"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a943ad6be58c2209121e2152edbc5c1a4">AllEqualityComparableTypes</a> = (std::equality_comparable_with&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Ts</a>&gt; <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">and</a> ...)</td></tr>
 <tr class="separator:a943ad6be58c2209121e2152edbc5c1a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab94caca08c5f55dceabd7846d917865" id="r_aab94caca08c5f55dceabd7846d917865"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Ts&gt; </td></tr>
-<tr class="memitem:aab94caca08c5f55dceabd7846d917865"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#aab94caca08c5f55dceabd7846d917865">AllEqualityComparableValueTypes</a></td></tr>
+<tr class="memitem:aab94caca08c5f55dceabd7846d917865" id="r_aab94caca08c5f55dceabd7846d917865"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , typename... Ts&gt; </td></tr>
+<tr class="memitem:aab94caca08c5f55dceabd7846d917865"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#aab94caca08c5f55dceabd7846d917865">AllEqualityComparableValueTypes</a></td></tr>
 <tr class="separator:aab94caca08c5f55dceabd7846d917865"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aced65bfe90f0db3da520486459434d00" id="r_aced65bfe90f0db3da520486459434d00"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Ts&gt; </td></tr>
-<tr class="memitem:aced65bfe90f0db3da520486459434d00"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#aced65bfe90f0db3da520486459434d00">AnyFloatingPointTypes</a> = (std::floating_point&lt;T&gt; or ... or std::floating_point&lt;Ts&gt;)</td></tr>
+<tr class="memitem:aced65bfe90f0db3da520486459434d00" id="r_aced65bfe90f0db3da520486459434d00"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , typename... Ts&gt; </td></tr>
+<tr class="memitem:aced65bfe90f0db3da520486459434d00"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#aced65bfe90f0db3da520486459434d00">AnyFloatingPointTypes</a> = (std::floating_point&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a>&gt; <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">or</a> ... <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">or</a> std::floating_point&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Ts</a>&gt;)</td></tr>
 <tr class="separator:aced65bfe90f0db3da520486459434d00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06b15aac75e92d768e32c6f9b518b53a" id="r_a06b15aac75e92d768e32c6f9b518b53a"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Ts&gt; </td></tr>
-<tr class="memitem:a06b15aac75e92d768e32c6f9b518b53a"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a06b15aac75e92d768e32c6f9b518b53a">AnyFloatingPointValueTypes</a></td></tr>
+<tr class="memitem:a06b15aac75e92d768e32c6f9b518b53a" id="r_a06b15aac75e92d768e32c6f9b518b53a"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , typename... Ts&gt; </td></tr>
+<tr class="memitem:a06b15aac75e92d768e32c6f9b518b53a"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a06b15aac75e92d768e32c6f9b518b53a">AnyFloatingPointValueTypes</a></td></tr>
 <tr class="separator:a06b15aac75e92d768e32c6f9b518b53a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c8bd3b0fd8138f5fb72f03dac87bf50" id="r_a9c8bd3b0fd8138f5fb72f03dac87bf50"><td class="memTemplParams" colspan="2">template&lt;typename F , IsCljonicCollection T, IsCljonicCollection... Ts&gt; </td></tr>
-<tr class="memitem:a9c8bd3b0fd8138f5fb72f03dac87bf50"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a9c8bd3b0fd8138f5fb72f03dac87bf50">IsBinaryPredicateForAllCljonicCollections</a></td></tr>
+<tr class="memitem:a9c8bd3b0fd8138f5fb72f03dac87bf50" id="r_a9c8bd3b0fd8138f5fb72f03dac87bf50"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> , IsCljonicCollection T, IsCljonicCollection... Ts&gt; </td></tr>
+<tr class="memitem:a9c8bd3b0fd8138f5fb72f03dac87bf50"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a9c8bd3b0fd8138f5fb72f03dac87bf50">IsBinaryPredicateForAllCljonicCollections</a></td></tr>
 <tr class="separator:a9c8bd3b0fd8138f5fb72f03dac87bf50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="anchor" id="Namespace_Core"></a>The <b>Core</b> namespace provides the vast majority of <b>cljonic</b> functions. Many <b>Core</b> functions deal with <a class="el" href="classcljonic_1_1_array.html#Array">Array</a>, <a class="el" href="classcljonic_1_1_range.html#Range">Range</a>, <a class="el" href="classcljonic_1_1_repeat.html#Repeat">Repeat</a>, <a class="el" href="classcljonic_1_1_set.html#Set">Set</a>, and <a class="el" href="classcljonic_1_1_string.html#String">String</a>, collections. The variety and capability of the <b>Core</b> functions provide much of the overall value of the <b>cljonic functional style of programming</b>. </p>
-</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+</div><h2 class="groupheader">Typedef Documentation</h2>
+<a id="afba6951e2d42a9481e192e7406dd163d" name="afba6951e2d42a9481e192e7406dd163d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afba6951e2d42a9481e192e7406dd163d">&#9670;&#160;</a></span>FindCommonType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , typename... Ts&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">using</a> <a class="el" href="namespacecljonic.html#afba6951e2d42a9481e192e7406dd163d">cljonic::FindCommonType</a> = <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typedef</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="structinner__find__common__type_1_1_inner_find_common_type.html">InnerFindCommonType</a>&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a>, Ts...&gt;::type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00189">189</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a1168b9dccf2e5557903d0a1e6dd94680" name="a1168b9dccf2e5557903d0a1e6dd94680"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1168b9dccf2e5557903d0a1e6dd94680">&#9670;&#160;</a></span>FindCommonValueType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , typename... Ts&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">using</a> <a class="el" href="namespacecljonic.html#a1168b9dccf2e5557903d0a1e6dd94680">cljonic::FindCommonValueType</a> = <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typedef</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="structinner__find__common__type_1_1_inner_find_common_type.html">InnerFindCommonType</a>&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> T::value_type, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> Ts::value_type...&gt;::type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00192">192</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a28bdbcc4eb4cd3dcb5f5c875c1dafbd6" name="a28bdbcc4eb4cd3dcb5f5c875c1dafbd6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6">&#9670;&#160;</a></span>CljonicCollectionType</h2>
 
@@ -211,7 +267,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum class <a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6">cljonic::CljonicCollectionType</a></td>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">enum</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">class</a> <a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6">cljonic::CljonicCollectionType</a></td>
         </tr>
       </table>
   </td>
@@ -243,15 +299,15 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr bool cljonic::AreEqual </td>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a> cljonic::AreEqual </td>
           <td>(</td>
-          <td class="paramtype">CString auto&#160;</td>
+          <td class="paramtype">CString <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td>
           <td class="paramname"><em>a</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">CString auto&#160;</td>
+          <td class="paramtype">CString <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td>
           <td class="paramname"><em>b</em>&#160;</td>
         </tr>
         <tr>
@@ -281,15 +337,15 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr bool cljonic::AreEqual </td>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a> cljonic::AreEqual </td>
           <td>(</td>
-          <td class="paramtype">NotCString auto&#160;</td>
+          <td class="paramtype">NotCString <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td>
           <td class="paramname"><em>a</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">NotCString auto&#160;</td>
+          <td class="paramtype">NotCString <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td>
           <td class="paramname"><em>b</em>&#160;</td>
         </tr>
         <tr>
@@ -315,27 +371,27 @@ Variables</h2></td></tr>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename F , typename T , typename U &gt; </div>
+template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr bool cljonic::AreEqualBy </td>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a> cljonic::AreEqualBy </td>
           <td>(</td>
-          <td class="paramtype">const F &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> &amp;&#160;</td>
           <td class="paramname"><em>f</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &amp;&#160;</td>
           <td class="paramname"><em>t</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const U &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> &amp;&#160;</td>
           <td class="paramname"><em>u</em>&#160;</td>
         </tr>
         <tr>
@@ -368,7 +424,7 @@ template&lt;typename... Args&gt; </div>
           <td>(</td>
           <td class="paramtype">Args...&#160;</td>
           <td class="paramname"></td><td>)</td>
-          <td> -&gt;  <a class="el" href="classcljonic_1_1_array.html">Array</a>&lt; std::common_type_t&lt; Args... &gt;, sizeof...(Args)&gt;</td>
+          <td> -&gt;  <a class="el" href="classcljonic_1_1_array.html">Array</a>&lt; std::common_type_t&lt; Args... &gt;, sizeof...(<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Args</a>)&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -385,15 +441,15 @@ template&lt;typename... Args&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr auto cljonic::Min </td>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a> cljonic::Min </td>
           <td>(</td>
-          <td class="paramtype">auto&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td>
           <td class="paramname"><em>a</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">auto&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td>
           <td class="paramname"><em>b</em>&#160;</td>
         </tr>
         <tr>
@@ -419,13 +475,13 @@ template&lt;typename... Args&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename C , typename... Cs&gt; </div>
+template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">C</a> , typename... Cs&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr auto cljonic::MinimumOfCljonicCollectionMaximumCounts </td>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a> cljonic::MinimumOfCljonicCollectionMaximumCounts </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -448,14 +504,14 @@ template&lt;typename C , typename... Cs&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classcljonic_1_1_repeat.html">cljonic::Repeat</a> </td>
           <td>(</td>
-          <td class="paramtype">T&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a>&#160;</td>
           <td class="paramname"></td><td>)</td>
-          <td> -&gt;  <a class="el" href="classcljonic_1_1_repeat.html">Repeat</a>&lt; std::numeric_limits&lt; std::size_t &gt;::max(), T &gt;</td>
+          <td> -&gt;  <a class="el" href="classcljonic_1_1_repeat.html">Repeat</a>&lt; std::numeric_limits&lt; std::size_t &gt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">::max</a>(), <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -475,7 +531,7 @@ template&lt;typename... Args&gt; </div>
           <td>(</td>
           <td class="paramtype">Args...&#160;</td>
           <td class="paramname"></td><td>)</td>
-          <td> -&gt;  <a class="el" href="classcljonic_1_1_set.html">Set</a>&lt; std::common_type_t&lt; Args... &gt;, sizeof...(Args)&gt;</td>
+          <td> -&gt;  <a class="el" href="classcljonic_1_1_set.html">Set</a>&lt; std::common_type_t&lt; Args... &gt;, sizeof...(<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Args</a>)&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -495,7 +551,7 @@ template&lt;typename... Args&gt; </div>
           <td>(</td>
           <td class="paramtype">Args...&#160;</td>
           <td class="paramname"></td><td>)</td>
-          <td> -&gt;  <a class="el" href="classcljonic_1_1_string.html">String</a>&lt; sizeof...(Args)&gt;</td>
+          <td> -&gt;  <a class="el" href="classcljonic_1_1_string.html">String</a>&lt; sizeof...(<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Args</a>)&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -513,29 +569,31 @@ template&lt;std::size_t N&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classcljonic_1_1_string.html">cljonic::String</a> </td>
           <td>(</td>
-          <td class="paramtype">const &#160;</td>
+          <td class="paramtype"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> &#160;</td>
           <td class="paramname"><em>char</em>(&amp;)[N]</td><td>)</td>
-          <td> -&gt;  <a class="el" href="classcljonic_1_1_string.html">String</a>&lt; N - 1 &gt;</td>
+          <td> -&gt;  <a class="el" href="classcljonic_1_1_string.html">String</a>&lt; <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">N</a> - 1 &gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="a943ad6be58c2209121e2152edbc5c1a4" name="a943ad6be58c2209121e2152edbc5c1a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a943ad6be58c2209121e2152edbc5c1a4">&#9670;&#160;</a></span>AllEqualityComparableTypes</h2>
+<a id="a70f00fd349f32c7c1c5187aa7c958e7b" name="a70f00fd349f32c7c1c5187aa7c958e7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70f00fd349f32c7c1c5187aa7c958e7b">&#9670;&#160;</a></span>SumOfCljonicCollectionMaximumCounts()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename... Ts&gt; </div>
+template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">C</a> , typename... Cs&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr bool cljonic::AllEqualityComparableTypes = (std::equality_comparable_with&lt;T, Ts&gt; and ...)</td>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a> cljonic::SumOfCljonicCollectionMaximumCounts </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
@@ -545,12 +603,13 @@ template&lt;typename T , typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00129">129</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-shared_8hpp_source.html#l00047">47</a> of file <a class="el" href="cljonic-shared_8hpp_source.html">cljonic-shared.hpp</a>.</p>
 
 </div>
 </div>
-<a id="aab94caca08c5f55dceabd7846d917865" name="aab94caca08c5f55dceabd7846d917865"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aab94caca08c5f55dceabd7846d917865">&#9670;&#160;</a></span>AllEqualityComparableValueTypes</h2>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="ac1734fb139d2b39c04e650f3d0a75eef" name="ac1734fb139d2b39c04e650f3d0a75eef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1734fb139d2b39c04e650f3d0a75eef">&#9670;&#160;</a></span>AllConvertibleTypes</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -561,7 +620,87 @@ template&lt;typename T , typename... Ts&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr bool cljonic::AllEqualityComparableValueTypes</td>
+          <td class="memname">constexpr bool cljonic::AllConvertibleTypes = (std::convertible_to&lt;T, Ts&gt; and ...)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00158">158</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a7f107bf91ee0b1c753a558a1aea9640f" name="a7f107bf91ee0b1c753a558a1aea9640f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f107bf91ee0b1c753a558a1aea9640f">&#9670;&#160;</a></span>AllConvertibleValueTypes</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , typename... Ts&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a> cljonic::AllConvertibleValueTypes</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">    (AllConvertibleTypes&lt;typename T::value_type, typename Ts::value_type&gt; and ...)</div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00161">161</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a943ad6be58c2209121e2152edbc5c1a4" name="a943ad6be58c2209121e2152edbc5c1a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a943ad6be58c2209121e2152edbc5c1a4">&#9670;&#160;</a></span>AllEqualityComparableTypes</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , typename... Ts&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a> cljonic::AllEqualityComparableTypes = (std::equality_comparable_with&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Ts</a>&gt; <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">and</a> ...)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00165">165</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aab94caca08c5f55dceabd7846d917865" name="aab94caca08c5f55dceabd7846d917865"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab94caca08c5f55dceabd7846d917865">&#9670;&#160;</a></span>AllEqualityComparableValueTypes</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , typename... Ts&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a> cljonic::AllEqualityComparableValueTypes</td>
         </tr>
       </table>
   </td>
@@ -573,7 +712,7 @@ template&lt;typename T , typename... Ts&gt; </div>
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line">    (std::equality_comparable_with&lt;typename T::value_type, typename Ts::value_type&gt; and ...)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00132">132</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00168">168</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -583,13 +722,13 @@ template&lt;typename T , typename... Ts&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename... Ts&gt; </div>
+template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , typename... Ts&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr bool cljonic::AnyFloatingPointTypes = (std::floating_point&lt;T&gt; or ... or std::floating_point&lt;Ts&gt;)</td>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a> cljonic::AnyFloatingPointTypes = (std::floating_point&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a>&gt; <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">or</a> ... <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">or</a> std::floating_point&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Ts</a>&gt;)</td>
         </tr>
       </table>
   </td>
@@ -599,7 +738,7 @@ template&lt;typename T , typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00136">136</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00172">172</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -609,13 +748,13 @@ template&lt;typename T , typename... Ts&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename... Ts&gt; </div>
+template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , typename... Ts&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr bool cljonic::AnyFloatingPointValueTypes</td>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a> cljonic::AnyFloatingPointValueTypes</td>
         </tr>
       </table>
   </td>
@@ -627,7 +766,7 @@ template&lt;typename T , typename... Ts&gt; </div>
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line">    (std::floating_point&lt;typename T::value_type&gt; or ... or std::floating_point&lt;typename Ts::value_type&gt;)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00143">143</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00179">179</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -637,13 +776,13 @@ template&lt;typename T , typename... Ts&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename F , IsCljonicCollection T, IsCljonicCollection... Ts&gt; </div>
+template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> , IsCljonicCollection T, IsCljonicCollection... Ts&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr bool cljonic::IsBinaryPredicateForAllCljonicCollections</td>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a> cljonic::IsBinaryPredicateForAllCljonicCollections</td>
         </tr>
       </table>
   </td>
@@ -654,16 +793,16 @@ template&lt;typename F , IsCljonicCollection T, IsCljonicCollection... Ts&gt; </
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line">    (<a class="code hl_concept" href="conceptcljonic_1_1_is_binary_predicate_for_all.html">IsBinaryPredicateForAll&lt;F, typename T::value_type, typename Ts::value_type&gt;</a> and ...)</div>
-<div class="ttc" id="aconceptcljonic_1_1_is_binary_predicate_for_all_html"><div class="ttname"><a href="conceptcljonic_1_1_is_binary_predicate_for_all.html">cljonic::IsBinaryPredicateForAll</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00090">cljonic-concepts.hpp:90</a></div></div>
+<div class="ttc" id="aconceptcljonic_1_1_is_binary_predicate_for_all_html"><div class="ttname"><a href="conceptcljonic_1_1_is_binary_predicate_for_all.html">cljonic::IsBinaryPredicateForAll</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00119">cljonic-concepts.hpp:119</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00156">156</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00198">198</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 27 2024 14:22:23 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Dec 28 2024 15:41:05 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

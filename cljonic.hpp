@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Dec 27 02:22:23 PM MST 2024
+// This file was generated Sat Dec 28 03:41:05 PM MST 2024
 
 namespace cljonic {
 
@@ -71,6 +71,7 @@ enum class CljonicCollectionType {
 
 #include <concepts>
 #include <limits>
+#include <type_traits>
 
 namespace each_function_is_invocable_with_next_return_type {
 
@@ -124,9 +125,30 @@ static constexpr bool value = true;
 
 } // namespace each_function_is_invocable_with_next_return_type
 
+namespace inner_find_common_type {
+
+template <typename T, typename... Ts>
+struct InnerFindCommonType;
+
+template <typename T>
+struct InnerFindCommonType<T> {
+using type = T;
+};
+
+template <typename T, typename U, typename... Ts>
+struct InnerFindCommonType<T, U, Ts...> {
+
+using type = std::conditional_t<(std::convertible_to<U, T> && ... && std::convertible_to<Ts, T>),
+                                typename InnerFindCommonType<T, Ts...>::type,
+                                typename InnerFindCommonType<U, Ts...>::type>;
+};
+
+} // namespace inner_find_common_type
+
 namespace cljonic {
 
 using namespace each_function_is_invocable_with_next_return_type;
+using namespace inner_find_common_type;
 
 template <typename P, typename T, typename U>
 concept IsBinaryPredicate = requires(P p, T a, U b) {
@@ -173,6 +195,13 @@ template <typename T, typename... Ts>
 concept AllCljonicSets = (IsCljonicSet<T> and ... and IsCljonicSet<Ts>);
 
 template <typename T, typename... Ts>
+constexpr bool AllConvertibleTypes = (std::convertible_to<T, Ts> and ...);
+
+template <typename T, typename... Ts>
+constexpr bool AllConvertibleValueTypes =
+    (AllConvertibleTypes<typename T::value_type, typename Ts::value_type> and ...);
+
+template <typename T, typename... Ts>
 constexpr bool AllEqualityComparableTypes = (std::equality_comparable_with<T, Ts> and ...);
 
 template <typename T, typename... Ts>
@@ -195,6 +224,12 @@ concept CString = std::same_as<T, const char*> or std::same_as<T, char*>;
 
 template <typename... Fs>
 concept EachFunctionIsInvocableWithNextReturnType = AreInvocableWithReturn<Fs...>::value;
+
+template <typename T, typename... Ts>
+using FindCommonType = typename InnerFindCommonType<T, Ts...>::type;
+
+template <typename T, typename... Ts>
+using FindCommonValueType = typename InnerFindCommonType<typename T::value_type, typename Ts::value_type...>::type;
 
 template <typename T>
 concept NotCString = (not CString<T>);
@@ -234,6 +269,15 @@ if constexpr(sizeof...(Cs) == 0) {
 return C::MaximumCount();
 } else {
 return (Min(C::MaximumCount(), Cs::MaximumCount()), ...);
+}
+}
+
+template <typename C, typename... Cs>
+constexpr auto SumOfCljonicCollectionMaximumCounts() {
+if constexpr(sizeof...(Cs) == 0) {
+return C::MaximumCount();
+} else {
+return (C::MaximumCount() + ... + Cs::MaximumCount());
 }
 }
 
@@ -715,6 +759,33 @@ static_assert(EachFunctionIsInvocableWithNextReturnType<Fs...>,
               "Each Compose function must be callable with the return type of the next function");
 
 return InnerCompose(std::forward<Fs>(fs)...);
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C, typename... Cs>
+constexpr auto Concat(const C& c, const Cs&... cs) noexcept {
+
+static_assert(AllCljonicCollections<C, Cs...>, "All Concat parameters must be cljonic collections");
+
+static_assert(AllConvertibleValueTypes<C, Cs...>,
+              "All Concat cljonic collections value types must be interconvertible");
+
+using ResultType = FindCommonValueType<C, Cs...>;
+using SizeType = decltype(c.Count());
+constexpr auto count{SumOfCljonicCollectionMaximumCounts<C, Cs...>()};
+auto result{Array<ResultType, count>{}};
+const auto MConjCollectionOntoResult = [&](const auto& c) {
+for(SizeType i{0}; i < c.Count(); ++i)
+result.MConj(c[i]);
+};
+(MConjCollectionOntoResult(c), ..., MConjCollectionOntoResult(cs));
+return result;
 }
 
 }

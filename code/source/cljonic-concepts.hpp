@@ -3,12 +3,13 @@
 
 #include <concepts>
 #include <limits>
+#include <type_traits>
 #include "cljonic-collection-type.hpp"
 
 namespace each_function_is_invocable_with_next_return_type
 {
 
-// A base template struct for deducing the return type of function
+// Base template struct for deducing the return type of function
 template <typename F>
 struct ReturnType;
 
@@ -76,10 +77,38 @@ struct AreInvocableWithReturn<F>
 
 } // namespace each_function_is_invocable_with_next_return_type
 
+namespace inner_find_common_type
+{
+
+// Base template struct for finding the best common type among multiple types
+template <typename T, typename... Ts>
+struct InnerFindCommonType;
+
+// Specialization of InnerFindCommonType for a single type
+template <typename T>
+struct InnerFindCommonType<T>
+{
+    using type = T; // Common type is the single type itself
+};
+
+// Specialization of InnerFindCommonType for multiple types
+template <typename T, typename U, typename... Ts>
+struct InnerFindCommonType<T, U, Ts...>
+{
+    // Determines the common type among T, U, and Ts. If U and all Ts are convertible to T, the common type is T.
+    // Otherwise, it recursively determines the common type among U and Ts.
+    using type = std::conditional_t<(std::convertible_to<U, T> && ... && std::convertible_to<Ts, T>),
+                                    typename InnerFindCommonType<T, Ts...>::type,
+                                    typename InnerFindCommonType<U, Ts...>::type>;
+};
+
+} // namespace inner_find_common_type
+
 namespace cljonic
 {
 
 using namespace each_function_is_invocable_with_next_return_type;
+using namespace inner_find_common_type;
 
 template <typename P, typename T, typename U>
 concept IsBinaryPredicate = requires(P p, T a, U b) {
@@ -126,6 +155,13 @@ template <typename T, typename... Ts>
 concept AllCljonicSets = (IsCljonicSet<T> and ... and IsCljonicSet<Ts>);
 
 template <typename T, typename... Ts>
+constexpr bool AllConvertibleTypes = (std::convertible_to<T, Ts> and ...);
+
+template <typename T, typename... Ts>
+constexpr bool AllConvertibleValueTypes =
+    (AllConvertibleTypes<typename T::value_type, typename Ts::value_type> and ...);
+
+template <typename T, typename... Ts>
 constexpr bool AllEqualityComparableTypes = (std::equality_comparable_with<T, Ts> and ...);
 
 template <typename T, typename... Ts>
@@ -148,6 +184,12 @@ concept CString = std::same_as<T, const char*> or std::same_as<T, char*>;
 
 template <typename... Fs>
 concept EachFunctionIsInvocableWithNextReturnType = AreInvocableWithReturn<Fs...>::value;
+
+template <typename T, typename... Ts>
+using FindCommonType = typename InnerFindCommonType<T, Ts...>::type;
+
+template <typename T, typename... Ts>
+using FindCommonValueType = typename InnerFindCommonType<typename T::value_type, typename Ts::value_type...>::type;
 
 template <typename T>
 concept NotCString = (not CString<T>);
