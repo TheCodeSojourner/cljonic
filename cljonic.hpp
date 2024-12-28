@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Sat Dec 28 03:41:05 PM MST 2024
+// This file was generated Sat Dec 28 04:24:01 PM MST 2024
 
 namespace cljonic {
 
@@ -785,6 +785,31 @@ for(SizeType i{0}; i < c.Count(); ++i)
 result.MConj(c[i]);
 };
 (MConjCollectionOntoResult(c), ..., MConjCollectionOntoResult(cs));
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C, typename E>
+constexpr auto Conj(const C& c, const E& e) noexcept {
+
+static_assert(IsCljonicCollection<C>, "First Conj parameter must be a cljonic collection");
+
+static_assert(std::convertible_to<E, typename C::value_type>,
+              "Second Conj parameter must be convertible to the specified cljonic collection value type");
+
+using ResultType = typename C::value_type;
+using SizeType = decltype(c.Count());
+constexpr auto count{C::MaximumCount() + 1};
+auto result{Array<ResultType, count>{}};
+for(SizeType i{0}; i < c.Count(); ++i)
+result.MConj(c[i]);
+result.MConj(e);
 return result;
 }
 
