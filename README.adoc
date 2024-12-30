@@ -39,37 +39,58 @@ No matter what language you work in, programming in a functional style provides 
 is convenient, and you should think hard about the decision when it isn't convenient."
 ____
 
-*Clojure* is one of the most expressive and concise programming languages. *Clojure* is *laconic* in nature. *Clojure* is an *immutable-by-default*, *practical* and *stable* *functional programming language* based on the *Lisp* programming language. Unfortunately, *Clojure* is not well suited for some programming domains. One example is the *embedded system* domain. Especially, *embedded system* domains with tight memory and cpu constraints that do not allow use of the *heap*, and that only offer *{cpp}* programming tools.
+*Clojure* is one of the most expressive and concise programming languages. It is *laconic* in nature, 
+*immutable-by-default*, *practical*, and *stable*. *Clojure* is based on the *Lisp* programming language. However, 
+*Clojure* is not well suited for some programming domains, such as *embedded systems* with tight memory and CPU 
+constraints that do not allow *heap* usage and only offer *{cpp}* programming tools.
 
-*{cpp}*, on the other hand, is kind of the opposite of *Clojure*. *{cpp}* is a language that *does not* tend to be *Laconic* in nature, and *does* tend to be *verbose* in nature.  Furthermore, *{cpp}* is not immutable-by-default, and it is not considered a functional programming language, although it has some functional-programming-oriented features like *lambdas* and standard libraries like *ranges*, *views*, *optional* and *expected*.  Finally, *{cpp}* is a *BIG* language that is constantly in flux, has a large and growing set of features, offers a lot of ways to do things, and makes it *easy to do things poorly*.
+*{cpp}*, on the other hand, is quite different from *Clojure*. It tends to be *verbose* rather than *laconic*. *{cpp}* 
+is not immutable-by-default and is not considered a functional programming language, although it has some functional 
+features like *lambdas* and standard libraries such as *ranges*, *views*, *optional*, and *expected*. *{cpp}* is a 
+*BIG* language that is constantly evolving, with a large and growing set of features. It offers many ways to do things, 
+some of which can make it easy to do things poorly.
 
-Most *embedded system developers* are not computer language experts, they do not have time to keep up with the latest *{cpp}* language features, and their educational background is *not* heavy in the nuances of optimal *Modern* *{cpp}* usage.  When it comes to the use of *Modern* *{cpp}*, they are often mostly *self-taught*, and have learned on the job.
+Most *embedded system developers* are not computer language experts. They do not have time to keep up with the latest 
+*{cpp}* language features, and their educational background is often not heavy in the nuances of optimal *Modern* 
+*{cpp}* usage. When it comes to *Modern* *{cpp}*, they are often mostly *self-taught* and have learned on the job.
 
-Many *embedded system* projects *do not* require heavy use of the *{cpp}* features designed for memory and cpu utilization optimization. Many projects have a small amount of code that must be *finely tuned*, and quite a bit of code that is *not performance critical*.  
+Some *embedded system* projects do not require heavy use of the *{cpp}* features designed for memory and CPU utilization 
+optimization. Many projects have a small amount of code that must be *finely tuned*, and quite a bit of code that is 
+*not performance critical*.
 
-The motivation behind *cljonic* is to provide a *Clojure-esque* functional programming library for *{cpp}* embedded system developers that is *laconic*, *immutable-by-default*, *practical*, and *stable*.  *Cljonic* should also be *easy to learn and understand* and *easy to use properly* for the *safe* implementation of the *non-performance-critical* code of an *embedded system*.
+The motivation behind *cljonic* is to provide a *Clojure-esque* functional programming library for *{cpp}* embedded 
+system developers. It aims to be *laconic*, *immutable-by-default*, *practical*, and *stable*. *Cljonic* should also be 
+*easy to learn and understand* and *easy to use properly* for the *safe* implementation of embedded systems.
 
 == Desired Developer Experience When Using cljonic
 The developer using *cljonic* should be able to write *safe* code that is *easy to read*, *easy to understand* and *easy to maintain*.  These goals will enable *embedded system* projects to be *completed more quickly*, with 
 *fewer bugs*, and maintained and enhanced with *less long term effort*. 
 
 == Developer Experience When Developing cljonic
-*cljonic* has a *Makefile* in the root directory.  For *help* on the available development processes, simply execute `make` from a command-line while in the root directory , which will display the available options.
+*cljonic* has a *Makefile* in the root directory.  For *help* on the available development processes simply execute 
+`make` from a command-line while in the root directory to generate a list of the available options.
 
 *After cloning the repository*, the developer should first execute `make all`. Next, assuming no files are added to the
-repository, only modified, the developer should execute `make test`. Assuming all tests pass, executing `make cljonic` will generate the *cljonic* single header file.  Finally, executing `make git` will prepare the repository for a *git* commit.
+repository, only modified, the developer should execute `make test`. Assuming all tests pass, executing `make cljonic` 
+will generate the *cljonic* single header file.  Finally, executing `make git` will prepare the repository for a *git* 
+commit.
 
-NOTE: Whenever new files are added to the *code/source* or *code/test* directories, the developer must run `make all` again.
+NOTE: Whenever new files are added to the *code/source* or *code/test* directories, the developer must run `make all` 
+again.
 
-NOTE: Whenever new files are added to the *code/source* directory, the developer must update the *scripts/make-cljonic.sh* file.
+NOTE: Whenever new files are added to the *code/source* directory, the developer must update the 
+*scripts/make-cljonic.sh* file to include added files in the single header file.
 
 == Implementation Characteristics
 
-NOTE: The performance of these implementation characteristics should be acceptable if the *average collection size is small*, and the *cljonic* library is used for *non-performance-critical code*.
+NOTE: The performance of the implementation should be acceptable if the *average collection size is small*, and the 
+*cljonic* library is used for *non-performance-critical code*.
 
-* In order to provide the *cljonic immutable-by-default* feature, and because the *heap* can't be used in the *targeted* embedded systems, *cljonic* uses copying.  
+* In order to provide the *cljonic immutable-by-default* feature, and because the *heap* can't be used in the *targeted* 
+embedded systems, *cljonic* uses copying.  
 
-* In order to meet the *safe* Desired Developer Experience goal, *cljonic* does bounds checking on all collection accesses. 
+* In order to meet the *safe* Desired Developer Experience goal, *cljonic* does bounds checking on all collection 
+accesses. 
 
 == Required Resources
 * *AsciiDoc* for project documentation
