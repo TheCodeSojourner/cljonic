@@ -47,8 +47,8 @@ constraints that do not allow *heap* usage and only offer *{cpp}* programming to
 *{cpp}*, on the other hand, is quite different from *Clojure*. It tends to be *verbose* rather than *laconic*. *{cpp}* 
 is not immutable-by-default and is not considered a functional programming language, although it has some functional 
 features like *lambdas* and standard libraries such as *ranges*, *views*, *optional*, and *expected*. *{cpp}* is a 
-*BIG* language that is constantly evolving, with a large and growing set of features. It offers many ways to do things, 
-some of which can make it easy to do things poorly.
+*BIG* language that is constantly evolving, with a large and growing feature set. It offers many ways to do things, 
+some of which make it easy to do things poorly.
 
 Most *embedded system developers* are not computer language experts. They do not have time to keep up with the latest 
 *{cpp}* language features, and their educational background is often not heavy in the nuances of optimal *Modern* 
@@ -60,7 +60,8 @@ optimization. Many projects have a small amount of code that must be *finely tun
 
 The motivation behind *cljonic* is to provide a *Clojure-esque* functional programming library for *{cpp}* embedded 
 system developers. It aims to be *laconic*, *immutable-by-default*, *practical*, and *stable*. *Cljonic* should also be 
-*easy to learn and understand* and *easy to use properly* for the *safe* implementation of embedded systems.
+*easy to learn and understand*, and *easy to use properly* for the *safe* and *efficient* implementation of embedded 
+systems.
 
 == Desired Developer Experience When Using cljonic
 The developer using *cljonic* should be able to write *safe* code that is *easy to read*, *easy to understand* and *easy to maintain*.  These goals will enable *embedded system* projects to be *completed more quickly*, with 
