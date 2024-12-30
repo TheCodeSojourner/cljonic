@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Sat Dec 28 04:24:01 PM MST 2024
+// This file was generated Mon Dec 30 08:48:32 AM MST 2024
 
 namespace cljonic {
 
@@ -795,21 +795,22 @@ return result;
 namespace cljonic {
 
 namespace core {
-template <typename C, typename E>
-constexpr auto Conj(const C& c, const E& e) noexcept {
+template <typename C, typename... Es>
+constexpr auto Conj(const C& c, const Es&... es) noexcept {
 
 static_assert(IsCljonicCollection<C>, "First Conj parameter must be a cljonic collection");
 
-static_assert(std::convertible_to<E, typename C::value_type>,
-              "Second Conj parameter must be convertible to the specified cljonic collection value type");
+static_assert(AllConvertibleTypes<typename C::value_type, Es...>,
+              "Second through last Conj parameters must be convertible to cljonic collection value type");
 
 using ResultType = typename C::value_type;
 using SizeType = decltype(c.Count());
-constexpr auto count{C::MaximumCount() + 1};
+constexpr auto count{C::MaximumCount() + sizeof...(Es)};
 auto result{Array<ResultType, count>{}};
+const auto MConjElementOntoResult = [&](const auto& e) { result.MConj(e); };
 for(SizeType i{0}; i < c.Count(); ++i)
-result.MConj(c[i]);
-result.MConj(e);
+MConjElementOntoResult(c[i]);
+(MConjElementOntoResult(es), ...);
 return result;
 }
 

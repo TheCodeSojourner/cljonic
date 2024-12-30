@@ -10,8 +10,8 @@ namespace core
 {
 /** \anchor Core_Conj
 * The \b Conj function returns a \b cljonic \b Array with all of the elements of its first parameter, which must be a
-* \b cljonic \b collection, followed by its second parameter, which must be convertible to the value type of the
-* first parameter.
+* \b cljonic \b collection, followed by its second through last parameters, which all must be convertible to the value
+* type of the first parameter.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -21,7 +21,7 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto a{Array{11, 12, 13, 14}};
-    const auto cA{Conj(a, 15)};
+    const auto cA{Conj(a, 15, 16)};
 
     constexpr auto rng{Range<1, 5>{}};
     const auto cRng{Conj(rng, 15)};
@@ -33,35 +33,37 @@ int main()
     const auto cSet{Conj(set, 15)};
 
     constexpr auto str{String{"Hello"}};
-    const auto cStr{Conj(str, '!')};;
+    const auto cStr{Conj(str)};;
+    const auto cStrBang{Conj(str, '!', '!', '!')};;
 
     // Compiler Error: First Conj parameter must be a cljonic collection
     // const auto c{Conj("Hello", '!')};
 
-    // Compiler Error: Second Conj parameter must be convertible to the specified cljonic collection value type
+    // Compiler Error: Second through last Conj parameters must be convertible to cljonic collection value type
     // const auto c{Conj(Repeat<5, int>{1}, "Hello")};
 
     return 0;
 }
 ~~~~~
 */
-template <typename C, typename E>
-constexpr auto Conj(const C& c, const E& e) noexcept
+template <typename C, typename... Es>
+constexpr auto Conj(const C& c, const Es&... es) noexcept
 {
     // #lizard forgives -- The length of this function is acceptable
 
     static_assert(IsCljonicCollection<C>, "First Conj parameter must be a cljonic collection");
 
-    static_assert(std::convertible_to<E, typename C::value_type>,
-                  "Second Conj parameter must be convertible to the specified cljonic collection value type");
+    static_assert(AllConvertibleTypes<typename C::value_type, Es...>,
+                  "Second through last Conj parameters must be convertible to cljonic collection value type");
 
     using ResultType = typename C::value_type;
     using SizeType = decltype(c.Count());
-    constexpr auto count{C::MaximumCount() + 1};
+    constexpr auto count{C::MaximumCount() + sizeof...(Es)};
     auto result{Array<ResultType, count>{}};
+    const auto MConjElementOntoResult = [&](const auto& e) { result.MConj(e); };
     for (SizeType i{0}; i < c.Count(); ++i)
-        result.MConj(c[i]);
-    result.MConj(e);
+        MConjElementOntoResult(c[i]);
+    (MConjElementOntoResult(es), ...);
     return result;
 }
 

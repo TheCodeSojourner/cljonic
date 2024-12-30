@@ -12,14 +12,15 @@ using namespace cljonic::core;
 SCENARIO("Conj", "[CljonicCoreConj]")
 {
     constexpr auto a{Array{11, 12, 13, 14}};
-    const auto cA{Conj(a, 15)};
-    CHECK(5 == cA.Count());
+    const auto cA{Conj(a, 15, 16)};
+    CHECK(6 == cA.Count());
     CHECK(11 == cA[0]);
     CHECK(12 == cA[1]);
     CHECK(13 == cA[2]);
     CHECK(14 == cA[3]);
     CHECK(15 == cA[4]);
-    CHECK(0 == cA[5]);
+    CHECK(16 == cA[5]);
+    CHECK(0 == cA[6]);
 
     constexpr auto rng{Range<1, 5>{}};
     const auto cRng{Conj(rng, 15)};
@@ -51,13 +52,25 @@ SCENARIO("Conj", "[CljonicCoreConj]")
     CHECK(0 == cSet[5]);
 
     constexpr auto str{String{"Hello"}};
-    const auto cStr{Conj(str, '!')};
-    CHECK(6 == cStr.Count());
+
+    const auto cStr{Conj(str)};
+    CHECK(5 == cStr.Count());
     CHECK('H' == cStr[0]);
     CHECK('e' == cStr[1]);
     CHECK('l' == cStr[2]);
     CHECK('l' == cStr[3]);
     CHECK('o' == cStr[4]);
-    CHECK('!' == cStr[5]);
-    CHECK('\0' == cStr[6]);
+    CHECK('\0' == cStr[5]);
+
+    const auto cStrBang{Conj(str, '!', '!', '!')};
+    CHECK(8 == cStrBang.Count());
+    CHECK('H' == cStrBang[0]);
+    CHECK('e' == cStrBang[1]);
+    CHECK('l' == cStrBang[2]);
+    CHECK('l' == cStrBang[3]);
+    CHECK('o' == cStrBang[4]);
+    CHECK('!' == cStrBang[5]);
+    CHECK('!' == cStrBang[6]);
+    CHECK('!' == cStrBang[7]);
+    CHECK('\0' == cStrBang[8]);
 }
