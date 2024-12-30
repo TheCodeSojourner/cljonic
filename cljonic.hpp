@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Dec 30 09:15:20 AM MST 2024
+// This file was generated Mon Dec 30 10:00:15 AM MST 2024
 
 namespace cljonic {
 
@@ -812,6 +812,20 @@ for(SizeType i{0}; i < c.Count(); ++i)
 MConjElementOntoResult(c[i]);
 (MConjElementOntoResult(es), ...);
 return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto Count(const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "Count parameter must be a cljonic collection");
+
+return c.count();
 }
 
 }
