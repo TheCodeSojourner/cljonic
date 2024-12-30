@@ -7,7 +7,7 @@ namespace cljonic
 namespace core
 {
 /** \anchor Core_Count
-* The \b Count function returns the number of elements current contained in a \b cljonic \b collection.
+* The \b Count function returns the number of elements currently contained in a \b cljonic \b collection.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -29,13 +29,10 @@ int main()
     const auto countSet{Count(set)};
 
     constexpr auto str{String{"Hello"}};
-    const auto countStr{Count(set)};;
+    const auto countStr{Count(str)};;
 
-    // Compiler Error: First Conj parameter must be a cljonic collection
-    // const auto c{Conj("Hello", '!')};
-
-    // Compiler Error: Second through last Conj parameters must be convertible to cljonic collection value type
-    // const auto c{Conj(Repeat<5, int>{1}, "Hello")};
+    // Compiler Error: Count parameter must be a cljonic collection
+    // const auto c{Count("Hello")};
 
     return 0;
 }
@@ -46,7 +43,7 @@ constexpr auto Count(const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Count parameter must be a cljonic collection");
 
-    return c.count();
+    return c.Count();
 }
 
 } // namespace core

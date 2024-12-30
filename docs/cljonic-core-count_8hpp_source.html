@@ -91,29 +91,29 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">namespace </span>core</div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>{</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> C&gt;</div>
-<div class="foldopen" id="foldopen00045" data-start="{" data-end="}">
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#a87d77305da1777799cafdb2ea18c198d">   45</a></span><span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#a87d77305da1777799cafdb2ea18c198d">Count</a>(<span class="keyword">const</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">C</a>&amp; <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>) <span class="keyword">noexcept</span></div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>{</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keyword">static_assert</span>(<a class="code hl_concept" href="conceptcljonic_1_1_is_cljonic_collection.html">IsCljonicCollection&lt;C&gt;</a>, <span class="stringliteral">&quot;Count parameter must be a cljonic collection&quot;</span>);</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>.count();</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>}</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> C&gt;</div>
+<div class="foldopen" id="foldopen00042" data-start="{" data-end="}">
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#a87d77305da1777799cafdb2ea18c198d">   42</a></span><span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#a87d77305da1777799cafdb2ea18c198d">Count</a>(<span class="keyword">const</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">C</a>&amp; <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>{</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keyword">static_assert</span>(<a class="code hl_concept" href="conceptcljonic_1_1_is_cljonic_collection.html">IsCljonicCollection&lt;C&gt;</a>, <span class="stringliteral">&quot;Count parameter must be a cljonic collection&quot;</span>);</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>.Count();</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>}</div>
 </div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>} <span class="comment">// namespace core</span></div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>} <span class="comment">// namespace cljonic</span></div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="preprocessor">#endif </span><span class="comment">// CLJONIC_CORE_COUNT_HPP</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>} <span class="comment">// namespace core</span></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>} <span class="comment">// namespace cljonic</span></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="preprocessor">#endif </span><span class="comment">// CLJONIC_CORE_COUNT_HPP</span></div>
 <div class="ttc" id="aconceptcljonic_1_1_is_cljonic_collection_html"><div class="ttname"><a href="conceptcljonic_1_1_is_cljonic_collection.html">cljonic::IsCljonicCollection</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00126">cljonic-concepts.hpp:126</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_a87d77305da1777799cafdb2ea18c198d"><div class="ttname"><a href="namespacecljonic_1_1core.html#a87d77305da1777799cafdb2ea18c198d">cljonic::core::Count</a></div><div class="ttdeci">constexpr auto Count(const C &amp;c) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-count_8hpp_source.html#l00045">cljonic-core-count.hpp:45</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a87d77305da1777799cafdb2ea18c198d"><div class="ttname"><a href="namespacecljonic_1_1core.html#a87d77305da1777799cafdb2ea18c198d">cljonic::core::Count</a></div><div class="ttdeci">constexpr auto Count(const C &amp;c) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-count_8hpp_source.html#l00042">cljonic-core-count.hpp:42</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00010">cljonic-array.hpp:11</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_ac1734fb139d2b39c04e650f3d0a75eef"><div class="ttname"><a href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">cljonic::AllConvertibleTypes</a></div><div class="ttdeci">constexpr bool AllConvertibleTypes</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00158">cljonic-concepts.hpp:158</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Dec 30 2024 10:00:16 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Mon Dec 30 2024 10:07:47 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

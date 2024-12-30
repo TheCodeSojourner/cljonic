@@ -380,7 +380,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
   </tr>
 </table>
 </div><div class="memdoc">
-<p><a class="anchor" id="Core_Count"></a> The <b>Count</b> function returns the number of elements current contained in a <b>cljonic</b> <b>collection</b>. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<p><a class="anchor" id="Core_Count"></a> The <b>Count</b> function returns the number of elements currently contained in a <b>cljonic</b> <b>collection</b>. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
@@ -400,19 +400,16 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">countSet</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a87d77305da1777799cafdb2ea18c198d">Count</a>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">set</a>)};</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">str</a>{<a class="code hl_class" href="classcljonic_1_1_string.html">String</a>{<span class="stringliteral">&quot;Hello&quot;</span>}};</div>
-<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">countStr</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a87d77305da1777799cafdb2ea18c198d">Count</a>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">set</a>)};;</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">countStr</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a87d77305da1777799cafdb2ea18c198d">Count</a>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">str</a>)};;</div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// Compiler Error: First Conj parameter must be a cljonic collection</span></div>
-<div class="line">    <span class="comment">// const auto c{Conj(&quot;Hello&quot;, &#39;!&#39;)};</span></div>
-<div class="line"> </div>
-<div class="line">    <span class="comment">// Compiler Error: Second through last Conj parameters must be convertible to cljonic collection value type</span></div>
-<div class="line">    <span class="comment">// const auto c{Conj(Repeat&lt;5, int&gt;{1}, &quot;Hello&quot;)};</span></div>
+<div class="line">    <span class="comment">// Compiler Error: Count parameter must be a cljonic collection</span></div>
+<div class="line">    <span class="comment">// const auto c{Count(&quot;Hello&quot;)};</span></div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_a87d77305da1777799cafdb2ea18c198d"><div class="ttname"><a href="namespacecljonic_1_1core.html#a87d77305da1777799cafdb2ea18c198d">cljonic::core::Count</a></div><div class="ttdeci">constexpr auto Count(const C &amp;c) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-count_8hpp_source.html#l00045">cljonic-core-count.hpp:45</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a87d77305da1777799cafdb2ea18c198d"><div class="ttname"><a href="namespacecljonic_1_1core.html#a87d77305da1777799cafdb2ea18c198d">cljonic::core::Count</a></div><div class="ttdeci">constexpr auto Count(const C &amp;c) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-count_8hpp_source.html#l00042">cljonic-core-count.hpp:42</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-core-count_8hpp_source.html#l00045">45</a> of file <a class="el" href="cljonic-core-count_8hpp_source.html">cljonic-core-count.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-core-count_8hpp_source.html#l00042">42</a> of file <a class="el" href="cljonic-core-count_8hpp_source.html">cljonic-core-count.hpp</a>.</p>
 
 </div>
 </div>
@@ -1090,7 +1087,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Dec 30 2024 10:00:16 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Mon Dec 30 2024 10:07:47 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

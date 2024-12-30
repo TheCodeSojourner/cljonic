@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Dec 30 10:00:15 AM MST 2024
+// This file was generated Mon Dec 30 10:07:47 AM MST 2024
 
 namespace cljonic {
 
@@ -825,7 +825,7 @@ template <typename C>
 constexpr auto Count(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Count parameter must be a cljonic collection");
 
-return c.count();
+return c.Count();
 }
 
 }
