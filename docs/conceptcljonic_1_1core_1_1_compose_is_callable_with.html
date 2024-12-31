@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cljonic: cljonic::IsCljonicSet Concept Reference</title>
+<title>cljonic: cljonic::core::ComposeIsCallableWith Concept Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -71,23 +71,25 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacecljonic.html">cljonic</a></li><li class="navelem"><a class="el" href="conceptcljonic_1_1_is_cljonic_set.html">IsCljonicSet</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacecljonic.html">cljonic</a></li><li class="navelem"><a class="el" href="namespacecljonic_1_1core.html">core</a></li><li class="navelem"><a class="el" href="conceptcljonic_1_1core_1_1_compose_is_callable_with.html">ComposeIsCallableWith</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="headertitle"><div class="title">cljonic::IsCljonicSet Concept Reference</div></div>
+  <div class="headertitle"><div class="title">cljonic::core::ComposeIsCallableWith Concept Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="cljonic-core-compose_8hpp_source.html">cljonic-core-compose.hpp</a>&gt;</code></p>
 <h2 class="groupheader">Concept definition</h2>
-<div class="fragment"><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="conceptcljonic_1_1_is_cljonic_set.html">cljonic::IsCljonicSet</a> =  std::same_as&lt;<span class="keyword">typename</span> T::cljonic_collection_type,</div>
-<div class="line">                                    std::integral_constant&lt;CljonicCollectionType, CljonicCollectionType::Set&gt;&gt;</div>
-<div class="ttc" id="aconceptcljonic_1_1_is_cljonic_set_html"><div class="ttname"><a href="conceptcljonic_1_1_is_cljonic_set.html">cljonic::IsCljonicSet</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00137">cljonic-concepts.hpp:137</a></div></div>
+<div class="fragment"><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F1</a>, <span class="keyword">typename</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F2</a>, <span class="keyword">typename</span>... <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Args</a>&gt;</div>
+<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="conceptcljonic_1_1core_1_1_compose_is_callable_with.html">cljonic::core::ComposeIsCallableWith</a> =  <span class="keyword">requires</span>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F1</a> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f1</a>, <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F2</a> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f2</a>, <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Args</a>&amp;&amp;... <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">args</a>) {</div>
+<div class="line">    { <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f1</a>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f2</a>(std::forward&lt;Args&gt;(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">args</a>)...)) };</div>
+<div class="line">}</div>
+<div class="ttc" id="aconceptcljonic_1_1core_1_1_compose_is_callable_with_html"><div class="ttname"><a href="conceptcljonic_1_1core_1_1_compose_is_callable_with.html">cljonic::core::ComposeIsCallableWith</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-compose_8hpp_source.html#l00013">cljonic-core-compose.hpp:13</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_ac1734fb139d2b39c04e650f3d0a75eef"><div class="ttname"><a href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">cljonic::AllConvertibleTypes</a></div><div class="ttdeci">constexpr bool AllConvertibleTypes</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00158">cljonic-concepts.hpp:158</a></div></div>
 </div><!-- fragment --><a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00137">137</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-core-compose_8hpp_source.html#l00013">13</a> of file <a class="el" href="cljonic-core-compose_8hpp_source.html">cljonic-core-compose.hpp</a>.</p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

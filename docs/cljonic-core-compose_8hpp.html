@@ -77,13 +77,12 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#concepts">Concepts</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">cljonic-core-compose.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;concepts&gt;</code><br />
-<code>#include &lt;utility&gt;</code><br />
-<code>#include &quot;<a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>&quot;</code><br />
+<div class="textblock"><code>#include &lt;utility&gt;</code><br />
 </div>
 <p><a href="cljonic-core-compose_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -94,16 +93,24 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespacecljonic_1_1core" id="r_namespacecljonic_1_1core"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html">cljonic::core</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="concepts" name="concepts"></a>
+Concepts</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1core_1_1_compose_is_callable_with.html">cljonic::core::ComposeIsCallableWith</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aeeebe3fbcccc5337ab519dac72cae3db" id="r_aeeebe3fbcccc5337ab519dac72cae3db"><td class="memTemplParams" colspan="2">template&lt;typename... Fs&gt; </td></tr>
-<tr class="memitem:aeeebe3fbcccc5337ab519dac72cae3db"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#aeeebe3fbcccc5337ab519dac72cae3db">cljonic::core::Compose</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Fs</a> &amp;&amp;... <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">fs</a>) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
-<tr class="separator:aeeebe3fbcccc5337ab519dac72cae3db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a173dc7bdd588d33175a25ce4cdf668bc" id="r_a173dc7bdd588d33175a25ce4cdf668bc"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F1</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F2</a> &gt; </td></tr>
+<tr class="memitem:a173dc7bdd588d33175a25ce4cdf668bc"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#a173dc7bdd588d33175a25ce4cdf668bc">cljonic::core::Compose</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F1</a> &amp;&amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f1</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F2</a> &amp;&amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f2</a>) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
+<tr class="separator:a173dc7bdd588d33175a25ce4cdf668bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed686c2a58dfdfcaeb1bf555d24a2568" id="r_aed686c2a58dfdfcaeb1bf555d24a2568"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F1</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F2</a> , typename... Fs&gt; </td></tr>
+<tr class="memitem:aed686c2a58dfdfcaeb1bf555d24a2568"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#aed686c2a58dfdfcaeb1bf555d24a2568">cljonic::core::Compose</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F1</a> &amp;&amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f1</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F2</a> &amp;&amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f2</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Fs</a> &amp;&amp;... <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">fs</a>) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
+<tr class="separator:aed686c2a58dfdfcaeb1bf555d24a2568"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Dec 31 2024 11:26:22 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Tue Dec 31 2024 15:32:13 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

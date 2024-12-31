@@ -1,9 +1,7 @@
 #ifndef CLJONIC_CORE_COMPOSE_HPP
 #define CLJONIC_CORE_COMPOSE_HPP
 
-#include <concepts>
 #include <utility>
-#include "cljonic-concepts.hpp"
 
 namespace cljonic
 {
@@ -11,18 +9,22 @@ namespace cljonic
 namespace core
 {
 
-template <typename F, typename... Fs>
-static constexpr auto InnerCompose(F&& f, Fs&&... fs) noexcept
+template <typename F1, typename F2, typename... Args>
+concept ComposeIsCallableWith = requires(F1 f1, F2 f2, Args&&... args) {
+    { f1(f2(std::forward<Args>(args)...)) };
+};
+
+template <typename F1, typename F2>
+constexpr auto Compose(F1&& f1, F2&& f2) noexcept
 {
-    if constexpr (sizeof...(fs) == 0)
+    return [f1 = std::forward<F1>(f1), f2 = std::forward<F2>(f2)]<typename... T>(T&&... args)
     {
-        return std::forward<F>(f);
-    }
-    else
-    {
-        return [=]<typename... T>(T&&... args) noexcept
-        { return f(InnerCompose(std::forward<Fs>(fs)...)(std::forward<T>(args)...)); };
-    }
+        static_assert(ComposeIsCallableWith<F1, F2, T...>,
+                      "Each Compose argument must be callable with one argument of the return type of the argument to "
+                      "its right. Was the Compose result function called with the correct number of arguments?");
+
+        return f1(f2(std::forward<T>(args)...));
+    };
 }
 
 /** \anchor Core_Compose
@@ -70,32 +72,63 @@ const char* StrDouble(double x) noexcept
 
 int main()
 {
-    // Compiler Error: Compose requires at least two function parameters
-    // constexpr auto f{Compose(StrDouble)};
+    constexpr auto f1{Compose(StrDouble, Add1p7, Mult2, Div3, AddXY)};
+    const auto x1{f1(234, 1111)};
 
-    // Compiler Error: Each Compose function must be callable with the return type of the next function
-    // constexpr auto f{Compose(StrDouble, Add1p7, Div3, AddXY)};
+    constexpr auto f2{Compose(
+        [](const int x) noexcept
+        {
+            return x + 1.7;
+        },
+        [](const std::tuple<const int, const int>& x) noexcept
+        {
+            auto [num, den]{x};
+            return 2 * (num / den);
+        },
+        [](const int x) noexcept
+        {
+            return std::make_tuple(x, 3);
+        },
+        [](const int x, const int y) noexcept
+        {
+            return x + y;
+        })};
+    const auto x2{f2(234, 1111)};
 
-    constexpr auto f{Compose(StrDouble, Add1p7, Mult2, Div3, AddXY)};
+    constexpr auto f3{Compose(
+        StrDouble,
+        [](const int x) noexcept
+        {
+            return x + 1.7;
+        },
+        Mult2,
+        [](const int x) noexcept
+        {
+            return std::make_tuple(x, 3);
+        },
+        AddXY)};
+    const auto x3{f3(234, 1111)};
 
-    const auto x{f(234, 1111)};
+    // Compiler Error:
+    //     Each Compose argument must be callable with one argument of the return type of the argument to its right. Was
+    //     the Compose result function called with the correct number of arguments?
+    // constexpr auto f{Compose(Mult2, Add1p7, Div3, AddXY)};
+    // const auto x{f(234, 1111)};
 
-    // Compiler Error: too few arguments to function
+    // Compiler Error:
+    //     Each Compose argument must be callable with one argument of the return type of the argument to its right. Was
+    //     the Compose result function called with the correct number of arguments?
+    // constexpr auto f{Compose(Add1p7, Mult2, Div3, AddXY)};
     // const auto x{f(234)};
 
     return 0;
 }
 ~~~~~
 */
-template <typename... Fs>
-constexpr auto Compose(Fs&&... fs) noexcept
+template <typename F1, typename F2, typename... Fs>
+constexpr auto Compose(F1&& f1, F2&& f2, Fs&&... fs) noexcept
 {
-    static_assert(sizeof...(Fs) >= 2, "Compose requires at least two function parameters");
-
-    static_assert(EachFunctionIsInvocableWithNextReturnType<Fs...>,
-                  "Each Compose function must be callable with the return type of the next function");
-
-    return InnerCompose(std::forward<Fs>(fs)...);
+    return Compose(std::forward<F1>(f1), Compose(std::forward<F2>(f2), std::forward<Fs>(fs)...));
 }
 
 } // namespace core

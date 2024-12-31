@@ -1,7 +1,7 @@
 var searchData=
 [
   ['collectioniterator_0',['CollectionIterator',['../classcljonic_1_1_collection_iterator.html#a242a8680d5efa5f5fcf89bcb3f16b589',1,'cljonic::CollectionIterator']]],
-  ['compose_1',['Compose',['../namespacecljonic_1_1core.html#aeeebe3fbcccc5337ab519dac72cae3db',1,'cljonic::core']]],
+  ['compose_1',['compose',['../namespacecljonic_1_1core.html#a173dc7bdd588d33175a25ce4cdf668bc',1,'cljonic::core::Compose(F1 &amp;&amp;f1, F2 &amp;&amp;f2) noexcept'],['../namespacecljonic_1_1core.html#aed686c2a58dfdfcaeb1bf555d24a2568',1,'cljonic::core::Compose(F1 &amp;&amp;f1, F2 &amp;&amp;f2, Fs &amp;&amp;... fs) noexcept']]],
   ['concat_2',['Concat',['../namespacecljonic_1_1core.html#ab1851f00181082cb04589021402b8743',1,'cljonic::core']]],
   ['conj_3',['Conj',['../namespacecljonic_1_1core.html#a880ebdb3f24d67d7f5ac4fdc4cf58b08',1,'cljonic::core']]],
   ['contains_4',['Contains',['../classcljonic_1_1_set.html#ae53faed12f2df5bb40738d3bebe7e509',1,'cljonic::Set']]],

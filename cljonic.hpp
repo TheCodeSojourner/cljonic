@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Dec 31 11:26:22 AM MST 2024
+// This file was generated Tue Dec 31 03:32:13 PM MST 2024
 
 namespace cljonic {
 
@@ -737,29 +737,30 @@ namespace core {
 
 }
 
-#include <concepts>
 #include <utility>
 
 namespace cljonic {
 
 namespace core {
 
-template <typename F, typename... Fs>
-static constexpr auto InnerCompose(F&& f, Fs&&... fs) noexcept {
-if constexpr(sizeof...(fs) == 0) {
-return std::forward<F>(f);
-} else {
-return [=]<typename... T>(T&&... args) noexcept { return f(InnerCompose(std::forward<Fs>(fs)...)(std::forward<T>(args)...)); };
-}
-}
-template <typename... Fs>
-constexpr auto Compose(Fs&&... fs) noexcept {
-static_assert(sizeof...(Fs) >= 2, "Compose requires at least two function parameters");
+template <typename F1, typename F2, typename... Args>
+concept ComposeIsCallableWith = requires(F1 f1, F2 f2, Args&&... args) {
+{ f1(f2(std::forward<Args>(args)...)) };
+};
 
-static_assert(EachFunctionIsInvocableWithNextReturnType<Fs...>,
-              "Each Compose function must be callable with the return type of the next function");
+template <typename F1, typename F2>
+constexpr auto Compose(F1&& f1, F2&& f2) noexcept {
+return [f1 = std::forward<F1>(f1), f2 = std::forward<F2>(f2)]<typename... T>(T&&... args) {
+static_assert(ComposeIsCallableWith<F1, F2, T...>,
+              "Each Compose argument must be callable with one argument of the return type of the argument to "
+              "its right. Was the Compose result function called with the correct number of arguments?");
 
-return InnerCompose(std::forward<Fs>(fs)...);
+return f1(f2(std::forward<T>(args)...));
+};
+}
+template <typename F1, typename F2, typename... Fs>
+constexpr auto Compose(F1&& f1, F2&& f2, Fs&&... fs) noexcept {
+return Compose(std::forward<F1>(f1), Compose(std::forward<F2>(f2), std::forward<Fs>(fs)...));
 }
 
 }
