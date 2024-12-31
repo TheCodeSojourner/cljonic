@@ -3,13 +3,15 @@
 LAST_EXIT_CODE=0
 
 format_files () {
-    CPPS=$(find 'code' -type f -name '*.cpp')
-    HPPS=$(find 'code' -type f -name '*.hpp')
+    CODE_CPPS=$(find 'code' -type f -name '*.cpp')
+    CODE_HPPS=$(find 'code' -type f -name '*.hpp')
     clang-format \
         -i \
         -style="{AllowShortBlocksOnASingleLine: false, AllowShortCaseLabelsOnASingleLine: false, AllowShortFunctionsOnASingleLine: false, AllowShortIfStatementsOnASingleLine: false, AllowShortLoopsOnASingleLine: false, AlwaysBreakTemplateDeclarations: true, BasedOnStyle: LLVM, BinPackArguments: false, BinPackParameters: false, BreakBeforeBraces: Allman, ColumnLimit: 120, Cpp11BracedListStyle: true, IndentWidth: 4, PointerAlignment: Left, SortIncludes: false, SpaceBeforeParens: ControlStatements, Standard: Latest}" \
-        $CPPS \
-        $HPPS \
+        $CODE_CPPS \
+        $CODE_HPPS \
+        resources/no-dynamic-memory.cpp \
+        resources/no-dynamic-memory.hpp \
         2>/dev/null >/dev/null
     LAST_EXIT_CODE=$?
 }

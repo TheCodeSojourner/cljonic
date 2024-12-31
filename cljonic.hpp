@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Dec 31 03:32:13 PM MST 2024
+// This file was generated Tue Dec 31 03:56:16 PM MST 2024
 
 namespace cljonic {
 
@@ -74,58 +74,6 @@ enum class CljonicCollectionType {
 #include <limits>
 #include <type_traits>
 
-namespace each_function_is_invocable_with_next_return_type {
-
-template <typename F>
-struct ReturnType;
-
-template <typename R, typename... Args>
-struct ReturnType<R(Args...)> {
-using type = R;
-};
-
-template <typename R, typename... Args>
-struct ReturnType<R (*)(Args...)> {
-using type = R;
-};
-
-template <typename R, typename... Args>
-struct ReturnType<R (&)(Args...)> {
-using type = R;
-};
-
-template <typename R, typename... Args>
-struct ReturnType<R(Args...) noexcept> {
-using type = R;
-};
-
-template <typename R, typename... Args>
-struct ReturnType<R (*)(Args...) noexcept> {
-using type = R;
-};
-
-template <typename R, typename... Args>
-struct ReturnType<R (&)(Args...) noexcept> {
-using type = R;
-};
-
-template <typename F, typename... Fs>
-struct AreInvocableWithReturn;
-
-template <typename F1, typename F2, typename... Fs>
-struct AreInvocableWithReturn<F1, F2, Fs...> {
-
-static constexpr bool value =
-    std::regular_invocable<F1, typename ReturnType<F2>::type> and AreInvocableWithReturn<F2, Fs...>::value;
-};
-
-template <typename F>
-struct AreInvocableWithReturn<F> {
-static constexpr bool value = true;
-};
-
-} // namespace each_function_is_invocable_with_next_return_type
-
 namespace inner_find_common_type {
 
 template <typename T, typename... Ts>
@@ -148,7 +96,6 @@ using type = std::conditional_t<(std::convertible_to<U, T> && ... && std::conver
 
 namespace cljonic {
 
-using namespace each_function_is_invocable_with_next_return_type;
 using namespace inner_find_common_type;
 
 template <typename P, typename T, typename U>
@@ -222,9 +169,6 @@ constexpr bool AnyFloatingPointValueTypes =
 
 template <typename T>
 concept CString = std::same_as<T, const char*> or std::same_as<T, char*>;
-
-template <typename... Fs>
-concept EachFunctionIsInvocableWithNextReturnType = AreInvocableWithReturn<Fs...>::value;
 
 template <typename T, typename... Ts>
 using FindCommonType = typename InnerFindCommonType<T, Ts...>::type;

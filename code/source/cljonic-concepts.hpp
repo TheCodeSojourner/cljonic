@@ -6,77 +6,6 @@
 #include <type_traits>
 #include "cljonic-collection-type.hpp"
 
-namespace each_function_is_invocable_with_next_return_type
-{
-
-// Base template struct for deducing the return type of function
-template <typename F>
-struct ReturnType;
-
-// Specialization of ReturnType for deducing the return type of function
-template <typename R, typename... Args>
-struct ReturnType<R(Args...)>
-{
-    using type = R; // Function return type
-};
-
-// Specialization of ReturnType for deducing the return type of function pointer
-template <typename R, typename... Args>
-struct ReturnType<R (*)(Args...)>
-{
-    using type = R; // Function pointer return type
-};
-
-// Specialization of ReturnType for deducing the return type of function reference
-template <typename R, typename... Args>
-struct ReturnType<R (&)(Args...)>
-{
-    using type = R; //
-};
-
-// Specialization of ReturnType for deducing the return type of noexcept function
-template <typename R, typename... Args>
-struct ReturnType<R(Args...) noexcept>
-{
-    using type = R; // noexcept function return type
-};
-
-// Specialization of ReturnType for deducing the return type of noexcept function pointer
-template <typename R, typename... Args>
-struct ReturnType<R (*)(Args...) noexcept>
-{
-    using type = R; // noexcept function pointer return type
-};
-
-// Specialization of ReturnType for deducing the return type of noexcept function reference
-template <typename R, typename... Args>
-struct ReturnType<R (&)(Args...) noexcept>
-{
-    using type = R; // noexcept function reference return type
-};
-
-// A base template struct to check if each function in a list is invocable with the return type of the next function
-template <typename F, typename... Fs>
-struct AreInvocableWithReturn;
-
-// Specialization of AreInvocableWithReturn for multiple functions
-template <typename F1, typename F2, typename... Fs>
-struct AreInvocableWithReturn<F1, F2, Fs...>
-{
-    // Value is true if F1 is invocable with the return type of F2 and the rest of the functions follow the same rule
-    static constexpr bool value =
-        std::regular_invocable<F1, typename ReturnType<F2>::type> and AreInvocableWithReturn<F2, Fs...>::value;
-};
-
-// Specialization of AreInvocableWithReturn for a single function
-template <typename F>
-struct AreInvocableWithReturn<F>
-{
-    static constexpr bool value = true; // Single function is always invocable
-};
-
-} // namespace each_function_is_invocable_with_next_return_type
-
 namespace inner_find_common_type
 {
 
@@ -107,7 +36,6 @@ struct InnerFindCommonType<T, U, Ts...>
 namespace cljonic
 {
 
-using namespace each_function_is_invocable_with_next_return_type;
 using namespace inner_find_common_type;
 
 template <typename P, typename T, typename U>
@@ -181,9 +109,6 @@ constexpr bool AnyFloatingPointValueTypes =
 
 template <typename T>
 concept CString = std::same_as<T, const char*> or std::same_as<T, char*>;
-
-template <typename... Fs>
-concept EachFunctionIsInvocableWithNextReturnType = AreInvocableWithReturn<Fs...>::value;
 
 template <typename T, typename... Ts>
 using FindCommonType = typename InnerFindCommonType<T, Ts...>::type;
