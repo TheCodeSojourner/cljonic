@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Dec 31 10:00:05 AM MST 2024
+// This file was generated Tue Dec 31 11:26:22 AM MST 2024
 
 namespace cljonic {
 
@@ -1042,6 +1042,20 @@ for(const auto& element : c)
 if(f(element))
 result.MConj(element);
 return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto First(const C& coll) noexcept {
+static_assert(IsCljonicCollection<C>, "First parameter must be a cljonic collection");
+
+return coll[0];
 }
 
 }

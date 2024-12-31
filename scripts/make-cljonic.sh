@@ -29,6 +29,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-equalby.hpp \
     cljonic-core-every.hpp \
     cljonic-core-filter.hpp \
+    cljonic-core-first.hpp \
     cljonic-core-map.hpp \
     cljonic-core-partial.hpp \
     cljonic-core-reduce.hpp \
