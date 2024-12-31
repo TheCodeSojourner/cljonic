@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Dec 30 10:07:47 AM MST 2024
+// This file was generated Tue Dec 31 09:56:35 AM MST 2024
 
 namespace cljonic {
 
@@ -61,6 +61,7 @@ namespace cljonic {
 
 enum class CljonicCollectionType {
     Array,
+    Cycle,
     Range,
     Repeat,
     Set,
@@ -826,6 +827,106 @@ constexpr auto Count(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Count parameter must be a cljonic collection");
 
 return c.Count();
+}
+
+}
+
+} // namespace cljonic::core
+
+#include <utility>
+
+namespace cljonic {
+
+namespace core {
+
+template <typename C>
+class CycleCollection {
+using MaxElementsType = typename C::size_type;
+using ElementType = typename C::value_type;
+
+const C m_collection;
+
+[[nodiscard]] MaxElementsType IndexToElementIndex(const MaxElementsType index) const noexcept {
+return (0 == m_collection.Count()) ? 0 : (index % m_collection.Count());
+}
+
+class CycleIterator {
+const CycleCollection& m_cycle;
+MaxElementsType m_index;
+
+public:
+constexpr CycleIterator(const CycleCollection& cycle, const MaxElementsType index) noexcept
+    : m_cycle(cycle), m_index(index) {
+}
+
+constexpr auto operator*() const noexcept -> decltype(m_cycle[m_index]) {
+return m_cycle[m_cycle.IndexToElementIndex(m_index)];
+}
+
+constexpr CycleIterator& operator++() noexcept {
+++m_index;
+return *this;
+}
+
+constexpr bool operator!=(const CycleIterator& other) const noexcept {
+return m_index != other.m_index;
+}
+
+constexpr CycleIterator& operator+=(const int value) noexcept {
+m_index += value;
+return *this;
+}
+
+constexpr CycleIterator operator+(const int value) const noexcept {
+CycleIterator temp = *this;
+temp += value;
+return temp;
+}
+};
+
+public:
+using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Cycle>;
+using size_type = MaxElementsType;
+using value_type = ElementType;
+
+explicit CycleCollection(const C& collection) : m_collection(collection) {
+}
+
+explicit CycleCollection(C&& collection) : m_collection(std::move(collection)) {
+}
+
+constexpr CycleCollection(const CycleCollection& other) = default;
+constexpr CycleCollection(CycleCollection&& other) = default;
+
+[[nodiscard]] constexpr CycleIterator begin() const noexcept {
+return CycleIterator(*this, 0);
+}
+
+[[nodiscard]] constexpr CycleIterator end() const noexcept {
+return CycleIterator(*this, MaximumCount());
+}
+
+[[nodiscard]] constexpr ElementType operator[](const MaxElementsType index) const noexcept {
+return m_collection[IndexToElementIndex(index)];
+}
+
+[[nodiscard]] constexpr MaxElementsType Count() const noexcept {
+return MaximumCount();
+}
+
+[[nodiscard]] constexpr ElementType& DefaultElement() const noexcept {
+return m_collection.DefaultElement();
+}
+
+[[nodiscard]] constexpr std::size_t MaximumCount() const noexcept {
+return (0 == m_collection.Count()) ? 0 : std::numeric_limits<MaxElementsType>::max();
+}
+};
+template <typename C>
+auto Cycle(const C& c) {
+static_assert(IsCljonicCollection<C>, "Cycle parameter must be a cljonic collection");
+
+return CycleCollection{c};
 }
 
 }

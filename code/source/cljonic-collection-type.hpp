@@ -7,6 +7,7 @@ namespace cljonic
 enum class CljonicCollectionType
 {
     Array,
+    Cycle,
     Range,
     Repeat,
     Set,

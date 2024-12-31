@@ -17,5 +17,7 @@ void* operator new(std::size_t) = delete;
 void* operator new[](std::size_t) = delete;
 void operator delete(void*) noexcept = delete;
 void operator delete[](void*) noexcept = delete;
+void operator delete(void*, std::size_t) noexcept = delete; // Added for sized deallocation
+void operator delete[](void*, std::size_t) noexcept = delete; // Added for sized deallocation
 
 #endif // NO_DYNAMIC_MEMORY_HPP

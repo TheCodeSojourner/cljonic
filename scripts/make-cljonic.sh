@@ -24,6 +24,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-concat.hpp \
     cljonic-core-conj.hpp \
     cljonic-core-count.hpp \
+    cljonic-core-cycle.hpp \
     cljonic-core-equal.hpp \
     cljonic-core-equalby.hpp \
     cljonic-core-every.hpp \
