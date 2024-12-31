@@ -156,7 +156,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-auto Cycle(const C& c)
+constexpr auto Cycle(const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Cycle parameter must be a cljonic collection");
 

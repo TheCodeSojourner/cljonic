@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Dec 31 09:56:35 AM MST 2024
+// This file was generated Tue Dec 31 10:00:05 AM MST 2024
 
 namespace cljonic {
 
@@ -923,7 +923,7 @@ return (0 == m_collection.Count()) ? 0 : std::numeric_limits<MaxElementsType>::m
 }
 };
 template <typename C>
-auto Cycle(const C& c) {
+constexpr auto Cycle(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Cycle parameter must be a cljonic collection");
 
 return CycleCollection{c};
