@@ -35,7 +35,8 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-reduce.hpp \
     cljonic-core-take.hpp \
     cljonic-core-seq.hpp \
-    cljonic-core-takelast.hpp > /tmp/cljonic-glued.hpp
+    cljonic-core-takelast.hpp \
+    cljonic-core-takenth.hpp > /tmp/cljonic-glued.hpp
 
 # remove all the comments
 g++ -fpreprocessed -dD -E -o /tmp/cljonic.hpp /tmp/cljonic-glued.hpp

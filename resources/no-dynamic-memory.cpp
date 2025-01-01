@@ -29,6 +29,7 @@ int main()
     constexpr auto seq{Seq(a)};
     constexpr auto take{Take(2, a)};
     constexpr auto takelast{TakeLast(2, a)};
+    constexpr auto takenth{TakeNth(2, a)};
 
     return 0;
 }

@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Jan  1 01:25:21 PM MST 2025
+// This file was generated Wed Jan  1 04:24:11 PM MST 2025
 
 namespace cljonic {
 
@@ -1130,6 +1130,41 @@ auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 auto startIndex{(c.Count() > count) ? (c.Count() - count) : 0};
 for(CountType i{startIndex}; (i < c.Count()); ++i)
 result.MConj(c[i]);
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto TakeNth(const std::size_t nth, const C& c) noexcept {
+
+static_assert(IsCljonicCollection<C>, "TakeNth second parameter must be a cljonic collection");
+
+using CountType = decltype(c.Count());
+using ResultType = Array<typename C::value_type, c.MaximumCount()>;
+using ValueType = typename C::value_type;
+
+constexpr auto FillArray = [](ResultType& r, const ValueType& v) noexcept {
+for(CountType i{0}; i < r.MaximumCount(); ++i)
+r.MConj(v);
+};
+constexpr auto FillArrayNth = [](ResultType& r, const C& vArray, const CountType nth) noexcept {
+auto i{CountType{0}};
+while(i < vArray.Count()) {
+r.MConj(vArray[i]);
+i += nth;
+}
+};
+auto result{ResultType{}};
+if((c.Count() > 0) and (0 == nth))
+FillArray(result, c[0]);
+else if(c.Count() > 0)
+FillArrayNth(result, c, nth);
 return result;
 }
 
