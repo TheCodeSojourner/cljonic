@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Dec 31 03:56:16 PM MST 2024
+// This file was generated Wed Jan  1 01:25:21 PM MST 2025
 
 namespace cljonic {
 
@@ -1092,7 +1092,7 @@ namespace cljonic {
 namespace core {
 template <typename C>
 constexpr auto Take(const std::size_t count, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "The second parameter must be a cljonic collection");
+static_assert(IsCljonicCollection<C>, "Take second parameter must be a cljonic collection");
 
 using CountType = decltype(c.Count());
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
@@ -1112,6 +1112,25 @@ namespace core {
 template <typename C>
 constexpr auto Seq(const C& c) noexcept {
 return Take(c.MaximumCount(), c);
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto TakeLast(const std::size_t count, const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "TakeLast second parameter must be a cljonic collection");
+
+using CountType = decltype(c.Count());
+auto result{Array<typename C::value_type, c.MaximumCount()>{}};
+auto startIndex{(c.Count() > count) ? (c.Count() - count) : 0};
+for(CountType i{startIndex}; (i < c.Count()); ++i)
+result.MConj(c[i]);
+return result;
 }
 
 }

@@ -28,6 +28,7 @@ int main()
     constexpr auto reduce3{Reduce([](const int sum, const int i) { return sum + i; }, 30, a)};
     constexpr auto seq{Seq(a)};
     constexpr auto take{Take(2, a)};
+    constexpr auto takelast{TakeLast(2, a)};
 
     return 0;
 }
