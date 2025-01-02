@@ -5,6 +5,7 @@
 #include <cstring>
 #include <initializer_list>
 #include <type_traits>
+#include "cljonic-collection-maximum-element-count.hpp"
 #include "cljonic-collection-type.hpp"
 #include "cljonic-shared.hpp"
 
@@ -30,9 +31,12 @@ class Set
 
     using MaxElementsType = decltype(MaxElements);
 
+    static constexpr auto CljonicCollectionMaximumElementCount{
+        static_cast<MaxElementsType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+
     MaxElementsType m_elementCount;
     const T m_elementDefault;
-    T m_elements[MaxElements];
+    T m_elements[Min(MaxElements, CljonicCollectionMaximumElementCount)];
 
     constexpr bool IsUniqueElementBy(const auto& f, const T& element) const noexcept
     {
@@ -88,7 +92,7 @@ class Set
         // #lizard forgives -- The complexity of this function is acceptable
         for (const auto& element : elements)
         {
-            if (m_elementCount == MaxElements)
+            if (m_elementCount == MaximumCount())
                 break; // LCOV_EXCL_LINE - This line of code may only execute at compile-time
             if (IsUniqueElement(element))
                 m_elements[m_elementCount++] = element;
@@ -140,7 +144,7 @@ class Set
 
     static constexpr std::size_t MaximumCount() noexcept
     {
-        return MaxElements;
+        return Min(MaxElements, CljonicCollectionMaximumElementCount);
     }
 }; // class Set
 

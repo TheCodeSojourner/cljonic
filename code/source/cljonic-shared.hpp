@@ -25,9 +25,17 @@ constexpr bool AreEqual(CString auto a, CString auto b) noexcept
     return std::strcmp(a, b) == 0;
 }
 
-constexpr auto Min(auto a, auto b) noexcept
+template <typename T, typename... Ts>
+constexpr auto Min(T a, Ts... args) noexcept
 {
-    return (a < b) ? a : b;
+    if constexpr (sizeof...(args) == 0)
+    {
+        return a;
+    }
+    else
+    {
+        return (a < Min(args...)) ? a : Min(args...);
+    }
 }
 
 template <typename C, typename... Cs>

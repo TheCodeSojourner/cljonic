@@ -10,11 +10,12 @@
 using namespace cljonic;
 using namespace cljonic::core;
 
-constexpr auto MAX_SIZE_T{std::numeric_limits<std::size_t>::max()};
-
 SCENARIO("Cycle", "[CljonicCoreCycle]")
 {
     constexpr auto a{Array{11, 12, 13, 14}};
+    const auto c{Cycle(a)};
+    auto MAX_SIZE_T{static_cast<decltype(c.Count())>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+
     const auto cycleA0{Cycle(a)};
     CHECK(MAX_SIZE_T == cycleA0.Count());
     CHECK(11 == cycleA0[0]);
@@ -22,7 +23,7 @@ SCENARIO("Cycle", "[CljonicCoreCycle]")
     CHECK(13 == cycleA0[2]);
     CHECK(14 == cycleA0[3]);
     CHECK(11 == cycleA0[4]);
-    CHECK(13 == cycleA0[MAX_SIZE_T - 1]);
+    CHECK(14 == cycleA0[MAX_SIZE_T - 1]);
 
     const auto cycleA1{Cycle(Array{11, 12, 13, 14})};
     CHECK(MAX_SIZE_T == cycleA1.Count());
@@ -31,7 +32,7 @@ SCENARIO("Cycle", "[CljonicCoreCycle]")
     CHECK(13 == cycleA1[2]);
     CHECK(14 == cycleA1[3]);
     CHECK(11 == cycleA1[4]);
-    CHECK(13 == cycleA1[MAX_SIZE_T - 1]);
+    CHECK(14 == cycleA1[MAX_SIZE_T - 1]);
 
     const auto cycleA2{Cycle(Array<int, 0>{})};
     CHECK(0 == cycleA2.Count());
@@ -50,7 +51,7 @@ SCENARIO("Cycle", "[CljonicCoreCycle]")
     CHECK(3 == cycleRng0[2]);
     CHECK(4 == cycleRng0[3]);
     CHECK(1 == cycleRng0[4]);
-    CHECK(3 == cycleRng0[MAX_SIZE_T - 1]);
+    CHECK(4 == cycleRng0[MAX_SIZE_T - 1]);
 
     const auto cycleRng1{Cycle(Range<1, 5>{})};
     CHECK(MAX_SIZE_T == cycleRng1.Count());
@@ -59,7 +60,7 @@ SCENARIO("Cycle", "[CljonicCoreCycle]")
     CHECK(3 == cycleRng1[2]);
     CHECK(4 == cycleRng1[3]);
     CHECK(1 == cycleRng1[4]);
-    CHECK(3 == cycleRng1[MAX_SIZE_T - 1]);
+    CHECK(4 == cycleRng1[MAX_SIZE_T - 1]);
 
     const auto cycleRng2{Cycle(Range<0>{})};
     CHECK(0 == cycleRng2.Count());
@@ -106,7 +107,7 @@ SCENARIO("Cycle", "[CljonicCoreCycle]")
     CHECK(3 == cycleSet0[2]);
     CHECK(4 == cycleSet0[3]);
     CHECK(1 == cycleSet0[4]);
-    CHECK(3 == cycleSet0[MAX_SIZE_T - 1]);
+    CHECK(4 == cycleSet0[MAX_SIZE_T - 1]);
 
     const auto cycleSet1{Cycle(Set{1, 2, 1, 3, 4})};
     CHECK(MAX_SIZE_T == cycleSet1.Count());
@@ -115,7 +116,7 @@ SCENARIO("Cycle", "[CljonicCoreCycle]")
     CHECK(3 == cycleSet1[2]);
     CHECK(4 == cycleSet1[3]);
     CHECK(1 == cycleSet1[4]);
-    CHECK(3 == cycleSet1[MAX_SIZE_T - 1]);
+    CHECK(4 == cycleSet1[MAX_SIZE_T - 1]);
 
     const auto cycleSet2{Cycle(Set<int, 2>{})};
     CHECK(0 == cycleSet2.Count());

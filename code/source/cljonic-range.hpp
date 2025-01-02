@@ -2,10 +2,10 @@
 #define CLJONIC_RANGE_HPP
 
 #include <concepts>
-#include <limits>
-// #include <type_traits>
 #include "cljonic-collection-iterator.hpp"
+#include "cljonic-collection-maximum-element-count.hpp"
 #include "cljonic-collection-type.hpp"
+#include "cljonic-shared.hpp"
 
 namespace cljonic
 {
@@ -22,6 +22,9 @@ class Range
 
     using Iterator = CollectionIterator<Range>;
     using SizeType = std::size_t;
+
+    static constexpr auto CljonicCollectionMaximumElementCount{
+        static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
 
     SizeType m_elementCount;
     int m_elementDefault;
@@ -53,7 +56,7 @@ class Range
 
     constexpr void InitializeMembers(const int count, const int start, const int step) noexcept
     {
-        m_elementCount = static_cast<SizeType>(count);
+        m_elementCount = Min(static_cast<SizeType>(count), CljonicCollectionMaximumElementCount);
         m_elementDefault = 0;
         m_elementStart = start;
         m_elementStep = step;
@@ -61,7 +64,7 @@ class Range
 
     constexpr void Initialize() noexcept
     {
-        InitializeMembers(std::numeric_limits<int>::max(), 0, 1);
+        InitializeMembers(CljonicCollectionMaximumElementCount, 0, 1);
     }
 
     constexpr void InitializeEnd(const int end) noexcept
@@ -108,7 +111,7 @@ class Range
         if ((0 == step) and (start == end))
             InitializeMembers(0, 0, 0);
         else if (0 == step)
-            InitializeMembers(std::numeric_limits<int>::max(), start, 0);
+            InitializeMembers(CljonicCollectionMaximumElementCount, start, 0);
         else if (step < 0)
             InitializeStartEndStepWithNegativeStep(start, end, step);
         else
@@ -158,7 +161,7 @@ class Range
     using value_type = int;
 
     constexpr Range() noexcept
-        : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0}
+        : m_elementCount{static_cast<SizeType>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0}
     {
         // #lizard forgives -- The complexity and length of this function is acceptable
         if constexpr (sizeof...(StartEndStep) == 1) // Range(end)
@@ -211,7 +214,7 @@ class Range
 
     static constexpr auto MaximumCount() noexcept
     {
-        return MaxElements;
+        return Min(MaxElements, CljonicCollectionMaximumElementCount);
     }
 };
 

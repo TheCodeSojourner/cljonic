@@ -47,6 +47,8 @@ return 0;
 template <typename F, typename C, typename... Cs>
 constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept
 {
+    // #lizard forgives -- The length and complexity of this function is acceptable.
+
     static_assert(AllCljonicCollections<C, Cs...>, "The second through last parameters must be cljonic collections");
 
     static_assert(std::invocable<F, typename C::value_type, typename Cs::value_type...>,
@@ -54,7 +56,13 @@ constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept
 
     using ResultType = decltype(f(std::declval<typename C::value_type>(), std::declval<typename Cs::value_type>()...));
     using SizeType = decltype(c.Count());
-    auto result{Array<ResultType, MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()>{}};
+
+    constexpr auto CljonicCollectionMaximumElementCount{
+        static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+
+    constexpr auto count{
+        Min(MinimumOfCljonicCollectionMaximumCounts<C, Cs...>(), CljonicCollectionMaximumElementCount)};
+    auto result{Array<ResultType, count>{}};
     for (SizeType i{0}; i < c.Count(); ++i)
         result.MConj(f(c[i], cs[i]...));
     return result;

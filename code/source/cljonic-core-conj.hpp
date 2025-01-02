@@ -58,7 +58,11 @@ constexpr auto Conj(const C& c, const Es&... es) noexcept
 
     using ResultType = typename C::value_type;
     using SizeType = decltype(c.Count());
-    constexpr auto count{C::MaximumCount() + sizeof...(Es)};
+
+    constexpr auto CljonicCollectionMaximumElementCount{
+        static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+
+    constexpr auto count{Min(C::MaximumCount() + sizeof...(Es), CljonicCollectionMaximumElementCount)};
     auto result{Array<ResultType, count>{}};
     const auto MConjElementOntoResult = [&](const auto& e) { result.MConj(e); };
     for (SizeType i{0}; i < c.Count(); ++i)

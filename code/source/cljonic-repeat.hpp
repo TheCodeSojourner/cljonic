@@ -4,7 +4,9 @@
 #include <concepts>
 #include <limits>
 #include "cljonic-collection-iterator.hpp"
+#include "cljonic-collection-maximum-element-count.hpp"
 #include "cljonic-collection-type.hpp"
+#include "cljonic-shared.hpp"
 
 namespace cljonic
 {
@@ -16,8 +18,12 @@ template <std::size_t MaxElements, typename T>
 class Repeat
 {
     using Iterator = CollectionIterator<Repeat>;
+    using SizeType = decltype(MaxElements);
 
-    const std::size_t m_elementCount;
+    static constexpr auto CljonicCollectionMaximumElementCount{
+        static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+
+    const SizeType m_elementCount;
     const T m_elementDefault;
     const T m_elementValue;
 
@@ -50,11 +56,11 @@ class Repeat
     ~~~~~
     */
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Repeat>;
-    using size_type = std::size_t;
+    using size_type = SizeType;
     using value_type = T;
 
     constexpr explicit Repeat(const T& t) noexcept
-        : m_elementCount{MaxElements}, m_elementDefault{T{}}, m_elementValue{t}
+        : m_elementCount{MaximumCount()}, m_elementDefault{T{}}, m_elementValue{t}
     {
     }
 
@@ -88,7 +94,7 @@ class Repeat
 
     static constexpr auto MaximumCount() noexcept
     {
-        return MaxElements;
+        return Min(MaxElements, CljonicCollectionMaximumElementCount);
     }
 }; // class Repeat
 

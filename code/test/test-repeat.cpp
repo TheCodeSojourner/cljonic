@@ -8,8 +8,11 @@ static constexpr auto MAX_INDEX{std::numeric_limits<std::size_t>::max()};
 
 SCENARIO("Repeat", "[CljonicRepeat]")
 {
+    const auto r{Repeat{1}};
+    auto MAX_INDEX{static_cast<decltype(r.Count())>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+
     {
-        const auto r{Repeat(1)};
+        const auto r{Repeat{1}};
         CHECK(MAX_INDEX == r.Count());
         CHECK(1 == r[0]);
         CHECK(1 == r[1]);

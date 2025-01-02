@@ -5,7 +5,9 @@
 #include <initializer_list>
 #include <type_traits>
 #include "cljonic-collection-iterator.hpp"
+#include "cljonic-collection-maximum-element-count.hpp"
 #include "cljonic-collection-type.hpp"
+#include "cljonic-shared.hpp"
 
 namespace cljonic
 {
@@ -22,9 +24,12 @@ class String
     using Iterator = CollectionIterator<String>;
     using MaxElementsType = decltype(MaxElements);
 
+    static constexpr auto CljonicCollectionMaximumElementCount{
+        static_cast<MaxElementsType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+
     MaxElementsType m_elementCount;
     const char m_elementDefault;
-    char m_elements[MaxElements + 1]; // +1 for the null terminator
+    char m_elements[Min(MaxElements, CljonicCollectionMaximumElementCount) + 1]; // +1 for the null terminator
 
   public:
     /**
@@ -63,7 +68,7 @@ class String
     {
         for (const auto& element : elements)
         {
-            if (m_elementCount == MaxElements)
+            if (m_elementCount == MaximumCount())
                 break; // LCOV_EXCL_LINE - This line of code may only execute at compile-time
             m_elements[m_elementCount++] = element;
         }
@@ -72,7 +77,7 @@ class String
 
     constexpr explicit String(const char* c_str) noexcept : m_elementCount(0), m_elementDefault('\0')
     {
-        while ((m_elementCount < MaxElements) and ('\0' != c_str[m_elementCount]))
+        while ((m_elementCount < MaximumCount()) and ('\0' != c_str[m_elementCount]))
         {
             m_elements[m_elementCount] = c_str[m_elementCount];
             m_elementCount += 1;
@@ -115,7 +120,7 @@ class String
 
     static constexpr std::size_t MaximumCount() noexcept
     {
-        return MaxElements;
+        return Min(MaxElements, CljonicCollectionMaximumElementCount);
     }
 }; // class String
 

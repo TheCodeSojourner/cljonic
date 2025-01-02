@@ -4,6 +4,7 @@
 #include <cstring>
 #include <initializer_list>
 #include <type_traits>
+#include "cljonic-collection-maximum-element-count.hpp"
 #include "cljonic-collection-type.hpp"
 #include "cljonic-shared.hpp"
 
@@ -22,9 +23,12 @@ class Array
 {
     using MaxElementsType = decltype(MaxElements);
 
+    static constexpr auto CljonicCollectionMaximumElementCount{
+        static_cast<MaxElementsType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+
     MaxElementsType m_elementCount;
     const T m_elementDefault;
-    T m_elements[MaxElements];
+    T m_elements[Min(MaxElements, CljonicCollectionMaximumElementCount)];
 
   public:
     /**
@@ -56,7 +60,7 @@ class Array
     }
 
     constexpr explicit Array(const std::initializer_list<const T> elements) noexcept
-        : m_elementCount(Min(MaxElements, elements.size())), m_elementDefault(T{})
+        : m_elementCount(Min(MaximumCount(), elements.size())), m_elementDefault(T{})
     {
         for (size_type i{0}; i < m_elementCount; ++i)
             m_elements[i] = *(elements.begin() + i);
@@ -87,7 +91,7 @@ class Array
 
     constexpr void MConj(const T& t) noexcept
     {
-        if (m_elementCount < MaxElements)
+        if (m_elementCount < MaximumCount())
             m_elements[m_elementCount++] = t;
     }
 
@@ -101,9 +105,9 @@ class Array
         return m_elementDefault;
     }
 
-    static constexpr std::size_t MaximumCount() noexcept
+    static constexpr MaxElementsType MaximumCount() noexcept
     {
-        return MaxElements;
+        return Min(MaxElements, CljonicCollectionMaximumElementCount);
     }
 }; // class Array
 

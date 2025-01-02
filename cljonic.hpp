@@ -16,7 +16,11 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Jan  1 04:24:11 PM MST 2025
+// This file was generated Wed Jan  1 06:05:55 PM MST 2025
+
+#ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+#define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT 1000
+#endif
 
 namespace cljonic {
 
@@ -204,8 +208,13 @@ constexpr bool AreEqual(CString auto a, CString auto b) noexcept {
 return std::strcmp(a, b) == 0;
 }
 
-constexpr auto Min(auto a, auto b) noexcept {
-return (a < b) ? a : b;
+template <typename T, typename... Ts>
+constexpr auto Min(T a, Ts... args) noexcept {
+if constexpr(sizeof...(args) == 0) {
+return a;
+} else {
+return (a < Min(args...)) ? a : Min(args...);
+}
 }
 
 template <typename C, typename... Cs>
@@ -237,9 +246,12 @@ template <typename T, std::size_t MaxElements>
 class Array {
 using MaxElementsType = decltype(MaxElements);
 
+static constexpr auto CljonicCollectionMaximumElementCount{
+    static_cast<MaxElementsType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+
 MaxElementsType m_elementCount;
 const T m_elementDefault;
-T m_elements[MaxElements];
+T m_elements[Min(MaxElements, CljonicCollectionMaximumElementCount)];
 
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>;
@@ -250,7 +262,7 @@ constexpr Array() noexcept : m_elementCount(0), m_elementDefault(T{}) {
 }
 
 constexpr explicit Array(const std::initializer_list<const T> elements) noexcept
-    : m_elementCount(Min(MaxElements, elements.size())), m_elementDefault(T{}) {
+    : m_elementCount(Min(MaximumCount(), elements.size())), m_elementDefault(T{}) {
 for(size_type i{0}; i < m_elementCount; ++i)
 m_elements[i] = *(elements.begin() + i);
 }
@@ -275,7 +287,7 @@ return this->operator[](index);
 }
 
 constexpr void MConj(const T& t) noexcept {
-if(m_elementCount < MaxElements)
+if(m_elementCount < MaximumCount())
 m_elements[m_elementCount++] = t;
 }
 
@@ -287,8 +299,8 @@ constexpr const T& DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
-static constexpr std::size_t MaximumCount() noexcept {
-return MaxElements;
+static constexpr MaxElementsType MaximumCount() noexcept {
+return Min(MaxElements, CljonicCollectionMaximumElementCount);
 }
 };
 
@@ -298,7 +310,6 @@ Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
 } // namespace cljonic
 
 #include <concepts>
-#include <limits>
 
 namespace cljonic {
 
@@ -309,6 +320,9 @@ static_assert(sizeof...(StartEndStep) <= 3, "Number of Range parameters must be 
 
 using Iterator = CollectionIterator<Range>;
 using SizeType = std::size_t;
+
+static constexpr auto CljonicCollectionMaximumElementCount{
+    static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
 
 SizeType m_elementCount;
 int m_elementDefault;
@@ -334,14 +348,14 @@ return std::numeric_limits<SizeType>::max();
 }();
 
 constexpr void InitializeMembers(const int count, const int start, const int step) noexcept {
-m_elementCount = static_cast<SizeType>(count);
+m_elementCount = Min(static_cast<SizeType>(count), CljonicCollectionMaximumElementCount);
 m_elementDefault = 0;
 m_elementStart = start;
 m_elementStep = step;
 }
 
 constexpr void Initialize() noexcept {
-InitializeMembers(std::numeric_limits<int>::max(), 0, 1);
+InitializeMembers(CljonicCollectionMaximumElementCount, 0, 1);
 }
 
 constexpr void InitializeEnd(const int end) noexcept {
@@ -381,7 +395,7 @@ constexpr void InitializeStartEndStep(const int start, const int end, const int 
 if((0 == step) and (start == end))
 InitializeMembers(0, 0, 0);
 else if(0 == step)
-InitializeMembers(std::numeric_limits<int>::max(), start, 0);
+InitializeMembers(CljonicCollectionMaximumElementCount, start, 0);
 else if(step < 0)
 InitializeStartEndStepWithNegativeStep(start, end, step);
 else
@@ -394,7 +408,7 @@ using size_type = SizeType;
 using value_type = int;
 
 constexpr Range() noexcept
-    : m_elementCount{static_cast<std::size_t>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0} {
+    : m_elementCount{static_cast<SizeType>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0} {
 
 if constexpr(sizeof...(StartEndStep) == 1) {
 InitializeEnd(values[0]);
@@ -433,7 +447,7 @@ return m_elementDefault;
 }
 
 static constexpr auto MaximumCount() noexcept {
-return MaxElements;
+return Min(MaxElements, CljonicCollectionMaximumElementCount);
 }
 };
 
@@ -447,18 +461,22 @@ namespace cljonic {
 template <std::size_t MaxElements, typename T>
 class Repeat {
 using Iterator = CollectionIterator<Repeat>;
+using SizeType = decltype(MaxElements);
 
-const std::size_t m_elementCount;
+static constexpr auto CljonicCollectionMaximumElementCount{
+    static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+
+const SizeType m_elementCount;
 const T m_elementDefault;
 const T m_elementValue;
 
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Repeat>;
-using size_type = std::size_t;
+using size_type = SizeType;
 using value_type = T;
 
 constexpr explicit Repeat(const T& t) noexcept
-    : m_elementCount{MaxElements}, m_elementDefault{T{}}, m_elementValue{t} {
+    : m_elementCount{MaximumCount()}, m_elementDefault{T{}}, m_elementValue{t} {
 }
 
 constexpr Repeat(const Repeat& other) = default;
@@ -485,7 +503,7 @@ return m_elementDefault;
 }
 
 static constexpr auto MaximumCount() noexcept {
-return MaxElements;
+return Min(MaxElements, CljonicCollectionMaximumElementCount);
 }
 };
 
@@ -510,9 +528,12 @@ static_assert(std::equality_comparable<T>, "A Set type must be equality comparab
 
 using MaxElementsType = decltype(MaxElements);
 
+static constexpr auto CljonicCollectionMaximumElementCount{
+    static_cast<MaxElementsType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+
 MaxElementsType m_elementCount;
 const T m_elementDefault;
-T m_elements[MaxElements];
+T m_elements[Min(MaxElements, CljonicCollectionMaximumElementCount)];
 
 constexpr bool IsUniqueElementBy(const auto& f, const T& element) const noexcept {
 auto result{true};
@@ -540,7 +561,7 @@ constexpr explicit Set(const std::initializer_list<const T> elements) noexcept
     : m_elementCount(0), m_elementDefault(T{}) {
 
 for(const auto& element : elements) {
-if(m_elementCount == MaxElements)
+if(m_elementCount == MaximumCount())
 break;
 if(IsUniqueElement(element))
 m_elements[m_elementCount++] = element;
@@ -583,7 +604,7 @@ return m_elementDefault;
 }
 
 static constexpr std::size_t MaximumCount() noexcept {
-return MaxElements;
+return Min(MaxElements, CljonicCollectionMaximumElementCount);
 }
 };
 
@@ -603,9 +624,12 @@ class String {
 using Iterator = CollectionIterator<String>;
 using MaxElementsType = decltype(MaxElements);
 
+static constexpr auto CljonicCollectionMaximumElementCount{
+    static_cast<MaxElementsType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+
 MaxElementsType m_elementCount;
 const char m_elementDefault;
-char m_elements[MaxElements + 1];
+char m_elements[Min(MaxElements, CljonicCollectionMaximumElementCount) + 1];
 
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>;
@@ -619,7 +643,7 @@ m_elements[0] = '\0';
 constexpr explicit String(const std::initializer_list<const char> elements) noexcept
     : m_elementCount(0), m_elementDefault('\0') {
 for(const auto& element : elements) {
-if(m_elementCount == MaxElements)
+if(m_elementCount == MaximumCount())
 break;
 m_elements[m_elementCount++] = element;
 }
@@ -627,7 +651,7 @@ m_elements[m_elementCount] = '\0';
 }
 
 constexpr explicit String(const char* c_str) noexcept : m_elementCount(0), m_elementDefault('\0') {
-while((m_elementCount < MaxElements) and ('\0' != c_str[m_elementCount])) {
+while((m_elementCount < MaximumCount()) and ('\0' != c_str[m_elementCount])) {
 m_elements[m_elementCount] = c_str[m_elementCount];
 m_elementCount += 1;
 }
@@ -662,7 +686,7 @@ return m_elementDefault;
 }
 
 static constexpr std::size_t MaximumCount() noexcept {
-return MaxElements;
+return Min(MaxElements, CljonicCollectionMaximumElementCount);
 }
 };
 
@@ -724,7 +748,11 @@ static_assert(AllConvertibleValueTypes<C, Cs...>,
 
 using ResultType = FindCommonValueType<C, Cs...>;
 using SizeType = decltype(c.Count());
-constexpr auto count{SumOfCljonicCollectionMaximumCounts<C, Cs...>()};
+
+constexpr auto CljonicCollectionMaximumElementCount{
+    static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+
+constexpr auto count{Min(SumOfCljonicCollectionMaximumCounts<C, Cs...>(), CljonicCollectionMaximumElementCount)};
 auto result{Array<ResultType, count>{}};
 const auto MConjCollectionOntoResult = [&](const auto& c) {
 for(SizeType i{0}; i < c.Count(); ++i)
@@ -751,7 +779,11 @@ static_assert(AllConvertibleTypes<typename C::value_type, Es...>,
 
 using ResultType = typename C::value_type;
 using SizeType = decltype(c.Count());
-constexpr auto count{C::MaximumCount() + sizeof...(Es)};
+
+constexpr auto CljonicCollectionMaximumElementCount{
+    static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+
+constexpr auto count{Min(C::MaximumCount() + sizeof...(Es), CljonicCollectionMaximumElementCount)};
 auto result{Array<ResultType, count>{}};
 const auto MConjElementOntoResult = [&](const auto& e) { result.MConj(e); };
 for(SizeType i{0}; i < c.Count(); ++i)
@@ -863,8 +895,8 @@ return MaximumCount();
 return m_collection.DefaultElement();
 }
 
-[[nodiscard]] constexpr std::size_t MaximumCount() const noexcept {
-return (0 == m_collection.Count()) ? 0 : std::numeric_limits<MaxElementsType>::max();
+[[nodiscard]] constexpr MaxElementsType MaximumCount() const noexcept {
+return (0 == m_collection.Count()) ? 0 : static_cast<MaxElementsType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT);
 }
 };
 template <typename C>
@@ -1012,6 +1044,7 @@ namespace cljonic {
 namespace core {
 template <typename F, typename C, typename... Cs>
 constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept {
+
 static_assert(AllCljonicCollections<C, Cs...>, "The second through last parameters must be cljonic collections");
 
 static_assert(std::invocable<F, typename C::value_type, typename Cs::value_type...>,
@@ -1019,7 +1052,13 @@ static_assert(std::invocable<F, typename C::value_type, typename Cs::value_type.
 
 using ResultType = decltype(f(std::declval<typename C::value_type>(), std::declval<typename Cs::value_type>()...));
 using SizeType = decltype(c.Count());
-auto result{Array<ResultType, MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()>{}};
+
+constexpr auto CljonicCollectionMaximumElementCount{
+    static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+
+constexpr auto count{
+    Min(MinimumOfCljonicCollectionMaximumCounts<C, Cs...>(), CljonicCollectionMaximumElementCount)};
+auto result{Array<ResultType, count>{}};
 for(SizeType i{0}; i < c.Count(); ++i)
 result.MConj(f(c[i], cs[i]...));
 return result;

@@ -49,9 +49,10 @@ sed -i '/^#endif/d' /tmp/cljonic.hpp
 sed -i '/^# *[0-9]/d' /tmp/cljonic.hpp
 
 # prepare final cljonic.hpp
-printf "// This file was generated $(date)\n\n" | \
+printf "\n// This file was generated $(date)\n\n" | \
 cat ../../resources/cljonic-head.hpp \
     - \
+    cljonic-collection-maximum-element-count.hpp \
     /tmp/cljonic.hpp \
     ../../resources/cljonic-tail.hpp > ../../cljonic.hpp
 

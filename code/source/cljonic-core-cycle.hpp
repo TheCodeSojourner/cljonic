@@ -110,9 +110,9 @@ class CycleCollection
         return m_collection.DefaultElement();
     }
 
-    [[nodiscard]] constexpr std::size_t MaximumCount() const noexcept
+    [[nodiscard]] constexpr MaxElementsType MaximumCount() const noexcept
     {
-        return (0 == m_collection.Count()) ? 0 : std::numeric_limits<MaxElementsType>::max();
+        return (0 == m_collection.Count()) ? 0 : static_cast<MaxElementsType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT);
     }
 }; // class CycleCollection
 
