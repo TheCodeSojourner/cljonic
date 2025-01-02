@@ -43,8 +43,8 @@ int main()
     const auto nAddEmpty{Reduce(Add, aAddEmpty)};      // default element value (i.e, 0) is returned, Add not called
     const auto nAddEmptyI{Reduce(Add, 11, aAddEmpty)}; // initial value (i.e., 11) is returned, Add not called
 
-    const auto aAddOne{Array{11}};              // a single-element Array
-    const auto nAdd{Reduce(Add, aAddOne)};      // single-element value is returned, Ass not called
+    const auto aAddOne{Array{11}};         // a single-element Array
+    const auto nAdd{Reduce(Add, aAddOne)}; // single-element value is returned, Ass not called
 
     const auto a{Array{1, 2, 3, 4}};
     const auto n0{Reduce(Add, a)};
@@ -54,34 +54,37 @@ int main()
     const auto n2{Reduce(Add, rng)};
     const auto n3{Reduce(Add, 11, rng)};
 
-    const auto rpt{Repeat(5, 5)};
+    const auto rpt{Repeat<5, int>{5}};
     const auto n4{Reduce(Add, rpt)};
     const auto n5{Reduce(Add, 11, rpt)};
 
     const auto s{String{"Hello"}};
     const auto n6{Reduce([](const int count, const char b) { return count + 1; }, 0, s)};
 
-    // Compiler Error: Function cannot be called with two parameters of the collection value type
+    // Compiler Error: Reduce's function cannot be called with two parameters of the collection value type
     // const auto ints{Array{1, 2, 3, 4}};
-    // CHECK(10 == Reduce([](const char* a, const int b) { return a[0] + b; }, a));
+    // const auto r{Reduce([](const char* a, const int b) { return a[0] + b; }, a)};
 
-    // Compiler Error: Function cannot be called with parameters of function result type, and collection value type
+    // Compiler Error:
+    //     Reduce's function cannot be called with parameters of function result type, and collection value type
     // const auto strs{Array{1, 2, 3, 4}};
-    // CHECK(10 == Reduce([]([[maybe_unused]] const int a, [[maybe_unused]] const int b) { return "Hello"; }, a));
+    // const auto r{Reduce([]([[maybe_unused]] const int a, [[maybe_unused]] const int b) { return "Hello"; }, a)};
 
-    // Compiler Error: Function cannot be called with parameters of initial value type, and collection value type
+    // Compiler Error:
+    //     Reduce's function cannot be called with parameters of initial value type, and collection value type
     // const auto strs{Array{1, 2, 3, 4}};
-    // CHECK(10 == Reduce([](const int a, const int b) { return a + b; }, "Hello", a));
+    // const auto r{Reduce([](const int a, const int b) { return a + b; }, "Hello", a)};
 
-    // Compiler Error: Function cannot be called with parameters of function result type, and collection value type
+    // Compiler Error:
+    //     Reduce's function cannot be called with parameters of function result type, and collection value type
     // const auto strs{Array{1, 2, 3, 4}};
-    // CHECK(10 == Reduce([]([[maybe_unused]] const int a, [[maybe_unused]] const int b) { return "Hello"; }, 11, a));
+    // const auto r{Reduce([]([[maybe_unused]] const int a, [[maybe_unused]] const int b) { return "Hello"; }, 11, a)};
 
-    // Compiler Error: Second parameter must be a cljonic collection
-    // CHECK(5 == Reduce([](const int a, const char b) { return a + b; }, 5));
+    // Compiler Error: Reduce's second parameter must be a cljonic collection
+    // const auto r{Reduce([](const int a, const char b) { return a + b; }, 5)};
 
-    // Compiler Error: Third parameter must be a cljonic collection
-    // CHECK(5 == Reduce([](const int count, [[maybe_unused]] const char b) { return count + 1; }, 0, 5));
+    // Compiler Error: Reduce's third parameter must be a cljonic collection
+    // const auto r{Reduce([](const int count, [[maybe_unused]] const char b) { return count + 1; }, 0, 5)};
 
     return 0;
 }

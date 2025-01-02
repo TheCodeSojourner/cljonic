@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan  2 02:11:49 PM MST 2025
+// This file was generated Thu Jan  2 03:35:15 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -338,6 +338,7 @@ constexpr auto TakeWhile(const F& f, const C& c) noexcept;
 #include <type_traits>
 
 namespace cljonic {
+
 template <typename T, SizeType MaxElements>
 class Array {
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
@@ -913,7 +914,7 @@ namespace cljonic {
 namespace core {
 template <typename C>
 constexpr auto Count(const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Count parameter must be a cljonic collection");
+static_assert(IsCljonicCollection<C>, "Count's parameter must be a cljonic collection");
 
 return c.Count();
 }
@@ -1012,7 +1013,7 @@ return (0 == m_collection.Count()) ? 0 : CljonicCollectionMaximumElementCount;
 };
 template <typename C>
 constexpr auto Cycle(const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Cycle parameter must be a cljonic collection");
+static_assert(IsCljonicCollection<C>, "Cycle's parameter must be a cljonic collection");
 
 return CycleCollection{c};
 }
@@ -1241,6 +1242,8 @@ namespace cljonic {
 namespace core {
 template <typename C>
 constexpr auto Seq(const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "Seq's second parameter must be a cljonic collection");
+
 return Take(c.MaximumCount(), c);
 }
 

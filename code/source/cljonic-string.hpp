@@ -51,6 +51,9 @@ class String
         const auto s5{String{"Hello"}};                    // immutable, full
         const auto s6{String{'H', 'e', 'l', 'l', 'o'}};    // immutable, full
 
+        // Compiler Error: Attempt to create a String bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+        // const auto s{String<1111>{"Too Big"}};
+
         return 0;
     }
     ~~~~~

@@ -362,17 +362,11 @@ SCENARIO("Equal", "[CljonicCoreEqual]")
     }
 
     {
-        using T = std::variant<int, double, char, const char*>;
-
         CHECK(true == Equal(Repeat{1}));
         // CHECK(true == Equal(Repeat{1}, Repeat{1}})); // this will take a LONG time to run
         CHECK(true == Equal(Repeat<10, int>{1}, Repeat<10, int>{1}, Repeat<10, int>{1}));
         CHECK(false == Equal(Repeat<10, int>{1}, Repeat<10, int>{2}, Repeat<10, int>{1}));
-        CHECK(false == Equal(Repeat<10, int>{1}, Repeat(1), Repeat<10, int>{1}));
-        CHECK(true == Equal(Repeat{T{'x'}}));
-        CHECK(true == Equal(Repeat<10, T>{T{'x'}}, Repeat<10, T>{T{'x'}}, Repeat<10, T>{T{'x'}}));
-        CHECK(false == Equal(Repeat<10, T>{T{'x'}}, Repeat<10, T>{T{'y'}}, Repeat<10, T>{T{'x'}}));
-        CHECK(false == Equal(Repeat<10, T>{T{'x'}}, Repeat(T{'x'}), Repeat<10, T>{T{'x'}}));
+        CHECK(false == Equal(Repeat<10, int>{1}, Repeat{1}, Repeat<10, int>{1}));
     }
 
     {

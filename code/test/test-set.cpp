@@ -1,5 +1,4 @@
 #include <string>
-#include <variant>
 #include "catch.hpp"
 #include "cljonic-set.hpp"
 
@@ -140,61 +139,6 @@ SCENARIO("Set", "[CljonicSet]")
         CHECK(s6.Contains("2.1"));
         CHECK(not s6.Contains("3.1"));
         CHECK(s6.Contains("4.1"));
-    }
-
-    {
-        using T = std::variant<int, double, char, const char*>;
-
-        auto s0{Set<T, 10>{}};
-        auto s1{Set<T, 10>{1, 2.1, '3', "4"}};
-        auto s2{Set<T, 4>{1, 2.1, '3', "4"}};
-        auto s3{Set<T, 4>{1, 2.1, '3', "4", 5, 6.1}};
-        auto s4{Set<T, 4>{1, 2.1, 1, "4", 5, 6.1}};
-        auto s5{Set{T{1}, T{2.1}, T{'3'}, T{"4"}}};
-        auto s6{Set{T{1}, T{2.1}, T{1}, T{"4"}}};
-
-        CHECK(0 == s0.Count());
-        CHECK(4 == s1.Count());
-        CHECK(4 == s2.Count());
-        CHECK(4 == s3.Count());
-        CHECK(4 == s4.Count());
-
-        CHECK(not s0.Contains(T{1}));
-
-        CHECK(s1.Contains(T{1}));
-        CHECK(s1.Contains(T{2.1}));
-        CHECK(s1.Contains(T{'3'}));
-        CHECK(s1.Contains(T{"4"}));
-        CHECK(not s1.Contains(T{5.1}));
-
-        CHECK(s2.Contains(T{1}));
-        CHECK(s2.Contains(T{2.1}));
-        CHECK(s2.Contains(T{'3'}));
-        CHECK(s2.Contains(T{"4"}));
-        CHECK(not s2.Contains(T{5.1}));
-
-        CHECK(s3.Contains(T{1}));
-        CHECK(s3.Contains(T{2.1}));
-        CHECK(s3.Contains(T{'3'}));
-        CHECK(s3.Contains(T{"4"}));
-        CHECK(not s3.Contains(T{5.1}));
-
-        CHECK(s4.Contains(T{1}));
-        CHECK(s4.Contains(T{2.1}));
-        CHECK(not s4.Contains(T{'3'}));
-        CHECK(s4.Contains(T{"4"}));
-        CHECK(s4.Contains(T{5}));
-
-        CHECK(s5.Contains(T{1}));
-        CHECK(s5.Contains(T{2.1}));
-        CHECK(s5.Contains(T{'3'}));
-        CHECK(s5.Contains(T{"4"}));
-        CHECK(not s5.Contains("5.1"));
-
-        CHECK(s6.Contains(T{1}));
-        CHECK(s6.Contains(T{2.1}));
-        CHECK(not s6.Contains(T{'3'}));
-        CHECK(s6.Contains(T{"4"}));
     }
 
     {

@@ -31,7 +31,7 @@ int main()
     constexpr auto str{String{"Hello"}};
     const auto countStr{Count(str)};;
 
-    // Compiler Error: Count parameter must be a cljonic collection
+    // Compiler Error: Count's parameter must be a cljonic collection
     // const auto c{Count("Hello")};
 
     return 0;
@@ -41,7 +41,7 @@ int main()
 template <typename C>
 constexpr auto Count(const C& c) noexcept
 {
-    static_assert(IsCljonicCollection<C>, "Count parameter must be a cljonic collection");
+    static_assert(IsCljonicCollection<C>, "Count's parameter must be a cljonic collection");
 
     return c.Count();
 }

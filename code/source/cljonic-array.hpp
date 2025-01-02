@@ -12,10 +12,9 @@ namespace cljonic
 /** \anchor Array
  * The \b Array type is a fundamental immutable collection type in cljonic.  It is implemented as a C array, and
  * <b>does not use heap memory</b>.  An \b Array has a specified maximum number of \b ordered elements each of the same
- * specified type (i.e., It is homogenous).  <b>Note that one could create an Array of a \b UNION or \b std::variant to
- * get something like heterogeneity.</b> An \b Array is a function of its indexable elements. An \b Array called with
- * an out-of-bounds index will return its \b default \b element. Many \ref Namespace_Core "Core" functions accept Array
- * arguments.
+ * specified type (i.e., It is homogenous).  <b>Note that one could create an Array of a \b UNION to get something like
+ * heterogeneity.</b> An \b Array is a function of its indexable elements. An \b Array called with an out-of-bounds
+ * index will return its \b default \b element. Many \ref Namespace_Core "Core" functions accept Array arguments.
  */
 template <typename T, SizeType MaxElements>
 class Array
@@ -45,6 +44,9 @@ class Array
         const auto a2{Array<int, 4>{1, 2, 3, 4}};       // immutable and full
         const auto a3{Array<int, 4>{1, 2, 3, 4, 5, 6}}; // immutable and full, and the values 5 and 6 are ignored
         const auto a4{Array{1, 2, 3, 4}};               // immutable and full of four int values
+
+        // Compiler Error: Attempt to create an Array bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+        // const auto a{Array<int, 1111>{0, 2, 4, 5, 6, 7, 8, 9}};
 
         return 0;
     }

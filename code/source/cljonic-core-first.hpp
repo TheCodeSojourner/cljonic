@@ -1,6 +1,8 @@
 #ifndef CLJONIC_CORE_FIRST_HPP
 #define CLJONIC_CORE_FIRST_HPP
 
+#include "cljonic-concepts.hpp"
+
 namespace cljonic
 {
 
@@ -33,7 +35,7 @@ int main()
     constexpr auto str{String{"Hello"}};
     const auto str0{First(str)};
 
-    // Compiler Error: First parameter must be a cljonic collection
+    // Compiler Error: First's parameter must be a cljonic collection
     // const auto f{First("Hello")};
 
 return 0;

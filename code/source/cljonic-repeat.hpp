@@ -45,12 +45,11 @@ class Repeat
 
     int main()
     {
-        using T = std::variant<int, double, char, const char*>;
-
         const auto r0{Repeat{1}};              // immutable, 1, CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT times
         const auto r1{Repeat<10, int>{1}};     // immutable, 1, ten times
-        const auto r2{Repeat{T{'x'}}};         // immutable, T{'x'}, CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT times
-        const auto r3{Repeat<100, T>{T{'x'}}}; // immutable, T{'x'}, 100 times
+
+        // Compiler Error: Attempt to create a Repeat bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+        // const auto r{Repeat<1111, int>{1}};
 
         return 0;
     }

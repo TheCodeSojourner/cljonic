@@ -34,7 +34,7 @@ int main()
     const auto tSet5{TakeLast(5, Set{'a', 'b'})};                 // immutable, sparse Array, with 'a' and 'b'
     const auto tStr3{TakeLast(3, String{"Hello"})};               // immutable, sparse Array, with 'l', 'l', and 'o'
 
-    // Compiler Error: TakeLast second parameter must be a cljonic collection
+    // Compiler Error: TakeLast's second parameter must be a cljonic collection
     // const auto t{TakeLast(10, "Hello")};
 
     return 0;

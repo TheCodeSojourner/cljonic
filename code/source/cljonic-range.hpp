@@ -36,21 +36,21 @@ class Range
 
     static constexpr auto MaxElements = []() constexpr
     {
-        if constexpr (sizeof...(StartEndStep) == 1) // Range(end)
+        if constexpr (sizeof...(StartEndStep) == 1) // Range<end>{}
         {
             if constexpr (values[0] < 0) // end is negative
                 return static_cast<SizeType>(0);
             else
                 return static_cast<SizeType>(values[0]);
         }
-        else if constexpr (sizeof...(StartEndStep) == 2) // Range(start, end)
+        else if constexpr (sizeof...(StartEndStep) == 2) // Range<start, end>{}
         {
             if constexpr (values[1] <= values[0]) // end is less than or equal to start
                 return static_cast<SizeType>(0);
             else
                 return static_cast<SizeType>(values[1] - values[0]);
         }
-        else if constexpr (sizeof...(StartEndStep) == 3) // Range(start, end, step)
+        else if constexpr (sizeof...(StartEndStep) == 3) // Range<start, end, step>{}
         {
             // #lizard forgives -- The length and complexity of this function is acceptable
             if constexpr ((0 == values[2]) and (values[0] == values[1])) // step is zero, and start equals end
@@ -72,7 +72,7 @@ class Range
                     return static_cast<SizeType>(RangeCount(values[0], values[1], values[2]));
             }
         }
-        else // Range()
+        else // Range{}
         {
             return CljonicCollectionMaximumElementCount;
         }
@@ -154,8 +154,7 @@ class Range
     *     - <b>Range<end>{}</b> returns a \b Range from \b 0 (zero) to \b end-1 by one
     *     - <b>Range<start, end>{}</b> returns a \b Range from \b start to \b end-1 by one
     *     - <b>Range<start, end, step>{}</b> returns the \b Range \b start,  \b start+1*step, \b start+2*step, etc.,
-    while
-    *     \b start+N*step is less than \b end.
+    *       while \b start+N*step is less than \b end.
     ~~~~~{.cpp}
     #include "cljonic.hpp"
 
@@ -181,6 +180,9 @@ class Range
         // Compiler Error: Number of Range parameters must be less than or equal to three
         // const auto r{Range<10, -10, -1, 1>{}};
 
+        // Compiler Error: Attempt to create a Range bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+        // const auto r{Range<-11111, 11111>{}};
+
         return 0;
     }
     ~~~~~
@@ -193,19 +195,19 @@ class Range
         : m_elementCount{static_cast<SizeType>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0}
     {
         // #lizard forgives -- The complexity and length of this function is acceptable
-        if constexpr (sizeof...(StartEndStep) == 1) // Range(end)
+        if constexpr (sizeof...(StartEndStep) == 1) // Range<end>{}
         {
             InitializeEnd(values[0]);
         }
-        else if constexpr (sizeof...(StartEndStep) == 2) // Range(start, end)
+        else if constexpr (sizeof...(StartEndStep) == 2) // Range<start, end>{}
         {
             InitializeStartEnd(values[0], values[1]);
         }
-        else if constexpr (sizeof...(StartEndStep) == 3) // Range(start, end, step  )
+        else if constexpr (sizeof...(StartEndStep) == 3) // Range<start, end, step>{}
         {
             InitializeStartEndStep(values[0], values[1], values[2]);
         }
-        else // Range()
+        else // Range{}
         {
             Initialize();
         }

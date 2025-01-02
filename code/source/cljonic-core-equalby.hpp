@@ -25,18 +25,29 @@ int main()
     constexpr auto EBF = [](const int a, const int b){ return a == b; };
     const auto a{Array{1, 1, 1, 1}};
     const auto a13{Array{1, 2, 3}};
-    const auto r14{Range(1, 4)};
-    const auto r04{Range(4)};
-    const auto r{Repeat(4, 1)};
-    const auto b0{EqualBy(EBF, 1.1)};      // true whenever one parameter is specified, even if it's a floating point
-    const auto b1{EqualBy(EBF, 1, 1)};     // true
-    const auto b2{EqualBy(EBF, 1, 2)};     // false
-    const auto b3{EqualBy(EBF, a)};        // true whenever one parameter is specified
-    const auto b4{EqualBy(EBF, a, r)};     // true
+    const auto r14{Range<1, 4>{}};
+    const auto r04{Range<4>{}};
+    const auto r{Repeat<4, int>{1}};
+    const auto b0{EqualBy(EBF, 1, 1)};     // true
+    const auto b1{EqualBy(EBF, 1, 2)};     // false
+    const auto b2{EqualBy(EBF, a)};        // true whenever one parameter is specified
+    const auto b3{EqualBy(EBF, a, r)};     // true
+    const auto b4{EqualBy(EBF, a, a13)};   // false
     const auto b5{EqualBy(EBF, a, a13)};   // false
-    const auto b6{EqualBy(EBF, a, a13)};   // false
-    const auto b7{EqualBy(EBF, r14, a13)}; // true
-    const auto b8{EqualBy(EBF, r04, a)};   // false
+    const auto b6{EqualBy(EBF, r14, a13)}; // true
+    const auto b7{EqualBy(EBF, r04, a)};   // false
+
+    // Compiler Error: Equal(By) should not compare floating point types for equality
+    // const auto b{EqualBy(EBF, 1.1)};
+
+    // Compiler Error: Equal(By) should not compare floating point types for equality
+    // const auto b{EqualBy(EBF, 1.1, 2.1)};
+
+    // Compiler Error: no matching function for call
+    // const auto b{EqualBy(EBF)}; // Compiler Error: Must specify at least two parameters
+
+    // Compiler Error: Not all Equal(By) types are equality comparable
+    // const auto b{EqualBy(EBF, 1, "Hello")};
 
     return 0;
 }

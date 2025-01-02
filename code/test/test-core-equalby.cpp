@@ -571,18 +571,11 @@ SCENARIO("EqualBy", "[CljonicCoreEqualBy]")
     }
 
     {
-        using T = std::variant<int, double, char, const char*>;
-        const auto EBFv = EBF<T>();
-
-        CHECK(true == EqualBy(EBFi, Repeat(1)));
-        // CHECK(true == EqualBy(EBFi, Repeat(1), Repeat(1))); // this will take a LONG time to run
+        CHECK(true == EqualBy(EBFi, Repeat{1}));
+        // CHECK(true == EqualBy(EBFi, Repeat{1}, Repeat{1})); // this will take a LONG time to run
         CHECK(true == EqualBy(EBFi, Repeat<10, int>{1}, Repeat<10, int>{1}, Repeat<10, int>{1}));
         CHECK(false == EqualBy(EBFi, Repeat<10, int>{1}, Repeat<10, int>{2}, Repeat<10, int>{1}));
-        CHECK(false == EqualBy(EBFi, Repeat<10, int>{1}, Repeat(1), Repeat<10, int>{1}));
-        CHECK(true == EqualBy(EBFv, Repeat(T{'x'})));
-        CHECK(true == EqualBy(EBFv, Repeat<10, T>{T{'x'}}, Repeat<10, T>{T{'x'}}, Repeat<10, T>{T{'x'}}));
-        CHECK(false == EqualBy(EBFv, Repeat<10, T>{T{'x'}}, Repeat<10, T>{T{'y'}}, Repeat<10, T>{T{'x'}}));
-        CHECK(false == EqualBy(EBFv, Repeat<10, T>{T{'x'}}, Repeat(T{'x'}), Repeat<10, T>{T{'x'}}));
+        CHECK(false == EqualBy(EBFi, Repeat<10, int>{1}, Repeat{1}, Repeat<10, int>{1}));
     }
 
     {

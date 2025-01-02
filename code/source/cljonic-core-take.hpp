@@ -36,7 +36,7 @@ int main()
     const auto tSet5{Take(5, Set{'a', 'b'})};                 // immutable, sparse Array, with 'a' and 'b'
     const auto tStr3{Take(3, String{"Hello"})};               // immutable, sparse Array, with 'H', 'e', and 'l'
 
-    // Compiler Error: Take second parameter must be a cljonic collection
+    // Compiler Error: Take's second parameter must be a cljonic collection
     // const auto t{Take(10, "Hello")};
 
     return 0;

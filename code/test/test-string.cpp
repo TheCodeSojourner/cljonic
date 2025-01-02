@@ -1,5 +1,4 @@
 #include <string>
-#include <variant>
 #include "catch.hpp"
 #include "cljonic-string.hpp"
 

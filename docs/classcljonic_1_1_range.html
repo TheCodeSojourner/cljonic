@@ -143,8 +143,7 @@ template&lt;int... StartEndStep&gt; </div>
       - &lt;b&gt;Range&lt;end&gt;{}&lt;/b&gt; returns a \b Range from \b 0 (zero) to \b end-1 by one
       - &lt;b&gt;Range&lt;start, end&gt;{}&lt;/b&gt; returns a \b Range from \b start to \b end-1 by one
       - &lt;b&gt;Range&lt;start, end, step&gt;{}&lt;/b&gt; returns the \b Range \b start,  \b start+1*step, \b start+2*step, etc.,
-while
-      \b start+N*step is less than \b end.
+        while \b start+N*step is less than \b end.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -166,11 +165,12 @@ int main()
     const auto r11{Range&lt;3, 10, 3&gt;{}};    // immutable, has three elements: 3, 6 and 9
     const auto r12{Range&lt;100, 0, -10&gt;{}}; // immutable, has ten elements: 100, 90, 80, ... and 10
     const auto r13{Range&lt;10, -10, -1&gt;{}}; // immutable, has twenty elements: 10, 9, ..., 0, -1, ... -9
-</pre><p> Compiler Error: Number of <a class="el" href="classcljonic_1_1_range.html">Range</a> parameters must be less than or equal to three const auto r{<a class="el" href="classcljonic_1_1_range.html">Range</a>&lt;10, -10, -1, 1&gt;{}}; </p><pre class="fragment">    return 0;
+</pre><p> Compiler Error: Number of <a class="el" href="classcljonic_1_1_range.html">Range</a> parameters must be less than or equal to three const auto r{<a class="el" href="classcljonic_1_1_range.html">Range</a>&lt;10, -10, -1, 1&gt;{}};</p>
+<p>Compiler Error: Attempt to create a <a class="el" href="classcljonic_1_1_range.html">Range</a> bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT const auto r{<a class="el" href="classcljonic_1_1_range.html">Range</a>&lt;-11111, 11111&gt;{}}; </p><pre class="fragment">    return 0;
 }
 ~~~~~
 </pre> 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00188">188</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00190">190</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
@@ -188,7 +188,7 @@ template&lt;int... StartEndStep&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00189">189</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00191">191</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
@@ -206,7 +206,7 @@ template&lt;int... StartEndStep&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00190">190</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00192">192</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
@@ -236,7 +236,7 @@ template&lt;int... StartEndStep&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00192">192</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00194">194</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
@@ -322,7 +322,7 @@ template&lt;int... StartEndStep&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00217">217</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00219">219</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
@@ -351,7 +351,7 @@ template&lt;int... StartEndStep&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00234">234</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00236">236</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
@@ -380,7 +380,7 @@ template&lt;int... StartEndStep&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00239">239</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00241">241</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
@@ -409,7 +409,7 @@ template&lt;int... StartEndStep&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00222">222</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00224">224</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
@@ -438,7 +438,7 @@ template&lt;int... StartEndStep&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00244">244</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00246">246</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
@@ -468,7 +468,7 @@ template&lt;int... StartEndStep&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00227">227</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00229">229</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
 </div>
@@ -479,7 +479,7 @@ template&lt;int... StartEndStep&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 2 2025 14:11:50 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Thu Jan 2 2025 15:35:15 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

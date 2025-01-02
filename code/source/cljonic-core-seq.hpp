@@ -1,6 +1,8 @@
 #ifndef CLJONIC_CORE_SEQ_HPP
 #define CLJONIC_CORE_SEQ_HPP
 
+#include "cljonic-concepts.hpp"
+
 namespace cljonic
 {
 
@@ -26,6 +28,9 @@ int main()
     const auto s5{Seq(String{"Hello"})};              // immutable, full cljonic Array, with 'H', 'e', 'l', 'l', 'o'
     const auto s6{Seq(String<10>{"Hi"})};             // immutable, sparse cljonic Array, with 'H' and 'i'
 
+    // Compiler Error: Seq's second parameter must be a cljonic collection
+    // const auto s{Seq("Hello")};
+
     return 0;
 }
 ~~~~~
@@ -33,6 +38,8 @@ int main()
 template <typename C>
 constexpr auto Seq(const C& c) noexcept
 {
+    static_assert(IsCljonicCollection<C>, "Seq's second parameter must be a cljonic collection");
+
     return Take(c.MaximumCount(), c);
 }
 

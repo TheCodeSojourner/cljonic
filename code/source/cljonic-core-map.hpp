@@ -35,11 +35,11 @@ int main()
     const auto m4{Map(Add2, Array<int, 10>{1, 2, 3, 4}, Repeat{1})}; // immutable, sparse, 2, 3, 4, and 5
     const auto m5{Map(Add3, Set{1, 2, 3, 4}, Range{}, Repeat{3})};   // immutable, full, 4, 6, 8, and 10
 
-    // Compiler Error: Second parameter must be a cljonic collection
+    // Compiler Error: Map's second through last parameters must be cljonic collections
     // const auto m{Map(TwoTimes, 4)};
     // const auto m{Map(TwoTimes, Range{}, 4)};
 
-    // Compiler Error: Function cannot be called with values from the specified cljonic collections
+    // Compiler Error: Map's function cannot be called with values from the specified cljonic collections
     // const auto m{Map([](const char* str) { return str[0]; }, Array{1, 2, 3, 4})};
     // const auto m{Map([](const char* str) { return str[0]; }, Array{1, 2, 3, 4}, Range{})};
     // const auto m{Map([](const char* str, const int i) { return str[0] + i; }, Array{1, 2, 3, 4}, Range{})};

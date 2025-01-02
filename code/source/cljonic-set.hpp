@@ -15,10 +15,10 @@ namespace cljonic
 /** \anchor Set
  * The \b Set type is a fundamental immutable collection type in cljonic.  It is implemented as a C array, and
  * <b>does not use dynamic memory</b>. A \b Set has a specified maximum number of \b unique \b unordered elements each
- * of the same specified type (i.e., It is homogenous).  <b>Note that one could create a Set of a \b UNION or
- * \b std::variant to get something like heterogeneity.</b> A \b Set is a function of its elements. A \b Set called with
- * a value not contained within the set will return its \b default \b element.  Many \ref Namespace_Core "Core"
- * functions accept Set arguments.
+ * of the same specified type (i.e., It is homogenous).  <b>Note that one could create a Set of a \b UNION to get
+ * something like heterogeneity.</b> A \b Set is a function of its elements. A \b Set called with a value not contained
+ * within the set will return its \b default \b element.  Many \ref Namespace_Core "Core" functions accept Set
+ * arguments.
  */
 template <typename T, SizeType MaxElements>
 class Set
@@ -73,6 +73,17 @@ class Set
         const auto s4{Set<int, 4>{1, 2, 1, 4, 5, 6}}; // immutable, full with 1, 2, 4, 5
         const auto s5{Set{1, 2, 3, 4}};               // immutable, full of four int values
         const auto s6{Set{1, 2, 1, 4}};               // immutable, full of three unique int values
+
+        // Compiler Error:
+        //     Floating point types should not be compared for equality, hence Sets of floating point types are not
+    allowed
+        // const auto s{Set{1.1, 2.2}};
+
+        // Compiler Error: A Set type must be equality comparable
+        // const auto s{Set<NonComparable, 10>{}};
+
+        // Compiler Error: Attempt to create a Set bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+        // const auto s{Set<int, 1111>{}};
 
         return 0;
     }

@@ -1,5 +1,4 @@
 #include <string>
-#include <variant>
 #include "catch.hpp"
 #include "cljonic-array.hpp"
 
@@ -159,46 +158,6 @@ SCENARIO("Array", "[CljonicArray]")
         CHECK(std::string{"3"} == a4[2]);
         CHECK(std::string{"4"} == a4[3]);
         CHECK(nullptr == a4[4]);
-    }
-
-    {
-        using T = std::variant<int, double, char, const char*>;
-
-        auto a0{Array<T, 10>{}};
-        auto a1{Array<T, 10>{1, 2.1, '3', "4"}};
-        auto a2{Array<T, 4>{1, 2.1, '3', "4"}};
-        auto a3{Array<T, 4>{1, 2.1, '3', "4", 5, 6.1}};
-        auto a4{Array{T{1}, T{2.1}, T{'3'}, T{"4"}}};
-
-        CHECK(0 == a0.Count());
-        CHECK(4 == a1.Count());
-        CHECK(4 == a2.Count());
-        CHECK(4 == a3.Count());
-        CHECK(4 == a4.Count());
-
-        CHECK(1 == *std::get_if<int>(&a1[0]));
-        CHECK(2.1 == *std::get_if<double>(&a1[1]));
-        CHECK('3' == *std::get_if<char>(&a1[2]));
-        CHECK(std::string{"4"} == *std::get_if<const char*>(&a1[3]));
-        CHECK(0 == *std::get_if<int>(&a1[4]));
-
-        CHECK(1 == *std::get_if<int>(&a2[0]));
-        CHECK(2.1 == *std::get_if<double>(&a2[1]));
-        CHECK('3' == *std::get_if<char>(&a2[2]));
-        CHECK(std::string{"4"} == *std::get_if<const char*>(&a2[3]));
-        CHECK(0 == *std::get_if<int>(&a2[4]));
-
-        CHECK(1 == *std::get_if<int>(&a3[0]));
-        CHECK(2.1 == *std::get_if<double>(&a3[1]));
-        CHECK('3' == *std::get_if<char>(&a3[2]));
-        CHECK(std::string{"4"} == *std::get_if<const char*>(&a3[3]));
-        CHECK(0 == *std::get_if<int>(&a3[4]));
-
-        CHECK(1 == *std::get_if<int>(&a4[0]));
-        CHECK(2.1 == *std::get_if<double>(&a4[1]));
-        CHECK('3' == *std::get_if<char>(&a4[2]));
-        CHECK(std::string{"4"} == *std::get_if<const char*>(&a4[3]));
-        CHECK(0 == *std::get_if<int>(&a4[4]));
     }
 
     {

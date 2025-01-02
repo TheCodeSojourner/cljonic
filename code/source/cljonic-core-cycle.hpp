@@ -150,7 +150,7 @@ int main()
     const auto cycleStr0{Cycle(str)};;
     const auto cycleStr1{Cycle(String{"Hello"})};;
 
-    // Compiler Error: Cycle parameter must be a cljonic collection
+    // Compiler Error: Cycle's parameter must be a cljonic collection
     // const auto c{Cycle("Hello")};
 
     return 0;
@@ -160,7 +160,7 @@ int main()
 template <typename C>
 constexpr auto Cycle(const C& c) noexcept
 {
-    static_assert(IsCljonicCollection<C>, "Cycle parameter must be a cljonic collection");
+    static_assert(IsCljonicCollection<C>, "Cycle's parameter must be a cljonic collection");
 
     return CycleCollection{c};
 }
