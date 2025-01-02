@@ -75,6 +75,9 @@ constexpr auto TakeLast(const SizeType count, const C& c) noexcept;
 template <typename C>
 constexpr auto TakeNth(const SizeType nth, const C& c) noexcept;
 
+template <typename F, typename C>
+constexpr auto TakeWhile(const F& f, const C& c) noexcept;
+
 } // namespace core
 
 } // namespace cljonic

@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan  2 10:57:08 AM MST 2025
+// This file was generated Thu Jan  2 02:11:49 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -211,7 +211,7 @@ namespace cljonic {
 
 template <typename F, typename T, typename U>
 constexpr bool AreEqualBy(const F& f, const T& t, const U& u) noexcept {
-static_assert(std::predicate<F, T, U>, "Function is not a valid binary predicate for the parameters");
+static_assert(std::predicate<F, T, U>, "AreEqualBy function is not a valid binary predicate for the parameters");
 return f(t, u);
 }
 
@@ -325,6 +325,9 @@ constexpr auto TakeLast(const SizeType count, const C& c) noexcept;
 
 template <typename C>
 constexpr auto TakeNth(const SizeType nth, const C& c) noexcept;
+
+template <typename F, typename C>
+constexpr auto TakeWhile(const F& f, const C& c) noexcept;
 
 } // namespace core
 
@@ -1039,19 +1042,20 @@ constexpr auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept {
 if constexpr(sizeof...(Ts) <= 0) {
 if constexpr(IsCljonicCollection<T>)
 static_assert((not std::floating_point<typename T::value_type>),
-              "cljonic floating point collection value types should not be compared for equality");
+              "Equal(By) should not compare cljonic floating point collection value types for equality");
 else
-static_assert((not std::floating_point<T>), "Floating point types should not be compared for equality");
+static_assert((not std::floating_point<T>),
+              "Equal(By) should not compare floating point types for equality");
 return true;
 } else if constexpr(AllCljonicCollections<T, Ts...>) {
 static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
-              "cljonic collection types are not all the same, or all Array, Range or Repeat types");
+              "Equal(By) cljonic collection types are not all the same, or all Array, Range or Repeat types");
 
 static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
-              "cljonic floating point collection value types should not be compared for equality");
+              "Equal(By) should not compare cljonic floating point collection value types for equality");
 
 static_assert(IsBinaryPredicateForAllCljonicCollections<F, T, Ts...>,
-              "Function is not a valid binary predicate for all cljonic collection value types");
+              "Equal(By) function is not a valid binary predicate for all cljonic collection value types");
 
 if constexpr(sizeof...(Ts) <= 0) {
 return true;
@@ -1073,12 +1077,13 @@ return result;
 return (EqualCollections(t, ts) and ...);
 }
 } else {
-static_assert(not AnyFloatingPointTypes<T, Ts...>, "Floating point types should not be compared for equality");
+static_assert(not AnyFloatingPointTypes<T, Ts...>,
+              "Equal(By) should not compare floating point types for equality");
 
-static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all types are equality comparable");
+static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all Equal(By) types are equality comparable");
 
 static_assert(IsBinaryPredicateForAll<F, T, Ts...>,
-              "Function is not a valid binary predicate for all parameters");
+              "Equal(By) function is not a valid binary predicate for all parameters");
 
 auto EqualParameters = [&](const auto& p1, const auto& p2) { return AreEqualBy(f, p1, p2); };
 return (EqualParameters(t, ts) and ...);
@@ -1094,10 +1099,10 @@ namespace cljonic {
 namespace core {
 template <typename F, typename C>
 constexpr auto Every(const F& f, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "The second parameter must be a cljonic collection");
+static_assert(IsCljonicCollection<C>, "Every's second parameter must be a cljonic collection");
 
 static_assert(IsUnaryPredicate<F, typename C::value_type>,
-              "Function is not a valid unary predicate for the collection value type");
+              "Every's function is not a valid unary predicate for the collection value type");
 
 auto result{true};
 for(SizeType i{0}; (result and (i < c.Count())); ++i)
@@ -1114,10 +1119,10 @@ namespace cljonic {
 namespace core {
 template <typename F, typename C>
 constexpr auto Filter(const F& f, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "The second parameter must be a cljonic collection");
+static_assert(IsCljonicCollection<C>, "Filter's second parameter must be a cljonic collection");
 
 static_assert(IsUnaryPredicate<F, typename C::value_type>,
-              "Function is not a valid unary predicate for the collection value type");
+              "Filter's function is not a valid unary predicate for the collection value type");
 
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 for(const auto& element : c)
@@ -1135,7 +1140,7 @@ namespace cljonic {
 namespace core {
 template <typename C>
 constexpr auto First(const C& coll) noexcept {
-static_assert(IsCljonicCollection<C>, "First parameter must be a cljonic collection");
+static_assert(IsCljonicCollection<C>, "First's parameter must be a cljonic collection");
 
 return coll[0];
 }
@@ -1152,10 +1157,10 @@ namespace core {
 template <typename F, typename C, typename... Cs>
 constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept {
 
-static_assert(AllCljonicCollections<C, Cs...>, "The second through last parameters must be cljonic collections");
+static_assert(AllCljonicCollections<C, Cs...>, "Map's second through last parameters must be cljonic collections");
 
 static_assert(std::invocable<F, typename C::value_type, typename Cs::value_type...>,
-              "Function cannot be called with values from the specified cljonic collections");
+              "Map's function cannot be called with values from the specified cljonic collections");
 
 using ResultType = decltype(f(std::declval<typename C::value_type>(), std::declval<typename Cs::value_type>()...));
 
@@ -1179,7 +1184,7 @@ template <typename F, typename... Args>
 constexpr auto Partial(F&& f, Args&&... args) noexcept {
 return [f = std::forward<F>(f), ... args = std::forward<Args>(args)](auto&&... rest) {
 static_assert(std::regular_invocable<F, Args..., decltype(rest)...>,
-              "Partial function cannot be called with the specified arguments");
+              "Partial's function cannot be called with the specified arguments");
 
 return f(args..., std::forward<decltype(rest)>(rest)...);
 };
@@ -1197,14 +1202,15 @@ namespace cljonic {
 namespace core {
 template <typename F, typename C>
 constexpr auto Reduce(F&& f, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Second parameter must be a cljonic collection");
+static_assert(IsCljonicCollection<C>, "Reduce's second parameter must be a cljonic collection");
 
 static_assert(std::regular_invocable<F, typename C::value_type, typename C::value_type>,
-              "Function cannot be called with two parameters of the collection value type");
+              "Reduce's function cannot be called with two parameters of the collection value type");
 
 using ResultType = std::invoke_result_t<F, typename C::value_type, typename C::value_type>;
-static_assert(std::regular_invocable<F, ResultType, typename C::value_type>,
-              "Function cannot be called with parameters of function result type, and collection value type");
+static_assert(
+    std::regular_invocable<F, ResultType, typename C::value_type>,
+    "Reduce's function cannot be called with parameters of function result type, and collection value type");
 
 return (0 == c.Count()) ? c.DefaultElement()
                         : std::accumulate((c.begin() + 1), c.end(), *c.begin(), std::forward<F>(f));
@@ -1212,14 +1218,16 @@ return (0 == c.Count()) ? c.DefaultElement()
 
 template <typename F, typename T, typename C>
 constexpr auto Reduce(F&& f, const T& t, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Third parameter must be a cljonic collection");
+static_assert(IsCljonicCollection<C>, "Reduce's third parameter must be a cljonic collection");
 
-static_assert(std::regular_invocable<F, T, typename C::value_type>,
-              "Function cannot be called with parameters of initial value type, and collection value type");
+static_assert(
+    std::regular_invocable<F, T, typename C::value_type>,
+    "Reduce's function cannot be called with parameters of initial value type, and collection value type");
 
 using ResultType = std::invoke_result_t<F, T, typename C::value_type>;
-static_assert(std::regular_invocable<F, ResultType, typename C::value_type>,
-              "Function cannot be called with parameters of function result type, and collection value type");
+static_assert(
+    std::regular_invocable<F, ResultType, typename C::value_type>,
+    "Reduce's function cannot be called with parameters of function result type, and collection value type");
 
 return (0 == c.Count()) ? t : std::accumulate(c.begin(), c.end(), t, std::forward<F>(f));
 }
@@ -1245,7 +1253,7 @@ namespace cljonic {
 namespace core {
 template <typename C>
 constexpr auto Take(const SizeType count, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Take second parameter must be a cljonic collection");
+static_assert(IsCljonicCollection<C>, "Take's second parameter must be a cljonic collection");
 
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 auto maxIndex{Min(count, c.Count())};
@@ -1263,7 +1271,7 @@ namespace cljonic {
 namespace core {
 template <typename C>
 constexpr auto TakeLast(const SizeType count, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "TakeLast second parameter must be a cljonic collection");
+static_assert(IsCljonicCollection<C>, "TakeLast's second parameter must be a cljonic collection");
 
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 auto startIndex{(c.Count() > count) ? (c.Count() - count) : 0};
@@ -1282,7 +1290,7 @@ namespace core {
 template <typename C>
 constexpr auto TakeNth(const SizeType nth, const C& c) noexcept {
 
-static_assert(IsCljonicCollection<C>, "TakeNth second parameter must be a cljonic collection");
+static_assert(IsCljonicCollection<C>, "TakeNth's second parameter must be a cljonic collection");
 
 using ResultType = Array<typename C::value_type, c.MaximumCount()>;
 using ValueType = typename C::value_type;
@@ -1303,6 +1311,30 @@ if((c.Count() > 0) and (0 == nth))
 FillArray(result, c[0]);
 else if(c.Count() > 0)
 FillArrayNth(result, c, nth);
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C>
+constexpr auto TakeWhile(const F& f, const C& c) noexcept {
+
+static_assert(IsCljonicCollection<C>, "TakeWhile's second parameter must be a cljonic collection");
+
+static_assert(IsUnaryPredicate<F, typename C::value_type>,
+              "TakeWhile's function is not a valid unary predicate for the collection value type");
+
+auto result{Array<typename C::value_type, c.MaximumCount()>{}};
+for(const auto& element : c)
+if(f(element))
+result.MConj(element);
+else
+break;
 return result;
 }
 

@@ -55,21 +55,22 @@ constexpr auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
     {
         if constexpr (IsCljonicCollection<T>)
             static_assert((not std::floating_point<typename T::value_type>),
-                          "cljonic floating point collection value types should not be compared for equality");
+                          "Equal(By) should not compare cljonic floating point collection value types for equality");
         else
-            static_assert((not std::floating_point<T>), "Floating point types should not be compared for equality");
+            static_assert((not std::floating_point<T>),
+                          "Equal(By) should not compare floating point types for equality");
         return true;
     }
     else if constexpr (AllCljonicCollections<T, Ts...>)
     {
         static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
-                      "cljonic collection types are not all the same, or all Array, Range or Repeat types");
+                      "Equal(By) cljonic collection types are not all the same, or all Array, Range or Repeat types");
 
         static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
-                      "cljonic floating point collection value types should not be compared for equality");
+                      "Equal(By) should not compare cljonic floating point collection value types for equality");
 
         static_assert(IsBinaryPredicateForAllCljonicCollections<F, T, Ts...>,
-                      "Function is not a valid binary predicate for all cljonic collection value types");
+                      "Equal(By) function is not a valid binary predicate for all cljonic collection value types");
 
         if constexpr (sizeof...(Ts) <= 0)
         {
@@ -100,12 +101,13 @@ constexpr auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
     }
     else
     {
-        static_assert(not AnyFloatingPointTypes<T, Ts...>, "Floating point types should not be compared for equality");
+        static_assert(not AnyFloatingPointTypes<T, Ts...>,
+                      "Equal(By) should not compare floating point types for equality");
 
-        static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all types are equality comparable");
+        static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all Equal(By) types are equality comparable");
 
         static_assert(IsBinaryPredicateForAll<F, T, Ts...>,
-                      "Function is not a valid binary predicate for all parameters");
+                      "Equal(By) function is not a valid binary predicate for all parameters");
 
         auto EqualParameters = [&](const auto& p1, const auto& p2) { return AreEqualBy(f, p1, p2); };
         return (EqualParameters(t, ts) and ...);

@@ -54,7 +54,7 @@ constexpr auto TakeNth(const SizeType nth, const C& c) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 
-    static_assert(IsCljonicCollection<C>, "TakeNth second parameter must be a cljonic collection");
+    static_assert(IsCljonicCollection<C>, "TakeNth's second parameter must be a cljonic collection");
 
     using ResultType = Array<typename C::value_type, c.MaximumCount()>;
     using ValueType = typename C::value_type;

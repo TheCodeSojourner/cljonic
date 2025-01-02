@@ -76,11 +76,12 @@ repository, only modified, the developer should execute `make test`. Assuming al
 will generate the *cljonic* single header file.  Finally, executing `make git` will prepare the repository for a *git* 
 commit.
 
-NOTE: Whenever new files are added to the *code/source* or *code/test* directories, the developer must run `make all` 
+NOTE: Whenever new files are added to the *code/source* or *code/test* directories the developer must run `make all` 
 again.
 
-NOTE: Whenever new files are added to the *code/source* directory, the developer must update the 
-*scripts/make-cljonic.sh* file to include added files in the single header file.
+NOTE: Whenever new function files are added to the *code/source* directory the developer must update the 
+*code/source/cljonic-pre-declarations.hpp*, *scripts/make-cljonic.sh*, and *resources/no-dynamic-memory.cpp* files 
+to include support for the new function.
 
 == Implementation Characteristics
 

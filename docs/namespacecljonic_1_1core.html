@@ -152,6 +152,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a2bcb31c6d865210092d86ee6d8b28a81" id="r_a2bcb31c6d865210092d86ee6d8b28a81"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">C</a> &gt; </td></tr>
 <tr class="memitem:a2bcb31c6d865210092d86ee6d8b28a81"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#a2bcb31c6d865210092d86ee6d8b28a81">TakeNth</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">nth</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">C</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
 <tr class="separator:a2bcb31c6d865210092d86ee6d8b28a81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0eab33d3a2088c6c94f0a461ece4fb57" id="r_a0eab33d3a2088c6c94f0a461ece4fb57"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">C</a> &gt; </td></tr>
+<tr class="memitem:a0eab33d3a2088c6c94f0a461ece4fb57"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#a0eab33d3a2088c6c94f0a461ece4fb57">TakeWhile</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">C</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
+<tr class="separator:a0eab33d3a2088c6c94f0a461ece4fb57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a173dc7bdd588d33175a25ce4cdf668bc" name="a173dc7bdd588d33175a25ce4cdf668bc"></a>
@@ -842,7 +845,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
   </tr>
 </table>
 </div><div class="memdoc">
-<p><a class="anchor" id="Core_Filter"></a> The <b>Filter</b> function calls its first parameter, which must be a <b>unary</b> <b>predicate</b>, with each element of its second parameter, which must be a <b>cljonic</b> <b>collection</b>, and if the result is true a copy of the element is concatenated to the end of <b>Filter's</b> result, which is a <b>cljonic</b> <b><a class="el" href="classcljonic_1_1_array.html">Array</a></b> with the same <b>MaximumCount</b> the second parameter. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<p><a class="anchor" id="Core_Filter"></a> The <b>Filter</b> function calls its first parameter, which must be a <b>unary</b> <b>predicate</b>, with each element of its second parameter, which must be a <b>cljonic</b> <b>collection</b>, and if the result is true a copy of the element is concatenated to the end of <b>Filter's</b> result, which is a <b>cljonic</b> <b><a class="el" href="classcljonic_1_1_array.html">Array</a></b> with the same <b>MaximumCount</b> as the second parameter. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
@@ -866,11 +869,17 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">fStr</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a5891f313437f590e8e98f78cabc9cacb">Filter</a>([](<span class="keyword">const</span> <span class="keywordtype">char</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>) { <span class="keywordflow">return</span> (<span class="charliteral">&#39;l&#39;</span> == <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>); }, <span class="comment">// immutable, sparse Array, with &#39;l&#39; and &#39;l&#39;</span></div>
 <div class="line">                           <a class="code hl_class" href="classcljonic_1_1_string.html">String</a>{<span class="stringliteral">&quot;Hello&quot;</span>})};</div>
 <div class="line"> </div>
+<div class="line">    <span class="comment">// Compiler Error: Filter&#39;s second parameter must be a cljonic collection</span></div>
+<div class="line">    <span class="comment">// const auto tw{Filter(Even, &quot;Hello&quot;)};</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Compiler Error: Filter&#39;s function is not a valid unary predicate for the collection value type</span></div>
+<div class="line">    <span class="comment">// const auto tw{Filter(Even, Array&lt;const char*, 5&gt;{})};</span></div>
+<div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_a5891f313437f590e8e98f78cabc9cacb"><div class="ttname"><a href="namespacecljonic_1_1core.html#a5891f313437f590e8e98f78cabc9cacb">cljonic::core::Filter</a></div><div class="ttdeci">constexpr auto Filter(const F &amp;f, const C &amp;c) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-filter_8hpp_source.html#l00048">cljonic-core-filter.hpp:48</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a5891f313437f590e8e98f78cabc9cacb"><div class="ttname"><a href="namespacecljonic_1_1core.html#a5891f313437f590e8e98f78cabc9cacb">cljonic::core::Filter</a></div><div class="ttdeci">constexpr auto Filter(const F &amp;f, const C &amp;c) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-filter_8hpp_source.html#l00054">cljonic-core-filter.hpp:54</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-core-filter_8hpp_source.html#l00048">48</a> of file <a class="el" href="cljonic-core-filter_8hpp_source.html">cljonic-core-filter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-core-filter_8hpp_source.html#l00054">54</a> of file <a class="el" href="cljonic-core-filter_8hpp_source.html">cljonic-core-filter.hpp</a>.</p>
 
 </div>
 </div>
@@ -1212,7 +1221,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-core-reduce_8hpp_source.html#l00107">107</a> of file <a class="el" href="cljonic-core-reduce_8hpp_source.html">cljonic-core-reduce.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-core-reduce_8hpp_source.html#l00108">108</a> of file <a class="el" href="cljonic-core-reduce_8hpp_source.html">cljonic-core-reduce.hpp</a>.</p>
 
 </div>
 </div>
@@ -1461,10 +1470,83 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 
 </div>
 </div>
+<a id="a0eab33d3a2088c6c94f0a461ece4fb57" name="a0eab33d3a2088c6c94f0a461ece4fb57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0eab33d3a2088c6c94f0a461ece4fb57">&#9670;&#160;</a></span>TakeWhile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">C</a> &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a> cljonic::core::TakeWhile </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> &amp;&#160;</td>
+          <td class="paramname"><em>f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">C</a> &amp;&#160;</td>
+          <td class="paramname"><em>c</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="anchor" id="Core_TakeWhile"></a> The <b>TakeWhile</b> function calls its first parameter, which must be a <b>unary</b> <b>predicate</b>, with each element of its second parameter, which must be a <b>cljonic</b> <b>collection</b>, and while the result is true a copy of the element is concatenated to the end of <b>TakeWhile's</b> result, which is a <b>cljonic</b> <b><a class="el" href="classcljonic_1_1_array.html">Array</a></b> with the same <b>MaximumCount</b> as the second parameter. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">main</a>()</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Even</a> = [](<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">i</a>) { <span class="keywordflow">return</span> (0 == (<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">i</a> % 2)); };</div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">a</a>{<a class="code hl_class" href="classcljonic_1_1_array.html">Array&lt;int, 10&gt;</a>{0, 2, 4, 5, 6, 7, 8, 9}};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">twA</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a0eab33d3a2088c6c94f0a461ece4fb57">TakeWhile</a>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Even</a>, <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">a</a>)}; <span class="comment">// immutable, sparse Array, with 0, 2, and 4</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">rng</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range&lt;10&gt;</a>{}};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">twRng</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a0eab33d3a2088c6c94f0a461ece4fb57">TakeWhile</a>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Even</a>, <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">rng</a>)}; <span class="comment">// immutable, sparse Array, with 0</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">rpt</a>{<a class="code hl_class" href="classcljonic_1_1_repeat.html">Repeat&lt;10, int&gt;</a>{2}};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">twRpt</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a0eab33d3a2088c6c94f0a461ece4fb57">TakeWhile</a>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Even</a>, <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">rpt</a>)}; <span class="comment">// immutable, full array, of 2s</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">s</a>{<a class="code hl_class" href="classcljonic_1_1_set.html">Set&lt;int, 4&gt;</a>{2, 4, 5, 6}};</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">twS</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a0eab33d3a2088c6c94f0a461ece4fb57">TakeWhile</a>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Even</a>, <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">s</a>)}; <span class="comment">// immutable, sparse Array, with 2 and 4</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">twStr</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a0eab33d3a2088c6c94f0a461ece4fb57">TakeWhile</a>([](<span class="keyword">const</span> <span class="keywordtype">char</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>) { <span class="keywordflow">return</span> (<span class="charliteral">&#39;l&#39;</span> != <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>); }, <span class="comment">// immutable, sparse Array, with &#39;H&#39; and &#39;e&#39;</span></div>
+<div class="line">                               <a class="code hl_class" href="classcljonic_1_1_string.html">String</a>{<span class="stringliteral">&quot;Hello&quot;</span>})};</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Compiler Error: TakeWhile&#39;s second parameter must be a cljonic collection</span></div>
+<div class="line">    <span class="comment">// const auto tw{TakeWhile(Even, &quot;Hello&quot;)};</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Compiler Error: TakeWhile&#39;s function is not a valid unary predicate for the collection value type</span></div>
+<div class="line">    <span class="comment">// const auto tw{TakeWhile(Even, Array&lt;const char*, 5&gt;{})};</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a0eab33d3a2088c6c94f0a461ece4fb57"><div class="ttname"><a href="namespacecljonic_1_1core.html#a0eab33d3a2088c6c94f0a461ece4fb57">cljonic::core::TakeWhile</a></div><div class="ttdeci">constexpr auto TakeWhile(const F &amp;f, const C &amp;c) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-takewhile_8hpp_source.html#l00054">cljonic-core-takewhile.hpp:54</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-core-takewhile_8hpp_source.html#l00054">54</a> of file <a class="el" href="cljonic-core-takewhile_8hpp_source.html">cljonic-core-takewhile.hpp</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 2 2025 10:57:08 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Thu Jan 2 2025 14:11:50 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

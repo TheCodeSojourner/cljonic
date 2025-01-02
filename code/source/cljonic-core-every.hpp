@@ -47,10 +47,10 @@ int main()
 template <typename F, typename C>
 constexpr auto Every(const F& f, const C& c) noexcept
 {
-    static_assert(IsCljonicCollection<C>, "The second parameter must be a cljonic collection");
+    static_assert(IsCljonicCollection<C>, "Every's second parameter must be a cljonic collection");
 
     static_assert(IsUnaryPredicate<F, typename C::value_type>,
-                  "Function is not a valid unary predicate for the collection value type");
+                  "Every's function is not a valid unary predicate for the collection value type");
 
     auto result{true};
     for (SizeType i{0}; (result and (i < c.Count())); ++i)

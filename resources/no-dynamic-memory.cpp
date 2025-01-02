@@ -30,6 +30,7 @@ int main()
     constexpr auto take{Take(2, a)};
     constexpr auto takelast{TakeLast(2, a)};
     constexpr auto takenth{TakeNth(2, a)};
+    constexpr auto takewhile{TakeWhile([](const int i) { return true; }, a)};
 
     return 0;
 }

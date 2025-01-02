@@ -53,10 +53,10 @@ constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable.
 
-    static_assert(AllCljonicCollections<C, Cs...>, "The second through last parameters must be cljonic collections");
+    static_assert(AllCljonicCollections<C, Cs...>, "Map's second through last parameters must be cljonic collections");
 
     static_assert(std::invocable<F, typename C::value_type, typename Cs::value_type...>,
-                  "Function cannot be called with values from the specified cljonic collections");
+                  "Map's function cannot be called with values from the specified cljonic collections");
 
     using ResultType = decltype(f(std::declval<typename C::value_type>(), std::declval<typename Cs::value_type>()...));
 

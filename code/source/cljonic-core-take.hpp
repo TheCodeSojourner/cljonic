@@ -46,7 +46,7 @@ int main()
 template <typename C>
 constexpr auto Take(const SizeType count, const C& c) noexcept
 {
-    static_assert(IsCljonicCollection<C>, "Take second parameter must be a cljonic collection");
+    static_assert(IsCljonicCollection<C>, "Take's second parameter must be a cljonic collection");
 
     auto result{Array<typename C::value_type, c.MaximumCount()>{}};
     auto maxIndex{Min(count, c.Count())};

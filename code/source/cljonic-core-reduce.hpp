@@ -90,14 +90,15 @@ int main()
 template <typename F, typename C>
 constexpr auto Reduce(F&& f, const C& c) noexcept
 {
-    static_assert(IsCljonicCollection<C>, "Second parameter must be a cljonic collection");
+    static_assert(IsCljonicCollection<C>, "Reduce's second parameter must be a cljonic collection");
 
     static_assert(std::regular_invocable<F, typename C::value_type, typename C::value_type>,
-                  "Function cannot be called with two parameters of the collection value type");
+                  "Reduce's function cannot be called with two parameters of the collection value type");
 
     using ResultType = std::invoke_result_t<F, typename C::value_type, typename C::value_type>;
-    static_assert(std::regular_invocable<F, ResultType, typename C::value_type>,
-                  "Function cannot be called with parameters of function result type, and collection value type");
+    static_assert(
+        std::regular_invocable<F, ResultType, typename C::value_type>,
+        "Reduce's function cannot be called with parameters of function result type, and collection value type");
 
     return (0 == c.Count()) ? c.DefaultElement()
                             : std::accumulate((c.begin() + 1), c.end(), *c.begin(), std::forward<F>(f));
@@ -106,14 +107,16 @@ constexpr auto Reduce(F&& f, const C& c) noexcept
 template <typename F, typename T, typename C>
 constexpr auto Reduce(F&& f, const T& t, const C& c) noexcept
 {
-    static_assert(IsCljonicCollection<C>, "Third parameter must be a cljonic collection");
+    static_assert(IsCljonicCollection<C>, "Reduce's third parameter must be a cljonic collection");
 
-    static_assert(std::regular_invocable<F, T, typename C::value_type>,
-                  "Function cannot be called with parameters of initial value type, and collection value type");
+    static_assert(
+        std::regular_invocable<F, T, typename C::value_type>,
+        "Reduce's function cannot be called with parameters of initial value type, and collection value type");
 
     using ResultType = std::invoke_result_t<F, T, typename C::value_type>;
-    static_assert(std::regular_invocable<F, ResultType, typename C::value_type>,
-                  "Function cannot be called with parameters of function result type, and collection value type");
+    static_assert(
+        std::regular_invocable<F, ResultType, typename C::value_type>,
+        "Reduce's function cannot be called with parameters of function result type, and collection value type");
 
     return (0 == c.Count()) ? t : std::accumulate(c.begin(), c.end(), t, std::forward<F>(f));
 }
