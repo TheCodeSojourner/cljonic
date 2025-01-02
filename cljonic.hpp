@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Jan  1 06:05:55 PM MST 2025
+// This file was generated Thu Jan  2 07:39:45 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT 1000
@@ -234,6 +234,80 @@ return C::MaximumCount();
 return (C::MaximumCount() + ... + Cs::MaximumCount());
 }
 }
+
+} // namespace cljonic
+
+namespace cljonic {
+
+template <typename T, std::size_t MaxElements>
+class Array;
+
+template <int... StartEndStep>
+class Range;
+
+template <std::size_t MaxElements, typename T>
+class Repeat;
+
+template <typename T, std::size_t MaxElements>
+class Set;
+
+template <std::size_t MaxElements>
+class String;
+
+namespace core {
+
+template <typename F1, typename F2>
+constexpr auto Compose(F1&& f1, F2&& f2) noexcept;
+
+template <typename C, typename... Cs>
+constexpr auto Concat(const C& c, const Cs&... cs) noexcept;
+
+template <typename C, typename... Es>
+constexpr auto Conj(const C& c, const Es&... es) noexcept;
+
+template <typename C>
+constexpr auto Count(const C& c) noexcept;
+
+template <typename C>
+constexpr auto Cycle(const C& c) noexcept;
+
+template <typename T, typename... Ts>
+constexpr auto Equal(const T& t, const Ts&... ts) noexcept;
+
+template <typename F, typename T, typename... Ts>
+constexpr auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept;
+
+template <typename F, typename C>
+constexpr auto Every(const F& f, const C& c) noexcept;
+
+template <typename F, typename C>
+constexpr auto Filter(const F& f, const C& c) noexcept;
+
+template <typename C>
+constexpr auto First(const C& coll) noexcept;
+
+template <typename F, typename C, typename... Cs>
+constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept;
+
+template <typename F, typename... Args>
+constexpr auto Partial(F&& f, Args&&... args) noexcept;
+
+template <typename F, typename C>
+constexpr auto Reduce(F&& f, const C& c) noexcept;
+
+template <typename C>
+constexpr auto Seq(const C& c) noexcept;
+
+template <typename C>
+constexpr auto Take(const std::size_t count, const C& c) noexcept;
+
+template <typename C>
+constexpr auto TakeLast(const std::size_t count, const C& c) noexcept;
+
+template <typename C>
+constexpr auto TakeNth(const std::size_t nth, const C& c) noexcept;
+
+} // namespace core
 
 } // namespace cljonic
 
@@ -1130,15 +1204,8 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto Take(const std::size_t count, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Take second parameter must be a cljonic collection");
-
-using CountType = decltype(c.Count());
-auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-auto maxIndex{Min(count, c.Count())};
-for(CountType i{0}; (i < maxIndex); ++i)
-result.MConj(c[i]);
-return result;
+constexpr auto Seq(const C& c) noexcept {
+return Take(c.MaximumCount(), c);
 }
 
 }
@@ -1149,8 +1216,15 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto Seq(const C& c) noexcept {
-return Take(c.MaximumCount(), c);
+constexpr auto Take(const std::size_t count, const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "Take second parameter must be a cljonic collection");
+
+using CountType = decltype(c.Count());
+auto result{Array<typename C::value_type, c.MaximumCount()>{}};
+auto maxIndex{Min(count, c.Count())};
+for(CountType i{0}; (i < maxIndex); ++i)
+result.MConj(c[i]);
+return result;
 }
 
 }

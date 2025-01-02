@@ -138,6 +138,7 @@ metrics: FORCE
 ########################################################################################################################
 ## Verify that cljonic will compile without heap allocation allowed
 noheap: FORCE
+	@scripts/make-format.sh
 	@scripts/make-cljonic.sh
 	@scripts/make-noheap.sh
 	@echo
