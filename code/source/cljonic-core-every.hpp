@@ -1,6 +1,9 @@
 #ifndef CLJONIC_CORE_EVERY_HPP
 #define CLJONIC_CORE_EVERY_HPP
 
+#include "cljonic-collection-maximum-element-count.hpp"
+#include "cljonic-concepts.hpp"
+
 namespace cljonic
 {
 
@@ -49,9 +52,8 @@ constexpr auto Every(const F& f, const C& c) noexcept
     static_assert(IsUnaryPredicate<F, typename C::value_type>,
                   "Function is not a valid unary predicate for the collection value type");
 
-    using CountType = decltype(c.Count());
     auto result{true};
-    for (CountType i{0}; (result and (i < c.Count())); ++i)
+    for (SizeType i{0}; (result and (i < c.Count())); ++i)
         result = f(c[i]);
     return result;
 }

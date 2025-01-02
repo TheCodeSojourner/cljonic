@@ -20,7 +20,7 @@ namespace cljonic
  * a value not contained within the set will return its \b default \b element.  Many \ref Namespace_Core "Core"
  * functions accept Set arguments.
  */
-template <typename T, std::size_t MaxElements>
+template <typename T, SizeType MaxElements>
 class Set
 {
     static_assert(not std::floating_point<T>,
@@ -29,19 +29,19 @@ class Set
 
     static_assert(std::equality_comparable<T>, "A Set type must be equality comparable");
 
-    using MaxElementsType = decltype(MaxElements);
+    static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
-    static constexpr auto CljonicCollectionMaximumElementCount{
-        static_cast<MaxElementsType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+    static_assert(maximumElements == MaxElements,
+                  "Attempt to create a Set bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
 
-    MaxElementsType m_elementCount;
+    SizeType m_elementCount;
     const T m_elementDefault;
-    T m_elements[Min(MaxElements, CljonicCollectionMaximumElementCount)];
+    T m_elements[maximumElements];
 
     constexpr bool IsUniqueElementBy(const auto& f, const T& element) const noexcept
     {
         auto result{true};
-        for (MaxElementsType i{0}; (result and (i < m_elementCount)); ++i)
+        for (SizeType i{0}; (result and (i < m_elementCount)); ++i)
             result = not AreEqualBy(f, element, m_elements[i]);
         return result;
     }
@@ -49,7 +49,7 @@ class Set
     constexpr bool IsUniqueElement(const T& element) const noexcept
     {
         auto result{true};
-        for (MaxElementsType i{0}; (result and (i < m_elementCount)); ++i)
+        for (SizeType i{0}; (result and (i < m_elementCount)); ++i)
             result = not AreEqual(element, m_elements[i]);
         return result;
     }
@@ -79,7 +79,7 @@ class Set
     ~~~~~
     */
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Set>;
-    using size_type = MaxElementsType;
+    using size_type = SizeType;
     using value_type = T;
 
     constexpr Set() noexcept : m_elementCount(0), m_elementDefault(T{})
@@ -112,7 +112,7 @@ class Set
         return m_elements + m_elementCount;
     }
 
-    constexpr const T& operator[](const MaxElementsType index) const noexcept
+    constexpr const T& operator[](const SizeType index) const noexcept
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
     }
@@ -122,7 +122,7 @@ class Set
         return Contains(t) ? t : m_elementDefault;
     }
 
-    [[nodiscard]] constexpr MaxElementsType Count() const noexcept
+    [[nodiscard]] constexpr SizeType Count() const noexcept
     {
         return m_elementCount;
     }
@@ -142,9 +142,9 @@ class Set
         return m_elementDefault;
     }
 
-    static constexpr std::size_t MaximumCount() noexcept
+    static constexpr SizeType MaximumCount() noexcept
     {
-        return Min(MaxElements, CljonicCollectionMaximumElementCount);
+        return maximumElements;
     }
 }; // class Set
 

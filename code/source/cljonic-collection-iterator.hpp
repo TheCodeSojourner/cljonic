@@ -1,6 +1,8 @@
 #ifndef CLJONIC_COLLECTION_ITERATOR_HPP
 #define CLJONIC_COLLECTION_ITERATOR_HPP
 
+#include "cljonic-collection-maximum-element-count.hpp"
+
 namespace cljonic
 {
 
@@ -8,10 +10,10 @@ template <typename T>
 class CollectionIterator
 {
     const T& m_collection;
-    std::size_t m_index;
+    SizeType m_index;
 
   public:
-    constexpr CollectionIterator(const T& collection, const std::size_t index) noexcept
+    constexpr CollectionIterator(const T& collection, const SizeType index) noexcept
         : m_collection(collection), m_index(index)
     {
     }

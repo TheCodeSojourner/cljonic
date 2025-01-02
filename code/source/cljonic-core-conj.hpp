@@ -1,6 +1,8 @@
 #ifndef CLJONIC_CORE_CONJ_HPP
 #define CLJONIC_CORE_CONJ_HPP
 
+#include "cljonic-array.hpp"
+#include "cljonic-collection-maximum-element-count.hpp"
 #include "cljonic-concepts.hpp"
 
 namespace cljonic
@@ -57,12 +59,8 @@ constexpr auto Conj(const C& c, const Es&... es) noexcept
                   "Second through last Conj parameters must be convertible to cljonic collection value type");
 
     using ResultType = typename C::value_type;
-    using SizeType = decltype(c.Count());
 
-    constexpr auto CljonicCollectionMaximumElementCount{
-        static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
-
-    constexpr auto count{Min(C::MaximumCount() + sizeof...(Es), CljonicCollectionMaximumElementCount)};
+    constexpr auto count{C::MaximumCount() + sizeof...(Es)};
     auto result{Array<ResultType, count>{}};
     const auto MConjElementOntoResult = [&](const auto& e) { result.MConj(e); };
     for (SizeType i{0}; i < c.Count(); ++i)

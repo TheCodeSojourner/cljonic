@@ -4,6 +4,7 @@
 #include <concepts>
 #include <cstring>
 #include "cljonic-concepts.hpp"
+#include "cljonic-collection-maximum-element-count.hpp"
 
 namespace cljonic
 {
@@ -62,6 +63,11 @@ constexpr auto SumOfCljonicCollectionMaximumCounts()
     {
         return (C::MaximumCount() + ... + Cs::MaximumCount());
     }
+}
+
+constexpr SizeType MaximumElements(const SizeType count) noexcept
+{
+    return Min(count, CljonicCollectionMaximumElementCount);
 }
 
 } // namespace cljonic

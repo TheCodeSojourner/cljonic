@@ -18,18 +18,19 @@ namespace cljonic
  * out-of-bounds index will return its \b default \b element (i.e., a NUL char). Many \ref Namespace_Core "Core"
  * functions accept String arguments.
  */
-template <std::size_t MaxElements>
+template <SizeType MaxElements>
 class String
 {
     using Iterator = CollectionIterator<String>;
-    using MaxElementsType = decltype(MaxElements);
 
-    static constexpr auto CljonicCollectionMaximumElementCount{
-        static_cast<MaxElementsType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+    static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
-    MaxElementsType m_elementCount;
+    static_assert(maximumElements == MaxElements,
+                  "Attempt to create a String bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+
+    SizeType m_elementCount;
     const char m_elementDefault;
-    char m_elements[Min(MaxElements, CljonicCollectionMaximumElementCount) + 1]; // +1 for the null terminator
+    char m_elements[maximumElements + 1]; // +1 for the null terminator
 
   public:
     /**
@@ -55,7 +56,7 @@ class String
     ~~~~~
     */
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>;
-    using size_type = MaxElementsType;
+    using size_type = SizeType;
     using value_type = char;
 
     constexpr String() noexcept : m_elementCount(0), m_elementDefault('\0')
@@ -98,17 +99,17 @@ class String
         return Iterator{*this, m_elementCount};
     }
 
-    constexpr char operator[](const MaxElementsType index) const noexcept
+    constexpr char operator[](const SizeType index) const noexcept
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
     }
 
-    constexpr char operator()(const MaxElementsType index) const noexcept
+    constexpr char operator()(const SizeType index) const noexcept
     {
         return this->operator[](index);
     }
 
-    [[nodiscard]] constexpr MaxElementsType Count() const noexcept
+    [[nodiscard]] constexpr SizeType Count() const noexcept
     {
         return m_elementCount;
     }
@@ -118,14 +119,14 @@ class String
         return m_elementDefault;
     }
 
-    static constexpr std::size_t MaximumCount() noexcept
+    static constexpr SizeType MaximumCount() noexcept
     {
-        return Min(MaxElements, CljonicCollectionMaximumElementCount);
+        return maximumElements;
     }
 }; // class String
 
 // Support declarations like 'auto v{String{"Hello"}};', which is equivalent to 'auto v{String<5>{"Hello"}};'
-template <std::size_t N>
+template <SizeType N>
 String(const char (&)[N]) -> String<N - 1>;
 
 // Support declarations like "auto v{String{'H', 'e', 'l', 'l', 'o'}};", which is equivalent to

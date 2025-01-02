@@ -1,6 +1,9 @@
 #ifndef CLJONIC_CORE_TAKE_HPP
 #define CLJONIC_CORE_TAKE_HPP
 
+#include "cljonic-array.hpp"
+#include "cljonic-collection-maximum-element-count.hpp"
+
 namespace cljonic
 {
 
@@ -41,14 +44,13 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto Take(const std::size_t count, const C& c) noexcept
+constexpr auto Take(const SizeType count, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Take second parameter must be a cljonic collection");
 
-    using CountType = decltype(c.Count());
     auto result{Array<typename C::value_type, c.MaximumCount()>{}};
     auto maxIndex{Min(count, c.Count())};
-    for (CountType i{0}; (i < maxIndex); ++i)
+    for (SizeType i{0}; (i < maxIndex); ++i)
         result.MConj(c[i]);
     return result;
 }
