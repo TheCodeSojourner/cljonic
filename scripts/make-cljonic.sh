@@ -9,11 +9,11 @@ echo -n 'Building "cljonic.hpp" ... '
 cd code/source
 
 # glue all the cljonic files together
-# seq requires take so it must be first
 cat cljonic-collection-iterator.hpp \
     cljonic-collection-type.hpp \
     cljonic-concepts.hpp \
     cljonic-shared.hpp \
+    cljonic-pre-declarations.hpp \
     cljonic-array.hpp \
     cljonic-range.hpp \
     cljonic-repeat.hpp \
@@ -33,8 +33,8 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-map.hpp \
     cljonic-core-partial.hpp \
     cljonic-core-reduce.hpp \
-    cljonic-core-take.hpp \
     cljonic-core-seq.hpp \
+    cljonic-core-take.hpp \
     cljonic-core-takelast.hpp \
     cljonic-core-takenth.hpp > /tmp/cljonic-glued.hpp
 
