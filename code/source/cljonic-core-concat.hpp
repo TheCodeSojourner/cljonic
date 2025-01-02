@@ -1,6 +1,7 @@
 #ifndef CLJONIC_CORE_CONCAT_HPP
 #define CLJONIC_CORE_CONCAT_HPP
 
+#include "cljonic-array.hpp"
 #include "cljonic-concepts.hpp"
 #include "cljonic-shared.hpp"
 
@@ -49,12 +50,8 @@ constexpr auto Concat(const C& c, const Cs&... cs) noexcept
                   "All Concat cljonic collections value types must be interconvertible");
 
     using ResultType = FindCommonValueType<C, Cs...>;
-    using SizeType = decltype(c.Count());
 
-    constexpr auto CljonicCollectionMaximumElementCount{
-        static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
-
-    constexpr auto count{Min(SumOfCljonicCollectionMaximumCounts<C, Cs...>(), CljonicCollectionMaximumElementCount)};
+    constexpr auto count{SumOfCljonicCollectionMaximumCounts<C, Cs...>()};
     auto result{Array<ResultType, count>{}};
     const auto MConjCollectionOntoResult = [&](const auto& c)
     {

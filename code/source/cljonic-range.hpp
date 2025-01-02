@@ -21,10 +21,6 @@ class Range
     static_assert(sizeof...(StartEndStep) <= 3, "Number of Range parameters must be less than or equal to three");
 
     using Iterator = CollectionIterator<Range>;
-    using SizeType = std::size_t;
-
-    static constexpr auto CljonicCollectionMaximumElementCount{
-        static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
 
     SizeType m_elementCount;
     int m_elementDefault;
@@ -41,18 +37,51 @@ class Range
     static constexpr auto MaxElements = []() constexpr
     {
         if constexpr (sizeof...(StartEndStep) == 1) // Range(end)
-            return static_cast<SizeType>(values[0]);
-        else if constexpr (sizeof...(StartEndStep) == 2) // Range(start, end)
-            return static_cast<SizeType>(values[1] - values[0]);
-        else if constexpr (sizeof...(StartEndStep) == 3) // Range(start, end, step  )
         {
-            return static_cast<SizeType>(RangeCount(StartEndStep...));
+            if constexpr (values[0] < 0) // end is negative
+                return static_cast<SizeType>(0);
+            else
+                return static_cast<SizeType>(values[0]);
+        }
+        else if constexpr (sizeof...(StartEndStep) == 2) // Range(start, end)
+        {
+            if constexpr (values[1] <= values[0]) // end is less than or equal to start
+                return static_cast<SizeType>(0);
+            else
+                return static_cast<SizeType>(values[1] - values[0]);
+        }
+        else if constexpr (sizeof...(StartEndStep) == 3) // Range(start, end, step)
+        {
+            // #lizard forgives -- The length and complexity of this function is acceptable
+            if constexpr ((0 == values[2]) and (values[0] == values[1])) // step is zero, and start equals end
+                return static_cast<SizeType>(0);
+            else if constexpr (0 == values[2]) // step is zero
+                return CljonicCollectionMaximumElementCount;
+            else if constexpr (values[2] < 0) // step is negative
+            {
+                if constexpr (values[0] <= values[1]) // start is less than or equal to end
+                    return static_cast<SizeType>(0);
+                else
+                    return static_cast<SizeType>(RangeCount(values[0], values[1], values[2]));
+            }
+            else
+            {
+                if constexpr (values[1] <= values[0]) // end is less than or equal to start
+                    return static_cast<SizeType>(0);
+                else
+                    return static_cast<SizeType>(RangeCount(values[0], values[1], values[2]));
+            }
         }
         else // Range()
         {
-            return std::numeric_limits<SizeType>::max();
+            return CljonicCollectionMaximumElementCount;
         }
     }();
+
+    static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
+
+    static_assert(maximumElements == MaxElements,
+                  "Attempt to create a Range bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
 
     constexpr void InitializeMembers(const int count, const int start, const int step) noexcept
     {
@@ -195,14 +224,14 @@ class Range
         return Iterator{*this, m_elementCount};
     }
 
-    constexpr int operator[](const size_type index) const noexcept
+    constexpr int operator[](const SizeType index) const noexcept
     {
         return ((0 == m_elementCount) or (index >= m_elementCount))
                    ? m_elementDefault
                    : (m_elementStart + (static_cast<int>(index) * m_elementStep));
     }
 
-    [[nodiscard]] constexpr size_type Count() const noexcept
+    [[nodiscard]] constexpr SizeType Count() const noexcept
     {
         return m_elementCount;
     }
@@ -214,7 +243,7 @@ class Range
 
     static constexpr auto MaximumCount() noexcept
     {
-        return Min(MaxElements, CljonicCollectionMaximumElementCount);
+        return maximumElements;
     }
 };
 

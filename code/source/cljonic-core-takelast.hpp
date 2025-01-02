@@ -1,6 +1,10 @@
 #ifndef CLJONIC_CORE_TAKELAST_HPP
 #define CLJONIC_CORE_TAKELAST_HPP
 
+#include "cljonic-array.hpp"
+#include "cljonic-collection-maximum-element-count.hpp"
+#include "cljonic-concepts.hpp"
+
 namespace cljonic
 {
 
@@ -38,14 +42,13 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto TakeLast(const std::size_t count, const C& c) noexcept
+constexpr auto TakeLast(const SizeType count, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "TakeLast second parameter must be a cljonic collection");
 
-    using CountType = decltype(c.Count());
     auto result{Array<typename C::value_type, c.MaximumCount()>{}};
     auto startIndex{(c.Count() > count) ? (c.Count() - count) : 0};
-    for (CountType i{startIndex}; (i < c.Count()); ++i)
+    for (SizeType i{startIndex}; (i < c.Count()); ++i)
         result.MConj(c[i]);
     return result;
 }

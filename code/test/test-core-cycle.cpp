@@ -14,7 +14,7 @@ SCENARIO("Cycle", "[CljonicCoreCycle]")
 {
     constexpr auto a{Array{11, 12, 13, 14}};
     const auto c{Cycle(a)};
-    auto MAX_SIZE_T{static_cast<decltype(c.Count())>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+    auto MAX_SIZE_T{CljonicCollectionMaximumElementCount};
 
     const auto cycleA0{Cycle(a)};
     CHECK(MAX_SIZE_T == cycleA0.Count());

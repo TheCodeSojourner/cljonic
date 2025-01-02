@@ -1,6 +1,10 @@
 #ifndef CLJONIC_CORE_TAKENTH_HPP
 #define CLJONIC_CORE_TAKENTH_HPP
 
+#include "cljonic-array.hpp"
+#include "cljonic-collection-maximum-element-count.hpp"
+#include "cljonic-concepts.hpp"
+
 namespace cljonic
 {
 
@@ -46,24 +50,23 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto TakeNth(const std::size_t nth, const C& c) noexcept
+constexpr auto TakeNth(const SizeType nth, const C& c) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 
     static_assert(IsCljonicCollection<C>, "TakeNth second parameter must be a cljonic collection");
 
-    using CountType = decltype(c.Count());
     using ResultType = Array<typename C::value_type, c.MaximumCount()>;
     using ValueType = typename C::value_type;
 
     constexpr auto FillArray = [](ResultType& r, const ValueType& v) noexcept
     {
-        for (CountType i{0}; i < r.MaximumCount(); ++i)
+        for (SizeType i{0}; i < r.MaximumCount(); ++i)
             r.MConj(v);
     };
-    constexpr auto FillArrayNth = [](ResultType& r, const C& vArray, const CountType nth) noexcept
+    constexpr auto FillArrayNth = [](ResultType& r, const C& vArray, const SizeType nth) noexcept
     {
-        auto i{CountType{0}};
+        auto i{SizeType{0}};
         while (i < vArray.Count())
         {
             r.MConj(vArray[i]);

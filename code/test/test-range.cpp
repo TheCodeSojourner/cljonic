@@ -7,7 +7,7 @@ using namespace cljonic;
 SCENARIO("Range", "[CljonicRange]")
 {
     const auto r{Range<>{}};
-    auto MAX_INDEX{static_cast<decltype(r.Count())>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+    auto MAX_INDEX{CljonicCollectionMaximumElementCount};
     auto MAX_VALUE{static_cast<decltype(r[0])>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
 
     {

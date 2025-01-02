@@ -1,6 +1,9 @@
 #ifndef CLJONIC_CORE_FILTER_HPP
 #define CLJONIC_CORE_FILTER_HPP
 
+#include "cljonic-array.hpp"
+#include "cljonic-concepts.hpp"
+
 namespace cljonic
 {
 

@@ -2,6 +2,9 @@
 #define CLJONIC_CORE_CYCLE_HPP
 
 #include <utility>
+#include "cljonic-collection-maximum-element-count.hpp"
+#include "cljonic-collection-type.hpp"
+#include "cljonic-concepts.hpp"
 
 namespace cljonic
 {
@@ -18,12 +21,11 @@ namespace core
 template <typename C>
 class CycleCollection
 {
-    using MaxElementsType = typename C::size_type;
     using ElementType = typename C::value_type;
 
     const C m_collection;
 
-    [[nodiscard]] MaxElementsType IndexToElementIndex(const MaxElementsType index) const noexcept
+    [[nodiscard]] SizeType IndexToElementIndex(const SizeType index) const noexcept
     {
         return (0 == m_collection.Count()) ? 0 : (index % m_collection.Count());
     }
@@ -31,10 +33,10 @@ class CycleCollection
     class CycleIterator
     {
         const CycleCollection& m_cycle;
-        MaxElementsType m_index;
+        SizeType m_index;
 
       public:
-        constexpr CycleIterator(const CycleCollection& cycle, const MaxElementsType index) noexcept
+        constexpr CycleIterator(const CycleCollection& cycle, const SizeType index) noexcept
             : m_cycle(cycle), m_index(index)
         {
         }
@@ -71,7 +73,7 @@ class CycleCollection
 
   public:
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Cycle>;
-    using size_type = MaxElementsType;
+    using size_type = SizeType;
     using value_type = ElementType;
 
     explicit CycleCollection(const C& collection) : m_collection(collection)
@@ -95,12 +97,12 @@ class CycleCollection
         return CycleIterator(*this, MaximumCount());
     }
 
-    [[nodiscard]] constexpr ElementType operator[](const MaxElementsType index) const noexcept
+    [[nodiscard]] constexpr ElementType operator[](const SizeType index) const noexcept
     {
         return m_collection[IndexToElementIndex(index)];
     }
 
-    [[nodiscard]] constexpr MaxElementsType Count() const noexcept
+    [[nodiscard]] constexpr SizeType Count() const noexcept
     {
         return MaximumCount();
     }
@@ -110,9 +112,9 @@ class CycleCollection
         return m_collection.DefaultElement();
     }
 
-    [[nodiscard]] constexpr MaxElementsType MaximumCount() const noexcept
+    [[nodiscard]] constexpr SizeType MaximumCount() const noexcept
     {
-        return (0 == m_collection.Count()) ? 0 : static_cast<MaxElementsType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT);
+        return (0 == m_collection.Count()) ? 0 : CljonicCollectionMaximumElementCount;
     }
 }; // class CycleCollection
 

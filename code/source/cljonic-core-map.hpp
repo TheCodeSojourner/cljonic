@@ -1,6 +1,10 @@
 #ifndef CLJONIC_CORE_MAP_HPP
 #define CLJONIC_CORE_MAP_HPP
 
+#include <concepts>
+#include "cljonic-array.hpp"
+#include "cljonic-concepts.hpp"
+
 namespace cljonic
 {
 
@@ -55,13 +59,8 @@ constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept
                   "Function cannot be called with values from the specified cljonic collections");
 
     using ResultType = decltype(f(std::declval<typename C::value_type>(), std::declval<typename Cs::value_type>()...));
-    using SizeType = decltype(c.Count());
 
-    constexpr auto CljonicCollectionMaximumElementCount{
-        static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
-
-    constexpr auto count{
-        Min(MinimumOfCljonicCollectionMaximumCounts<C, Cs...>(), CljonicCollectionMaximumElementCount)};
+    constexpr auto count{MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()};
     auto result{Array<ResultType, count>{}};
     for (SizeType i{0}; i < c.Count(); ++i)
         result.MConj(f(c[i], cs[i]...));

@@ -1,15 +1,14 @@
 #include <type_traits>
 #include "catch.hpp"
+#include "cljonic-collection-maximum-element-count.hpp"
 #include "cljonic-repeat.hpp"
 
 using namespace cljonic;
 
-static constexpr auto MAX_INDEX{std::numeric_limits<std::size_t>::max()};
-
 SCENARIO("Repeat", "[CljonicRepeat]")
 {
     const auto r{Repeat{1}};
-    auto MAX_INDEX{static_cast<decltype(r.Count())>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+    auto MAX_INDEX{CljonicCollectionMaximumElementCount};
 
     {
         const auto r{Repeat{1}};

@@ -90,8 +90,10 @@ NOTE: The performance of the implementation should be acceptable if the *average
 * In order to provide the *cljonic immutable-by-default* feature, and because the *heap* can't be used in the *targeted* 
 embedded systems, *cljonic* uses copying.  
 
-* In order to meet the *safe* Desired Developer Experience goal, *cljonic* does bounds checking on all collection 
+* In order to meet the *safe* Desired Developer Experience goal, *cljonic* does bounds-checking on all collection
 accesses. 
+
+* In order to meet the *safe* Desired Developer Experience goal, *cljonic* provides a *#define* named *CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT* that specifies the maximum number of elements that can be stored in a *cljonic Collection*, which is defaulted to *1000*. *CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT* can be changed to a larger value if needed by adding a line of code like this "*#define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT 10000*" before including *cljonic.hpp*, by directly defining *CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT* on the compiler command line, or by indirectly defining *CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT* in a build tool like *cmake*.
 
 == Required Resources
 * *AsciiDoc* for project documentation

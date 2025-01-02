@@ -14,14 +14,15 @@ namespace cljonic
  * The \b Repeat type is a fundamental immutable collection type in cljonic.  It is implemented as a \b lazy \b sequence
  * of a specified length of a specified value. Many \ref Namespace_Core "Core" functions accept Repeat arguments.
  */
-template <std::size_t MaxElements, typename T>
+template <SizeType MaxElements, typename T>
 class Repeat
 {
     using Iterator = CollectionIterator<Repeat>;
-    using SizeType = decltype(MaxElements);
 
-    static constexpr auto CljonicCollectionMaximumElementCount{
-        static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+    static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
+
+    static_assert(maximumElements == MaxElements,
+                  "Attempt to create a Repeat bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
 
     const SizeType m_elementCount;
     const T m_elementDefault;
@@ -30,7 +31,7 @@ class Repeat
   public:
     /**
     * There are two ways to create a \b Repeat:
-    *     - <b>Repeat{value}</b> returns a \b Repeat of value \b std::numeric_limits<std::size_t>::max() times
+    *     - <b>Repeat{value}</b> returns a \b Repeat of value \b CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT times
     *     - <b>Repeat<count, valueType>{value}</b> returns a \b Repeat of value, which is of type valueType,
     *     \b count times
     *
@@ -46,9 +47,9 @@ class Repeat
     {
         using T = std::variant<int, double, char, const char*>;
 
-        const auto r0{Repeat{1}};              // immutable, 1, std::numeric_limits<std::size_t>::max() times
+        const auto r0{Repeat{1}};              // immutable, 1, CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT times
         const auto r1{Repeat<10, int>{1}};     // immutable, 1, ten times
-        const auto r2{Repeat{T{'x'}}};         // immutable, T{'x'}, std::numeric_limits<std::size_t>::max() times
+        const auto r2{Repeat{T{'x'}}};         // immutable, T{'x'}, CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT times
         const auto r3{Repeat<100, T>{T{'x'}}}; // immutable, T{'x'}, 100 times
 
         return 0;
@@ -60,7 +61,7 @@ class Repeat
     using value_type = T;
 
     constexpr explicit Repeat(const T& t) noexcept
-        : m_elementCount{MaximumCount()}, m_elementDefault{T{}}, m_elementValue{t}
+        : m_elementCount{maximumElements}, m_elementDefault{T{}}, m_elementValue{t}
     {
     }
 
@@ -77,12 +78,12 @@ class Repeat
         return Iterator{*this, m_elementCount};
     }
 
-    constexpr const T& operator[](const size_type index) const noexcept
+    constexpr const T& operator[](const SizeType index) const noexcept
     {
         return ((m_elementCount <= 0) or (index >= m_elementCount)) ? m_elementDefault : m_elementValue;
     }
 
-    [[nodiscard]] constexpr size_type Count() const noexcept
+    [[nodiscard]] constexpr SizeType Count() const noexcept
     {
         return m_elementCount;
     }
@@ -94,13 +95,13 @@ class Repeat
 
     static constexpr auto MaximumCount() noexcept
     {
-        return Min(MaxElements, CljonicCollectionMaximumElementCount);
+        return maximumElements;
     }
 }; // class Repeat
 
-// deduction guide to transform Repeat{1} into Repeat<std::numeric_limits<std::size_t>::max(), int>(1)
+// deduction guide to transform Repeat{1} into Repeat<CljonicCollectionMaximumElementCount, int>(1)
 template <typename T>
-Repeat(T) -> Repeat<std::numeric_limits<std::size_t>::max(), T>;
+Repeat(T) -> Repeat<CljonicCollectionMaximumElementCount, T>;
 
 } // namespace cljonic
 

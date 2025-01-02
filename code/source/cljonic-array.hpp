@@ -4,7 +4,6 @@
 #include <cstring>
 #include <initializer_list>
 #include <type_traits>
-#include "cljonic-collection-maximum-element-count.hpp"
 #include "cljonic-collection-type.hpp"
 #include "cljonic-shared.hpp"
 
@@ -18,17 +17,17 @@ namespace cljonic
  * an out-of-bounds index will return its \b default \b element. Many \ref Namespace_Core "Core" functions accept Array
  * arguments.
  */
-template <typename T, std::size_t MaxElements>
+template <typename T, SizeType MaxElements>
 class Array
 {
-    using MaxElementsType = decltype(MaxElements);
+    static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
-    static constexpr auto CljonicCollectionMaximumElementCount{
-        static_cast<MaxElementsType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+    static_assert(maximumElements == MaxElements,
+                  "Attempt to create an Array bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
 
-    MaxElementsType m_elementCount;
+    SizeType m_elementCount;
     const T m_elementDefault;
-    T m_elements[Min(MaxElements, CljonicCollectionMaximumElementCount)];
+    T m_elements[maximumElements];
 
   public:
     /**
@@ -52,7 +51,7 @@ class Array
     ~~~~~
     */
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>;
-    using size_type = MaxElementsType;
+    using size_type = SizeType;
     using value_type = T;
 
     constexpr Array() noexcept : m_elementCount(0), m_elementDefault(T{})
@@ -62,7 +61,7 @@ class Array
     constexpr explicit Array(const std::initializer_list<const T> elements) noexcept
         : m_elementCount(Min(MaximumCount(), elements.size())), m_elementDefault(T{})
     {
-        for (size_type i{0}; i < m_elementCount; ++i)
+        for (SizeType i{0}; i < m_elementCount; ++i)
             m_elements[i] = *(elements.begin() + i);
     }
 
@@ -79,12 +78,12 @@ class Array
         return m_elements + m_elementCount;
     }
 
-    constexpr const T& operator[](const MaxElementsType index) const noexcept
+    constexpr const T& operator[](const SizeType index) const noexcept
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
     }
 
-    constexpr const T& operator()(const MaxElementsType index) const noexcept
+    constexpr const T& operator()(const SizeType index) const noexcept
     {
         return this->operator[](index);
     }
@@ -95,7 +94,7 @@ class Array
             m_elements[m_elementCount++] = t;
     }
 
-    [[nodiscard]] constexpr MaxElementsType Count() const noexcept
+    [[nodiscard]] constexpr SizeType Count() const noexcept
     {
         return m_elementCount;
     }
@@ -105,9 +104,9 @@ class Array
         return m_elementDefault;
     }
 
-    static constexpr MaxElementsType MaximumCount() noexcept
+    static constexpr SizeType MaximumCount() noexcept
     {
-        return Min(MaxElements, CljonicCollectionMaximumElementCount);
+        return maximumElements;
     }
 }; // class Array
 

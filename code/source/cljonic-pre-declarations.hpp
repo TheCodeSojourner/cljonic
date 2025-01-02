@@ -1,22 +1,24 @@
 #ifndef CLJONIC_PRE_DECLARATIONSHPP
 #define CLJONIC_PRE_DECLARATIONSHPP
 
+#include "cljonic-collection-maximum-element-count.hpp"
+
 namespace cljonic
 {
 
-template <typename T, std::size_t MaxElements>
+template <typename T, SizeType MaxElements>
 class Array;
 
 template <int... StartEndStep>
 class Range;
 
-template <std::size_t MaxElements, typename T>
+template <SizeType MaxElements, typename T>
 class Repeat;
 
-template <typename T, std::size_t MaxElements>
+template <typename T, SizeType MaxElements>
 class Set;
 
-template <std::size_t MaxElements>
+template <SizeType MaxElements>
 class String;
 
 namespace core
@@ -65,13 +67,13 @@ template <typename C>
 constexpr auto Seq(const C& c) noexcept;
 
 template <typename C>
-constexpr auto Take(const std::size_t count, const C& c) noexcept;
+constexpr auto Take(const SizeType count, const C& c) noexcept;
 
 template <typename C>
-constexpr auto TakeLast(const std::size_t count, const C& c) noexcept;
+constexpr auto TakeLast(const SizeType count, const C& c) noexcept;
 
 template <typename C>
-constexpr auto TakeNth(const std::size_t nth, const C& c) noexcept;
+constexpr auto TakeNth(const SizeType nth, const C& c) noexcept;
 
 } // namespace core
 

@@ -79,9 +79,8 @@ constexpr auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
         {
             auto EqualSets = [&](const auto& c1, const auto& c2)
             {
-                using CountType = decltype(c1.Count());
                 auto result{c1.Count() == c2.Count()};
-                for (CountType i{0}; (result and (i < c1.Count())); ++i)
+                for (SizeType i{0}; (result and (i < c1.Count())); ++i)
                     result = c2.ContainsBy(f, c1[i]);
                 return result;
             };
@@ -91,9 +90,8 @@ constexpr auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
         {
             auto EqualCollections = [&](const auto& c1, const auto& c2)
             {
-                using CountType = decltype(c1.Count());
                 auto result{c1.Count() == c2.Count()};
-                for (CountType i{0}; (result and (i < c1.Count())); ++i)
+                for (SizeType i{0}; (result and (i < c1.Count())); ++i)
                     result = AreEqualBy(f, c1[i], c2[i]);
                 return result;
             };
