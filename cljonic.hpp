@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan  3 09:47:41 AM MST 2025
+// This file was generated Fri Jan  3 10:46:13 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -292,6 +292,9 @@ constexpr auto Cycle(const C& c) noexcept;
 
 template <typename C>
 constexpr auto Dedupe(const C& c) noexcept;
+
+template <typename F, typename C>
+constexpr auto DedupeBy(const F& f, const C& c) noexcept;
 
 template <typename T, typename... Ts>
 constexpr auto Equal(const T& t, const Ts&... ts) noexcept;
@@ -1052,6 +1055,40 @@ auto result{Array<ValueType, c.MaximumCount()>{}};
 for(SizeType i{0}; i < c.Count();) {
 result.MConj(c[i]);
 i = IndexOfNextElementNotEqualToCurrentElement(c, i);
+}
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C>
+constexpr auto DedupeBy(const F& f, const C& c) noexcept {
+
+static_assert(IsCljonicCollection<C>, "DedupeBy's second parameter must be a cljonic collection");
+
+static_assert(IsBinaryPredicate<F, typename C::value_type, typename C::value_type>,
+              "DedupeBy's function is not a valid binary predicate for the collection value type");
+
+using ValueType = typename C::value_type;
+
+constexpr auto IndexOfNextElementNotEqualToCurrentElement =
+    [](const F& fn, const C& collection, const SizeType currentIndex) {
+    auto currentElement{collection[currentIndex]};
+    auto i{currentIndex + 1};
+    while((i < collection.Count()) and fn(collection[i], currentElement))
+    ++i;
+    return i;
+    };
+
+auto result{Array<ValueType, c.MaximumCount()>{}};
+for(SizeType i{0}; i < c.Count();) {
+result.MConj(c[i]);
+i = IndexOfNextElementNotEqualToCurrentElement(f, c, i);
 }
 return result;
 }

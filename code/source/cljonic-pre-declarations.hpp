@@ -42,6 +42,9 @@ constexpr auto Cycle(const C& c) noexcept;
 template <typename C>
 constexpr auto Dedupe(const C& c) noexcept;
 
+template <typename F, typename C>
+constexpr auto DedupeBy(const F& f, const C& c) noexcept;
+
 template <typename T, typename... Ts>
 constexpr auto Equal(const T& t, const Ts&... ts) noexcept;
 

@@ -18,6 +18,7 @@ int main()
     constexpr auto count{Count(a)};
     const auto cycle{Cycle(a)};
     constexpr auto dedupe{Dedupe(a)};
+    constexpr auto dedupeby{DedupeBy([](const int i, const int j) { return i == j; }, a)};
     constexpr auto equal{Equal(a, a)};
     constexpr auto equalby{EqualBy([](const int i, const int j) { return i == j; }, 1, 1, 1, 1)};
     constexpr auto every{Every([](const int i) { return 1 == i; }, a)};
