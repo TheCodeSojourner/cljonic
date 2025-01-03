@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan  3 11:46:44 AM MST 2025
+// This file was generated Fri Jan  3 11:52:03 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -303,7 +303,7 @@ template <typename F, typename T, typename... Ts>
 constexpr auto EqualBy(F&& f, const T& t, const Ts&... ts) noexcept;
 
 template <typename F, typename C>
-constexpr auto Every(const F& f, const C& c) noexcept;
+constexpr auto Every(F&& f, const C& c) noexcept;
 
 template <typename F, typename C>
 constexpr auto Filter(const F& f, const C& c) noexcept;
@@ -1128,7 +1128,7 @@ return true;
 static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
               "EqualBy cljonic collection types are not all the same, or all Array, Range or Repeat types");
 
-static_assert(IsBinaryPredicateForAllCljonicCollections<F, T, Ts...>,
+static_assert(IsBinaryPredicateForAllCljonicCollections<std::decay_t<F>, T, Ts...>,
               "EqualBy function is not a valid binary predicate for all cljonic collection value types");
 
 if constexpr(AllCljonicSets<T, Ts...>) {
@@ -1167,10 +1167,10 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto Every(const F& f, const C& c) noexcept {
+constexpr auto Every(F&& f, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Every's second parameter must be a cljonic collection");
 
-static_assert(IsUnaryPredicate<F, typename C::value_type>,
+static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
               "Every's function is not a valid unary predicate for the collection value type");
 
 auto result{true};

@@ -65,7 +65,7 @@ constexpr auto EqualBy(F&& f, const T& t, const Ts&... ts) noexcept
         static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
                       "EqualBy cljonic collection types are not all the same, or all Array, Range or Repeat types");
 
-        static_assert(IsBinaryPredicateForAllCljonicCollections<F, T, Ts...>,
+        static_assert(IsBinaryPredicateForAllCljonicCollections<std::decay_t<F>, T, Ts...>,
                       "EqualBy function is not a valid binary predicate for all cljonic collection value types");
 
         if constexpr (AllCljonicSets<T, Ts...>)

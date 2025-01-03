@@ -52,7 +52,7 @@ template <typename F, typename T, typename... Ts>
 constexpr auto EqualBy(F&& f, const T& t, const Ts&... ts) noexcept;
 
 template <typename F, typename C>
-constexpr auto Every(const F& f, const C& c) noexcept;
+constexpr auto Every(F&& f, const C& c) noexcept;
 
 template <typename F, typename C>
 constexpr auto Filter(const F& f, const C& c) noexcept;

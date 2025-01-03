@@ -51,11 +51,11 @@ int main()
 ~~~~~
 */
 template <typename F, typename C>
-constexpr auto Every(const F& f, const C& c) noexcept
+constexpr auto Every(F&& f, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Every's second parameter must be a cljonic collection");
 
-    static_assert(IsUnaryPredicate<F, typename C::value_type>,
+    static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
                   "Every's function is not a valid unary predicate for the collection value type");
 
     auto result{true};
