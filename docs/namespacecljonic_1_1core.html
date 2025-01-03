@@ -810,16 +810,16 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">e6</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a6674048d51e65a38324f11c5f3a4c6b8">Equal</a>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">str1</a>, <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">str2</a>)};      <span class="comment">// true</span></div>
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">e7</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a6674048d51e65a38324f11c5f3a4c6b8">Equal</a>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">a4</a>, <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">ra1</a>, <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">re1</a>)};    <span class="comment">// true</span></div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// Compiler Error: Equal(By) should not compare floating point types for equality</span></div>
+<div class="line">    <span class="comment">// Compiler Error: Equal should not compare floating point types for equality</span></div>
 <div class="line">    <span class="comment">// const auto e{Equal(1.1)};</span></div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// Compiler Error: Equal(By) should not compare floating point types for equality</span></div>
+<div class="line">    <span class="comment">// Compiler Error: Equal should not compare floating point types for equality</span></div>
 <div class="line">    <span class="comment">// const auto e{Equal(1.1, 2.1)};</span></div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Compiler Error: no matching function for call to ‘Equal()’</span></div>
 <div class="line">    <span class="comment">// const auto e{Equal()}; // Compiler Error: Must specify at least one parameter</span></div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// Compiler Error: Not all Equal(By) types are equality comparable</span></div>
+<div class="line">    <span class="comment">// Compiler Error: Not all Equal types are equality comparable</span></div>
 <div class="line">    <span class="comment">// const auto e{Equal(1, &quot;Hello&quot;)};</span></div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
@@ -893,23 +893,17 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">b6</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a27c9ba69080e8e96faf4a5b2ce14b1ff">EqualBy</a>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">EBF</a>, <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r14</a>, <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">a13</a>)}; <span class="comment">// true</span></div>
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">b7</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a27c9ba69080e8e96faf4a5b2ce14b1ff">EqualBy</a>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">EBF</a>, <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r04</a>, <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">a</a>)};   <span class="comment">// false</span></div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// Compiler Error: Equal(By) should not compare floating point types for equality</span></div>
-<div class="line">    <span class="comment">// const auto b{EqualBy(EBF, 1.1)};</span></div>
-<div class="line"> </div>
-<div class="line">    <span class="comment">// Compiler Error: Equal(By) should not compare floating point types for equality</span></div>
-<div class="line">    <span class="comment">// const auto b{EqualBy(EBF, 1.1, 2.1)};</span></div>
-<div class="line"> </div>
 <div class="line">    <span class="comment">// Compiler Error: no matching function for call</span></div>
 <div class="line">    <span class="comment">// const auto b{EqualBy(EBF)}; // Compiler Error: Must specify at least two parameters</span></div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// Compiler Error: Not all Equal(By) types are equality comparable</span></div>
+<div class="line">    <span class="comment">// Compiler Error: Not all EqualBy types are equality comparable</span></div>
 <div class="line">    <span class="comment">// const auto b{EqualBy(EBF, 1, &quot;Hello&quot;)};</span></div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_a27c9ba69080e8e96faf4a5b2ce14b1ff"><div class="ttname"><a href="namespacecljonic_1_1core.html#a27c9ba69080e8e96faf4a5b2ce14b1ff">cljonic::core::EqualBy</a></div><div class="ttdeci">constexpr auto EqualBy(const F &amp;f, const T &amp;t, const Ts &amp;... ts) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-equalby_8hpp_source.html#l00057">cljonic-core-equalby.hpp:57</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a27c9ba69080e8e96faf4a5b2ce14b1ff"><div class="ttname"><a href="namespacecljonic_1_1core.html#a27c9ba69080e8e96faf4a5b2ce14b1ff">cljonic::core::EqualBy</a></div><div class="ttdeci">constexpr auto EqualBy(const F &amp;f, const T &amp;t, const Ts &amp;... ts) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-equalby_8hpp_source.html#l00051">cljonic-core-equalby.hpp:51</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-core-equalby_8hpp_source.html#l00057">57</a> of file <a class="el" href="cljonic-core-equalby_8hpp_source.html">cljonic-core-equalby.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-core-equalby_8hpp_source.html#l00051">51</a> of file <a class="el" href="cljonic-core-equalby_8hpp_source.html">cljonic-core-equalby.hpp</a>.</p>
 
 </div>
 </div>
@@ -1731,7 +1725,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jan 3 2025 11:00:50 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Jan 3 2025 11:31:44 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

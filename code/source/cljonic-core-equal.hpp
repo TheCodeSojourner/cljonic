@@ -38,16 +38,16 @@ int main()
     const auto e6{Equal(str1, str2)};      // true
     const auto e7{Equal(a4, ra1, re1)};    // true
 
-    // Compiler Error: Equal(By) should not compare floating point types for equality
+    // Compiler Error: Equal should not compare floating point types for equality
     // const auto e{Equal(1.1)};
 
-    // Compiler Error: Equal(By) should not compare floating point types for equality
+    // Compiler Error: Equal should not compare floating point types for equality
     // const auto e{Equal(1.1, 2.1)};
 
     // Compiler Error: no matching function for call to ‘Equal()’
     // const auto e{Equal()}; // Compiler Error: Must specify at least one parameter
 
-    // Compiler Error: Not all Equal(By) types are equality comparable
+    // Compiler Error: Not all Equal types are equality comparable
     // const auto e{Equal(1, "Hello")};
 
     return 0;
@@ -57,7 +57,36 @@ int main()
 template <typename T, typename... Ts>
 constexpr auto Equal(const T& t, const Ts&... ts) noexcept
 {
-    return EqualBy([](const auto& a, const auto& b) { return AreEqual(a, b); }, t, ts...);
+    // #lizard forgives -- The length and complexity of this function is acceptable
+
+    if constexpr (sizeof...(Ts) <= 0)
+    {
+        if constexpr (IsCljonicCollection<T>)
+            static_assert((not std::floating_point<typename T::value_type>),
+                          "Equal should not compare cljonic floating point collection value types for equality");
+        else
+            static_assert((not std::floating_point<T>), "Equal should not compare floating point types for equality");
+        return true;
+    }
+    else if constexpr (AllCljonicCollections<T, Ts...>)
+    {
+        static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
+                      "Equal should not compare cljonic floating point collection value types for equality");
+
+        static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
+                      "Equal cljonic collection types are not all the same, or all Array, Range or Repeat types");
+
+        return EqualBy([](const auto& a, const auto& b) { return AreEqual(a, b); }, t, ts...);
+    }
+    else
+    {
+        static_assert(not AnyFloatingPointTypes<T, Ts...>,
+                      "Equal should not compare floating point types for equality");
+
+        static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all Equal types are equality comparable");
+
+        return EqualBy([](const auto& a, const auto& b) { return AreEqual(a, b); }, t, ts...);
+    }
 }
 
 } // namespace core

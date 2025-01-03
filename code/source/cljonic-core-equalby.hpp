@@ -37,16 +37,10 @@ int main()
     const auto b6{EqualBy(EBF, r14, a13)}; // true
     const auto b7{EqualBy(EBF, r04, a)};   // false
 
-    // Compiler Error: Equal(By) should not compare floating point types for equality
-    // const auto b{EqualBy(EBF, 1.1)};
-
-    // Compiler Error: Equal(By) should not compare floating point types for equality
-    // const auto b{EqualBy(EBF, 1.1, 2.1)};
-
     // Compiler Error: no matching function for call
     // const auto b{EqualBy(EBF)}; // Compiler Error: Must specify at least two parameters
 
-    // Compiler Error: Not all Equal(By) types are equality comparable
+    // Compiler Error: Not all EqualBy types are equality comparable
     // const auto b{EqualBy(EBF, 1, "Hello")};
 
     return 0;
@@ -64,30 +58,22 @@ constexpr auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
      */
     if constexpr (sizeof...(Ts) <= 0)
     {
-        if constexpr (IsCljonicCollection<T>)
-            static_assert((not std::floating_point<typename T::value_type>),
-                          "Equal(By) should not compare cljonic floating point collection value types for equality");
-        else
-            static_assert((not std::floating_point<T>),
-                          "Equal(By) should not compare floating point types for equality");
         return true;
     }
     else if constexpr (AllCljonicCollections<T, Ts...>)
     {
         static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
-                      "Equal(By) cljonic collection types are not all the same, or all Array, Range or Repeat types");
-
-        static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
-                      "Equal(By) should not compare cljonic floating point collection value types for equality");
+                      "EqualBy cljonic collection types are not all the same, or all Array, Range or Repeat types");
 
         static_assert(IsBinaryPredicateForAllCljonicCollections<F, T, Ts...>,
-                      "Equal(By) function is not a valid binary predicate for all cljonic collection value types");
+                      "EqualBy function is not a valid binary predicate for all cljonic collection value types");
 
-        if constexpr (sizeof...(Ts) <= 0)
-        {
-            return true;
-        }
-        else if constexpr (AllCljonicSets<T, Ts...>)
+        // if constexpr (sizeof...(Ts) <= 0)
+        // {
+        //     return true;
+        // }
+        // else
+        if constexpr (AllCljonicSets<T, Ts...>)
         {
             auto EqualSets = [&](const auto& c1, const auto& c2)
             {
@@ -112,13 +98,10 @@ constexpr auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
     }
     else
     {
-        static_assert(not AnyFloatingPointTypes<T, Ts...>,
-                      "Equal(By) should not compare floating point types for equality");
-
-        static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all Equal(By) types are equality comparable");
+        static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all EqualBy types are equality comparable");
 
         static_assert(IsBinaryPredicateForAll<F, T, Ts...>,
-                      "Equal(By) function is not a valid binary predicate for all parameters");
+                      "EqualBy function is not a valid binary predicate for all parameters");
 
         auto EqualParameters = [&](const auto& p1, const auto& p2) { return AreEqualBy(f, p1, p2); };
         return (EqualParameters(t, ts) and ...);
