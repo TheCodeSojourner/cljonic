@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan  3 02:57:50 PM MST 2025
+// This file was generated Fri Jan  3 03:28:52 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -305,6 +305,9 @@ constexpr auto Drop(const SizeType count, const C& c) noexcept;
 
 template <typename C>
 constexpr auto DropLast(const SizeType count, const C& c) noexcept;
+
+template <typename F, typename C>
+constexpr auto DropWhile(F&& f, const C& c) noexcept;
 
 template <typename T, typename... Ts>
 constexpr auto Equal(const T& t, const Ts&... ts) noexcept;
@@ -1133,6 +1136,29 @@ auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 auto endIndex{(count > c.Count()) ? 0 : (c.Count() - count)};
 for(SizeType i{0}; (i < endIndex); ++i)
 result.MConj(c[i]);
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C>
+constexpr auto DropWhile(F&& f, const C& c) noexcept {
+
+static_assert(IsCljonicCollection<C>, "DropWhile's second parameter must be a cljonic collection");
+
+static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
+              "DropWhile's function is not a valid unary predicate for the collection value type");
+
+auto result{Array<typename C::value_type, c.MaximumCount()>{}};
+auto conjElement(false);
+for(const auto& element : c)
+if(conjElement |= (not f(element)))
+result.MConj(element);
 return result;
 }
 

@@ -54,6 +54,9 @@ constexpr auto Drop(const SizeType count, const C& c) noexcept;
 template <typename C>
 constexpr auto DropLast(const SizeType count, const C& c) noexcept;
 
+template <typename F, typename C>
+constexpr auto DropWhile(F&& f, const C& c) noexcept;
+
 template <typename T, typename... Ts>
 constexpr auto Equal(const T& t, const Ts&... ts) noexcept;
 
