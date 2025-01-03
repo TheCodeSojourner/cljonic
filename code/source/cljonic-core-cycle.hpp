@@ -76,11 +76,11 @@ class CycleCollection
     using size_type = SizeType;
     using value_type = ElementType;
 
-    explicit CycleCollection(const C& collection) : m_collection(collection)
+    constexpr explicit CycleCollection(const C& collection) : m_collection(collection)
     {
     }
 
-    explicit CycleCollection(C&& collection) : m_collection(std::move(collection))
+    constexpr explicit CycleCollection(C&& collection) : m_collection(std::move(collection))
     {
     }
 

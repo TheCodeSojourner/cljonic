@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan  3 04:00:44 PM MST 2025
+// This file was generated Fri Jan  3 04:09:49 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -1002,10 +1002,10 @@ using cljonic_collection_type = std::integral_constant<CljonicCollectionType, Cl
 using size_type = SizeType;
 using value_type = ElementType;
 
-explicit CycleCollection(const C& collection) : m_collection(collection) {
+constexpr explicit CycleCollection(const C& collection) : m_collection(collection) {
 }
 
-explicit CycleCollection(C&& collection) : m_collection(std::move(collection)) {
+constexpr explicit CycleCollection(C&& collection) : m_collection(std::move(collection)) {
 }
 
 constexpr CycleCollection(const CycleCollection& other) = default;
