@@ -82,7 +82,7 @@ template <typename C>
 constexpr auto TakeNth(const SizeType nth, const C& c) noexcept;
 
 template <typename F, typename C>
-constexpr auto TakeWhile(const F& f, const C& c) noexcept;
+constexpr auto TakeWhile(F&& f, const C& c) noexcept;
 
 } // namespace core
 

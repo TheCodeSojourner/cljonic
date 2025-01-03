@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan  3 12:01:13 PM MST 2025
+// This file was generated Fri Jan  3 12:05:26 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -210,8 +210,9 @@ constexpr bool IsBinaryPredicateForAllCljonicCollections =
 namespace cljonic {
 
 template <typename F, typename T, typename U>
-constexpr bool AreEqualBy(const F& f, const T& t, const U& u) noexcept {
-static_assert(std::predicate<F, T, U>, "AreEqualBy function is not a valid binary predicate for the parameters");
+constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept {
+static_assert(std::predicate<std::decay_t<F>, T, U>,
+              "AreEqualBy function is not a valid binary predicate for the parameters");
 return f(t, u);
 }
 
@@ -333,7 +334,7 @@ template <typename C>
 constexpr auto TakeNth(const SizeType nth, const C& c) noexcept;
 
 template <typename F, typename C>
-constexpr auto TakeWhile(const F& f, const C& c) noexcept;
+constexpr auto TakeWhile(F&& f, const C& c) noexcept;
 
 } // namespace core
 

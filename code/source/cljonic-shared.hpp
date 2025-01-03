@@ -10,9 +10,10 @@ namespace cljonic
 {
 
 template <typename F, typename T, typename U>
-constexpr bool AreEqualBy(const F& f, const T& t, const U& u) noexcept
+constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept
 {
-    static_assert(std::predicate<F, T, U>, "AreEqualBy function is not a valid binary predicate for the parameters");
+    static_assert(std::predicate<std::decay_t<F>, T, U>,
+                  "AreEqualBy function is not a valid binary predicate for the parameters");
     return f(t, u);
 }
 
