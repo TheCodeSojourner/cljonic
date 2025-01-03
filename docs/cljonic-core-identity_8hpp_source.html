@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cljonic: /home/pauwhi/Downloads/junk/cljonic/code/source/cljonic-core-defaultelement.hpp Source File</title>
+<title>cljonic: /home/pauwhi/Downloads/junk/cljonic/code/source/cljonic-core-identity.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -80,11 +80,11 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="headertitle"><div class="title">cljonic-core-defaultelement.hpp</div></div>
+  <div class="headertitle"><div class="title">cljonic-core-identity.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="cljonic-core-defaultelement_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef CLJONIC_CORE_DEFAULTELEMENT_HPP</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define CLJONIC_CORE_DEFAULTELEMENT_HPP</span></div>
+<a href="cljonic-core-identity_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef CLJONIC_CORE_IDENTITY_HPP</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define CLJONIC_CORE_IDENTITY_HPP</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span>{</div>
@@ -92,23 +92,20 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">namespace </span>core</div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>{</div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> C&gt;</div>
-<div class="foldopen" id="foldopen00043" data-start="{" data-end="}">
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#a52ee97245848ed8c4dd9d3b06c0f41e2">   43</a></span><span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#a52ee97245848ed8c4dd9d3b06c0f41e2">DefaultElement</a>(<span class="keyword">const</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">C</a>&amp; <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>) <span class="keyword">noexcept</span></div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>{</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keyword">static_assert</span>(<a class="code hl_concept" href="conceptcljonic_1_1_is_cljonic_collection.html">IsCljonicCollection&lt;C&gt;</a>, <span class="stringliteral">&quot;DefaultElement&#39;s parameter must be a cljonic collection&quot;</span>);</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>.DefaultElement();</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>}</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="foldopen" id="foldopen00037" data-start="{" data-end="}">
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#aebaf247525436690bf61493e6b29040b">   37</a></span><span class="keyword">constexpr</span> <span class="keywordtype">void</span>* <a class="code hl_function" href="namespacecljonic_1_1core.html#aebaf247525436690bf61493e6b29040b">Identity</a>(<span class="keyword">const</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a>&amp; <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">t</a>) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>{</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keywordflow">return</span> (<span class="keywordtype">void</span>*)&amp;<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">t</a>;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>}</div>
 </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>} <span class="comment">// namespace core</span></div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>} <span class="comment">// namespace cljonic</span></div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="preprocessor">#endif </span><span class="comment">// CLJONIC_CORE_DEFAULTELEMENT_HPP</span></div>
-<div class="ttc" id="aconceptcljonic_1_1_is_cljonic_collection_html"><div class="ttname"><a href="conceptcljonic_1_1_is_cljonic_collection.html">cljonic::IsCljonicCollection</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00054">cljonic-concepts.hpp:54</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_a52ee97245848ed8c4dd9d3b06c0f41e2"><div class="ttname"><a href="namespacecljonic_1_1core.html#a52ee97245848ed8c4dd9d3b06c0f41e2">cljonic::core::DefaultElement</a></div><div class="ttdeci">constexpr auto DefaultElement(const C &amp;c) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-defaultelement_8hpp_source.html#l00043">cljonic-core-defaultelement.hpp:43</a></div></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>} <span class="comment">// namespace core</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>} <span class="comment">// namespace cljonic</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="preprocessor">#endif </span><span class="comment">// CLJONIC_CORE_IDENTITY_HPP</span></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_aebaf247525436690bf61493e6b29040b"><div class="ttname"><a href="namespacecljonic_1_1core.html#aebaf247525436690bf61493e6b29040b">cljonic::core::Identity</a></div><div class="ttdeci">constexpr void * Identity(const T &amp;t) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-identity_8hpp_source.html#l00037">cljonic-core-identity.hpp:37</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00010">cljonic-array.hpp:11</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_ac1734fb139d2b39c04e650f3d0a75eef"><div class="ttname"><a href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">cljonic::AllConvertibleTypes</a></div><div class="ttdeci">constexpr bool AllConvertibleTypes</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00086">cljonic-concepts.hpp:86</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

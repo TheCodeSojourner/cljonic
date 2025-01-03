@@ -72,6 +72,9 @@ constexpr auto Filter(F&& f, const C& c) noexcept;
 template <typename C>
 constexpr auto First(const C& coll) noexcept;
 
+template <typename T>
+constexpr void* Identity(const T& t) noexcept;
+
 template <typename F, typename C, typename... Cs>
 constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept;
 

@@ -28,6 +28,7 @@ int main()
     constexpr auto every{Every([](const int i) { return 1 == i; }, a)};
     constexpr auto filter{Filter([](const int i) { return 1 == i; }, a)};
     constexpr auto first{First(a)};
+    const auto identity{Identity(a)};
     constexpr auto map{Map([](const int i) { return 1 == i; }, a)};
     constexpr auto partial{Partial([](const int i, const int j) { return i + j; }, 10)};
     constexpr auto reduce2{Reduce([](const int sum, const int i) { return sum + i; }, a)};
