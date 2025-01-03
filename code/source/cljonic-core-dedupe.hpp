@@ -1,6 +1,8 @@
 #ifndef CLJONIC_CORE_DEDUPE_HPP
 #define CLJONIC_CORE_DEDUPE_HPP
 
+#include "cljonic-core-dedupeby.hpp"
+
 namespace cljonic
 {
 
@@ -52,31 +54,12 @@ int main()
 template <typename C>
 constexpr auto Dedupe(const C& c) noexcept
 {
-    // #lizard forgives -- The length and complexity of this function is acceptable
-
     static_assert(IsCljonicCollection<C>, "Dedupe's parameter must be a cljonic collection");
 
     static_assert((not std::floating_point<typename C::value_type>),
                   "Dedupe should not compare cljonic floating point collection value types for equality");
 
-    using ValueType = typename C::value_type;
-
-    constexpr auto IndexOfNextElementNotEqualToCurrentElement = [](const C& collection, const SizeType currentIndex)
-    {
-        auto currentElement{collection[currentIndex]};
-        auto i{currentIndex + 1};
-        while ((i < collection.Count()) and (collection[i] == currentElement))
-            ++i;
-        return i;
-    };
-
-    auto result{Array<ValueType, c.MaximumCount()>{}};
-    for (SizeType i{0}; i < c.Count();)
-    {
-        result.MConj(c[i]);
-        i = IndexOfNextElementNotEqualToCurrentElement(c, i);
-    }
-    return result;
+    return DedupeBy([](const auto& a, const auto& b) { return AreEqual(a, b); }, c);
 }
 
 } // namespace core
