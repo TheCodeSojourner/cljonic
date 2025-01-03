@@ -6,6 +6,7 @@ namespace cljonic
 
 namespace core
 {
+
 /** \anchor Core_Count
 * The \b Count function returns the number of elements currently contained in a \b cljonic \b collection.
 ~~~~~{.cpp}

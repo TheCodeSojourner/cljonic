@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan  2 03:35:15 PM MST 2025
+// This file was generated Fri Jan  3 07:38:25 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -401,8 +401,8 @@ return maximumElements;
 }
 };
 
-template <typename... Args>
-Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
+template <typename T = void, typename... Args>
+Array(Args...) -> Array<std::conditional_t<std::is_void_v<T>, std::common_type_t<Args...>, T>, sizeof...(Args)>;
 
 } // namespace cljonic
 
