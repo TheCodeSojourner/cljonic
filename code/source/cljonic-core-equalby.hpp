@@ -48,7 +48,7 @@ int main()
 ~~~~~
 */
 template <typename F, typename T, typename... Ts>
-constexpr auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
+constexpr auto EqualBy(F&& f, const T& t, const Ts&... ts) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 
@@ -68,11 +68,6 @@ constexpr auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept
         static_assert(IsBinaryPredicateForAllCljonicCollections<F, T, Ts...>,
                       "EqualBy function is not a valid binary predicate for all cljonic collection value types");
 
-        // if constexpr (sizeof...(Ts) <= 0)
-        // {
-        //     return true;
-        // }
-        // else
         if constexpr (AllCljonicSets<T, Ts...>)
         {
             auto EqualSets = [&](const auto& c1, const auto& c2)

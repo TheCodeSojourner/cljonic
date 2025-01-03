@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan  3 11:42:12 AM MST 2025
+// This file was generated Fri Jan  3 11:46:44 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -294,13 +294,13 @@ template <typename C>
 constexpr auto Dedupe(const C& c) noexcept;
 
 template <typename F, typename C>
-constexpr auto DedupeBy(const F& f, const C& c) noexcept;
+constexpr auto DedupeBy(F&& f, const C& c) noexcept;
 
 template <typename T, typename... Ts>
 constexpr auto Equal(const T& t, const Ts&... ts) noexcept;
 
 template <typename F, typename T, typename... Ts>
-constexpr auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept;
+constexpr auto EqualBy(F&& f, const T& t, const Ts&... ts) noexcept;
 
 template <typename F, typename C>
 constexpr auto Every(const F& f, const C& c) noexcept;
@@ -1120,7 +1120,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename T, typename... Ts>
-constexpr auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept {
+constexpr auto EqualBy(F&& f, const T& t, const Ts&... ts) noexcept {
 
 if constexpr(sizeof...(Ts) <= 0) {
 return true;

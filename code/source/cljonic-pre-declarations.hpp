@@ -43,13 +43,13 @@ template <typename C>
 constexpr auto Dedupe(const C& c) noexcept;
 
 template <typename F, typename C>
-constexpr auto DedupeBy(const F& f, const C& c) noexcept;
+constexpr auto DedupeBy(F&& f, const C& c) noexcept;
 
 template <typename T, typename... Ts>
 constexpr auto Equal(const T& t, const Ts&... ts) noexcept;
 
 template <typename F, typename T, typename... Ts>
-constexpr auto EqualBy(const F& f, const T& t, const Ts&... ts) noexcept;
+constexpr auto EqualBy(F&& f, const T& t, const Ts&... ts) noexcept;
 
 template <typename F, typename C>
 constexpr auto Every(const F& f, const C& c) noexcept;
