@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan  3 08:25:37 AM MST 2025
+// This file was generated Fri Jan  3 09:47:41 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -289,6 +289,9 @@ constexpr auto Count(const C& c) noexcept;
 
 template <typename C>
 constexpr auto Cycle(const C& c) noexcept;
+
+template <typename C>
+constexpr auto Dedupe(const C& c) noexcept;
 
 template <typename T, typename... Ts>
 constexpr auto Equal(const T& t, const Ts&... ts) noexcept;
@@ -1018,6 +1021,39 @@ constexpr auto Cycle(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Cycle's parameter must be a cljonic collection");
 
 return CycleCollection{c};
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto Dedupe(const C& c) noexcept {
+
+static_assert(IsCljonicCollection<C>, "Dedupe's parameter must be a cljonic collection");
+
+static_assert((not std::floating_point<typename C::value_type>),
+              "Dedupe should not compare cljonic floating point collection value types for equality");
+
+using ValueType = typename C::value_type;
+
+constexpr auto IndexOfNextElementNotEqualToCurrentElement = [](const C& collection, const SizeType currentIndex) {
+auto currentElement{collection[currentIndex]};
+auto i{currentIndex + 1};
+while((i < collection.Count()) and (collection[i] == currentElement))
+++i;
+return i;
+};
+
+auto result{Array<ValueType, c.MaximumCount()>{}};
+for(SizeType i{0}; i < c.Count();) {
+result.MConj(c[i]);
+i = IndexOfNextElementNotEqualToCurrentElement(c, i);
+}
+return result;
 }
 
 }
