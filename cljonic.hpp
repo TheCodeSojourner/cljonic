@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan  3 02:24:09 PM MST 2025
+// This file was generated Fri Jan  3 02:57:50 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -302,6 +302,9 @@ constexpr auto DefaultElement(const C& c) noexcept;
 
 template <typename C>
 constexpr auto Drop(const SizeType count, const C& c) noexcept;
+
+template <typename C>
+constexpr auto DropLast(const SizeType count, const C& c) noexcept;
 
 template <typename T, typename... Ts>
 constexpr auto Equal(const T& t, const Ts&... ts) noexcept;
@@ -1111,6 +1114,24 @@ static_assert(IsCljonicCollection<C>, "Drop's second parameter must be a cljonic
 
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 for(SizeType i{count}; (i < c.Count()); ++i)
+result.MConj(c[i]);
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto DropLast(const SizeType count, const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "DropLast's second parameter must be a cljonic collection");
+
+auto result{Array<typename C::value_type, c.MaximumCount()>{}};
+auto endIndex{(count > c.Count()) ? 0 : (c.Count() - count)};
+for(SizeType i{0}; (i < endIndex); ++i)
 result.MConj(c[i]);
 return result;
 }

@@ -119,7 +119,6 @@
  * \ref Core_DefaultElement_M "DefaultElement_M", \ref Core_Different "Different", \ref Core_Distinct "Distinct",
  * \ref Core_DistinctBy "DistinctBy", \ref Core_Drop "Drop", \ref Core_DropLast "DropLast",
  * \ref Core_DropWhile "DropWhile"
- * \ref Core_DropWhile "DropWhile"
  * - \ref Core_Empty_M "Empty_M", \ref Core_Equal "Equal", \ref Core_EqualBy "EqualBy", \ref Core_Every "Every"
  * - \ref Core_Filter "Filter", \ref Core_First "First", \ref Core_Flatten "Flatten",
  * \ref Core_FlattenSize "FlattenSize", \ref Core_Frequencies "Frequencies", \ref Core_FrequenciesBy "FrequenciesBy"
