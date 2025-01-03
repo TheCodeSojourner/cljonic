@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan  3 12:05:26 PM MST 2025
+// This file was generated Fri Jan  3 01:28:37 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -296,6 +296,9 @@ constexpr auto Dedupe(const C& c) noexcept;
 
 template <typename F, typename C>
 constexpr auto DedupeBy(F&& f, const C& c) noexcept;
+
+template <typename C>
+constexpr auto DefaultElement(const C& c) noexcept;
 
 template <typename T, typename... Ts>
 constexpr auto Equal(const T& t, const Ts&... ts) noexcept;
@@ -1076,6 +1079,20 @@ result.MConj(c[i]);
 i = IndexOfNextElementNotEqualToCurrentElement(f, c, i);
 }
 return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto DefaultElement(const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "DefaultElement's parameter must be a cljonic collection");
+
+return c.DefaultElement();
 }
 
 }
