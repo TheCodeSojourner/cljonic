@@ -30,7 +30,7 @@ class String
 
     SizeType m_elementCount;
     const char m_elementDefault;
-    char m_elements[maximumElements + 1]; // +1 for the null terminator
+    char m_elements[maximumElements + 1]{}; // +1 for the null terminator
 
   public:
     /**

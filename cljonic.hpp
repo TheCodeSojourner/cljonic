@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan  3 07:38:25 AM MST 2025
+// This file was generated Fri Jan  3 08:25:37 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -348,7 +348,7 @@ static_assert(maximumElements == MaxElements,
 
 SizeType m_elementCount;
 const T m_elementDefault;
-T m_elements[maximumElements];
+T m_elements[maximumElements]{};
 
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>;
@@ -401,8 +401,8 @@ return maximumElements;
 }
 };
 
-template <typename T = void, typename... Args>
-Array(Args...) -> Array<std::conditional_t<std::is_void_v<T>, std::common_type_t<Args...>, T>, sizeof...(Args)>;
+template <typename... Args>
+Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
 
 } // namespace cljonic
 
@@ -570,6 +570,8 @@ return maximumElements;
 }
 };
 
+Range() -> Range<>;
+
 } // namespace cljonic
 
 #include <concepts>
@@ -653,7 +655,7 @@ static_assert(maximumElements == MaxElements,
 
 SizeType m_elementCount;
 const T m_elementDefault;
-T m_elements[maximumElements];
+T m_elements[maximumElements]{};
 
 constexpr bool IsUniqueElementBy(const auto& f, const T& element) const noexcept {
 auto result{true};
@@ -750,7 +752,7 @@ static_assert(maximumElements == MaxElements,
 
 SizeType m_elementCount;
 const char m_elementDefault;
-char m_elements[maximumElements + 1];
+char m_elements[maximumElements + 1]{};
 
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>;

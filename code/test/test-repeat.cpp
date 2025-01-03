@@ -7,11 +7,11 @@ using namespace cljonic;
 
 SCENARIO("Repeat", "[CljonicRepeat]")
 {
-    const auto r{Repeat{1}};
+    constexpr auto r{Repeat{1}};
     auto MAX_INDEX{CljonicCollectionMaximumElementCount};
 
     {
-        const auto r{Repeat{1}};
+        constexpr auto r{Repeat{1}};
         CHECK(MAX_INDEX == r.Count());
         CHECK(1 == r[0]);
         CHECK(1 == r[1]);
@@ -22,7 +22,7 @@ SCENARIO("Repeat", "[CljonicRepeat]")
     }
 
     {
-        const auto r{Repeat<5, int>{1}};
+        constexpr auto r{Repeat<5, int>{1}};
         CHECK(5 == r.Count());
         CHECK(1 == r[0]);
         CHECK(1 == r[1]);
@@ -36,7 +36,7 @@ SCENARIO("Repeat", "[CljonicRepeat]")
     }
 
     {
-        const auto r{Repeat<5, int>{1}};
+        constexpr auto r{Repeat<5, int>{1}};
         for (const auto& element : r)
         {
             CHECK(1 == element);

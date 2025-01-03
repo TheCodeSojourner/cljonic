@@ -247,7 +247,10 @@ class Range
     {
         return maximumElements;
     }
-};
+}; // class Range
+
+// Deduction guide for Range{}
+Range() -> Range<>;
 
 } // namespace cljonic
 

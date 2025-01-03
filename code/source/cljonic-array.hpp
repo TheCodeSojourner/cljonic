@@ -26,7 +26,7 @@ class Array
 
     SizeType m_elementCount;
     const T m_elementDefault;
-    T m_elements[maximumElements];
+    T m_elements[maximumElements]{};
 
   public:
     /**
@@ -112,9 +112,9 @@ class Array
     }
 }; // class Array
 
-// Deduction guide to allow declarations like "constexpr auto v{Array{1, 2, 3}};" and "constexpr auto v{Array{}};"
-template <typename T = void, typename... Args>
-Array(Args...) -> Array<std::conditional_t<std::is_void_v<T>, std::common_type_t<Args...>, T>, sizeof...(Args)>;
+// Support declarations like: auto v{Array{1, 2, 3}}; // Equivalent to auto v{Array<int, 3>{1, 2, 3}};
+template <typename... Args>
+Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
 
 } // namespace cljonic
 

@@ -7,11 +7,11 @@ using namespace cljonic;
 SCENARIO("Array", "[CljonicArray]")
 {
     {
-        auto a0{Array<int, 10>{}};
-        auto a1{Array<int, 10>{1, 2, 3, 4}};
-        auto a2{Array<int, 4>{1, 2, 3, 4}};
-        auto a3{Array<int, 4>{1, 2, 3, 4, 5, 6}};
-        auto a4{Array{1, 2, 3, 4}};
+        constexpr auto a0{Array<int, 10>{}};
+        constexpr auto a1{Array<int, 10>{1, 2, 3, 4}};
+        constexpr auto a2{Array<int, 4>{1, 2, 3, 4}};
+        constexpr auto a3{Array<int, 4>{1, 2, 3, 4, 5, 6}};
+        constexpr auto a4{Array{1, 2, 3, 4}};
 
         CHECK(0 == a0.Count());
         CHECK(4 == a1.Count());

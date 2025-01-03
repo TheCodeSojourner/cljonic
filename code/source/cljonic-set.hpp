@@ -36,7 +36,7 @@ class Set
 
     SizeType m_elementCount;
     const T m_elementDefault;
-    T m_elements[maximumElements];
+    T m_elements[maximumElements]{};
 
     constexpr bool IsUniqueElementBy(const auto& f, const T& element) const noexcept
     {

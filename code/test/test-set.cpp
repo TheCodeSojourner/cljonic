@@ -7,13 +7,13 @@ using namespace cljonic;
 SCENARIO("Set", "[CljonicSet]")
 {
     {
-        auto s0{Set<int, 10>{}};
-        auto s1{Set<int, 10>{1, 2, 3, 4}};
-        auto s2{Set<int, 4>{1, 2, 3, 4}};
-        auto s3{Set<int, 4>{1, 2, 3, 4, 5, 6}};
-        auto s4{Set<int, 4>{1, 2, 1, 4, 5, 6}};
-        auto s5{Set{1, 2, 3, 4}};
-        auto s6{Set{1, 2, 1, 4}};
+        constexpr auto s0{Set<int, 10>{}};
+        constexpr auto s1{Set<int, 10>{1, 2, 3, 4}};
+        constexpr auto s2{Set<int, 4>{1, 2, 3, 4}};
+        constexpr auto s3{Set<int, 4>{1, 2, 3, 4, 5, 6}};
+        constexpr auto s4{Set<int, 4>{1, 2, 1, 4, 5, 6}};
+        constexpr auto s5{Set{1, 2, 3, 4}};
+        constexpr auto s6{Set{1, 2, 1, 4}};
 
         CHECK(0 == s0.Count());
         CHECK(4 == s1.Count());
@@ -63,13 +63,13 @@ SCENARIO("Set", "[CljonicSet]")
     }
 
     {
-        auto s0{Set<const char*, 10>{}};
-        auto s1{Set<const char*, 10>{"1.1", "2.1", "3.1", "4.1"}};
-        auto s2{Set<const char*, 4>{"1.1", "2.1", "3.1", "4.1"}};
-        auto s3{Set<const char*, 4>{"1.1", "2.1", "3.1", "4.1", "5.1", "6.1"}};
-        auto s4{Set<const char*, 4>{"1.1", "2.1", "1.1", "4.1", "5.1", "6.1"}};
-        auto s5{Set{"1.1", "2.1", "3.1", "4.1"}};
-        auto s6{Set{"1.1", "2.1", "1.1", "4.1"}};
+        constexpr auto s0{Set<const char*, 10>{}};
+        constexpr auto s1{Set<const char*, 10>{"1.1", "2.1", "3.1", "4.1"}};
+        constexpr auto s2{Set<const char*, 4>{"1.1", "2.1", "3.1", "4.1"}};
+        constexpr auto s3{Set<const char*, 4>{"1.1", "2.1", "3.1", "4.1", "5.1", "6.1"}};
+        constexpr auto s4{Set<const char*, 4>{"1.1", "2.1", "1.1", "4.1", "5.1", "6.1"}};
+        constexpr auto s5{Set{"1.1", "2.1", "3.1", "4.1"}};
+        constexpr auto s6{Set{"1.1", "2.1", "1.1", "4.1"}};
 
         // use the strings in these buffers to test Contains with non-literal strings
         char buffer1[4];
@@ -142,7 +142,7 @@ SCENARIO("Set", "[CljonicSet]")
     }
 
     {
-        const auto s{Set<int, 10>{1, 2, 3, 4}};
+        const constexpr auto s{Set<int, 10>{1, 2, 3, 4}};
         auto i{1};
         for (const auto& element : s)
         {
@@ -155,7 +155,7 @@ SCENARIO("Set", "[CljonicSet]")
 
     {
         // a Set is a function of its elements
-        const auto s{Set<int, 10>{1, 2, 3, 4}};
+        const constexpr auto s{Set<int, 10>{1, 2, 3, 4}};
         CHECK(1 == s(1));
         CHECK(2 == s(2));
         CHECK(3 == s(3));

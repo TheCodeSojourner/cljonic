@@ -14,16 +14,16 @@ SCENARIO("String", "[CljonicString]")
     s[4] = 'o';
     s[5] = '\0';
 
-    auto s0{String<10>{}};
-    auto s1{String<10>{"Hello"}};
-    auto s2{String<5>{"Hello"}};
-    auto s3{String<4>{"Hello"}};
-    auto s4{String{"Hello"}};
-    auto s5{String<10>{'H', 'e', 'l', 'l', 'o'}};
-    auto s6{String<5>{'H', 'e', 'l', 'l', 'o'}};
-    auto s7{String<4>{'H', 'e', 'l', 'l', 'o'}};
-    auto s8{String{'H', 'e', 'l', 'l', 'o'}};
-    auto s9{String{s}};
+    constexpr auto s0{String<10>{}};
+    constexpr auto s1{String<10>{"Hello"}};
+    constexpr auto s2{String<5>{"Hello"}};
+    constexpr auto s3{String<4>{"Hello"}};
+    constexpr auto s4{String{"Hello"}};
+    constexpr auto s5{String<10>{'H', 'e', 'l', 'l', 'o'}};
+    constexpr auto s6{String<5>{'H', 'e', 'l', 'l', 'o'}};
+    constexpr auto s7{String<4>{'H', 'e', 'l', 'l', 'o'}};
+    constexpr auto s8{String{'H', 'e', 'l', 'l', 'o'}};
+    const auto s9{String{s}};
 
     CHECK(0 == s0.Count());
     CHECK(5 == s1.Count());
@@ -100,7 +100,7 @@ SCENARIO("String", "[CljonicString]")
     CHECK('\0' == s9[5]);
 
     {
-        const auto s{String{"1234"}};
+        constexpr auto s{String{"1234"}};
         auto i{'1'};
         for (const auto& element : s)
         {
@@ -111,7 +111,7 @@ SCENARIO("String", "[CljonicString]")
 
     {
         // a String is a function of its index
-        const auto s{String{"1234"}};
+        constexpr auto s{String{"1234"}};
         CHECK('1' == s(0));
         CHECK('2' == s(1));
         CHECK('3' == s(2));
