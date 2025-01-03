@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan  3 11:31:44 AM MST 2025
+// This file was generated Fri Jan  3 11:42:12 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -1051,11 +1051,11 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto DedupeBy(const F& f, const C& c) noexcept {
+constexpr auto DedupeBy(F&& f, const C& c) noexcept {
 
 static_assert(IsCljonicCollection<C>, "DedupeBy's second parameter must be a cljonic collection");
 
-static_assert(IsBinaryPredicate<F, typename C::value_type, typename C::value_type>,
+static_assert(IsBinaryPredicate<std::decay_t<F>, typename C::value_type, typename C::value_type>,
               "DedupeBy's function is not a valid binary predicate for the collection value type");
 
 using ValueType = typename C::value_type;

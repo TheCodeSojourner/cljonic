@@ -52,13 +52,13 @@ int main()
 ~~~~~
 */
 template <typename F, typename C>
-constexpr auto DedupeBy(const F& f, const C& c) noexcept
+constexpr auto DedupeBy(F&& f, const C& c) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 
     static_assert(IsCljonicCollection<C>, "DedupeBy's second parameter must be a cljonic collection");
 
-    static_assert(IsBinaryPredicate<F, typename C::value_type, typename C::value_type>,
+    static_assert(IsBinaryPredicate<std::decay_t<F>, typename C::value_type, typename C::value_type>,
                   "DedupeBy's function is not a valid binary predicate for the collection value type");
 
     using ValueType = typename C::value_type;
