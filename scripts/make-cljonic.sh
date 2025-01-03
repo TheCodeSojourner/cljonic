@@ -28,6 +28,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-dedupe.hpp \
     cljonic-core-dedupeby.hpp \
     cljonic-core-defaultelement.hpp \
+    cljonic-core-drop.hpp \
     cljonic-core-equal.hpp \
     cljonic-core-equalby.hpp \
     cljonic-core-every.hpp \

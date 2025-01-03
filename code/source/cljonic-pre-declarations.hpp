@@ -48,6 +48,9 @@ constexpr auto DedupeBy(F&& f, const C& c) noexcept;
 template <typename C>
 constexpr auto DefaultElement(const C& c) noexcept;
 
+template <typename C>
+constexpr auto Drop(const SizeType count, const C& c) noexcept;
+
 template <typename T, typename... Ts>
 constexpr auto Equal(const T& t, const Ts&... ts) noexcept;
 

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cljonic: /home/pauwhi/Downloads/junk/cljonic/code/source/cljonic-array.hpp File Reference</title>
+<title>cljonic: /home/pauwhi/Downloads/junk/cljonic/code/source/cljonic-core-drop.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -76,35 +76,27 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">cljonic-array.hpp File Reference</div></div>
+  <div class="headertitle"><div class="title">cljonic-core-drop.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;cstring&gt;</code><br />
-<code>#include &lt;initializer_list&gt;</code><br />
-<code>#include &lt;type_traits&gt;</code><br />
-<code>#include &quot;<a class="el" href="cljonic-collection-type_8hpp_source.html">cljonic-collection-type.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="cljonic-shared_8hpp_source.html">cljonic-shared.hpp</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="cljonic-array_8hpp_source.html">cljonic-array.hpp</a>&quot;</code><br />
 </div>
-<p><a href="cljonic-array_8hpp_source.html">Go to the source code of this file.</a></p>
+<p><a href="cljonic-core-drop_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_array.html">cljonic::Array&lt; T, MaxElements &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacecljonic" id="r_namespacecljonic"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html">cljonic</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacecljonic_1_1core" id="r_namespacecljonic_1_1core"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html">cljonic::core</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ac8a1780765f9453dd427a6b6f341320b" id="r_ac8a1780765f9453dd427a6b6f341320b"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:ac8a1780765f9453dd427a6b6f341320b"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#ac8a1780765f9453dd427a6b6f341320b">cljonic::Array</a> (Args...) -&gt; <a class="el" href="classcljonic_1_1_array.html">Array</a>&lt; std::common_type_t&lt; Args... &gt;, sizeof...(<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">Args</a>)&gt;</td></tr>
-<tr class="separator:ac8a1780765f9453dd427a6b6f341320b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9dca8398f2c59f0ddf453225268a08ef" id="r_a9dca8398f2c59f0ddf453225268a08ef"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">C</a> &gt; </td></tr>
+<tr class="memitem:a9dca8398f2c59f0ddf453225268a08ef"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic_1_1core.html#a9dca8398f2c59f0ddf453225268a08ef">cljonic::core::Drop</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">count</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">C</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
+<tr class="separator:a9dca8398f2c59f0ddf453225268a08ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->
