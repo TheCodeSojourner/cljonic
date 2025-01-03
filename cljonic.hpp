@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan  3 11:55:22 AM MST 2025
+// This file was generated Fri Jan  3 12:01:13 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -1393,11 +1393,11 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto TakeWhile(const F& f, const C& c) noexcept {
+constexpr auto TakeWhile(F&& f, const C& c) noexcept {
 
 static_assert(IsCljonicCollection<C>, "TakeWhile's second parameter must be a cljonic collection");
 
-static_assert(IsUnaryPredicate<F, typename C::value_type>,
+static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
               "TakeWhile's function is not a valid unary predicate for the collection value type");
 
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};

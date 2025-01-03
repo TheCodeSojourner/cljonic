@@ -51,13 +51,13 @@ int main()
 ~~~~~
 */
 template <typename F, typename C>
-constexpr auto TakeWhile(const F& f, const C& c) noexcept
+constexpr auto TakeWhile(F&& f, const C& c) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 
     static_assert(IsCljonicCollection<C>, "TakeWhile's second parameter must be a cljonic collection");
 
-    static_assert(IsUnaryPredicate<F, typename C::value_type>,
+    static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
                   "TakeWhile's function is not a valid unary predicate for the collection value type");
 
     auto result{Array<typename C::value_type, c.MaximumCount()>{}};
