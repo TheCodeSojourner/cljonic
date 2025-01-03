@@ -51,11 +51,11 @@ int main()
 ~~~~~
 */
 template <typename F, typename C>
-constexpr auto Filter(const F& f, const C& c) noexcept
+constexpr auto Filter(F&& f, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Filter's second parameter must be a cljonic collection");
 
-    static_assert(IsUnaryPredicate<F, typename C::value_type>,
+    static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
                   "Filter's function is not a valid unary predicate for the collection value type");
 
     auto result{Array<typename C::value_type, c.MaximumCount()>{}};

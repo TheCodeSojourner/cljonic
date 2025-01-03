@@ -55,7 +55,7 @@ template <typename F, typename C>
 constexpr auto Every(F&& f, const C& c) noexcept;
 
 template <typename F, typename C>
-constexpr auto Filter(const F& f, const C& c) noexcept;
+constexpr auto Filter(F&& f, const C& c) noexcept;
 
 template <typename C>
 constexpr auto First(const C& coll) noexcept;
