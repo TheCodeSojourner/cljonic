@@ -96,6 +96,12 @@ class Array
             m_elements[m_elementCount++] = t;
     }
 
+    constexpr void MSet(const SizeType i, const T& t) noexcept
+    {
+        if (i < m_elementCount)
+            m_elements[i] = t;
+    }
+
     [[nodiscard]] constexpr SizeType Count() const noexcept
     {
         return m_elementCount;

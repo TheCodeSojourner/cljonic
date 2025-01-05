@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan  3 04:09:49 PM MST 2025
+// This file was generated Sat Jan  4 05:43:14 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -339,6 +339,9 @@ constexpr auto Reduce(F&& f, const C& c) noexcept;
 template <typename C>
 constexpr auto Seq(const C& c) noexcept;
 
+template <typename F, typename C>
+constexpr auto SortBy(F&& f, const C& c) noexcept;
+
 template <typename C>
 constexpr auto Take(const SizeType count, const C& c) noexcept;
 
@@ -408,6 +411,11 @@ return this->operator[](index);
 constexpr void MConj(const T& t) noexcept {
 if(m_elementCount < MaximumCount())
 m_elements[m_elementCount++] = t;
+}
+
+constexpr void MSet(const SizeType i, const T& t) noexcept {
+if(i < m_elementCount)
+m_elements[i] = t;
 }
 
 [[nodiscard]] constexpr SizeType Count() const noexcept {
@@ -1413,6 +1421,34 @@ constexpr auto Seq(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Seq's second parameter must be a cljonic collection");
 
 return Take(c.MaximumCount(), c);
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C>
+constexpr auto SortBy(F&& f, const C& c) noexcept {
+
+static_assert(IsCljonicCollection<C>, "SortBy's second parameter must be a cljonic collection");
+
+static_assert(IsBinaryPredicate<std::decay_t<F>, typename C::value_type, typename C::value_type>,
+              "SortBy's function is not a valid binary predicate for the collection value type");
+
+auto result{Seq(c)};
+for(SizeType i{1}; i < result.Count(); ++i) {
+auto key = result[i];
+SizeType j = i;
+while((j > 0) and f(key, result[j - 1])) {
+result.MSet(j, result[j - 1]);
+--j;
+}
+result.MSet(j, key);
+}
+return result;
 }
 
 }

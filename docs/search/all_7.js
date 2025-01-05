@@ -5,5 +5,6 @@ var searchData=
   ['maximumelements_2',['MaximumElements',['../namespacecljonic.html#a5df003589ade3960265a49bfdc2da209',1,'cljonic']]],
   ['mconj_3',['MConj',['../classcljonic_1_1_array.html#afe7fe034818947026a7f6f795dafc98e',1,'cljonic::Array']]],
   ['min_4',['Min',['../namespacecljonic.html#a0a855c317a17a8b2253fb111adc54e98',1,'cljonic']]],
-  ['minimumofcljoniccollectionmaximumcounts_5',['MinimumOfCljonicCollectionMaximumCounts',['../namespacecljonic.html#a56236f4c354b1a6cbfe113b26fc17f1d',1,'cljonic']]]
+  ['minimumofcljoniccollectionmaximumcounts_5',['MinimumOfCljonicCollectionMaximumCounts',['../namespacecljonic.html#a56236f4c354b1a6cbfe113b26fc17f1d',1,'cljonic']]],
+  ['mset_6',['MSet',['../classcljonic_1_1_array.html#a785e5f271fccdc474915c0cd0178fedf',1,'cljonic::Array']]]
 ];

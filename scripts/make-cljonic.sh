@@ -41,6 +41,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-partial.hpp \
     cljonic-core-reduce.hpp \
     cljonic-core-seq.hpp \
+    cljonic-core-sortby.hpp \
     cljonic-core-take.hpp \
     cljonic-core-takelast.hpp \
     cljonic-core-takenth.hpp \

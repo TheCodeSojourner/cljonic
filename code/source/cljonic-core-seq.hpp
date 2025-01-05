@@ -2,6 +2,7 @@
 #define CLJONIC_CORE_SEQ_HPP
 
 #include "cljonic-concepts.hpp"
+#include "cljonic-core-take.hpp"
 
 namespace cljonic
 {
