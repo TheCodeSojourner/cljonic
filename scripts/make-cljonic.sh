@@ -41,10 +41,12 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-map.hpp \
     cljonic-core-partial.hpp \
     cljonic-core-reduce.hpp \
+    cljonic-core-second.hpp \
     cljonic-core-seq.hpp \
     cljonic-core-some.hpp \
     cljonic-core-sort.hpp \
     cljonic-core-sortby.hpp \
+    cljonic-core-splitby.hpp \
     cljonic-core-take.hpp \
     cljonic-core-takelast.hpp \
     cljonic-core-takenth.hpp \

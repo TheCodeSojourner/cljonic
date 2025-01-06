@@ -34,10 +34,12 @@ int main()
     constexpr auto partial{Partial([](const int i, const int j) { return i + j; }, 10)};
     constexpr auto reduce2{Reduce([](const int sum, const int i) { return sum + i; }, a)};
     constexpr auto reduce3{Reduce([](const int sum, const int i) { return sum + i; }, 30, a)};
+    constexpr auto second{Second(a)};
     constexpr auto seq{Seq(a)};
     constexpr auto some{Some([](const int i) { return 20 == i; }, a)};
     constexpr auto sort{Sort(a)};
     constexpr auto sortby{SortBy([](const int i, const int j) { return i < j; }, a)};
+    constexpr auto splitby{SplitBy([](const int i) { return true; }, a)};
     constexpr auto take{Take(2, a)};
     constexpr auto takelast{TakeLast(2, a)};
     constexpr auto takenth{TakeNth(2, a)};

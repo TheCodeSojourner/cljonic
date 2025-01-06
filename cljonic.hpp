@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Jan  6 03:32:19 PM MST 2025
+// This file was generated Mon Jan  6 04:18:54 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -348,6 +348,9 @@ template <typename F, typename C>
 constexpr auto Reduce(F&& f, const C& c) noexcept;
 
 template <typename C>
+constexpr auto Second(const C& c) noexcept;
+
+template <typename C>
 constexpr auto Seq(const C& c) noexcept;
 
 template <typename F, typename C>
@@ -358,6 +361,9 @@ constexpr auto Sort(F&& f, const C& c) noexcept;
 
 template <typename F, typename C>
 constexpr auto SortBy(F&& f, const C& c) noexcept;
+
+template <typename F, typename C>
+constexpr auto SplitBy(F&& f, const C& c) noexcept;
 
 template <typename C>
 constexpr auto Take(const SizeType count, const C& c) noexcept;
@@ -1465,6 +1471,20 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
+constexpr auto Second(const C& coll) noexcept {
+static_assert(IsCljonicCollection<C>, "Second's parameter must be a cljonic collection");
+
+return coll[1];
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
 constexpr auto Seq(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Seq's second parameter must be a cljonic collection");
 
@@ -1543,6 +1563,27 @@ MSet(result, result[j - 1], j);
 MSet(result, key, j);
 }
 return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+#include <tuple>
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C>
+constexpr auto SplitBy(F&& f, const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "SplitBy's second parameter must be a cljonic collection");
+
+static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
+              "SplitBy's function is not a valid unary predicate for the collection value type");
+
+const auto firstArray{TakeWhile(f, c)};
+const auto secondArray{Drop(firstArray.Count(), c)};
+return std::make_tuple(std::move(firstArray), std::move(secondArray));
 }
 
 }
