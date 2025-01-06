@@ -122,8 +122,8 @@
  * - \ref Core_Empty_M "Empty_M", \ref Core_Equal "Equal", \ref Core_EqualBy "EqualBy", \ref Core_Every "Every"
  * - \ref Core_Filter "Filter", \ref Core_First "First", \ref Core_Flatten "Flatten",
  * \ref Core_FlattenSize "FlattenSize", \ref Core_Frequencies "Frequencies", \ref Core_FrequenciesBy "FrequenciesBy"
- * - \ref Core_Identity "Identity", \ref Core_IndexOf "IndexOf", \ref Core_IndexOfBy "IndexOfBy",
- * \ref Core_Interleave "Interleave", \ref Core_Interpose "Interpose", \ref Core_IsDistinct "IsDistinct",
+ * - \ref Core_Identical "Identical", \ref Core_Identity "Identity", \ref Core_IndexOf "IndexOf", \ref Core_IndexOfBy
+ * "IndexOfBy", \ref Core_Interleave "Interleave", \ref Core_Interpose "Interpose", \ref Core_IsDistinct "IsDistinct",
  * \ref Core_IsDistinctBy "IsDistinctBy", \ref Core_IsFull "IsFull", \ref Core_Iterate "Iterate"
  * - \ref Core_Juxt "Juxt"
  * - \ref Core_Last "Last", \ref Core_LastIndexOf "LastIndexOf", \ref Core_LastIndexOfBy "LastIndexOfBy"
@@ -132,7 +132,7 @@
  * - \ref Core_Partition "Partition", \ref Core_PartitionAll "PartitionAll", \ref Core_PartitionBy "PartitionBy"
  * - \ref Core_Reduce "Reduce", \ref Core_Reductions "Reductions", \ref Core_Remove "Remove",
  * \ref Core_Replace "Replace", \ref Core_ReplaceBy "ReplaceBy", \ref Core_Reverse "Reverse"
- * - \ref Core_Same "Same", \ref Core_Second "Second", \ref Core_Seq "Seq", \ref Core_Some "Some",
+ * - \ref Core_Second "Second", \ref Core_Seq "Seq", \ref Core_Some "Some",
  * \ref Core_Sort "Sort", \ref Core_SortBy "SortBy", \ref Core_SplitBy "SplitBy", \ref Core_SplitAt "SplitAt",
  * \ref Core_Size "Size", \ref Core_Subs "Subs"
  * - \ref Core_Take "Take", \ref Core_TakeLast "TakeLast", \ref Core_TakeNth "TakeNth", \ref Core_TakeWhile "TakeWhile"
