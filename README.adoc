@@ -67,6 +67,15 @@ systems.
 The developer using *cljonic* should be able to write *safe* code that is *easy to read*, *easy to understand* and *easy to maintain*.  These goals will enable *embedded system* projects to be *completed more quickly*, with 
 *fewer bugs*, and maintained and enhanced with *less long term effort*. 
 
+=== Default Element
+Every *cljonic collection* has a *default element* that is returned whenever a valid collection element can't be returned.
+The value of a collection's *default element* is a default initialized instance of the type of the collection's values
+(i.e., T{}).  This approach is taken to avoid using exceptions and/or error codes/states.
+
+NOTE: The design choice to use a *default element* means that *cljonic* users must take care to ensure that they know
+when a *default element* can be returned (e.g., Asking for the First element of an empty collection), and to handle things appropriately. 
+
+
 == Developer Experience When Developing cljonic
 *cljonic* has a *Makefile* in the root directory.  For *help* on the available development processes simply execute 
 `make` from a command-line while in the root directory to generate a list of the available options.
