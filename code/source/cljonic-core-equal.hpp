@@ -38,10 +38,12 @@ int main()
     const auto e6{Equal(str1, str2)};      // true
     const auto e7{Equal(a4, ra1, re1)};    // true
 
-    // Compiler Error: Equal should not compare floating point types for equality
+    // Compiler Error: Equal should not compare floating point types for equality. Consider using EqualBy to override
+    //                 override this default.
     // const auto e{Equal(1.1)};
 
-    // Compiler Error: Equal should not compare floating point types for equality
+    // Compiler Error: Equal should not compare floating point types for equality. Consider using EqualBy to override
+    //                 override this default.
     // const auto e{Equal(1.1, 2.1)};
 
     // Compiler Error: no matching function for call to ‘Equal()’
@@ -63,15 +65,19 @@ constexpr auto Equal(const T& t, const Ts&... ts) noexcept
     {
         if constexpr (IsCljonicCollection<T>)
             static_assert((not std::floating_point<typename T::value_type>),
-                          "Equal should not compare cljonic floating point collection value types for equality");
+                          "Equal should not compare cljonic floating point collection value types for equality. "
+                          "Consider using EqualBy to override this default.");
         else
-            static_assert((not std::floating_point<T>), "Equal should not compare floating point types for equality");
+            static_assert((not std::floating_point<T>),
+                          "Equal should not compare floating point types for equality. Consider using EqualBy to "
+                          "override this default.");
         return true;
     }
     else if constexpr (AllCljonicCollections<T, Ts...>)
     {
         static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
-                      "Equal should not compare cljonic floating point collection value types for equality");
+                      "Equal should not compare cljonic floating point collection value types for equality. Consider "
+                      "using EqualBy to override this default.");
 
         static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
                       "Equal cljonic collection types are not all the same, or all Array, Range or Repeat types");
@@ -81,7 +87,8 @@ constexpr auto Equal(const T& t, const Ts&... ts) noexcept
     else
     {
         static_assert(not AnyFloatingPointTypes<T, Ts...>,
-                      "Equal should not compare floating point types for equality");
+                      "Equal should not compare floating point types for equality. Consider using EqualBy to override "
+                      "this default.");
 
         static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all Equal types are equality comparable");
 

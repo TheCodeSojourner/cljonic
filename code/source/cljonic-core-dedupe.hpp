@@ -44,7 +44,8 @@ int main()
     // Compiler Error: Dedupe's parameter must be a cljonic collection
     // constexpr auto d{Dedupe(1)};
 
-    // Compiler Error: Dedupe should not compare cljonic floating point collection value types for equality
+    // Compiler Error: Dedupe should not compare cljonic floating point collection value types for equality. Consider
+    //                 using DedupeBy to override this default.
     // constexpr auto d{Dedupe(Array{1.1, 1.1})};
 
     return 0;
@@ -57,7 +58,8 @@ constexpr auto Dedupe(const C& c) noexcept
     static_assert(IsCljonicCollection<C>, "Dedupe's parameter must be a cljonic collection");
 
     static_assert((not std::floating_point<typename C::value_type>),
-                  "Dedupe should not compare cljonic floating point collection value types for equality");
+                  "Dedupe should not compare cljonic floating point collection value types for equality. Consider "
+                  "using DedupeBy to override this default.");
 
     return DedupeBy([](const auto& a, const auto& b) { return AreEqual(a, b); }, c);
 }

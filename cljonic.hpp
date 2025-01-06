@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Jan  6 10:46:10 AM MST 2025
+// This file was generated Mon Jan  6 11:55:19 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -348,10 +348,13 @@ template <typename C>
 constexpr auto Seq(const C& c) noexcept;
 
 template <typename F, typename C>
-constexpr auto SortBy(F&& f, const C& c) noexcept;
+constexpr auto Some(F&& f, const C& c) noexcept;
 
 template <typename F, typename C>
 constexpr auto Sort(F&& f, const C& c) noexcept;
+
+template <typename F, typename C>
+constexpr auto SortBy(F&& f, const C& c) noexcept;
 
 template <typename C>
 constexpr auto Take(const SizeType count, const C& c) noexcept;
@@ -1081,7 +1084,8 @@ constexpr auto Dedupe(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Dedupe's parameter must be a cljonic collection");
 
 static_assert((not std::floating_point<typename C::value_type>),
-              "Dedupe should not compare cljonic floating point collection value types for equality");
+              "Dedupe should not compare cljonic floating point collection value types for equality. Consider "
+              "using DedupeBy to override this default.");
 
 return DedupeBy([](const auto& a, const auto& b) { return AreEqual(a, b); }, c);
 }
@@ -1205,13 +1209,17 @@ constexpr auto Equal(const T& t, const Ts&... ts) noexcept {
 if constexpr(sizeof...(Ts) <= 0) {
 if constexpr(IsCljonicCollection<T>)
 static_assert((not std::floating_point<typename T::value_type>),
-              "Equal should not compare cljonic floating point collection value types for equality");
+              "Equal should not compare cljonic floating point collection value types for equality. "
+              "Consider using EqualBy to override this default.");
 else
-static_assert((not std::floating_point<T>), "Equal should not compare floating point types for equality");
+static_assert((not std::floating_point<T>),
+              "Equal should not compare floating point types for equality. Consider using EqualBy to "
+              "override this default.");
 return true;
 } else if constexpr(AllCljonicCollections<T, Ts...>) {
 static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
-              "Equal should not compare cljonic floating point collection value types for equality");
+              "Equal should not compare cljonic floating point collection value types for equality. Consider "
+              "using EqualBy to override this default.");
 
 static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
               "Equal cljonic collection types are not all the same, or all Array, Range or Repeat types");
@@ -1219,7 +1227,8 @@ static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRe
 return EqualBy([](const auto& a, const auto& b) { return AreEqual(a, b); }, t, ts...);
 } else {
 static_assert(not AnyFloatingPointTypes<T, Ts...>,
-              "Equal should not compare floating point types for equality");
+              "Equal should not compare floating point types for equality. Consider using EqualBy to override "
+              "this default.");
 
 static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all Equal types are equality comparable");
 
@@ -1440,6 +1449,27 @@ constexpr auto Seq(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Seq's second parameter must be a cljonic collection");
 
 return Take(c.MaximumCount(), c);
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C>
+constexpr auto Some(F&& f, const C& c) noexcept {
+
+static_assert(IsCljonicCollection<C>, "Some's second parameter must be a cljonic collection");
+
+static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
+              "Some's function is not a valid unary predicate for the collection value type");
+
+for(const auto& i : c)
+if(f(i))
+return true;
+return false;
 }
 
 }

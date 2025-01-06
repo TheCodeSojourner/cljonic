@@ -29,7 +29,7 @@ int main()
     const auto sortByA{SortBy(IsALessThanB, a)};
 
     constexpr auto b{Array{11, 13, 12, 14}};
-    const auto sortByB{SortBy(IsALessThanB, a)};
+    const auto sortByB{SortBy(IsALessThanB, b)};
 
     const auto sortByRng{SortBy(IsALessThanB, Range<0>{})};
 
@@ -44,7 +44,7 @@ int main()
     // Compiler Error: SortBy's second parameter must be a cljonic collection
     // const auto sb{SortBy(IsALessThanB, "Hello")};
 
-    // Compiler Error: SortBy's function is not a valid unary predicate for the collection value type
+    // Compiler Error: SortBy's function is not a valid binary predicate for the collection value type
     // const auto sb{SortBy(IsALessThanB, Array<const char*, 5>{})};
 
     return 0;

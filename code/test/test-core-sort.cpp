@@ -16,7 +16,7 @@ SCENARIO("Sort", "[CljonicCoreSort]")
     CHECK(Equal(Array{11, 12, 13, 14}, Sort(a)));
 
     constexpr auto b{Array{11, 13, 12, 14}};
-    CHECK(Equal(Array{11, 12, 13, 14}, Sort(a)));
+    CHECK(Equal(Array{11, 12, 13, 14}, Sort(b)));
 
     CHECK(Equal(Array<int, 0>{}, Sort(Range<0>{})));
 

@@ -26,7 +26,7 @@ int main()
     const auto sortA{Sort(a)};
 
     constexpr auto b{Array{11, 13, 12, 14}};
-    const auto sortB{Sort(a)};
+    const auto sortB{Sort(b)};
 
     const auto sortRng{Sort(Range<0>{})};
 

@@ -18,7 +18,7 @@ SCENARIO("SortBy", "[CljonicCoreSortBy]")
     CHECK(Equal(Array{11, 12, 13, 14}, SortBy(IsALessThanB, a)));
 
     constexpr auto b{Array{11, 13, 12, 14}};
-    CHECK(Equal(Array{11, 12, 13, 14}, SortBy(IsALessThanB, a)));
+    CHECK(Equal(Array{11, 12, 13, 14}, SortBy(IsALessThanB, b)));
 
     CHECK(Equal(Array<int, 0>{}, SortBy(IsALessThanB, Range<0>{})));
 
