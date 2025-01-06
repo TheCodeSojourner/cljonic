@@ -63,7 +63,7 @@ constexpr auto DropWhile(F&& f, const C& c) noexcept
     auto conjElement(false);
     for (const auto& element : c)
         if (conjElement |= (not f(element)))
-            result.MConj(element);
+            MConj(result, element);
     return result;
 }
 

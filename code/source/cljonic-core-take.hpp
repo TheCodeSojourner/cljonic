@@ -51,7 +51,7 @@ constexpr auto Take(const SizeType count, const C& c) noexcept
     auto result{Array<typename C::value_type, c.MaximumCount()>{}};
     auto maxIndex{Min(count, c.Count())};
     for (SizeType i{0}; (i < maxIndex); ++i)
-        result.MConj(c[i]);
+        MConj(result, c[i]);
     return result;
 }
 

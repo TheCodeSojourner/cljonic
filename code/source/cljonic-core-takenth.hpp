@@ -62,14 +62,14 @@ constexpr auto TakeNth(const SizeType nth, const C& c) noexcept
     constexpr auto FillArray = [](ResultType& r, const ValueType& v) noexcept
     {
         for (SizeType i{0}; i < r.MaximumCount(); ++i)
-            r.MConj(v);
+            MConj(r, v);
     };
     constexpr auto FillArrayNth = [](ResultType& r, const C& vArray, const SizeType nth) noexcept
     {
         auto i{SizeType{0}};
         while (i < vArray.Count())
         {
-            r.MConj(vArray[i]);
+            MConj(r, vArray[i]);
             i += nth;
         }
     };

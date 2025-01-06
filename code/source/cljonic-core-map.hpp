@@ -63,7 +63,7 @@ constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept
     constexpr auto count{MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()};
     auto result{Array<ResultType, count>{}};
     for (SizeType i{0}; i < c.Count(); ++i)
-        result.MConj(f(c[i], cs[i]...));
+        MConj(result, f(c[i], cs[i]...));
     return result;
 }
 

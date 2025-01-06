@@ -49,7 +49,7 @@ constexpr auto TakeLast(const SizeType count, const C& c) noexcept
     auto result{Array<typename C::value_type, c.MaximumCount()>{}};
     auto startIndex{(c.Count() > count) ? (c.Count() - count) : 0};
     for (SizeType i{startIndex}; (i < c.Count()); ++i)
-        result.MConj(c[i]);
+        MConj(result, c[i]);
     return result;
 }
 
