@@ -62,7 +62,7 @@ constexpr auto Conj(const C& c, const Es&... es) noexcept
 
     constexpr auto count{C::MaximumCount() + sizeof...(Es)};
     auto result{Array<ResultType, count>{}};
-    const auto MConjElementOntoResult = [&](const auto& e) { result.MConj(e); };
+    const auto MConjElementOntoResult = [&](const auto& e) { MConj(result, e); };
     for (SizeType i{0}; i < c.Count(); ++i)
         MConjElementOntoResult(c[i]);
     (MConjElementOntoResult(es), ...);

@@ -47,7 +47,7 @@ constexpr auto DropLast(const SizeType count, const C& c) noexcept
     auto result{Array<typename C::value_type, c.MaximumCount()>{}};
     auto endIndex{(count > c.Count()) ? 0 : (c.Count() - count)};
     for (SizeType i{0}; (i < endIndex); ++i)
-        result.MConj(c[i]);
+        MConj(result, c[i]);
     return result;
 }
 

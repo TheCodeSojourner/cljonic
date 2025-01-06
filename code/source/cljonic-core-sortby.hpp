@@ -69,10 +69,10 @@ constexpr auto SortBy(F&& f, const C& c) noexcept
         SizeType j = i;
         while ((j > 0) and f(key, result[j - 1]))
         {
-            result.MSet(j, result[j - 1]);
+            MSet(result, result[j - 1], j);
             --j;
         }
-        result.MSet(j, key);
+        MSet(result, key, j);
     }
     return result;
 }

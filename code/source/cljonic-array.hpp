@@ -28,6 +28,12 @@ class Array
     const T m_elementDefault;
     T m_elements[maximumElements]{};
 
+    template <typename U, SizeType N>
+    constexpr friend void MConj(Array<U, N>& array, const U& value);
+
+    template <typename U, SizeType N>
+    constexpr friend void MSet(Array<U, N>& array, const U& value, const SizeType index);
+
   public:
     /**
     * The \b Array constructor returns an instance of Array initialized with its arguments. If the number of arguments
@@ -90,18 +96,6 @@ class Array
         return this->operator[](index);
     }
 
-    constexpr void MConj(const T& t) noexcept
-    {
-        if (m_elementCount < MaximumCount())
-            m_elements[m_elementCount++] = t;
-    }
-
-    constexpr void MSet(const SizeType i, const T& t) noexcept
-    {
-        if (i < m_elementCount)
-            m_elements[i] = t;
-    }
-
     [[nodiscard]] constexpr SizeType Count() const noexcept
     {
         return m_elementCount;
@@ -121,6 +115,20 @@ class Array
 // Support declarations like: auto v{Array{1, 2, 3}}; // Equivalent to auto v{Array<int, 3>{1, 2, 3}};
 template <typename... Args>
 Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
+
+template <typename U, SizeType N>
+constexpr void MConj(Array<U, N>& array, const U& value)
+{
+    if (array.m_elementCount < array.MaximumCount())
+        array.m_elements[array.m_elementCount++] = value;
+}
+
+template <typename U, SizeType N>
+constexpr void MSet(Array<U, N>& array, const U& value, const SizeType index)
+{
+    if (index < array.m_elementCount)
+        array.m_elements[index] = value;
+}
 
 } // namespace cljonic
 

@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Jan  6 09:40:56 AM MST 2025
+// This file was generated Mon Jan  6 10:46:10 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -386,6 +386,12 @@ SizeType m_elementCount;
 const T m_elementDefault;
 T m_elements[maximumElements]{};
 
+template <typename U, SizeType N>
+constexpr friend void MConj(Array<U, N>& array, const U& value);
+
+template <typename U, SizeType N>
+constexpr friend void MSet(Array<U, N>& array, const U& value, const SizeType index);
+
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>;
 using size_type = SizeType;
@@ -419,16 +425,6 @@ constexpr const T& operator()(const SizeType index) const noexcept {
 return this->operator[](index);
 }
 
-constexpr void MConj(const T& t) noexcept {
-if(m_elementCount < MaximumCount())
-m_elements[m_elementCount++] = t;
-}
-
-constexpr void MSet(const SizeType i, const T& t) noexcept {
-if(i < m_elementCount)
-m_elements[i] = t;
-}
-
 [[nodiscard]] constexpr SizeType Count() const noexcept {
 return m_elementCount;
 }
@@ -444,6 +440,18 @@ return maximumElements;
 
 template <typename... Args>
 Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
+
+template <typename U, SizeType N>
+constexpr void MConj(Array<U, N>& array, const U& value) {
+if(array.m_elementCount < array.MaximumCount())
+array.m_elements[array.m_elementCount++] = value;
+}
+
+template <typename U, SizeType N>
+constexpr void MSet(Array<U, N>& array, const U& value, const SizeType index) {
+if(index < array.m_elementCount)
+array.m_elements[index] = value;
+}
 
 } // namespace cljonic
 
@@ -916,7 +924,7 @@ constexpr auto count{SumOfCljonicCollectionMaximumCounts<C, Cs...>()};
 auto result{Array<ResultType, count>{}};
 const auto MConjCollectionOntoResult = [&](const auto& c) {
 for(SizeType i{0}; i < c.Count(); ++i)
-result.MConj(c[i]);
+MConj(result, static_cast<ResultType>(c[i]));
 };
 (MConjCollectionOntoResult(c), ..., MConjCollectionOntoResult(cs));
 return result;
@@ -941,7 +949,7 @@ using ResultType = typename C::value_type;
 
 constexpr auto count{C::MaximumCount() + sizeof...(Es)};
 auto result{Array<ResultType, count>{}};
-const auto MConjElementOntoResult = [&](const auto& e) { result.MConj(e); };
+const auto MConjElementOntoResult = [&](const auto& e) { MConj(result, e); };
 for(SizeType i{0}; i < c.Count(); ++i)
 MConjElementOntoResult(c[i]);
 (MConjElementOntoResult(es), ...);
@@ -1106,7 +1114,7 @@ constexpr auto IndexOfNextElementNotEqualToCurrentElement =
 
 auto result{Array<ValueType, c.MaximumCount()>{}};
 for(SizeType i{0}; i < c.Count();) {
-result.MConj(c[i]);
+MConj(result, c[i]);
 i = IndexOfNextElementNotEqualToCurrentElement(f, c, i);
 }
 return result;
@@ -1139,7 +1147,7 @@ static_assert(IsCljonicCollection<C>, "Drop's second parameter must be a cljonic
 
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 for(SizeType i{count}; (i < c.Count()); ++i)
-result.MConj(c[i]);
+MConj(result, c[i]);
 return result;
 }
 
@@ -1157,7 +1165,7 @@ static_assert(IsCljonicCollection<C>, "DropLast's second parameter must be a clj
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 auto endIndex{(count > c.Count()) ? 0 : (c.Count() - count)};
 for(SizeType i{0}; (i < endIndex); ++i)
-result.MConj(c[i]);
+MConj(result, c[i]);
 return result;
 }
 
@@ -1180,7 +1188,7 @@ auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 auto conjElement(false);
 for(const auto& element : c)
 if(conjElement |= (not f(element)))
-result.MConj(element);
+MConj(result, element);
 return result;
 }
 
@@ -1303,7 +1311,7 @@ static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 for(const auto& element : c)
 if(f(element))
-result.MConj(element);
+MConj(result, element);
 return result;
 }
 
@@ -1355,7 +1363,7 @@ using ResultType = decltype(f(std::declval<typename C::value_type>(), std::declv
 constexpr auto count{MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()};
 auto result{Array<ResultType, count>{}};
 for(SizeType i{0}; i < c.Count(); ++i)
-result.MConj(f(c[i], cs[i]...));
+MConj(result, f(c[i], cs[i]...));
 return result;
 }
 
@@ -1451,10 +1459,10 @@ for(SizeType i{1}; i < result.Count(); ++i) {
 auto key = result[i];
 SizeType j = i;
 while((j > 0) and FirstLessThanSecond(key, result[j - 1])) {
-result.MSet(j, result[j - 1]);
+MSet(result, result[j - 1], j);
 --j;
 }
-result.MSet(j, key);
+MSet(result, key, j);
 }
 return result;
 }
@@ -1479,10 +1487,10 @@ for(SizeType i{1}; i < result.Count(); ++i) {
 auto key = result[i];
 SizeType j = i;
 while((j > 0) and f(key, result[j - 1])) {
-result.MSet(j, result[j - 1]);
+MSet(result, result[j - 1], j);
 --j;
 }
-result.MSet(j, key);
+MSet(result, key, j);
 }
 return result;
 }
@@ -1501,7 +1509,7 @@ static_assert(IsCljonicCollection<C>, "Take's second parameter must be a cljonic
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 auto maxIndex{Min(count, c.Count())};
 for(SizeType i{0}; (i < maxIndex); ++i)
-result.MConj(c[i]);
+MConj(result, c[i]);
 return result;
 }
 
@@ -1519,7 +1527,7 @@ static_assert(IsCljonicCollection<C>, "TakeLast's second parameter must be a clj
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 auto startIndex{(c.Count() > count) ? (c.Count() - count) : 0};
 for(SizeType i{startIndex}; (i < c.Count()); ++i)
-result.MConj(c[i]);
+MConj(result, c[i]);
 return result;
 }
 
@@ -1540,12 +1548,12 @@ using ValueType = typename C::value_type;
 
 constexpr auto FillArray = [](ResultType& r, const ValueType& v) noexcept {
 for(SizeType i{0}; i < r.MaximumCount(); ++i)
-r.MConj(v);
+MConj(r, v);
 };
 constexpr auto FillArrayNth = [](ResultType& r, const C& vArray, const SizeType nth) noexcept {
 auto i{SizeType{0}};
 while(i < vArray.Count()) {
-r.MConj(vArray[i]);
+MConj(r, vArray[i]);
 i += nth;
 }
 };
@@ -1575,7 +1583,7 @@ static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 for(const auto& element : c)
 if(f(element))
-result.MConj(element);
+MConj(result, element);
 else
 break;
 return result;
