@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Jan  6 09:37:12 AM MST 2025
+// This file was generated Mon Jan  6 09:40:56 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -1444,7 +1444,7 @@ namespace core {
 template <typename C>
 constexpr auto Sort(const C& c) noexcept {
 
-static_assert(IsCljonicCollection<C>, "Sort's second parameter must be a cljonic collection");
+static_assert(IsCljonicCollection<C>, "Sort's parameter must be a cljonic collection");
 
 auto result{Seq(c)};
 for(SizeType i{1}; i < result.Count(); ++i) {

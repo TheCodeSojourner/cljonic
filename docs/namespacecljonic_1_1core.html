@@ -1810,7 +1810,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
   </tr>
 </table>
 </div><div class="memdoc">
-<p><a class="anchor" id="Core_Sort"></a> The <b>Sort</b> function uses an <b>Insertion</b> <b>Sort</b> algorithm to sort its second parameter, which must be a <b>cljonic</b> <b>collection</b>, into its result, which is a <b>cljonic</b> <b><a class="el" href="classcljonic_1_1_array.html">Array</a></b> with the same <b>MaximumCount</b> as its second parameter. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<p><a class="anchor" id="Core_Sort"></a> The <b>Sort</b> function uses an <b>Insertion</b> <b>Sort</b> algorithm to sort its parameter, which must be a <b>cljonic</b> <b>collection</b>, into its result, which is a <b>cljonic</b> <b><a class="el" href="classcljonic_1_1_array.html">Array</a></b> with the same <b>MaximumCount</b> as its parameter. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
@@ -1836,7 +1836,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">sortCStr0</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a01d866b48ba4058f40cecdd2849d6bf8">Sort</a>(<a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>{<span class="stringliteral">&quot;four&quot;</span>, <span class="stringliteral">&quot;one&quot;</span>, <span class="stringliteral">&quot;three&quot;</span>, <span class="stringliteral">&quot;two&quot;</span>})};</div>
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">sortCStr1</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a01d866b48ba4058f40cecdd2849d6bf8">Sort</a>(<a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>{<span class="stringliteral">&quot;one&quot;</span>, <span class="stringliteral">&quot;two&quot;</span>, <span class="stringliteral">&quot;three&quot;</span>, <span class="stringliteral">&quot;four&quot;</span>})};</div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// Compiler Error: Sort&#39;s second parameter must be a cljonic collection</span></div>
+<div class="line">    <span class="comment">// Compiler Error: Sort&#39;s parameter must be a cljonic collection</span></div>
 <div class="line">    <span class="comment">// const auto sb{Sort(&quot;Hello&quot;)};</span></div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
@@ -2232,7 +2232,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jan 6 2025 09:37:12 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Mon Jan 6 2025 09:40:56 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

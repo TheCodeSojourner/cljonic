@@ -12,8 +12,8 @@ namespace core
 {
 
 /** \anchor Core_Sort
-* The \b Sort function uses an \b Insertion \b Sort algorithm to sort its second parameter, which must be a \b cljonic
-* \b collection, into its result, which is a \b cljonic \b Array with the same \b MaximumCount as its second parameter.
+* The \b Sort function uses an \b Insertion \b Sort algorithm to sort its parameter, which must be a \b cljonic
+* \b collection, into its result, which is a \b cljonic \b Array with the same \b MaximumCount as its parameter.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -41,7 +41,7 @@ int main()
     const auto sortCStr0{Sort(Array{"four", "one", "three", "two"})};
     const auto sortCStr1{Sort(Array{"one", "two", "three", "four"})};
 
-    // Compiler Error: Sort's second parameter must be a cljonic collection
+    // Compiler Error: Sort's parameter must be a cljonic collection
     // const auto sb{Sort("Hello")};
 
     return 0;
@@ -53,7 +53,7 @@ constexpr auto Sort(const C& c) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 
-    static_assert(IsCljonicCollection<C>, "Sort's second parameter must be a cljonic collection");
+    static_assert(IsCljonicCollection<C>, "Sort's parameter must be a cljonic collection");
 
     // Insertion sort algorithm
     auto result{Seq(c)};
