@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Jan  6 11:58:02 AM MST 2025
+// This file was generated Mon Jan  6 03:03:31 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -331,6 +331,9 @@ constexpr auto Filter(F&& f, const C& c) noexcept;
 
 template <typename C>
 constexpr auto First(const C& coll) noexcept;
+
+template <typename T, typename... Ts>
+constexpr auto Identical(const T& t, const Ts&... ts) noexcept;
 
 template <typename T>
 constexpr void* Identity(const T& t) noexcept;
@@ -1336,6 +1339,23 @@ constexpr auto First(const C& coll) noexcept {
 static_assert(IsCljonicCollection<C>, "First's parameter must be a cljonic collection");
 
 return coll[0];
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename T, typename... Ts>
+constexpr auto Identical(const T& t, const Ts&... ts) noexcept {
+if constexpr(sizeof...(Ts) <= 0) {
+return true;
+} else {
+auto SameIdentity = [&](const auto& t1, const auto& t2) { return Identity(t1) == Identity(t2); };
+return (SameIdentity(t, ts) and ...);
+}
 }
 
 }
