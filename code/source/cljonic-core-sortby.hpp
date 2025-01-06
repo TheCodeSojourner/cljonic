@@ -44,7 +44,7 @@ int main()
     // Compiler Error: SortBy's second parameter must be a cljonic collection
     // const auto sb{SortBy(IsALessThanB, "Hello")};
 
-    // Compiler Error: TakeWhile's function is not a valid unary predicate for the collection value type
+    // Compiler Error: SortBy's function is not a valid unary predicate for the collection value type
     // const auto sb{SortBy(IsALessThanB, Array<const char*, 5>{})};
 
     return 0;

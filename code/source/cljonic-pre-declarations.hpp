@@ -90,6 +90,9 @@ constexpr auto Seq(const C& c) noexcept;
 template <typename F, typename C>
 constexpr auto SortBy(F&& f, const C& c) noexcept;
 
+template <typename F, typename C>
+constexpr auto Sort(F&& f, const C& c) noexcept;
+
 template <typename C>
 constexpr auto Take(const SizeType count, const C& c) noexcept;
 

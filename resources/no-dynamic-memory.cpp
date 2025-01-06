@@ -34,6 +34,7 @@ int main()
     constexpr auto reduce2{Reduce([](const int sum, const int i) { return sum + i; }, a)};
     constexpr auto reduce3{Reduce([](const int sum, const int i) { return sum + i; }, 30, a)};
     constexpr auto seq{Seq(a)};
+    constexpr auto sort{Sort(a)};
     constexpr auto sortby{SortBy([](const int i, const int j) { return i < j; }, a)};
     constexpr auto take{Take(2, a)};
     constexpr auto takelast{TakeLast(2, a)};

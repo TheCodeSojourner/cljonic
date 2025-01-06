@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Sat Jan  4 05:43:14 PM MST 2025
+// This file was generated Mon Jan  6 09:37:12 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -224,6 +224,14 @@ constexpr bool AreEqual(CString auto a, CString auto b) noexcept {
 return std::strcmp(a, b) == 0;
 }
 
+constexpr bool FirstLessThanSecond(NotCString auto a, NotCString auto b) noexcept {
+return a < b;
+}
+
+constexpr bool FirstLessThanSecond(CString auto a, CString auto b) noexcept {
+return std::strcmp(a, b) < 0;
+}
+
 template <typename T, typename... Ts>
 constexpr auto Min(T a, Ts... args) noexcept {
 if constexpr(sizeof...(args) == 0) {
@@ -341,6 +349,9 @@ constexpr auto Seq(const C& c) noexcept;
 
 template <typename F, typename C>
 constexpr auto SortBy(F&& f, const C& c) noexcept;
+
+template <typename F, typename C>
+constexpr auto Sort(F&& f, const C& c) noexcept;
 
 template <typename C>
 constexpr auto Take(const SizeType count, const C& c) noexcept;
@@ -1421,6 +1432,31 @@ constexpr auto Seq(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Seq's second parameter must be a cljonic collection");
 
 return Take(c.MaximumCount(), c);
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto Sort(const C& c) noexcept {
+
+static_assert(IsCljonicCollection<C>, "Sort's second parameter must be a cljonic collection");
+
+auto result{Seq(c)};
+for(SizeType i{1}; i < result.Count(); ++i) {
+auto key = result[i];
+SizeType j = i;
+while((j > 0) and FirstLessThanSecond(key, result[j - 1])) {
+result.MSet(j, result[j - 1]);
+--j;
+}
+result.MSet(j, key);
+}
+return result;
 }
 
 }
