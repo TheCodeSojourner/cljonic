@@ -11,7 +11,7 @@ namespace core
 
 /** \anchor Core_First
 * The \b First function returns the first element in a \b cljonic \b collection.  If the \b cljonic \b collection has
-* no elements its default element is returned.
+* no elements its \b default \b element is returned.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
