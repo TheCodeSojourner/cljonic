@@ -14,7 +14,7 @@ namespace core
 {
 
 /** \anchor Core_SplitBy
-* The \b SplitBy function, called \b split-with, in \b Clojure, returns a \b tuple of two \b cljonic \b collections,
+* The \b SplitBy function, called \b split-with in \b Clojure, returns a \b tuple of two \b cljonic \b collections,
 * both with the same \b MaximumCount as its second parameter. The first returned \b cljonic \b collection contains the
 * result of calling \b TakeWhile with the first parameter, which must be a \b unary \b predicate, and the second
 * parameter. The second returned \b cljonic \b collection contains the rest of the second parameter's elements.
