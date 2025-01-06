@@ -12,8 +12,8 @@ namespace core
 /** \anchor Core_Some
 * The \b Some function calls its first parameter, which must be a \b unary \b predicate, with the elements of its second
 * parameter, which must be a \b cljonic \b collection, and if any of the results are \b true then \b Some returns true,
-* otherwise \b Some returns false. Note that \b Some does short circuit, that is \b true is returned on the first
-* \b true result from \b Some's first parameter and no.
+* otherwise \b Some returns false. Note that \b Some \b does short circuit, that is \b true is returned on the first
+* \b true result from \b Some's first parameter.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
