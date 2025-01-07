@@ -18,7 +18,7 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto a{Array{11, 12, 13, 14}};
-    constexpr auto sizeA{Size(a)}; // 10
+    constexpr auto sizeA{Size(a)}; // 4
 
     constexpr auto rng{Range<1, 5>{}};
     constexpr auto sizeRng{Size(rng)}; // 4
