@@ -36,6 +36,7 @@ int main()
     constexpr auto reduce3{Reduce([](const int sum, const int i) { return sum + i; }, 30, a)};
     constexpr auto second{Second(a)};
     constexpr auto seq{Seq(a)};
+    constexpr auto size{Size(a)};
     constexpr auto some{Some([](const int i) { return 20 == i; }, a)};
     constexpr auto sort{Sort(a)};
     constexpr auto sortby{SortBy([](const int i, const int j) { return i < j; }, a)};

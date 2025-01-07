@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Jan  6 04:23:23 PM MST 2025
+// This file was generated Tue Jan  7 04:14:19 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -352,6 +352,9 @@ constexpr auto Second(const C& c) noexcept;
 
 template <typename C>
 constexpr auto Seq(const C& c) noexcept;
+
+template <typename C>
+constexpr auto Size(const C& c) noexcept;
 
 template <typename F, typename C>
 constexpr auto Some(F&& f, const C& c) noexcept;
@@ -1489,6 +1492,20 @@ constexpr auto Seq(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Seq's second parameter must be a cljonic collection");
 
 return Take(c.MaximumCount(), c);
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto Size(const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "Size's parameter must be a cljonic collection");
+
+return c.MaximumCount();
 }
 
 }

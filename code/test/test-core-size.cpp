@@ -4,25 +4,25 @@
 #include "cljonic-repeat.hpp"
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
-#include "cljonic-core-count.hpp"
+#include "cljonic-core-size.hpp"
 
 using namespace cljonic;
 using namespace cljonic::core;
 
-SCENARIO("Count", "[CljonicCoreCount]")
+SCENARIO("Size", "[CljonicCoreSize]")
 {
     const auto a{Array<int, 10>{11, 12, 13, 14}};
-    CHECK(4 == Count(a));
+    CHECK(10 == Size(a));
 
     constexpr auto rng{Range<1, 5>{}};
-    CHECK(4 == Count(rng));
+    CHECK(4 == Size(rng));
 
     constexpr auto rpt{Repeat<3, int>{11}};
-    CHECK(3 == Count(rpt));
+    CHECK(3 == Size(rpt));
 
     const auto set{Set{1, 2, 1, 3, 4}};
-    CHECK(4 == Count(set));
+    CHECK(5 == Size(set));
 
     constexpr auto str{String{"Hello"}};
-    CHECK(5 == Count(str));
+    CHECK(5 == Size(str));
 }

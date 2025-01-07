@@ -93,6 +93,9 @@ constexpr auto Second(const C& c) noexcept;
 template <typename C>
 constexpr auto Seq(const C& c) noexcept;
 
+template <typename C>
+constexpr auto Size(const C& c) noexcept;
+
 template <typename F, typename C>
 constexpr auto Some(F&& f, const C& c) noexcept;
 

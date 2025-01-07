@@ -43,6 +43,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-reduce.hpp \
     cljonic-core-second.hpp \
     cljonic-core-seq.hpp \
+    cljonic-core-size.hpp \
     cljonic-core-some.hpp \
     cljonic-core-sort.hpp \
     cljonic-core-sortby.hpp \
