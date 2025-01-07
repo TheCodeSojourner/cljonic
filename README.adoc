@@ -64,7 +64,8 @@ system developers. It aims to be *laconic*, *immutable-by-default*, *practical*,
 systems.
 
 == Desired Developer Experience When Using cljonic
-The developer using *cljonic* should be able to write *safe* code that is *easy to read*, *easy to understand* and *easy to maintain*.  These goals will enable *embedded system* projects to be *completed more quickly*, with 
+The developer using *cljonic* should be able to write *safe* code that is *easy to read*, *easy to understand* and 
+*easy to maintain*.  These goals will enable *embedded system* projects to be *completed more quickly*, with 
 *fewer bugs*, and maintained and enhanced with *less long term effort*. 
 
 === Default Element
@@ -75,6 +76,9 @@ The value of a collection's *default element* is a default initialized instance 
 NOTE: The design choice to use a *default element* means that *cljonic* users must take care to ensure that they know
 when a *default element* can be returned (e.g., Asking for the First element of an empty collection), and to handle things appropriately. 
 
+=== constexpr
+*cljonic* uses *constexpr* whenever possible to enable *compile-time* evaluation of expressions. Additionally, this 
+approach helps to dectect *undefined behavior* at compile time.
 
 == Developer Experience When Developing cljonic
 *cljonic* has a *Makefile* in the root directory.  For *help* on the available development processes simply execute 
