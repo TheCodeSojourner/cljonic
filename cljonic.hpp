@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Jan  7 04:18:39 PM MST 2025
+// This file was generated Wed Jan  8 08:45:07 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -367,6 +367,9 @@ constexpr auto SortBy(F&& f, const C& c) noexcept;
 
 template <typename F, typename C>
 constexpr auto SplitBy(F&& f, const C& c) noexcept;
+
+template <typename C>
+constexpr auto Subs(const C& c, const SizeType start, const SizeType end) noexcept;
 
 template <typename C>
 constexpr auto Take(const SizeType count, const C& c) noexcept;
@@ -1601,6 +1604,27 @@ static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
 const auto firstArray{TakeWhile(f, c)};
 const auto secondArray{Drop(firstArray.Count(), c)};
 return std::make_tuple(std::move(firstArray), std::move(secondArray));
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto Subs(const C& c, const SizeType start, const SizeType end) noexcept {
+static_assert(IsCljonicCollection<C>, "Subs's first parameter must be a cljonic collection");
+
+return ((c.Count() == 0) or (start >= c.Count()) or (end <= start))
+           ? Array<typename C::value_type, c.MaximumCount()>{}
+           : Take((end - start), Drop(start, c));
+}
+
+template <typename C>
+constexpr auto Subs(const C& c, const SizeType start) noexcept {
+return Subs(c, start, c.Count());
 }
 
 }
