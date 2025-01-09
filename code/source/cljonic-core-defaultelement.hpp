@@ -18,19 +18,19 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto a{Array{11, 12, 13, 14}};
-    const auto deA{DefaultElement(a)};
+    constexpr auto deA{DefaultElement(a)};
 
     constexpr auto rng{Range<1, 5>{}};
-    const auto deRng{DefaultElement(rng)};
+    constexpr auto deRng{DefaultElement(rng)};
 
     constexpr auto rpt{Repeat<3, int>{11}};
-    const auto deRpt{DefaultElement(rpt)};
+    constexpr auto deRpt{DefaultElement(rpt)};
 
-    const auto set{Set{1, 2, 1, 3, 4}};
-    const auto deSet{DefaultElement(set)};
+    constexpr auto set{Set{1, 2, 1, 3, 4}};
+    constexpr auto deSet{DefaultElement(set)};
 
     constexpr auto str{String{"Hello"}};
-    const auto deStr{DefaultElement(str)};;
+    constexpr auto deStr{DefaultElement(str)};
 
     // Compiler Error: DefaultElement's parameter must be a cljonic collection
     // const auto de{DefaultElement("Hello")};

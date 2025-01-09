@@ -47,6 +47,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-some.hpp \
     cljonic-core-sort.hpp \
     cljonic-core-sortby.hpp \
+    cljonic-core-splitat.hpp \
     cljonic-core-splitby.hpp \
     cljonic-core-subs.hpp \
     cljonic-core-take.hpp \

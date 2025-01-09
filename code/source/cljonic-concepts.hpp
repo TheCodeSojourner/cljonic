@@ -68,6 +68,9 @@ concept IsCljonicSet = std::same_as<typename T::cljonic_collection_type,
 template <typename T>
 concept IsCljonicArrayRangeOrRepeat = IsCljonicArray<T> or IsCljonicRange<T> or IsCljonicRepeat<T>;
 
+template <typename T>
+concept IsCString = std::same_as<T, const char*> or std::same_as<T, char*>;
+
 template <typename P, typename T>
 concept IsUnaryPredicate = requires(P p, T t) {
     { p(t) } -> std::convertible_to<bool>;
@@ -107,17 +110,11 @@ template <typename T, typename... Ts>
 constexpr bool AnyFloatingPointValueTypes =
     (std::floating_point<typename T::value_type> or ... or std::floating_point<typename Ts::value_type>);
 
-template <typename T>
-concept CString = std::same_as<T, const char*> or std::same_as<T, char*>;
-
 template <typename T, typename... Ts>
 using FindCommonType = typename InnerFindCommonType<T, Ts...>::type;
 
 template <typename T, typename... Ts>
 using FindCommonValueType = typename InnerFindCommonType<typename T::value_type, typename Ts::value_type...>::type;
-
-template <typename T>
-concept NotCString = (not CString<T>);
 
 template <typename F, IsCljonicCollection T, IsCljonicCollection... Ts>
 constexpr bool IsBinaryPredicateForAllCljonicCollections =

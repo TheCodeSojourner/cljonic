@@ -26,26 +26,26 @@ int main()
     constexpr auto IsALessThanB = [](const int a, const int b) { return a < b; };
 
     constexpr auto a{Array{11, 12, 13, 14}};
-    const auto sortByA{SortBy(IsALessThanB, a)};
+    constexpr auto sortByA{SortBy(IsALessThanB, a)};
 
     constexpr auto b{Array{11, 13, 12, 14}};
-    const auto sortByB{SortBy(IsALessThanB, b)};
+    constexpr auto sortByB{SortBy(IsALessThanB, b)};
 
-    const auto sortByRng{SortBy(IsALessThanB, Range<0>{})};
+    constexpr auto sortByRng{SortBy(IsALessThanB, Range<0>{})};
 
-    const auto sortByRpt{SortBy(IsALessThanB, Repeat<4, int>{11})};
+    constexpr auto sortByRpt{SortBy(IsALessThanB, Repeat<4, int>{11})};
 
-    const auto sortBySet0{SortBy(IsALessThanB, Set{11, 12, 13, 14})};
-    const auto sortBySet1{SortBy(IsALessThanB, Set{11, 13, 12, 14})};
+    constexpr auto sortBySet0{SortBy(IsALessThanB, Set{11, 12, 13, 14})};
+    constexpr auto sortBySet1{SortBy(IsALessThanB, Set{11, 13, 12, 14})};
 
-    const auto sortByStr0{SortBy([](const char i, const char j) { return i < j; }, String{"abcd"})};
-    const auto sortByStr1{SortBy([](const char i, const char j) { return i < j; }, String{"axbycz"})};
+    constexpr auto sortByStr0{SortBy([](const char i, const char j) { return i < j; }, String{"abcd"})};
+    constexpr auto sortByStr1{SortBy([](const char i, const char j) { return i < j; }, String{"axbycz"})};
 
     // Compiler Error: SortBy's second parameter must be a cljonic collection
-    // const auto sb{SortBy(IsALessThanB, "Hello")};
+    // constexpr auto sb{SortBy(IsALessThanB, "Hello")};
 
     // Compiler Error: SortBy's function is not a valid binary predicate for the collection value type
-    // const auto sb{SortBy(IsALessThanB, Array<const char*, 5>{})};
+    // constexpr auto sb{SortBy(IsALessThanB, Array<const char*, 5>{})};
 
     return 0;
 }

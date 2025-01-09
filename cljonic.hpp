@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Jan  8 08:45:07 AM MST 2025
+// This file was generated Thu Jan  9 12:46:15 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -147,6 +147,9 @@ concept IsCljonicSet = std::same_as<typename T::cljonic_collection_type,
 template <typename T>
 concept IsCljonicArrayRangeOrRepeat = IsCljonicArray<T> or IsCljonicRange<T> or IsCljonicRepeat<T>;
 
+template <typename T>
+concept IsCString = std::same_as<T, const char*> or std::same_as<T, char*>;
+
 template <typename P, typename T>
 concept IsUnaryPredicate = requires(P p, T t) {
 { p(t) } -> std::convertible_to<bool>;
@@ -186,17 +189,11 @@ template <typename T, typename... Ts>
 constexpr bool AnyFloatingPointValueTypes =
     (std::floating_point<typename T::value_type> or ... or std::floating_point<typename Ts::value_type>);
 
-template <typename T>
-concept CString = std::same_as<T, const char*> or std::same_as<T, char*>;
-
 template <typename T, typename... Ts>
 using FindCommonType = typename InnerFindCommonType<T, Ts...>::type;
 
 template <typename T, typename... Ts>
 using FindCommonValueType = typename InnerFindCommonType<typename T::value_type, typename Ts::value_type...>::type;
-
-template <typename T>
-concept NotCString = (not CString<T>);
 
 template <typename F, IsCljonicCollection T, IsCljonicCollection... Ts>
 constexpr bool IsBinaryPredicateForAllCljonicCollections =
@@ -211,25 +208,49 @@ namespace cljonic {
 
 template <typename F, typename T, typename U>
 constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept {
-static_assert(std::predicate<std::decay_t<F>, T, U>,
-              "AreEqualBy function is not a valid binary predicate for the parameters");
+
+if constexpr(IsCljonicSet<T> or IsCljonicSet<U>) {
+auto result{t.Count() == u.Count()};
+for(SizeType i{0}; (result and (i < t.Count())); ++i)
+result = t.ContainsBy(f, u[i]);
+return result;
+} else if constexpr(IsCljonicCollection<T> or IsCljonicCollection<U>) {
+auto result{t.Count() == u.Count()};
+for(SizeType i{0}; (result and (i < t.Count())); ++i)
+result = f(t[i], u[i]);
+return result;
+} else {
 return f(t, u);
 }
-
-constexpr bool AreEqual(NotCString auto a, NotCString auto b) noexcept {
-return a == b;
 }
 
-constexpr bool AreEqual(CString auto a, CString auto b) noexcept {
-return std::strcmp(a, b) == 0;
+template <typename T, typename U>
+constexpr bool AreEqual(const T& t, const U& u) noexcept {
+
+if constexpr(IsCString<T> and IsCString<U>) {
+return std::strcmp(t, u) == 0;
+} else if constexpr(IsCljonicSet<T> or IsCljonicSet<U>) {
+auto result{t.Count() == u.Count()};
+for(SizeType i{0}; (result and (i < t.Count())); ++i)
+result = t.Contains(u[i]);
+return result;
+} else if constexpr(IsCljonicCollection<T> or IsCljonicCollection<U>) {
+auto result{t.Count() == u.Count()};
+for(SizeType i{0}; (result and (i < t.Count())); ++i)
+result = AreEqual(t[i], u[i]);
+return result;
+} else {
+return t == u;
+}
 }
 
-constexpr bool FirstLessThanSecond(NotCString auto a, NotCString auto b) noexcept {
-return a < b;
+template <typename T, typename U>
+constexpr bool FirstLessThanSecond(const T& t, const U& u) noexcept {
+if constexpr(IsCString<T> and IsCString<U>) {
+return std::strcmp(t, u) < 0;
+} else {
+return t < u;
 }
-
-constexpr bool FirstLessThanSecond(CString auto a, CString auto b) noexcept {
-return std::strcmp(a, b) < 0;
 }
 
 template <typename T, typename... Ts>
@@ -365,6 +386,9 @@ constexpr auto Sort(F&& f, const C& c) noexcept;
 template <typename F, typename C>
 constexpr auto SortBy(F&& f, const C& c) noexcept;
 
+template <typename C>
+constexpr auto SplitAt(const SizeType count, const C& c) noexcept;
+
 template <typename F, typename C>
 constexpr auto SplitBy(F&& f, const C& c) noexcept;
 
@@ -401,7 +425,7 @@ static_assert(maximumElements == MaxElements,
               "Attempt to create an Array bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
 
 SizeType m_elementCount;
-const T m_elementDefault;
+T m_elementDefault;
 T m_elements[maximumElements]{};
 
 template <typename U, SizeType N>
@@ -441,6 +465,16 @@ return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 
 constexpr const T& operator()(const SizeType index) const noexcept {
 return this->operator[](index);
+}
+
+constexpr Array& operator=(const Array& other) noexcept {
+if(this != &other) {
+m_elementCount = other.m_elementCount;
+m_elementDefault = other.m_elementDefault;
+for(SizeType i{0}; i < m_elementCount; ++i)
+m_elements[i] = other.m_elements[i];
+}
+return *this;
 }
 
 [[nodiscard]] constexpr SizeType Count() const noexcept {
@@ -1002,9 +1036,9 @@ template <typename C>
 class CycleCollection {
 using ElementType = typename C::value_type;
 
-const C m_collection;
+C m_collection;
 
-[[nodiscard]] SizeType IndexToElementIndex(const SizeType index) const noexcept {
+[[nodiscard]] constexpr SizeType IndexToElementIndex(const SizeType index) const noexcept {
 return (0 == m_collection.Count()) ? 0 : (index % m_collection.Count());
 }
 
@@ -1221,7 +1255,7 @@ namespace core {
 template <typename T, typename... Ts>
 constexpr auto Equal(const T& t, const Ts&... ts) noexcept {
 
-if constexpr(sizeof...(Ts) <= 0) {
+if constexpr(sizeof...(Ts) == 0) {
 if constexpr(IsCljonicCollection<T>)
 static_assert((not std::floating_point<typename T::value_type>),
               "Equal should not compare cljonic floating point collection value types for equality. "
@@ -1239,7 +1273,7 @@ static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
 static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
               "Equal cljonic collection types are not all the same, or all Array, Range or Repeat types");
 
-return EqualBy([](const auto& a, const auto& b) { return AreEqual(a, b); }, t, ts...);
+return (AreEqual(t, ts) and ...);
 } else {
 static_assert(not AnyFloatingPointTypes<T, Ts...>,
               "Equal should not compare floating point types for equality. Consider using EqualBy to override "
@@ -1247,7 +1281,7 @@ static_assert(not AnyFloatingPointTypes<T, Ts...>,
 
 static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all Equal types are equality comparable");
 
-return EqualBy([](const auto& a, const auto& b) { return AreEqual(a, b); }, t, ts...);
+return (AreEqual(t, ts) and ...);
 }
 }
 
@@ -1270,31 +1304,14 @@ static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRe
 static_assert(IsBinaryPredicateForAllCljonicCollections<std::decay_t<F>, T, Ts...>,
               "EqualBy function is not a valid binary predicate for all cljonic collection value types");
 
-if constexpr(AllCljonicSets<T, Ts...>) {
-auto EqualSets = [&](const auto& c1, const auto& c2) {
-auto result{c1.Count() == c2.Count()};
-for(SizeType i{0}; (result and (i < c1.Count())); ++i)
-result = c2.ContainsBy(f, c1[i]);
-return result;
-};
-return (EqualSets(t, ts) and ...);
-} else {
-auto EqualCollections = [&](const auto& c1, const auto& c2) {
-auto result{c1.Count() == c2.Count()};
-for(SizeType i{0}; (result and (i < c1.Count())); ++i)
-result = AreEqualBy(f, c1[i], c2[i]);
-return result;
-};
-return (EqualCollections(t, ts) and ...);
-}
+return (AreEqualBy(f, t, ts) and ...);
 } else {
 static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all EqualBy types are equality comparable");
 
 static_assert(IsBinaryPredicateForAll<F, T, Ts...>,
               "EqualBy function is not a valid binary predicate for all parameters");
 
-auto EqualParameters = [&](const auto& p1, const auto& p2) { return AreEqualBy(f, p1, p2); };
-return (EqualParameters(t, ts) and ...);
+return (AreEqualBy(f, t, ts) and ...);
 }
 }
 
@@ -1594,6 +1611,22 @@ return result;
 namespace cljonic {
 
 namespace core {
+template <typename C>
+constexpr auto SplitAt(const SizeType count, const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "SplitAt's second parameter must be a cljonic collection");
+
+return Array{Take(count, c), Drop(count, c)};
+}
+
+}
+
+} // namespace cljonic::core
+
+#include <tuple>
+
+namespace cljonic {
+
+namespace core {
 template <typename F, typename C>
 constexpr auto SplitBy(F&& f, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "SplitBy's second parameter must be a cljonic collection");
@@ -1624,6 +1657,8 @@ return ((c.Count() == 0) or (start >= c.Count()) or (end <= start))
 
 template <typename C>
 constexpr auto Subs(const C& c, const SizeType start) noexcept {
+static_assert(IsCljonicCollection<C>, "Subs's first parameter must be a cljonic collection");
+
 return Subs(c, start, c.Count());
 }
 

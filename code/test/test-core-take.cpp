@@ -12,7 +12,7 @@ using namespace cljonic::core;
 
 SCENARIO("Take", "[CljonicCoreTake]")
 {
-    const auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    constexpr auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
 
     CHECK(Equal(Array<int, 0>{}, Take(0, a)));
     CHECK(Equal(Array{0}, Take(1, a)));

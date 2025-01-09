@@ -12,29 +12,68 @@ namespace cljonic
 template <typename F, typename T, typename U>
 constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept
 {
-    static_assert(std::predicate<std::decay_t<F>, T, U>,
-                  "AreEqualBy function is not a valid binary predicate for the parameters");
-    return f(t, u);
+    // #lizard forgives -- The length and complexity of this function is acceptable
+
+    if constexpr (IsCljonicSet<T> or IsCljonicSet<U>)
+    {
+        auto result{t.Count() == u.Count()};
+        for (SizeType i{0}; (result and (i < t.Count())); ++i)
+            result = t.ContainsBy(f, u[i]);
+        return result;
+    }
+    else if constexpr (IsCljonicCollection<T> or IsCljonicCollection<U>)
+    {
+        auto result{t.Count() == u.Count()};
+        for (SizeType i{0}; (result and (i < t.Count())); ++i)
+            result = f(t[i], u[i]);
+        return result;
+    }
+    else
+    {
+        return f(t, u);
+    }
 }
 
-constexpr bool AreEqual(NotCString auto a, NotCString auto b) noexcept
+template <typename T, typename U>
+constexpr bool AreEqual(const T& t, const U& u) noexcept
 {
-    return a == b;
+    // #lizard forgives -- The length and complexity of this function is acceptable
+
+    if constexpr (IsCString<T> and IsCString<U>)
+    {
+        return std::strcmp(t, u) == 0;
+    }
+    else if constexpr (IsCljonicSet<T> or IsCljonicSet<U>)
+    {
+        auto result{t.Count() == u.Count()};
+        for (SizeType i{0}; (result and (i < t.Count())); ++i)
+            result = t.Contains(u[i]);
+        return result;
+    }
+    else if constexpr (IsCljonicCollection<T> or IsCljonicCollection<U>)
+    {
+        auto result{t.Count() == u.Count()};
+        for (SizeType i{0}; (result and (i < t.Count())); ++i)
+            result = AreEqual(t[i], u[i]);
+        return result;
+    }
+    else
+    {
+        return t == u;
+    }
 }
 
-constexpr bool AreEqual(CString auto a, CString auto b) noexcept
+template <typename T, typename U>
+constexpr bool FirstLessThanSecond(const T& t, const U& u) noexcept
 {
-    return std::strcmp(a, b) == 0;
-}
-
-constexpr bool FirstLessThanSecond(NotCString auto a, NotCString auto b) noexcept
-{
-    return a < b;
-}
-
-constexpr bool FirstLessThanSecond(CString auto a, CString auto b) noexcept
-{
-    return std::strcmp(a, b) < 0;
+    if constexpr (IsCString<T> and IsCString<U>)
+    {
+        return std::strcmp(t, u) < 0;
+    }
+    else
+    {
+        return t < u;
+    }
 }
 
 template <typename T, typename... Ts>

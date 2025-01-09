@@ -25,26 +25,26 @@ int main()
 {
     constexpr auto Even = [](const int i) { return (0 == (i % 2)); };
 
-    const auto a{Array<int, 10>{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
-    const auto fA{Filter(Even, a)};                                 // immutable, sparse Array, with 0, 2, 4, 6, and 8
+    constexpr auto a{Array<int, 10>{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    constexpr auto fA{Filter(Even, a)}; // immutable, sparse Array, with 0, 2, 4, 6, and 8
 
-    const auto rng{Range<10>{}};
-    const auto fRng{Filter(Even, rng)};                             // immutable, sparse Array, with 0, 2, 4, 6, and 8
+    constexpr auto rng{Range<10>{}};
+    constexpr auto fRng{Filter(Even, rng)}; // immutable, sparse Array, with 0, 2, 4, 6, and 8
 
-    const auto rpt{Repeat<10, int>{1}};
-    const auto fRpt{Filter(Even, rpt)};                             // immutable, empty Array
+    constexpr auto rpt{Repeat<10, int>{1}};
+    constexpr auto fRpt{Filter(Even, rpt)}; // immutable, empty Array
 
-    const auto s{Set<int, 4>{1, 2, 3, 4, 5, 6}};
-    const auto fS{Filter(Even, s)};                                 // immutable, sparse Array, with 2 and 4
+    constexpr auto s{Set<int, 4>{1, 2, 3, 4, 5, 6}};
+    constexpr auto fS{Filter(Even, s)}; // immutable, sparse Array, with 2 and 4
 
-    const auto fStr{Filter([](const char c) { return ('l' == c); }, // immutable, sparse Array, with 'l' and 'l'
-                           String{"Hello"})};
+    constexpr auto fStr{Filter([](const char c) { return ('l' == c); }, // immutable, sparse Array, with 'l' and 'l'
+                               String{"Hello"})};
 
     // Compiler Error: Filter's second parameter must be a cljonic collection
-    // const auto tw{Filter(Even, "Hello")};
+    // constexpr auto tw{Filter(Even, "Hello")};
 
     // Compiler Error: Filter's function is not a valid unary predicate for the collection value type
-    // const auto tw{Filter(Even, Array<const char*, 5>{})};
+    // constexpr auto tw{Filter(Even, Array<const char*, 5>{})};
 
     return 0;
 }

@@ -16,7 +16,7 @@ int main()
     constexpr auto concat{Concat(a, a)};
     constexpr auto conj{Conj(a, 11)};
     constexpr auto count{Count(a)};
-    const auto cycle{Cycle(a)};
+    constexpr auto cycle{Cycle(a)};
     constexpr auto dedupe{Dedupe(a)};
     constexpr auto dedupeby{DedupeBy([](const int i, const int j) { return i == j; }, a)};
     constexpr auto defaultelement{DefaultElement(a)};
@@ -28,7 +28,7 @@ int main()
     constexpr auto every{Every([](const int i) { return 1 == i; }, a)};
     constexpr auto filter{Filter([](const int i) { return 1 == i; }, a)};
     constexpr auto first{First(a)};
-    const auto identical{Identical(a)};
+    constexpr auto identical{Identical(a)};
     const auto identity{Identity(a)};
     constexpr auto map{Map([](const int i) { return 1 == i; }, a)};
     constexpr auto partial{Partial([](const int i, const int j) { return i + j; }, 10)};
@@ -40,6 +40,7 @@ int main()
     constexpr auto some{Some([](const int i) { return 20 == i; }, a)};
     constexpr auto sort{Sort(a)};
     constexpr auto sortby{SortBy([](const int i, const int j) { return i < j; }, a)};
+    constexpr auto splitat{SplitAt(2, a)};
     constexpr auto splitby{SplitBy([](const int i) { return true; }, a)};
     constexpr auto subs_1{Subs(a, 0, 2)};
     constexpr auto subs_2{Subs(a, 0)};

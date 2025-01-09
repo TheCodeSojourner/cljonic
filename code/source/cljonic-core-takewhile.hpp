@@ -25,26 +25,26 @@ int main()
 {
     constexpr auto Even = [](const int i) { return (0 == (i % 2)); };
 
-    const auto a{Array<int, 10>{0, 2, 4, 5, 6, 7, 8, 9}};
-    const auto twA{TakeWhile(Even, a)}; // immutable, sparse Array, with 0, 2, and 4
+    constexpr auto a{Array<int, 10>{0, 2, 4, 5, 6, 7, 8, 9}};
+    constexpr auto twA{TakeWhile(Even, a)}; // immutable, sparse Array, with 0, 2, and 4
 
-    const auto rng{Range<10>{}};
-    const auto twRng{TakeWhile(Even, rng)}; // immutable, sparse Array, with 0
+    constexpr auto rng{Range<10>{}};
+    constexpr auto twRng{TakeWhile(Even, rng)}; // immutable, sparse Array, with 0
 
-    const auto rpt{Repeat<10, int>{2}};
-    const auto twRpt{TakeWhile(Even, rpt)}; // immutable, full array, of 2s
+    constexpr auto rpt{Repeat<10, int>{2}};
+    constexpr auto twRpt{TakeWhile(Even, rpt)}; // immutable, full array, of 2s
 
-    const auto s{Set<int, 4>{2, 4, 5, 6}};
-    const auto twS{TakeWhile(Even, s)}; // immutable, sparse Array, with 2 and 4
+    constexpr auto s{Set<int, 4>{2, 4, 5, 6}};
+    constexpr auto twS{TakeWhile(Even, s)}; // immutable, sparse Array, with 2 and 4
 
-    const auto twStr{TakeWhile([](const char c) { return ('l' != c); }, // immutable, sparse Array, with 'H' and 'e'
-                               String{"Hello"})};
+    constexpr auto twStr{TakeWhile([](const char c) { return ('l' != c); }, // immutable, sparse Array, with 'H' and 'e'
+                                   String{"Hello"})};
 
     // Compiler Error: TakeWhile's second parameter must be a cljonic collection
-    // const auto tw{TakeWhile(Even, "Hello")};
+    // constexpr auto tw{TakeWhile(Even, "Hello")};
 
     // Compiler Error: TakeWhile's function is not a valid unary predicate for the collection value type
-    // const auto tw{TakeWhile(Even, Array<const char*, 5>{})};
+    // constexpr auto tw{TakeWhile(Even, Array<const char*, 5>{})};
 
     return 0;
 }

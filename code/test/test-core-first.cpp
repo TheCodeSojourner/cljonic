@@ -20,7 +20,7 @@ SCENARIO("First", "[CljonicCoreFirst]")
     constexpr auto rpt{Repeat<3, int>{11}};
     CHECK(11 == First(rpt));
 
-    const auto set{Set{1, 2, 1, 3, 4}};
+    constexpr auto set{Set{1, 2, 1, 3, 4}};
     CHECK(1 == First(set));
 
     constexpr auto str{String{"Hello"}};

@@ -1,7 +1,6 @@
 #ifndef CLJONIC_CORE_EVERY_HPP
 #define CLJONIC_CORE_EVERY_HPP
 
-#include "cljonic-collection-maximum-element-count.hpp"
 #include "cljonic-concepts.hpp"
 
 namespace cljonic

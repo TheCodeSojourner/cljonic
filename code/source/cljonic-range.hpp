@@ -3,7 +3,6 @@
 
 #include <concepts>
 #include "cljonic-collection-iterator.hpp"
-#include "cljonic-collection-maximum-element-count.hpp"
 #include "cljonic-collection-type.hpp"
 #include "cljonic-shared.hpp"
 

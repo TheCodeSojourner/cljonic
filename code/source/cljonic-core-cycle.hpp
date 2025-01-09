@@ -2,7 +2,6 @@
 #define CLJONIC_CORE_CYCLE_HPP
 
 #include <utility>
-#include "cljonic-collection-maximum-element-count.hpp"
 #include "cljonic-collection-type.hpp"
 #include "cljonic-concepts.hpp"
 
@@ -23,9 +22,9 @@ class CycleCollection
 {
     using ElementType = typename C::value_type;
 
-    const C m_collection;
+    C m_collection;
 
-    [[nodiscard]] SizeType IndexToElementIndex(const SizeType index) const noexcept
+    [[nodiscard]] constexpr SizeType IndexToElementIndex(const SizeType index) const noexcept
     {
         return (0 == m_collection.Count()) ? 0 : (index % m_collection.Count());
     }
@@ -131,24 +130,24 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto a{Array{11, 12, 13, 14}};
-    const auto cycleA0{Cycle(a)};
-    const auto cycleA1{Cycle(Array{11, 12, 13, 14})};
+    constexpr auto cycleA0{Cycle(a)};
+    constexpr auto cycleA1{Cycle(Array{11, 12, 13, 14})};
 
     constexpr auto rng{Range<1, 5>{}};
-    const auto cycleRng0{Cycle(rng)};
-    const auto cycleRng1{Cycle(Range<1, 5>{})};
+    constexpr auto cycleRng0{Cycle(rng)};
+    constexpr auto cycleRng1{Cycle(Range<1, 5>{})};
 
     constexpr auto rpt{Repeat<3, int>{11}};
-    const auto cycleRpt0{Cycle(rpt)};
-    const auto cycleRpt1{Cycle(Repeat<3, int>{11})};
+    constexpr auto cycleRpt0{Cycle(rpt)};
+    constexpr auto cycleRpt1{Cycle(Repeat<3, int>{11})};
 
-    const auto set{Set{1, 2, 1, 3, 4}};
-    const auto cycleSet0{Cycle(set)};
-    const auto cycleSet1{Cycle(Set{1, 2, 1, 3, 4})};
+    constexpr auto set{Set{1, 2, 1, 3, 4}};
+    constexpr auto cycleSet0{Cycle(set)};
+    constexpr auto cycleSet1{Cycle(Set{1, 2, 1, 3, 4})};
 
     constexpr auto str{String{"Hello"}};
-    const auto cycleStr0{Cycle(str)};;
-    const auto cycleStr1{Cycle(String{"Hello"})};;
+    constexpr auto cycleStr0{Cycle(str)};;
+    constexpr auto cycleStr1{Cycle(String{"Hello"})};;
 
     // Compiler Error: Cycle's parameter must be a cljonic collection
     // const auto c{Cycle("Hello")};

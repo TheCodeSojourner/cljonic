@@ -1,6 +1,5 @@
 #include <type_traits>
 #include "catch.hpp"
-#include "cljonic-collection-maximum-element-count.hpp"
 #include "cljonic-repeat.hpp"
 
 using namespace cljonic;

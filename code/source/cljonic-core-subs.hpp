@@ -39,7 +39,8 @@ int main()
     constexpr auto subsStr{Subs(str, 2, 4)}; // 'l' and 'l'
 
     // Compiler Error: Subs's first parameter must be a cljonic collection
-    // const auto c{Subs("Hello, 3)};
+    // constexpr auto c{Subs("Hello", 2, 4)};
+    // constexpr auto c{Subs("Hello", 3)};
 
     return 0;
 }
@@ -58,6 +59,8 @@ constexpr auto Subs(const C& c, const SizeType start, const SizeType end) noexce
 template <typename C>
 constexpr auto Subs(const C& c, const SizeType start) noexcept
 {
+    static_assert(IsCljonicCollection<C>, "Subs's first parameter must be a cljonic collection");
+
     return Subs(c, start, c.Count());
 }
 

@@ -33,7 +33,7 @@ int main()
     constexpr auto sizeStr{Size(str)}; // 5
 
     // Compiler Error: Size's parameter must be a cljonic collection
-    // const auto c{Size("Hello")};
+    // constexpr auto c{Size("Hello")};
 
     return 0;
 }

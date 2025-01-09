@@ -114,6 +114,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0d37f718339949a670d491079fbe0d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74c95bcdb1bf94885ddc721ac3f33c9a" id="r_a74c95bcdb1bf94885ddc721ac3f33c9a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_array.html#a74c95bcdb1bf94885ddc721ac3f33c9a">operator()</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a> index) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
 <tr class="separator:a74c95bcdb1bf94885ddc721ac3f33c9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2935adcb9763d46309e4f17edcd6dfb" id="r_ad2935adcb9763d46309e4f17edcd6dfb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="classcljonic_1_1_array.html">Array</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_array.html#ad2935adcb9763d46309e4f17edcd6dfb">operator=</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="classcljonic_1_1_array.html">Array</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">other</a>) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
+<tr class="separator:ad2935adcb9763d46309e4f17edcd6dfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91eeadfe72486d71225e08f50b86c161" id="r_a91eeadfe72486d71225e08f50b86c161"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_array.html#a91eeadfe72486d71225e08f50b86c161">Count</a> () <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
 <tr class="separator:a91eeadfe72486d71225e08f50b86c161"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f71b273ce625d807d949df636e54374" id="r_a6f71b273ce625d807d949df636e54374"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_array.html#a6f71b273ce625d807d949df636e54374">DefaultElement</a> () <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
@@ -161,12 +163,12 @@ using namespace cljonic;
 
 int main()
 {
-    const auto a0{Array&lt;int, 10&gt;{}};                // immutable and empty
-    const auto a1{Array&lt;int, 10&gt;{1, 2, 3, 4}};      // immutable and sparse
-    const auto a2{Array&lt;int, 4&gt;{1, 2, 3, 4}};       // immutable and full
-    const auto a3{Array&lt;int, 4&gt;{1, 2, 3, 4, 5, 6}}; // immutable and full, and the values 5 and 6 are ignored
-    const auto a4{Array{1, 2, 3, 4}};               // immutable and full of four int values
-</pre><p> Compiler Error: Attempt to create an <a class="el" href="classcljonic_1_1_array.html">Array</a> bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT const auto a{Array&lt;int, 1111&gt;{0, 2, 4, 5, 6, 7, 8, 9}}; </p><pre class="fragment">    return 0;
+    constexpr auto a0{Array&lt;int, 10&gt;{}};                // immutable and empty
+    constexpr auto a1{Array&lt;int, 10&gt;{1, 2, 3, 4}};      // immutable and sparse
+    constexpr auto a2{Array&lt;int, 4&gt;{1, 2, 3, 4}};       // immutable and full
+    constexpr auto a3{Array&lt;int, 4&gt;{1, 2, 3, 4, 5, 6}}; // immutable and full, and the values 5 and 6 are ignored
+    constexpr auto a4{Array{1, 2, 3, 4}};               // immutable and full of four int values
+</pre><p> Compiler Error: Attempt to create an <a class="el" href="classcljonic_1_1_array.html">Array</a> bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT constexpr auto a{Array&lt;int, 1111&gt;{0, 2, 4, 5, 6, 7, 8, 9}}; </p><pre class="fragment">    return 0;
 }
 ~~~~~
 </pre> 
@@ -381,7 +383,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-array_8hpp_source.html#l00099">99</a> of file <a class="el" href="cljonic-array_8hpp_source.html">cljonic-array.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-array_8hpp_source.html#l00111">111</a> of file <a class="el" href="cljonic-array_8hpp_source.html">cljonic-array.hpp</a>.</p>
 
 </div>
 </div>
@@ -410,7 +412,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-array_8hpp_source.html#l00104">104</a> of file <a class="el" href="cljonic-array_8hpp_source.html">cljonic-array.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-array_8hpp_source.html#l00116">116</a> of file <a class="el" href="cljonic-array_8hpp_source.html">cljonic-array.hpp</a>.</p>
 
 </div>
 </div>
@@ -468,7 +470,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-array_8hpp_source.html#l00109">109</a> of file <a class="el" href="cljonic-array_8hpp_source.html">cljonic-array.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-array_8hpp_source.html#l00121">121</a> of file <a class="el" href="cljonic-array_8hpp_source.html">cljonic-array.hpp</a>.</p>
 
 </div>
 </div>
@@ -499,6 +501,36 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="cljonic-array_8hpp_source.html#l00094">94</a> of file <a class="el" href="cljonic-array_8hpp_source.html">cljonic-array.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ad2935adcb9763d46309e4f17edcd6dfb" name="ad2935adcb9763d46309e4f17edcd6dfb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2935adcb9763d46309e4f17edcd6dfb">&#9670;&#160;</a></span>operator=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , <a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a> MaxElements&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="classcljonic_1_1_array.html">Array</a> &amp; <a class="el" href="classcljonic_1_1_array.html">cljonic::Array</a>&lt; <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a>, MaxElements &gt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">::operator</a>= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="classcljonic_1_1_array.html">Array</a>&lt; <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a>, MaxElements &gt; &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-array_8hpp_source.html#l00099">99</a> of file <a class="el" href="cljonic-array_8hpp_source.html">cljonic-array.hpp</a>.</p>
 
 </div>
 </div>
@@ -571,7 +603,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-array_8hpp_source.html#l00120">120</a> of file <a class="el" href="cljonic-array_8hpp_source.html">cljonic-array.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-array_8hpp_source.html#l00132">132</a> of file <a class="el" href="cljonic-array_8hpp_source.html">cljonic-array.hpp</a>.</p>
 
 </div>
 </div>
@@ -619,7 +651,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-array_8hpp_source.html#l00127">127</a> of file <a class="el" href="cljonic-array_8hpp_source.html">cljonic-array.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-array_8hpp_source.html#l00139">139</a> of file <a class="el" href="cljonic-array_8hpp_source.html">cljonic-array.hpp</a>.</p>
 
 </div>
 </div>
@@ -629,7 +661,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jan 8 2025 08:45:07 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Thu Jan 9 2025 12:46:15 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

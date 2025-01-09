@@ -11,7 +11,7 @@ using namespace cljonic::core;
 
 SCENARIO("DefaultElement", "[CljonicCoreDefaultElement]")
 {
-    const auto a{Array<int, 10>{11, 12, 13, 14}};
+    constexpr auto a{Array<int, 10>{11, 12, 13, 14}};
     CHECK(0 == a.DefaultElement());
 
     constexpr auto rng{Range<1, 5>{}};
@@ -20,7 +20,7 @@ SCENARIO("DefaultElement", "[CljonicCoreDefaultElement]")
     constexpr auto rpt{Repeat<3, int>{11}};
     CHECK(0 == rpt.DefaultElement());
 
-    const auto set{Set{1, 2, 1, 3, 4}};
+    constexpr auto set{Set{1, 2, 1, 3, 4}};
     CHECK(0 == set.DefaultElement());
 
     constexpr auto str{String{"Hello"}};

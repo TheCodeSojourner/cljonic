@@ -1,8 +1,6 @@
 #ifndef CLJONIC_PRE_DECLARATIONSHPP
 #define CLJONIC_PRE_DECLARATIONSHPP
 
-#include "cljonic-collection-maximum-element-count.hpp"
-
 namespace cljonic
 {
 
@@ -104,6 +102,9 @@ constexpr auto Sort(F&& f, const C& c) noexcept;
 
 template <typename F, typename C>
 constexpr auto SortBy(F&& f, const C& c) noexcept;
+
+template <typename C>
+constexpr auto SplitAt(const SizeType count, const C& c) noexcept;
 
 template <typename F, typename C>
 constexpr auto SplitBy(F&& f, const C& c) noexcept;

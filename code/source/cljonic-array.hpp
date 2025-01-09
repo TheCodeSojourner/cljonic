@@ -25,7 +25,7 @@ class Array
                   "Attempt to create an Array bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
 
     SizeType m_elementCount;
-    const T m_elementDefault;
+    T m_elementDefault;
     T m_elements[maximumElements]{};
 
     template <typename U, SizeType N>
@@ -45,14 +45,14 @@ class Array
 
     int main()
     {
-        const auto a0{Array<int, 10>{}};                // immutable and empty
-        const auto a1{Array<int, 10>{1, 2, 3, 4}};      // immutable and sparse
-        const auto a2{Array<int, 4>{1, 2, 3, 4}};       // immutable and full
-        const auto a3{Array<int, 4>{1, 2, 3, 4, 5, 6}}; // immutable and full, and the values 5 and 6 are ignored
-        const auto a4{Array{1, 2, 3, 4}};               // immutable and full of four int values
+        constexpr auto a0{Array<int, 10>{}};                // immutable and empty
+        constexpr auto a1{Array<int, 10>{1, 2, 3, 4}};      // immutable and sparse
+        constexpr auto a2{Array<int, 4>{1, 2, 3, 4}};       // immutable and full
+        constexpr auto a3{Array<int, 4>{1, 2, 3, 4, 5, 6}}; // immutable and full, and the values 5 and 6 are ignored
+        constexpr auto a4{Array{1, 2, 3, 4}};               // immutable and full of four int values
 
         // Compiler Error: Attempt to create an Array bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
-        // const auto a{Array<int, 1111>{0, 2, 4, 5, 6, 7, 8, 9}};
+        // constexpr auto a{Array<int, 1111>{0, 2, 4, 5, 6, 7, 8, 9}};
 
         return 0;
     }
@@ -94,6 +94,18 @@ class Array
     constexpr const T& operator()(const SizeType index) const noexcept
     {
         return this->operator[](index);
+    }
+
+    constexpr Array& operator=(const Array& other) noexcept
+    {
+        if (this != &other)
+        {
+            m_elementCount = other.m_elementCount;
+            m_elementDefault = other.m_elementDefault;
+            for (SizeType i{0}; i < m_elementCount; ++i)
+                m_elements[i] = other.m_elements[i];
+        }
+        return *this;
     }
 
     [[nodiscard]] constexpr SizeType Count() const noexcept

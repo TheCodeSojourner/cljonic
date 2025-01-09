@@ -27,7 +27,7 @@ int main()
     constexpr auto rpt{Repeat<5, int>{10}};
     constexpr auto set{Set{100, 101}};
     constexpr auto str{String{"Hello"}};
-    const auto c{Concat(a, rng, rpt, set, str)};
+    constexpr auto c{Concat(a, rng, rpt, set, str)};
 
     // Compiler Error: All Concat parameters must be cljonic collections
     // const auto c{Concat("Hello", 1)};

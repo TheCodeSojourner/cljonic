@@ -2,7 +2,6 @@
 #define CLJONIC_CORE_TAKENTH_HPP
 
 #include "cljonic-array.hpp"
-#include "cljonic-collection-maximum-element-count.hpp"
 #include "cljonic-concepts.hpp"
 
 namespace cljonic
@@ -24,26 +23,26 @@ using namespace cljonic::core;
 
 int main()
 {
-    const auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
-    const auto t0{TakeNth(0, a)};                                // immutable, full Array, of ten 0s
-    const auto t1{TakeNth(1, a)};                                // immutable, full Array, with 0 through 9
-    const auto t2{TakeNth(2, a)};                                // immutable, sparse Array, with 0, 2, 4, 6, and 8
-    const auto t3{TakeNth(3, a)};                                // immutable, sparse Array, with 0, 3, 6, and 9
-    const auto t4{TakeNth(4, a)};                                // immutable, sparse Array, with 0, 4, and 8
-    const auto t5{TakeNth(5, a)};                                // immutable, sparse Array, with 0 and 5
-    const auto t6{TakeNth(6, a)};                                // immutable, sparse Array, with 0 and 6
-    const auto t7{TakeNth(7, a)};                                // immutable, sparse Array, with 0 and 7
-    const auto t8{TakeNth(8, a)};                                // immutable, sparse Array, with 0 and 8
-    const auto t9{TakeNth(9, a)};                                // immutable, sparse Array, with 0 and 9
-    const auto t10{TakeNth(10, a)};                              // immutable, sparse Array, with 0
-    const auto t50{TakeNth(50, a)};                              // immutable, sparse Array, with 0
-    const auto tEmpty{TakeNth(50, Range<0>{})};                  // immutable, empty Array
-    const auto tRpt7{TakeNth(50, Repeat<7, const char*>{"11"})}; // immutable, sparse Array, with one "11"
-    const auto tSet5{TakeNth(5, Set{'a', 'b'})};                 // immutable, sparse Array, with 'a'
-    const auto tStr3{TakeNth(3, String{"abcde"})};               // immutable, sparse Array, with 'a', and 'd'
+    constexpr auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    constexpr auto t0{TakeNth(0, a)};                                // immutable, full Array, of ten 0s
+    constexpr auto t1{TakeNth(1, a)};                                // immutable, full Array, with 0 through 9
+    constexpr auto t2{TakeNth(2, a)};                                // immutable, sparse Array, with 0, 2, 4, 6, and 8
+    constexpr auto t3{TakeNth(3, a)};                                // immutable, sparse Array, with 0, 3, 6, and 9
+    constexpr auto t4{TakeNth(4, a)};                                // immutable, sparse Array, with 0, 4, and 8
+    constexpr auto t5{TakeNth(5, a)};                                // immutable, sparse Array, with 0 and 5
+    constexpr auto t6{TakeNth(6, a)};                                // immutable, sparse Array, with 0 and 6
+    constexpr auto t7{TakeNth(7, a)};                                // immutable, sparse Array, with 0 and 7
+    constexpr auto t8{TakeNth(8, a)};                                // immutable, sparse Array, with 0 and 8
+    constexpr auto t9{TakeNth(9, a)};                                // immutable, sparse Array, with 0 and 9
+    constexpr auto t10{TakeNth(10, a)};                              // immutable, sparse Array, with 0
+    constexpr auto t50{TakeNth(50, a)};                              // immutable, sparse Array, with 0
+    constexpr auto tEmpty{TakeNth(50, Range<0>{})};                  // immutable, empty Array
+    constexpr auto tRpt7{TakeNth(50, Repeat<7, const char*>{"11"})}; // immutable, sparse Array, with one "11"
+    constexpr auto tSet5{TakeNth(5, Set{'a', 'b'})};                 // immutable, sparse Array, with 'a'
+    constexpr auto tStr3{TakeNth(3, String{"abcde"})};               // immutable, sparse Array, with 'a', and 'd'
 
     // Compiler Error: TakeNth's second parameter must be a cljonic collection
-    // const auto t{TakeNth(10, "Hello")};
+    // constexpr auto t{TakeNth(10, "Hello")};
 
     return 0;
 }

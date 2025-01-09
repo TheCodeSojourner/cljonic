@@ -21,22 +21,22 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto a{Array{11, 12, 13, 14}};
-    const auto a0{Second(a)};
+    constexpr auto a0{Second(a)};
 
     constexpr auto rng{Range<1, 5>{}};
-    const auto rng0{Second(rng)};
+    constexpr auto rng0{Second(rng)};
 
     constexpr auto rpt{Repeat<3, int>{11}};
-    const auto rpt0{Second(rpt)};
+    constexpr auto rpt0{Second(rpt)};
 
-    const auto set{Set{1, 2, 1, 3, 4}};
-    const auto set0{Second(set)};
+    constexpr auto set{Set{1, 2, 1, 3, 4}};
+    constexpr auto set0{Second(set)};
 
     constexpr auto str{String{"Hello"}};
-    const auto str0{Second(str)};
+    constexpr auto str0{Second(str)};
 
     // Compiler Error: Second's parameter must be a cljonic collection
-    // const auto f{Second("Hello")};
+    // constexpr auto f{Second("Hello")};
 
 return 0;
 }

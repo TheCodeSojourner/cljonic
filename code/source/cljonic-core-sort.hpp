@@ -23,26 +23,26 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto a{Array{11, 12, 13, 14}};
-    const auto sortA{Sort(a)};
+    constexpr auto sortA{Sort(a)};
 
     constexpr auto b{Array{11, 13, 12, 14}};
-    const auto sortB{Sort(b)};
+    constexpr auto sortB{Sort(b)};
 
-    const auto sortRng{Sort(Range<0>{})};
+    constexpr auto sortRng{Sort(Range<0>{})};
 
-    const auto sortRpt{Sort(Repeat<4, int>{11})};
+    constexpr auto sortRpt{Sort(Repeat<4, int>{11})};
 
-    const auto sortSet0{Sort(Set{11, 12, 13, 14})};
-    const auto sortSet1{Sort(Set{11, 13, 12, 14})};
+    constexpr auto sortSet0{Sort(Set{11, 12, 13, 14})};
+    constexpr auto sortSet1{Sort(Set{11, 13, 12, 14})};
 
-    const auto sortStr0{Sort(String{"abcd"})};
-    const auto sortStr1{Sort(String{"axbycz"})};
+    constexpr auto sortStr0{Sort(String{"abcd"})};
+    constexpr auto sortStr1{Sort(String{"axbycz"})};
 
-    const auto sortCStr0{Sort(Array{"four", "one", "three", "two"})};
-    const auto sortCStr1{Sort(Array{"one", "two", "three", "four"})};
+    constexpr auto sortCStr0{Sort(Array{"four", "one", "three", "two"})};
+    constexpr auto sortCStr1{Sort(Array{"one", "two", "three", "four"})};
 
     // Compiler Error: Sort's parameter must be a cljonic collection
-    // const auto sb{Sort("Hello")};
+    // constexpr auto sb{Sort("Hello")};
 
     return 0;
 }

@@ -37,54 +37,55 @@ using namespace cljonic::core;
 
 int main()
 {
-    auto Add = [](const auto& a, const auto& b) { return a + b; };
+    static constexpr auto Add = [](const auto& a, const auto& b) { return a + b; };
 
-    const auto aAddEmpty{Array<int, 5>{}};             // an empty Array
-    const auto nAddEmpty{Reduce(Add, aAddEmpty)};      // default element value (i.e, 0) is returned, Add not called
-    const auto nAddEmptyI{Reduce(Add, 11, aAddEmpty)}; // initial value (i.e., 11) is returned, Add not called
+    constexpr auto aAddEmpty{Array<int, 5>{}};             // an empty Array
+    constexpr auto nAddEmpty{Reduce(Add, aAddEmpty)};      // default element value (i.e, 0) is returned, Add not called
+    constexpr auto nAddEmptyI{Reduce(Add, 11, aAddEmpty)}; // initial value (i.e., 11) is returned, Add not called
 
-    const auto aAddOne{Array{11}};         // a single-element Array
-    const auto nAdd{Reduce(Add, aAddOne)}; // single-element value is returned, Ass not called
+    constexpr auto aAddOne{Array{11}};         // a single-element Array
+    constexpr auto nAdd{Reduce(Add, aAddOne)}; // single-element value is returned, Ass not called
 
-    const auto a{Array{1, 2, 3, 4}};
-    const auto n0{Reduce(Add, a)};
-    const auto n1{Reduce(Add, 11, a)};
+    constexpr auto a{Array{1, 2, 3, 4}};
+    constexpr auto n0{Reduce(Add, a)};
+    constexpr auto n1{Reduce(Add, 11, a)};
 
-    const auto rng{Range<5>{}};
-    const auto n2{Reduce(Add, rng)};
-    const auto n3{Reduce(Add, 11, rng)};
+    constexpr auto rng{Range<5>{}};
+    constexpr auto n2{Reduce(Add, rng)};
+    constexpr auto n3{Reduce(Add, 11, rng)};
 
-    const auto rpt{Repeat<5, int>{5}};
-    const auto n4{Reduce(Add, rpt)};
-    const auto n5{Reduce(Add, 11, rpt)};
+    constexpr auto rpt{Repeat<5, int>{5}};
+    constexpr auto n4{Reduce(Add, rpt)};
+    constexpr auto n5{Reduce(Add, 11, rpt)};
 
-    const auto s{String{"Hello"}};
-    const auto n6{Reduce([](const int count, const char b) { return count + 1; }, 0, s)};
+    constexpr auto s{String{"Hello"}};
+    constexpr auto n6{Reduce([](const int count, const char b) { return count + 1; }, 0, s)};
 
     // Compiler Error: Reduce's function cannot be called with two parameters of the collection value type
-    // const auto ints{Array{1, 2, 3, 4}};
-    // const auto r{Reduce([](const char* a, const int b) { return a[0] + b; }, a)};
+    // constexpr auto ints{Array{1, 2, 3, 4}};
+    // constexpr auto r{Reduce([](const char* a, const int b) { return a[0] + b; }, a)};
 
     // Compiler Error:
     //     Reduce's function cannot be called with parameters of function result type, and collection value type
-    // const auto strs{Array{1, 2, 3, 4}};
-    // const auto r{Reduce([]([[maybe_unused]] const int a, [[maybe_unused]] const int b) { return "Hello"; }, a)};
+    // constexpr auto strs{Array{1, 2, 3, 4}};
+    // constexpr auto r{Reduce([]([[maybe_unused]] const int a, [[maybe_unused]] const int b) { return "Hello"; }, a)};
 
     // Compiler Error:
     //     Reduce's function cannot be called with parameters of initial value type, and collection value type
-    // const auto strs{Array{1, 2, 3, 4}};
-    // const auto r{Reduce([](const int a, const int b) { return a + b; }, "Hello", a)};
+    // constexpr auto strs{Array{1, 2, 3, 4}};
+    // constexpr auto r{Reduce([](const int a, const int b) { return a + b; }, "Hello", a)};
 
     // Compiler Error:
     //     Reduce's function cannot be called with parameters of function result type, and collection value type
-    // const auto strs{Array{1, 2, 3, 4}};
-    // const auto r{Reduce([]([[maybe_unused]] const int a, [[maybe_unused]] const int b) { return "Hello"; }, 11, a)};
+    // constexpr auto strs{Array{1, 2, 3, 4}};
+    // constexpr auto r{Reduce([]([[maybe_unused]] const int a, [[maybe_unused]] const int b) { return "Hello"; },
+    //                         11, a)};
 
     // Compiler Error: Reduce's second parameter must be a cljonic collection
-    // const auto r{Reduce([](const int a, const char b) { return a + b; }, 5)};
+    // constexpr auto r{Reduce([](const int a, const char b) { return a + b; }, 5)};
 
     // Compiler Error: Reduce's third parameter must be a cljonic collection
-    // const auto r{Reduce([](const int count, [[maybe_unused]] const char b) { return count + 1; }, 0, 5)};
+    // constexpr auto r{Reduce([](const int count, [[maybe_unused]] const char b) { return count + 1; }, 0, 5)};
 
     return 0;
 }

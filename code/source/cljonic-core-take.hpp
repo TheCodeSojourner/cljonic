@@ -2,7 +2,6 @@
 #define CLJONIC_CORE_TAKE_HPP
 
 #include "cljonic-array.hpp"
-#include "cljonic-collection-maximum-element-count.hpp"
 
 namespace cljonic
 {
@@ -26,18 +25,18 @@ using namespace cljonic::core;
 
 int main()
 {
-    const auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
-    const auto t0{Take(0, a)};                                // immutable, empty Array
-    const auto t1{Take(1, a)};                                // immutable, sparse Array, with 0
-    const auto t5{Take(5, a)};                                // immutable, sparse Array, with 0 to 4
-    const auto t50{Take(50, a)};                              // immutable, full Array, with 0 to 9
-    const auto tEmpty{Take(50, Range<0>{})};                  // immutable, empty Array
-    const auto tRpt7{Take(50, Repeat<7, const char*>{"11"})}; // immutable, full Array, with seven "11"s
-    const auto tSet5{Take(5, Set{'a', 'b'})};                 // immutable, sparse Array, with 'a' and 'b'
-    const auto tStr3{Take(3, String{"Hello"})};               // immutable, sparse Array, with 'H', 'e', and 'l'
+    constexpr auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    constexpr auto t0{Take(0, a)};                                // immutable, empty Array
+    constexpr auto t1{Take(1, a)};                                // immutable, sparse Array, with 0
+    constexpr auto t5{Take(5, a)};                                // immutable, sparse Array, with 0 to 4
+    constexpr auto t50{Take(50, a)};                              // immutable, full Array, with 0 to 9
+    constexpr auto tEmpty{Take(50, Range<0>{})};                  // immutable, empty Array
+    constexpr auto tRpt7{Take(50, Repeat<7, const char*>{"11"})}; // immutable, full Array, with seven "11"s
+    constexpr auto tSet5{Take(5, Set{'a', 'b'})};                 // immutable, sparse Array, with 'a' and 'b'
+    constexpr auto tStr3{Take(3, String{"Hello"})};               // immutable, sparse Array, with 'H', 'e', and 'l'
 
     // Compiler Error: Take's second parameter must be a cljonic collection
-    // const auto t{Take(10, "Hello")};
+    // constexpr auto t{Take(10, "Hello")};
 
     return 0;
 }

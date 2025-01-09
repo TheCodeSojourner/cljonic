@@ -12,7 +12,7 @@ using namespace cljonic::core;
 SCENARIO("Conj", "[CljonicCoreConj]")
 {
     constexpr auto a{Array{11, 12, 13, 14}};
-    const auto cA{Conj(a, 15, 16)};
+    constexpr auto cA{Conj(a, 15, 16)};
     CHECK(6 == cA.Count());
     CHECK(11 == cA[0]);
     CHECK(12 == cA[1]);
@@ -23,7 +23,7 @@ SCENARIO("Conj", "[CljonicCoreConj]")
     CHECK(0 == cA[6]);
 
     constexpr auto rng{Range<1, 5>{}};
-    const auto cRng{Conj(rng, 15)};
+    constexpr auto cRng{Conj(rng, 15)};
     CHECK(5 == cRng.Count());
     CHECK(1 == cRng[0]);
     CHECK(2 == cRng[1]);
@@ -33,7 +33,7 @@ SCENARIO("Conj", "[CljonicCoreConj]")
     CHECK(0 == cRng[5]);
 
     constexpr auto rpt{Repeat<3, int>{11}};
-    const auto cRpt{Conj(rpt, 15)};
+    constexpr auto cRpt{Conj(rpt, 15)};
     CHECK(4 == cRpt.Count());
     CHECK(11 == cRpt[0]);
     CHECK(11 == cRpt[1]);
@@ -41,8 +41,8 @@ SCENARIO("Conj", "[CljonicCoreConj]")
     CHECK(15 == cRpt[3]);
     CHECK(0 == cRpt[4]);
 
-    const auto set{Set{1, 2, 1, 3, 4}};
-    const auto cSet{Conj(set, 15)};
+    constexpr auto set{Set{1, 2, 1, 3, 4}};
+    constexpr auto cSet{Conj(set, 15)};
     CHECK(5 == cSet.Count());
     CHECK(1 == cSet[0]);
     CHECK(2 == cSet[1]);
@@ -53,7 +53,7 @@ SCENARIO("Conj", "[CljonicCoreConj]")
 
     constexpr auto str{String{"Hello"}};
 
-    const auto cStr{Conj(str)};
+    constexpr auto cStr{Conj(str)};
     CHECK(5 == cStr.Count());
     CHECK('H' == cStr[0]);
     CHECK('e' == cStr[1]);
@@ -62,7 +62,7 @@ SCENARIO("Conj", "[CljonicCoreConj]")
     CHECK('o' == cStr[4]);
     CHECK('\0' == cStr[5]);
 
-    const auto cStrBang{Conj(str, '!', '!', '!')};
+    constexpr auto cStrBang{Conj(str, '!', '!', '!')};
     CHECK(8 == cStrBang.Count());
     CHECK('H' == cStrBang[0]);
     CHECK('e' == cStrBang[1]);

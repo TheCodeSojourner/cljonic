@@ -12,7 +12,7 @@ using namespace cljonic::core;
 
 SCENARIO("TakeLast", "[CljonicCoreTakeLast]")
 {
-    const auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    constexpr auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
     CHECK(Equal(Array<int, 0>{}, TakeLast(0, a)));
     CHECK(Equal(Array{9}, TakeLast(1, a)));
     CHECK(Equal(Array{5, 6, 7, 8, 9}, TakeLast(5, a)));

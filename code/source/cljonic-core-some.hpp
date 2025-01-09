@@ -25,26 +25,26 @@ int main()
     constexpr auto Is13 = [](const int a) { return 13 == a; };
 
     constexpr auto a{Array{11, 12, 13, 14}};
-    const auto someA{Some(Is13, a)};
+    constexpr auto someA{Some(Is13, a)};
 
     constexpr auto b{Array{11, 12, 14}};
-    const auto someB{Some(Is13, b)};
+    constexpr auto someB{Some(Is13, b)};
 
-    const auto someRng{Some(Is13, Range<0>{})};
+    constexpr auto someRng{Some(Is13, Range<0>{})};
 
-    const auto someRpt{Some(Is13, Repeat<4, int>{11})};
+    constexpr auto someRpt{Some(Is13, Repeat<4, int>{11})};
 
-    const auto someSet0{Some(Is13, Set{11, 12, 13, 14})};
-    const auto someSet1{Some(Is13, Set{11, 12, 14})};
+    constexpr auto someSet0{Some(Is13, Set{11, 12, 13, 14})};
+    constexpr auto someSet1{Some(Is13, Set{11, 12, 14})};
 
-    const auto someStr0{Some([](const char i) { return 'y' == i; }, String{"abcd"})};
-    const auto someStr1{Some([](const char i) { return 'y' == i; }, String{"axbycz"})};
+    constexpr auto someStr0{Some([](const char i) { return 'y' == i; }, String{"abcd"})};
+    constexpr auto someStr1{Some([](const char i) { return 'y' == i; }, String{"axbycz"})};
 
     // Compiler Error: Some's second parameter must be a cljonic collection
-    // const auto sb{Some(Is13, "Hello")};
+    // constexpr auto sb{Some(Is13, "Hello")};
 
     // Compiler Error: Some's function is not a valid unary predicate for the collection value type
-    // const auto sb{Some(Is13, Array<const char*, 5>{})};
+    // constexpr auto sb{Some(Is13, Array<const char*, 5>{})};
 
     return 0;
 }

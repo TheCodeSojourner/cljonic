@@ -26,7 +26,7 @@ int main()
     const auto b0{identityA == identityA};   // true
     const auto b1{identityA == identityRng}; // false
 
-    const auto b2{Identity(1) == Identity(2)}; // false
+    constexpr auto b2{Identity(1) == Identity(2)}; // false
     const auto b3{identityA == Identity(2)};   // false
 
     return 0;

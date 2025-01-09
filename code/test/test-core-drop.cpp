@@ -12,7 +12,7 @@ using namespace cljonic::core;
 
 SCENARIO("Drop", "[CljonicCoreDrop]")
 {
-    const auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    constexpr auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
 
     CHECK(Equal(Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, Drop(0, a)));
     CHECK(Equal(Array{1, 2, 3, 4, 5, 6, 7, 8, 9}, Drop(1, a)));
