@@ -13,10 +13,10 @@ namespace core
 {
 
 /** \anchor Core_SplitAt
-* The \b SplitAt function returns a \b tuple of two \b cljonic \b Arrays, both with the same \b MaximumCount as its
-* second parameter. The first \b cljonic \b Array contains the value returned by executing the \b Take function with the
-* first parameter, and the second parameter. The second \b cljonic \b Array contains the value returned by executing the
-* \b Drop function with the first parameter, and the second parameter.
+* The \b SplitAt function returns a \b cljonic \b Array of two \b cljonic \b Arrays, both with the same \b MaximumCount
+* as its second parameter. The first \b cljonic \b Array contains the value returned by executing the \b Take function
+* with the first parameter, and the second parameter. The second \b cljonic \b Array contains the value returned by
+* executing the \b Drop function with the first parameter, and the second parameter.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
