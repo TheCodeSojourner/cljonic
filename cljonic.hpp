@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan  9 01:24:02 PM MST 2025
+// This file was generated Thu Jan  9 02:13:30 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -361,6 +361,9 @@ constexpr void* Identity(const T& t) noexcept;
 
 template <typename F, typename C, typename... Cs>
 constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept;
+
+template <typename F, typename C>
+constexpr auto NotAny(F&& f, const C& c) noexcept;
 
 template <typename F, typename... Args>
 constexpr auto Partial(F&& f, Args&&... args) noexcept;
@@ -1422,6 +1425,26 @@ constexpr auto count{MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()};
 auto result{Array<ResultType, count>{}};
 for(SizeType i{0}; i < c.Count(); ++i)
 MConj(result, f(c[i], cs[i]...));
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C>
+constexpr auto NotAny(F&& f, const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "NotAny's second parameter must be a cljonic collection");
+
+static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
+              "NotAny's function is not a valid unary predicate for the collection value type");
+
+auto result{true};
+for(SizeType i{0}; (result and (i < c.Count())); ++i)
+result = not f(c[i]);
 return result;
 }
 
