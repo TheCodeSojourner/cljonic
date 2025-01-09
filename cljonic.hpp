@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan  9 02:55:46 PM MST 2025
+// This file was generated Thu Jan  9 03:32:35 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -367,6 +367,12 @@ constexpr auto NotAny(F&& f, const C& c) noexcept;
 
 template <typename F, typename C>
 constexpr auto NotEvery(F&& f, const C& c) noexcept;
+
+template <typename C>
+constexpr auto Nth(const C& c, const SizeType index) noexcept;
+
+template <typename C, typename T>
+constexpr auto Nth(const C& c, const SizeType index, const T& t) noexcept;
 
 template <typename F, typename... Args>
 constexpr auto Partial(F&& f, Args&&... args) noexcept;
@@ -1463,6 +1469,32 @@ static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
               "NotEvery's function is not a valid unary predicate for the collection value type");
 
 return (c.Count() != 0) and (not Every(std::forward<F>(f), c));
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto Nth(const C& c, const SizeType index) noexcept {
+static_assert(IsCljonicCollection<C> and (not IsCljonicSet<C>),
+              "Nth's first parameter must be a cljonic collection other than a Set");
+
+return c[index];
+}
+
+template <typename C, typename T>
+constexpr auto Nth(const C& c, const SizeType index, const T& t) noexcept {
+static_assert(IsCljonicCollection<C> and (not IsCljonicSet<C>),
+              "Nth's first parameter must be a cljonic collection other than a Set");
+
+static_assert(std::same_as<typename C::value_type, T>,
+              "Nth's third parameter must have the same type as the values in the first parameter");
+
+return (index < c.Count()) ? c[index] : t;
 }
 
 }
