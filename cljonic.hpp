@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan  9 02:37:40 PM MST 2025
+// This file was generated Thu Jan  9 02:55:46 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -1445,10 +1445,7 @@ static_assert(IsCljonicCollection<C>, "NotAny's second parameter must be a cljon
 static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
               "NotAny's function is not a valid unary predicate for the collection value type");
 
-auto result{true};
-for(SizeType i{0}; (result and (i < c.Count())); ++i)
-result = not f(c[i]);
-return result;
+return (c.Count() == 0) or (not Some(std::forward<F>(f), c));
 }
 
 }
@@ -1465,7 +1462,7 @@ static_assert(IsCljonicCollection<C>, "NotEvery's second parameter must be a clj
 static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
               "NotEvery's function is not a valid unary predicate for the collection value type");
 
-return not Every(std::forward<F>(f), c);
+return (c.Count() != 0) and (not Every(std::forward<F>(f), c));
 }
 
 }

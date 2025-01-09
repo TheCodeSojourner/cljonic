@@ -58,7 +58,7 @@ constexpr auto NotEvery(F&& f, const C& c) noexcept
     static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
                   "NotEvery's function is not a valid unary predicate for the collection value type");
 
-    return not Every(std::forward<F>(f), c);
+    return (c.Count() != 0) and (not Every(std::forward<F>(f), c));
 }
 
 } // namespace core

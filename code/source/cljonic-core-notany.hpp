@@ -2,6 +2,7 @@
 #define CLJONIC_CORE_NOTANY_HPP
 
 #include "cljonic-concepts.hpp"
+#include "cljonic-core-some.hpp"
 
 namespace cljonic
 {
@@ -57,10 +58,7 @@ constexpr auto NotAny(F&& f, const C& c) noexcept
     static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
                   "NotAny's function is not a valid unary predicate for the collection value type");
 
-    auto result{true};
-    for (SizeType i{0}; (result and (i < c.Count())); ++i)
-        result = not f(c[i]);
-    return result;
+    return (c.Count() == 0) or (not Some(std::forward<F>(f), c));
 }
 
 } // namespace core

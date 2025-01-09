@@ -104,7 +104,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="keyword">static_assert</span>(<a class="code hl_concept" href="conceptcljonic_1_1_is_unary_predicate.html">IsUnaryPredicate&lt;std::decay_t&lt;F&gt;</a>, <span class="keyword">typename</span> C::value_type&gt;,</div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>                  <span class="stringliteral">&quot;NotEvery&#39;s function is not a valid unary predicate for the collection value type&quot;</span>);</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">not</a> <a class="code hl_function" href="namespacecljonic_1_1core.html#aaebeafb07f2f97fc106cdad41134ddca">Every</a>(std::forward&lt;F&gt;(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f</a>), <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>);</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <span class="keywordflow">return</span> (<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>.Count() != 0) <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">and</a> (<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">not</a> <a class="code hl_function" href="namespacecljonic_1_1core.html#aaebeafb07f2f97fc106cdad41134ddca">Every</a>(std::forward&lt;F&gt;(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f</a>), <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">c</a>));</div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>}</div>
 </div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
@@ -124,7 +124,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 9 2025 14:37:40 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Thu Jan 9 2025 14:55:47 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
