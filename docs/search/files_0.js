@@ -33,7 +33,7 @@ var searchData=
   ['cljonic_2dcore_2dsort_2ehpp_30',['cljonic-core-sort.hpp',['../cljonic-core-sort_8hpp.html',1,'']]],
   ['cljonic_2dcore_2dsortby_2ehpp_31',['cljonic-core-sortby.hpp',['../cljonic-core-sortby_8hpp.html',1,'']]],
   ['cljonic_2dcore_2dsplitat_2ehpp_32',['cljonic-core-splitat.hpp',['../cljonic-core-splitat_8hpp.html',1,'']]],
-  ['cljonic_2dcore_2dsplitby_2ehpp_33',['cljonic-core-splitby.hpp',['../cljonic-core-splitby_8hpp.html',1,'']]],
+  ['cljonic_2dcore_2dsplitwith_2ehpp_33',['cljonic-core-splitwith.hpp',['../cljonic-core-splitwith_8hpp.html',1,'']]],
   ['cljonic_2dcore_2dsubs_2ehpp_34',['cljonic-core-subs.hpp',['../cljonic-core-subs_8hpp.html',1,'']]],
   ['cljonic_2dcore_2dtake_2ehpp_35',['cljonic-core-take.hpp',['../cljonic-core-take_8hpp.html',1,'']]],
   ['cljonic_2dcore_2dtakelast_2ehpp_36',['cljonic-core-takelast.hpp',['../cljonic-core-takelast_8hpp.html',1,'']]],

@@ -41,7 +41,7 @@ int main()
     constexpr auto sort{Sort(a)};
     constexpr auto sortby{SortBy([](const int i, const int j) { return i < j; }, a)};
     constexpr auto splitat{SplitAt(2, a)};
-    constexpr auto splitby{SplitBy([](const int i) { return true; }, a)};
+    constexpr auto splitwith{SplitWith([](const int i) { return true; }, a)};
     constexpr auto subs_1{Subs(a, 0, 2)};
     constexpr auto subs_2{Subs(a, 0)};
     constexpr auto take{Take(2, a)};

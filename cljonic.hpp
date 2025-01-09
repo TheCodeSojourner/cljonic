@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan  9 01:07:59 PM MST 2025
+// This file was generated Thu Jan  9 01:24:02 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -390,7 +390,7 @@ template <typename C>
 constexpr auto SplitAt(const SizeType count, const C& c) noexcept;
 
 template <typename F, typename C>
-constexpr auto SplitBy(F&& f, const C& c) noexcept;
+constexpr auto SplitWith(F&& f, const C& c) noexcept;
 
 template <typename C>
 constexpr auto Subs(const C& c, const SizeType start, const SizeType end) noexcept;
@@ -1626,11 +1626,11 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto SplitBy(F&& f, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "SplitBy's second parameter must be a cljonic collection");
+constexpr auto SplitWith(F&& f, const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "SplitWith's second parameter must be a cljonic collection");
 
 static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
-              "SplitBy's function is not a valid unary predicate for the collection value type");
+              "SplitWith's function is not a valid unary predicate for the collection value type");
 
 const auto firstArray{TakeWhile(f, c)};
 const auto secondArray{Drop(firstArray.Count(), c)};
