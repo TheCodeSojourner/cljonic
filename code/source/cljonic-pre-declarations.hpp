@@ -107,7 +107,7 @@ template <typename C>
 constexpr auto SplitAt(const SizeType count, const C& c) noexcept;
 
 template <typename F, typename C>
-constexpr auto SplitBy(F&& f, const C& c) noexcept;
+constexpr auto SplitWith(F&& f, const C& c) noexcept;
 
 template <typename C>
 constexpr auto Subs(const C& c, const SizeType start, const SizeType end) noexcept;

@@ -132,9 +132,9 @@
  * - \ref Core_Partition "Partition", \ref Core_PartitionAll "PartitionAll", \ref Core_PartitionBy "PartitionBy"
  * - \ref Core_Reduce "Reduce", \ref Core_Reductions "Reductions", \ref Core_Remove "Remove",
  * \ref Core_Replace "Replace", \ref Core_ReplaceBy "ReplaceBy", \ref Core_Reverse "Reverse"
- * - \ref Core_Second "Second", \ref Core_Seq "Seq", \ref Core_Some "Some",
- * \ref Core_Sort "Sort", \ref Core_SortBy "SortBy", \ref Core_SplitBy "SplitBy", \ref Core_SplitAt "SplitAt",
- * \ref Core_Size "Size", \ref Core_Subs "Subs"
+ * - \ref Core_Second "Second", \ref Core_Seq "Seq", \ref Core_Size "Size", \ref Core_Some "Some",
+ * \ref Core_Sort "Sort", \ref Core_SortBy "SortBy", \ref Core_SplitAt "SplitAt", \ref Core_SplitWith "SplitWith",
+ * \ref Core_Subs "Subs"
  * - \ref Core_Take "Take", \ref Core_TakeLast "TakeLast", \ref Core_TakeNth "TakeNth", \ref Core_TakeWhile "TakeWhile"
  *
  * ## Regex Functions
