@@ -85,6 +85,12 @@ constexpr auto NotAny(F&& f, const C& c) noexcept;
 template <typename F, typename C>
 constexpr auto NotEvery(F&& f, const C& c) noexcept;
 
+template <typename C>
+constexpr auto Nth(const C& c, const SizeType index) noexcept;
+
+template <typename C, typename T>
+constexpr auto Nth(const C& c, const SizeType index, const T& t) noexcept;
+
 template <typename F, typename... Args>
 constexpr auto Partial(F&& f, Args&&... args) noexcept;
 

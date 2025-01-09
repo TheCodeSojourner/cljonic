@@ -33,6 +33,8 @@ int main()
     constexpr auto map{Map([](const int i) { return 1 == i; }, a)};
     constexpr auto notany{NotAny([](const int i) { return 1 == i; }, a)};
     constexpr auto notevery{NotEvery([](const int i) { return 1 == i; }, a)};
+    constexpr auto nth1{Nth(a, 1)};
+    constexpr auto nth2{Nth(a, 1, 11)};
     constexpr auto partial{Partial([](const int i, const int j) { return i + j; }, 10)};
     constexpr auto reduce2{Reduce([](const int sum, const int i) { return sum + i; }, a)};
     constexpr auto reduce3{Reduce([](const int sum, const int i) { return sum + i; }, 30, a)};
