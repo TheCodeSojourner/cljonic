@@ -1,7 +1,6 @@
 #ifndef CLJONIC_CORE_SORTBY_HPP
 #define CLJONIC_CORE_SORTBY_HPP
 
-#include <tuple>
 #include "cljonic-array.hpp"
 #include "cljonic-concepts.hpp"
 #include "cljonic-core-drop.hpp"
@@ -14,10 +13,10 @@ namespace core
 {
 
 /** \anchor Core_SplitBy
-* The \b SplitBy function, called \b split-with in \b Clojure, returns a \b tuple of two \b cljonic \b Arrays, both with
-* the same \b MaximumCount as its second parameter. The first returned \b cljonic \b collection contains the result of
-* calling \b TakeWhile with the first parameter, which must be a \b unary \b predicate, and the second parameter. The
-* second returned \b cljonic \b collection contains the rest of the second parameter's elements.
+* The \b SplitBy function, called \b split-with in \b Clojure, returns a \b cljonic \b Array of two \b cljonic
+* \b Arrays, both with the same \b MaximumCount as its second parameter. The first \b cljonic \b Array contains the
+* result of calling \b TakeWhile with the first parameter, which must be a \b unary \b predicate, and the
+* second parameter. The second \b cljonic \b Array contains the rest of the second parameter's elements.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -65,7 +64,7 @@ constexpr auto SplitBy(F&& f, const C& c) noexcept
 
     const auto firstArray{TakeWhile(f, c)};
     const auto secondArray{Drop(firstArray.Count(), c)};
-    return std::make_tuple(std::move(firstArray), std::move(secondArray));
+    return Array{firstArray, secondArray};
 }
 
 } // namespace core
