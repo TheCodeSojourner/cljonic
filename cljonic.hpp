@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan  9 12:49:40 PM MST 2025
+// This file was generated Thu Jan  9 01:07:59 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -1622,8 +1622,6 @@ return Array{Take(count, c), Drop(count, c)};
 
 } // namespace cljonic::core
 
-#include <tuple>
-
 namespace cljonic {
 
 namespace core {
@@ -1636,7 +1634,7 @@ static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
 
 const auto firstArray{TakeWhile(f, c)};
 const auto secondArray{Drop(firstArray.Count(), c)};
-return std::make_tuple(std::move(firstArray), std::move(secondArray));
+return Array{firstArray, secondArray};
 }
 
 }
