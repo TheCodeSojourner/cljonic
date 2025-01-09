@@ -40,6 +40,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-identity.hpp \
     cljonic-core-map.hpp \
     cljonic-core-notany.hpp \
+    cljonic-core-notevery.hpp \
     cljonic-core-partial.hpp \
     cljonic-core-reduce.hpp \
     cljonic-core-second.hpp \

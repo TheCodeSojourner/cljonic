@@ -82,6 +82,9 @@ constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept;
 template <typename F, typename C>
 constexpr auto NotAny(F&& f, const C& c) noexcept;
 
+template <typename F, typename C>
+constexpr auto NotEvery(F&& f, const C& c) noexcept;
+
 template <typename F, typename... Args>
 constexpr auto Partial(F&& f, Args&&... args) noexcept;
 
