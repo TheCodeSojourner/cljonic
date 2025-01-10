@@ -118,6 +118,9 @@ constexpr auto Partial(F&& f, Args&&... args) noexcept;
 template <typename F, typename C>
 constexpr auto Reduce(F&& f, const C& c) noexcept;
 
+template <typename F, typename C>
+constexpr auto Remove(F&& f, const C& c) noexcept;
+
 template <typename C>
 constexpr auto Second(const C& c) noexcept;
 

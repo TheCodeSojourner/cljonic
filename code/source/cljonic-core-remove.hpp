@@ -29,7 +29,7 @@ int main()
     constexpr auto fA{Remove(Even, a)}; // immutable, sparse Array, with 1, 3, 5, 7, and 9
 
     constexpr auto rng{Range<10>{}};
-    constexpr auto fRng{Remove(Even, rng)}; // immutable, sparse Array, with with 1, 3, 5, 7, and 9
+    constexpr auto fRng{Remove(Even, rng)}; // immutable, sparse Array, with 1, 3, 5, 7, and 9
 
     constexpr auto rpt{Repeat<10, int>{1}};
     constexpr auto fRpt{Remove(Even, rpt)}; // immutable, full Array of ten ones

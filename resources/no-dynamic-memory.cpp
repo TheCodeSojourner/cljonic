@@ -49,6 +49,7 @@ int main()
     constexpr auto partial{Partial([](const int i, const int j) { return i + j; }, 10)};
     constexpr auto reduce2{Reduce([](const int sum, const int i) { return sum + i; }, a)};
     constexpr auto reduce3{Reduce([](const int sum, const int i) { return sum + i; }, 30, a)};
+    constexpr auto remove{Remove([](const int i) { return 1 == i; }, a)};
     constexpr auto second{Second(a)};
     constexpr auto seq{Seq(a)};
     constexpr auto size{Size(a)};

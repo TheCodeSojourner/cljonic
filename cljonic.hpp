@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 10 12:48:07 PM MST 2025
+// This file was generated Fri Jan 10 12:55:58 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -409,6 +409,9 @@ constexpr auto Partial(F&& f, Args&&... args) noexcept;
 
 template <typename F, typename C>
 constexpr auto Reduce(F&& f, const C& c) noexcept;
+
+template <typename F, typename C>
+constexpr auto Remove(F&& f, const C& c) noexcept;
 
 template <typename C>
 constexpr auto Second(const C& c) noexcept;
@@ -1789,6 +1792,27 @@ static_assert(
     "Reduce's function cannot be called with parameters of function result type, and collection value type");
 
 return (0 == c.Count()) ? t : std::accumulate(c.begin(), c.end(), t, std::forward<F>(f));
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C>
+constexpr auto Remove(F&& f, const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "Remove's second parameter must be a cljonic collection");
+
+static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
+              "Remove's function is not a valid unary predicate for the collection value type");
+
+auto result{Array<typename C::value_type, c.MaximumCount()>{}};
+for(const auto& element : c)
+if(not f(element))
+MConj(result, element);
+return result;
 }
 
 }

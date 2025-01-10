@@ -51,6 +51,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-nth.hpp \
     cljonic-core-partial.hpp \
     cljonic-core-reduce.hpp \
+    cljonic-core-remove.hpp \
     cljonic-core-second.hpp \
     cljonic-core-seq.hpp \
     cljonic-core-size.hpp \
