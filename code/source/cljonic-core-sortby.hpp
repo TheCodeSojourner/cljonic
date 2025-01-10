@@ -11,10 +11,10 @@ namespace core
 {
 
 /** \anchor Core_SortBy
-* The \b SortBy function uses its first parameter, which must be a \b binary \b predicate, in an \b Insertion \b Sort
-* algorithm to sort its second parameter, which must be a \b cljonic \b collection, into its result, which is a
-* \b cljonic \b Array with the same \b MaximumCount as its second parameter.  The first parameter \b binary \b predicate
-* must reutrn \b true if its first parameter is less than its second parameter.
+* The \b SortBy function uses its first parameter, which must be a \b binary \b predicate that returns \b true if its
+* first parameter is less than its second parameter, in an \b Insertion \b Sort algorithm to sort its second parameter,
+* which must be a \b cljonic \b collection, into its result, which is a \b cljonic \b Array with the same
+* \b MaximumCount as its second parameter.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 

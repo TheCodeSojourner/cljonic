@@ -116,7 +116,7 @@ class String
         return m_elementCount;
     }
 
-    constexpr int DefaultElement() const noexcept
+    constexpr char DefaultElement() const noexcept
     {
         return m_elementDefault;
     }

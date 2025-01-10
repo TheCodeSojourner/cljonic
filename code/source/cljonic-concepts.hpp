@@ -71,6 +71,9 @@ concept IsCljonicArrayRangeOrRepeat = IsCljonicArray<T> or IsCljonicRange<T> or 
 template <typename T>
 concept IsCString = std::same_as<T, const char*> or std::same_as<T, char*>;
 
+template <typename T>
+concept IsNotCljonicCollection = not IsCljonicCollection<T>;
+
 template <typename P, typename T>
 concept IsUnaryPredicate = requires(P p, T t) {
     { p(t) } -> std::convertible_to<bool>;
@@ -101,6 +104,9 @@ constexpr bool AllEqualityComparableValueTypes =
 
 template <typename T, typename... Ts>
 constexpr bool AnyFloatingPointTypes = (std::floating_point<T> or ... or std::floating_point<Ts>);
+
+template <typename T, typename... Ts>
+concept AllNotCljonicCollections = (IsNotCljonicCollection<T> and ... and IsNotCljonicCollection<Ts>);
 
 template <typename T, typename... Ts>
 concept AllSameCljonicCollectionType =

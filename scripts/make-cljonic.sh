@@ -39,6 +39,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-identical.hpp \
     cljonic-core-identity.hpp \
     cljonic-core-map.hpp \
+    cljonic-core-maxby.hpp \
     cljonic-core-notany.hpp \
     cljonic-core-notevery.hpp \
     cljonic-core-nth.hpp \

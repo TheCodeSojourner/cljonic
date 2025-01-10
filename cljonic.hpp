@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan  9 03:32:35 PM MST 2025
+// This file was generated Fri Jan 10 09:46:05 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -150,6 +150,9 @@ concept IsCljonicArrayRangeOrRepeat = IsCljonicArray<T> or IsCljonicRange<T> or 
 template <typename T>
 concept IsCString = std::same_as<T, const char*> or std::same_as<T, char*>;
 
+template <typename T>
+concept IsNotCljonicCollection = not IsCljonicCollection<T>;
+
 template <typename P, typename T>
 concept IsUnaryPredicate = requires(P p, T t) {
 { p(t) } -> std::convertible_to<bool>;
@@ -180,6 +183,9 @@ constexpr bool AllEqualityComparableValueTypes =
 
 template <typename T, typename... Ts>
 constexpr bool AnyFloatingPointTypes = (std::floating_point<T> or ... or std::floating_point<Ts>);
+
+template <typename T, typename... Ts>
+concept AllNotCljonicCollections = (IsNotCljonicCollection<T> and ... and IsNotCljonicCollection<Ts>);
 
 template <typename T, typename... Ts>
 concept AllSameCljonicCollectionType =
@@ -361,6 +367,9 @@ constexpr void* Identity(const T& t) noexcept;
 
 template <typename F, typename C, typename... Cs>
 constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept;
+
+template <typename F, typename T, typename... Ts>
+constexpr auto MaxBy(F&& f, const T& t, const Ts... ts) noexcept;
 
 template <typename F, typename C>
 constexpr auto NotAny(F&& f, const C& c) noexcept;
@@ -917,7 +926,7 @@ return this->operator[](index);
 return m_elementCount;
 }
 
-constexpr int DefaultElement() const noexcept {
+constexpr char DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
@@ -1435,6 +1444,43 @@ auto result{Array<ResultType, count>{}};
 for(SizeType i{0}; i < c.Count(); ++i)
 MConj(result, f(c[i], cs[i]...));
 return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename T, typename... Ts>
+constexpr auto MaxBy(F&& f, const T& t, const Ts... ts) noexcept {
+
+if constexpr(sizeof...(Ts) == 0) {
+static_assert(IsCljonicCollection<T>, "MaxBy's second parameter must be a cljonic collection");
+
+static_assert(IsBinaryPredicate<F, typename T::value_type, typename T::value_type>,
+              "MaxBy function is not a valid binary predicate for the collection value type");
+
+auto result{t.DefaultElement()};
+if(t.Count() > 0) {
+result = t[0];
+for(SizeType i{1}; i < t.Count(); ++i)
+if(f(result, t[i]))
+result = t[i];
+}
+return result;
+} else {
+static_assert(AllNotCljonicCollections<T, Ts...>,
+              "None of MaxBy's second through last parameters can be cljonic collections");
+
+static_assert(IsBinaryPredicate<F, T, T>,
+              "MaxBy function is not a valid binary predicate for the collection value type");
+
+auto result{t};
+(..., (void)(f(result, ts) ? result = ts : result));
+return result;
+}
 }
 
 }
