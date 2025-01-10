@@ -45,7 +45,7 @@ int main()
 ~~~~~
 */
 template <typename T, typename... Ts>
-constexpr auto Min(const T& t, const Ts... ts) noexcept
+constexpr auto Min(const T& t, const Ts&... ts) noexcept
 {
     // #lizard forgives -- The complexity and length of this function is acceptable
 
