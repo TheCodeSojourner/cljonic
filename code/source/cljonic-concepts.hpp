@@ -69,6 +69,12 @@ template <typename T>
 concept IsCljonicArrayRangeOrRepeat = IsCljonicArray<T> or IsCljonicRange<T> or IsCljonicRepeat<T>;
 
 template <typename T>
+concept IsConvertibleToIntegral = std::convertible_to<T, char>     //
+                                  or std::convertible_to<T, short> //
+                                  or std::convertible_to<T, int>   //
+                                  or std::convertible_to<T, long>  //
+                                  or std::convertible_to<T, long long>;
+template <typename T>
 concept IsCString = std::same_as<T, const char*> or std::same_as<T, char*>;
 
 template <typename T>
