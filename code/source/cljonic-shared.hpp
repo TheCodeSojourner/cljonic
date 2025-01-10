@@ -3,11 +3,14 @@
 
 #include <concepts>
 #include <cstring>
+#include <limits>
 #include "cljonic-concepts.hpp"
 #include "cljonic-collection-maximum-element-count.hpp"
 
 namespace cljonic
 {
+
+constexpr auto CLJONIC_INVALID_INDEX{std::numeric_limits<SizeType>::max()};
 
 template <typename F, typename T, typename U>
 constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept

@@ -31,6 +31,8 @@ int main()
     constexpr auto identical{Identical(a)};
     const auto identity{Identity(a)};
     constexpr auto last{Last(a)};
+    constexpr auto lastindexof{LastIndexOf(a, 5)};
+    constexpr auto lastindexofby{LastIndexOfBy([](const int i, const int j) { return j == i; }, a, 5)};
     constexpr auto map{Map([](const int i) { return 1 == i; }, a)};
     constexpr auto max1{Max(a)};
     constexpr auto max2{Max(4, 1, 5, 3)};
