@@ -76,6 +76,9 @@ constexpr auto Identical(const T& t, const Ts&... ts) noexcept;
 template <typename T>
 constexpr void* Identity(const T& t) noexcept;
 
+template <typename C>
+constexpr auto Last(const C& c) noexcept;
+
 template <typename F, typename C, typename... Cs>
 constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept;
 
