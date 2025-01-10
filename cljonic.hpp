@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 10 09:46:05 AM MST 2025
+// This file was generated Fri Jan 10 10:12:59 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -367,6 +367,9 @@ constexpr void* Identity(const T& t) noexcept;
 
 template <typename F, typename C, typename... Cs>
 constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept;
+
+template <typename T, typename... Ts>
+constexpr auto Max(const T& t, const Ts... ts) noexcept;
 
 template <typename F, typename T, typename... Ts>
 constexpr auto MaxBy(F&& f, const T& t, const Ts... ts) noexcept;
@@ -1444,6 +1447,36 @@ auto result{Array<ResultType, count>{}};
 for(SizeType i{0}; i < c.Count(); ++i)
 MConj(result, f(c[i], cs[i]...));
 return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename T, typename... Ts>
+constexpr auto Max(const T& t, const Ts... ts) noexcept {
+
+if constexpr(sizeof...(Ts) == 0) {
+static_assert(IsCljonicCollection<T>, "Max's parameter must be a cljonic collection");
+
+auto result{t.DefaultElement()};
+if(t.Count() > 0) {
+result = t[0];
+for(SizeType i{1}; i < t.Count(); ++i)
+if(result < t[i])
+result = t[i];
+}
+return result;
+} else {
+static_assert(AllNotCljonicCollections<T, Ts...>, "None of Max's parameters can be cljonic collections");
+
+auto result{t};
+(..., (void)((result < ts) ? result = ts : result));
+return result;
+}
 }
 
 }
