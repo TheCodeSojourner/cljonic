@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 10 12:22:17 PM MST 2025
+// This file was generated Fri Jan 10 12:31:29 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -381,16 +381,16 @@ template <typename F, typename C, typename... Cs>
 constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept;
 
 template <typename T, typename... Ts>
-constexpr auto Max(const T& t, const Ts... ts) noexcept;
+constexpr auto Max(const T& t, const Ts&... ts) noexcept;
 
 template <typename F, typename T, typename... Ts>
-constexpr auto MaxBy(F&& f, const T& t, const Ts... ts) noexcept;
+constexpr auto MaxBy(F&& f, const T& t, const Ts&... ts) noexcept;
 
 template <typename T, typename... Ts>
-constexpr auto Min(const T& t, const Ts... ts) noexcept;
+constexpr auto Min(const T& t, const Ts&... ts) noexcept;
 
 template <typename F, typename T, typename... Ts>
-constexpr auto MinBy(F&& f, const T& t, const Ts... ts) noexcept;
+constexpr auto MinBy(F&& f, const T& t, const Ts&... ts) noexcept;
 
 template <typename F, typename C>
 constexpr auto NotAny(F&& f, const C& c) noexcept;
@@ -1544,7 +1544,7 @@ namespace cljonic {
 
 namespace core {
 template <typename T, typename... Ts>
-constexpr auto Max(const T& t, const Ts... ts) noexcept {
+constexpr auto Max(const T& t, const Ts&... ts) noexcept {
 
 if constexpr(sizeof...(Ts) == 0) {
 static_assert(IsCljonicCollection<T>, "Max's parameter must be a cljonic collection");
@@ -1574,7 +1574,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename T, typename... Ts>
-constexpr auto MaxBy(F&& f, const T& t, const Ts... ts) noexcept {
+constexpr auto MaxBy(F&& f, const T& t, const Ts&... ts) noexcept {
 
 if constexpr(sizeof...(Ts) == 0) {
 static_assert(IsCljonicCollection<T>, "MaxBy's second parameter must be a cljonic collection");
@@ -1611,7 +1611,7 @@ namespace cljonic {
 
 namespace core {
 template <typename T, typename... Ts>
-constexpr auto Min(const T& t, const Ts... ts) noexcept {
+constexpr auto Min(const T& t, const Ts&... ts) noexcept {
 
 if constexpr(sizeof...(Ts) == 0) {
 static_assert(IsCljonicCollection<T>, "Min's parameter must be a cljonic collection");
@@ -1641,7 +1641,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename T, typename... Ts>
-constexpr auto MinBy(F&& f, const T& t, const Ts... ts) noexcept {
+constexpr auto MinBy(F&& f, const T& t, const Ts&... ts) noexcept {
 
 if constexpr(sizeof...(Ts) == 0) {
 static_assert(IsCljonicCollection<T>, "MinBy's second parameter must be a cljonic collection");
