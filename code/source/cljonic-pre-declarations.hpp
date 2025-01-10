@@ -85,6 +85,12 @@ constexpr auto Max(const T& t, const Ts... ts) noexcept;
 template <typename F, typename T, typename... Ts>
 constexpr auto MaxBy(F&& f, const T& t, const Ts... ts) noexcept;
 
+template <typename T, typename... Ts>
+constexpr auto Min(const T& t, const Ts... ts) noexcept;
+
+template <typename F, typename T, typename... Ts>
+constexpr auto MinBy(F&& f, const T& t, const Ts... ts) noexcept;
+
 template <typename F, typename C>
 constexpr auto NotAny(F&& f, const C& c) noexcept;
 

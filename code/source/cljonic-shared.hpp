@@ -77,7 +77,7 @@ constexpr bool FirstLessThanSecond(const T& t, const U& u) noexcept
 }
 
 template <typename T, typename... Ts>
-constexpr auto Min(T a, Ts... args) noexcept
+constexpr auto MinArgument(T a, Ts... args) noexcept
 {
     if constexpr (sizeof...(args) == 0)
     {
@@ -85,7 +85,7 @@ constexpr auto Min(T a, Ts... args) noexcept
     }
     else
     {
-        return (a < Min(args...)) ? a : Min(args...);
+        return (a < MinArgument(args...)) ? a : MinArgument(args...);
     }
 }
 
@@ -98,7 +98,7 @@ constexpr auto MinimumOfCljonicCollectionMaximumCounts()
     }
     else
     {
-        return (Min(C::MaximumCount(), Cs::MaximumCount()), ...);
+        return (MinArgument(C::MaximumCount(), Cs::MaximumCount()), ...);
     }
 }
 
@@ -117,7 +117,7 @@ constexpr auto SumOfCljonicCollectionMaximumCounts()
 
 constexpr SizeType MaximumElements(const SizeType count) noexcept
 {
-    return Min(count, CljonicCollectionMaximumElementCount);
+    return MinArgument(count, CljonicCollectionMaximumElementCount);
 }
 
 } // namespace cljonic

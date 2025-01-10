@@ -35,6 +35,10 @@ int main()
     constexpr auto max2{Max(4, 1, 5, 3)};
     constexpr auto maxby1{MaxBy([](const int i, const int j) { return i < j; }, a)};
     constexpr auto maxby2{MaxBy([](const int i, const int j) { return i < j; }, 4, 1, 5, 3)};
+    constexpr auto min1{Min(a)};
+    constexpr auto min2{Min(4, 1, 5, 3)};
+    constexpr auto minby1{MinBy([](const int i, const int j) { return i < j; }, a)};
+    constexpr auto minby2{MinBy([](const int i, const int j) { return i < j; }, 4, 1, 5, 3)};
     constexpr auto notany{NotAny([](const int i) { return 1 == i; }, a)};
     constexpr auto notevery{NotEvery([](const int i) { return 1 == i; }, a)};
     constexpr auto nth1{Nth(a, 1)};

@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 10 10:12:59 AM MST 2025
+// This file was generated Fri Jan 10 10:41:44 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -260,11 +260,11 @@ return t < u;
 }
 
 template <typename T, typename... Ts>
-constexpr auto Min(T a, Ts... args) noexcept {
+constexpr auto MinArgument(T a, Ts... args) noexcept {
 if constexpr(sizeof...(args) == 0) {
 return a;
 } else {
-return (a < Min(args...)) ? a : Min(args...);
+return (a < MinArgument(args...)) ? a : MinArgument(args...);
 }
 }
 
@@ -273,7 +273,7 @@ constexpr auto MinimumOfCljonicCollectionMaximumCounts() {
 if constexpr(sizeof...(Cs) == 0) {
 return C::MaximumCount();
 } else {
-return (Min(C::MaximumCount(), Cs::MaximumCount()), ...);
+return (MinArgument(C::MaximumCount(), Cs::MaximumCount()), ...);
 }
 }
 
@@ -287,7 +287,7 @@ return (C::MaximumCount() + ... + Cs::MaximumCount());
 }
 
 constexpr SizeType MaximumElements(const SizeType count) noexcept {
-return Min(count, CljonicCollectionMaximumElementCount);
+return MinArgument(count, CljonicCollectionMaximumElementCount);
 }
 
 } // namespace cljonic
@@ -373,6 +373,12 @@ constexpr auto Max(const T& t, const Ts... ts) noexcept;
 
 template <typename F, typename T, typename... Ts>
 constexpr auto MaxBy(F&& f, const T& t, const Ts... ts) noexcept;
+
+template <typename T, typename... Ts>
+constexpr auto Min(const T& t, const Ts... ts) noexcept;
+
+template <typename F, typename T, typename... Ts>
+constexpr auto MinBy(F&& f, const T& t, const Ts... ts) noexcept;
 
 template <typename F, typename C>
 constexpr auto NotAny(F&& f, const C& c) noexcept;
@@ -467,7 +473,7 @@ constexpr Array() noexcept : m_elementCount(0), m_elementDefault(T{}) {
 }
 
 constexpr explicit Array(const std::initializer_list<const T> elements) noexcept
-    : m_elementCount(Min(MaximumCount(), elements.size())), m_elementDefault(T{}) {
+    : m_elementCount(MinArgument(MaximumCount(), elements.size())), m_elementDefault(T{}) {
 for(SizeType i{0}; i < m_elementCount; ++i)
 m_elements[i] = *(elements.begin() + i);
 }
@@ -592,7 +598,7 @@ static_assert(maximumElements == MaxElements,
               "Attempt to create a Range bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
 
 constexpr void InitializeMembers(const int count, const int start, const int step) noexcept {
-m_elementCount = Min(static_cast<SizeType>(count), CljonicCollectionMaximumElementCount);
+m_elementCount = MinArgument(static_cast<SizeType>(count), CljonicCollectionMaximumElementCount);
 m_elementDefault = 0;
 m_elementStart = start;
 m_elementStep = step;
@@ -1523,6 +1529,73 @@ return result;
 namespace cljonic {
 
 namespace core {
+template <typename T, typename... Ts>
+constexpr auto Min(const T& t, const Ts... ts) noexcept {
+
+if constexpr(sizeof...(Ts) == 0) {
+static_assert(IsCljonicCollection<T>, "Min's parameter must be a cljonic collection");
+
+auto result{t.DefaultElement()};
+if(t.Count() > 0) {
+result = t[0];
+for(SizeType i{1}; i < t.Count(); ++i)
+if(t[i] < result)
+result = t[i];
+}
+return result;
+} else {
+static_assert(AllNotCljonicCollections<T, Ts...>, "None of Min's parameters can be cljonic collections");
+
+auto result{t};
+(..., (void)((ts < result) ? result = ts : result));
+return result;
+}
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename T, typename... Ts>
+constexpr auto MinBy(F&& f, const T& t, const Ts... ts) noexcept {
+
+if constexpr(sizeof...(Ts) == 0) {
+static_assert(IsCljonicCollection<T>, "MinBy's second parameter must be a cljonic collection");
+
+static_assert(IsBinaryPredicate<F, typename T::value_type, typename T::value_type>,
+              "MinBy function is not a valid binary predicate for the collection value type");
+
+auto result{t.DefaultElement()};
+if(t.Count() > 0) {
+result = t[0];
+for(SizeType i{1}; i < t.Count(); ++i)
+if(not f(result, t[i]))
+result = t[i];
+}
+return result;
+} else {
+static_assert(AllNotCljonicCollections<T, Ts...>,
+              "None of MinBy's second through last parameters can be cljonic collections");
+
+static_assert(IsBinaryPredicate<F, T, T>,
+              "MinBy function is not a valid binary predicate for the collection value type");
+
+auto result{t};
+(..., (void)((not f(result, ts)) ? result = ts : result));
+return result;
+}
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
 template <typename F, typename C>
 constexpr auto NotAny(F&& f, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "NotAny's second parameter must be a cljonic collection");
@@ -1823,7 +1896,7 @@ constexpr auto Take(const SizeType count, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Take's second parameter must be a cljonic collection");
 
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-auto maxIndex{Min(count, c.Count())};
+auto maxIndex{MinArgument(count, c.Count())};
 for(SizeType i{0}; (i < maxIndex); ++i)
 MConj(result, c[i]);
 return result;

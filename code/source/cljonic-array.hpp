@@ -67,7 +67,7 @@ class Array
     }
 
     constexpr explicit Array(const std::initializer_list<const T> elements) noexcept
-        : m_elementCount(Min(MaximumCount(), elements.size())), m_elementDefault(T{})
+        : m_elementCount(MinArgument(MaximumCount(), elements.size())), m_elementDefault(T{})
     {
         for (SizeType i{0}; i < m_elementCount; ++i)
             m_elements[i] = *(elements.begin() + i);

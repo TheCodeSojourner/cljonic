@@ -84,7 +84,7 @@ class Range
 
     constexpr void InitializeMembers(const int count, const int start, const int step) noexcept
     {
-        m_elementCount = Min(static_cast<SizeType>(count), CljonicCollectionMaximumElementCount);
+        m_elementCount = MinArgument(static_cast<SizeType>(count), CljonicCollectionMaximumElementCount);
         m_elementDefault = 0;
         m_elementStart = start;
         m_elementStep = step;
