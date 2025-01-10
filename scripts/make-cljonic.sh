@@ -39,6 +39,8 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-identical.hpp \
     cljonic-core-identity.hpp \
     cljonic-core-last.hpp \
+    cljonic-core-lastindexof.hpp \
+    cljonic-core-lastindexofby.hpp \
     cljonic-core-map.hpp \
     cljonic-core-max.hpp \
     cljonic-core-maxby.hpp \

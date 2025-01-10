@@ -79,6 +79,12 @@ constexpr void* Identity(const T& t) noexcept;
 template <typename C>
 constexpr auto Last(const C& c) noexcept;
 
+template <typename C, typename T>
+constexpr auto LastIndexOf(const C& c, const T& t) noexcept;
+
+template <typename F, typename C, typename T>
+constexpr auto LastIndexOfBy(F&& f, const C& c, const T& t) noexcept;
+
 template <typename F, typename C, typename... Cs>
 constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept;
 

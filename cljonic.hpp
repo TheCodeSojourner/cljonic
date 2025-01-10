@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 10 10:57:46 AM MST 2025
+// This file was generated Fri Jan 10 12:22:17 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -209,8 +209,11 @@ constexpr bool IsBinaryPredicateForAllCljonicCollections =
 
 #include <concepts>
 #include <cstring>
+#include <limits>
 
 namespace cljonic {
+
+constexpr auto CLJONIC_INVALID_INDEX{std::numeric_limits<SizeType>::max()};
 
 template <typename F, typename T, typename U>
 constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept {
@@ -367,6 +370,12 @@ constexpr void* Identity(const T& t) noexcept;
 
 template <typename C>
 constexpr auto Last(const C& c) noexcept;
+
+template <typename C, typename T>
+constexpr auto LastIndexOf(const C& c, const T& t) noexcept;
+
+template <typename F, typename C, typename T>
+constexpr auto LastIndexOfBy(F&& f, const C& c, const T& t) noexcept;
 
 template <typename F, typename C, typename... Cs>
 constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept;
@@ -1444,6 +1453,61 @@ constexpr auto Last(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Last's parameter must be a cljonic collection");
 
 return c[(c.Count() > 0) ? (c.Count() - 1) : 0];
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C, typename T>
+constexpr auto LastIndexOf(const C& c, const T& t) noexcept {
+
+static_assert(IsCljonicCollection<C>, "LastIndexOf's first parameter must be a cljonic collection");
+
+static_assert(std::equality_comparable_with<typename C::value_type, T>,
+              "LastIndexOf's second parameter is not equality comparable with the cljonic collection values");
+
+static_assert(not std::floating_point<typename C::value_type>,
+              "LastIndexOf should not compare floating point types for equality. Consider using LastIndexOfBy to "
+              "override this default.");
+
+static_assert(not std::floating_point<T>,
+              "LastIndexOf should not compare floating point types for equality. Consider using LastIndexOfBy to "
+              "override this default.");
+
+auto result{CLJONIC_INVALID_INDEX};
+for(SizeType nextIndex{c.Count()}; ((CLJONIC_INVALID_INDEX == result) and (nextIndex > 0)); --nextIndex)
+if(AreEqual(c[nextIndex - 1], t))
+result = nextIndex - 1;
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C, typename T>
+constexpr auto LastIndexOfBy(F&& f, const C& c, const T& t) noexcept {
+
+static_assert(IsCljonicCollection<C>, "LastIndexOfBy's second parameter must be a cljonic collection");
+
+static_assert(std::equality_comparable_with<typename C::value_type, T>,
+              "LastIndexOfBy's third parameter is not equality comparable with the cljonic collection values");
+
+static_assert(IsBinaryPredicate<F, typename C::value_type, T>,
+              "LastIndexOfBy's first parameter is not a valid binary predicate for the collection value type");
+
+auto result{CLJONIC_INVALID_INDEX};
+for(SizeType nextIndex{c.Count()}; ((CLJONIC_INVALID_INDEX == result) and (nextIndex > 0)); --nextIndex)
+if(f(c[nextIndex - 1], t))
+result = nextIndex - 1;
+return result;
 }
 
 }
