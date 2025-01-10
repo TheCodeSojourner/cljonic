@@ -31,6 +31,8 @@ int main()
     constexpr auto identical{Identical(a)};
     const auto identity{Identity(a)};
     constexpr auto map{Map([](const int i) { return 1 == i; }, a)};
+    constexpr auto max1{Max(a)};
+    constexpr auto max2{Max(4, 1, 5, 3)};
     constexpr auto maxby1{MaxBy([](const int i, const int j) { return i < j; }, a)};
     constexpr auto maxby2{MaxBy([](const int i, const int j) { return i < j; }, 4, 1, 5, 3)};
     constexpr auto notany{NotAny([](const int i) { return 1 == i; }, a)};
