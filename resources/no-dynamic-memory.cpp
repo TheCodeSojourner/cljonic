@@ -30,6 +30,7 @@ int main()
     constexpr auto first{First(a)};
     constexpr auto identical{Identical(a)};
     const auto identity{Identity(a)};
+    constexpr auto last{Last(a)};
     constexpr auto map{Map([](const int i) { return 1 == i; }, a)};
     constexpr auto max1{Max(a)};
     constexpr auto max2{Max(4, 1, 5, 3)};

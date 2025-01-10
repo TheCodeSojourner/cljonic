@@ -38,6 +38,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-first.hpp \
     cljonic-core-identical.hpp \
     cljonic-core-identity.hpp \
+    cljonic-core-last.hpp \
     cljonic-core-map.hpp \
     cljonic-core-max.hpp \
     cljonic-core-maxby.hpp \

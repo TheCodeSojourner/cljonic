@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 10 10:41:44 AM MST 2025
+// This file was generated Fri Jan 10 10:57:46 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -364,6 +364,9 @@ constexpr auto Identical(const T& t, const Ts&... ts) noexcept;
 
 template <typename T>
 constexpr void* Identity(const T& t) noexcept;
+
+template <typename C>
+constexpr auto Last(const C& c) noexcept;
 
 template <typename F, typename C, typename... Cs>
 constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept;
@@ -1427,6 +1430,20 @@ namespace core {
 template <typename T>
 constexpr void* Identity(const T& t) noexcept {
 return (void*)&t;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto Last(const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "Last's parameter must be a cljonic collection");
+
+return c[(c.Count() > 0) ? (c.Count() - 1) : 0];
 }
 
 }
