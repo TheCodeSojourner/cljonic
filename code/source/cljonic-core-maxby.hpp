@@ -34,7 +34,7 @@ int main()
     constexpr auto maxByRng{MaxBy(IsALessThanB, Range<0>{})};          // 0, the default value of Range<0>
     constexpr auto maxByRpt{MaxBy(IsALessThanB, Repeat<4, int>{11})};  // 11
     constexpr auto maxBySet{MaxBy(IsALessThanB, Set{11, 14, 13, 14})}; // 14
-    constexpr auto maxByStr{MaxBy([](const char i, const char j) { return i < j; }, String{"adcb"})};
+    constexpr auto maxByStr{MaxBy([](const char i, const char j) { return i < j; }, String{"adcb"})}; // 'd'
     constexpr auto maxBy{MaxBy(IsALessThanB, 1, 2, 14, 7, 9)}; // 14
 
     // Compiler Error: MaxBy's second parameter must be a cljonic collection

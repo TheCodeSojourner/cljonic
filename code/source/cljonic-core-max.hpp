@@ -12,8 +12,8 @@ namespace core
 
 /** \anchor Core_Max
 * The \b Max function returns the maximum value of either the values in its only \b cljonic \b collection parameter or
-* its all of its parameters. If its only \b cljonic \b collection parameter is empty, then \b Max returns the default
-* value of its only \b cljonic \b collection parameter.
+* all of its parameters. If its only \b cljonic \b collection parameter is empty, then \b Max returns the default value
+* of its only \b cljonic \b collection parameter.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -31,7 +31,7 @@ int main()
     constexpr auto maxRng{Max(Range<0>{})};          // 0, the default value of Range<0>
     constexpr auto maxRpt{Max(Repeat<4, int>{11})};  // 11
     constexpr auto maxSet{Max(Set{11, 14, 13, 14})}; // 14
-    constexpr auto maxStr{Max(String{"adcb"})};
+    constexpr auto maxStr{Max(String{"adcb"})}; // 'd'
     constexpr auto max{Max(1, 2, 14, 7, 9)}; // 14
 
     // Compiler Error: Max's parameter must be a cljonic collection

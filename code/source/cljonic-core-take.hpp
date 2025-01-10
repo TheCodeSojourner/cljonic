@@ -48,7 +48,7 @@ constexpr auto Take(const SizeType count, const C& c) noexcept
     static_assert(IsCljonicCollection<C>, "Take's second parameter must be a cljonic collection");
 
     auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-    auto maxIndex{Min(count, c.Count())};
+    auto maxIndex{MinArgument(count, c.Count())};
     for (SizeType i{0}; (i < maxIndex); ++i)
         MConj(result, c[i]);
     return result;

@@ -41,6 +41,8 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-map.hpp \
     cljonic-core-max.hpp \
     cljonic-core-maxby.hpp \
+    cljonic-core-min.hpp \
+    cljonic-core-minby.hpp \
     cljonic-core-notany.hpp \
     cljonic-core-notevery.hpp \
     cljonic-core-nth.hpp \
