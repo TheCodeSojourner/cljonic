@@ -124,7 +124,8 @@
  * \ref Core_FlattenSize "FlattenSize", \ref Core_Frequencies "Frequencies", \ref Core_FrequenciesBy "FrequenciesBy"
  * - \ref Core_Identical "Identical", \ref Core_Identity "Identity", \ref Core_IndexOf "IndexOf", \ref Core_IndexOfBy
  * "IndexOfBy", \ref Core_Interleave "Interleave", \ref Core_Interpose "Interpose", \ref Core_IsDistinct "IsDistinct",
- * \ref Core_IsDistinctBy "IsDistinctBy", \ref Core_IsFull "IsFull", \ref Core_Iterate "Iterate"
+ * \ref Core_IsDistinctBy "IsDistinctBy", \ref Core_IsEmpty "IsEmpty", \ref Core_IsFull "IsFull", \ref Core_Iterate
+ * "Iterate"
  * - \ref Core_Juxt "Juxt"
  * - \ref Core_Last "Last", \ref Core_LastIndexOf "LastIndexOf", \ref Core_LastIndexOfBy "LastIndexOfBy"
  * - \ref Core_Map "Map", \ref Core_Max "Max", \ref Core_MaxBy "MaxBy", \ref Core_Min "Min", \ref Core_MinBy "MinBy"
