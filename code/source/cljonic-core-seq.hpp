@@ -24,12 +24,12 @@ int main()
     const auto s0{Seq(Array<int,0>{})};               // immutable, full cljonic Array, with zero elements
     const auto s1{Seq(Array{1, 2})};                  // immutable, full cljonic Array, with 1 and 2
     const auto s2{Seq(Range<0>{})};                   // immutable, full cljonic Array, with zero elements
-    const auto s3{Seq(Repeat<7, const char*>{"11"})}; // immutable, full cljonic Array, with sever "11" elements
+    const auto s3{Seq(Repeat<7, const char*>{"11"})}; // immutable, full cljonic Array, with seven "11" elements
     const auto s4{Seq(Set{'a', 'b'})};                // immutable, full cljonic Array, with 'a' and 'b'
     const auto s5{Seq(String{"Hello"})};              // immutable, full cljonic Array, with 'H', 'e', 'l', 'l', 'o'
     const auto s6{Seq(String<10>{"Hi"})};             // immutable, sparse cljonic Array, with 'H' and 'i'
 
-    // Compiler Error: Seq's second parameter must be a cljonic collection
+    // Compiler Error: Seq's parameter must be a cljonic collection
     // const auto s{Seq("Hello")};
 
     return 0;
@@ -39,7 +39,7 @@ int main()
 template <typename C>
 constexpr auto Seq(const C& c) noexcept
 {
-    static_assert(IsCljonicCollection<C>, "Seq's second parameter must be a cljonic collection");
+    static_assert(IsCljonicCollection<C>, "Seq's parameter must be a cljonic collection");
 
     return Take(c.MaximumCount(), c);
 }
