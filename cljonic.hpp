@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 10 12:55:58 PM MST 2025
+// This file was generated Sat Jan 11 04:19:07 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -147,6 +147,8 @@ concept IsCljonicSet = std::same_as<typename T::cljonic_collection_type,
 template <typename T>
 concept IsCljonicArrayRangeOrRepeat = IsCljonicArray<T> or IsCljonicRange<T> or IsCljonicRepeat<T>;
 
+template <typename T>
+concept IsConvertibleToIntegral = std::convertible_to<T, char> or std::convertible_to<T, short> or std::convertible_to<T, int> or std::convertible_to<T, long> or std::convertible_to<T, long long>;
 template <typename T>
 concept IsCString = std::same_as<T, const char*> or std::same_as<T, char*>;
 
@@ -412,6 +414,9 @@ constexpr auto Reduce(F&& f, const C& c) noexcept;
 
 template <typename F, typename C>
 constexpr auto Remove(F&& f, const C& c) noexcept;
+
+template <typename C1, typename C2>
+constexpr auto Replace(const C1& c1, const C2& c2) noexcept;
 
 template <typename C>
 constexpr auto Second(const C& c) noexcept;
@@ -1812,6 +1817,34 @@ auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 for(const auto& element : c)
 if(not f(element))
 MConj(result, element);
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+#include <concepts>
+
+namespace cljonic {
+
+namespace core {
+template <typename C1, typename C2>
+constexpr auto Replace(const C1& c1, const C2& c2) noexcept {
+
+static_assert(IsCljonicCollection<C1>, "Replace's first parameter must be a cljonic collection");
+
+static_assert(IsCljonicCollection<C2>, "Replace's second parameter must be a cljonic collection");
+
+static_assert(IsConvertibleToIntegral<typename C2::value_type>,
+              "Replace's second parameter value type must be convertible to an integral");
+
+static_assert(std::convertible_to<typename C2::value_type, typename C1::value_type>,
+              "Replace's second parameter value type must be convertible to the first parameter value type");
+
+auto result{Array<typename C1::value_type, c2.MaximumCount()>{}};
+for(SizeType i{0}; i < c2.Count(); ++i)
+MConj(result, ((c2[i] >= 0) and (static_cast<SizeType>(c2[i]) < c1.Count())) ? c1[c2[i]] : c2[i]);
 return result;
 }
 

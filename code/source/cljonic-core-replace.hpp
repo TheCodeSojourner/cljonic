@@ -77,17 +77,15 @@ constexpr auto Replace(const C1& c1, const C2& c2) noexcept
 
     static_assert(IsCljonicCollection<C2>, "Replace's second parameter must be a cljonic collection");
 
-    static_assert(IsConvertibleToIntegral<C2::value_type>,
+    static_assert(IsConvertibleToIntegral<typename C2::value_type>,
                   "Replace's second parameter value type must be convertible to an integral");
 
-    static_assert(std::convertible_to<C2::value_type, C1::value_type>,
+    static_assert(std::convertible_to<typename C2::value_type, typename C1::value_type>,
                   "Replace's second parameter value type must be convertible to the first parameter value type");
-
-    using ResultType = decltype(f(std::declval<typename C::value_type>(), std::declval<typename Cs::value_type>()...));
 
     auto result{Array<typename C1::value_type, c2.MaximumCount()>{}};
     for (SizeType i{0}; i < c2.Count(); ++i)
-        MConj(result, ((c2[i] >= 0) and (c2[i] < c1.Count())) ? c1[c2[i]] : c2[i]);
+        MConj(result, ((c2[i] >= 0) and (static_cast<SizeType>(c2[i]) < c1.Count())) ? c1[c2[i]] : c2[i]);
     return result;
 }
 
