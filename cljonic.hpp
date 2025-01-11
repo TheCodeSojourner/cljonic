@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Sat Jan 11 04:25:17 PM MST 2025
+// This file was generated Sat Jan 11 04:46:28 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -417,6 +417,9 @@ constexpr auto Remove(F&& f, const C& c) noexcept;
 
 template <typename C1, typename C2>
 constexpr auto Replace(const C1& c1, const C2& c2) noexcept;
+
+template <typename C>
+constexpr auto Reverse(const C& c) noexcept;
 
 template <typename C>
 constexpr auto Second(const C& c) noexcept;
@@ -1856,6 +1859,23 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
+constexpr auto Reverse(const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "Reverse's parameter must be a cljonic collection");
+
+auto result{Array<typename C::value_type, C::MaximumCount()>{}};
+for(SizeType i{c.Count()}; i != 0; --i)
+MConj(result, c[i - 1]);
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
 constexpr auto Second(const C& coll) noexcept {
 static_assert(IsCljonicCollection<C>, "Second's parameter must be a cljonic collection");
 
@@ -1871,7 +1891,7 @@ namespace cljonic {
 namespace core {
 template <typename C>
 constexpr auto Seq(const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Seq's second parameter must be a cljonic collection");
+static_assert(IsCljonicCollection<C>, "Seq's parameter must be a cljonic collection");
 
 return Take(c.MaximumCount(), c);
 }

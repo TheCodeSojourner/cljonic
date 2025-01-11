@@ -125,6 +125,9 @@ template <typename C1, typename C2>
 constexpr auto Replace(const C1& c1, const C2& c2) noexcept;
 
 template <typename C>
+constexpr auto Reverse(const C& c) noexcept;
+
+template <typename C>
 constexpr auto Second(const C& c) noexcept;
 
 template <typename C>

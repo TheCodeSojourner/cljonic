@@ -51,6 +51,7 @@ int main()
     constexpr auto reduce3{Reduce([](const int sum, const int i) { return sum + i; }, 30, a)};
     constexpr auto remove{Remove([](const int i) { return 1 == i; }, a)};
     constexpr auto replace{Replace(a, Array{1, 2, 3, 20})};
+    constexpr auto reverse{Reverse(a)};
     constexpr auto second{Second(a)};
     constexpr auto seq{Seq(a)};
     constexpr auto size{Size(a)};
