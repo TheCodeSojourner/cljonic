@@ -77,6 +77,9 @@ template <typename T>
 constexpr void* Identity(const T& t) noexcept;
 
 template <typename C>
+constexpr auto IsFull(const C& c) noexcept;
+
+template <typename C>
 constexpr auto Last(const C& c) noexcept;
 
 template <typename C, typename T>

@@ -30,6 +30,7 @@ int main()
     constexpr auto first{First(a)};
     constexpr auto identical{Identical(a)};
     const auto identity{Identity(a)};
+    constexpr auto isfull{IsFull(a)};
     constexpr auto last{Last(a)};
     constexpr auto lastindexof{LastIndexOf(a, 5)};
     constexpr auto lastindexofby{LastIndexOfBy([](const int i, const int j) { return j == i; }, a, 5)};
