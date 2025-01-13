@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Jan 13 01:12:09 PM MST 2025
+// This file was generated Mon Jan 13 03:26:08 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -375,6 +375,11 @@ constexpr auto IndexOf(const C& c, const T& t) noexcept;
 
 template <typename F, typename C, typename T>
 constexpr auto IndexOfBy(F&& f, const C& c, const T& t) noexcept;
+
+constexpr auto Interleave() noexcept;
+
+template <typename C, typename... Cs>
+constexpr auto Interleave(const C& c, const Cs&... cs) noexcept;
 
 template <typename C>
 constexpr auto IsEmpty(const C& c) noexcept;
@@ -1033,7 +1038,7 @@ constexpr auto Concat(const C& c, const Cs&... cs) noexcept {
 static_assert(AllCljonicCollections<C, Cs...>, "All Concat parameters must be cljonic collections");
 
 static_assert(AllConvertibleValueTypes<C, Cs...>,
-              "All Concat cljonic collections value types must be interconvertible");
+              "All Concat cljonic collection value types must be interconvertible");
 
 using ResultType = FindCommonValueType<C, Cs...>;
 
@@ -1513,6 +1518,38 @@ for(SizeType i{0}; ((CLJONIC_INVALID_INDEX == result) and (i < c.Count())); ++i)
 if(f(c[i], t))
 result = i;
 return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+#include <concepts>
+
+namespace cljonic {
+
+namespace core {
+template <typename C, typename... Cs>
+constexpr auto Interleave(const C& c, const Cs&... cs) noexcept {
+
+static_assert(AllCljonicCollections<C, Cs...>, "Interleave's parameters must all be cljonic collections");
+
+static_assert(AllConvertibleValueTypes<C, Cs...>,
+              "All Interleave cljonic collection value types must be interconvertible");
+
+constexpr auto minimumCollectionCount{MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()};
+constexpr auto collectionsCount{sizeof...(Cs) + 1};
+constexpr auto resultCount{minimumCollectionCount * collectionsCount};
+auto result{Array<FindCommonValueType<C, Cs...>, resultCount>{}};
+for(SizeType i{0}; i < minimumCollectionCount; ++i) {
+MConj(result, c[i]);
+(MConj(result, cs[i]), ...);
+}
+return result;
+}
+
+constexpr auto Interleave() noexcept {
+return Array<int, 0>{};
 }
 
 }

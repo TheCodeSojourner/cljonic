@@ -32,7 +32,7 @@ int main()
     // Compiler Error: All Concat parameters must be cljonic collections
     // const auto c{Concat("Hello", 1)};
 
-    // Compiler Error: All Concat cljonic collections value types must be interconvertible
+    // Compiler Error: All Concat cljonic collection value types must be interconvertible
     // const auto c{Concat(Array{"one", "two", "three"}, Repeat<5, int>{1})};
 
     return 0;
@@ -47,7 +47,7 @@ constexpr auto Concat(const C& c, const Cs&... cs) noexcept
     static_assert(AllCljonicCollections<C, Cs...>, "All Concat parameters must be cljonic collections");
 
     static_assert(AllConvertibleValueTypes<C, Cs...>,
-                  "All Concat cljonic collections value types must be interconvertible");
+                  "All Concat cljonic collection value types must be interconvertible");
 
     using ResultType = FindCommonValueType<C, Cs...>;
 
