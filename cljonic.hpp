@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Jan 13 11:55:57 AM MST 2025
+// This file was generated Mon Jan 13 01:12:09 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -369,6 +369,12 @@ constexpr auto Identical(const T& t, const Ts&... ts) noexcept;
 
 template <typename T>
 constexpr void* Identity(const T& t) noexcept;
+
+template <typename C, typename T>
+constexpr auto IndexOf(const C& c, const T& t) noexcept;
+
+template <typename F, typename C, typename T>
+constexpr auto IndexOfBy(F&& f, const C& c, const T& t) noexcept;
 
 template <typename C>
 constexpr auto IsEmpty(const C& c) noexcept;
@@ -1456,6 +1462,57 @@ namespace core {
 template <typename T>
 constexpr void* Identity(const T& t) noexcept {
 return (void*)&t;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C, typename T>
+constexpr auto IndexOf(const C& c, const T& t) noexcept {
+
+static_assert(IsCljonicCollection<C>, "IndexOf's first parameter must be a cljonic collection");
+
+static_assert((not std::floating_point<typename C::value_type>) and (not std::floating_point<T>),
+              "IndexOf should not compare floating point types for equality. Consider using IndexOfBy to override "
+              "this default.");
+
+static_assert(std::convertible_to<T, typename C::value_type>,
+              "IndexOf's second parameter must be convertible to the collection value type");
+
+auto result{CLJONIC_INVALID_INDEX};
+for(SizeType i{0}; ((CLJONIC_INVALID_INDEX == result) and (i < c.Count())); ++i)
+if(AreEqual(c[i], t))
+result = i;
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C, typename T>
+constexpr auto IndexOfBy(F&& f, const C& c, const T& t) noexcept {
+
+static_assert(IsCljonicCollection<C>, "IndexOfBy's second parameter must be a cljonic collection");
+
+static_assert(IsBinaryPredicate<std::decay_t<F>, typename C::value_type, typename C::value_type>,
+              "IndexOfBy's function is not a valid binary predicate for the collection value type");
+
+static_assert(std::convertible_to<T, typename C::value_type>,
+              "IndexOfBy's third parameter must be convertible to the collection value type");
+
+auto result{CLJONIC_INVALID_INDEX};
+for(SizeType i{0}; ((CLJONIC_INVALID_INDEX == result) and (i < c.Count())); ++i)
+if(f(c[i], t))
+result = i;
+return result;
 }
 
 }
