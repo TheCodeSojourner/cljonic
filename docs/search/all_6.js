@@ -7,5 +7,6 @@ var searchData=
   ['innerfindcommontype_4',['InnerFindCommonType',['../structinner__find__common__type_1_1_inner_find_common_type.html',1,'inner_find_common_type']]],
   ['innerfindcommontype_3c_20t_20_3e_5',['InnerFindCommonType&lt; T &gt;',['../structinner__find__common__type_1_1_inner_find_common_type_3_01_t_01_4.html',1,'inner_find_common_type']]],
   ['innerfindcommontype_3c_20t_2c_20u_2c_20ts_2e_2e_2e_20_3e_6',['InnerFindCommonType&lt; T, U, Ts... &gt;',['../structinner__find__common__type_1_1_inner_find_common_type_3_01_t_00_01_u_00_01_ts_8_8_8_01_4.html',1,'inner_find_common_type']]],
-  ['isbinarypredicateforallcljoniccollections_7',['IsBinaryPredicateForAllCljonicCollections',['../namespacecljonic.html#a9c8bd3b0fd8138f5fb72f03dac87bf50',1,'cljonic']]]
+  ['isbinarypredicateforallcljoniccollections_7',['IsBinaryPredicateForAllCljonicCollections',['../namespacecljonic.html#a9c8bd3b0fd8138f5fb72f03dac87bf50',1,'cljonic']]],
+  ['isfull_8',['IsFull',['../namespacecljonic_1_1core.html#aaaf451a151f25376af629f510252a115',1,'cljonic::core']]]
 ];
