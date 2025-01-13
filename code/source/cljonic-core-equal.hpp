@@ -39,11 +39,11 @@ int main()
     constexpr auto e7{Equal(a4, ra1, re1)};    // true
 
     // Compiler Error: Equal should not compare floating point types for equality. Consider using EqualBy to override
-    //                 override this default.
+    //                 this default.
     // constexpr auto e{Equal(1.1)};
 
     // Compiler Error: Equal should not compare floating point types for equality. Consider using EqualBy to override
-    //                 override this default.
+    //                 this default.
     // constexpr auto e{Equal(1.1, 2.1)};
 
     // Compiler Error: no matching function for call to ‘Equal()’
