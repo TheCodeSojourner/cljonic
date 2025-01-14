@@ -40,4 +40,5 @@ SCENARIO("Concat", "[CljonicCoreConcat]")
     CHECK(108 == c[19]);
     CHECK(111 == c[20]);
     CHECK(0 == c[21]);
+    CHECK(0 == Concat().Count());
 }

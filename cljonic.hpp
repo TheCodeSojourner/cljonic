@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Jan 13 03:26:08 PM MST 2025
+// This file was generated Tue Jan 14 02:42:19 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -318,6 +318,8 @@ namespace core {
 
 template <typename F1, typename F2>
 constexpr auto Compose(F1&& f1, F2&& f2) noexcept;
+
+constexpr auto Concat() noexcept;
 
 template <typename C, typename... Cs>
 constexpr auto Concat(const C& c, const Cs&... cs) noexcept;
@@ -1050,6 +1052,10 @@ MConj(result, static_cast<ResultType>(c[i]));
 };
 (MConjCollectionOntoResult(c), ..., MConjCollectionOntoResult(cs));
 return result;
+}
+
+constexpr auto Concat() noexcept {
+return Array<int, 0>{};
 }
 
 }

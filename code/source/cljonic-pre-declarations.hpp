@@ -25,6 +25,8 @@ namespace core
 template <typename F1, typename F2>
 constexpr auto Compose(F1&& f1, F2&& f2) noexcept;
 
+constexpr auto Concat() noexcept;
+
 template <typename C, typename... Cs>
 constexpr auto Concat(const C& c, const Cs&... cs) noexcept;
 

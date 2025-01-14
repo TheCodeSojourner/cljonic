@@ -94,7 +94,7 @@ var searchData=
   ['collectioniterator_91',['collectioniterator',['../classcljonic_1_1_collection_iterator.html#a52ac6c2f962963969f4aba4367d2beef',1,'cljonic::CollectionIterator::CollectionIterator()'],['../classcljonic_1_1_collection_iterator.html',1,'cljonic::CollectionIterator&lt; T &gt;']]],
   ['compose_92',['compose',['../namespacecljonic_1_1core.html#aed686c2a58dfdfcaeb1bf555d24a2568',1,'cljonic::core::Compose(F1 &amp;&amp;f1, F2 &amp;&amp;f2, Fs &amp;&amp;... fs) noexcept'],['../namespacecljonic_1_1core.html#a173dc7bdd588d33175a25ce4cdf668bc',1,'cljonic::core::Compose(F1 &amp;&amp;f1, F2 &amp;&amp;f2) noexcept']]],
   ['composition_93',['Composition',['../index.html#autotoc_md4',1,'']]],
-  ['concat_94',['Concat',['../namespacecljonic_1_1core.html#ab1851f00181082cb04589021402b8743',1,'cljonic::core']]],
+  ['concat_94',['concat',['../namespacecljonic_1_1core.html#aad06b8e69307e556ac93db747a7667ca',1,'cljonic::core::Concat() noexcept'],['../namespacecljonic_1_1core.html#ab1851f00181082cb04589021402b8743',1,'cljonic::core::Concat(const C &amp;c, const Cs &amp;... cs) noexcept']]],
   ['conj_95',['Conj',['../namespacecljonic_1_1core.html#a880ebdb3f24d67d7f5ac4fdc4cf58b08',1,'cljonic::core']]],
   ['contains_96',['Contains',['../classcljonic_1_1_set.html#ae53faed12f2df5bb40738d3bebe7e509',1,'cljonic::Set']]],
   ['containsby_97',['ContainsBy',['../classcljonic_1_1_set.html#a95b4b4e69e5967ca572f4222ab00432c',1,'cljonic::Set']]],

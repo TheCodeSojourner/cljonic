@@ -13,7 +13,8 @@ int main()
     constexpr auto str{String{"Hello"}};
 
     constexpr auto compose{Compose(a, a)};
-    constexpr auto concat{Concat(a, a)};
+    constexpr auto concat0{Concat()};
+    constexpr auto concat1{Concat(a, a)};
     constexpr auto conj{Conj(a, 11)};
     constexpr auto count{Count(a)};
     constexpr auto cycle{Cycle(a)};
