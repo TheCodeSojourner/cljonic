@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Jan 14 02:42:19 PM MST 2025
+// This file was generated Tue Jan 14 03:28:46 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -382,6 +382,9 @@ constexpr auto Interleave() noexcept;
 
 template <typename C, typename... Cs>
 constexpr auto Interleave(const C& c, const Cs&... cs) noexcept;
+
+template <typename T, typename C>
+constexpr auto Interpose(const T& t, const C& c) noexcept;
 
 template <typename C>
 constexpr auto IsEmpty(const C& c) noexcept;
@@ -1555,6 +1558,37 @@ return result;
 }
 
 constexpr auto Interleave() noexcept {
+return Array<int, 0>{};
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename T, typename C>
+constexpr auto Interpose(const T& t, const C& c) noexcept {
+
+static_assert(IsCljonicCollection<C>, "Interpose's second parameter must be a cljonic collection");
+
+static_assert(std::convertible_to<T, typename C::value_type>,
+              "Interpose's first parameter must be convertible to cljonic collection value type");
+
+using ResultType = typename C::value_type;
+constexpr auto collectionMaximumCount{c.MaximumCount()};
+constexpr auto resultMaximumCount{(2 * collectionMaximumCount) - 1};
+auto interposeValue{static_cast<ResultType>(t)};
+auto result{Array<ResultType, resultMaximumCount>{}};
+for(SizeType i{0}; i < collectionMaximumCount; ++i) {
+MConj(result, c[i]);
+MConj(result, interposeValue);
+}
+return result;
+}
+
+constexpr auto Interpose() noexcept {
 return Array<int, 0>{};
 }
 

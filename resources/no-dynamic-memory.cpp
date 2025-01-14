@@ -35,6 +35,7 @@ int main()
     constexpr auto indexofby{IndexOfBy([](const int i, const int j) { return i == j; }, Array{1, 2, 3}, 1)};
     constexpr auto interleave0{Interleave()};
     constexpr auto interleave1{Interleave(a)};
+    constexpr auto interpose{Interpose(1, Array{1, 2, 3})};
     constexpr auto isempty{IsEmpty(a)};
     constexpr auto isfull{IsFull(a)};
     constexpr auto last{Last(a)};

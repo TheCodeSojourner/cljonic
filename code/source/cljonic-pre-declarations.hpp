@@ -89,6 +89,9 @@ constexpr auto Interleave() noexcept;
 template <typename C, typename... Cs>
 constexpr auto Interleave(const C& c, const Cs&... cs) noexcept;
 
+template <typename T, typename C>
+constexpr auto Interpose(const T& t, const C& c) noexcept;
+
 template <typename C>
 constexpr auto IsEmpty(const C& c) noexcept;
 
