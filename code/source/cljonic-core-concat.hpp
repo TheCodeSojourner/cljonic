@@ -13,7 +13,7 @@ namespace core
 /** \anchor Core_Concat
 * The \b Concat function returns a \b cljonic \b Array with all of the elements of its first parameter, which must be a
 * \b cljonic \b collection, followed by all of the elements of its second parameter, which must also be a \b cljonic
-* \b collection, etc.
+* \b collection, etc. If \b Concat is called with no parameters it returns an empty \b cljonic \b Array of \b int.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -60,6 +60,11 @@ constexpr auto Concat(const C& c, const Cs&... cs) noexcept
     };
     (MConjCollectionOntoResult(c), ..., MConjCollectionOntoResult(cs));
     return result;
+}
+
+constexpr auto Concat() noexcept
+{
+    return Array<int, 0>{};
 }
 
 } // namespace core
