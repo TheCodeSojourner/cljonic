@@ -36,6 +36,8 @@ int main()
     constexpr auto interleave0{Interleave()};
     constexpr auto interleave1{Interleave(a)};
     constexpr auto interpose{Interpose(1, Array{1, 2, 3})};
+    constexpr auto isdistinctby0{IsDistinctBy([](const int i, const int j) { return i == j; }, a)};
+    constexpr auto isdistinctby1{IsDistinctBy([](const int i, const int j) { return i == j; }, 1, 1, 1)};
     constexpr auto isempty{IsEmpty(a)};
     constexpr auto isfull{IsFull(a)};
     constexpr auto last{Last(a)};
