@@ -14,7 +14,7 @@ namespace cljonic
  * of a specified length of a specified value. Many \ref Namespace_Core "Core" functions accept Repeat arguments.
  */
 template <SizeType MaxElements, typename T>
-class Repeat
+class Repeat : public SequentialInterface<T>
 {
     using Iterator = CollectionIterator<Repeat>;
 
@@ -76,12 +76,12 @@ class Repeat
         return Iterator{*this, m_elementCount};
     }
 
-    constexpr const T& operator[](const SizeType index) const noexcept
+    constexpr T operator[](const SizeType index) const noexcept override
     {
         return ((m_elementCount <= 0) or (index >= m_elementCount)) ? m_elementDefault : m_elementValue;
     }
 
-    [[nodiscard]] constexpr SizeType Count() const noexcept
+    [[nodiscard]] constexpr SizeType Count() const noexcept override
     {
         return m_elementCount;
     }

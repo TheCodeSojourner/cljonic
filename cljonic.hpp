@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Jan 14 03:28:46 PM MST 2025
+// This file was generated Mon Jan 20 10:50:28 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -214,6 +214,13 @@ constexpr bool IsBinaryPredicateForAllCljonicCollections =
 #include <limits>
 
 namespace cljonic {
+
+template <typename T>
+class SequentialInterface {
+public:
+virtual constexpr SizeType Count() const noexcept = 0;
+virtual constexpr T operator[](const SizeType index) const noexcept = 0;
+};
 
 constexpr auto CLJONIC_INVALID_INDEX{std::numeric_limits<SizeType>::max()};
 
@@ -493,7 +500,7 @@ constexpr auto TakeWhile(F&& f, const C& c) noexcept;
 namespace cljonic {
 
 template <typename T, SizeType MaxElements>
-class Array {
+class Array : public SequentialInterface<T> {
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
 static_assert(maximumElements == MaxElements,
@@ -534,11 +541,11 @@ constexpr const T* end() const noexcept {
 return m_elements + m_elementCount;
 }
 
-constexpr const T& operator[](const SizeType index) const noexcept {
+constexpr T operator[](const SizeType index) const noexcept override {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 }
 
-constexpr const T& operator()(const SizeType index) const noexcept {
+constexpr T operator()(const SizeType index) const noexcept {
 return this->operator[](index);
 }
 
@@ -552,7 +559,7 @@ m_elements[i] = other.m_elements[i];
 return *this;
 }
 
-[[nodiscard]] constexpr SizeType Count() const noexcept {
+[[nodiscard]] constexpr SizeType Count() const noexcept override {
 return m_elementCount;
 }
 
@@ -587,7 +594,7 @@ array.m_elements[index] = value;
 namespace cljonic {
 
 template <int... StartEndStep>
-class Range {
+class Range : public SequentialInterface<int> {
 private:
 static_assert(sizeof...(StartEndStep) <= 3, "Number of Range parameters must be less than or equal to three");
 
@@ -727,13 +734,13 @@ return Iterator{*this, 0};
 return Iterator{*this, m_elementCount};
 }
 
-constexpr int operator[](const SizeType index) const noexcept {
+constexpr int operator[](const SizeType index) const noexcept override {
 return ((0 == m_elementCount) or (index >= m_elementCount))
            ? m_elementDefault
            : (m_elementStart + (static_cast<int>(index) * m_elementStep));
 }
 
-[[nodiscard]] constexpr SizeType Count() const noexcept {
+[[nodiscard]] constexpr SizeType Count() const noexcept override {
 return m_elementCount;
 }
 
@@ -756,7 +763,7 @@ Range() -> Range<>;
 namespace cljonic {
 
 template <SizeType MaxElements, typename T>
-class Repeat {
+class Repeat : public SequentialInterface<T> {
 using Iterator = CollectionIterator<Repeat>;
 
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
@@ -788,11 +795,11 @@ return Iterator{*this, 0};
 return Iterator{*this, m_elementCount};
 }
 
-constexpr const T& operator[](const SizeType index) const noexcept {
+constexpr T operator[](const SizeType index) const noexcept override {
 return ((m_elementCount <= 0) or (index >= m_elementCount)) ? m_elementDefault : m_elementValue;
 }
 
-[[nodiscard]] constexpr SizeType Count() const noexcept {
+[[nodiscard]] constexpr SizeType Count() const noexcept override {
 return m_elementCount;
 }
 
@@ -817,7 +824,7 @@ Repeat(T) -> Repeat<CljonicCollectionMaximumElementCount, T>;
 
 namespace cljonic {
 template <typename T, SizeType MaxElements>
-class Set {
+class Set : public SequentialInterface<T> {
 static_assert(not std::floating_point<T>,
               "Floating point types should not be compared for equality, hence Sets of floating point types are "
               "not allowed");
@@ -877,15 +884,15 @@ constexpr const T* end() const noexcept {
 return m_elements + m_elementCount;
 }
 
-constexpr const T& operator[](const SizeType index) const noexcept {
+constexpr T operator[](const SizeType index) const noexcept override {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 }
 
-constexpr const T& operator()(const T& t) const noexcept {
+constexpr T operator()(const T& t) const noexcept {
 return Contains(t) ? t : m_elementDefault;
 }
 
-[[nodiscard]] constexpr SizeType Count() const noexcept {
+[[nodiscard]] constexpr SizeType Count() const noexcept override {
 return m_elementCount;
 }
 
@@ -918,7 +925,7 @@ Set(Args...) -> Set<std::common_type_t<Args...>, sizeof...(Args)>;
 namespace cljonic {
 
 template <SizeType MaxElements>
-class String {
+class String : public SequentialInterface<char> {
 using Iterator = CollectionIterator<String>;
 
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
@@ -968,7 +975,7 @@ return Iterator{*this, 0};
 return Iterator{*this, m_elementCount};
 }
 
-constexpr char operator[](const SizeType index) const noexcept {
+constexpr char operator[](const SizeType index) const noexcept override {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 }
 
@@ -976,7 +983,7 @@ constexpr char operator()(const SizeType index) const noexcept {
 return this->operator[](index);
 }
 
-[[nodiscard]] constexpr SizeType Count() const noexcept {
+[[nodiscard]] constexpr SizeType Count() const noexcept override {
 return m_elementCount;
 }
 

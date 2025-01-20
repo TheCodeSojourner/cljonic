@@ -14,7 +14,7 @@ namespace cljonic
  * of \b "int". Many \ref Namespace_Core "Core" functions accept Range arguments.
  */
 template <int... StartEndStep>
-class Range
+class Range : public SequentialInterface<int>
 {
   private:
     static_assert(sizeof...(StartEndStep) <= 3, "Number of Range parameters must be less than or equal to three");
@@ -225,14 +225,14 @@ class Range
         return Iterator{*this, m_elementCount};
     }
 
-    constexpr int operator[](const SizeType index) const noexcept
+    constexpr int operator[](const SizeType index) const noexcept override
     {
         return ((0 == m_elementCount) or (index >= m_elementCount))
                    ? m_elementDefault
                    : (m_elementStart + (static_cast<int>(index) * m_elementStep));
     }
 
-    [[nodiscard]] constexpr SizeType Count() const noexcept
+    [[nodiscard]] constexpr SizeType Count() const noexcept override
     {
         return m_elementCount;
     }
