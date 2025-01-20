@@ -17,7 +17,7 @@ namespace cljonic
  * index will return its \b default \b element. Many \ref Namespace_Core "Core" functions accept Array arguments.
  */
 template <typename T, SizeType MaxElements>
-class Array : public SequentialInterface<T>
+class Array : public IndexInterface<T>
 {
     static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 

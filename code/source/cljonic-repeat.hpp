@@ -14,7 +14,7 @@ namespace cljonic
  * of a specified length of a specified value. Many \ref Namespace_Core "Core" functions accept Repeat arguments.
  */
 template <SizeType MaxElements, typename T>
-class Repeat : public SequentialInterface<T>
+class Repeat : public IndexInterface<T>
 {
     using Iterator = CollectionIterator<Repeat>;
 

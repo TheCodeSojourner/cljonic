@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Jan 20 10:50:28 AM MST 2025
+// This file was generated Mon Jan 20 10:57:20 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -216,7 +216,7 @@ constexpr bool IsBinaryPredicateForAllCljonicCollections =
 namespace cljonic {
 
 template <typename T>
-class SequentialInterface {
+class IndexInterface {
 public:
 virtual constexpr SizeType Count() const noexcept = 0;
 virtual constexpr T operator[](const SizeType index) const noexcept = 0;
@@ -500,7 +500,7 @@ constexpr auto TakeWhile(F&& f, const C& c) noexcept;
 namespace cljonic {
 
 template <typename T, SizeType MaxElements>
-class Array : public SequentialInterface<T> {
+class Array : public IndexInterface<T> {
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
 static_assert(maximumElements == MaxElements,
@@ -594,7 +594,7 @@ array.m_elements[index] = value;
 namespace cljonic {
 
 template <int... StartEndStep>
-class Range : public SequentialInterface<int> {
+class Range : public IndexInterface<int> {
 private:
 static_assert(sizeof...(StartEndStep) <= 3, "Number of Range parameters must be less than or equal to three");
 
@@ -763,7 +763,7 @@ Range() -> Range<>;
 namespace cljonic {
 
 template <SizeType MaxElements, typename T>
-class Repeat : public SequentialInterface<T> {
+class Repeat : public IndexInterface<T> {
 using Iterator = CollectionIterator<Repeat>;
 
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
@@ -824,7 +824,7 @@ Repeat(T) -> Repeat<CljonicCollectionMaximumElementCount, T>;
 
 namespace cljonic {
 template <typename T, SizeType MaxElements>
-class Set : public SequentialInterface<T> {
+class Set : public IndexInterface<T> {
 static_assert(not std::floating_point<T>,
               "Floating point types should not be compared for equality, hence Sets of floating point types are "
               "not allowed");
@@ -925,7 +925,7 @@ Set(Args...) -> Set<std::common_type_t<Args...>, sizeof...(Args)>;
 namespace cljonic {
 
 template <SizeType MaxElements>
-class String : public SequentialInterface<char> {
+class String : public IndexInterface<char> {
 using Iterator = CollectionIterator<String>;
 
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};

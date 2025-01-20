@@ -18,7 +18,7 @@ namespace cljonic
  * functions accept String arguments.
  */
 template <SizeType MaxElements>
-class String : public SequentialInterface<char>
+class String : public IndexInterface<char>
 {
     using Iterator = CollectionIterator<String>;
 

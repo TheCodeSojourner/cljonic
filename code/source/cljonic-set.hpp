@@ -20,7 +20,7 @@ namespace cljonic
  * arguments.
  */
 template <typename T, SizeType MaxElements>
-class Set : public SequentialInterface<T>
+class Set : public IndexInterface<T>
 {
     static_assert(not std::floating_point<T>,
                   "Floating point types should not be compared for equality, hence Sets of floating point types are "

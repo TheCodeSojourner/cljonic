@@ -11,7 +11,7 @@ namespace cljonic
 {
 
 template <typename T>
-class SequentialInterface
+class IndexInterface
 {
   public:
     virtual constexpr SizeType Count() const noexcept = 0;

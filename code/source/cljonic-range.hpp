@@ -14,7 +14,7 @@ namespace cljonic
  * of \b "int". Many \ref Namespace_Core "Core" functions accept Range arguments.
  */
 template <int... StartEndStep>
-class Range : public SequentialInterface<int>
+class Range : public IndexInterface<int>
 {
   private:
     static_assert(sizeof...(StartEndStep) <= 3, "Number of Range parameters must be less than or equal to three");
