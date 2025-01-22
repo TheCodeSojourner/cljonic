@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Jan 20 10:57:20 AM MST 2025
+// This file was generated Wed Jan 22 12:33:30 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -145,6 +145,10 @@ concept IsCljonicSet = std::same_as<typename T::cljonic_collection_type,
                                     std::integral_constant<CljonicCollectionType, CljonicCollectionType::Set>>;
 
 template <typename T>
+concept IsCljonicString = std::same_as<typename T::cljonic_collection_type,
+                                       std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>>;
+
+template <typename T>
 concept IsCljonicArrayRangeOrRepeat = IsCljonicArray<T> or IsCljonicRange<T> or IsCljonicRepeat<T>;
 
 template <typename T>
@@ -160,42 +164,40 @@ concept IsUnaryPredicate = requires(P p, T t) {
 { p(t) } -> std::convertible_to<bool>;
 };
 
-template <typename T, typename... Ts>
-concept AllCljonicArrayRangeOrRepeat = (IsCljonicArrayRangeOrRepeat<T> and ... and IsCljonicArrayRangeOrRepeat<Ts>);
+template <typename... Ts>
+concept AllCljonicArrayRangeOrRepeat = (IsCljonicArrayRangeOrRepeat<Ts> and ...);
 
-template <typename T, typename... Ts>
-concept AllCljonicCollections = (IsCljonicCollection<T> and ... and IsCljonicCollection<Ts>);
+template <typename... Ts>
+concept AllCljonicCollections = (IsCljonicCollection<Ts> and ...);
 
-template <typename T, typename... Ts>
-concept AllCljonicSets = (IsCljonicSet<T> and ... and IsCljonicSet<Ts>);
+template <typename... Ts>
+concept AllCljonicSets = (IsCljonicSet<Ts> and ...);
 
-template <typename T, typename... Ts>
-constexpr bool AllConvertibleTypes = (std::convertible_to<T, Ts> and ...);
+template <typename... Ts>
+constexpr bool AllConvertibleTypes = (std::convertible_to<Ts, Ts> and ...);
 
-template <typename T, typename... Ts>
-constexpr bool AllConvertibleValueTypes =
-    (AllConvertibleTypes<typename T::value_type, typename Ts::value_type> and ...);
+template <typename... Ts>
+constexpr bool AllConvertibleValueTypes = (AllConvertibleTypes<typename Ts::value_type> and ...);
 
-template <typename T, typename... Ts>
-constexpr bool AllEqualityComparableTypes = (std::equality_comparable_with<T, Ts> and ...);
+template <typename... Ts>
+constexpr bool AllEqualityComparableTypes = (std::equality_comparable_with<Ts, Ts> and ...);
 
-template <typename T, typename... Ts>
+template <typename... Ts>
 constexpr bool AllEqualityComparableValueTypes =
-    (std::equality_comparable_with<typename T::value_type, typename Ts::value_type> and ...);
+    (std::equality_comparable_with<typename Ts::value_type, typename Ts::value_type> and ...);
 
-template <typename T, typename... Ts>
-constexpr bool AnyFloatingPointTypes = (std::floating_point<T> or ... or std::floating_point<Ts>);
+template <typename... Ts>
+constexpr bool AnyFloatingPointTypes = (std::floating_point<Ts> or ...);
 
-template <typename T, typename... Ts>
-concept AllNotCljonicCollections = (IsNotCljonicCollection<T> and ... and IsNotCljonicCollection<Ts>);
+template <typename... Ts>
+concept AllNotCljonicCollections = (IsNotCljonicCollection<Ts> and ...);
 
 template <typename T, typename... Ts>
 concept AllSameCljonicCollectionType =
-    (std::same_as<typename T::cljonic_collection_type, typename Ts::cljonic_collection_type> and ...);
+    (std::same_as<typename Ts::cljonic_collection_type, typename Ts::cljonic_collection_type> and ...);
 
-template <typename T, typename... Ts>
-constexpr bool AnyFloatingPointValueTypes =
-    (std::floating_point<typename T::value_type> or ... or std::floating_point<typename Ts::value_type>);
+template <typename... Ts>
+constexpr bool AnyFloatingPointValueTypes = (std::floating_point<typename Ts::value_type> or ...);
 
 template <typename T, typename... Ts>
 using FindCommonType = typename InnerFindCommonType<T, Ts...>::type;
@@ -203,9 +205,9 @@ using FindCommonType = typename InnerFindCommonType<T, Ts...>::type;
 template <typename T, typename... Ts>
 using FindCommonValueType = typename InnerFindCommonType<typename T::value_type, typename Ts::value_type...>::type;
 
-template <typename F, IsCljonicCollection T, IsCljonicCollection... Ts>
+template <typename F, IsCljonicCollection... Ts>
 constexpr bool IsBinaryPredicateForAllCljonicCollections =
-    (IsBinaryPredicateForAll<F, typename T::value_type, typename Ts::value_type> and ...);
+    (IsBinaryPredicateForAll<F, typename Ts::value_type, typename Ts::value_type> and ...);
 
 } // namespace cljonic
 
@@ -392,6 +394,9 @@ constexpr auto Interleave(const C& c, const Cs&... cs) noexcept;
 
 template <typename T, typename C>
 constexpr auto Interpose(const T& t, const C& c) noexcept;
+
+template <typename F, typename T, typename... Ts>
+constexpr auto IsDistinctBy(F&& f, const T& t, const Ts&... ts) noexcept;
 
 template <typename C>
 constexpr auto IsEmpty(const C& c) noexcept;
@@ -1597,6 +1602,72 @@ return result;
 
 constexpr auto Interpose() noexcept {
 return Array<int, 0>{};
+}
+
+}
+
+} // namespace cljonic::core
+
+#include <array>
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename T, typename... Ts>
+constexpr auto IsDistinctBy(F&& f, const T& t, const Ts&... ts) noexcept {
+
+if constexpr(sizeof...(Ts) == 0) {
+return true;
+} else {
+if constexpr(AllCljonicCollections<T, Ts...>) {
+static_assert(
+    AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
+    "IsDistinctBy cljonic collection types are not all the same, or all Array, Range or Repeat types");
+
+static_assert(
+    IsBinaryPredicateForAllCljonicCollections<std::decay_t<F>, T, Ts...>,
+    "IsDistinctBy function is not a valid binary predicate for all cljonic collection value types");
+
+constexpr auto IndexInterfacesEqualBy = [](auto&& f, const auto& t, const auto& u) noexcept {
+if(&t == &u)
+return true;
+if(t.Count() != u.Count())
+return false;
+if constexpr(IsCljonicSet<T>) {
+constexpr auto ContainsBy = [](auto&& f, const auto& setIndex, const auto& element) noexcept {
+auto result{false};
+for(SizeType i{0}; ((not result) and (i < setIndex.Count())); ++i)
+result = f(setIndex[i], element);
+return result;
+};
+for(SizeType i{0}; i < t.Count(); ++i)
+if(not ContainsBy(f, t, u[i]))
+return false;
+return true;
+} else {
+for(SizeType i{0}; i < t.Count(); ++i)
+if(not f(t[i], u[i]))
+return false;
+return true;
+}
+};
+using I = const IndexInterface<typename T::value_type>*;
+constexpr auto n{sizeof...(Ts) + 1};
+const auto i{std::array<I, n>{static_cast<I>(&t), static_cast<I>(&ts)...}};
+for(SizeType j{0}; j < n; ++j)
+for(SizeType k{j + 1}; k < n; ++k)
+if(IndexInterfacesEqualBy(std::forward<F>(f), *i[j], *i[k]))
+return false;
+return true;
+} else {
+static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all IsDistinctBy types are equality comparable");
+
+static_assert(IsBinaryPredicateForAll<std::decay_t<F>, T, Ts...>,
+              "IsDistinctBy function is not a valid binary predicate for all parameters");
+
+return ((f(t, ts) == false) and ...) and IsDistinctBy(std::forward<F>(f), ts...);
+}
+}
 }
 
 }
