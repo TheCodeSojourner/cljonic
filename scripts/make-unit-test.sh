@@ -4,12 +4,8 @@ get_current_directory () {
     pwd
 }
 
-get_processor_count () {
-    grep processor /proc/cpuinfo | wc -l
-}
-
 CMAKELISTS_FILE_DIRECTORY=$1
-CPU_COUNT=$(get_processor_count)
+CPU_COUNT=$(scripts/make-cpu-count.sh)
 CURRENT_DIRECTORY=$(get_current_directory)
 LAST_EXIT_CODE=0
 

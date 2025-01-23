@@ -10,6 +10,14 @@
 namespace cljonic
 {
 
+template <typename T>
+class IndexInterface
+{
+  public:
+    virtual constexpr SizeType Count() const noexcept = 0;
+    virtual constexpr T operator[](const SizeType index) const noexcept = 0;
+};
+
 constexpr auto CLJONIC_INVALID_INDEX{std::numeric_limits<SizeType>::max()};
 
 template <typename F, typename T, typename U>

@@ -18,7 +18,7 @@ namespace cljonic
  * functions accept String arguments.
  */
 template <SizeType MaxElements>
-class String
+class String : public IndexInterface<char>
 {
     using Iterator = CollectionIterator<String>;
 
@@ -101,7 +101,7 @@ class String
         return Iterator{*this, m_elementCount};
     }
 
-    constexpr char operator[](const SizeType index) const noexcept
+    constexpr char operator[](const SizeType index) const noexcept override
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
     }
@@ -111,7 +111,7 @@ class String
         return this->operator[](index);
     }
 
-    [[nodiscard]] constexpr SizeType Count() const noexcept
+    [[nodiscard]] constexpr SizeType Count() const noexcept override
     {
         return m_elementCount;
     }

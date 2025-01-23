@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['isbinarypredicateforallcljoniccollections_0',['IsBinaryPredicateForAllCljonicCollections',['../namespacecljonic.html#a9c8bd3b0fd8138f5fb72f03dac87bf50',1,'cljonic']]]
+  ['isbinarypredicateforallcljoniccollections_0',['IsBinaryPredicateForAllCljonicCollections',['../namespacecljonic.html#ab55fc596a71f4b8e72b56d20be1bb68c',1,'cljonic']]]
 ];

@@ -33,3 +33,5 @@
 
 build
 
+.clj-kondo/
+.lsp/

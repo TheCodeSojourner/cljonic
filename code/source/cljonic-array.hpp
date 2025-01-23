@@ -17,7 +17,7 @@ namespace cljonic
  * index will return its \b default \b element. Many \ref Namespace_Core "Core" functions accept Array arguments.
  */
 template <typename T, SizeType MaxElements>
-class Array
+class Array : public IndexInterface<T>
 {
     static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
@@ -86,12 +86,12 @@ class Array
         return m_elements + m_elementCount;
     }
 
-    constexpr const T& operator[](const SizeType index) const noexcept
+    constexpr T operator[](const SizeType index) const noexcept override
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
     }
 
-    constexpr const T& operator()(const SizeType index) const noexcept
+    constexpr T operator()(const SizeType index) const noexcept
     {
         return this->operator[](index);
     }
@@ -108,7 +108,7 @@ class Array
         return *this;
     }
 
-    [[nodiscard]] constexpr SizeType Count() const noexcept
+    [[nodiscard]] constexpr SizeType Count() const noexcept override
     {
         return m_elementCount;
     }

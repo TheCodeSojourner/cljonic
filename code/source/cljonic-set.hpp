@@ -20,7 +20,7 @@ namespace cljonic
  * arguments.
  */
 template <typename T, SizeType MaxElements>
-class Set
+class Set : public IndexInterface<T>
 {
     static_assert(not std::floating_point<T>,
                   "Floating point types should not be compared for equality, hence Sets of floating point types are "
@@ -122,17 +122,17 @@ class Set
         return m_elements + m_elementCount;
     }
 
-    constexpr const T& operator[](const SizeType index) const noexcept
+    constexpr T operator[](const SizeType index) const noexcept override
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
     }
 
-    constexpr const T& operator()(const T& t) const noexcept
+    constexpr T operator()(const T& t) const noexcept
     {
         return Contains(t) ? t : m_elementDefault;
     }
 
-    [[nodiscard]] constexpr SizeType Count() const noexcept
+    [[nodiscard]] constexpr SizeType Count() const noexcept override
     {
         return m_elementCount;
     }

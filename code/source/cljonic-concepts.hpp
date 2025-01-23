@@ -66,6 +66,10 @@ concept IsCljonicSet = std::same_as<typename T::cljonic_collection_type,
                                     std::integral_constant<CljonicCollectionType, CljonicCollectionType::Set>>;
 
 template <typename T>
+concept IsCljonicString = std::same_as<typename T::cljonic_collection_type,
+                                       std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>>;
+
+template <typename T>
 concept IsCljonicArrayRangeOrRepeat = IsCljonicArray<T> or IsCljonicRange<T> or IsCljonicRepeat<T>;
 
 template <typename T>
@@ -85,42 +89,40 @@ concept IsUnaryPredicate = requires(P p, T t) {
     { p(t) } -> std::convertible_to<bool>;
 };
 
-template <typename T, typename... Ts>
-concept AllCljonicArrayRangeOrRepeat = (IsCljonicArrayRangeOrRepeat<T> and ... and IsCljonicArrayRangeOrRepeat<Ts>);
+template <typename... Ts>
+concept AllCljonicArrayRangeOrRepeat = (IsCljonicArrayRangeOrRepeat<Ts> and ...);
 
-template <typename T, typename... Ts>
-concept AllCljonicCollections = (IsCljonicCollection<T> and ... and IsCljonicCollection<Ts>);
+template <typename... Ts>
+concept AllCljonicCollections = (IsCljonicCollection<Ts> and ...);
 
-template <typename T, typename... Ts>
-concept AllCljonicSets = (IsCljonicSet<T> and ... and IsCljonicSet<Ts>);
+template <typename... Ts>
+concept AllCljonicSets = (IsCljonicSet<Ts> and ...);
 
-template <typename T, typename... Ts>
-constexpr bool AllConvertibleTypes = (std::convertible_to<T, Ts> and ...);
+template <typename... Ts>
+constexpr bool AllConvertibleTypes = (std::convertible_to<Ts, Ts> and ...);
 
-template <typename T, typename... Ts>
-constexpr bool AllConvertibleValueTypes =
-    (AllConvertibleTypes<typename T::value_type, typename Ts::value_type> and ...);
+template <typename... Ts>
+constexpr bool AllConvertibleValueTypes = (AllConvertibleTypes<typename Ts::value_type> and ...);
 
-template <typename T, typename... Ts>
-constexpr bool AllEqualityComparableTypes = (std::equality_comparable_with<T, Ts> and ...);
+template <typename... Ts>
+constexpr bool AllEqualityComparableTypes = (std::equality_comparable_with<Ts, Ts> and ...);
 
-template <typename T, typename... Ts>
+template <typename... Ts>
 constexpr bool AllEqualityComparableValueTypes =
-    (std::equality_comparable_with<typename T::value_type, typename Ts::value_type> and ...);
+    (std::equality_comparable_with<typename Ts::value_type, typename Ts::value_type> and ...);
 
-template <typename T, typename... Ts>
-constexpr bool AnyFloatingPointTypes = (std::floating_point<T> or ... or std::floating_point<Ts>);
+template <typename... Ts>
+constexpr bool AnyFloatingPointTypes = (std::floating_point<Ts> or ...);
 
-template <typename T, typename... Ts>
-concept AllNotCljonicCollections = (IsNotCljonicCollection<T> and ... and IsNotCljonicCollection<Ts>);
+template <typename... Ts>
+concept AllNotCljonicCollections = (IsNotCljonicCollection<Ts> and ...);
 
 template <typename T, typename... Ts>
 concept AllSameCljonicCollectionType =
-    (std::same_as<typename T::cljonic_collection_type, typename Ts::cljonic_collection_type> and ...);
+    (std::same_as<typename Ts::cljonic_collection_type, typename Ts::cljonic_collection_type> and ...);
 
-template <typename T, typename... Ts>
-constexpr bool AnyFloatingPointValueTypes =
-    (std::floating_point<typename T::value_type> or ... or std::floating_point<typename Ts::value_type>);
+template <typename... Ts>
+constexpr bool AnyFloatingPointValueTypes = (std::floating_point<typename Ts::value_type> or ...);
 
 template <typename T, typename... Ts>
 using FindCommonType = typename InnerFindCommonType<T, Ts...>::type;
@@ -128,9 +130,9 @@ using FindCommonType = typename InnerFindCommonType<T, Ts...>::type;
 template <typename T, typename... Ts>
 using FindCommonValueType = typename InnerFindCommonType<typename T::value_type, typename Ts::value_type...>::type;
 
-template <typename F, IsCljonicCollection T, IsCljonicCollection... Ts>
+template <typename F, IsCljonicCollection... Ts>
 constexpr bool IsBinaryPredicateForAllCljonicCollections =
-    (IsBinaryPredicateForAll<F, typename T::value_type, typename Ts::value_type> and ...);
+    (IsBinaryPredicateForAll<F, typename Ts::value_type, typename Ts::value_type> and ...);
 
 } // namespace cljonic
 
