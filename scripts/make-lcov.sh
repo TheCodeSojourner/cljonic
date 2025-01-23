@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+CPU_COUNT=$(scripts/make-cpu-count.sh)
 CURRENT_DIRECTORY=$(pwd)
 LAST_EXIT_CODE=0
 LCOV_DIRECTORY="build/CMakeFiles/cljonic.dir"$CURRENT_DIRECTORY"/code/"
@@ -13,7 +14,7 @@ build_unit_test () {
 
 execute_lcov () {
     echo -n "Executing lcov ... "
-    lcov -c -d $LCOV_DIRECTORY -o build/lcov.info 2>/dev/null >/dev/null
+    lcov -j $CPU_COUNT -c -d $LCOV_DIRECTORY -o build/lcov.info 2>/dev/null >/dev/null
     LAST_EXIT_CODE=$?
     echo "Done"
 }
