@@ -22,24 +22,44 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto EBF = [](const int a, const int b) { return a == b; };
+    constexpr auto IDBFS = [](const char* a, const char* b) { return 0 == std::strcmp(a, b); };
     constexpr auto a{Array{1, 1, 1, 1}};
     constexpr auto a13{Array{1, 2, 3}};
     constexpr auto r14{Range<1, 4>{}};
     constexpr auto r04{Range<4>{}};
-    constexpr auto r{Repeat<4, int>{1}};
-    constexpr auto b0{IsDistinctBy(EBF, 1, 1)};     // false
-    constexpr auto b1{IsDistinctBy(EBF, 1, 2)};     // true
-    constexpr auto b2{IsDistinctBy(EBF, a)};        // true whenever there's only two parameters
-    constexpr auto b3{IsDistinctBy(EBF, a, r)};     // false
-    constexpr auto b4{IsDistinctBy(EBF, a, a13)};   // true
-    constexpr auto b6{IsDistinctBy(EBF, r14, a13)}; // true
-    constexpr auto b7{IsDistinctBy(EBF, r04, a)};   // false
+    constexpr auto r41{Repeat<4, int>{1}};
+    constexpr auto s{Set{1, 3, 2}};
+    constexpr auto s1{Set{3, 1, 2}};
+    constexpr auto s2{Set{1, 4, 2}};
+    constexpr auto str{String{"abc"}};
+    constexpr auto str1{String{"def"}};
+    constexpr auto b0{IsDistinctBy(EBF, 1)};                 // true whenever there's only two parameters
+    constexpr auto b1{IsDistinctBy(EBF, 1, 1)};              // false
+    constexpr auto b2{IsDistinctBy(EBF, 1, 2)};              // true
+    constexpr auto b3{IsDistinctBy(EBF, a)};                 // true whenever there's only two parameters
+    constexpr auto b4{IsDistinctBy(EBF, a, r41)};            // false
+    constexpr auto b5{IsDistinctBy(EBF, a, a13)};            // true
+    constexpr auto b6{IsDistinctBy(EBF, r14, a13)};          // false
+    constexpr auto b7{IsDistinctBy(EBF, r04, a)};            // true
+    constexpr auto b8{IsDistinctBy(EBF, s, s)};              // false
+    constexpr auto b9{IsDistinctBy(EBF, s, s1)};             // false
+    constexpr auto b10{IsDistinctBy(EBF, s, s2)};            // true
+    constexpr auto b11{IsDistinctBy(EBF, str, str)};         // false
+    constexpr auto b12{IsDistinctBy(EBF, str, str1)};        // true
+    constexpr auto b13{IsDistinctBy(IDBFS, "str", "str")};   // false
+    constexpr auto b14{IsDistinctBy(IDBFS, "str1", "str2")}; // true
 
     // Compiler Error: no matching function for call
     // constexpr auto b{IsDistinctBy(EBF)}; // Compiler Error: Must specify at least two parameters
 
-    // Compiler Error: Not all IsDistinctBy types are equality comparable
-    // constexpr auto b{IsDistinctBy(EBF, 1, "Hello")};
+    // Compiler Error: IsDistinctBy cljonic collection types are not all the same, or all Array, Range or Repeat types
+    // constexpr auto b{IsDistinctBy(EBF, a, Set{2, 3, 4})};
+
+    // Compiler Error: IsDistinctBy function is not a valid binary predicate for all cljonic collection value types
+    // constexpr auto b{IsDistinctBy([](){ return true; }, a, a)};
+
+    // Compiler Error: IsDistinctBy function is not a valid binary predicate for all parameters
+    // constexpr auto b{IsDistinctBy([]() { return true; }, 1, 2)};
 
     return 0;
 }
@@ -105,8 +125,6 @@ constexpr auto IsDistinctBy(F&& f, const T& t, const Ts&... ts) noexcept
         }
         else
         {
-            static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all IsDistinctBy types are equality comparable");
-
             static_assert(IsBinaryPredicateForAll<std::decay_t<F>, T, Ts...>,
                           "IsDistinctBy function is not a valid binary predicate for all parameters");
 

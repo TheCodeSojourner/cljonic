@@ -14,9 +14,8 @@ var searchData=
   ['cljonic_3a_3aiscljonicrange_11',['IsCljonicRange',['../conceptcljonic_1_1_is_cljonic_range.html',1,'cljonic']]],
   ['cljonic_3a_3aiscljonicrepeat_12',['IsCljonicRepeat',['../conceptcljonic_1_1_is_cljonic_repeat.html',1,'cljonic']]],
   ['cljonic_3a_3aiscljonicset_13',['IsCljonicSet',['../conceptcljonic_1_1_is_cljonic_set.html',1,'cljonic']]],
-  ['cljonic_3a_3aiscljonicstring_14',['IsCljonicString',['../conceptcljonic_1_1_is_cljonic_string.html',1,'cljonic']]],
-  ['cljonic_3a_3aisconvertibletointegral_15',['IsConvertibleToIntegral',['../conceptcljonic_1_1_is_convertible_to_integral.html',1,'cljonic']]],
-  ['cljonic_3a_3aiscstring_16',['IsCString',['../conceptcljonic_1_1_is_c_string.html',1,'cljonic']]],
-  ['cljonic_3a_3aisnotcljoniccollection_17',['IsNotCljonicCollection',['../conceptcljonic_1_1_is_not_cljonic_collection.html',1,'cljonic']]],
-  ['cljonic_3a_3aisunarypredicate_18',['IsUnaryPredicate',['../conceptcljonic_1_1_is_unary_predicate.html',1,'cljonic']]]
+  ['cljonic_3a_3aisconvertibletointegral_14',['IsConvertibleToIntegral',['../conceptcljonic_1_1_is_convertible_to_integral.html',1,'cljonic']]],
+  ['cljonic_3a_3aiscstring_15',['IsCString',['../conceptcljonic_1_1_is_c_string.html',1,'cljonic']]],
+  ['cljonic_3a_3aisnotcljoniccollection_16',['IsNotCljonicCollection',['../conceptcljonic_1_1_is_not_cljonic_collection.html',1,'cljonic']]],
+  ['cljonic_3a_3aisunarypredicate_17',['IsUnaryPredicate',['../conceptcljonic_1_1_is_unary_predicate.html',1,'cljonic']]]
 ];
