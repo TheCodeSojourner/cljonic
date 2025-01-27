@@ -31,6 +31,7 @@ int main()
     constexpr auto first{First(a)};
     constexpr auto identical{Identical(a)};
     const auto identity{Identity(a)};
+    constexpr auto inc{Inc(1)};
     constexpr auto indexof{IndexOf(Array{1, 2, 3}, 1)};
     constexpr auto indexofby{IndexOfBy([](const int i, const int j) { return i == j; }, Array{1, 2, 3}, 1)};
     constexpr auto interleave0{Interleave()};

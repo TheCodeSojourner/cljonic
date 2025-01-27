@@ -78,6 +78,9 @@ constexpr auto Identical(const T& t, const Ts&... ts) noexcept;
 template <typename T>
 constexpr void* Identity(const T& t) noexcept;
 
+template <typename T>
+constexpr auto Inc(const T t) noexcept;
+
 template <typename C, typename T>
 constexpr auto IndexOf(const C& c, const T& t) noexcept;
 

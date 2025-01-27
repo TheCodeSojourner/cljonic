@@ -38,6 +38,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-first.hpp \
     cljonic-core-identical.hpp \
     cljonic-core-identity.hpp \
+    cljonic-core-inc.hpp \
     cljonic-core-indexof.hpp \
     cljonic-core-indexofby.hpp \
     cljonic-core-interleave.hpp \
