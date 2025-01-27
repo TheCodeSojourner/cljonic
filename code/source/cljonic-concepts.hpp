@@ -38,6 +38,9 @@ namespace cljonic
 
 using namespace inner_find_common_type;
 
+template <typename T>
+concept IsArithmetic = std::integral<T> or std::floating_point<T>;
+
 template <typename P, typename T, typename U>
 concept IsBinaryPredicate = requires(P p, T a, U b) {
     { p(a, b) } -> std::convertible_to<bool>;

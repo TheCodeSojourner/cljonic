@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Jan 27 12:22:56 PM MST 2025
+// This file was generated Mon Jan 27 01:08:08 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -116,6 +116,9 @@ using type = std::conditional_t<(std::convertible_to<U, T> && ... && std::conver
 namespace cljonic {
 
 using namespace inner_find_common_type;
+
+template <typename T>
+concept IsArithmetic = std::integral<T> or std::floating_point<T>;
 
 template <typename P, typename T, typename U>
 concept IsBinaryPredicate = requires(P p, T a, U b) {
@@ -379,6 +382,9 @@ constexpr auto Identical(const T& t, const Ts&... ts) noexcept;
 
 template <typename T>
 constexpr void* Identity(const T& t) noexcept;
+
+template <typename T>
+constexpr auto Inc(const T t) noexcept;
 
 template <typename C, typename T>
 constexpr auto IndexOf(const C& c, const T& t) noexcept;
@@ -1526,6 +1532,22 @@ namespace core {
 template <typename T>
 constexpr void* Identity(const T& t) noexcept {
 return (void*)&t;
+}
+
+}
+
+} // namespace cljonic::core
+
+#include <limits>
+
+namespace cljonic {
+
+namespace core {
+template <typename T>
+constexpr auto Inc(const T t) noexcept {
+static_assert(IsArithmetic<T>, "Inc's parameter must be an arithmetic type");
+
+return (std::numeric_limits<T>::max() == t) ? t : (t + 1);
 }
 
 }
