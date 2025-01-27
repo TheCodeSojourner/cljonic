@@ -11,8 +11,9 @@ namespace core
 {
 
 /** \anchor Core_Inc
-* The \b Inc function returns a number one greater than its argument. If its argument is already the maximum possible
-* value for its type then \b Inc will return the value of its argument unchanged.
+* The \b Inc function returns a number whose value is one greater than its argument's value. If its argument's value is
+* already the maximum possible value for the type of its argument then \b Inc will return the value of its argument
+* unchanged.
 ~~~~~{.cpp}
 #include <limits>
 #include "cljonic.hpp"
