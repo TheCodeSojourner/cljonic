@@ -42,6 +42,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-indexofby.hpp \
     cljonic-core-interleave.hpp \
     cljonic-core-interpose.hpp \
+    cljonic-core-isdistinct.hpp \
     cljonic-core-isdistinctby.hpp \
     cljonic-core-isempty.hpp \
     cljonic-core-isfull.hpp \

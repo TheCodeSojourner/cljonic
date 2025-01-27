@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan 23 03:13:53 PM MST 2025
+// This file was generated Mon Jan 27 12:22:56 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -150,7 +150,7 @@ concept IsCljonicArrayRangeOrRepeat = IsCljonicArray<T> or IsCljonicRange<T> or 
 template <typename T>
 concept IsConvertibleToIntegral = std::convertible_to<T, char> or std::convertible_to<T, short> or std::convertible_to<T, int> or std::convertible_to<T, long> or std::convertible_to<T, long long>;
 template <typename T>
-concept IsCString = std::same_as<T, const char*> or std::same_as<T, char*>;
+concept IsCString = std::same_as<std::decay_t<T>, char*> or std::same_as<std::decay_t<T>, const char*>;
 
 template <typename T>
 concept IsNotCljonicCollection = not IsCljonicCollection<T>;
@@ -220,6 +220,7 @@ class IndexInterface {
 public:
 virtual constexpr SizeType Count() const noexcept = 0;
 virtual constexpr T operator[](const SizeType index) const noexcept = 0;
+virtual constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept = 0;
 };
 
 constexpr auto CLJONIC_INVALID_INDEX{std::numeric_limits<SizeType>::max()};
@@ -393,6 +394,9 @@ constexpr auto Interleave(const C& c, const Cs&... cs) noexcept;
 template <typename T, typename C>
 constexpr auto Interpose(const T& t, const C& c) noexcept;
 
+template <typename T, typename... Ts>
+constexpr auto IsDistinct(const T& t, const Ts&... ts) noexcept;
+
 template <typename F, typename T, typename... Ts>
 constexpr auto IsDistinctBy(F&& f, const T& t, const Ts&... ts) noexcept;
 
@@ -519,6 +523,10 @@ constexpr friend void MConj(Array<U, N>& array, const U& value);
 template <typename U, SizeType N>
 constexpr friend void MSet(Array<U, N>& array, const U& value, const SizeType index);
 
+constexpr auto ValueAtIndex(const SizeType index) const noexcept {
+return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+}
+
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>;
 using size_type = SizeType;
@@ -545,7 +553,7 @@ return m_elements + m_elementCount;
 }
 
 constexpr T operator[](const SizeType index) const noexcept override {
-return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+return ValueAtIndex(index);
 }
 
 constexpr T operator()(const SizeType index) const noexcept {
@@ -568,6 +576,10 @@ return m_elementCount;
 
 constexpr const T& DefaultElement() const noexcept {
 return m_elementDefault;
+}
+
+constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override {
+return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
 }
 
 static constexpr SizeType MaximumCount() noexcept {
@@ -707,6 +719,12 @@ else
 InitializeStartEndStepWithPositiveStep(start, end, step);
 }
 
+constexpr auto ValueAtIndex(const SizeType index) const noexcept {
+return ((0 == m_elementCount) or (index >= m_elementCount))
+           ? m_elementDefault
+           : (m_elementStart + (static_cast<int>(index) * m_elementStep));
+}
+
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Range>;
 using size_type = SizeType;
@@ -738,9 +756,7 @@ return Iterator{*this, m_elementCount};
 }
 
 constexpr int operator[](const SizeType index) const noexcept override {
-return ((0 == m_elementCount) or (index >= m_elementCount))
-           ? m_elementDefault
-           : (m_elementStart + (static_cast<int>(index) * m_elementStep));
+return ValueAtIndex(index);
 }
 
 [[nodiscard]] constexpr SizeType Count() const noexcept override {
@@ -749,6 +765,10 @@ return m_elementCount;
 
 constexpr int DefaultElement() const noexcept {
 return m_elementDefault;
+}
+
+constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const int& element) const noexcept override {
+return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
 }
 
 static constexpr auto MaximumCount() noexcept {
@@ -778,6 +798,10 @@ const SizeType m_elementCount;
 const T m_elementDefault;
 const T m_elementValue;
 
+constexpr auto ValueAtIndex(const SizeType index) const noexcept {
+return ((m_elementCount <= 0) or (index >= m_elementCount)) ? m_elementDefault : m_elementValue;
+}
+
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Repeat>;
 using size_type = SizeType;
@@ -799,7 +823,7 @@ return Iterator{*this, m_elementCount};
 }
 
 constexpr T operator[](const SizeType index) const noexcept override {
-return ((m_elementCount <= 0) or (index >= m_elementCount)) ? m_elementDefault : m_elementValue;
+return ValueAtIndex(index);
 }
 
 [[nodiscard]] constexpr SizeType Count() const noexcept override {
@@ -808,6 +832,10 @@ return m_elementCount;
 
 constexpr const T& DefaultElement() const noexcept {
 return m_elementDefault;
+}
+
+constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override {
+return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
 }
 
 static constexpr auto MaximumCount() noexcept {
@@ -911,6 +939,10 @@ constexpr int DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
+constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override {
+return (index < m_elementCount) and Contains(element);
+}
+
 static constexpr SizeType MaximumCount() noexcept {
 return maximumElements;
 }
@@ -939,6 +971,10 @@ static_assert(maximumElements == MaxElements,
 SizeType m_elementCount;
 const char m_elementDefault;
 char m_elements[maximumElements + 1]{};
+
+constexpr auto ValueAtIndex(const SizeType index) const noexcept {
+return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+}
 
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>;
@@ -979,7 +1015,7 @@ return Iterator{*this, m_elementCount};
 }
 
 constexpr char operator[](const SizeType index) const noexcept override {
-return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+return ValueAtIndex(index);
 }
 
 constexpr char operator()(const SizeType index) const noexcept {
@@ -992,6 +1028,10 @@ return m_elementCount;
 
 constexpr char DefaultElement() const noexcept {
 return m_elementDefault;
+}
+
+constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const char& element) const noexcept override {
+return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
 }
 
 static constexpr SizeType MaximumCount() noexcept {
@@ -1600,6 +1640,60 @@ return result;
 
 constexpr auto Interpose() noexcept {
 return Array<int, 0>{};
+}
+
+}
+
+} // namespace cljonic::core
+
+#include <array>
+
+namespace cljonic {
+
+namespace core {
+template <typename T, typename... Ts>
+constexpr auto IsDistinct(const T& t, const Ts&... ts) noexcept {
+
+if constexpr(sizeof...(Ts) == 0) {
+return true;
+} else {
+if constexpr(AllCljonicCollections<T, Ts...>) {
+static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
+              "IsDistinct should not compare cljonic floating point collection value types for "
+              "equality. Consider using IsDistinctBy to override this default.");
+
+static_assert(
+    AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
+    "IsDistinct cljonic collection types are not all the same, or all Array, Range or Repeat types");
+
+constexpr auto IndexInterfacesEqual = [](const auto& t, const auto& u) noexcept {
+if(&t == &u)
+return true;
+if(t.Count() != u.Count())
+return false;
+for(SizeType i{0}; i < t.Count(); ++i)
+if(not t.ElementAtIndexIsEqualToElement(i, u[i]))
+return false;
+return true;
+};
+using I = const IndexInterface<typename T::value_type>*;
+constexpr auto n{sizeof...(Ts) + 1};
+const auto i{std::array<I, n>{static_cast<I>(&t), static_cast<I>(&ts)...}};
+for(SizeType j{0}; j < n; ++j)
+for(SizeType k{j + 1}; k < n; ++k)
+if(IndexInterfacesEqual(*i[j], *i[k]))
+return false;
+return true;
+} else {
+static_assert(not AnyFloatingPointTypes<T, Ts...>,
+              "IsDistinct should not compare floating point types for equality. Consider using "
+              "IsDistinctBy to override this default.");
+
+static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all IsDistinct types are equality comparable");
+
+return (not AreEqual(t, ts) and ...);
+}
+}
 }
 
 }

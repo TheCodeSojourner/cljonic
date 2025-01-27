@@ -27,6 +27,11 @@ class Repeat : public IndexInterface<T>
     const T m_elementDefault;
     const T m_elementValue;
 
+    constexpr auto ValueAtIndex(const SizeType index) const noexcept
+    {
+        return ((m_elementCount <= 0) or (index >= m_elementCount)) ? m_elementDefault : m_elementValue;
+    }
+
   public:
     /**
     * There are two ways to create a \b Repeat:
@@ -53,6 +58,8 @@ class Repeat : public IndexInterface<T>
         return 0;
     }
     ~~~~~
+Making Cljonic Unit Test Program
+
     */
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Repeat>;
     using size_type = SizeType;
@@ -78,7 +85,7 @@ class Repeat : public IndexInterface<T>
 
     constexpr T operator[](const SizeType index) const noexcept override
     {
-        return ((m_elementCount <= 0) or (index >= m_elementCount)) ? m_elementDefault : m_elementValue;
+        return ValueAtIndex(index);
     }
 
     [[nodiscard]] constexpr SizeType Count() const noexcept override
@@ -89,6 +96,11 @@ class Repeat : public IndexInterface<T>
     constexpr const T& DefaultElement() const noexcept
     {
         return m_elementDefault;
+    }
+
+    constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override
+    {
+        return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
     }
 
     static constexpr auto MaximumCount() noexcept

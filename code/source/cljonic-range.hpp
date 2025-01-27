@@ -146,6 +146,13 @@ class Range : public IndexInterface<int>
             InitializeStartEndStepWithPositiveStep(start, end, step);
     }
 
+    constexpr auto ValueAtIndex(const SizeType index) const noexcept
+    {
+        return ((0 == m_elementCount) or (index >= m_elementCount))
+                   ? m_elementDefault
+                   : (m_elementStart + (static_cast<int>(index) * m_elementStep));
+    }
+
   public:
     /**
     * There are four ways to create a \b Range:
@@ -227,9 +234,7 @@ class Range : public IndexInterface<int>
 
     constexpr int operator[](const SizeType index) const noexcept override
     {
-        return ((0 == m_elementCount) or (index >= m_elementCount))
-                   ? m_elementDefault
-                   : (m_elementStart + (static_cast<int>(index) * m_elementStep));
+        return ValueAtIndex(index);
     }
 
     [[nodiscard]] constexpr SizeType Count() const noexcept override
@@ -240,6 +245,11 @@ class Range : public IndexInterface<int>
     constexpr int DefaultElement() const noexcept
     {
         return m_elementDefault;
+    }
+
+    constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const int& element) const noexcept override
+    {
+        return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
     }
 
     static constexpr auto MaximumCount() noexcept
