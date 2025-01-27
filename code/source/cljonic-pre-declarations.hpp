@@ -92,6 +92,9 @@ constexpr auto Interleave(const C& c, const Cs&... cs) noexcept;
 template <typename T, typename C>
 constexpr auto Interpose(const T& t, const C& c) noexcept;
 
+template <typename T, typename... Ts>
+constexpr auto IsDistinct(const T& t, const Ts&... ts) noexcept;
+
 template <typename F, typename T, typename... Ts>
 constexpr auto IsDistinctBy(F&& f, const T& t, const Ts&... ts) noexcept;
 

@@ -34,6 +34,11 @@ class Array : public IndexInterface<T>
     template <typename U, SizeType N>
     constexpr friend void MSet(Array<U, N>& array, const U& value, const SizeType index);
 
+    constexpr auto ValueAtIndex(const SizeType index) const noexcept
+    {
+        return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+    }
+
   public:
     /**
     * The \b Array constructor returns an instance of Array initialized with its arguments. If the number of arguments
@@ -88,7 +93,7 @@ class Array : public IndexInterface<T>
 
     constexpr T operator[](const SizeType index) const noexcept override
     {
-        return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+        return ValueAtIndex(index);
     }
 
     constexpr T operator()(const SizeType index) const noexcept
@@ -116,6 +121,11 @@ class Array : public IndexInterface<T>
     constexpr const T& DefaultElement() const noexcept
     {
         return m_elementDefault;
+    }
+
+    constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override
+    {
+        return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
     }
 
     static constexpr SizeType MaximumCount() noexcept

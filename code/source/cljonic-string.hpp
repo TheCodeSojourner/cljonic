@@ -31,6 +31,11 @@ class String : public IndexInterface<char>
     const char m_elementDefault;
     char m_elements[maximumElements + 1]{}; // +1 for the null terminator
 
+    constexpr auto ValueAtIndex(const SizeType index) const noexcept
+    {
+        return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+    }
+
   public:
     /**
     * The \b String constructor returns an instance of String initialized with the chars in its argument(s). If the
@@ -103,7 +108,7 @@ class String : public IndexInterface<char>
 
     constexpr char operator[](const SizeType index) const noexcept override
     {
-        return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+        return ValueAtIndex(index);
     }
 
     constexpr char operator()(const SizeType index) const noexcept
@@ -119,6 +124,11 @@ class String : public IndexInterface<char>
     constexpr char DefaultElement() const noexcept
     {
         return m_elementDefault;
+    }
+
+    constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const char& element) const noexcept override
+    {
+        return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
     }
 
     static constexpr SizeType MaximumCount() noexcept

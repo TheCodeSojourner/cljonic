@@ -152,6 +152,11 @@ class Set : public IndexInterface<T>
         return m_elementDefault;
     }
 
+    constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override
+    {
+        return (index < m_elementCount) and Contains(element);
+    }
+
     static constexpr SizeType MaximumCount() noexcept
     {
         return maximumElements;

@@ -75,7 +75,7 @@ concept IsConvertibleToIntegral = std::convertible_to<T, char>     //
                                   or std::convertible_to<T, long>  //
                                   or std::convertible_to<T, long long>;
 template <typename T>
-concept IsCString = std::same_as<T, const char*> or std::same_as<T, char*>;
+concept IsCString = std::same_as<std::decay_t<T>, char*> or std::same_as<std::decay_t<T>, const char*>;
 
 template <typename T>
 concept IsNotCljonicCollection = not IsCljonicCollection<T>;

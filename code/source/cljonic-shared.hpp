@@ -16,6 +16,7 @@ class IndexInterface
   public:
     virtual constexpr SizeType Count() const noexcept = 0;
     virtual constexpr T operator[](const SizeType index) const noexcept = 0;
+    virtual constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept = 0;
 };
 
 constexpr auto CLJONIC_INVALID_INDEX{std::numeric_limits<SizeType>::max()};
