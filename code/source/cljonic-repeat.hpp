@@ -58,8 +58,6 @@ class Repeat : public IndexInterface<T>
         return 0;
     }
     ~~~~~
-Making Cljonic Unit Test Program
-
     */
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Repeat>;
     using size_type = SizeType;

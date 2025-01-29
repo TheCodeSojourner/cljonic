@@ -107,6 +107,9 @@ constexpr auto IsEmpty(const C& c) noexcept;
 template <typename C>
 constexpr auto IsFull(const C& c) noexcept;
 
+template <typename F, typename T>
+constexpr auto Iterate(F&& f, const T& t) noexcept;
+
 template <typename C>
 constexpr auto Last(const C& c) noexcept;
 

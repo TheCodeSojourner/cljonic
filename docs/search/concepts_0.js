@@ -12,11 +12,13 @@ var searchData=
   ['cljonic_3a_3aiscljonicarray_9',['IsCljonicArray',['../conceptcljonic_1_1_is_cljonic_array.html',1,'cljonic']]],
   ['cljonic_3a_3aiscljonicarrayrangeorrepeat_10',['IsCljonicArrayRangeOrRepeat',['../conceptcljonic_1_1_is_cljonic_array_range_or_repeat.html',1,'cljonic']]],
   ['cljonic_3a_3aiscljoniccollection_11',['IsCljonicCollection',['../conceptcljonic_1_1_is_cljonic_collection.html',1,'cljonic']]],
-  ['cljonic_3a_3aiscljonicrange_12',['IsCljonicRange',['../conceptcljonic_1_1_is_cljonic_range.html',1,'cljonic']]],
-  ['cljonic_3a_3aiscljonicrepeat_13',['IsCljonicRepeat',['../conceptcljonic_1_1_is_cljonic_repeat.html',1,'cljonic']]],
-  ['cljonic_3a_3aiscljonicset_14',['IsCljonicSet',['../conceptcljonic_1_1_is_cljonic_set.html',1,'cljonic']]],
-  ['cljonic_3a_3aisconvertibletointegral_15',['IsConvertibleToIntegral',['../conceptcljonic_1_1_is_convertible_to_integral.html',1,'cljonic']]],
-  ['cljonic_3a_3aiscstring_16',['IsCString',['../conceptcljonic_1_1_is_c_string.html',1,'cljonic']]],
-  ['cljonic_3a_3aisnotcljoniccollection_17',['IsNotCljonicCollection',['../conceptcljonic_1_1_is_not_cljonic_collection.html',1,'cljonic']]],
-  ['cljonic_3a_3aisunarypredicate_18',['IsUnaryPredicate',['../conceptcljonic_1_1_is_unary_predicate.html',1,'cljonic']]]
+  ['cljonic_3a_3aiscljoniclazyiterate_12',['IsCljonicLazyIterate',['../conceptcljonic_1_1_is_cljonic_lazy_iterate.html',1,'cljonic']]],
+  ['cljonic_3a_3aiscljonicrange_13',['IsCljonicRange',['../conceptcljonic_1_1_is_cljonic_range.html',1,'cljonic']]],
+  ['cljonic_3a_3aiscljonicrepeat_14',['IsCljonicRepeat',['../conceptcljonic_1_1_is_cljonic_repeat.html',1,'cljonic']]],
+  ['cljonic_3a_3aiscljonicset_15',['IsCljonicSet',['../conceptcljonic_1_1_is_cljonic_set.html',1,'cljonic']]],
+  ['cljonic_3a_3aisconvertibletointegral_16',['IsConvertibleToIntegral',['../conceptcljonic_1_1_is_convertible_to_integral.html',1,'cljonic']]],
+  ['cljonic_3a_3aiscstring_17',['IsCString',['../conceptcljonic_1_1_is_c_string.html',1,'cljonic']]],
+  ['cljonic_3a_3aisnotcljoniccollection_18',['IsNotCljonicCollection',['../conceptcljonic_1_1_is_not_cljonic_collection.html',1,'cljonic']]],
+  ['cljonic_3a_3aisunaryfunction_19',['IsUnaryFunction',['../conceptcljonic_1_1_is_unary_function.html',1,'cljonic']]],
+  ['cljonic_3a_3aisunarypredicate_20',['IsUnaryPredicate',['../conceptcljonic_1_1_is_unary_predicate.html',1,'cljonic']]]
 ];

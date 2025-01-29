@@ -10,5 +10,6 @@ var searchData=
   ['isdistinct_7',['IsDistinct',['../namespacecljonic_1_1core.html#a55b0cb307263d9356b458f4b074eb8f7',1,'cljonic::core']]],
   ['isdistinctby_8',['IsDistinctBy',['../namespacecljonic_1_1core.html#ad96426aef184a1539d8a438295cf0b81',1,'cljonic::core']]],
   ['isempty_9',['IsEmpty',['../namespacecljonic_1_1core.html#a8f6b95578c1daefdb6b50c01156b09e8',1,'cljonic::core']]],
-  ['isfull_10',['IsFull',['../namespacecljonic_1_1core.html#aaaf451a151f25376af629f510252a115',1,'cljonic::core']]]
+  ['isfull_10',['IsFull',['../namespacecljonic_1_1core.html#aaaf451a151f25376af629f510252a115',1,'cljonic::core']]],
+  ['iterate_11',['Iterate',['../namespacecljonic_1_1core.html#a1dff18aae6462fe9fb4672ae3f3cf787',1,'cljonic::core']]]
 ];

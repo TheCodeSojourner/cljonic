@@ -96,6 +96,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_index_interface.html">IndexInterface</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_lazy_iterate.html">LazyIterate</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html">Range</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_repeat.html">Repeat</a></td></tr>
@@ -117,6 +119,8 @@ Concepts</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1_is_cljonic_collection.html">IsCljonicCollection</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1_is_cljonic_lazy_iterate.html">IsCljonicLazyIterate</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1_is_cljonic_range.html">IsCljonicRange</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1_is_cljonic_repeat.html">IsCljonicRepeat</a></td></tr>
@@ -130,6 +134,8 @@ Concepts</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1_is_c_string.html">IsCString</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1_is_not_cljonic_collection.html">IsNotCljonicCollection</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1_is_unary_function.html">IsUnaryFunction</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptcljonic_1_1_is_unary_predicate.html">IsUnaryPredicate</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -160,10 +166,11 @@ Enumerations</h2></td></tr>
 <tr class="memitem:a28bdbcc4eb4cd3dcb5f5c875c1dafbd6" id="r_a28bdbcc4eb4cd3dcb5f5c875c1dafbd6"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6">CljonicCollectionType</a> { <br />
 &#160;&#160;<a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a4410ec34d9e6c1a68100ca0ce033fb17">Array</a>
 , <a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a46e4c9ef8686e58a89edb553aba6d938">Cycle</a>
+, <a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a137b88e97837b5d2fdfc4d3d951ee334">LazyIterate</a>
 , <a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a87ba2ecc8b6915e8bd6f5089918229fd">Range</a>
-, <a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a7020426cfb0a204051be4b3053d2acc8">Repeat</a>
 , <br />
-&#160;&#160;<a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a5d5b78699e57104f2fa03bbdf7b9197b">Set</a>
+&#160;&#160;<a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a7020426cfb0a204051be4b3053d2acc8">Repeat</a>
+, <a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a5d5b78699e57104f2fa03bbdf7b9197b">Set</a>
 , <a class="el" href="namespacecljonic.html#a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a27118326006d3829667a400ad23d5d98">String</a>
 <br />
  }</td></tr>
@@ -180,6 +187,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aceff902b062e57806fd1929d323a09c9" id="r_aceff902b062e57806fd1929d323a09c9"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> , <a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a> N&gt; </td></tr>
 <tr class="memitem:aceff902b062e57806fd1929d323a09c9"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">void</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#aceff902b062e57806fd1929d323a09c9">MSet</a> (<a class="el" href="classcljonic_1_1_array.html">Array</a>&lt; <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">N</a> &gt; &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">array</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">value</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a> index)</td></tr>
 <tr class="separator:aceff902b062e57806fd1929d323a09c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5441a1b0327d47d266b56e2e5705231c" id="r_a5441a1b0327d47d266b56e2e5705231c"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &gt; </td></tr>
+<tr class="memitem:a5441a1b0327d47d266b56e2e5705231c"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a5441a1b0327d47d266b56e2e5705231c">LazyIterate</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> &amp;&amp;, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &amp;) -&gt; <a class="el" href="classcljonic_1_1_lazy_iterate.html">LazyIterate</a>&lt; <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &gt;</td></tr>
+<tr class="separator:a5441a1b0327d47d266b56e2e5705231c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2daf9dafcf871f7bf26d704ca6c7f0ae" id="r_a2daf9dafcf871f7bf26d704ca6c7f0ae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a2daf9dafcf871f7bf26d704ca6c7f0ae">Range</a> () -&gt; <a class="el" href="classcljonic_1_1_range.html">Range</a>&lt;&gt;</td></tr>
 <tr class="separator:a2daf9dafcf871f7bf26d704ca6c7f0ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a818459d168b8ac7a3e7c7ddc8915860d" id="r_a818459d168b8ac7a3e7c7ddc8915860d"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &gt; </td></tr>
@@ -260,7 +270,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00129">129</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00139">139</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -278,7 +288,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00132">132</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00142">142</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -321,6 +331,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a4410ec34d9e6c1a68100ca0ce033fb17" name="a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a4410ec34d9e6c1a68100ca0ce033fb17"></a>Array&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a46e4c9ef8686e58a89edb553aba6d938" name="a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a46e4c9ef8686e58a89edb553aba6d938"></a>Cycle&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a137b88e97837b5d2fdfc4d3d951ee334" name="a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a137b88e97837b5d2fdfc4d3d951ee334"></a>LazyIterate&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a87ba2ecc8b6915e8bd6f5089918229fd" name="a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a87ba2ecc8b6915e8bd6f5089918229fd"></a>Range&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a7020426cfb0a204051be4b3053d2acc8" name="a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a7020426cfb0a204051be4b3053d2acc8"></a>Repeat&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a5d5b78699e57104f2fa03bbdf7b9197b" name="a28bdbcc4eb4cd3dcb5f5c875c1dafbd6a5d5b78699e57104f2fa03bbdf7b9197b"></a>Set&#160;</td><td class="fielddoc"></td></tr>
@@ -475,6 +486,36 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="cljonic-shared_8hpp_source.html#l00079">79</a> of file <a class="el" href="cljonic-shared_8hpp_source.html">cljonic-shared.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a5441a1b0327d47d266b56e2e5705231c" name="a5441a1b0327d47d266b56e2e5705231c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5441a1b0327d47d266b56e2e5705231c">&#9670;&#160;</a></span>LazyIterate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcljonic_1_1_lazy_iterate.html">cljonic::LazyIterate</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> &amp;&amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &amp;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> -&gt;  <a class="el" href="classcljonic_1_1_lazy_iterate.html">LazyIterate</a>&lt; <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -810,7 +851,7 @@ template&lt;typename T , typename... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00101">101</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00111">111</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -838,7 +879,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line">    (AllConvertibleTypes&lt;typename T::value_type, typename Ts::value_type&gt; and ...)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00104">104</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00114">114</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -864,7 +905,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00108">108</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00118">118</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -892,7 +933,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line">    (std::equality_comparable_with&lt;typename T::value_type, typename Ts::value_type&gt; and ...)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00111">111</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00121">121</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -918,7 +959,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00115">115</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00125">125</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -946,7 +987,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line">    (std::floating_point&lt;typename T::value_type&gt; or ... or std::floating_point&lt;typename Ts::value_type&gt;)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00125">125</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00135">135</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -1023,14 +1064,14 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 <div class="line">    (<a class="code hl_concept" href="conceptcljonic_1_1_is_binary_predicate_for_all.html">IsBinaryPredicateForAll&lt;F, typename T::value_type, typename Ts::value_type&gt;</a> and ...)</div>
 <div class="ttc" id="aconceptcljonic_1_1_is_binary_predicate_for_all_html"><div class="ttname"><a href="conceptcljonic_1_1_is_binary_predicate_for_all.html">cljonic::IsBinaryPredicateForAll</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00050">cljonic-concepts.hpp:50</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00135">135</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00145">145</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jan 27 2025 13:17:15 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Jan 29 2025 14:42:14 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

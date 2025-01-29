@@ -15,6 +15,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-shared.hpp \
     cljonic-pre-declarations.hpp \
     cljonic-array.hpp \
+    cljonic-lazyiterate.hpp \
     cljonic-range.hpp \
     cljonic-repeat.hpp \
     cljonic-set.hpp \
@@ -47,6 +48,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-core-isdistinctby.hpp \
     cljonic-core-isempty.hpp \
     cljonic-core-isfull.hpp \
+    cljonic-core-iterate.hpp \
     cljonic-core-last.hpp \
     cljonic-core-lastindexof.hpp \
     cljonic-core-lastindexofby.hpp \
