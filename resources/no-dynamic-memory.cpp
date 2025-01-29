@@ -43,6 +43,7 @@ int main()
     constexpr auto isdistinctby1{IsDistinctBy([](const int i, const int j) { return i == j; }, 1, 1, 1)};
     constexpr auto isempty{IsEmpty(a)};
     constexpr auto isfull{IsFull(a)};
+    constexpr auto iterate{Iterate([](const int i) { return 1 + i; }, 1)};
     constexpr auto last{Last(a)};
     constexpr auto lastindexof{LastIndexOf(a, 5)};
     constexpr auto lastindexofby{LastIndexOfBy([](const int i, const int j) { return j == i; }, a, 5)};

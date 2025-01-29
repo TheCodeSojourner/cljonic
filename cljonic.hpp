@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Jan 29 01:00:08 PM MST 2025
+// This file was generated Wed Jan 29 02:42:14 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -422,6 +422,9 @@ constexpr auto IsEmpty(const C& c) noexcept;
 
 template <typename C>
 constexpr auto IsFull(const C& c) noexcept;
+
+template <typename F, typename T>
+constexpr auto Iterate(F&& f, const T& t) noexcept;
 
 template <typename C>
 constexpr auto Last(const C& c) noexcept;
@@ -1861,6 +1864,20 @@ constexpr auto IsFull(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "IsFull's parameter must be a cljonic collection");
 
 return c.Count() == c.MaximumCount();
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename T>
+constexpr auto Iterate(F&& f, const T& t) noexcept {
+static_assert(IsUnaryFunction<F, T>, "Iterate's first parameter is not a unary function of its second parameter");
+
+return LazyIterate{std::forward<F>(f), t};
 }
 
 }
