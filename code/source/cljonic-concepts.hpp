@@ -57,6 +57,11 @@ template <typename T>
 concept IsCljonicCollection = requires { typename T::cljonic_collection_type; };
 
 template <typename T>
+concept IsCljonicLazyIterate =
+    std::same_as<typename T::cljonic_collection_type,
+                 std::integral_constant<CljonicCollectionType, CljonicCollectionType::LazyIterate>>;
+
+template <typename T>
 concept IsCljonicRange = std::same_as<typename T::cljonic_collection_type,
                                       std::integral_constant<CljonicCollectionType, CljonicCollectionType::Range>>;
 
@@ -82,6 +87,11 @@ concept IsCString = std::same_as<std::decay_t<T>, char*> or std::same_as<std::de
 
 template <typename T>
 concept IsNotCljonicCollection = not IsCljonicCollection<T>;
+
+template <typename P, typename T>
+concept IsUnaryFunction = requires(P p, T t) {
+    { p(t) } -> std::convertible_to<T>;
+};
 
 template <typename P, typename T>
 concept IsUnaryPredicate = requires(P p, T t) {

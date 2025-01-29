@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Mon Jan 27 01:17:14 PM MST 2025
+// This file was generated Wed Jan 29 01:00:08 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -81,6 +81,7 @@ namespace cljonic {
 enum class CljonicCollectionType {
     Array,
     Cycle,
+    LazyIterate,
     Range,
     Repeat,
     Set,
@@ -136,6 +137,11 @@ template <typename T>
 concept IsCljonicCollection = requires { typename T::cljonic_collection_type; };
 
 template <typename T>
+concept IsCljonicLazyIterate =
+    std::same_as<typename T::cljonic_collection_type,
+                 std::integral_constant<CljonicCollectionType, CljonicCollectionType::LazyIterate>>;
+
+template <typename T>
 concept IsCljonicRange = std::same_as<typename T::cljonic_collection_type,
                                       std::integral_constant<CljonicCollectionType, CljonicCollectionType::Range>>;
 
@@ -157,6 +163,11 @@ concept IsCString = std::same_as<std::decay_t<T>, char*> or std::same_as<std::de
 
 template <typename T>
 concept IsNotCljonicCollection = not IsCljonicCollection<T>;
+
+template <typename P, typename T>
+concept IsUnaryFunction = requires(P p, T t) {
+{ p(t) } -> std::convertible_to<T>;
+};
 
 template <typename P, typename T>
 concept IsUnaryPredicate = requires(P p, T t) {
@@ -607,6 +618,48 @@ constexpr void MSet(Array<U, N>& array, const U& value, const SizeType index) {
 if(index < array.m_elementCount)
 array.m_elements[index] = value;
 }
+
+} // namespace cljonic
+
+#include <concepts>
+#include <utility>
+
+namespace cljonic {
+template <typename F, typename T>
+class LazyIterate {
+F m_f;
+T m_nextValue;
+
+public:
+using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::LazyIterate>;
+using size_type = SizeType;
+using value_type = T;
+
+constexpr explicit LazyIterate(F&& f, const T& t) noexcept : m_f{std::forward<F>(f)}, m_nextValue{t} {
+static_assert(IsUnaryFunction<F, T>,
+              "LazyIterate constructor's first parameter is not a unary function of its second parameter");
+}
+
+constexpr LazyIterate(const LazyIterate& other) = default;
+constexpr LazyIterate(LazyIterate&& other) = default;
+
+[[nodiscard]] constexpr SizeType Count() const noexcept {
+return CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT;
+}
+
+[[nodiscard]] static constexpr auto MaximumCount() noexcept {
+return CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT;
+}
+
+[[nodiscard]] constexpr auto Next() noexcept {
+auto result{m_nextValue};
+m_nextValue = m_f(m_nextValue);
+return result;
+}
+};
+
+template <typename F, typename T>
+LazyIterate(F&&, const T&) -> LazyIterate<F, T>;
 
 } // namespace cljonic
 
