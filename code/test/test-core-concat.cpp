@@ -5,6 +5,8 @@
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
 #include "cljonic-core-concat.hpp"
+#include "cljonic-core-iterate.hpp"
+#include "cljonic-core-take.hpp"
 
 using namespace cljonic;
 using namespace cljonic::core;
@@ -12,12 +14,16 @@ using namespace cljonic::core;
 SCENARIO("Concat", "[CljonicCoreConcat]")
 {
     constexpr auto a{Array{11, 12, 13, 14}};
+    constexpr auto i{Iterate([](const int i) { return 10 * i; }, 1)};
     constexpr auto rng{Range<5>{}};
     constexpr auto rpt{Repeat<5, int>{10}};
     constexpr auto set{Set{100, 101}};
     constexpr auto str{String{"Hello"}};
-    constexpr auto c{Concat(a, rng, rpt, set, str)};
-    CHECK(21 == c.Count());
+    const auto c{Concat(a, rng, rpt, set, str, Take<3>(i))};
+
+    CHECK(0 == Concat().Count());
+
+    CHECK(24 == c.Count());
     CHECK(11 == c[0]);
     CHECK(12 == c[1]);
     CHECK(13 == c[2]);
@@ -39,6 +45,8 @@ SCENARIO("Concat", "[CljonicCoreConcat]")
     CHECK(108 == c[18]);
     CHECK(108 == c[19]);
     CHECK(111 == c[20]);
-    CHECK(0 == c[21]);
-    CHECK(0 == Concat().Count());
+    CHECK(1 == c[21]);
+    CHECK(10 == c[22]);
+    CHECK(100 == c[23]);
+    CHECK(0 == c[24]);
 }

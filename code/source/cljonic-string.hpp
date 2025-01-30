@@ -25,7 +25,7 @@ class String : public IndexInterface<char>
     static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
     static_assert(maximumElements == MaxElements,
-                  "Attempt to create a String bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+                  "Attempt to create a String bigger than CljonicCollectionMaximumElementCount");
 
     SizeType m_elementCount;
     const char m_elementDefault;
@@ -55,7 +55,7 @@ class String : public IndexInterface<char>
         const auto s5{String{"Hello"}};                    // immutable, full
         const auto s6{String{'H', 'e', 'l', 'l', 'o'}};    // immutable, full
 
-        // Compiler Error: Attempt to create a String bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+        // Compiler Error: Attempt to create a String bigger than CljonicCollectionMaximumElementCount
         // const auto s{String<1111>{"Too Big"}};
 
         return 0;

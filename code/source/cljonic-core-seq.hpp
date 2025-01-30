@@ -41,7 +41,11 @@ constexpr auto Seq(const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Seq's parameter must be a cljonic collection");
 
-    return Take(c.MaximumCount(), c);
+    using ResultType = typename C::value_type;
+    auto result{Array<ResultType, C::MaximumCount()>{}};
+    for (const ResultType& v : c)
+        MConj(result, v);
+    return result;
 }
 
 } // namespace core

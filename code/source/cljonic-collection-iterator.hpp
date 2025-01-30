@@ -34,13 +34,13 @@ class CollectionIterator
         return m_index != other.m_index;
     }
 
-    constexpr CollectionIterator& operator+=(int value) noexcept
+    constexpr CollectionIterator& operator+=(SizeType value) noexcept
     {
         m_index += value;
         return *this;
     }
 
-    constexpr CollectionIterator operator+(int value) const noexcept
+    constexpr CollectionIterator operator+(SizeType value) const noexcept
     {
         CollectionIterator temp = *this;
         temp += value;

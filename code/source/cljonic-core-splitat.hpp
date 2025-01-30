@@ -45,7 +45,18 @@ constexpr auto SplitAt(const SizeType count, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "SplitAt's second parameter must be a cljonic collection");
 
-    return Array{Take(count, c), Drop(count, c)};
+    using ResultType = typename C::value_type;
+    using ArrayType = Array<ResultType, C::MaximumCount()>;
+    auto result{Array{ArrayType{}, ArrayType{}}};
+    auto lhs{MPtr(result, 0)};
+    auto rhs{MPtr(result, 1)};
+    auto i{SizeType{0}};
+    for (const ResultType& v : c)
+        if (i++ < count)
+            MConj(*lhs, v);
+        else
+            MConj(*rhs, v);
+    return result;
 }
 
 } // namespace core

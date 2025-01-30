@@ -31,7 +31,7 @@ class Set : public IndexInterface<T>
     static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
     static_assert(maximumElements == MaxElements,
-                  "Attempt to create a Set bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+                  "Attempt to create a Set bigger than CljonicCollectionMaximumElementCount");
 
     SizeType m_elementCount;
     const T m_elementDefault;
@@ -81,7 +81,7 @@ class Set : public IndexInterface<T>
         // Compiler Error: A Set type must be equality comparable
         // const auto s{Set<NonComparable, 10>{}};
 
-        // Compiler Error: Attempt to create a Set bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+        // Compiler Error: Attempt to create a Set bigger than CljonicCollectionMaximumElementCount
         // const auto s{Set<int, 1111>{}};
 
         return 0;

@@ -19,20 +19,24 @@ namespace cljonic
 template <typename T, SizeType MaxElements>
 class Array : public IndexInterface<T>
 {
-    static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
+    static constexpr auto maximumElements{MaximumElements(MaxElements)};
 
     static_assert(maximumElements == MaxElements,
-                  "Attempt to create an Array bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+                  "Attempt to create an Array bigger than CljonicCollectionMaximumElementCount");
 
+    static constexpr auto elementCount{(0 == maximumElements) ? 1 : maximumElements};
     SizeType m_elementCount;
     T m_elementDefault;
-    T m_elements[maximumElements]{};
+    T m_elements[elementCount]{};
 
     template <typename U, SizeType N>
     constexpr friend void MConj(Array<U, N>& array, const U& value);
 
     template <typename U, SizeType N>
-    constexpr friend void MSet(Array<U, N>& array, const U& value, const SizeType index);
+    constexpr friend U* MPtr(Array<U, N>& array, SizeType index);
+
+    template <typename U, SizeType N>
+    constexpr friend void MSet(Array<U, N>& array, const U& value, SizeType index);
 
     constexpr auto ValueAtIndex(const SizeType index) const noexcept
     {
@@ -56,7 +60,7 @@ class Array : public IndexInterface<T>
         constexpr auto a3{Array<int, 4>{1, 2, 3, 4, 5, 6}}; // immutable and full, and the values 5 and 6 are ignored
         constexpr auto a4{Array{1, 2, 3, 4}};               // immutable and full of four int values
 
-        // Compiler Error: Attempt to create an Array bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+        // Compiler Error: Attempt to create an Array bigger than CljonicCollectionMaximumElementCount
         // constexpr auto a{Array<int, 1111>{0, 2, 4, 5, 6, 7, 8, 9}};
 
         return 0;
@@ -143,6 +147,12 @@ constexpr void MConj(Array<U, N>& array, const U& value)
 {
     if (array.m_elementCount < array.MaximumCount())
         array.m_elements[array.m_elementCount++] = value;
+}
+
+template <typename U, SizeType N>
+constexpr U* MPtr(Array<U, N>& array, const SizeType index)
+{
+    return &array.m_elements[(index < array.m_elementCount) ? index : 0];
 }
 
 template <typename U, SizeType N>

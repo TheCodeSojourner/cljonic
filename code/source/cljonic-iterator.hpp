@@ -56,6 +56,14 @@ class Iterator
             return *this;
         }
 
+        Itr operator+(SizeType n) const
+        {
+            auto result{*this};
+            for (SizeType i{0}; (i < n) and (result.m_index < Iterator::MaximumCount()); ++i)
+                ++result;
+            return result;
+        }
+
         bool operator!=(const Itr& other) const
         {
             return m_index != other.m_index;
@@ -99,24 +107,24 @@ class Iterator
     constexpr Iterator(const Iterator& other) = default; // Copy constructor
     constexpr Iterator(Iterator&& other) = default;      // Move constructor
 
-    Itr begin()
+    Itr begin() const
     {
         return Itr(*this, 0);
     }
 
-    Itr end()
+    Itr end() const
     {
         return Itr(*this, MaximumCount());
     }
 
     [[nodiscard]] constexpr SizeType Count() const noexcept
     {
-        return CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT;
+        return CljonicCollectionMaximumElementCount;
     }
 
     [[nodiscard]] static constexpr auto MaximumCount() noexcept
     {
-        return CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT;
+        return CljonicCollectionMaximumElementCount;
     }
 }; // class Iterator
 

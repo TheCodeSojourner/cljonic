@@ -8,7 +8,7 @@ SCENARIO("Range", "[CljonicRange]")
 {
     constexpr auto r{Range<>{}};
     auto MAX_INDEX{CljonicCollectionMaximumElementCount};
-    auto MAX_VALUE{static_cast<decltype(r[0])>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+    auto MAX_VALUE{static_cast<decltype(r[0])>(CljonicCollectionMaximumElementCount)};
 
     {
         constexpr auto r{Range{}};

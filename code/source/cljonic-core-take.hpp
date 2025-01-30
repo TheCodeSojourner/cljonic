@@ -10,13 +10,23 @@ namespace core
 {
 
 /** \anchor Core_Take
-* The \b Take function returns a \b cljonic \b Array with the same \b MaximumCount as its second parameter, which must
+* There are \b two \b forms of the \b Take function.
+*
+* The \b first \b form returns a \b cljonic \b Array with the same \b MaximumCount as its second parameter, which must
 * be a \b cljonic \b collection, containing the number of elements given by its first parameter copied from its second
 * parameter to its result, in order. If its second parameter contains fewer elements than the first parameter specifies
-* the returned \b Array will contain all the elements of its first parameter, in order. If the second parameter contains
-* more elements than the first parameter specifies the returned \b Array will contain only the number of elements
-* specified by the first parameter copied from the second parameter to the result, in order. If the second parameter is
-* empty, the returned \b Array will also be empty.
+* the returned \b cljonic \b Array will contain all the elements of its first parameter, in order. If the second
+* parameter contains more elements than the first parameter specifies the returned \b cljonic \b Array will contain only
+* the number of elements specified by the first parameter copied from the second parameter to the result, in order. If
+* the second parameter is empty, the returned \b cljonic \b Array will also be empty.
+*
+* The \b second \b form returns a \b cljonic \b Array with the \b MaximumCount specified by its \b template
+* \b parameter. The elements in the returned \b cljonic \b Array are copied from its parameter, which must be a
+* \b cljonic \b collection, in order. If its parameter contains fewer elements than its template parameter specifies
+* the returned \b cljonic \b Array will contain all the elements of its parameter, in order. If the parameter contains
+* more elements than the template parameter specifies the returned \b cljonic \b Array will contain only the number of
+* elements specified by the template parameter copied from the parameter to the result, in order. If the parameter is
+* empty, the returned \b cljonic \b Array will also be empty.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -47,10 +57,28 @@ constexpr auto Take(const SizeType count, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Take's second parameter must be a cljonic collection");
 
-    auto result{Array<typename C::value_type, c.MaximumCount()>{}};
+    using ResultType = typename C::value_type;
+    auto result{Array<ResultType, c.MaximumCount()>{}};
     auto maxIndex{MinArgument(count, c.Count())};
-    for (SizeType i{0}; (i < maxIndex); ++i)
-        MConj(result, c[i]);
+    auto cBegin{c.begin()};
+    auto cEnd{cBegin + maxIndex};
+    for (auto it{cBegin}; it != cEnd; ++it)
+        MConj(result, static_cast<ResultType>(*it));
+    return result;
+}
+
+template <SizeType N, typename C>
+constexpr auto Take(const C& c) noexcept
+{
+    static_assert(IsCljonicCollection<C>, "Take's parameter must be a cljonic collection");
+
+    using ResultType = typename C::value_type;
+    auto result{Array<ResultType, N>{}};
+    auto maxIndex{MinArgument(N, c.Count())};
+    auto cBegin{c.begin()};
+    auto cEnd{cBegin + maxIndex};
+    for (auto it{cBegin}; it != cEnd; ++it)
+        MConj(result, static_cast<ResultType>(*it));
     return result;
 }
 

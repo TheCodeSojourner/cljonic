@@ -5,6 +5,8 @@
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
 #include "cljonic-core-equal.hpp"
+#include "cljonic-core-iterate.hpp"
+#include "cljonic-core-nth.hpp"
 #include "cljonic-core-splitat.hpp"
 
 using namespace cljonic;
@@ -21,4 +23,9 @@ SCENARIO("SplitAt", "[CljonicCoreSplitAt]")
                 SplitAt(50, Repeat<7, const char*>{"11"})));
     CHECK(Equal(Array{Array<char, 2>{'a', 'b'}, Array<char, 2>{}}, SplitAt(5, Set{'a', 'b'})));
     CHECK(Equal(Array{Array<char, 5>{'H', 'e', 'l'}, Array<char, 5>{'l', 'o'}}, SplitAt(3, String{"Hello"})));
+
+    const auto i{Iterate([](const int i) { return 10 * i; }, 1)};
+    const auto sa{SplitAt(3, i)};
+    CHECK(Equal(Array{1, 10, 100}, Nth(sa, 0)));
+    CHECK(Equal(Array{1000, 10000, 100000}, Take<3>(Nth(sa, 1))));
 }

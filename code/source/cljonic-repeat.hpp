@@ -21,7 +21,7 @@ class Repeat : public IndexInterface<T>
     static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
     static_assert(maximumElements == MaxElements,
-                  "Attempt to create a Repeat bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+                  "Attempt to create a Repeat bigger than CljonicCollectionMaximumElementCount");
 
     const SizeType m_elementCount;
     const T m_elementDefault;
@@ -35,7 +35,7 @@ class Repeat : public IndexInterface<T>
   public:
     /**
     * There are two ways to create a \b Repeat:
-    *     - <b>Repeat{value}</b> returns a \b Repeat of value \b CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT times
+    *     - <b>Repeat{value}</b> returns a \b Repeat of value \b CljonicCollectionMaximumElementCount times
     *     - <b>Repeat<count, valueType>{value}</b> returns a \b Repeat of value, which is of type valueType,
     *     \b count times
     *
@@ -49,10 +49,10 @@ class Repeat : public IndexInterface<T>
 
     int main()
     {
-        const auto r0{Repeat{1}};              // immutable, 1, CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT times
+        const auto r0{Repeat{1}};              // immutable, 1, CljonicCollectionMaximumElementCount times
         const auto r1{Repeat<10, int>{1}};     // immutable, 1, ten times
 
-        // Compiler Error: Attempt to create a Repeat bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+        // Compiler Error: Attempt to create a Repeat bigger than CljonicCollectionMaximumElementCount
         // const auto r{Repeat<1111, int>{1}};
 
         return 0;

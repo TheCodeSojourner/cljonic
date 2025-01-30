@@ -55,8 +55,8 @@ constexpr auto Concat(const C& c, const Cs&... cs) noexcept
     auto result{Array<ResultType, count>{}};
     const auto MConjCollectionOntoResult = [&](const auto& c)
     {
-        for (SizeType i{0}; i < c.Count(); ++i)
-            MConj(result, static_cast<ResultType>(c[i]));
+        for (const auto& v : c)
+            MConj(result, static_cast<ResultType>(v));
     };
     (MConjCollectionOntoResult(c), ..., MConjCollectionOntoResult(cs));
     return result;

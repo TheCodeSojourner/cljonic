@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan 30 09:39:44 AM MST 2025
+// This file was generated Thu Jan 30 03:16:38 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -62,12 +62,12 @@ constexpr bool operator!=(const CollectionIterator& other) const noexcept {
 return m_index != other.m_index;
 }
 
-constexpr CollectionIterator& operator+=(int value) noexcept {
+constexpr CollectionIterator& operator+=(SizeType value) noexcept {
 m_index += value;
 return *this;
 }
 
-constexpr CollectionIterator operator+(int value) const noexcept {
+constexpr CollectionIterator operator+(SizeType value) const noexcept {
 CollectionIterator temp = *this;
 temp += value;
 return temp;
@@ -528,20 +528,24 @@ namespace cljonic {
 
 template <typename T, SizeType MaxElements>
 class Array : public IndexInterface<T> {
-static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
+static constexpr auto maximumElements{MaximumElements(MaxElements)};
 
 static_assert(maximumElements == MaxElements,
-              "Attempt to create an Array bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+              "Attempt to create an Array bigger than CljonicCollectionMaximumElementCount");
 
+static constexpr auto elementCount{(0 == maximumElements) ? 1 : maximumElements};
 SizeType m_elementCount;
 T m_elementDefault;
-T m_elements[maximumElements]{};
+T m_elements[elementCount]{};
 
 template <typename U, SizeType N>
 constexpr friend void MConj(Array<U, N>& array, const U& value);
 
 template <typename U, SizeType N>
-constexpr friend void MSet(Array<U, N>& array, const U& value, const SizeType index);
+constexpr friend U* MPtr(Array<U, N>& array, SizeType index);
+
+template <typename U, SizeType N>
+constexpr friend void MSet(Array<U, N>& array, const U& value, SizeType index);
 
 constexpr auto ValueAtIndex(const SizeType index) const noexcept {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
@@ -617,6 +621,11 @@ array.m_elements[array.m_elementCount++] = value;
 }
 
 template <typename U, SizeType N>
+constexpr U* MPtr(Array<U, N>& array, const SizeType index) {
+return &array.m_elements[(index < array.m_elementCount) ? index : 0];
+}
+
+template <typename U, SizeType N>
 constexpr void MSet(Array<U, N>& array, const U& value, const SizeType index) {
 if(index < array.m_elementCount)
 array.m_elements[index] = value;
@@ -660,6 +669,13 @@ m_nextValue = m_f(m_nextValue);
 return *this;
 }
 
+Itr operator+(SizeType n) const {
+auto result{*this};
+for(SizeType i{0}; (i < n) and (result.m_index < Iterator::MaximumCount()); ++i)
+++result;
+return result;
+}
+
 bool operator!=(const Itr& other) const {
 return m_index != other.m_index;
 }
@@ -678,20 +694,20 @@ static_assert(IsUnaryFunction<F, T>,
 constexpr Iterator(const Iterator& other) = default;
 constexpr Iterator(Iterator&& other) = default;
 
-Itr begin() {
+Itr begin() const {
 return Itr(*this, 0);
 }
 
-Itr end() {
+Itr end() const {
 return Itr(*this, MaximumCount());
 }
 
 [[nodiscard]] constexpr SizeType Count() const noexcept {
-return CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT;
+return CljonicCollectionMaximumElementCount;
 }
 
 [[nodiscard]] static constexpr auto MaximumCount() noexcept {
-return CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT;
+return CljonicCollectionMaximumElementCount;
 }
 };
 
@@ -758,7 +774,7 @@ return CljonicCollectionMaximumElementCount;
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
 static_assert(maximumElements == MaxElements,
-              "Attempt to create a Range bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+              "Attempt to create a Range bigger than CljonicCollectionMaximumElementCount");
 
 constexpr void InitializeMembers(const int count, const int start, const int step) noexcept {
 m_elementCount = MinArgument(static_cast<SizeType>(count), CljonicCollectionMaximumElementCount);
@@ -888,7 +904,7 @@ using Iterator = CollectionIterator<Repeat>;
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
 static_assert(maximumElements == MaxElements,
-              "Attempt to create a Repeat bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+              "Attempt to create a Repeat bigger than CljonicCollectionMaximumElementCount");
 
 const SizeType m_elementCount;
 const T m_elementDefault;
@@ -961,7 +977,7 @@ static_assert(std::equality_comparable<T>, "A Set type must be equality comparab
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
 static_assert(maximumElements == MaxElements,
-              "Attempt to create a Set bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+              "Attempt to create a Set bigger than CljonicCollectionMaximumElementCount");
 
 SizeType m_elementCount;
 const T m_elementDefault;
@@ -1062,7 +1078,7 @@ using Iterator = CollectionIterator<String>;
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
 static_assert(maximumElements == MaxElements,
-              "Attempt to create a String bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+              "Attempt to create a String bigger than CljonicCollectionMaximumElementCount");
 
 SizeType m_elementCount;
 const char m_elementDefault;
@@ -1196,8 +1212,8 @@ using ResultType = FindCommonValueType<C, Cs...>;
 constexpr auto count{SumOfCljonicCollectionMaximumCounts<C, Cs...>()};
 auto result{Array<ResultType, count>{}};
 const auto MConjCollectionOntoResult = [&](const auto& c) {
-for(SizeType i{0}; i < c.Count(); ++i)
-MConj(result, static_cast<ResultType>(c[i]));
+for(const auto& v : c)
+MConj(result, static_cast<ResultType>(v));
 };
 (MConjCollectionOntoResult(c), ..., MConjCollectionOntoResult(cs));
 return result;
@@ -2355,7 +2371,11 @@ template <typename C>
 constexpr auto Seq(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Seq's parameter must be a cljonic collection");
 
-return Take(c.MaximumCount(), c);
+using ResultType = typename C::value_type;
+auto result{Array<ResultType, C::MaximumCount()>{}};
+for(const ResultType& v : c)
+MConj(result, v);
+return result;
 }
 
 }
@@ -2459,7 +2479,18 @@ template <typename C>
 constexpr auto SplitAt(const SizeType count, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "SplitAt's second parameter must be a cljonic collection");
 
-return Array{Take(count, c), Drop(count, c)};
+using ResultType = typename C::value_type;
+using ArrayType = Array<ResultType, C::MaximumCount()>;
+auto result{Array{ArrayType{}, ArrayType{}}};
+auto lhs{MPtr(result, 0)};
+auto rhs{MPtr(result, 1)};
+auto i{SizeType{0}};
+for(const ResultType& v : c)
+if(i++ < count)
+MConj(*lhs, v);
+else
+MConj(*rhs, v);
+return result;
 }
 
 }
@@ -2515,10 +2546,27 @@ template <typename C>
 constexpr auto Take(const SizeType count, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Take's second parameter must be a cljonic collection");
 
-auto result{Array<typename C::value_type, c.MaximumCount()>{}};
+using ResultType = typename C::value_type;
+auto result{Array<ResultType, c.MaximumCount()>{}};
 auto maxIndex{MinArgument(count, c.Count())};
-for(SizeType i{0}; (i < maxIndex); ++i)
-MConj(result, c[i]);
+auto cBegin{c.begin()};
+auto cEnd{cBegin + maxIndex};
+for(auto it{cBegin}; it != cEnd; ++it)
+MConj(result, static_cast<ResultType>(*it));
+return result;
+}
+
+template <SizeType N, typename C>
+constexpr auto Take(const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "Take's parameter must be a cljonic collection");
+
+using ResultType = typename C::value_type;
+auto result{Array<ResultType, N>{}};
+auto maxIndex{MinArgument(N, c.Count())};
+auto cBegin{c.begin()};
+auto cEnd{cBegin + maxIndex};
+for(auto it{cBegin}; it != cEnd; ++it)
+MConj(result, static_cast<ResultType>(*it));
 return result;
 }
 

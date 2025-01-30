@@ -80,7 +80,7 @@ class Range : public IndexInterface<int>
     static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
     static_assert(maximumElements == MaxElements,
-                  "Attempt to create a Range bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+                  "Attempt to create a Range bigger than CljonicCollectionMaximumElementCount");
 
     constexpr void InitializeMembers(const int count, const int start, const int step) noexcept
     {
@@ -186,7 +186,7 @@ class Range : public IndexInterface<int>
         // Compiler Error: Number of Range parameters must be less than or equal to three
         // const auto r{Range<10, -10, -1, 1>{}};
 
-        // Compiler Error: Attempt to create a Range bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+        // Compiler Error: Attempt to create a Range bigger than CljonicCollectionMaximumElementCount
         // const auto r{Range<-11111, 11111>{}};
 
         return 0;
