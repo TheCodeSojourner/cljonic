@@ -57,9 +57,9 @@ template <typename T>
 concept IsCljonicCollection = requires { typename T::cljonic_collection_type; };
 
 template <typename T>
-concept IsCljonicLazyIterate =
+concept IsCljonicIterator =
     std::same_as<typename T::cljonic_collection_type,
-                 std::integral_constant<CljonicCollectionType, CljonicCollectionType::LazyIterate>>;
+                 std::integral_constant<CljonicCollectionType, CljonicCollectionType::Iterator>>;
 
 template <typename T>
 concept IsCljonicRange = std::same_as<typename T::cljonic_collection_type,

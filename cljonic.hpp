@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Jan 29 02:42:14 PM MST 2025
+// This file was generated Thu Jan 30 09:39:44 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -81,7 +81,7 @@ namespace cljonic {
 enum class CljonicCollectionType {
     Array,
     Cycle,
-    LazyIterate,
+    Iterator,
     Range,
     Repeat,
     Set,
@@ -137,9 +137,9 @@ template <typename T>
 concept IsCljonicCollection = requires { typename T::cljonic_collection_type; };
 
 template <typename T>
-concept IsCljonicLazyIterate =
+concept IsCljonicIterator =
     std::same_as<typename T::cljonic_collection_type,
-                 std::integral_constant<CljonicCollectionType, CljonicCollectionType::LazyIterate>>;
+                 std::integral_constant<CljonicCollectionType, CljonicCollectionType::Iterator>>;
 
 template <typename T>
 concept IsCljonicRange = std::same_as<typename T::cljonic_collection_type,
@@ -629,22 +629,62 @@ array.m_elements[index] = value;
 
 namespace cljonic {
 template <typename F, typename T>
-class LazyIterate {
+class Iterator {
 F m_f;
+T m_initialValue;
+
+class Itr {
+F m_f;
+SizeType m_index;
 T m_nextValue;
 
 public:
-using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::LazyIterate>;
+using value_type = T;
+using difference_type = std::ptrdiff_t;
+using pointer = T*;
+using reference = T&;
+
+Itr(const Iterator& iterator, SizeType index)
+    : m_f{iterator.m_f}, m_index{index}, m_nextValue{iterator.m_initialValue} {
+}
+
+T operator*() const {
+return m_nextValue;
+}
+
+Itr& operator++() {
+if(m_index < Iterator::MaximumCount()) {
+m_nextValue = m_f(m_nextValue);
+++m_index;
+}
+return *this;
+}
+
+bool operator!=(const Itr& other) const {
+return m_index != other.m_index;
+}
+};
+
+public:
+using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Iterator>;
 using size_type = SizeType;
 using value_type = T;
 
-constexpr explicit LazyIterate(F&& f, const T& t) noexcept : m_f{std::forward<F>(f)}, m_nextValue{t} {
+constexpr explicit Iterator(F&& f, const T& t) noexcept : m_f{std::forward<F>(f)}, m_initialValue{t} {
 static_assert(IsUnaryFunction<F, T>,
-              "LazyIterate constructor's first parameter is not a unary function of its second parameter");
+              "Iterator constructor's first parameter is not a unary function of its second parameter");
 }
 
-constexpr LazyIterate(const LazyIterate& other) = default;
-constexpr LazyIterate(LazyIterate&& other) = default;
+constexpr Iterator(const Iterator& other) = default;
+constexpr Iterator(Iterator&& other) = default;
+
+Itr begin() {
+return Itr(*this, 0);
+}
+
+Itr end() {
+return Itr(*this, MaximumCount());
+}
 
 [[nodiscard]] constexpr SizeType Count() const noexcept {
 return CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT;
@@ -653,16 +693,10 @@ return CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT;
 [[nodiscard]] static constexpr auto MaximumCount() noexcept {
 return CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT;
 }
-
-[[nodiscard]] constexpr auto Next() noexcept {
-auto result{m_nextValue};
-m_nextValue = m_f(m_nextValue);
-return result;
-}
 };
 
 template <typename F, typename T>
-LazyIterate(F&&, const T&) -> LazyIterate<F, T>;
+Iterator(F&&, const T&) -> Iterator<F, T>;
 
 } // namespace cljonic
 
@@ -1877,7 +1911,7 @@ template <typename F, typename T>
 constexpr auto Iterate(F&& f, const T& t) noexcept {
 static_assert(IsUnaryFunction<F, T>, "Iterate's first parameter is not a unary function of its second parameter");
 
-return LazyIterate{std::forward<F>(f), t};
+return Iterator{std::forward<F>(f), t};
 }
 
 }

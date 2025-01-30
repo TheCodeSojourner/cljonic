@@ -15,7 +15,7 @@ cat cljonic-collection-iterator.hpp \
     cljonic-shared.hpp \
     cljonic-pre-declarations.hpp \
     cljonic-array.hpp \
-    cljonic-lazyiterate.hpp \
+    cljonic-iterator.hpp \
     cljonic-range.hpp \
     cljonic-repeat.hpp \
     cljonic-set.hpp \

@@ -63,7 +63,7 @@ var searchData=
   ['cljonic_2dcore_2dtakenth_2ehpp_60',['cljonic-core-takenth.hpp',['../cljonic-core-takenth_8hpp.html',1,'']]],
   ['cljonic_2dcore_2dtakewhile_2ehpp_61',['cljonic-core-takewhile.hpp',['../cljonic-core-takewhile_8hpp.html',1,'']]],
   ['cljonic_2dcore_2ehpp_62',['cljonic-core.hpp',['../cljonic-core_8hpp.html',1,'']]],
-  ['cljonic_2dlazyiterate_2ehpp_63',['cljonic-lazyiterate.hpp',['../cljonic-lazyiterate_8hpp.html',1,'']]],
+  ['cljonic_2diterator_2ehpp_63',['cljonic-iterator.hpp',['../cljonic-iterator_8hpp.html',1,'']]],
   ['cljonic_2dpre_2ddeclarations_2ehpp_64',['cljonic-pre-declarations.hpp',['../cljonic-pre-declarations_8hpp.html',1,'']]],
   ['cljonic_2drange_2ehpp_65',['cljonic-range.hpp',['../cljonic-range_8hpp.html',1,'']]],
   ['cljonic_2drepeat_2ehpp_66',['cljonic-repeat.hpp',['../cljonic-repeat_8hpp.html',1,'']]],

@@ -2,7 +2,7 @@
 #define CLJONIC_CORE_ITERATE_HPP
 
 #include "cljonic-concepts.hpp"
-#include "cljonic-lazyiterate.hpp"
+#include "cljonic-iterator.hpp"
 
 namespace cljonic
 {
@@ -45,7 +45,7 @@ constexpr auto Iterate(F&& f, const T& t) noexcept
 {
     static_assert(IsUnaryFunction<F, T>, "Iterate's first parameter is not a unary function of its second parameter");
 
-    return LazyIterate{std::forward<F>(f), t};
+    return Iterator{std::forward<F>(f), t};
 }
 
 } // namespace core

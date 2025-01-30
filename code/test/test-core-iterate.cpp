@@ -13,17 +13,27 @@ SCENARIO("Iterate", "[CljonicCoreIterate]")
 {
     {
         auto i{Iterate([](const int i) { return 1 + i; }, 11)};
-        CHECK(11 == i.Next());
-        CHECK(12 == i.Next());
-        CHECK(13 == i.Next());
-        CHECK(14 == i.Next());
+        auto j{11};
+        for (const auto& v : i)
+            CHECK(j++ == v);
+        j = 11;
+        for (const auto& v : i)
+            CHECK(j++ == v);
     }
 
     {
         auto i{Iterate(TimesTenI, 1)};
-        CHECK(1 == i.Next());
-        CHECK(10 == i.Next());
-        CHECK(100 == i.Next());
-        CHECK(1000 == i.Next());
+        auto j{1};
+        for (const auto& v : i)
+        {
+            CHECK(j == v);
+            j *= 10;
+        }
+        j = 1;
+        for (const auto& v : i)
+        {
+            CHECK(j == v);
+            j *= 10;
+        }
     }
 }
