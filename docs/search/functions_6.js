@@ -11,5 +11,6 @@ var searchData=
   ['isdistinctby_8',['IsDistinctBy',['../namespacecljonic_1_1core.html#ad96426aef184a1539d8a438295cf0b81',1,'cljonic::core']]],
   ['isempty_9',['IsEmpty',['../namespacecljonic_1_1core.html#a8f6b95578c1daefdb6b50c01156b09e8',1,'cljonic::core']]],
   ['isfull_10',['IsFull',['../namespacecljonic_1_1core.html#aaaf451a151f25376af629f510252a115',1,'cljonic::core']]],
-  ['iterate_11',['Iterate',['../namespacecljonic_1_1core.html#a1dff18aae6462fe9fb4672ae3f3cf787',1,'cljonic::core']]]
+  ['iterate_11',['Iterate',['../namespacecljonic_1_1core.html#a1dff18aae6462fe9fb4672ae3f3cf787',1,'cljonic::core']]],
+  ['iterator_12',['iterator',['../namespacecljonic.html#a1cf474730678e674a95855129b707a77',1,'cljonic::Iterator()'],['../classcljonic_1_1_iterator.html#a78f20da44714e14711d0cb1281801f7d',1,'cljonic::Iterator::Iterator(F &amp;&amp;f, const T &amp;t) noexcept'],['../classcljonic_1_1_iterator.html#a1a147f767e57869846c6ebba73a89041',1,'cljonic::Iterator::Iterator(Iterator &amp;&amp;other)=default'],['../classcljonic_1_1_iterator.html#a1997e33ebe5b1e5cf6ade5f155d372ec',1,'cljonic::Iterator::Iterator(const Iterator &amp;other)=default']]]
 ];

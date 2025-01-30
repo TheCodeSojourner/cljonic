@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['lazyiterate_0',['LazyIterate',['../classcljonic_1_1_lazy_iterate.html',1,'cljonic']]]
+  ['range_0',['Range',['../classcljonic_1_1_range.html',1,'cljonic']]],
+  ['repeat_1',['Repeat',['../classcljonic_1_1_repeat.html',1,'cljonic']]]
 ];

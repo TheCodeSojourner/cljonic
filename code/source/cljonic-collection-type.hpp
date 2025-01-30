@@ -8,7 +8,7 @@ enum class CljonicCollectionType
 {
     Array,
     Cycle,
-    LazyIterate,
+    Iterator,
     Range,
     Repeat,
     Set,

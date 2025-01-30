@@ -12,7 +12,7 @@ var searchData=
   ['cljonic_3a_3aiscljonicarray_9',['IsCljonicArray',['../conceptcljonic_1_1_is_cljonic_array.html',1,'cljonic']]],
   ['cljonic_3a_3aiscljonicarrayrangeorrepeat_10',['IsCljonicArrayRangeOrRepeat',['../conceptcljonic_1_1_is_cljonic_array_range_or_repeat.html',1,'cljonic']]],
   ['cljonic_3a_3aiscljoniccollection_11',['IsCljonicCollection',['../conceptcljonic_1_1_is_cljonic_collection.html',1,'cljonic']]],
-  ['cljonic_3a_3aiscljoniclazyiterate_12',['IsCljonicLazyIterate',['../conceptcljonic_1_1_is_cljonic_lazy_iterate.html',1,'cljonic']]],
+  ['cljonic_3a_3aiscljoniciterator_12',['IsCljonicIterator',['../conceptcljonic_1_1_is_cljonic_iterator.html',1,'cljonic']]],
   ['cljonic_3a_3aiscljonicrange_13',['IsCljonicRange',['../conceptcljonic_1_1_is_cljonic_range.html',1,'cljonic']]],
   ['cljonic_3a_3aiscljonicrepeat_14',['IsCljonicRepeat',['../conceptcljonic_1_1_is_cljonic_repeat.html',1,'cljonic']]],
   ['cljonic_3a_3aiscljonicset_15',['IsCljonicSet',['../conceptcljonic_1_1_is_cljonic_set.html',1,'cljonic']]],
