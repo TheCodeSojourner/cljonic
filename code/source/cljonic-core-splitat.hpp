@@ -43,6 +43,8 @@ int main()
 template <typename C>
 constexpr auto SplitAt(const SizeType count, const C& c) noexcept
 {
+    // #lizard forgives -- The length and complexity of this function is acceptable
+
     static_assert(IsCljonicCollection<C>, "SplitAt's second parameter must be a cljonic collection");
 
     using ResultType = typename C::value_type;

@@ -13,6 +13,8 @@ using namespace cljonic::core;
 
 SCENARIO("Concat", "[CljonicCoreConcat]")
 {
+    CHECK(0 == Concat().Count());
+
     constexpr auto a{Array{11, 12, 13, 14}};
     constexpr auto i{Iterate([](const int i) { return 10 * i; }, 1)};
     constexpr auto rng{Range<5>{}};
@@ -20,8 +22,6 @@ SCENARIO("Concat", "[CljonicCoreConcat]")
     constexpr auto set{Set{100, 101}};
     constexpr auto str{String{"Hello"}};
     const auto c{Concat(a, rng, rpt, set, str, Take<3>(i))};
-
-    CHECK(0 == Concat().Count());
 
     CHECK(24 == c.Count());
     CHECK(11 == c[0]);

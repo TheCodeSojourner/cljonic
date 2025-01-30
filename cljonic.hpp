@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan 30 03:16:38 PM MST 2025
+// This file was generated Thu Jan 30 03:49:10 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -1211,11 +1211,11 @@ using ResultType = FindCommonValueType<C, Cs...>;
 
 constexpr auto count{SumOfCljonicCollectionMaximumCounts<C, Cs...>()};
 auto result{Array<ResultType, count>{}};
-const auto MConjCollectionOntoResult = [&](const auto& c) {
+const auto MConjCollectionOnResult = [&](const auto& c) {
 for(const auto& v : c)
 MConj(result, static_cast<ResultType>(v));
 };
-(MConjCollectionOntoResult(c), ..., MConjCollectionOntoResult(cs));
+(MConjCollectionOnResult(c), ..., MConjCollectionOnResult(cs));
 return result;
 }
 
@@ -2477,6 +2477,7 @@ namespace cljonic {
 namespace core {
 template <typename C>
 constexpr auto SplitAt(const SizeType count, const C& c) noexcept {
+
 static_assert(IsCljonicCollection<C>, "SplitAt's second parameter must be a cljonic collection");
 
 using ResultType = typename C::value_type;
