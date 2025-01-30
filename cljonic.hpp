@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan 30 03:49:10 PM MST 2025
+// This file was generated Thu Jan 30 03:51:36 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -1243,8 +1243,8 @@ using ResultType = typename C::value_type;
 constexpr auto count{C::MaximumCount() + sizeof...(Es)};
 auto result{Array<ResultType, count>{}};
 const auto MConjElementOntoResult = [&](const auto& e) { MConj(result, e); };
-for(SizeType i{0}; i < c.Count(); ++i)
-MConjElementOntoResult(c[i]);
+for(const ResultType& v : c)
+MConjElementOntoResult(v);
 (MConjElementOntoResult(es), ...);
 return result;
 }

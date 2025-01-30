@@ -5,6 +5,8 @@
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
 #include "cljonic-core-conj.hpp"
+#include "cljonic-core-iterate.hpp"
+#include "cljonic-core-take.hpp"
 
 using namespace cljonic;
 using namespace cljonic::core;
@@ -21,6 +23,16 @@ SCENARIO("Conj", "[CljonicCoreConj]")
     CHECK(15 == cA[4]);
     CHECK(16 == cA[5]);
     CHECK(0 == cA[6]);
+
+    const auto i{Iterate([](const int i) { return 1 + i; }, 1)};
+    const auto i3{Take<3>(i)};
+    const auto cItr{Conj(i3, 15)};
+    CHECK(4 == cItr.Count());
+    CHECK(1 == cItr[0]);
+    CHECK(2 == cItr[1]);
+    CHECK(3 == cItr[2]);
+    CHECK(15 == cItr[3]);
+    CHECK(0 == cItr[4]);
 
     constexpr auto rng{Range<1, 5>{}};
     constexpr auto cRng{Conj(rng, 15)};
