@@ -53,12 +53,12 @@ constexpr auto Concat(const C& c, const Cs&... cs) noexcept
 
     constexpr auto count{SumOfCljonicCollectionMaximumCounts<C, Cs...>()};
     auto result{Array<ResultType, count>{}};
-    const auto MConjCollectionOntoResult = [&](const auto& c)
+    const auto MConjCollectionOnResult = [&](const auto& c)
     {
         for (const auto& v : c)
             MConj(result, static_cast<ResultType>(v));
     };
-    (MConjCollectionOntoResult(c), ..., MConjCollectionOntoResult(cs));
+    (MConjCollectionOnResult(c), ..., MConjCollectionOnResult(cs));
     return result;
 }
 
