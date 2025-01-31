@@ -5,8 +5,10 @@
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
 #include "cljonic-core-equal.hpp"
+#include "cljonic-core-count.hpp"
 #include "cljonic-core-drop.hpp"
 #include "cljonic-core-iterate.hpp"
+#include "cljonic-core-size.hpp"
 
 using namespace cljonic;
 using namespace cljonic::core;
@@ -26,11 +28,7 @@ SCENARIO("Drop", "[CljonicCoreDrop]")
 
     const auto i{Iterate([](const SizeType i) { return i + 1_sz; }, 1_sz)};
 
-    auto di{Drop(CljonicCollectionMaximumElementCount - 5, i)};
-    CHECK(Equal(Array{CljonicCollectionMaximumElementCount - 4,
-                      CljonicCollectionMaximumElementCount - 3,
-                      CljonicCollectionMaximumElementCount - 2,
-                      CljonicCollectionMaximumElementCount - 1,
-                      CljonicCollectionMaximumElementCount},
-                Drop(CljonicCollectionMaximumElementCount - 5, i)));
+    auto di{Drop(Count(i) - 5, i)};
+    CHECK(Equal(Array{Count(i) - 4, Count(i) - 3, Count(i) - 2, Count(i) - 1, Count(i)}, Drop(Count(i) - 5, i)));
+    CHECK(Equal(Array{Count(i) - 4, Count(i) - 3, Count(i) - 2, Count(i) - 1, Count(i)}, Drop<Size(i) - 5>(i)));
 }
