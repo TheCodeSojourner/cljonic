@@ -13,7 +13,8 @@ namespace core
 /** \anchor Core_DropWhile
 * The \b DropWhile function calls its first parameter, which must be a \b unary \b predicate, with each element of its
 * second parameter, which must be a \b cljonic \b collection. While the call returns true elements are ignored, but
-* the rest of the elements are copied to the result, which is a \b cljonic \b collecion.
+* starting at the first element that returns false the rest of the elements are copied to the result, which is a
+* \b cljonic \b Array.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -23,9 +24,13 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto Even = [](const int i) { return (0 == (i % 2)); };
+    constexpr auto LessThan990 = [](const int i) { return (i < 990); };
 
     constexpr auto a{Array<int, 10>{0, 2, 4, 5, 6, 7, 8, 9}};
     constexpr auto dwA{DropWhile(Even, a)}; // immutable, sparse Array, with 0, 2, and 4
+
+    const auto itr{Iterate([](const int i) { return (i + 1); }, 1)};
+    const auto dwItr{DropWhile(LessThan990, itr)}; // immutable, sparse Array, with 1 to 9
 
     constexpr auto rng{Range<10>{}};
     constexpr auto dwRng{DropWhile(Even, rng)}; // immutable, sparse Array, with 1 to 9
