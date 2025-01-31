@@ -24,7 +24,7 @@ SCENARIO("Drop", "[CljonicCoreDrop]")
     CHECK(Equal(Array<int, 0>{}, Drop(5, Set{'a', 'b'})));
     CHECK(Equal(Array{'l', 'o'}, Drop(3, String{"Hello"})));
 
-    const auto i{Iterate([](const SizeType i) { return i + static_cast<SizeType>(1); }, static_cast<SizeType>(1))};
+    const auto i{Iterate([](const SizeType i) { return i + 1_sz; }, 1_sz)};
 
     auto di{Drop(CljonicCollectionMaximumElementCount - 5, i)};
     CHECK(Equal(Array{CljonicCollectionMaximumElementCount - 4,

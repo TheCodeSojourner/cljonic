@@ -23,6 +23,7 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    const auto itr{Iterate([](const SizeType i) { return i + 1_sz; }, 1_sz)};
     constexpr auto t0{Drop(0, a)};                               // immutable, full Array, with 0 to 9
     constexpr auto t1{Drop(1, a)};                               // immutable, sparse Array, with 1 to 9
     constexpr auto t5{Drop(5, a)};                               // immutable, sparse Array, with 5 to 9
@@ -31,6 +32,7 @@ int main()
     constexpr auto tRpt7{Drop(5, Repeat<7, const char*>{"11"})}; // immutable, sparse Array, with two "11"s
     constexpr auto tSet5{Drop(5, Set{'a', 'b'})};                // immutable, empty Array
     constexpr auto tStr3{Drop(3, String{"Hello"})};              // immutable, sparse Array, with 'l', and 'o'
+    const auto tItr{Drop(Count(itr) - 5, itr)};                  // immutable, sparse Array, with 996 to 1000
 
     // Compiler Error: Drop's second parameter must be a cljonic collection
     // const auto t{Drop(10, "Hello")};

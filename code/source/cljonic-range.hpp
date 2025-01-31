@@ -38,14 +38,14 @@ class Range : public IndexInterface<int>
         if constexpr (sizeof...(StartEndStep) == 1) // Range<end>{}
         {
             if constexpr (values[0] < 0) // end is negative
-                return static_cast<SizeType>(0);
+                return 0_sz;
             else
                 return static_cast<SizeType>(values[0]);
         }
         else if constexpr (sizeof...(StartEndStep) == 2) // Range<start, end>{}
         {
             if constexpr (values[1] <= values[0]) // end is less than or equal to start
-                return static_cast<SizeType>(0);
+                return 0_sz;
             else
                 return static_cast<SizeType>(values[1] - values[0]);
         }
@@ -53,20 +53,20 @@ class Range : public IndexInterface<int>
         {
             // #lizard forgives -- The length and complexity of this function is acceptable
             if constexpr ((0 == values[2]) and (values[0] == values[1])) // step is zero, and start equals end
-                return static_cast<SizeType>(0);
+                return 0_sz;
             else if constexpr (0 == values[2]) // step is zero
                 return CljonicCollectionMaximumElementCount;
             else if constexpr (values[2] < 0) // step is negative
             {
                 if constexpr (values[0] <= values[1]) // start is less than or equal to end
-                    return static_cast<SizeType>(0);
+                    return 0_sz;
                 else
                     return static_cast<SizeType>(RangeCount(values[0], values[1], values[2]));
             }
             else
             {
                 if constexpr (values[1] <= values[0]) // end is less than or equal to start
-                    return static_cast<SizeType>(0);
+                    return 0_sz;
                 else
                     return static_cast<SizeType>(RangeCount(values[0], values[1], values[2]));
             }
