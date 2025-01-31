@@ -44,9 +44,13 @@ constexpr auto Drop(const SizeType count, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Drop's second parameter must be a cljonic collection");
 
-    auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-    for (SizeType i{count}; (i < c.Count()); ++i)
-        MConj(result, c[i]);
+    using ResultType = typename C::value_type;
+    auto result{Array<ResultType, c.MaximumCount()>{}};
+    auto dropCount{MinArgument(count, c.Count())};
+    auto cBegin{c.begin() + dropCount};
+    auto cEnd{c.end()};
+    for (auto it{cBegin}; it != cEnd; ++it)
+        MConj(result, static_cast<ResultType>(*it));
     return result;
 }
 

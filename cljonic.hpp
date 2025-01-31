@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan 30 03:51:36 PM MST 2025
+// This file was generated Fri Jan 31 08:16:06 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -1440,8 +1440,10 @@ constexpr auto Drop(const SizeType count, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Drop's second parameter must be a cljonic collection");
 
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-for(SizeType i{count}; (i < c.Count()); ++i)
-MConj(result, c[i]);
+auto cBegin{c.begin() + count};
+auto cEnd{c.end()};
+for(auto it{cBegin}; it != cEnd; ++it)
+MConj(result, static_cast<ResultType>(*it));
 return result;
 }
 
