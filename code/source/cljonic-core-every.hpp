@@ -58,8 +58,8 @@ constexpr auto Every(F&& f, const C& c) noexcept
                   "Every's function is not a valid unary predicate for the collection value type");
 
     auto result{true};
-    for (SizeType i{0}; (result and (i < c.Count())); ++i)
-        result = f(c[i]);
+    for (auto it{c.begin()}; (result and (it != c.end())); ++it)
+        result = f(*it);
     return result;
 }
 

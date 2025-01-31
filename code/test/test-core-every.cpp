@@ -5,11 +5,13 @@
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
 #include "cljonic-core-every.hpp"
+#include "cljonic-core-iterate.hpp"
 
 using namespace cljonic;
 using namespace cljonic::core;
 
 constexpr auto Less10 = [](const int i) { return i < 10; };
+constexpr auto Less1000 = [](const int i) { return i < 1000; };
 constexpr auto LessP = [](const char c) { return c < 'p'; };
 
 SCENARIO("Every", "[CljonicCoreEvery]")
@@ -17,6 +19,8 @@ SCENARIO("Every", "[CljonicCoreEvery]")
     CHECK(true == Every(Less10, Array<int, 10>{}));
     CHECK(false == Every(Less10, Array{10}));
     CHECK(true == Every(Less10, Array{1, 2, 3}));
+
+    CHECK(true == Every(Less1000, Iterate([](const int i) { return 1 + i; }, 0)));
 
     CHECK(true == Every(Less10, Range<0>{}));
     CHECK(false == Every(Less10, Range<11>{}));
