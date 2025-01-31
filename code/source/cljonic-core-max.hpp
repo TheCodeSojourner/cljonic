@@ -69,7 +69,7 @@ constexpr auto Max(const T& t, const Ts&... ts) noexcept
 
         // ***** CAUTION: C++ Voodoo Ahead *****
         // This code initializes "result" to the value "t" then tests "result" to see if it is less than each element
-        // in the parameter pack "ts", and updates "result" if is less than the element. The "(void)" cast ensures
+        // in the parameter pack "ts", and updates "result" if it is less than the element. The "(void)" cast ensures
         // that the expression is evaluated for its "side effects" only, and the comma operator ensures that this is
         // done for each element in the parameter pack "ts".
         auto result{t};
