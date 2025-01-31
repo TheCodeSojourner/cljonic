@@ -22,11 +22,13 @@ using namespace cljonic::core;
 
 int main()
 {
+    constexpr auto i{Iterate([](const int i) { return 1 + i; }, 11)};
     constexpr auto i0{Interpose(1, Array{11, 12, 13})};            // 11, 1, 12, 1, 13
-    constexpr auto i1{Interpose(7, Range<5>{})};                   // 0, 7, 1, 7, 2, 7, 3, 7, 4
-    constexpr auto i2{Interpose(7, Repeat<4, int>{9})};            // 9, 7, 9, 7, 9, 7, 9
-    constexpr auto i3{Interpose(" ", Set{"One", "Two", "Three"})}; // "One", " ", "Two", " ", "Three"
-    constexpr auto i4{Interpose('-', String{"Hello"})};            // 'H', '-', 'e', '-', 'l', '-', 'l', '-', 'o'
+    const auto i1{Interpose(7, Take<3>(i))};                       // 11, 7, 12, 7, 13
+    constexpr auto i2{Interpose(7, Range<5>{})};                   // 0, 7, 1, 7, 2, 7, 3, 7, 4
+    constexpr auto i3{Interpose(7, Repeat<4, int>{9})};            // 9, 7, 9, 7, 9, 7, 9
+    constexpr auto i4{Interpose(" ", Set{"One", "Two", "Three"})}; // "One", " ", "Two", " ", "Three"
+    constexpr auto i5{Interpose('-', String{"Hello"})};            // 'H', '-', 'e', '-', 'l', '-', 'l', '-', 'o'
 
     // Compiler Error: Interpose's second parameter must be a cljonic collection
     // constexpr auto m{Interpose(4, 4)};
@@ -51,11 +53,12 @@ constexpr auto Interpose(const T& t, const C& c) noexcept
     using ResultType = typename C::value_type;
     constexpr auto collectionMaximumCount{c.MaximumCount()};
     constexpr auto resultMaximumCount{(2 * collectionMaximumCount) - 1};
+    auto cItr{c.begin()};
     auto interposeValue{static_cast<ResultType>(t)};
     auto result{Array<ResultType, resultMaximumCount>{}};
     for (SizeType i{0}; i < collectionMaximumCount; ++i)
     {
-        MConj(result, c[i]);
+        MConj(result, *cItr++);
         MConj(result, interposeValue); // MConj will do nothing if the collection is full
     }
     return result;
