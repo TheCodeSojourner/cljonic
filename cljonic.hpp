@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 31 03:11:52 PM MST 2025
+// This file was generated Fri Jan 31 03:32:09 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -1826,10 +1826,11 @@ static_assert(std::convertible_to<T, typename C::value_type>,
 using ResultType = typename C::value_type;
 constexpr auto collectionMaximumCount{c.MaximumCount()};
 constexpr auto resultMaximumCount{(2 * collectionMaximumCount) - 1};
+auto cItr{c.begin()};
 auto interposeValue{static_cast<ResultType>(t)};
 auto result{Array<ResultType, resultMaximumCount>{}};
 for(SizeType i{0}; i < collectionMaximumCount; ++i) {
-MConj(result, c[i]);
+MConj(result, *cItr++);
 MConj(result, interposeValue);
 }
 return result;
@@ -2010,7 +2011,7 @@ template <typename C>
 constexpr auto Last(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Last's parameter must be a cljonic collection");
 
-return c[(c.Count() > 0) ? (c.Count() - 1) : 0];
+return *(c.begin() + (c.Count() - 1));
 }
 
 }

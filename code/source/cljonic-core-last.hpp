@@ -23,6 +23,9 @@ int main()
     constexpr auto a{Array{11, 12, 13, 14}};
     constexpr auto a0{Last(a)};
 
+    constexpr auto itr{Iterate([](const int i) { return 1 + i; }, 1)};
+    const auto itr0{Last(itr)};
+
     constexpr auto rng{Range<1, 5>{}};
     constexpr auto rng0{Last(rng)};
 
@@ -47,7 +50,7 @@ constexpr auto Last(const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Last's parameter must be a cljonic collection");
 
-    return c[(c.Count() > 0) ? (c.Count() - 1) : 0];
+    return *(c.begin() + (c.Count() - 1));
 }
 
 } // namespace core
