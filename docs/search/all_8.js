@@ -10,5 +10,6 @@ var searchData=
   ['minargument_7',['MinArgument',['../namespacecljonic.html#a710e1fb4834f0a0c570f540e854f2553',1,'cljonic']]],
   ['minby_8',['MinBy',['../namespacecljonic_1_1core.html#ad2473fc34df2b42f0051a905516cf167',1,'cljonic::core']]],
   ['minimumofcljoniccollectionmaximumcounts_9',['MinimumOfCljonicCollectionMaximumCounts',['../namespacecljonic.html#a56236f4c354b1a6cbfe113b26fc17f1d',1,'cljonic']]],
-  ['mset_10',['mset',['../classcljonic_1_1_array.html#a251e2fbaffd2bb63666b3e6f073f30be',1,'cljonic::Array::MSet'],['../namespacecljonic.html#aceff902b062e57806fd1929d323a09c9',1,'cljonic::MSet()']]]
+  ['mptr_10',['mptr',['../classcljonic_1_1_array.html#a57a4fda4ae0bf837cc3c90037c3d62c5',1,'cljonic::Array::MPtr'],['../namespacecljonic.html#a70e1a3d9b004ff3c3e1467b4073a8ed3',1,'cljonic::MPtr()']]],
+  ['mset_11',['mset',['../classcljonic_1_1_array.html#ae9b75b68d2429c6c61b5673d15db65c1',1,'cljonic::Array::MSet'],['../namespacecljonic.html#aceff902b062e57806fd1929d323a09c9',1,'cljonic::MSet()']]]
 ];

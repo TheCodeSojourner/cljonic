@@ -170,7 +170,7 @@ int main()
     const auto r12{Range&lt;100, 0, -10&gt;{}}; // immutable, has ten elements: 100, 90, 80, ... and 10
     const auto r13{Range&lt;10, -10, -1&gt;{}}; // immutable, has twenty elements: 10, 9, ..., 0, -1, ... -9
 </pre><p> Compiler Error: Number of <a class="el" href="classcljonic_1_1_range.html">Range</a> parameters must be less than or equal to three const auto r{<a class="el" href="classcljonic_1_1_range.html">Range</a>&lt;10, -10, -1, 1&gt;{}};</p>
-<p>Compiler Error: Attempt to create a <a class="el" href="classcljonic_1_1_range.html">Range</a> bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT const auto r{<a class="el" href="classcljonic_1_1_range.html">Range</a>&lt;-11111, 11111&gt;{}}; </p><pre class="fragment">    return 0;
+<p>Compiler Error: Attempt to create a <a class="el" href="classcljonic_1_1_range.html">Range</a> bigger than CljonicCollectionMaximumElementCount const auto r{<a class="el" href="classcljonic_1_1_range.html">Range</a>&lt;-11111, 11111&gt;{}}; </p><pre class="fragment">    return 0;
 }
 ~~~~~
 </pre> 
@@ -529,7 +529,7 @@ template&lt;int... StartEndStep&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 30 2025 09:39:44 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Jan 31 2025 11:52:08 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

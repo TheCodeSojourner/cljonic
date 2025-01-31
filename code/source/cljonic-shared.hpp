@@ -19,8 +19,6 @@ class IndexInterface
     virtual constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept = 0;
 };
 
-constexpr auto CLJONIC_INVALID_INDEX{std::numeric_limits<SizeType>::max()};
-
 template <typename F, typename T, typename U>
 constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept
 {

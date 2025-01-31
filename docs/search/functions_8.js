@@ -10,5 +10,6 @@ var searchData=
   ['minargument_7',['MinArgument',['../namespacecljonic.html#a710e1fb4834f0a0c570f540e854f2553',1,'cljonic']]],
   ['minby_8',['MinBy',['../namespacecljonic_1_1core.html#ad2473fc34df2b42f0051a905516cf167',1,'cljonic::core']]],
   ['minimumofcljoniccollectionmaximumcounts_9',['MinimumOfCljonicCollectionMaximumCounts',['../namespacecljonic.html#a56236f4c354b1a6cbfe113b26fc17f1d',1,'cljonic']]],
-  ['mset_10',['MSet',['../namespacecljonic.html#aceff902b062e57806fd1929d323a09c9',1,'cljonic']]]
+  ['mptr_10',['MPtr',['../namespacecljonic.html#a70e1a3d9b004ff3c3e1467b4073a8ed3',1,'cljonic']]],
+  ['mset_11',['MSet',['../namespacecljonic.html#aceff902b062e57806fd1929d323a09c9',1,'cljonic']]]
 ];

@@ -18,7 +18,7 @@ SCENARIO("LastIndexOf", "[CljonicCoreLastIndexOf]")
     constexpr auto b{Array{11}};
     CHECK(0 == LastIndexOf(b, 11));
 
-    CHECK(CLJONIC_INVALID_INDEX == LastIndexOf(Range<0>{}, 3));
+    CHECK(CljonicInvalidIndex == LastIndexOf(Range<0>{}, 3));
     CHECK(3 == LastIndexOf(Repeat<4, int>{11}, 11));
     CHECK(2 == LastIndexOf(Set{11, 14, 13, 14}, 13));
     CHECK(2 == LastIndexOf(String{"adcb"}, 'c'));

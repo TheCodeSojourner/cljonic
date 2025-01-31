@@ -77,13 +77,14 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">cljonic-collection-maximum-element-count.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;cstddef&gt;</code><br />
+<code>#include &lt;limits&gt;</code><br />
 </div>
 <p><a href="cljonic-collection-maximum-element-count_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -92,42 +93,27 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespacecljonic" id="r_namespacecljonic"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html">cljonic</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a3de5728cfb3d964bf6b7c08224c174ad" id="r_a3de5728cfb3d964bf6b7c08224c174ad"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cljonic-collection-maximum-element-count_8hpp.html#a3de5728cfb3d964bf6b7c08224c174ad">CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT</a>&#160;&#160;&#160;1000</td></tr>
-<tr class="separator:a3de5728cfb3d964bf6b7c08224c174ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a76526d15a807537c1e579316289a1def" id="r_a76526d15a807537c1e579316289a1def"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">using</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">cljonic::SizeType</a> = std::size_t</td></tr>
 <tr class="separator:a76526d15a807537c1e579316289a1def"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a98499676c3712e49726853bdbc3dcc23" id="r_a98499676c3712e49726853bdbc3dcc23"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a98499676c3712e49726853bdbc3dcc23">cljonic::operator&quot;&quot;_sz</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">unsigned</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">long</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">long</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">int</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">value</a>)</td></tr>
+<tr class="separator:a98499676c3712e49726853bdbc3dcc23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:abcf5bef4b62f3bbeca2bfdce3499f6e3" id="r_abcf5bef4b62f3bbeca2bfdce3499f6e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#abcf5bef4b62f3bbeca2bfdce3499f6e3">cljonic::CljonicCollectionMaximumElementCount</a> {<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">static_cast</a>&lt;<a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a>&gt;(<a class="el" href="cljonic-collection-maximum-element-count_8hpp.html#a3de5728cfb3d964bf6b7c08224c174ad">CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT</a>)}</td></tr>
+<tr class="memitem:abcf5bef4b62f3bbeca2bfdce3499f6e3" id="r_abcf5bef4b62f3bbeca2bfdce3499f6e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#abcf5bef4b62f3bbeca2bfdce3499f6e3">cljonic::CljonicCollectionMaximumElementCount</a> {1000_sz}</td></tr>
 <tr class="separator:abcf5bef4b62f3bbeca2bfdce3499f6e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac39c33a6bd2eef2aba216db4ff0275fd" id="r_ac39c33a6bd2eef2aba216db4ff0275fd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#ac39c33a6bd2eef2aba216db4ff0275fd">cljonic::CljonicInvalidIndex</a> {std::numeric_limits&lt;<a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a>&gt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">::max</a>()}</td></tr>
+<tr class="separator:ac39c33a6bd2eef2aba216db4ff0275fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a3de5728cfb3d964bf6b7c08224c174ad" name="a3de5728cfb3d964bf6b7c08224c174ad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3de5728cfb3d964bf6b7c08224c174ad">&#9670;&#160;</a></span>CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT&#160;&#160;&#160;1000</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="cljonic-collection-maximum-element-count_8hpp_source.html#l00007">7</a> of file <a class="el" href="cljonic-collection-maximum-element-count_8hpp_source.html">cljonic-collection-maximum-element-count.hpp</a>.</p>
-
-</div>
-</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 30 2025 09:39:44 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Jan 31 2025 11:52:08 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

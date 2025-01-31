@@ -16,12 +16,13 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 31 11:45:41 AM MST 2025
+// This file was generated Fri Jan 31 11:52:08 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 
 #include <cstddef>
+#include <limits>
 
 namespace cljonic {
 
@@ -32,6 +33,8 @@ return static_cast<SizeType>(value);
 }
 
 constexpr auto CljonicCollectionMaximumElementCount{1000_sz};
+
+constexpr auto CljonicInvalidIndex{std::numeric_limits<SizeType>::max()};
 
 } // namespace cljonic
 
@@ -247,8 +250,6 @@ virtual constexpr SizeType Count() const noexcept = 0;
 virtual constexpr T operator[](const SizeType index) const noexcept = 0;
 virtual constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept = 0;
 };
-
-constexpr auto CLJONIC_INVALID_INDEX{std::numeric_limits<SizeType>::max()};
 
 template <typename F, typename T, typename U>
 constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept {
@@ -1704,7 +1705,7 @@ template <typename T>
 constexpr auto Inc(const T t) noexcept {
 static_assert(IsArithmetic<T>, "Inc's parameter must be an arithmetic type");
 
-return (std::numeric_limits<T>::max() == t) ? t : (t + 1);
+return (std::numeric_limits<T>::max() == t) ? t : (t + static_cast<T>(1));
 }
 
 }
@@ -1726,8 +1727,8 @@ static_assert((not std::floating_point<typename C::value_type>) and (not std::fl
 static_assert(std::convertible_to<T, typename C::value_type>,
               "IndexOf's second parameter must be convertible to the collection value type");
 
-auto result{CLJONIC_INVALID_INDEX};
-for(SizeType i{0}; ((CLJONIC_INVALID_INDEX == result) and (i < c.Count())); ++i)
+auto result{CljonicInvalidIndex};
+for(SizeType i{0}; ((CljonicInvalidIndex == result) and (i < c.Count())); ++i)
 if(AreEqual(c[i], t))
 result = i;
 return result;
@@ -1751,8 +1752,8 @@ static_assert(IsBinaryPredicate<std::decay_t<F>, typename C::value_type, typenam
 static_assert(std::convertible_to<T, typename C::value_type>,
               "IndexOfBy's third parameter must be convertible to the collection value type");
 
-auto result{CLJONIC_INVALID_INDEX};
-for(SizeType i{0}; ((CLJONIC_INVALID_INDEX == result) and (i < c.Count())); ++i)
+auto result{CljonicInvalidIndex};
+for(SizeType i{0}; ((CljonicInvalidIndex == result) and (i < c.Count())); ++i)
 if(f(c[i], t))
 result = i;
 return result;
@@ -2018,8 +2019,8 @@ static_assert(not std::floating_point<T>,
               "LastIndexOf should not compare floating point types for equality. Consider using LastIndexOfBy to "
               "override this default.");
 
-auto result{CLJONIC_INVALID_INDEX};
-for(SizeType nextIndex{c.Count()}; ((CLJONIC_INVALID_INDEX == result) and (nextIndex > 0)); --nextIndex)
+auto result{CljonicInvalidIndex};
+for(SizeType nextIndex{c.Count()}; ((CljonicInvalidIndex == result) and (nextIndex > 0)); --nextIndex)
 if(AreEqual(c[nextIndex - 1], t))
 result = nextIndex - 1;
 return result;
@@ -2043,8 +2044,8 @@ static_assert(std::equality_comparable_with<typename C::value_type, T>,
 static_assert(IsBinaryPredicate<F, typename C::value_type, T>,
               "LastIndexOfBy's first parameter is not a valid binary predicate for the collection value type");
 
-auto result{CLJONIC_INVALID_INDEX};
-for(SizeType nextIndex{c.Count()}; ((CLJONIC_INVALID_INDEX == result) and (nextIndex > 0)); --nextIndex)
+auto result{CljonicInvalidIndex};
+for(SizeType nextIndex{c.Count()}; ((CljonicInvalidIndex == result) and (nextIndex > 0)); --nextIndex)
 if(f(c[nextIndex - 1], t))
 result = nextIndex - 1;
 return result;

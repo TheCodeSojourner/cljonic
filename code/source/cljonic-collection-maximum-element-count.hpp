@@ -2,6 +2,7 @@
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 
 #include <cstddef>
+#include <limits>
 
 namespace cljonic
 {
@@ -14,6 +15,8 @@ constexpr SizeType operator"" _sz(unsigned long long int value)
 }
 
 constexpr auto CljonicCollectionMaximumElementCount{1000_sz};
+
+constexpr auto CljonicInvalidIndex{std::numeric_limits<SizeType>::max()};
 
 } // namespace cljonic
 

@@ -169,7 +169,7 @@ int main()
     const auto s6{Set{1, 2, 1, 4}};               // immutable, full of three unique int values
 </pre><p> Compiler Error: Floating point types should not be compared for equality, hence Sets of floating point types are not allowed const auto s{<a class="el" href="classcljonic_1_1_set.html">Set</a>{1.1, 2.2}};</p>
 <p>Compiler Error: A <a class="el" href="classcljonic_1_1_set.html">Set</a> type must be equality comparable const auto s{Set&lt;NonComparable, 10&gt;{}};</p>
-<p>Compiler Error: Attempt to create a <a class="el" href="classcljonic_1_1_set.html">Set</a> bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT const auto s{Set&lt;int, 1111&gt;{}}; </p><pre class="fragment">    return 0;
+<p>Compiler Error: Attempt to create a <a class="el" href="classcljonic_1_1_set.html">Set</a> bigger than CljonicCollectionMaximumElementCount const auto s{Set&lt;int, 1111&gt;{}}; </p><pre class="fragment">    return 0;
 }
 ~~~~~
 </pre> 
@@ -658,7 +658,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 30 2025 09:39:44 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Jan 31 2025 11:52:08 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

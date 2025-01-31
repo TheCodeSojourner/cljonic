@@ -13,7 +13,7 @@ namespace core
 /** \anchor Core_LastIndexOf
 * The \b LastIndexOf function returns the index of the last value in its first parameter, which must be a \b cljonic
 * \b collection, that equals the value of its second parameter. If the first parameter has no value equal to the second
-* parameter then \b LastIndexOf returns the value \b CLJONIC_INVALID_INDEX.
+* parameter then \b LastIndexOf returns the value \b CljonicInvalidIndex.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -28,7 +28,7 @@ int main()
     constexpr auto b{Array{11}};
     constexpr auto lastIndexOfB{LastIndexOf(b, 11)}; // 0
 
-    constexpr auto lastIndexOfRng{LastIndexOf(Range<0>{}, 3)};                           // CLJONIC_INVALID_INDEX
+    constexpr auto lastIndexOfRng{LastIndexOf(Range<0>{}, 3)};                           // CljonicInvalidIndex
     constexpr auto lastIndexOfRpt{LastIndexOf(Repeat<4, int>{11}, 11)};                  // 3
     constexpr auto lastIndexOfSet{LastIndexOf(Set{11, 14, 13, 14}, 13)};                 // 2
     constexpr auto lastIndexOfStr{LastIndexOf(String{"adcb"}, 'c')};                     // 2
@@ -67,8 +67,8 @@ constexpr auto LastIndexOf(const C& c, const T& t) noexcept
                   "LastIndexOf should not compare floating point types for equality. Consider using LastIndexOfBy to "
                   "override this default.");
 
-    auto result{CLJONIC_INVALID_INDEX};
-    for (SizeType nextIndex{c.Count()}; ((CLJONIC_INVALID_INDEX == result) and (nextIndex > 0)); --nextIndex)
+    auto result{CljonicInvalidIndex};
+    for (SizeType nextIndex{c.Count()}; ((CljonicInvalidIndex == result) and (nextIndex > 0)); --nextIndex)
         if (AreEqual(c[nextIndex - 1], t))
             result = nextIndex - 1;
     return result;

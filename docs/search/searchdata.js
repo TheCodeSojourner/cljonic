@@ -11,8 +11,7 @@ var indexSectionsWithContent =
   8: "acirs",
   9: "m",
   10: "c",
-  11: "c",
-  12: "c"
+  11: "c"
 };
 
 var indexSectionNames =
@@ -27,9 +26,8 @@ var indexSectionNames =
   7: "enums",
   8: "enumvalues",
   9: "related",
-  10: "defines",
-  11: "pages",
-  12: "concepts"
+  10: "pages",
+  11: "concepts"
 };
 
 var indexSectionLabels =
@@ -44,8 +42,7 @@ var indexSectionLabels =
   7: "Enumerations",
   8: "Enumerator",
   9: "Friends",
-  10: "Macros",
-  11: "Pages",
-  12: "Concepts"
+  10: "Pages",
+  11: "Concepts"
 };
 

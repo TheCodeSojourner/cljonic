@@ -13,7 +13,7 @@ namespace core
 * The \b IndexOfBy function calls its first parameter, which must be a \b binary \b predicate, with each element of its
 * second parameter, which must be a \b cljonic \b collection, and its third parameter, and if the result is true the
 * index of the second parameter element is immediately returned. If the first parameter never returns true then
-* \b CLJONIC_INVALID_INDEX is returned.
+* \b CljonicInvalidIndex is returned.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -31,7 +31,7 @@ int main()
     constexpr auto iobRng{IndexOfBy(SameInts, rng, 4)}; // 4
 
     constexpr auto rpt{Repeat<10, int>{1}};
-    constexpr auto iobRpt{IndexOfBy(SameInts, rpt, 9)}; // CLJONIC_INVALID_INDEX
+    constexpr auto iobRpt{IndexOfBy(SameInts, rpt, 9)}; // CljonicInvalidIndex
 
     constexpr auto s{Set<int, 4>{1, 2, 3, 4, 5, 6}};
     constexpr auto iobS{IndexOfBy(SameInts, s, 4)}; // 3
@@ -64,8 +64,8 @@ constexpr auto IndexOfBy(F&& f, const C& c, const T& t) noexcept
     static_assert(std::convertible_to<T, typename C::value_type>,
                   "IndexOfBy's third parameter must be convertible to the collection value type");
 
-    auto result{CLJONIC_INVALID_INDEX};
-    for (SizeType i{0}; ((CLJONIC_INVALID_INDEX == result) and (i < c.Count())); ++i)
+    auto result{CljonicInvalidIndex};
+    for (SizeType i{0}; ((CljonicInvalidIndex == result) and (i < c.Count())); ++i)
         if (f(c[i], t))
             result = i;
     return result;
