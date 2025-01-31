@@ -25,17 +25,19 @@ int main()
     constexpr auto EBF = [](const int a, const int b) { return a == b; };
     constexpr auto a{Array{1, 1, 1, 1}};
     constexpr auto a13{Array{1, 2, 3}};
+    const auto itr{Take<3>(Iterate([](const int i) { return 1 + i; }, 1))};
     constexpr auto r14{Range<1, 4>{}};
     constexpr auto r04{Range<4>{}};
     constexpr auto r{Repeat<4, int>{1}};
     constexpr auto b0{EqualBy(EBF, 1, 1)};     // true
     constexpr auto b1{EqualBy(EBF, 1, 2)};     // false
     constexpr auto b2{EqualBy(EBF, a)};        // true whenever one parameter is specified
-    constexpr auto b3{EqualBy(EBF, a, r)};     // true
-    constexpr auto b4{EqualBy(EBF, a, a13)};   // false
+    const auto b3{EqualBy(EBF, a, itr)};       // true
+    constexpr auto b4{EqualBy(EBF, a, r)};     // true
     constexpr auto b5{EqualBy(EBF, a, a13)};   // false
-    constexpr auto b6{EqualBy(EBF, r14, a13)}; // true
-    constexpr auto b7{EqualBy(EBF, r04, a)};   // false
+    constexpr auto b6{EqualBy(EBF, a, a13)};   // false
+    constexpr auto b7{EqualBy(EBF, r14, a13)}; // true
+    constexpr auto b8{EqualBy(EBF, r04, a)};   // false
 
     // Compiler Error: no matching function for call
     // constexpr auto b{EqualBy(EBF)}; // Compiler Error: Must specify at least two parameters

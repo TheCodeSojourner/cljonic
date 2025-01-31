@@ -24,6 +24,7 @@ int main()
     constexpr auto a2{Array<int, 10>{1, 2, 3, 4}};
     constexpr auto a3{Array{0, 1, 2, 3, 4}};
     constexpr auto a4{Array{0}};
+    const auto itr{Take<5>(Iterate([](const int i) { return 1 + i; }, 0))};
     constexpr auto ra1{Range<1>{}};
     constexpr auto re1{Repeat<1, int>{0}};
     constexpr auto s1{Set{1, 2, 3}};
@@ -31,12 +32,13 @@ int main()
     constexpr auto str2{String<3>{'a', 'b', 'c'}};
     constexpr auto e0{Equal(a1, a2)};          // true
     constexpr auto e1{Equal(1, 2)};            // false
-    constexpr auto e2{Equal(Range{})};         // true
-    constexpr auto e3{Equal(Range<5>{}, a3)};  // true
-    constexpr auto e4{Equal(Range<10>{}, a3)}; // false
-    constexpr auto e5{Equal(s1, s1)};          // true
-    constexpr auto e6{Equal(str1, str2)};      // true
-    constexpr auto e7{Equal(a4, ra1, re1)};    // true
+    const auto e2{Equal(a3, itr)};         // true
+    constexpr auto e3{Equal(Range{})};         // true
+    constexpr auto e4{Equal(Range<5>{}, a3)};  // true
+    constexpr auto e5{Equal(Range<10>{}, a3)}; // false
+    constexpr auto e6{Equal(s1, s1)};          // true
+    constexpr auto e7{Equal(str1, str2)};      // true
+    constexpr auto e8{Equal(a4, ra1, re1)};    // true
 
     // Compiler Error: Equal should not compare floating point types for equality. Consider using EqualBy to override
     //                 this default.

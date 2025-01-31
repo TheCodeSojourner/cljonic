@@ -24,6 +24,9 @@ int main()
     constexpr auto a{Array{11, 12, 13, 14}};
     constexpr auto cA{Conj(a, 15, 16)};
 
+    const auto itr{Take<5>(Iterate([](const int i) { return 1 + i; }, 1))};
+    const auto cItr{Conj(itr, 15)};
+
     constexpr auto rng{Range<1, 5>{}};
     constexpr auto cRng{Conj(rng, 15)};
 
@@ -34,8 +37,8 @@ int main()
     constexpr auto cSet{Conj(set, 15)};
 
     constexpr auto str{String{"Hello"}};
-    constexpr auto cStr{Conj(str)};;
-    constexpr auto cStrBang{Conj(str, '!', '!', '!')};;
+    constexpr auto cStr{Conj(str)};
+    constexpr auto cStrBang{Conj(str, '!', '!', '!')};
 
     // Compiler Error: First Conj parameter must be a cljonic collection
     // const auto c{Conj("Hello", '!')};

@@ -23,6 +23,7 @@ int main()
 {
     constexpr auto Less10 = [](const int i) { return i < 10; };
     constexpr auto LessP = [](const char c) { return c < 'p'; };
+    constexpr auto IncI = [](const int i) { return 1 + i; };
     constexpr auto b0{Every(Less10, Array<int, 10>{})};    // true when empty Array
     constexpr auto b1{Every(Less10, Array{10})};           // false
     constexpr auto b2{Every(Less10, Array{1, 2, 3})};      // true
@@ -38,6 +39,7 @@ int main()
     constexpr auto b12{Every(LessP, String{""})};          // true when empty String
     constexpr auto b13{Every(LessP, String{"xyz"})};       // false
     constexpr auto b14{Every(LessP, String{"hello"})};     // true
+    const auto b15{Every(Less10, Iterate(IncI, 0))};
 
     // Compiler Error: Every's second parameter must be a cljonic collection
     // constexpr auto b{Every(Less10, "Hello")};

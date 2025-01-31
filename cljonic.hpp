@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 31 10:48:31 AM MST 2025
+// This file was generated Fri Jan 31 11:22:28 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -1622,8 +1622,8 @@ static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
               "Every's function is not a valid unary predicate for the collection value type");
 
 auto result{true};
-for(SizeType i{0}; (result and (i < c.Count())); ++i)
-result = f(c[i]);
+for(auto it{c.begin()}; (result and (it != c.end())); ++it)
+result = f(*it);
 return result;
 }
 
