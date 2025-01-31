@@ -64,6 +64,14 @@ class Iterator
             return result;
         }
 
+        // CAUTION: This operator assumes it will only ever be called like this = (end() - n)
+        Itr operator-(SizeType n) const
+        {
+            auto result{*this};
+            result.m_index = (m_index > n) ? (m_index - n) : 0;
+            return result;
+        }
+
         bool operator!=(const Itr& other) const
         {
             return m_index != other.m_index;

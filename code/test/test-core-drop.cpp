@@ -28,7 +28,6 @@ SCENARIO("Drop", "[CljonicCoreDrop]")
 
     const auto i{Iterate([](const SizeType i) { return i + 1_sz; }, 1_sz)};
 
-    auto di{Drop(Count(i) - 5, i)};
     CHECK(Equal(Array{Count(i) - 4, Count(i) - 3, Count(i) - 2, Count(i) - 1, Count(i)}, Drop(Count(i) - 5, i)));
     CHECK(Equal(Array{Count(i) - 4, Count(i) - 3, Count(i) - 2, Count(i) - 1, Count(i)}, Drop<Size(i) - 5>(i)));
 }

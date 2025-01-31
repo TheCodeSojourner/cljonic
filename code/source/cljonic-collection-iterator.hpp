@@ -42,9 +42,22 @@ class CollectionIterator
 
     constexpr CollectionIterator operator+(SizeType value) const noexcept
     {
-        CollectionIterator temp = *this;
-        temp += value;
-        return temp;
+        auto result{*this};
+        result += value;
+        return result;
+    }
+
+    constexpr CollectionIterator& operator-=(SizeType value) noexcept
+    {
+        m_index -= value;
+        return *this;
+    }
+
+    constexpr CollectionIterator operator-(SizeType value) const noexcept
+    {
+        auto result{*this};
+        result -= value;
+        return result;
     }
 }; // CollectionIterator
 

@@ -23,6 +23,7 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    const auto itr{Iterate([](const SizeType i) { return i + 1_sz; }, 1_sz)};
     constexpr auto t0{DropLast(0, a)};                               // immutable, full Array, with 0 to 9
     constexpr auto t1{DropLast(1, a)};                               // immutable, sparse Array, with 0 to 8
     constexpr auto t5{DropLast(5, a)};                               // immutable, sparse Array, with 0 to 4
@@ -31,9 +32,14 @@ int main()
     constexpr auto tRpt7{DropLast(5, Repeat<7, const char*>{"11"})}; // immutable, sparse Array, with two "11"s
     constexpr auto tSet5{DropLast(5, Set{'a', 'b'})};                // immutable, empty Array
     constexpr auto tStr3{DropLast(3, String{"Hello"})};              // immutable, sparse Array, with 'H', and 'e'
+    const auto tItr{DropLast(Count(itr) - 5, itr)};                  // immutable, sparse Array, with 1 to 5
+    const auto ttItr{DropLast<Size(itr) - 5>(itr)};                  // same as tItr, but Size is only 5 and it is full
 
     // Compiler Error: DropLast's second parameter must be a cljonic collection
     // constexpr auto t{DropLast(10, "Hello")};
+
+    // Compiler Error: DropLast's parameter must be a cljonic collection
+    // constexpr auto t{DropLast<10>("Hello")};
 
     return 0;
 }
@@ -44,10 +50,27 @@ constexpr auto DropLast(const SizeType count, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "DropLast's second parameter must be a cljonic collection");
 
-    auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-    auto endIndex{(count > c.Count()) ? 0 : (c.Count() - count)};
-    for (SizeType i{0}; (i < endIndex); ++i)
-        MConj(result, c[i]);
+    using ResultType = typename C::value_type;
+    auto result{Array<ResultType, c.MaximumCount()>{}};
+    auto cBegin(c.begin());
+    auto cEnd{(count > c.Count()) ? cBegin : (c.end() - count)};
+    for (auto it{cBegin}; it != cEnd; ++it)
+        MConj(result, static_cast<ResultType>(*it));
+    return result;
+}
+
+template <SizeType N, typename C>
+constexpr auto DropLast(const C& c) noexcept
+{
+    static_assert(IsCljonicCollection<C>, "DropLast's parameter must be a cljonic collection");
+
+    using ResultType = typename C::value_type;
+    constexpr auto resultMaximumCount{(N > c.MaximumCount()) ? 0 : (c.MaximumCount() - N)};
+    auto result{Array<ResultType, resultMaximumCount>{}};
+    auto cBegin(c.begin());
+    auto cEnd{(N > c.Count()) ? cBegin : (c.end() - N)};
+    for (auto it{cBegin}; it != cEnd; ++it)
+        MConj(result, static_cast<ResultType>(*it));
     return result;
 }
 

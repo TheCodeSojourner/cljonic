@@ -46,6 +46,9 @@ int main()
     // Compiler Error: Drop's second parameter must be a cljonic collection
     // const auto t{Drop(10, "Hello")};
 
+    // Compiler Error: Drop's parameter must be a cljonic collection
+    // const auto t{Drop<10>("Hello")};
+
     return 0;
 }
 ~~~~~

@@ -16,22 +16,22 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 31 08:16:06 AM MST 2025
+// This file was generated Fri Jan 31 10:32:00 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 
 #include <cstddef>
 
-#ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
-#define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT 1000
-#endif
-
 namespace cljonic {
 
 using SizeType = std::size_t;
 
-constexpr auto CljonicCollectionMaximumElementCount{static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+constexpr SizeType operator"" _sz(unsigned long long int value) {
+return static_cast<SizeType>(value);
+}
+
+constexpr auto CljonicCollectionMaximumElementCount{1000_sz};
 
 } // namespace cljonic
 
@@ -68,9 +68,20 @@ return *this;
 }
 
 constexpr CollectionIterator operator+(SizeType value) const noexcept {
-CollectionIterator temp = *this;
-temp += value;
-return temp;
+auto result{*this};
+result += value;
+return result;
+}
+
+constexpr CollectionIterator& operator-=(SizeType value) noexcept {
+m_index -= value;
+return *this;
+}
+
+constexpr CollectionIterator operator-(SizeType value) const noexcept {
+auto result{*this};
+result -= value;
+return result;
 }
 };
 
@@ -676,6 +687,12 @@ for(SizeType i{0}; (i < n) and (result.m_index < Iterator::MaximumCount()); ++i)
 return result;
 }
 
+Itr operator-(SizeType n) const {
+auto result{*this};
+result.m_index = (m_index > n) ? (m_index - n) : 0;
+return result;
+}
+
 bool operator!=(const Itr& other) const {
 return m_index != other.m_index;
 }
@@ -741,28 +758,28 @@ static constexpr int values[] = {StartEndStep...};
 static constexpr auto MaxElements = []() constexpr {
 if constexpr(sizeof...(StartEndStep) == 1) {
 if constexpr(values[0] < 0)
-return static_cast<SizeType>(0);
+return 0_sz;
 else
 return static_cast<SizeType>(values[0]);
 } else if constexpr(sizeof...(StartEndStep) == 2) {
 if constexpr(values[1] <= values[0])
-return static_cast<SizeType>(0);
+return 0_sz;
 else
 return static_cast<SizeType>(values[1] - values[0]);
 } else if constexpr(sizeof...(StartEndStep) == 3) {
 
 if constexpr((0 == values[2]) and (values[0] == values[1]))
-return static_cast<SizeType>(0);
+return 0_sz;
 else if constexpr(0 == values[2])
 return CljonicCollectionMaximumElementCount;
 else if constexpr(values[2] < 0) {
 if constexpr(values[0] <= values[1])
-return static_cast<SizeType>(0);
+return 0_sz;
 else
 return static_cast<SizeType>(RangeCount(values[0], values[1], values[2]));
 } else {
 if constexpr(values[1] <= values[0])
-return static_cast<SizeType>(0);
+return 0_sz;
 else
 return static_cast<SizeType>(RangeCount(values[0], values[1], values[2]));
 }
@@ -1439,9 +1456,25 @@ template <typename C>
 constexpr auto Drop(const SizeType count, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Drop's second parameter must be a cljonic collection");
 
-auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-auto cBegin{c.begin() + count};
+using ResultType = typename C::value_type;
+auto dropCount{MinArgument(count, c.Count())};
+auto cBegin{c.begin() + dropCount};
 auto cEnd{c.end()};
+auto result{Array<ResultType, c.MaximumCount()>{}};
+for(auto it{cBegin}; it != cEnd; ++it)
+MConj(result, static_cast<ResultType>(*it));
+return result;
+}
+
+template <SizeType N, typename C>
+constexpr auto Drop(const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "Drop's parameter must be a cljonic collection");
+
+using ResultType = typename C::value_type;
+constexpr auto dropCount{MinArgument(N, c.Count())};
+auto cBegin{c.begin() + dropCount};
+auto cEnd{c.end()};
+auto result{Array<ResultType, (c.MaximumCount() - dropCount)>{}};
 for(auto it{cBegin}; it != cEnd; ++it)
 MConj(result, static_cast<ResultType>(*it));
 return result;
@@ -1458,10 +1491,26 @@ template <typename C>
 constexpr auto DropLast(const SizeType count, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "DropLast's second parameter must be a cljonic collection");
 
-auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-auto endIndex{(count > c.Count()) ? 0 : (c.Count() - count)};
-for(SizeType i{0}; (i < endIndex); ++i)
-MConj(result, c[i]);
+using ResultType = typename C::value_type;
+auto result{Array<ResultType, c.MaximumCount()>{}};
+auto cBegin(c.begin());
+auto cEnd{(count > c.Count()) ? cBegin : (c.end() - count)};
+for(auto it{cBegin}; it != cEnd; ++it)
+MConj(result, static_cast<ResultType>(*it));
+return result;
+}
+
+template <SizeType N, typename C>
+constexpr auto DropLast(const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "DropLast's parameter must be a cljonic collection");
+
+using ResultType = typename C::value_type;
+constexpr auto resultMaximumCount{(N > c.MaximumCount()) ? 0 : (c.MaximumCount() - N)};
+auto result{Array<ResultType, resultMaximumCount>{}};
+auto cBegin(c.begin());
+auto cEnd{(N > c.Count()) ? cBegin : (c.end() - N)};
+for(auto it{cBegin}; it != cEnd; ++it)
+MConj(result, static_cast<ResultType>(*it));
 return result;
 }
 
