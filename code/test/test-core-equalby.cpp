@@ -6,6 +6,8 @@
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
 #include "cljonic-core-equalby.hpp"
+#include "cljonic-core-iterate.hpp"
+#include "cljonic-core-take.hpp"
 
 using namespace cljonic;
 using namespace cljonic::core;
@@ -598,5 +600,11 @@ SCENARIO("EqualBy", "[CljonicCoreEqualBy]")
         CHECK(false == EqualBy(EBFi, Range<1>{}, Array{0}, Repeat<2, int>{0}));
         CHECK(false == EqualBy(EBFi, Array{4, 4, 4}, Repeat<4, int>{4}));
         CHECK(false == EqualBy(EBFi, Array{4, 4, 4, 4}, Repeat<4, int>{5}));
+    }
+
+    {
+        CHECK(true == EqualBy(EBFi, Take(5, Iterate([](const int i) { return 1 + i; }, 0)), Array{0, 1, 2, 3, 4}));
+        CHECK(true == EqualBy(EBFi, Take(5, Iterate([](const int i) { return 1 + i; }, 0)), Range<5>{}));
+        CHECK(true == EqualBy(EBFi, Take(5, Iterate([](const int i) { return i; }, 11)), Repeat<5, int>{11}));
     }
 }
