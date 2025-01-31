@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 31 03:32:09 PM MST 2025
+// This file was generated Fri Jan 31 04:20:00 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -34,7 +34,7 @@ return static_cast<SizeType>(value);
 
 constexpr auto CljonicCollectionMaximumElementCount{1000_sz};
 
-constexpr auto CljonicInvalidIndex{std::numeric_limits<SizeType>::max()};
+constexpr auto CljonicInvalidIndex{CljonicCollectionMaximumElementCount};
 
 } // namespace cljonic
 
@@ -65,6 +65,11 @@ constexpr CollectionIterator operator++(int) noexcept {
 auto result{*this};
 ++(*this);
 return result;
+}
+
+constexpr CollectionIterator& operator--() noexcept {
+--m_index;
+return *this;
 }
 
 constexpr bool operator!=(const CollectionIterator& other) const noexcept {
@@ -2037,11 +2042,23 @@ static_assert(not std::floating_point<T>,
               "LastIndexOf should not compare floating point types for equality. Consider using LastIndexOfBy to "
               "override this default.");
 
+if constexpr(IsCljonicIterator<C>) {
 auto result{CljonicInvalidIndex};
-for(SizeType nextIndex{c.Count()}; ((CljonicInvalidIndex == result) and (nextIndex > 0)); --nextIndex)
-if(AreEqual(c[nextIndex - 1], t))
+auto cBegin{c.begin()};
+auto cEnd{c.end()};
+auto index{0};
+for(auto& it{cBegin}; it != cEnd; ++index, ++it)
+if(AreEqual(*it, t))
+result = index;
+return result;
+} else {
+auto result{CljonicInvalidIndex};
+auto cIt{c.end() - 1};
+for(SizeType nextIndex{c.Count()}; ((CljonicInvalidIndex == result) and (nextIndex > 0)); --cIt, --nextIndex)
+if(AreEqual(*cIt, t))
 result = nextIndex - 1;
 return result;
+}
 }
 
 }

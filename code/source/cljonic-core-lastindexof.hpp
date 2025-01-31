@@ -28,6 +28,9 @@ int main()
     constexpr auto b{Array{11}};
     constexpr auto lastIndexOfB{LastIndexOf(b, 11)}; // 0
 
+    constexpr auto itr{Iterate([](const int i) { return 1 + i; }, 0)};
+    const auto lastIndexOfItr{LastIndexOf(itr, 10)}; // 10
+
     constexpr auto lastIndexOfRng{LastIndexOf(Range<0>{}, 3)};                           // CljonicInvalidIndex
     constexpr auto lastIndexOfRpt{LastIndexOf(Repeat<4, int>{11}, 11)};                  // 3
     constexpr auto lastIndexOfSet{LastIndexOf(Set{11, 14, 13, 14}, 13)};                 // 2
@@ -67,11 +70,26 @@ constexpr auto LastIndexOf(const C& c, const T& t) noexcept
                   "LastIndexOf should not compare floating point types for equality. Consider using LastIndexOfBy to "
                   "override this default.");
 
-    auto result{CljonicInvalidIndex};
-    for (SizeType nextIndex{c.Count()}; ((CljonicInvalidIndex == result) and (nextIndex > 0)); --nextIndex)
-        if (AreEqual(c[nextIndex - 1], t))
-            result = nextIndex - 1;
-    return result;
+    if constexpr (IsCljonicIterator<C>)
+    {
+        auto result{CljonicInvalidIndex};
+        auto cBegin{c.begin()};
+        auto cEnd{c.end()};
+        auto index{0};
+        for (auto& it{cBegin}; it != cEnd; ++index, ++it)
+            if (AreEqual(*it, t))
+                result = index;
+        return result;
+    }
+    else
+    {
+        auto result{CljonicInvalidIndex};
+        auto cIt{c.end() - 1};
+        for (SizeType nextIndex{c.Count()}; ((CljonicInvalidIndex == result) and (nextIndex > 0)); --cIt, --nextIndex)
+            if (AreEqual(*cIt, t))
+                result = nextIndex - 1;
+        return result;
+    }
 }
 
 } // namespace core

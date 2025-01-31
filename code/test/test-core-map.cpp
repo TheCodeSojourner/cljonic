@@ -5,6 +5,7 @@
 #include "cljonic-repeat.hpp"
 #include "cljonic-set.hpp"
 #include "cljonic-core-equal.hpp"
+#include "cljonic-core-iterate.hpp"
 #include "cljonic-core-map.hpp"
 
 using namespace cljonic;
@@ -16,6 +17,8 @@ constexpr auto Add3 = [](const int i, const int j, const int k) { return i + j +
 
 SCENARIO("Map", "[CljonicCoreMap]")
 {
+    constexpr auto itr{Iterate([](const int i) { return 10 * i; }, 1)};
+    CHECK(Equal(Array{2, 12, 103, 1004}, Map(Add2, Set{1, 2, 3, 4}, itr)));
     CHECK(Equal(Array{2, 4, 6, 8}, Map(TwoTimes, Array{1, 2, 3, 4})));
     CHECK(Equal(Array{2, 4, 6, 8}, Map(TwoTimes, Array<int, 10>{1, 2, 3, 4})));
     CHECK(Equal(Array<int, 10>{}, Map(TwoTimes, Array<int, 10>{})));

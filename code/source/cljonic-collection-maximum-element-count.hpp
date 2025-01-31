@@ -16,7 +16,7 @@ constexpr SizeType operator"" _sz(unsigned long long int value)
 
 constexpr auto CljonicCollectionMaximumElementCount{1000_sz};
 
-constexpr auto CljonicInvalidIndex{std::numeric_limits<SizeType>::max()};
+constexpr auto CljonicInvalidIndex{CljonicCollectionMaximumElementCount};
 
 } // namespace cljonic
 

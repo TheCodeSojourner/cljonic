@@ -60,15 +60,14 @@ constexpr auto Interleave(const C& c, const Cs&... cs) noexcept
     static_assert(AllConvertibleValueTypes<C, Cs...>,
                   "All Interleave cljonic collection value types must be interconvertible");
 
-    constexpr auto minimumCollectionCount{MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()};
+    using ResultType = FindCommonValueType<C, Cs...>;
+    constexpr auto minimumCollectionMaximumCount{MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()};
     constexpr auto collectionsCount{sizeof...(Cs) + 1};
-    constexpr auto resultCount{minimumCollectionCount * collectionsCount};
-    auto result{Array<FindCommonValueType<C, Cs...>, resultCount>{}};
+    constexpr auto resultCount{minimumCollectionMaximumCount * collectionsCount};
+    auto result{Array<ResultType, resultCount>{}};
     auto itrs{std::make_tuple(c.begin(), cs.begin()...)};
-    for (SizeType i{0}; i < minimumCollectionCount; ++i)
-    {
-        std::apply([&result](auto&... itrs) { (MConj(result, *itrs++), ...); }, itrs);
-    }
+    for (SizeType i{0}; i < minimumCollectionMaximumCount; ++i)
+        std::apply([&](auto&... itrs) { (MConj(result, *itrs++), ...); }, itrs);
     return result;
 }
 

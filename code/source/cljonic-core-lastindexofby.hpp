@@ -32,6 +32,9 @@ int main()
     constexpr auto b{Array{11}};
     constexpr auto lastIndexOfByB{LastIndexOfBy(EBF, b, 11)}; // 0
 
+    constexpr auto itr{Iterate([](const int i) { return 1 + i; }, 0)};
+    const auto lastIndexOfByItr{LastIndexOfBy(EBF, itr, 10)}; // 10
+
     constexpr auto lastIndexOfByRng{LastIndexOfBy(EBF, Range<0>{}, 3)};           // CljonicInvalidIndex
     constexpr auto lastIndexOfByRpt{LastIndexOfBy(EBF, Repeat<4, int>{11}, 11)};  // 3
     constexpr auto lastIndexOfBySet{LastIndexOfBy(EBF, Set{11, 14, 13, 14}, 13)}; // 2
@@ -66,11 +69,26 @@ constexpr auto LastIndexOfBy(F&& f, const C& c, const T& t) noexcept
     static_assert(IsBinaryPredicate<F, typename C::value_type, T>,
                   "LastIndexOfBy's first parameter is not a valid binary predicate for the collection value type");
 
-    auto result{CljonicInvalidIndex};
-    for (SizeType nextIndex{c.Count()}; ((CljonicInvalidIndex == result) and (nextIndex > 0)); --nextIndex)
-        if (f(c[nextIndex - 1], t))
-            result = nextIndex - 1;
-    return result;
+    if constexpr (IsCljonicIterator<C>)
+    {
+        auto result{CljonicInvalidIndex};
+        auto cBegin{c.begin()};
+        auto cEnd{c.end()};
+        auto index{0};
+        for (auto& it{cBegin}; it != cEnd; ++index, ++it)
+            if (f(*it, t))
+                result = index;
+        return result;
+    }
+    else
+    {
+        auto result{CljonicInvalidIndex};
+        auto cIt{c.end() - 1};
+        for (SizeType nextIndex{c.Count()}; ((CljonicInvalidIndex == result) and (nextIndex > 0)); --cIt, --nextIndex)
+            if (f(*cIt, t))
+                result = nextIndex - 1;
+        return result;
+    }
 }
 
 } // namespace core

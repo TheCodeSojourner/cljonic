@@ -36,6 +36,12 @@ class CollectionIterator
         return result;
     }
 
+    constexpr CollectionIterator& operator--() noexcept
+    {
+        --m_index;
+        return *this;
+    }
+
     constexpr bool operator!=(const CollectionIterator& other) const noexcept
     {
         return m_index != other.m_index;

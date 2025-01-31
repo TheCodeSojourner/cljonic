@@ -5,6 +5,7 @@
 #include "cljonic-repeat.hpp"
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
+#include "cljonic-core-iterate.hpp"
 #include "cljonic-core-lastindexof.hpp"
 
 using namespace cljonic;
@@ -17,6 +18,9 @@ SCENARIO("LastIndexOf", "[CljonicCoreLastIndexOf]")
 
     constexpr auto b{Array{11}};
     CHECK(0 == LastIndexOf(b, 11));
+
+    constexpr auto itr{Iterate([](const int i) { return 1 + i; }, 0)};
+    CHECK(10 == LastIndexOf(itr, 10));
 
     CHECK(CljonicInvalidIndex == LastIndexOf(Range<0>{}, 3));
     CHECK(3 == LastIndexOf(Repeat<4, int>{11}, 11));
