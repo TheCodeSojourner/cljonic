@@ -80,6 +80,13 @@ when a *default element* can be returned (e.g., Asking for the First element of 
 *cljonic* uses *constexpr* whenever possible to enable *compile-time* evaluation of expressions. Additionally, this 
 approach helps to dectect *undefined behavior* at compile time.
 
+=== template parameter vs parameter 
+Some *cljonic* functions provide multiple forms that allow the *cljonic user* to control *compile-time* verses 
+*run-time* program behavior. For example, the *cljonic Take* function, when used in its *template parameter* form 
+(e.g., *"Take<3>(collection)"*), will return a *cljonic Array* that is only three elements big, and contains the first 
+three elements of "collection". When used in its *parameter* form (e.g., *"Take(3, collection)"*), the *cljonic Take* function will return a *cljonic Array* that is the same maximum size as "collection", and contains the first three 
+elements of "collection".
+
 == Developer Experience When Developing cljonic
 *cljonic* has a *Makefile* in the root directory.  For *help* on the available development processes simply execute 
 `make` from a command-line while in the root directory to generate a list of the available options.
