@@ -43,11 +43,11 @@ return 0;
 ~~~~~
 */
 template <typename C>
-constexpr auto First(const C& coll) noexcept
+constexpr auto First(const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "First's parameter must be a cljonic collection");
 
-    return coll[0];
+    return (c.Count() > 0) ? *c.begin() : c.DefaultElement();
 }
 
 } // namespace core

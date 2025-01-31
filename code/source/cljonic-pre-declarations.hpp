@@ -70,7 +70,7 @@ template <typename F, typename C>
 constexpr auto Filter(F&& f, const C& c) noexcept;
 
 template <typename C>
-constexpr auto First(const C& coll) noexcept;
+constexpr auto First(const C& c) noexcept;
 
 template <typename T, typename... Ts>
 constexpr auto Identical(const T& t, const Ts&... ts) noexcept;

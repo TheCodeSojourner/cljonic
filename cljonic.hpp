@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 31 11:22:28 AM MST 2025
+// This file was generated Fri Jan 31 11:45:41 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -397,7 +397,7 @@ template <typename F, typename C>
 constexpr auto Filter(F&& f, const C& c) noexcept;
 
 template <typename C>
-constexpr auto First(const C& coll) noexcept;
+constexpr auto First(const C& c) noexcept;
 
 template <typename T, typename... Ts>
 constexpr auto Identical(const T& t, const Ts&... ts) noexcept;
@@ -1656,10 +1656,10 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto First(const C& coll) noexcept {
+constexpr auto First(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "First's parameter must be a cljonic collection");
 
-return coll[0];
+return (c.Count() > 0) ? *c.begin() : c.DefaultElement();
 }
 
 }
