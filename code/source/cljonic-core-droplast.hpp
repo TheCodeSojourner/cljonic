@@ -10,10 +10,18 @@ namespace core
 {
 
 /** \anchor Core_DropLast
-* The \b DropLast function returns a \b cljonic \b Array with the same \b MaximumCount as its second parameter, which
+* There are \b two \b forms of the \b DropLast function.
+*
+* The \b first \b form returns a \b cljonic \b Array with the same \b MaximumCount as its second parameter, which must
 * must be a \b cljonic \b collection, containing copies of the elements in its second parameter except for the last
 * number of elements given by its first parameter. If its second parameter contains fewer elements than the first
 * parameter specifies the returned \b Array will be empty.
+*
+* The \b second \b form returns a \b cljonic \b Array with a \b MaximumCount equal to the \b MaximumCount of its
+* parameter minus the value of its \b template \b parameter. Its parameter must be a \b cljonic \b collection. Its
+* return value will contain copies of the elements in its parameter except the last number of elements given by its
+* \b template \b parameter. If its parameter contains fewer elements than the \b template \b parameter specifies the
+* returned \b cljonic \b Array will be empty.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
