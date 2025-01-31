@@ -5,6 +5,7 @@
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
 #include "cljonic-core-indexofby.hpp"
+#include "cljonic-core-iterate.hpp"
 
 using namespace cljonic;
 using namespace cljonic::core;
@@ -17,6 +18,9 @@ SCENARIO("IndexOfBy", "[CljonicCoreIndexOfBy]")
 
     constexpr auto a{Array<int, 10>{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
     CHECK(2 == IndexOfBy(SameInts, a, 2));
+
+    constexpr auto itr{Iterate([](const int i) { return 1 + i; }, 0)};
+    CHECK(4 == IndexOfBy(SameInts, itr, 4));
 
     constexpr auto rng{Range<10>{}};
     CHECK(4 == IndexOfBy(SameInts, rng, 4));

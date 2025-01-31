@@ -27,6 +27,9 @@ int main()
     constexpr auto a{Array<int, 10>{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
     constexpr auto iobA{IndexOfBy(SameInts, a, 2)}; // 2
 
+    constexpr auto itr{Iterate([](const int i) { return 1 + i; }, 0)};
+    const auto iobItr{IndexOfBy(SameInts, itr, 4)}; // 4
+
     constexpr auto rng{Range<10>{}};
     constexpr auto iobRng{IndexOfBy(SameInts, rng, 4)}; // 4
 
@@ -65,8 +68,10 @@ constexpr auto IndexOfBy(F&& f, const C& c, const T& t) noexcept
                   "IndexOfBy's third parameter must be convertible to the collection value type");
 
     auto result{CljonicInvalidIndex};
-    for (SizeType i{0}; ((CljonicInvalidIndex == result) and (i < c.Count())); ++i)
-        if (f(c[i], t))
+    auto it{c.begin()};
+    auto cEnd{c.end()};
+    for (SizeType i{0}; ((CljonicInvalidIndex == result) and (it != cEnd)); ++it, ++i)
+        if (f(*it, t))
             result = i;
     return result;
 }
