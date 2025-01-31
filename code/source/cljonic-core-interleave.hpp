@@ -2,6 +2,7 @@
 #define CLJONIC_CORE_Interleave_HPP
 
 #include <concepts>
+#include <tuple>
 #include "cljonic-array.hpp"
 #include "cljonic-concepts.hpp"
 
@@ -27,6 +28,7 @@ int main()
     constexpr auto a0{Array{1, 2, 3}};
     constexpr auto a1{Array{11, 12, 13}};
     constexpr auto a2{Array{111, 112}};
+    constexpr auto i{Iterate([](const int i) { return 1 + i; }, 11)};
     constexpr auto i0{Interleave()};                             // empty Array of int
     constexpr auto i1{Interleave(a0, a1)};                       // 1, 11, 2, 12, 3, 13
     constexpr auto i2{Interleave(a0, a2)};                       // 1, 111, 2, 112
@@ -35,6 +37,7 @@ int main()
     constexpr auto i5{Interleave(a0, Repeat{7})};                // 1, 7, 2, 7, 3, 7
     constexpr auto i6{Interleave(a0, Set{3, 5, 7, 9})};          // 1, 3, 2, 5, 3, 7
     constexpr auto i7{Interleave(String{"Hello"}, Repeat{'_'})}; // 'H', '_', 'e', '_', 'l', '_', 'l', '_', 'o', '_'
+    const auto i8{Interleave(a0, i, a2)};                        // 1, 11, 111, 2, 12, 112
 
     // Compiler Error: Interleave's parameters must all be cljonic collections
     // constexpr auto m{Interleave(4)};
@@ -61,10 +64,10 @@ constexpr auto Interleave(const C& c, const Cs&... cs) noexcept
     constexpr auto collectionsCount{sizeof...(Cs) + 1};
     constexpr auto resultCount{minimumCollectionCount * collectionsCount};
     auto result{Array<FindCommonValueType<C, Cs...>, resultCount>{}};
+    auto itrs{std::make_tuple(c.begin(), cs.begin()...)};
     for (SizeType i{0}; i < minimumCollectionCount; ++i)
     {
-        MConj(result, c[i]);
-        (MConj(result, cs[i]), ...);
+        std::apply([&result](auto&... itrs) { (MConj(result, *itrs++), ...); }, itrs);
     }
     return result;
 }

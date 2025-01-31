@@ -29,6 +29,13 @@ class CollectionIterator
         return *this;
     }
 
+    constexpr CollectionIterator operator++(int) noexcept
+    {
+        auto result{*this};
+        ++(*this);
+        return result;
+    }
+
     constexpr bool operator!=(const CollectionIterator& other) const noexcept
     {
         return m_index != other.m_index;

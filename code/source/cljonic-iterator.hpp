@@ -56,6 +56,13 @@ class Iterator
             return *this;
         }
 
+        Itr operator++(int)
+        {
+            auto result{*this};
+            ++(*this);
+            return result;
+        }
+
         Itr operator+(SizeType n) const
         {
             auto result{*this};

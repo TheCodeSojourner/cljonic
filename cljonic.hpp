@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 31 12:06:04 PM MST 2025
+// This file was generated Fri Jan 31 03:11:52 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -59,6 +59,12 @@ return m_collection[m_index];
 constexpr CollectionIterator& operator++() noexcept {
 ++m_index;
 return *this;
+}
+
+constexpr CollectionIterator operator++(int) noexcept {
+auto result{*this};
+++(*this);
+return result;
 }
 
 constexpr bool operator!=(const CollectionIterator& other) const noexcept {
@@ -679,6 +685,12 @@ m_nextValue = m_f(m_nextValue);
 ++m_index;
 }
 return *this;
+}
+
+Itr operator++(int) {
+auto result{*this};
+++(*this);
+return result;
 }
 
 Itr operator+(SizeType n) const {
@@ -1768,6 +1780,7 @@ return result;
 } // namespace cljonic::core
 
 #include <concepts>
+#include <tuple>
 
 namespace cljonic {
 
@@ -1784,9 +1797,9 @@ constexpr auto minimumCollectionCount{MinimumOfCljonicCollectionMaximumCounts<C,
 constexpr auto collectionsCount{sizeof...(Cs) + 1};
 constexpr auto resultCount{minimumCollectionCount * collectionsCount};
 auto result{Array<FindCommonValueType<C, Cs...>, resultCount>{}};
+auto itrs{std::make_tuple(c.begin(), cs.begin()...)};
 for(SizeType i{0}; i < minimumCollectionCount; ++i) {
-MConj(result, c[i]);
-(MConj(result, cs[i]), ...);
+std::apply([&result](auto&... itrs) { (MConj(result, *itrs++), ...); }, itrs);
 }
 return result;
 }
