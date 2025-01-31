@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 31 11:52:08 AM MST 2025
+// This file was generated Fri Jan 31 11:58:25 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -1728,8 +1728,10 @@ static_assert(std::convertible_to<T, typename C::value_type>,
               "IndexOf's second parameter must be convertible to the collection value type");
 
 auto result{CljonicInvalidIndex};
-for(SizeType i{0}; ((CljonicInvalidIndex == result) and (i < c.Count())); ++i)
-if(AreEqual(c[i], t))
+auto it{c.begin()};
+auto cEnd{c.end()};
+for(SizeType i{0}; ((CljonicInvalidIndex == result) and (it != cEnd)); ++it, ++i)
+if(AreEqual(*it, t))
 result = i;
 return result;
 }

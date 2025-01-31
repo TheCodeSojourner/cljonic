@@ -25,6 +25,9 @@ int main()
     constexpr auto a{Array<int, 10>{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
     constexpr auto ioA{IndexOf(a, 2)}; // 2
 
+    constexpr auto itr{Iterate([](const int i) { return 1 + i; }, 0)};
+    const auto ioItr{IndexOf(itr, 4)}; // 4
+
     constexpr auto rng{Range<10>{}};
     constexpr auto ioRng{IndexOf(rng, 4)}; // 4
 
@@ -69,8 +72,10 @@ constexpr auto IndexOf(const C& c, const T& t) noexcept
                   "IndexOf's second parameter must be convertible to the collection value type");
 
     auto result{CljonicInvalidIndex};
-    for (SizeType i{0}; ((CljonicInvalidIndex == result) and (i < c.Count())); ++i)
-        if (AreEqual(c[i], t))
+    auto it{c.begin()};
+    auto cEnd{c.end()};
+    for (SizeType i{0}; ((CljonicInvalidIndex == result) and (it != cEnd)); ++it, ++i)
+        if (AreEqual(*it, t))
             result = i;
     return result;
 }
