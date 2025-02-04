@@ -5,6 +5,7 @@
 #include "cljonic-repeat.hpp"
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
+#include "cljonic-core-iterate.hpp"
 #include "cljonic-core-min.hpp"
 
 using namespace cljonic;
@@ -17,6 +18,9 @@ SCENARIO("Min", "[CljonicCoreMin]")
 
     constexpr auto b{Array{11}};
     CHECK(11 == Min(b));
+
+    const auto itr{Iterate([](const SizeType i) { return i + 1_sz; }, 1_sz)};
+    CHECK(1 == Min(itr));
 
     CHECK(0 == Min(Range<0>{}));
     CHECK(11 == Min(Repeat<4, int>{11}));

@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Feb  4 03:21:02 PM MST 2025
+// This file was generated Tue Feb  4 03:25:12 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -2217,10 +2217,12 @@ static_assert(IsCljonicCollection<T>, "Min's parameter must be a cljonic collect
 
 auto result{t.DefaultElement()};
 if(t.Count() > 0) {
-result = t[0];
-for(SizeType i{1}; i < t.Count(); ++i)
-if(t[i] < result)
-result = t[i];
+auto tBegin{t.begin()};
+auto tEnd{t.end()};
+result = *tBegin++;
+for(auto it{tBegin}; it != tEnd; ++it)
+if(*it < result)
+result = *it;
 }
 return result;
 } else {

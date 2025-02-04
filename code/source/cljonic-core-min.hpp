@@ -28,6 +28,9 @@ int main()
     constexpr auto b{Array{11}};
     constexpr auto minB{Min(b)}; // 11
 
+    const auto itr{Iterate([](const SizeType i) { return i + 1_sz; }, 1_sz)};
+    const auto minItr{Min(itr)};
+
     constexpr auto minRng{Min(Range<0>{})};          // 0, the default value of Range<0>
     constexpr auto minRpt{Min(Repeat<4, int>{11})};  // 11
     constexpr auto minSet{Min(Set{11, 14, 13, 14})}; // 11
@@ -56,10 +59,12 @@ constexpr auto Min(const T& t, const Ts&... ts) noexcept
         auto result{t.DefaultElement()};
         if (t.Count() > 0)
         {
-            result = t[0];
-            for (SizeType i{1}; i < t.Count(); ++i)
-                if (t[i] < result)
-                    result = t[i];
+            auto tBegin{t.begin()};
+            auto tEnd{t.end()};
+            result = *tBegin++;
+            for (auto it{tBegin}; it != tEnd; ++it)
+                if (*it < result)
+                    result = *it;
         }
         return result;
     }
