@@ -21,6 +21,7 @@ namespace cljonic
 template <typename F, typename T>
 class Iterator
 {
+    T m_elementDefault;
     F m_f;
     T m_initialValue;
 
@@ -135,6 +136,11 @@ class Iterator
     [[nodiscard]] constexpr SizeType Count() const noexcept
     {
         return CljonicCollectionMaximumElementCount;
+    }
+
+    constexpr const T& DefaultElement() const noexcept
+    {
+        return m_elementDefault;
     }
 
     [[nodiscard]] static constexpr auto MaximumCount() noexcept

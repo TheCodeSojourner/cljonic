@@ -5,6 +5,7 @@
 #include "cljonic-repeat.hpp"
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
+#include "cljonic-core-iterate.hpp"
 #include "cljonic-core-max.hpp"
 
 using namespace cljonic;
@@ -17,6 +18,9 @@ SCENARIO("Max", "[CljonicCoreMax]")
 
     constexpr auto b{Array{11}};
     CHECK(11 == Max(b));
+
+    const auto itr{Iterate([](const SizeType i) { return i + 1_sz; }, 1_sz)};
+    CHECK(CljonicCollectionMaximumElementCount == Max(itr));
 
     CHECK(0 == Max(Range<0>{}));
     CHECK(11 == Max(Repeat<4, int>{11}));

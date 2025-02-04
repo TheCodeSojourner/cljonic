@@ -61,7 +61,6 @@ constexpr auto Conj(const C& c, const Es&... es) noexcept
                   "Second through last Conj parameters must be convertible to cljonic collection value type");
 
     using ResultType = typename C::value_type;
-
     constexpr auto count{C::MaximumCount() + sizeof...(Es)};
     auto result{Array<ResultType, count>{}};
     const auto MConjElementOntoResult = [&](const auto& e) { MConj(result, e); };

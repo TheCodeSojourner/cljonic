@@ -70,6 +70,8 @@ constexpr auto DropLast(const SizeType count, const C& c) noexcept
 template <SizeType N, typename C>
 constexpr auto DropLast(const C& c) noexcept
 {
+    // #lizard forgives -- The length and complexity of this function is acceptable
+
     static_assert(IsCljonicCollection<C>, "DropLast's parameter must be a cljonic collection");
 
     using ResultType = typename C::value_type;

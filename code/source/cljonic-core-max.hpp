@@ -28,6 +28,9 @@ int main()
     constexpr auto b{Array{11}};
     constexpr auto maxB{Max(b)}; // 11
 
+    const auto itr{Iterate([](const SizeType i) { return i + 1_sz; }, 1_sz)};
+    const auto maxItr{Max(itr)};
+
     constexpr auto maxRng{Max(Range<0>{})};          // 0, the default value of Range<0>
     constexpr auto maxRpt{Max(Repeat<4, int>{11})};  // 11
     constexpr auto maxSet{Max(Set{11, 14, 13, 14})}; // 14
@@ -56,10 +59,12 @@ constexpr auto Max(const T& t, const Ts&... ts) noexcept
         auto result{t.DefaultElement()};
         if (t.Count() > 0)
         {
-            result = t[0];
-            for (SizeType i{1}; i < t.Count(); ++i)
-                if (result < t[i])
-                    result = t[i];
+            auto tBegin{t.begin()};
+            auto tEnd{t.end()};
+            result = *tBegin++;
+            for (auto it{tBegin}; it != tEnd; ++it)
+                if (result < *it)
+                    result = *it;
         }
         return result;
     }
@@ -68,10 +73,10 @@ constexpr auto Max(const T& t, const Ts&... ts) noexcept
         static_assert(AllNotCljonicCollections<T, Ts...>, "None of Max's parameters can be cljonic collections");
 
         // ***** CAUTION: C++ Voodoo Ahead *****
-        // This code initializes "result" to the value "t" then tests "result" to see if it is less than each element
-        // in the parameter pack "ts", and updates "result" if it is less than the element. The "(void)" cast ensures
-        // that the expression is evaluated for its "side effects" only, and the comma operator ensures that this is
-        // done for each element in the parameter pack "ts".
+        // This code initializes "result" to the value "t" then tests "result" to see if it is less than each
+        // element in the parameter pack "ts", and updates "result" if it is less than the element. The "(void)"
+        // cast ensures that the expression is evaluated for its "side effects" only, and the comma operator ensures
+        // that this is done for each element in the parameter pack "ts".
         auto result{t};
         (..., (void)((result < ts) ? result = ts : result));
         return result;

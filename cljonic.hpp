@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Jan 31 04:20:00 PM MST 2025
+// This file was generated Tue Feb  4 03:11:20 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -662,6 +662,7 @@ array.m_elements[index] = value;
 namespace cljonic {
 template <typename F, typename T>
 class Iterator {
+T m_elementDefault;
 F m_f;
 T m_initialValue;
 
@@ -739,6 +740,10 @@ return Itr(*this, MaximumCount());
 
 [[nodiscard]] constexpr SizeType Count() const noexcept {
 return CljonicCollectionMaximumElementCount;
+}
+
+constexpr const T& DefaultElement() const noexcept {
+return m_elementDefault;
 }
 
 [[nodiscard]] static constexpr auto MaximumCount() noexcept {
@@ -1274,7 +1279,6 @@ static_assert(AllConvertibleTypes<typename C::value_type, Es...>,
               "Second through last Conj parameters must be convertible to cljonic collection value type");
 
 using ResultType = typename C::value_type;
-
 constexpr auto count{C::MaximumCount() + sizeof...(Es)};
 auto result{Array<ResultType, count>{}};
 const auto MConjElementOntoResult = [&](const auto& e) { MConj(result, e); };
@@ -1520,6 +1524,7 @@ return result;
 
 template <SizeType N, typename C>
 constexpr auto DropLast(const C& c) noexcept {
+
 static_assert(IsCljonicCollection<C>, "DropLast's parameter must be a cljonic collection");
 
 using ResultType = typename C::value_type;
@@ -1798,14 +1803,14 @@ static_assert(AllCljonicCollections<C, Cs...>, "Interleave's parameters must all
 static_assert(AllConvertibleValueTypes<C, Cs...>,
               "All Interleave cljonic collection value types must be interconvertible");
 
-constexpr auto minimumCollectionCount{MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()};
+using ResultType = FindCommonValueType<C, Cs...>;
+constexpr auto minimumCollectionMaximumCount{MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()};
 constexpr auto collectionsCount{sizeof...(Cs) + 1};
-constexpr auto resultCount{minimumCollectionCount * collectionsCount};
-auto result{Array<FindCommonValueType<C, Cs...>, resultCount>{}};
+constexpr auto resultCount{minimumCollectionMaximumCount * collectionsCount};
+auto result{Array<ResultType, resultCount>{}};
 auto itrs{std::make_tuple(c.begin(), cs.begin()...)};
-for(SizeType i{0}; i < minimumCollectionCount; ++i) {
-std::apply([&result](auto&... itrs) { (MConj(result, *itrs++), ...); }, itrs);
-}
+for(SizeType i{0}; i < minimumCollectionMaximumCount; ++i)
+std::apply([&](auto&... itrs) { (MConj(result, *itrs++), ...); }, itrs);
 return result;
 }
 
@@ -2079,11 +2084,23 @@ static_assert(std::equality_comparable_with<typename C::value_type, T>,
 static_assert(IsBinaryPredicate<F, typename C::value_type, T>,
               "LastIndexOfBy's first parameter is not a valid binary predicate for the collection value type");
 
+if constexpr(IsCljonicIterator<C>) {
 auto result{CljonicInvalidIndex};
-for(SizeType nextIndex{c.Count()}; ((CljonicInvalidIndex == result) and (nextIndex > 0)); --nextIndex)
-if(f(c[nextIndex - 1], t))
+auto cBegin{c.begin()};
+auto cEnd{c.end()};
+auto index{0};
+for(auto& it{cBegin}; it != cEnd; ++index, ++it)
+if(f(*it, t))
+result = index;
+return result;
+} else {
+auto result{CljonicInvalidIndex};
+auto cIt{c.end() - 1};
+for(SizeType nextIndex{c.Count()}; ((CljonicInvalidIndex == result) and (nextIndex > 0)); --cIt, --nextIndex)
+if(f(*cIt, t))
 result = nextIndex - 1;
 return result;
+}
 }
 
 }
@@ -2105,10 +2122,12 @@ static_assert(std::invocable<F, typename C::value_type, typename Cs::value_type.
 
 using ResultType = decltype(f(std::declval<typename C::value_type>(), std::declval<typename Cs::value_type>()...));
 
-constexpr auto count{MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()};
-auto result{Array<ResultType, count>{}};
-for(SizeType i{0}; i < c.Count(); ++i)
-MConj(result, f(c[i], cs[i]...));
+constexpr auto minimumCollectionMaximumCount{MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()};
+auto result{Array<ResultType, minimumCollectionMaximumCount>{}};
+auto itrs{std::make_tuple(c.begin(), cs.begin()...)};
+auto minimumCount{MinArgument(c.Count(), cs.Count()...)};
+for(SizeType i{0}; i < minimumCount; ++i)
+MConj(result, std::apply([&](auto&... iter) { return f(*iter++...); }, itrs));
 return result;
 }
 
@@ -2127,10 +2146,12 @@ static_assert(IsCljonicCollection<T>, "Max's parameter must be a cljonic collect
 
 auto result{t.DefaultElement()};
 if(t.Count() > 0) {
-result = t[0];
-for(SizeType i{1}; i < t.Count(); ++i)
-if(result < t[i])
-result = t[i];
+auto tBegin{t.begin()};
+auto tEnd{t.end()};
+result = *tBegin++;
+for(auto it{tBegin}; it != tEnd; ++it)
+if(result < *it)
+result = *it;
 }
 return result;
 } else {
