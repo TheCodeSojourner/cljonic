@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Feb  4 03:29:06 PM MST 2025
+// This file was generated Tue Feb  4 03:37:21 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -2315,14 +2315,6 @@ return (c.Count() != 0) and (not Every(std::forward<F>(f), c));
 namespace cljonic {
 
 namespace core {
-template <typename C>
-constexpr auto Nth(const C& c, const SizeType index) noexcept {
-static_assert(IsCljonicCollection<C> and (not IsCljonicSet<C>),
-              "Nth's first parameter must be a cljonic collection other than a Set");
-
-return c[index];
-}
-
 template <typename C, typename T>
 constexpr auto Nth(const C& c, const SizeType index, const T& t) noexcept {
 static_assert(IsCljonicCollection<C> and (not IsCljonicSet<C>),
@@ -2331,7 +2323,15 @@ static_assert(IsCljonicCollection<C> and (not IsCljonicSet<C>),
 static_assert(std::same_as<typename C::value_type, T>,
               "Nth's third parameter must have the same type as the values in the first parameter");
 
-return (index < c.Count()) ? c[index] : t;
+return (index < c.Count()) ? *(c.begin() + index) : t;
+}
+
+template <typename C>
+constexpr auto Nth(const C& c, const SizeType index) noexcept {
+static_assert(IsCljonicCollection<C> and (not IsCljonicSet<C>),
+              "Nth's first parameter must be a cljonic collection other than a Set");
+
+return Nth(c, index, c.DefaultElement());
 }
 
 }

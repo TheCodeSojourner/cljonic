@@ -23,11 +23,14 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
-    constexpr auto n0{Nth(a, 0)};      // 0
-    constexpr auto n1{Nth(a, 4)};      // 4
-    constexpr auto n2{Nth(a, 9)};      // 9
-    constexpr auto n3{Nth(a, 10)};     // 0, a's default value
-    constexpr auto n4{Nth(a, 10, 11)}; // 11
+    constexpr auto itr{Iterate([](const SizeType i) { return i + 1_sz; }, 1_sz)};
+    constexpr auto n0{Nth(a, 0)};                             // 0
+    constexpr auto n1{Nth(a, 4)};                             // 4
+    constexpr auto n2{Nth(a, 9)};                             // 9
+    constexpr auto n3{Nth(a, 10)};                            // 0, a's default value
+    constexpr auto n4{Nth(a, 10, 11)};                        // 11
+    const auto n5{Nth(itr, 10)};                              // 10
+    constexpr auto n6{Nth(itr, CljonicInvalidIndex, 111_sz)}; // 111
 
     // Compiler Error: Nth's first parameter must be a cljonic collection other than a Set
     // constexpr auto t{Nth("Hello", 10)};
@@ -42,15 +45,6 @@ int main()
 }
 ~~~~~
 */
-template <typename C>
-constexpr auto Nth(const C& c, const SizeType index) noexcept
-{
-    static_assert(IsCljonicCollection<C> and (not IsCljonicSet<C>),
-                  "Nth's first parameter must be a cljonic collection other than a Set");
-
-    return c[index];
-}
-
 template <typename C, typename T>
 constexpr auto Nth(const C& c, const SizeType index, const T& t) noexcept
 {
@@ -60,7 +54,16 @@ constexpr auto Nth(const C& c, const SizeType index, const T& t) noexcept
     static_assert(std::same_as<typename C::value_type, T>,
                   "Nth's third parameter must have the same type as the values in the first parameter");
 
-    return (index < c.Count()) ? c[index] : t;
+    return (index < c.Count()) ? *(c.begin() + index) : t;
+}
+
+template <typename C>
+constexpr auto Nth(const C& c, const SizeType index) noexcept
+{
+    static_assert(IsCljonicCollection<C> and (not IsCljonicSet<C>),
+                  "Nth's first parameter must be a cljonic collection other than a Set");
+
+    return Nth(c, index, c.DefaultElement());
 }
 
 } // namespace core
