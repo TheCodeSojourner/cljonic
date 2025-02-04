@@ -24,9 +24,13 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto Even = [](const int i) { return (0 == (i % 2)); };
+    constexpr auto GreaterThan5 = [](const int i) { return (i > 5); };
 
     constexpr auto a{Array<int, 10>{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
     constexpr auto fA{Remove(Even, a)}; // immutable, sparse Array, with 1, 3, 5, 7, and 9
+
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
+    const auto fIter{Remove(GreaterThan5, itr)};
 
     constexpr auto rng{Range<10>{}};
     constexpr auto fRng{Remove(Even, rng)}; // immutable, sparse Array, with 1, 3, 5, 7, and 9
