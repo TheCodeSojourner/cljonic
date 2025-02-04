@@ -50,6 +50,10 @@ int main()
     constexpr auto n0{Reduce(Add, a)};
     constexpr auto n1{Reduce(Add, 11, a)};
 
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
+    const auto nItr0{Reduce(Add, itr)};
+    const auto nItr1{Reduce(Add, 11, itr)};
+
     constexpr auto rng{Range<5>{}};
     constexpr auto n2{Reduce(Add, rng)};
     constexpr auto n3{Reduce(Add, 11, rng)};

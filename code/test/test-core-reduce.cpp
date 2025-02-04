@@ -3,6 +3,7 @@
 #include "cljonic-range.hpp"
 #include "cljonic-repeat.hpp"
 #include "cljonic-string.hpp"
+#include "cljonic-core-iterate.hpp"
 #include "cljonic-core-reduce.hpp"
 
 using namespace cljonic;
@@ -23,6 +24,10 @@ SCENARIO("Reduce", "[CljonicCoreReduce]")
     CHECK(0 == addCalled);
     CHECK(11 == Reduce(Add, 11, aAddEmpty));
     CHECK(0 == addCalled);
+
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
+    CHECK(500500 == Reduce(Add, itr));
+    CHECK(500511 == Reduce(Add, 11, itr));
 
     addCalled = 0;
     constexpr auto aAddOne{Array{11}};
