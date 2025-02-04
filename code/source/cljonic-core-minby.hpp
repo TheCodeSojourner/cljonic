@@ -31,6 +31,9 @@ int main()
     constexpr auto b{Array{11}};
     constexpr auto minByB{MinBy(IsALessThanB, b)}; // 11
 
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
+    const auto minByItr{MinBy(IsALessThanB, itr)};
+
     constexpr auto minByRng{MinBy(IsALessThanB, Range<0>{})};          // 0, the default value of Range<0>
     constexpr auto minByRpt{MinBy(IsALessThanB, Repeat<4, int>{11})};  // 11
     constexpr auto minBySet{MinBy(IsALessThanB, Set{11, 14, 13, 14})}; // 11
@@ -65,10 +68,13 @@ constexpr auto MinBy(F&& f, const T& t, const Ts&... ts) noexcept
         auto result{t.DefaultElement()};
         if (t.Count() > 0)
         {
-            result = t[0];
-            for (SizeType i{1}; i < t.Count(); ++i)
-                if (not f(result, t[i]))
-                    result = t[i];
+
+            auto tBegin{t.begin()};
+            auto tEnd{t.end()};
+            result = *tBegin++;
+            for (auto it{tBegin}; it != tEnd; ++it)
+                if (not f(result, *it))
+                    result = *it;
         }
         return result;
     }

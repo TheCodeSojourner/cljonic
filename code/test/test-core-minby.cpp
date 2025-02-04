@@ -5,6 +5,7 @@
 #include "cljonic-repeat.hpp"
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
+#include "cljonic-core-iterate.hpp"
 #include "cljonic-core-minby.hpp"
 
 using namespace cljonic;
@@ -19,6 +20,9 @@ SCENARIO("MinBy", "[CljonicCoreMinBy]")
 
     constexpr auto b{Array{11}};
     CHECK(11 == MinBy(IsALessThanB, b));
+
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
+    CHECK(1 == MinBy(IsALessThanB, itr));
 
     CHECK(0 == MinBy(IsALessThanB, Range<0>{}));
     CHECK(11 == MinBy(IsALessThanB, Repeat<4, int>{11}));
