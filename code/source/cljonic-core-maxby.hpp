@@ -31,6 +31,9 @@ int main()
     constexpr auto b{Array{11}};
     constexpr auto maxByB{MaxBy(IsALessThanB, b)}; // 11
 
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
+    const auto maxByItr{MaxBy(IsALessThanB, itr)};
+
     constexpr auto maxByRng{MaxBy(IsALessThanB, Range<0>{})};          // 0, the default value of Range<0>
     constexpr auto maxByRpt{MaxBy(IsALessThanB, Repeat<4, int>{11})};  // 11
     constexpr auto maxBySet{MaxBy(IsALessThanB, Set{11, 14, 13, 14})}; // 14
@@ -65,10 +68,12 @@ constexpr auto MaxBy(F&& f, const T& t, const Ts&... ts) noexcept
         auto result{t.DefaultElement()};
         if (t.Count() > 0)
         {
-            result = t[0];
-            for (SizeType i{1}; i < t.Count(); ++i)
-                if (f(result, t[i]))
-                    result = t[i];
+            auto tBegin{t.begin()};
+            auto tEnd{t.end()};
+            result = *tBegin++;
+            for (auto it{tBegin}; it != tEnd; ++it)
+                if (f(result, *it))
+                    result = *it;
         }
         return result;
     }

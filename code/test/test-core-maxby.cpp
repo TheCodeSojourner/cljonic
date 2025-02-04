@@ -5,6 +5,7 @@
 #include "cljonic-repeat.hpp"
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
+#include "cljonic-core-iterate.hpp"
 #include "cljonic-core-maxby.hpp"
 
 using namespace cljonic;
@@ -19,6 +20,9 @@ SCENARIO("MaxBy", "[CljonicCoreMaxBy]")
 
     constexpr auto b{Array{11}};
     CHECK(11 == MaxBy(IsALessThanB, b));
+
+    const auto itr{Iterate([](const int i) { return i + 1; }, 1)};
+    CHECK(CljonicCollectionMaximumElementCount == MaxBy(IsALessThanB, itr));
 
     CHECK(0 == MaxBy(IsALessThanB, Range<0>{}));
     CHECK(11 == MaxBy(IsALessThanB, Repeat<4, int>{11}));
