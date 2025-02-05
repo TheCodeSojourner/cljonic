@@ -7,6 +7,7 @@
 #include "cljonic-shared.hpp"
 #include "cljonic-string.hpp"
 #include "cljonic-core-equal.hpp"
+#include "cljonic-core-iterate.hpp"
 #include "cljonic-core-replace.hpp"
 
 using namespace cljonic;
@@ -15,11 +16,13 @@ using namespace cljonic::core;
 SCENARIO("Replace", "[CljonicCoreReplace]")
 {
     constexpr auto a{Array{1, 2, 3, 4}};
+    const auto itr{Iterate([](const int i) { return i + 1; }, 10)};
     CHECK(Equal(Array{2, 3, 4, 4}, Replace(a, Array{1, 2, 3, 4})));
     CHECK(Equal(Array{2, 3, 4, 14}, Replace(a, Array{1, 2, 3, 14})));
     CHECK(Equal(Array{-2, 3, 4, 14}, Replace(a, Array{-2, 2, 3, 14})));
     CHECK(Equal(Array{11, 12, 13, 14}, Replace(a, Array{11, 12, 13, 14})));
     CHECK(Equal(Array{4}, Replace(a, Array{3})));
+    CHECK(Equal(Array{-2, 12, 13, 24}, Replace(itr, Array{-2, 2, 3, 14})));
     CHECK(Equal(Array<int, 0>{}, Replace(a, Range<0>{})));
     CHECK(Equal(Array{1, 2, 3, 4, 4, 5, 6}, Replace(a, Range<7>{})));
     CHECK(Equal(Array{4, 4, 4, 4}, Replace(a, Repeat<4, int>{3})));

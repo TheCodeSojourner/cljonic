@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Tue Feb  4 03:37:21 PM MST 2025
+// This file was generated Wed Feb  5 08:54:01 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -2439,8 +2439,8 @@ static_assert(std::convertible_to<typename C2::value_type, typename C1::value_ty
               "Replace's second parameter value type must be convertible to the first parameter value type");
 
 auto result{Array<typename C1::value_type, c2.MaximumCount()>{}};
-for(SizeType i{0}; i < c2.Count(); ++i)
-MConj(result, ((c2[i] >= 0) and (static_cast<SizeType>(c2[i]) < c1.Count())) ? c1[c2[i]] : c2[i]);
+for(const auto& v2 : c2)
+MConj(result, ((v2 >= 0) and (static_cast<SizeType>(v2) < c1.Count())) ? *(c1.begin() + v2) : v2);
 return result;
 }
 

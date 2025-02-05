@@ -27,17 +27,19 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto a{Array{1, 2, 3, 4}};
+    const auto itr{Iterate([](const int i) { return i + 1; }, 10)};
     constexpr auto ri0{Replace(a, Array{1, 2, 3, 4})};           // 2, 3, 4, 4
     constexpr auto ri1{Replace(a, Array{1, 2, 3, 14})};          // 2, 3, 4, 14
     constexpr auto ri2{Replace(a, Array{-2, 2, 3, 14})};         // -2, 3, 4, 14
     constexpr auto ri3{Replace(a, Array{11, 12, 13, 14})};       // 11, 12, 13, 14
     constexpr auto ri4{Replace(a, Array{3})};                    // 4
-    constexpr auto ri5{Replace(a, Range<0>{})};                  // empty Array
-    constexpr auto ri6{Replace(a, Range<7>{})};                  // 1, 2, 3, 4, 4, 5, 6
-    constexpr auto ri7{Replace(a, Repeat<4, int>{3})};           // 4, 4, 4, 4
-    constexpr auto ri8{Replace(a, Repeat<4, int>{33})};          // 33, 33, 33, 33
-    constexpr auto ri9{Replace(a, Set{1, 2, 3, 4})};             // 2, 3, 4, 4
-    constexpr auto ri10{Replace(a, String{'1', '2', '3', '4'})}; // 49, 50, 51, 52
+    const auto ri5{Replace(itr, Array{-2, 2, 3, 14})};           // -2, 12, 13, 24
+    constexpr auto ri6{Replace(a, Range<0>{})};                  // empty Array
+    constexpr auto ri7{Replace(a, Range<7>{})};                  // 1, 2, 3, 4, 4, 5, 6
+    constexpr auto ri8{Replace(a, Repeat<4, int>{3})};           // 4, 4, 4, 4
+    constexpr auto ri9{Replace(a, Repeat<4, int>{33})};          // 33, 33, 33, 33
+    constexpr auto ri10{Replace(a, Set{1, 2, 3, 4})};            // 2, 3, 4, 4
+    constexpr auto ri11{Replace(a, String{'1', '2', '3', '4'})}; // 49, 50, 51, 52
 
     constexpr auto f{Array{1.1, 2.2, 3.3, 4.4}};
     constexpr auto rf0{Replace(f, Array{1, 2, 3, 4})};           // 2.2, 3.3, 4.4, 4.0
@@ -84,8 +86,8 @@ constexpr auto Replace(const C1& c1, const C2& c2) noexcept
                   "Replace's second parameter value type must be convertible to the first parameter value type");
 
     auto result{Array<typename C1::value_type, c2.MaximumCount()>{}};
-    for (SizeType i{0}; i < c2.Count(); ++i)
-        MConj(result, ((c2[i] >= 0) and (static_cast<SizeType>(c2[i]) < c1.Count())) ? c1[c2[i]] : c2[i]);
+    for (const auto& v2 : c2)
+        MConj(result, ((v2 >= 0) and (static_cast<SizeType>(v2) < c1.Count())) ? *(c1.begin() + v2) : v2);
     return result;
 }
 
