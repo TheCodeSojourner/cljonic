@@ -23,6 +23,9 @@ int main()
     constexpr auto a{Array{11, 12, 13, 14}};
     constexpr auto a0{Second(a)};
 
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
+    const auto itr0{Second(itr)};
+
     constexpr auto rng{Range<1, 5>{}};
     constexpr auto rng0{Second(rng)};
 
@@ -43,11 +46,11 @@ return 0;
 ~~~~~
 */
 template <typename C>
-constexpr auto Second(const C& coll) noexcept
+constexpr auto Second(const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Second's parameter must be a cljonic collection");
 
-    return coll[1];
+    return (c.Count() > 1) ? *(c.begin() + 1) : c.DefaultElement();
 }
 
 } // namespace core

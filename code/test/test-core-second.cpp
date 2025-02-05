@@ -4,6 +4,7 @@
 #include "cljonic-repeat.hpp"
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
+#include "cljonic-core-iterate.hpp"
 #include "cljonic-core-second.hpp"
 
 using namespace cljonic;
@@ -13,6 +14,9 @@ SCENARIO("Second", "[CljonicCoreSecond]")
 {
     constexpr auto a{Array{11, 12, 13, 14}};
     CHECK(12 == Second(a));
+
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
+    CHECK(2 == Second(itr));
 
     constexpr auto rng{Range<1, 5>{}};
     CHECK(2 == Second(rng));

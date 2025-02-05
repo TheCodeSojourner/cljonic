@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Feb  5 02:00:18 PM MST 2025
+// This file was generated Wed Feb  5 02:08:25 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -2480,10 +2480,10 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto Second(const C& coll) noexcept {
+constexpr auto Second(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Second's parameter must be a cljonic collection");
 
-return coll[1];
+return (c.Count() > 1) ? *(c.begin() + 1) : c.DefaultElement();
 }
 
 }
