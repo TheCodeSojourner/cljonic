@@ -63,7 +63,7 @@ constexpr auto DropLast(const SizeType count, const C& c) noexcept
     auto cBegin(c.begin());
     auto cEnd{(count > c.Count()) ? cBegin : (c.end() - count)};
     for (auto it{cBegin}; it != cEnd; ++it)
-        MConj(result, static_cast<ResultType>(*it));
+        MAppend(result, static_cast<ResultType>(*it));
     return result;
 }
 
@@ -80,7 +80,7 @@ constexpr auto DropLast(const C& c) noexcept
     auto cBegin(c.begin());
     auto cEnd{(N > c.Count()) ? cBegin : (c.end() - N)};
     for (auto it{cBegin}; it != cEnd; ++it)
-        MConj(result, static_cast<ResultType>(*it));
+        MAppend(result, static_cast<ResultType>(*it));
     return result;
 }
 

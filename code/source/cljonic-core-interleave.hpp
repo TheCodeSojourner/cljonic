@@ -67,7 +67,7 @@ constexpr auto Interleave(const C& c, const Cs&... cs) noexcept
     auto result{Array<ResultType, resultCount>{}};
     auto itrs{std::make_tuple(c.begin(), cs.begin()...)};
     for (SizeType i{0}; i < minimumCollectionMaximumCount; ++i)
-        std::apply([&](auto&... itrs) { (MConj(result, *itrs++), ...); }, itrs);
+        std::apply([&](auto&... itrs) { (MAppend(result, *itrs++), ...); }, itrs);
     return result;
 }
 

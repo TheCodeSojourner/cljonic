@@ -63,10 +63,10 @@ constexpr auto Conj(const C& c, const Es&... es) noexcept
     using ResultType = typename C::value_type;
     constexpr auto count{C::MaximumCount() + sizeof...(Es)};
     auto result{Array<ResultType, count>{}};
-    const auto MConjElementOntoResult = [&](const auto& e) { MConj(result, e); };
+    const auto MAppendElementOntoResult = [&](const auto& e) { MAppend(result, e); };
     for (const ResultType& v : c)
-        MConjElementOntoResult(v);
-    (MConjElementOntoResult(es), ...);
+        MAppendElementOntoResult(v);
+    (MAppendElementOntoResult(es), ...);
     return result;
 }
 

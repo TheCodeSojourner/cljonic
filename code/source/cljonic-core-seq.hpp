@@ -44,7 +44,7 @@ constexpr auto Seq(const C& c) noexcept
     using ResultType = typename C::value_type;
     auto result{Array<ResultType, C::MaximumCount()>{}};
     for (const ResultType& v : c)
-        MConj(result, v);
+        MAppend(result, v);
     return result;
 }
 

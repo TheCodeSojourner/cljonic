@@ -55,9 +55,9 @@ constexpr auto SplitAt(const SizeType count, const C& c) noexcept
     auto i{SizeType{0}};
     for (const ResultType& v : c)
         if (i++ < count)
-            MConj(*lhs, v);
+            MAppend(*lhs, v);
         else
-            MConj(*rhs, v);
+            MAppend(*rhs, v);
     return result;
 }
 

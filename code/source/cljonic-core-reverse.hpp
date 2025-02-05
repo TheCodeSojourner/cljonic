@@ -21,13 +21,15 @@ using namespace cljonic::core;
 
 int main()
 {
-    const auto r0{Reverse(Array<int, 0>{})};              // empty Array
-    const auto r1{Reverse(Array{1, 2})};                  // Array, with 2 and 1
-    const auto r2{Reverse(Range<0>{})};                   // empty Array
-    const auto r3{Reverse(Repeat<7, const char*>{"11"})}; // Array, with seven "11" elements
-    const auto r4{Reverse(Set{'a', 'b'})};                // Array, with 'b' and 'a'
-    const auto r5{Reverse(String{"Hello"})};              // Array, with 'o', 'l', 'l', 'e', 'H'
-    const auto r6{Reverse(String<10>{"Hi"})};             // Array, with 'i' and 'H'
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
+    constexpr auto r0{Reverse(Array<int, 0>{})};              // empty Array
+    constexpr auto r1{Reverse(Array{1, 2})};                  // Array, with 2 and 1
+    constexpr auto r2{Reverse(Range<0>{})};                   // empty Array
+    const auto r3{Reverse(itr)};                          // Array with CljonicCollectionMaximumElementCount to 1
+    constexpr auto r4{Reverse(Repeat<7, const char*>{"11"})}; // Array, with seven "11" elements
+    constexpr auto r5{Reverse(Set{'a', 'b'})};                // Array, with 'b' and 'a'
+    constexpr auto r6{Reverse(String{"Hello"})};              // Array, with 'o', 'l', 'l', 'e', 'H'
+    constexpr auto r7{Reverse(String<10>{"Hi"})};             // Array, with 'i' and 'H'
 
     // Compiler Error: Reverse's parameter must be a cljonic collection
     // const auto s{Reverse("Hello")};
@@ -42,8 +44,9 @@ constexpr auto Reverse(const C& c) noexcept
     static_assert(IsCljonicCollection<C>, "Reverse's parameter must be a cljonic collection");
 
     auto result{Array<typename C::value_type, C::MaximumCount()>{}};
-    for (SizeType i{c.Count()}; i != 0; --i)
-        MConj(result, c[i - 1]);
+    for (const auto& v : c)
+        MAppend(result, v);
+    MReverse(result);
     return result;
 }
 

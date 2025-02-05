@@ -30,10 +30,13 @@ class Array : public IndexInterface<T>
     T m_elements[elementCount]{};
 
     template <typename U, SizeType N>
-    constexpr friend void MConj(Array<U, N>& array, const U& value);
+    constexpr friend void MAppend(Array<U, N>& array, const U& value);
 
     template <typename U, SizeType N>
     constexpr friend U* MPtr(Array<U, N>& array, SizeType index);
+
+    template <typename U, SizeType N>
+    constexpr friend void MReverse(Array<U, N>& array);
 
     template <typename U, SizeType N>
     constexpr friend void MSet(Array<U, N>& array, const U& value, SizeType index);
@@ -143,7 +146,7 @@ template <typename... Args>
 Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
 
 template <typename U, SizeType N>
-constexpr void MConj(Array<U, N>& array, const U& value)
+constexpr void MAppend(Array<U, N>& array, const U& value)
 {
     if (array.m_elementCount < array.MaximumCount())
         array.m_elements[array.m_elementCount++] = value;
@@ -153,6 +156,14 @@ template <typename U, SizeType N>
 constexpr U* MPtr(Array<U, N>& array, const SizeType index)
 {
     return &array.m_elements[(index < array.m_elementCount) ? index : 0];
+}
+
+template <typename U, SizeType N>
+constexpr void MReverse(Array<U, N>& array)
+{
+    if (array.m_elementCount >= 2)
+        for (auto start{0_sz}, end{array.m_elementCount - 1_sz}; start < end; ++start, --end)
+            std::swap(array.m_elements[start], array.m_elements[end]);
 }
 
 template <typename U, SizeType N>

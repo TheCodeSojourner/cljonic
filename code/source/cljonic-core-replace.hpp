@@ -87,7 +87,7 @@ constexpr auto Replace(const C1& c1, const C2& c2) noexcept
 
     auto result{Array<typename C1::value_type, c2.MaximumCount()>{}};
     for (const auto& v2 : c2)
-        MConj(result, ((v2 >= 0) and (static_cast<SizeType>(v2) < c1.Count())) ? *(c1.begin() + v2) : v2);
+        MAppend(result, ((v2 >= 0) and (static_cast<SizeType>(v2) < c1.Count())) ? *(c1.begin() + v2) : v2);
     return result;
 }
 
