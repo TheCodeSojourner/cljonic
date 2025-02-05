@@ -23,12 +23,15 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto Is13 = [](const int a) { return 13 == a; };
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
 
     constexpr auto a{Array{11, 12, 13, 14}};
     constexpr auto someA{Some(Is13, a)};
 
     constexpr auto b{Array{11, 12, 14}};
     constexpr auto someB{Some(Is13, b)};
+
+    const auto someItr{Some(Is13, itr)};
 
     constexpr auto someRng{Some(Is13, Range<0>{})};
 
