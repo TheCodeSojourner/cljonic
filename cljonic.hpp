@@ -2612,8 +2612,8 @@ static_assert(IsCljonicCollection<C>, "SplitAt's second parameter must be a cljo
 using ResultType = typename C::value_type;
 using ArrayType = Array<ResultType, C::MaximumCount()>;
 auto result{Array{ArrayType{}, ArrayType{}}};
-auto lhs{MPtr(result, 0)};
-auto rhs{MPtr(result, 1)};
+auto lhs{result.MPtr( 0)};
+auto rhs{result.MPtr( 1)};
 auto i{SizeType{0}};
 for(const ResultType& v : c)
 if(i++ < count)
