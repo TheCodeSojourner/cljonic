@@ -26,6 +26,9 @@ int main()
     constexpr auto a{Array{11, 12, 13, 14}};
     constexpr auto subsA{Subs(a, 0, 3)}; // 11, 12, and 13
 
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
+    const auto subsItr{Subs(itr, 0, 3)}; // 1, 2, and 3
+
     constexpr auto rng{Range<1, 5>{}};
     constexpr auto subsRng{Subs(rng, 1)}; // 2, 3, and 4
 

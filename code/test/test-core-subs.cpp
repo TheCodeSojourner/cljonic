@@ -5,6 +5,7 @@
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
 #include "cljonic-core-equal.hpp"
+#include "cljonic-core-iterate.hpp"
 #include "cljonic-core-subs.hpp"
 
 using namespace cljonic;
@@ -16,6 +17,9 @@ SCENARIO("Subs", "[CljonicCoreSubs]")
     CHECK(Equal(Array<int, 0>{}, Subs(a, 2, 2)));
     CHECK(Equal(Array<int, 0>{}, Subs(a, 3, 0)));
     CHECK(Equal(Array{11, 12, 13}, Subs(a, 0, 3)));
+
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
+    CHECK(Equal(Array{1, 2, 3}, Subs(itr, 0, 3)));
 
     constexpr auto rng{Range<1, 5>{}};
     CHECK(Equal(Array{2, 3, 4}, Subs(rng, 1)));
