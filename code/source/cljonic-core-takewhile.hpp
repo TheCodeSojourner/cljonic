@@ -24,12 +24,16 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto Even = [](const int i) { return (0 == (i % 2)); };
+    constexpr auto LessThanTen = [](const int i) { return (i < 10); };
 
     constexpr auto a{Array<int, 10>{0, 2, 4, 5, 6, 7, 8, 9}};
     constexpr auto twA{TakeWhile(Even, a)}; // immutable, sparse Array, with 0, 2, and 4
 
     constexpr auto rng{Range<10>{}};
     constexpr auto twRng{TakeWhile(Even, rng)}; // immutable, sparse Array, with 0
+
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
+    const auto twItr{TakeWhile(LessThanTen, itr)}; // immutable, sparse Array, with 1 through 9
 
     constexpr auto rpt{Repeat<10, int>{2}};
     constexpr auto twRpt{TakeWhile(Even, rpt)}; // immutable, full array, of 2s
