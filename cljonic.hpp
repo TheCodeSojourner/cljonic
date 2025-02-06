@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Feb  6 10:43:52 AM MST 2025
+// This file was generated Thu Feb  6 10:49:38 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -2702,8 +2702,10 @@ static_assert(IsCljonicCollection<C>, "TakeLast's second parameter must be a clj
 
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 auto startIndex{(c.Count() > count) ? (c.Count() - count) : 0};
-for(SizeType i{startIndex}; (i < c.Count()); ++i)
-result.MAppend(c[i]);
+auto cBegin{c.begin()};
+auto cEnd{c.end()};
+for(auto it{cBegin + startIndex}; it != cEnd; ++it)
+result.MAppend(*it);
 return result;
 }
 
