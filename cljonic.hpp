@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Feb  6 10:49:38 AM MST 2025
+// This file was generated Thu Feb  6 11:43:28 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -2729,15 +2729,17 @@ for(SizeType i{0}; i < r.MaximumCount(); ++i)
 r.MAppend(v);
 };
 constexpr auto FillArrayNth = [](ResultType& r, const C& vArray, const SizeType nth) noexcept {
-auto i{SizeType{0}};
-while(i < vArray.Count()) {
-r.MAppend(vArray[i]);
-i += nth;
+auto it{vArray.begin()};
+auto vArrayEnd{vArray.end()};
+while(it != vArrayEnd) {
+r.MAppend(*it);
+for(SizeType i{0}; (i < nth) and (it != vArrayEnd); ++i)
+++it;
 }
 };
 auto result{ResultType{}};
 if((c.Count() > 0) and (0 == nth))
-FillArray(result, c[0]);
+FillArray(result, *c.begin());
 else if(c.Count() > 0)
 FillArrayNth(result, c, nth);
 return result;

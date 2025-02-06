@@ -5,6 +5,7 @@
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
 #include "cljonic-core-equal.hpp"
+#include "cljonic-core-iterate.hpp"
 #include "cljonic-core-takenth.hpp"
 
 using namespace cljonic;
@@ -13,6 +14,7 @@ using namespace cljonic::core;
 SCENARIO("TakeNth", "[CljonicCoreTakeNth]")
 {
     constexpr auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
     CHECK(Equal(Array{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, TakeNth(0, a)));
     CHECK(Equal(Array{0, 2, 4, 6, 8}, TakeNth(2, a)));
     CHECK(Equal(Array{0, 3, 6, 9}, TakeNth(3, a)));
@@ -24,6 +26,7 @@ SCENARIO("TakeNth", "[CljonicCoreTakeNth]")
     CHECK(Equal(Array{0, 9}, TakeNth(9, a)));
     CHECK(Equal(Array{0}, TakeNth(10, a)));
     CHECK(Equal(Array{0}, TakeNth(50, a)));
+    CHECK(Equal(Array{1, 101, 201, 301, 401, 501, 601, 701, 801, 901}, TakeNth(100, itr)));
     CHECK(Equal(Array<int, 1>{}, TakeNth(50, Range<0>{})));
     CHECK(Equal(Array{"11"}, TakeNth(50, Repeat<7, const char*>{"11"})));
     CHECK(Equal(Array{'a'}, TakeNth(5, Set{'a', 'b'})));

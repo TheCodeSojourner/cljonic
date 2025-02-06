@@ -24,6 +24,7 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
     constexpr auto t0{TakeNth(0, a)};                                // immutable, full Array, of ten 0s
     constexpr auto t1{TakeNth(1, a)};                                // immutable, full Array, with 0 through 9
     constexpr auto t2{TakeNth(2, a)};                                // immutable, sparse Array, with 0, 2, 4, 6, and 8
@@ -36,6 +37,7 @@ int main()
     constexpr auto t9{TakeNth(9, a)};                                // immutable, sparse Array, with 0 and 9
     constexpr auto t10{TakeNth(10, a)};                              // immutable, sparse Array, with 0
     constexpr auto t50{TakeNth(50, a)};                              // immutable, sparse Array, with 0
+    const auto tItr{TakeNth(100, itr)};                              // immutable, sparse Array{1, 101, 201, ..., 901}
     constexpr auto tEmpty{TakeNth(50, Range<0>{})};                  // immutable, empty Array
     constexpr auto tRpt7{TakeNth(50, Repeat<7, const char*>{"11"})}; // immutable, sparse Array, with one "11"
     constexpr auto tSet5{TakeNth(5, Set{'a', 'b'})};                 // immutable, sparse Array, with 'a'
@@ -65,16 +67,18 @@ constexpr auto TakeNth(const SizeType nth, const C& c) noexcept
     };
     constexpr auto FillArrayNth = [](ResultType& r, const C& vArray, const SizeType nth) noexcept
     {
-        auto i{SizeType{0}};
-        while (i < vArray.Count())
+        auto it{vArray.begin()};
+        auto vArrayEnd{vArray.end()};
+        while (it != vArrayEnd)
         {
-            r.MAppend(vArray[i]);
-            i += nth;
+            r.MAppend(*it);
+            for (SizeType i{0}; (i < nth) and (it != vArrayEnd); ++i)
+                ++it;
         }
     };
     auto result{ResultType{}};
     if ((c.Count() > 0) and (0 == nth))
-        FillArray(result, c[0]);
+        FillArray(result, *c.begin());
     else if (c.Count() > 0)
         FillArrayNth(result, c, nth);
     return result;
