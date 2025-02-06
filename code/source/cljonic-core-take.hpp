@@ -63,7 +63,7 @@ constexpr auto Take(const SizeType count, const C& c) noexcept
     auto cBegin{c.begin()};
     auto cEnd{cBegin + maxIndex};
     for (auto it{cBegin}; it != cEnd; ++it)
-        MAppend(result, static_cast<ResultType>(*it));
+        result.MAppend(static_cast<ResultType>(*it));
     return result;
 }
 
@@ -78,7 +78,7 @@ constexpr auto Take(const C& c) noexcept
     auto cBegin{c.begin()};
     auto cEnd{cBegin + maxIndex};
     for (auto it{cBegin}; it != cEnd; ++it)
-        MAppend(result, static_cast<ResultType>(*it));
+        result.MAppend(static_cast<ResultType>(*it));
     return result;
 }
 

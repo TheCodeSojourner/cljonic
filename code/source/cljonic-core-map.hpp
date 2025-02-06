@@ -67,7 +67,7 @@ constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept
     auto itrs{std::make_tuple(c.begin(), cs.begin()...)};
     auto minimumCount{MinArgument(c.Count(), cs.Count()...)};
     for (SizeType i{0}; i < minimumCount; ++i)
-        MAppend(result, std::apply([&](auto&... iter) { return f(*iter++...); }, itrs));
+        result.MAppend(std::apply([&](auto&... iter) { return f(*iter++...); }, itrs));
     return result;
 }
 

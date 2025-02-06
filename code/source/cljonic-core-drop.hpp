@@ -64,7 +64,7 @@ constexpr auto Drop(const SizeType count, const C& c) noexcept
     auto cEnd{c.end()};
     auto result{Array<ResultType, c.MaximumCount()>{}};
     for (auto it{cBegin}; it != cEnd; ++it)
-        MAppend(result, static_cast<ResultType>(*it));
+        result.MAppend(static_cast<ResultType>(*it));
     return result;
 }
 
@@ -79,7 +79,7 @@ constexpr auto Drop(const C& c) noexcept
     auto cEnd{c.end()};
     auto result{Array<ResultType, (c.MaximumCount() - dropCount)>{}};
     for (auto it{cBegin}; it != cEnd; ++it)
-        MAppend(result, static_cast<ResultType>(*it));
+        result.MAppend(static_cast<ResultType>(*it));
     return result;
 }
 

@@ -76,7 +76,7 @@ constexpr auto DedupeBy(F&& f, const C& c) noexcept
     auto result{Array<ValueType, c.MaximumCount()>{}};
     for (SizeType i{0}; i < c.Count();)
     {
-        MAppend(result, c[i]);
+        result.MAppend(c[i]);
         i = IndexOfNextElementNotEqualToCurrentElement(f, c, i);
     }
     return result;

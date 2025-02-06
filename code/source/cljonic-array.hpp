@@ -30,9 +30,6 @@ class Array : public IndexInterface<T>
     T m_elements[elementCount]{};
 
     template <typename U, SizeType N>
-    constexpr friend void MAppend(Array<U, N>& array, const U& value);
-
-    template <typename U, SizeType N>
     constexpr friend U* MPtr(Array<U, N>& array, SizeType index);
 
     template <typename U, SizeType N>
@@ -140,6 +137,12 @@ class Array : public IndexInterface<T>
         return maximumElements;
     }
 
+    constexpr void MAppend(const T& value)
+    {
+        if (m_elementCount < maximumElements)
+            m_elements[m_elementCount++] = value;
+    }
+
     constexpr void MSort() noexcept
     {
         // #lizard forgives -- The length and complexity of this function is acceptable
@@ -161,13 +164,6 @@ class Array : public IndexInterface<T>
 // Support declarations like: auto v{Array{1, 2, 3}}; // Equivalent to auto v{Array<int, 3>{1, 2, 3}};
 template <typename... Args>
 Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
-
-template <typename U, SizeType N>
-constexpr void MAppend(Array<U, N>& array, const U& value)
-{
-    if (array.m_elementCount < array.MaximumCount())
-        array.m_elements[array.m_elementCount++] = value;
-}
 
 template <typename U, SizeType N>
 constexpr U* MPtr(Array<U, N>& array, const SizeType index)

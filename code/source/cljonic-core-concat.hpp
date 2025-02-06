@@ -56,7 +56,7 @@ constexpr auto Concat(const C& c, const Cs&... cs) noexcept
     const auto MAppendCollectionOnResult = [&](const auto& c)
     {
         for (const auto& v : c)
-            MAppend(result, static_cast<ResultType>(v));
+            result.MAppend(static_cast<ResultType>(v));
     };
     (MAppendCollectionOnResult(c), ..., MAppendCollectionOnResult(cs));
     return result;

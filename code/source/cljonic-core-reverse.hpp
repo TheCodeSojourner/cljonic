@@ -45,7 +45,7 @@ constexpr auto Reverse(const C& c) noexcept
 
     auto result{Array<typename C::value_type, C::MaximumCount()>{}};
     for (const auto& v : c)
-        MAppend(result, v);
+        result.MAppend(v);
     MReverse(result);
     return result;
 }

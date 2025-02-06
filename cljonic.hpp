@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Feb  6 09:27:38 AM MST 2025
+// This file was generated Thu Feb  6 09:44:35 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -562,9 +562,6 @@ T m_elementDefault;
 T m_elements[elementCount]{};
 
 template <typename U, SizeType N>
-constexpr friend void MAppend(Array<U, N>& array, const U& value);
-
-template <typename U, SizeType N>
 constexpr friend U* MPtr(Array<U, N>& array, SizeType index);
 
 template <typename U, SizeType N>
@@ -636,6 +633,11 @@ static constexpr SizeType MaximumCount() noexcept {
 return maximumElements;
 }
 
+constexpr void MAppend(const T& value) {
+if(m_elementCount < maximumElements)
+m_elements[m_elementCount++] = value;
+}
+
 constexpr void MSort() noexcept {
 
 if(m_elementCount > 1) {
@@ -652,12 +654,6 @@ m_elements[j] = key;
 
 template <typename... Args>
 Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
-
-template <typename U, SizeType N>
-constexpr void MAppend(Array<U, N>& array, const U& value) {
-if(array.m_elementCount < array.MaximumCount())
-array.m_elements[array.m_elementCount++] = value;
-}
 
 template <typename U, SizeType N>
 constexpr U* MPtr(Array<U, N>& array, const SizeType index) {
@@ -1276,7 +1272,7 @@ constexpr auto count{SumOfCljonicCollectionMaximumCounts<C, Cs...>()};
 auto result{Array<ResultType, count>{}};
 const auto MAppendCollectionOnResult = [&](const auto& c) {
 for(const auto& v : c)
-MAppend(result, static_cast<ResultType>(v));
+result.MAppend(static_cast<ResultType>(v));
 };
 (MAppendCollectionOnResult(c), ..., MAppendCollectionOnResult(cs));
 return result;
@@ -1304,7 +1300,7 @@ static_assert(AllConvertibleTypes<typename C::value_type, Es...>,
 using ResultType = typename C::value_type;
 constexpr auto count{C::MaximumCount() + sizeof...(Es)};
 auto result{Array<ResultType, count>{}};
-const auto MAppendElementOntoResult = [&](const auto& e) { MAppend(result, e); };
+const auto MAppendElementOntoResult = [&](const auto& e) { result.MAppend(e); };
 for(const ResultType& v : c)
 MAppendElementOntoResult(v);
 (MAppendElementOntoResult(es), ...);
@@ -1470,7 +1466,7 @@ constexpr auto IndexOfNextElementNotEqualToCurrentElement =
 
 auto result{Array<ValueType, c.MaximumCount()>{}};
 for(SizeType i{0}; i < c.Count();) {
-MAppend(result, c[i]);
+result.MAppend(c[i]);
 i = IndexOfNextElementNotEqualToCurrentElement(f, c, i);
 }
 return result;
@@ -1507,7 +1503,7 @@ auto cBegin{c.begin() + dropCount};
 auto cEnd{c.end()};
 auto result{Array<ResultType, c.MaximumCount()>{}};
 for(auto it{cBegin}; it != cEnd; ++it)
-MAppend(result, static_cast<ResultType>(*it));
+result.MAppend(static_cast<ResultType>(*it));
 return result;
 }
 
@@ -1521,7 +1517,7 @@ auto cBegin{c.begin() + dropCount};
 auto cEnd{c.end()};
 auto result{Array<ResultType, (c.MaximumCount() - dropCount)>{}};
 for(auto it{cBegin}; it != cEnd; ++it)
-MAppend(result, static_cast<ResultType>(*it));
+result.MAppend(static_cast<ResultType>(*it));
 return result;
 }
 
@@ -1541,7 +1537,7 @@ auto result{Array<ResultType, c.MaximumCount()>{}};
 auto cBegin(c.begin());
 auto cEnd{(count > c.Count()) ? cBegin : (c.end() - count)};
 for(auto it{cBegin}; it != cEnd; ++it)
-MAppend(result, static_cast<ResultType>(*it));
+result.MAppend(static_cast<ResultType>(*it));
 return result;
 }
 
@@ -1556,7 +1552,7 @@ auto result{Array<ResultType, resultMaximumCount>{}};
 auto cBegin(c.begin());
 auto cEnd{(N > c.Count()) ? cBegin : (c.end() - N)};
 for(auto it{cBegin}; it != cEnd; ++it)
-MAppend(result, static_cast<ResultType>(*it));
+result.MAppend(static_cast<ResultType>(*it));
 return result;
 }
 
@@ -1579,7 +1575,7 @@ auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 auto conjElement(false);
 for(const auto& element : c)
 if(conjElement |= (not f(element)))
-MAppend(result, element);
+result.MAppend(element);
 return result;
 }
 
@@ -1690,7 +1686,7 @@ static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 for(const auto& element : c)
 if(f(element))
-MAppend(result, element);
+result.MAppend(element);
 return result;
 }
 
@@ -1833,7 +1829,7 @@ constexpr auto resultCount{minimumCollectionMaximumCount * collectionsCount};
 auto result{Array<ResultType, resultCount>{}};
 auto itrs{std::make_tuple(c.begin(), cs.begin()...)};
 for(SizeType i{0}; i < minimumCollectionMaximumCount; ++i)
-std::apply([&](auto&... itrs) { (MAppend(result, *itrs++), ...); }, itrs);
+std::apply([&](auto&... itrs) { (result.MAppend(*itrs++), ...); }, itrs);
 return result;
 }
 
@@ -1863,8 +1859,8 @@ auto cItr{c.begin()};
 auto interposeValue{static_cast<ResultType>(t)};
 auto result{Array<ResultType, resultMaximumCount>{}};
 for(SizeType i{0}; i < collectionMaximumCount; ++i) {
-MAppend(result, *cItr++);
-MAppend(result, interposeValue);
+result.MAppend(*cItr++);
+result.MAppend(interposeValue);
 }
 return result;
 }
@@ -2150,7 +2146,7 @@ auto result{Array<ResultType, minimumCollectionMaximumCount>{}};
 auto itrs{std::make_tuple(c.begin(), cs.begin()...)};
 auto minimumCount{MinArgument(c.Count(), cs.Count()...)};
 for(SizeType i{0}; i < minimumCount; ++i)
-MAppend(result, std::apply([&](auto&... iter) { return f(*iter++...); }, itrs));
+result.MAppend(std::apply([&](auto&... iter) { return f(*iter++...); }, itrs));
 return result;
 }
 
@@ -2435,7 +2431,7 @@ static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 for(const auto& element : c)
 if(not f(element))
-MAppend(result, element);
+result.MAppend(element);
 return result;
 }
 
@@ -2463,7 +2459,7 @@ static_assert(std::convertible_to<typename C2::value_type, typename C1::value_ty
 
 auto result{Array<typename C1::value_type, c2.MaximumCount()>{}};
 for(const auto& v2 : c2)
-MAppend(result, ((v2 >= 0) and (static_cast<SizeType>(v2) < c1.Count())) ? *(c1.begin() + v2) : v2);
+result.MAppend(((v2 >= 0) and (static_cast<SizeType>(v2) < c1.Count())) ? *(c1.begin() + v2) : v2);
 return result;
 }
 
@@ -2480,7 +2476,7 @@ static_assert(IsCljonicCollection<C>, "Reverse's parameter must be a cljonic col
 
 auto result{Array<typename C::value_type, C::MaximumCount()>{}};
 for(const auto& v : c)
-MAppend(result, v);
+result.MAppend(v);
 MReverse(result);
 return result;
 }
@@ -2513,7 +2509,7 @@ static_assert(IsCljonicCollection<C>, "Seq's parameter must be a cljonic collect
 using ResultType = typename C::value_type;
 auto result{Array<ResultType, C::MaximumCount()>{}};
 for(const ResultType& v : c)
-MAppend(result, v);
+result.MAppend(v);
 return result;
 }
 
@@ -2566,7 +2562,7 @@ static_assert(IsCljonicCollection<C>, "Sort's parameter must be a cljonic collec
 using ResultType = typename C::value_type;
 auto result{Array<ResultType, C::MaximumCount()>{}};
 for(const ResultType& v : c)
-MAppend(result, v);
+result.MAppend(v);
 result.MSort();
 return result;
 }
@@ -2621,9 +2617,9 @@ auto rhs{MPtr(result, 1)};
 auto i{SizeType{0}};
 for(const ResultType& v : c)
 if(i++ < count)
-MAppend(*lhs, v);
+lhs->MAppend(v);
 else
-MAppend(*rhs, v);
+rhs->MAppend(v);
 return result;
 }
 
@@ -2686,7 +2682,7 @@ auto maxIndex{MinArgument(count, c.Count())};
 auto cBegin{c.begin()};
 auto cEnd{cBegin + maxIndex};
 for(auto it{cBegin}; it != cEnd; ++it)
-MAppend(result, static_cast<ResultType>(*it));
+result.MAppend(static_cast<ResultType>(*it));
 return result;
 }
 
@@ -2700,7 +2696,7 @@ auto maxIndex{MinArgument(N, c.Count())};
 auto cBegin{c.begin()};
 auto cEnd{cBegin + maxIndex};
 for(auto it{cBegin}; it != cEnd; ++it)
-MAppend(result, static_cast<ResultType>(*it));
+result.MAppend(static_cast<ResultType>(*it));
 return result;
 }
 
@@ -2718,7 +2714,7 @@ static_assert(IsCljonicCollection<C>, "TakeLast's second parameter must be a clj
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 auto startIndex{(c.Count() > count) ? (c.Count() - count) : 0};
 for(SizeType i{startIndex}; (i < c.Count()); ++i)
-MAppend(result, c[i]);
+result.MAppend(c[i]);
 return result;
 }
 
@@ -2739,12 +2735,12 @@ using ValueType = typename C::value_type;
 
 constexpr auto FillArray = [](ResultType& r, const ValueType& v) noexcept {
 for(SizeType i{0}; i < r.MaximumCount(); ++i)
-MAppend(r, v);
+r.MAppend(v);
 };
 constexpr auto FillArrayNth = [](ResultType& r, const C& vArray, const SizeType nth) noexcept {
 auto i{SizeType{0}};
 while(i < vArray.Count()) {
-MAppend(r, vArray[i]);
+r.MAppend(vArray[i]);
 i += nth;
 }
 };
@@ -2774,7 +2770,7 @@ static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
 for(const auto& element : c)
 if(f(element))
-MAppend(result, element);
+result.MAppend(element);
 else
 break;
 return result;

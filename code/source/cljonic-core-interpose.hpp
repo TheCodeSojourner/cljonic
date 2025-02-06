@@ -58,8 +58,8 @@ constexpr auto Interpose(const T& t, const C& c) noexcept
     auto result{Array<ResultType, resultMaximumCount>{}};
     for (SizeType i{0}; i < collectionMaximumCount; ++i)
     {
-        MAppend(result, *cItr++);
-        MAppend(result, interposeValue); // MAppend will do nothing if the collection is full
+        result.MAppend(*cItr++);
+        result.MAppend(interposeValue); // MAppend will do nothing if the collection is full
     }
     return result;
 }

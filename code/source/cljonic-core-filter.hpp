@@ -65,7 +65,7 @@ constexpr auto Filter(F&& f, const C& c) noexcept
     auto result{Array<typename C::value_type, c.MaximumCount()>{}};
     for (const auto& element : c)
         if (f(element))
-            MAppend(result, element);
+            result.MAppend(element);
     return result;
 }
 

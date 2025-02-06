@@ -65,7 +65,7 @@ constexpr auto Remove(F&& f, const C& c) noexcept
     auto result{Array<typename C::value_type, c.MaximumCount()>{}};
     for (const auto& element : c)
         if (not f(element))
-            MAppend(result, element);
+            result.MAppend(element);
     return result;
 }
 
