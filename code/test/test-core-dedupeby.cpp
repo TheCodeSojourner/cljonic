@@ -6,6 +6,7 @@
 #include "cljonic-string.hpp"
 #include "cljonic-core-dedupeby.hpp"
 #include "cljonic-core-equal.hpp"
+#include "cljonic-core-iterate.hpp"
 
 using namespace cljonic;
 using namespace cljonic::core;
@@ -112,4 +113,9 @@ SCENARIO("DedupeBy", "[CljonicCoreDedupeBy]")
 
     constexpr auto d6{Array{0.0, 1.0, 1.0, 2.0, 3.0, 3.0, 3.0, 4.0, 5.0, 5.0, 6.0, 7.0, 7.0, 8.0, 9.0}};
     CHECK(EqualDoubleCollections(Array{0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0}, DedupeBy(EqualDoubles, d6)));
+
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
+    const auto d7{DedupeBy(EqualInts, itr)};
+    CHECK(1 == *d7.begin());
+    CHECK(1000 == *(d7.end() - 1));
 }

@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Feb  6 11:49:23 AM MST 2025
+// This file was generated Thu Feb  6 12:02:16 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -1449,19 +1449,19 @@ static_assert(IsBinaryPredicate<std::decay_t<F>, typename C::value_type, typenam
 
 using ValueType = typename C::value_type;
 
-constexpr auto IndexOfNextElementNotEqualToCurrentElement =
-    [](const F& fn, const C& collection, const SizeType currentIndex) {
-    auto currentElement{collection[currentIndex]};
-    auto i{currentIndex + 1};
-    while((i < collection.Count()) and fn(collection[i], currentElement))
-    ++i;
-    return i;
-    };
+constexpr auto AdvanceIteratorToNextElementNotEqualToCurrentElement = [](const F& fn, auto& it, const auto& end) {
+auto currentElement{*it};
+++it;
+while((it != end) and fn(*it, currentElement))
+++it;
+};
 
 auto result{Array<ValueType, c.MaximumCount()>{}};
-for(SizeType i{0}; i < c.Count();) {
-result.MAppend(c[i]);
-i = IndexOfNextElementNotEqualToCurrentElement(f, c, i);
+auto cBegin{c.begin()};
+auto cEnd{c.end()};
+for(auto it{cBegin}; it != cEnd;) {
+result.MAppend(*it);
+AdvanceIteratorToNextElementNotEqualToCurrentElement(f, it, cEnd);
 }
 return result;
 }

@@ -41,6 +41,9 @@ int main()
     constexpr auto a6{Array{0, 1, 1, 2, 3, 3, 3, 4, 5, 5, 6, 7, 7, 8, 9}};
     constexpr auto d6{DedupeBy(EqualInts, a6)};
 
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
+    const auto d7{DedupeBy(EqualInts, itr)};
+
     // Compiler Error: DedupeBy's second parameter must be a cljonic collection
     // constexpr auto d{DedupeBy(EqualInts, 1)};
 
@@ -63,21 +66,21 @@ constexpr auto DedupeBy(F&& f, const C& c) noexcept
 
     using ValueType = typename C::value_type;
 
-    constexpr auto IndexOfNextElementNotEqualToCurrentElement =
-        [](const F& fn, const C& collection, const SizeType currentIndex)
+    constexpr auto AdvanceIteratorToNextElementNotEqualToCurrentElement = [](const F& fn, auto& it, const auto& end)
     {
-        auto currentElement{collection[currentIndex]};
-        auto i{currentIndex + 1};
-        while ((i < collection.Count()) and fn(collection[i], currentElement))
-            ++i;
-        return i;
+        auto currentElement{*it};
+        ++it;
+        while ((it != end) and fn(*it, currentElement))
+            ++it;
     };
 
     auto result{Array<ValueType, c.MaximumCount()>{}};
-    for (SizeType i{0}; i < c.Count();)
+    auto cBegin{c.begin()};
+    auto cEnd{c.end()};
+    for (auto it{cBegin}; it != cEnd;)
     {
-        result.MAppend(c[i]);
-        i = IndexOfNextElementNotEqualToCurrentElement(f, c, i);
+        result.MAppend(*it);
+        AdvanceIteratorToNextElementNotEqualToCurrentElement(f, it, cEnd);
     }
     return result;
 }
