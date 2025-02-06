@@ -29,12 +29,6 @@ class Array : public IndexInterface<T>
     T m_elementDefault;
     T m_elements[elementCount]{};
 
-    template <typename U, SizeType N>
-    constexpr friend void MReverse(Array<U, N>& array);
-
-    template <typename U, SizeType N>
-    constexpr friend void MSet(Array<U, N>& array, const U& value, SizeType index);
-
     constexpr auto ValueAtIndex(const SizeType index) const noexcept
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
@@ -152,6 +146,30 @@ class Array : public IndexInterface<T>
                 std::swap(m_elements[start], m_elements[end]);
     }
 
+    constexpr void MSet(const T& value, const SizeType index)
+    {
+        if (index < m_elementCount)
+            m_elements[index] = value;
+    }
+
+    template <typename F>
+    constexpr void MSortBy(F&& f) noexcept
+    {
+        // #lizard forgives -- The length and complexity of this function is acceptable
+
+        if (m_elementCount > 1)
+        {
+            for (SizeType i{1}; i < m_elementCount; ++i)
+            {
+                auto key{m_elements[i]};
+                auto j{i + 1};
+                while ((--j > 0) and f(key, m_elements[j - 1]))
+                    m_elements[j] = m_elements[j - 1];
+                m_elements[j] = key;
+            }
+        }
+    }
+
     constexpr void MSort() noexcept
     {
         // #lizard forgives -- The length and complexity of this function is acceptable
@@ -173,21 +191,6 @@ class Array : public IndexInterface<T>
 // Support declarations like: auto v{Array{1, 2, 3}}; // Equivalent to auto v{Array<int, 3>{1, 2, 3}};
 template <typename... Args>
 Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
-
-template <typename U, SizeType N>
-constexpr void MReverse(Array<U, N>& array)
-{
-    if (array.m_elementCount >= 2)
-        for (auto start{0_sz}, end{array.m_elementCount - 1_sz}; start < end; ++start, --end)
-            std::swap(array.m_elements[start], array.m_elements[end]);
-}
-
-template <typename U, SizeType N>
-constexpr void MSet(Array<U, N>& array, const U& value, const SizeType index)
-{
-    if (index < array.m_elementCount)
-        array.m_elements[index] = value;
-}
 
 } // namespace cljonic
 

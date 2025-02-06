@@ -31,6 +31,9 @@ int main()
     constexpr auto b{Array{11, 13, 12, 14}};
     constexpr auto sortByB{SortBy(IsALessThanB, b)};
 
+    constexpr auto itr{Iterate([](const int i) { return i - 1; }, 10000)};
+    const auto sortByItr{SortBy(IsALessThanB, itr)};
+
     constexpr auto sortByRng{SortBy(IsALessThanB, Range<0>{})};
 
     constexpr auto sortByRpt{SortBy(IsALessThanB, Repeat<4, int>{11})};
@@ -61,19 +64,11 @@ constexpr auto SortBy(F&& f, const C& c) noexcept
     static_assert(IsBinaryPredicate<std::decay_t<F>, typename C::value_type, typename C::value_type>,
                   "SortBy's function is not a valid binary predicate for the collection value type");
 
-    // Insertion sort algorithm
-    auto result{Seq(c)};
-    for (SizeType i{1}; i < result.Count(); ++i)
-    {
-        auto key = result[i];
-        SizeType j = i;
-        while ((j > 0) and f(key, result[j - 1]))
-        {
-            MSet(result, result[j - 1], j);
-            --j;
-        }
-        MSet(result, key, j);
-    }
+    using ResultType = typename C::value_type;
+    auto result{Array<ResultType, C::MaximumCount()>{}};
+    for (const ResultType& v : c)
+        result.MAppend(v);
+    result.MSortBy(std::forward<F>(f));
     return result;
 }
 

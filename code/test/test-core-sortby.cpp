@@ -5,6 +5,7 @@
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
 #include "cljonic-core-equal.hpp"
+#include "cljonic-core-iterate.hpp"
 #include "cljonic-core-sortby.hpp"
 
 using namespace cljonic;
@@ -19,6 +20,11 @@ SCENARIO("SortBy", "[CljonicCoreSortBy]")
 
     constexpr auto b{Array{11, 13, 12, 14}};
     CHECK(Equal(Array{11, 12, 13, 14}, SortBy(IsALessThanB, b)));
+
+    constexpr auto itr{Iterate([](const int i) { return i - 1; }, 10000)};
+    const auto sortByItr{SortBy(IsALessThanB, itr)};
+    CHECK(9001 == *sortByItr.begin());
+    CHECK(10000 == *(sortByItr.end() - 1));
 
     CHECK(Equal(Array<int, 0>{}, SortBy(IsALessThanB, Range<0>{})));
 

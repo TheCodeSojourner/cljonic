@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Feb  6 09:44:35 AM MST 2025
+// This file was generated Thu Feb  6 10:05:05 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -561,15 +561,6 @@ SizeType m_elementCount;
 T m_elementDefault;
 T m_elements[elementCount]{};
 
-template <typename U, SizeType N>
-constexpr friend U* MPtr(Array<U, N>& array, SizeType index);
-
-template <typename U, SizeType N>
-constexpr friend void MReverse(Array<U, N>& array);
-
-template <typename U, SizeType N>
-constexpr friend void MSet(Array<U, N>& array, const U& value, SizeType index);
-
 constexpr auto ValueAtIndex(const SizeType index) const noexcept {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 }
@@ -638,6 +629,35 @@ if(m_elementCount < maximumElements)
 m_elements[m_elementCount++] = value;
 }
 
+constexpr T* MPtr(const SizeType index) {
+return (index < m_elementCount) ? &m_elements[index] : &m_elementDefault;
+}
+
+constexpr void MReverse() {
+if(m_elementCount >= 2)
+for(auto start{0_sz}, end{m_elementCount - 1_sz}; start < end; ++start, --end)
+std::swap(m_elements[start], m_elements[end]);
+}
+
+constexpr void MSet(const T& value, const SizeType index) {
+if(index < m_elementCount)
+m_elements[index] = value;
+}
+
+template <typename F>
+constexpr void MSortBy(F&& f) noexcept {
+
+if(m_elementCount > 1) {
+for(SizeType i{1}; i < m_elementCount; ++i) {
+auto key{m_elements[i]};
+auto j{i + 1};
+while((--j > 0) and f(key, m_elements[j - 1]))
+m_elements[j] = m_elements[j - 1];
+m_elements[j] = key;
+}
+}
+}
+
 constexpr void MSort() noexcept {
 
 if(m_elementCount > 1) {
@@ -654,24 +674,6 @@ m_elements[j] = key;
 
 template <typename... Args>
 Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
-
-template <typename U, SizeType N>
-constexpr U* MPtr(Array<U, N>& array, const SizeType index) {
-return &array.m_elements[(index < array.m_elementCount) ? index : 0];
-}
-
-template <typename U, SizeType N>
-constexpr void MReverse(Array<U, N>& array) {
-if(array.m_elementCount >= 2)
-for(auto start{0_sz}, end{array.m_elementCount - 1_sz}; start < end; ++start, --end)
-std::swap(array.m_elements[start], array.m_elements[end]);
-}
-
-template <typename U, SizeType N>
-constexpr void MSet(Array<U, N>& array, const U& value, const SizeType index) {
-if(index < array.m_elementCount)
-array.m_elements[index] = value;
-}
 
 } // namespace cljonic
 
@@ -2477,7 +2479,7 @@ static_assert(IsCljonicCollection<C>, "Reverse's parameter must be a cljonic col
 auto result{Array<typename C::value_type, C::MaximumCount()>{}};
 for(const auto& v : c)
 result.MAppend(v);
-MReverse(result);
+result.MReverse();
 return result;
 }
 
@@ -2582,16 +2584,11 @@ static_assert(IsCljonicCollection<C>, "SortBy's second parameter must be a cljon
 static_assert(IsBinaryPredicate<std::decay_t<F>, typename C::value_type, typename C::value_type>,
               "SortBy's function is not a valid binary predicate for the collection value type");
 
-auto result{Seq(c)};
-for(SizeType i{1}; i < result.Count(); ++i) {
-auto key = result[i];
-SizeType j = i;
-while((j > 0) and f(key, result[j - 1])) {
-MSet(result, result[j - 1], j);
---j;
-}
-MSet(result, key, j);
-}
+using ResultType = typename C::value_type;
+auto result{Array<ResultType, C::MaximumCount()>{}};
+for(const ResultType& v : c)
+result.MAppend(v);
+result.MSortBy(std::forward<F>(f));
 return result;
 }
 
@@ -2612,8 +2609,8 @@ static_assert(IsCljonicCollection<C>, "SplitAt's second parameter must be a cljo
 using ResultType = typename C::value_type;
 using ArrayType = Array<ResultType, C::MaximumCount()>;
 auto result{Array{ArrayType{}, ArrayType{}}};
-auto lhs{result.MPtr( 0)};
-auto rhs{result.MPtr( 1)};
+auto lhs{result.MPtr(0)};
+auto rhs{result.MPtr(1)};
 auto i{SizeType{0}};
 for(const ResultType& v : c)
 if(i++ < count)
