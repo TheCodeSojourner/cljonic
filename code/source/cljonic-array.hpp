@@ -145,6 +145,13 @@ class Array : public IndexInterface<T>
         return (index < m_elementCount) ? &m_elements[index] : &m_elementDefault;
     }
 
+    constexpr void MReverse()
+    {
+        if (m_elementCount >= 2)
+            for (auto start{0_sz}, end{m_elementCount - 1_sz}; start < end; ++start, --end)
+                std::swap(m_elements[start], m_elements[end]);
+    }
+
     constexpr void MSort() noexcept
     {
         // #lizard forgives -- The length and complexity of this function is acceptable
