@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Feb  6 10:18:32 AM MST 2025
+// This file was generated Thu Feb  6 10:31:56 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -2626,7 +2626,7 @@ static_assert(IsCljonicCollection<C>, "SplitWith's second parameter must be a cl
 static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
               "SplitWith's function is not a valid unary predicate for the collection value type");
 
-const auto firstArray{TakeWhile(f, c)};
+const auto firstArray{TakeWhile(std::forward<F>(f), c)};
 const auto secondArray{Drop(firstArray.Count(), c)};
 return Array{firstArray, secondArray};
 }

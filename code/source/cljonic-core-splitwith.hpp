@@ -26,12 +26,15 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto IsLessThan13 = [](const int a) { return a < 13; };
+    constexpr auto itr{Iterate([](const int i) { return i + 1; }, 1)};
 
     constexpr auto a{Array{11, 12, 13, 14}};
     constexpr auto splitByA{SplitWith(IsLessThan13, a)}; // Array{11, 12} and Array{13, 14}
 
     constexpr auto b{Array{11, 13, 12, 14}};
     constexpr auto splitByB{SplitWith(IsLessThan13, b)}; // Array{11} and Array{13, 12, 14}
+
+    const auto splitByItr{SplitWith(IsLessThan13, itr)}; // Array{1, ..., 12} and Array{13, ..., 1000}
 
     constexpr auto splitByRng{SplitWith(IsLessThan13, Range<0>{})}; // two empty Arrays
 
@@ -62,7 +65,7 @@ constexpr auto SplitWith(F&& f, const C& c) noexcept
     static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
                   "SplitWith's function is not a valid unary predicate for the collection value type");
 
-    const auto firstArray{TakeWhile(f, c)};
+    const auto firstArray{TakeWhile(std::forward<F>(f), c)};
     const auto secondArray{Drop(firstArray.Count(), c)};
     return Array{firstArray, secondArray};
 }
