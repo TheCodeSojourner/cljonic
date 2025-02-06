@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Feb  6 10:05:05 AM MST 2025
+// This file was generated Thu Feb  6 10:18:32 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -648,6 +648,7 @@ template <typename F>
 constexpr void MSortBy(F&& f) noexcept {
 
 if(m_elementCount > 1) {
+
 for(SizeType i{1}; i < m_elementCount; ++i) {
 auto key{m_elements[i]};
 auto j{i + 1};
@@ -659,16 +660,7 @@ m_elements[j] = key;
 }
 
 constexpr void MSort() noexcept {
-
-if(m_elementCount > 1) {
-for(SizeType i{1}; i < m_elementCount; ++i) {
-auto key{m_elements[i]};
-auto j{i + 1};
-while((--j > 0) and FirstLessThanSecond(key, m_elements[j - 1]))
-m_elements[j] = m_elements[j - 1];
-m_elements[j] = key;
-}
-}
+MSortBy([](const T& lhs, const T& rhs) { return FirstLessThanSecond(lhs, rhs); });
 }
 };
 
