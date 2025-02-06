@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Feb  5 03:13:42 PM MST 2025
+// This file was generated Thu Feb  6 09:27:38 AM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -634,6 +634,19 @@ return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
 
 static constexpr SizeType MaximumCount() noexcept {
 return maximumElements;
+}
+
+constexpr void MSort() noexcept {
+
+if(m_elementCount > 1) {
+for(SizeType i{1}; i < m_elementCount; ++i) {
+auto key{m_elements[i]};
+auto j{i + 1};
+while((--j > 0) and FirstLessThanSecond(key, m_elements[j - 1]))
+m_elements[j] = m_elements[j - 1];
+m_elements[j] = key;
+}
+}
 }
 };
 
@@ -2548,19 +2561,13 @@ namespace cljonic {
 namespace core {
 template <typename C>
 constexpr auto Sort(const C& c) noexcept {
-
 static_assert(IsCljonicCollection<C>, "Sort's parameter must be a cljonic collection");
 
-auto result{Seq(c)};
-for(SizeType i{1}; i < result.Count(); ++i) {
-auto key = result[i];
-SizeType j = i;
-while((j > 0) and FirstLessThanSecond(key, result[j - 1])) {
-MSet(result, result[j - 1], j);
---j;
-}
-MSet(result, key, j);
-}
+using ResultType = typename C::value_type;
+auto result{Array<ResultType, C::MaximumCount()>{}};
+for(const ResultType& v : c)
+MAppend(result, v);
+result.MSort();
 return result;
 }
 

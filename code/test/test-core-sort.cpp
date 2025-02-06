@@ -5,6 +5,7 @@
 #include "cljonic-set.hpp"
 #include "cljonic-string.hpp"
 #include "cljonic-core-equal.hpp"
+#include "cljonic-core-iterate.hpp"
 #include "cljonic-core-sort.hpp"
 
 using namespace cljonic;
@@ -17,6 +18,11 @@ SCENARIO("Sort", "[CljonicCoreSort]")
 
     constexpr auto b{Array{11, 13, 12, 14}};
     CHECK(Equal(Array{11, 12, 13, 14}, Sort(b)));
+
+    constexpr auto itr{Iterate([](const int i) { return i - 1; }, 10000)};
+    const auto sortItr{Sort(itr)};
+    CHECK(9001 == *sortItr.begin());
+    CHECK(10000 == *(sortItr.end() - 1));
 
     CHECK(Equal(Array<int, 0>{}, Sort(Range<0>{})));
 

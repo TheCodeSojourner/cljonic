@@ -28,6 +28,9 @@ int main()
     constexpr auto b{Array{11, 13, 12, 14}};
     constexpr auto sortB{Sort(b)};
 
+    constexpr auto itr{Iterate([](const int i) { return 10000 - i; }, 1)};
+    const auto sortItr{Sort(itr)};
+
     constexpr auto sortRng{Sort(Range<0>{})};
 
     constexpr auto sortRpt{Sort(Repeat<4, int>{11})};
@@ -51,23 +54,13 @@ int main()
 template <typename C>
 constexpr auto Sort(const C& c) noexcept
 {
-    // #lizard forgives -- The length and complexity of this function is acceptable
-
     static_assert(IsCljonicCollection<C>, "Sort's parameter must be a cljonic collection");
 
-    // Insertion sort algorithm
-    auto result{Seq(c)};
-    for (SizeType i{1}; i < result.Count(); ++i)
-    {
-        auto key = result[i];
-        SizeType j = i;
-        while ((j > 0) and FirstLessThanSecond(key, result[j - 1]))
-        {
-            MSet(result, result[j - 1], j);
-            --j;
-        }
-        MSet(result, key, j);
-    }
+    using ResultType = typename C::value_type;
+    auto result{Array<ResultType, C::MaximumCount()>{}};
+    for (const ResultType& v : c)
+        MAppend(result, v);
+    result.MSort();
     return result;
 }
 

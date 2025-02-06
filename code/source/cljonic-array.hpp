@@ -139,6 +139,23 @@ class Array : public IndexInterface<T>
     {
         return maximumElements;
     }
+
+    constexpr void MSort() noexcept
+    {
+        // #lizard forgives -- The length and complexity of this function is acceptable
+
+        if (m_elementCount > 1)
+        {
+            for (SizeType i{1}; i < m_elementCount; ++i)
+            {
+                auto key{m_elements[i]};
+                auto j{i + 1};
+                while ((--j > 0) and FirstLessThanSecond(key, m_elements[j - 1]))
+                    m_elements[j] = m_elements[j - 1];
+                m_elements[j] = key;
+            }
+        }
+    }
 }; // class Array
 
 // Support declarations like: auto v{Array{1, 2, 3}}; // Equivalent to auto v{Array<int, 3>{1, 2, 3}};
