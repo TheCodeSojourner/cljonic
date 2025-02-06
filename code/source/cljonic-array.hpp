@@ -159,6 +159,7 @@ class Array : public IndexInterface<T>
 
         if (m_elementCount > 1)
         {
+            // insertion sort
             for (SizeType i{1}; i < m_elementCount; ++i)
             {
                 auto key{m_elements[i]};
@@ -172,19 +173,7 @@ class Array : public IndexInterface<T>
 
     constexpr void MSort() noexcept
     {
-        // #lizard forgives -- The length and complexity of this function is acceptable
-
-        if (m_elementCount > 1)
-        {
-            for (SizeType i{1}; i < m_elementCount; ++i)
-            {
-                auto key{m_elements[i]};
-                auto j{i + 1};
-                while ((--j > 0) and FirstLessThanSecond(key, m_elements[j - 1]))
-                    m_elements[j] = m_elements[j - 1];
-                m_elements[j] = key;
-            }
-        }
+        MSortBy([](const T& lhs, const T& rhs) { return FirstLessThanSecond(lhs, rhs); });
     }
 }; // class Array
 
