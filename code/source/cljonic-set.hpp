@@ -127,9 +127,19 @@ class Set : public IndexInterface<T>
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
     }
 
-    constexpr T operator()(const T& t) const noexcept
+    constexpr T operator()(const SizeType index) const noexcept
     {
-        return Contains(t) ? t : m_elementDefault;
+        return this->operator[](index);
+    }
+
+    constexpr bool operator==(const auto& other) const noexcept
+    {
+        return AreEqual(*this, other);
+    }
+
+    constexpr bool operator!=(const auto& other) const noexcept
+    {
+        return not(*this == other);
     }
 
     [[nodiscard]] constexpr SizeType Count() const noexcept override
@@ -160,6 +170,12 @@ class Set : public IndexInterface<T>
     static constexpr SizeType MaximumCount() noexcept
     {
         return maximumElements;
+    }
+
+    constexpr void MInsert(const T& value)
+    {
+        if ((m_elementCount < maximumElements) and IsUniqueElement(value))
+            m_elements[m_elementCount++] = value;
     }
 }; // class Set
 

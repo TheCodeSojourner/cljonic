@@ -133,6 +133,16 @@ class Iterator
         return Itr(*this, MaximumCount());
     }
 
+    constexpr bool operator==(const auto& other) const noexcept
+    {
+        return AreEqual(*this, other);
+    }
+
+    constexpr bool operator!=(const auto& other) const noexcept
+    {
+        return not(*this == other);
+    }
+
     [[nodiscard]] constexpr SizeType Count() const noexcept
     {
         return CljonicCollectionMaximumElementCount;

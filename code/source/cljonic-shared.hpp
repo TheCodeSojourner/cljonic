@@ -24,18 +24,14 @@ constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 
-    if constexpr (IsCljonicSet<T> or IsCljonicSet<U>)
+    if constexpr (IsCljonicCollection<T> and IsCljonicCollection<U>)
     {
         auto result{t.Count() == u.Count()};
-        for (SizeType i{0}; (result and (i < t.Count())); ++i)
-            result = t.ContainsBy(f, u[i]);
-        return result;
-    }
-    else if constexpr (IsCljonicCollection<T> or IsCljonicCollection<U>)
-    {
-        auto result{t.Count() == u.Count()};
-        for (SizeType i{0}; (result and (i < t.Count())); ++i)
-            result = f(t[i], u[i]);
+        auto tBegin{t.begin()};
+        auto tEnd{t.end()};
+        auto uIt{u.begin()};
+        for (auto it{tBegin}; (result and (it != tEnd)); ++it, ++uIt)
+            result = f(*it, *uIt);
         return result;
     }
     else
@@ -55,21 +51,42 @@ constexpr bool AreEqual(const T& t, const U& u) noexcept
     }
     else if constexpr (IsCljonicSet<T> or IsCljonicSet<U>)
     {
-        auto result{t.Count() == u.Count()};
-        for (SizeType i{0}; (result and (i < t.Count())); ++i)
-            result = t.Contains(u[i]);
-        return result;
+        if constexpr (IsCljonicSet<T>)
+        {
+            auto result{t.Count() == u.Count()};
+            auto uBegin{u.begin()};
+            auto uEnd{u.end()};
+            for (auto it{uBegin}; (result and (it != uEnd)); ++it)
+                result = t.Contains(*it);
+            return result;
+        }
+        else
+        {
+            auto result{t.Count() == u.Count()};
+            auto tBegin{t.begin()};
+            auto tEnd{t.end()};
+            for (auto it{tBegin}; (result and (it != tEnd)); ++it)
+                result = u.Contains(*it);
+            return result;
+        }
     }
-    else if constexpr (IsCljonicCollection<T> or IsCljonicCollection<U>)
+    else if constexpr (IsCljonicCollection<T> and IsCljonicCollection<U>)
     {
         auto result{t.Count() == u.Count()};
-        for (SizeType i{0}; (result and (i < t.Count())); ++i)
-            result = AreEqual(t[i], u[i]);
+        auto tBegin{t.begin()};
+        auto tEnd{t.end()};
+        auto uIt{u.begin()};
+        for (auto it{tBegin}; (result and (it != tEnd)); ++it, ++uIt)
+            result = AreEqual(*it, *uIt);
         return result;
+    }
+    else if constexpr ((not IsCljonicCollection<T>) and (not IsCljonicCollection<U>))
+    {
+        return t == u;
     }
     else
     {
-        return t == u;
+        static_assert(false, "AreEqual arguments are not comparable");
     }
 }
 

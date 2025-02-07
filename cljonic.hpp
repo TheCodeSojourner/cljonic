@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Feb  6 12:02:16 PM MST 2025
+// This file was generated Fri Feb  7 03:56:32 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -265,15 +265,13 @@ virtual constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, cons
 template <typename F, typename T, typename U>
 constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept {
 
-if constexpr(IsCljonicSet<T> or IsCljonicSet<U>) {
+if constexpr(IsCljonicCollection<T> and IsCljonicCollection<U>) {
 auto result{t.Count() == u.Count()};
-for(SizeType i{0}; (result and (i < t.Count())); ++i)
-result = t.ContainsBy(f, u[i]);
-return result;
-} else if constexpr(IsCljonicCollection<T> or IsCljonicCollection<U>) {
-auto result{t.Count() == u.Count()};
-for(SizeType i{0}; (result and (i < t.Count())); ++i)
-result = f(t[i], u[i]);
+auto tBegin{t.begin()};
+auto tEnd{t.end()};
+auto uIt{u.begin()};
+for(auto it{tBegin}; (result and (it != tEnd)); ++it, ++uIt)
+result = f(*it, *uIt);
 return result;
 } else {
 return f(t, u);
@@ -286,17 +284,33 @@ constexpr bool AreEqual(const T& t, const U& u) noexcept {
 if constexpr(IsCString<T> and IsCString<U>) {
 return std::strcmp(t, u) == 0;
 } else if constexpr(IsCljonicSet<T> or IsCljonicSet<U>) {
+if constexpr(IsCljonicSet<T>) {
 auto result{t.Count() == u.Count()};
-for(SizeType i{0}; (result and (i < t.Count())); ++i)
-result = t.Contains(u[i]);
-return result;
-} else if constexpr(IsCljonicCollection<T> or IsCljonicCollection<U>) {
-auto result{t.Count() == u.Count()};
-for(SizeType i{0}; (result and (i < t.Count())); ++i)
-result = AreEqual(t[i], u[i]);
+auto uBegin{u.begin()};
+auto uEnd{u.end()};
+for(auto it{uBegin}; (result and (it != uEnd)); ++it)
+result = t.Contains(*it);
 return result;
 } else {
+auto result{t.Count() == u.Count()};
+auto tBegin{t.begin()};
+auto tEnd{t.end()};
+for(auto it{tBegin}; (result and (it != tEnd)); ++it)
+result = u.Contains(*it);
+return result;
+}
+} else if constexpr(IsCljonicCollection<T> and IsCljonicCollection<U>) {
+auto result{t.Count() == u.Count()};
+auto tBegin{t.begin()};
+auto tEnd{t.end()};
+auto uIt{u.begin()};
+for(auto it{tBegin}; (result and (it != tEnd)); ++it, ++uIt)
+result = AreEqual(*it, *uIt);
+return result;
+} else if constexpr((not IsCljonicCollection<T>) and (not IsCljonicCollection<U>)) {
 return t == u;
+} else {
+static_assert(false, "AreEqual arguments are not comparable");
 }
 }
 
@@ -346,6 +360,9 @@ namespace cljonic {
 
 template <typename T, SizeType MaxElements>
 class Array;
+
+template <typename F, typename T>
+class Iterator;
 
 template <int... StartEndStep>
 class Range;
@@ -435,7 +452,7 @@ template <typename T, typename C>
 constexpr auto Interpose(const T& t, const C& c) noexcept;
 
 template <typename T, typename... Ts>
-constexpr auto IsDistinct(const T& t, const Ts&... ts) noexcept;
+constexpr bool IsDistinct(const T& t, const Ts&... ts) noexcept;
 
 template <typename F, typename T, typename... Ts>
 constexpr auto IsDistinctBy(F&& f, const T& t, const Ts&... ts) noexcept;
@@ -598,6 +615,14 @@ constexpr T operator()(const SizeType index) const noexcept {
 return this->operator[](index);
 }
 
+constexpr bool operator==(const auto& other) const noexcept {
+return AreEqual(*this, other);
+}
+
+constexpr bool operator!=(const auto& other) const noexcept {
+return not(*this == other);
+}
+
 constexpr Array& operator=(const Array& other) noexcept {
 if(this != &other) {
 m_elementCount = other.m_elementCount;
@@ -749,6 +774,14 @@ return Itr(*this, 0);
 
 Itr end() const {
 return Itr(*this, MaximumCount());
+}
+
+constexpr bool operator==(const auto& other) const noexcept {
+return AreEqual(*this, other);
+}
+
+constexpr bool operator!=(const auto& other) const noexcept {
+return not(*this == other);
 }
 
 [[nodiscard]] constexpr SizeType Count() const noexcept {
@@ -924,6 +957,18 @@ constexpr int operator[](const SizeType index) const noexcept override {
 return ValueAtIndex(index);
 }
 
+constexpr int operator()(const SizeType index) const noexcept {
+return this->operator[](index);
+}
+
+constexpr bool operator==(const auto& other) const noexcept {
+return AreEqual(*this, other);
+}
+
+constexpr bool operator!=(const auto& other) const noexcept {
+return not(*this == other);
+}
+
 [[nodiscard]] constexpr SizeType Count() const noexcept override {
 return m_elementCount;
 }
@@ -989,6 +1034,18 @@ return Iterator{*this, m_elementCount};
 
 constexpr T operator[](const SizeType index) const noexcept override {
 return ValueAtIndex(index);
+}
+
+constexpr T operator()(const SizeType index) const noexcept {
+return this->operator[](index);
+}
+
+constexpr bool operator==(const auto& other) const noexcept {
+return AreEqual(*this, other);
+}
+
+constexpr bool operator!=(const auto& other) const noexcept {
+return not(*this == other);
 }
 
 [[nodiscard]] constexpr SizeType Count() const noexcept override {
@@ -1084,8 +1141,16 @@ constexpr T operator[](const SizeType index) const noexcept override {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 }
 
-constexpr T operator()(const T& t) const noexcept {
-return Contains(t) ? t : m_elementDefault;
+constexpr T operator()(const SizeType index) const noexcept {
+return this->operator[](index);
+}
+
+constexpr bool operator==(const auto& other) const noexcept {
+return AreEqual(*this, other);
+}
+
+constexpr bool operator!=(const auto& other) const noexcept {
+return not(*this == other);
 }
 
 [[nodiscard]] constexpr SizeType Count() const noexcept override {
@@ -1110,6 +1175,11 @@ return (index < m_elementCount) and Contains(element);
 
 static constexpr SizeType MaximumCount() noexcept {
 return maximumElements;
+}
+
+constexpr void MInsert(const T& value) {
+if((m_elementCount < maximumElements) and IsUniqueElement(value))
+m_elements[m_elementCount++] = value;
 }
 };
 
@@ -1185,6 +1255,14 @@ return ValueAtIndex(index);
 
 constexpr char operator()(const SizeType index) const noexcept {
 return this->operator[](index);
+}
+
+constexpr bool operator==(const auto& other) const noexcept {
+return AreEqual(*this, other);
+}
+
+constexpr bool operator!=(const auto& other) const noexcept {
+return not(*this == other);
 }
 
 [[nodiscard]] constexpr SizeType Count() const noexcept override {
@@ -1873,47 +1951,46 @@ namespace cljonic {
 
 namespace core {
 template <typename T, typename... Ts>
-constexpr auto IsDistinct(const T& t, const Ts&... ts) noexcept {
+constexpr bool IsDistinct(const T& t, const Ts&... ts) noexcept {
 
-if constexpr(sizeof...(Ts) == 0) {
+if constexpr(0 == sizeof...(Ts)) {
+
+if constexpr((not IsCljonicCollection<T>) or IsCljonicSet<T>) {
+
 return true;
 } else {
-if constexpr(AllCljonicCollections<T, Ts...>) {
-static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
-              "IsDistinct should not compare cljonic floating point collection value types for "
-              "equality. Consider using IsDistinctBy to override this default.");
 
-static_assert(
-    AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
-    "IsDistinct cljonic collection types are not all the same, or all Array, Range or Repeat types");
+static_assert(not std::floating_point<typename T::value_type>,
+              "IsDistinct should not compare cljonic floating point collection value types for equality. "
+              "Consider using IsDistinctBy to override this default.");
 
-constexpr auto IndexInterfacesEqual = [](const auto& t, const auto& u) noexcept {
-if(&t == &u)
-return true;
-if(t.Count() != u.Count())
+auto tSet{Set<typename T::value_type, t.MaximumCount()>{}};
+auto tSetCount{tSet.Count()};
+for(const auto& v : t) {
+tSet.MInsert(v);
+if(tSet.Count() == tSetCount)
 return false;
-for(SizeType i{0}; i < t.Count(); ++i)
-if(not t.ElementAtIndexIsEqualToElement(i, u[i]))
-return false;
+tSetCount = tSet.Count();
+}
 return true;
-};
-using I = const IndexInterface<typename T::value_type>*;
-constexpr auto n{sizeof...(Ts) + 1};
-const auto i{std::array<I, n>{static_cast<I>(&t), static_cast<I>(&ts)...}};
-for(SizeType j{0}; j < n; ++j)
-for(SizeType k{j + 1}; k < n; ++k)
-if(IndexInterfacesEqual(*i[j], *i[k]))
-return false;
-return true;
+}
 } else {
 static_assert(not AnyFloatingPointTypes<T, Ts...>,
-              "IsDistinct should not compare floating point types for equality. Consider using "
-              "IsDistinctBy to override this default.");
+              "IsDistinct should not compare floating point types for equality. Consider using IsDistinctBy to "
+              "override this default.");
 
 static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all IsDistinct types are equality comparable");
 
-return (not AreEqual(t, ts) and ...);
+auto tPtrs{std::array<const T*, sizeof...(Ts) + 1>{&t, static_cast<const T*>(&ts)...}};
+auto tSet{Set<T, (sizeof...(ts) + 1)>{}};
+auto tSetCount{tSet.Count()};
+for(const auto& tPtr : tPtrs) {
+tSet.MInsert(*tPtr);
+if(tSet.Count() == tSetCount)
+return false;
+tSetCount = tSet.Count();
 }
+return true;
 }
 }
 

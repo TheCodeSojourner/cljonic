@@ -237,6 +237,21 @@ class Range : public IndexInterface<int>
         return ValueAtIndex(index);
     }
 
+    constexpr int operator()(const SizeType index) const noexcept
+    {
+        return this->operator[](index);
+    }
+
+    constexpr bool operator==(const auto& other) const noexcept
+    {
+        return AreEqual(*this, other);
+    }
+
+    constexpr bool operator!=(const auto& other) const noexcept
+    {
+        return not(*this == other);
+    }
+
     [[nodiscard]] constexpr SizeType Count() const noexcept override
     {
         return m_elementCount;

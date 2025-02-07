@@ -96,6 +96,16 @@ class Array : public IndexInterface<T>
         return this->operator[](index);
     }
 
+    constexpr bool operator==(const auto& other) const noexcept
+    {
+        return AreEqual(*this, other);
+    }
+
+    constexpr bool operator!=(const auto& other) const noexcept
+    {
+        return not(*this == other);
+    }
+
     constexpr Array& operator=(const Array& other) noexcept
     {
         if (this != &other)

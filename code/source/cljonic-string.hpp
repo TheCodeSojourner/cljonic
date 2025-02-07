@@ -116,6 +116,16 @@ class String : public IndexInterface<char>
         return this->operator[](index);
     }
 
+    constexpr bool operator==(const auto& other) const noexcept
+    {
+        return AreEqual(*this, other);
+    }
+
+    constexpr bool operator!=(const auto& other) const noexcept
+    {
+        return not(*this == other);
+    }
+
     [[nodiscard]] constexpr SizeType Count() const noexcept override
     {
         return m_elementCount;

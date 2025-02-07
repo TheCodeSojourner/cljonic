@@ -2,6 +2,7 @@
 #define CLJONIC_CORE_ISDISTINCT_HPP
 
 #include <array>
+#include "cljonic-set.hpp"
 #include "cljonic-shared.hpp"
 
 namespace cljonic
@@ -66,56 +67,56 @@ int main()
 ~~~~~
 */
 template <typename T, typename... Ts>
-constexpr auto IsDistinct(const T& t, const Ts&... ts) noexcept
+constexpr bool IsDistinct(const T& t, const Ts&... ts) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 
-    if constexpr (sizeof...(Ts) == 0)
+    if constexpr (0 == sizeof...(Ts))
     {
-        return true;
-    }
-    else
-    {
-        if constexpr (AllCljonicCollections<T, Ts...>)
+        // called with only one argument
+        if constexpr ((not IsCljonicCollection<T>) or IsCljonicSet<T>)
         {
-            static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
-                          "IsDistinct should not compare cljonic floating point collection value types for "
-                          "equality. Consider using IsDistinctBy to override this default.");
-
-            static_assert(
-                AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
-                "IsDistinct cljonic collection types are not all the same, or all Array, Range or Repeat types");
-
-            constexpr auto IndexInterfacesEqual = [](const auto& t, const auto& u) noexcept
-            {
-                if (&t == &u) // if t and u point to the same IndexInterface
-                    return true;
-                if (t.Count() != u.Count())
-                    return false;
-                for (SizeType i{0}; i < t.Count(); ++i)
-                    if (not t.ElementAtIndexIsEqualToElement(i, u[i]))
-                        return false;
-                return true;
-            };
-            using I = const IndexInterface<typename T::value_type>*;
-            constexpr auto n{sizeof...(Ts) + 1};
-            const auto i{std::array<I, n>{static_cast<I>(&t), static_cast<I>(&ts)...}};
-            for (SizeType j{0}; j < n; ++j)
-                for (SizeType k{j + 1}; k < n; ++k)
-                    if (IndexInterfacesEqual(*i[j], *i[k]))
-                        return false;
+            // the one argument is not a cljonic collection, or is a cljonic Set
             return true;
         }
         else
         {
-            static_assert(not AnyFloatingPointTypes<T, Ts...>,
-                          "IsDistinct should not compare floating point types for equality. Consider using "
-                          "IsDistinctBy to override this default.");
+            // the one argument is a cljonic collection that is not a cljonic Set
+            static_assert(not std::floating_point<typename T::value_type>,
+                          "IsDistinct should not compare cljonic floating point collection value types for equality. "
+                          "Consider using IsDistinctBy to override this default.");
 
-            static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all IsDistinct types are equality comparable");
-
-            return (not AreEqual(t, ts) and ...);
+            auto tSet{Set<typename T::value_type, t.MaximumCount()>{}};
+            auto tSetCount{tSet.Count()};
+            for (const auto& v : t)
+            {
+                tSet.MInsert(v);
+                if (tSet.Count() == tSetCount)
+                    return false;
+                tSetCount = tSet.Count();
+            }
+            return true;
         }
+    }
+    else
+    {
+        static_assert(not AnyFloatingPointTypes<T, Ts...>,
+                      "IsDistinct should not compare floating point types for equality. Consider using IsDistinctBy to "
+                      "override this default.");
+
+        static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all IsDistinct types are equality comparable");
+
+        auto tPtrs{std::array<const T*, sizeof...(Ts) + 1>{&t, static_cast<const T*>(&ts)...}};
+        auto tSet{Set<T, (sizeof...(ts) + 1)>{}};
+        auto tSetCount{tSet.Count()};
+        for (const auto& tPtr : tPtrs)
+        {
+            tSet.MInsert(*tPtr);
+            if (tSet.Count() == tSetCount)
+                return false;
+            tSetCount = tSet.Count();
+        }
+        return true;
     }
 }
 

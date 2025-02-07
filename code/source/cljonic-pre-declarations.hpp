@@ -1,11 +1,16 @@
 #ifndef CLJONIC_PRE_DECLARATIONSHPP
 #define CLJONIC_PRE_DECLARATIONSHPP
 
+#include "cljonic-collection-maximum-element-count.hpp"
+
 namespace cljonic
 {
 
 template <typename T, SizeType MaxElements>
 class Array;
+
+template <typename F, typename T>
+class Iterator;
 
 template <int... StartEndStep>
 class Range;
@@ -96,7 +101,7 @@ template <typename T, typename C>
 constexpr auto Interpose(const T& t, const C& c) noexcept;
 
 template <typename T, typename... Ts>
-constexpr auto IsDistinct(const T& t, const Ts&... ts) noexcept;
+constexpr bool IsDistinct(const T& t, const Ts&... ts) noexcept;
 
 template <typename F, typename T, typename... Ts>
 constexpr auto IsDistinctBy(F&& f, const T& t, const Ts&... ts) noexcept;
