@@ -128,9 +128,12 @@ class Set : public IndexInterface<T>
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
     }
 
-    constexpr T operator()(const SizeType index) const noexcept
+    constexpr const T& operator()(const T& s) const noexcept
     {
-        return this->operator[](index);
+        for (const auto& element : m_elements)
+            if (AreEqual(element, s))
+                return element;
+        return m_elementDefault;
     }
 
     constexpr Set& operator=(const Set& other) noexcept

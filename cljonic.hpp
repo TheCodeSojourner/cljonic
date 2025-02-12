@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Feb 12 02:09:52 PM MST 2025
+// This file was generated Wed Feb 12 02:26:09 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -1142,8 +1142,11 @@ constexpr T operator[](const SizeType index) const noexcept override {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 }
 
-constexpr T operator()(const SizeType index) const noexcept {
-return this->operator[](index);
+constexpr const T& operator()(const T& s) const noexcept {
+for(const auto& element : m_elements)
+if(AreEqual(element, s))
+return element;
+return m_elementDefault;
 }
 
 constexpr Set& operator=(const Set& other) noexcept {
