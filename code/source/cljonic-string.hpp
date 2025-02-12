@@ -4,6 +4,7 @@
 #include <cstring>
 #include <initializer_list>
 #include <type_traits>
+#include <utility>
 #include "cljonic-collection-iterator.hpp"
 #include "cljonic-collection-type.hpp"
 #include "cljonic-shared.hpp"
@@ -114,6 +115,29 @@ class String : public IndexInterface<char>
     constexpr char operator()(const SizeType index) const noexcept
     {
         return this->operator[](index);
+    }
+
+    constexpr String& operator=(const String& other) noexcept
+    {
+        if (this != &other)
+        {
+            m_elementCount = other.m_elementCount;
+            for (SizeType i{0}; i <= m_elementCount; ++i)
+                m_elements[i] = other.m_elements[i];
+        }
+        return *this;
+    }
+
+    constexpr String& operator=(String&& other) noexcept
+    {
+        if (this != &other)
+        {
+            m_elementCount = other.m_elementCount;
+            std::move(other.m_elements, other.m_elements + other.m_elementCount + 1, m_elements);
+            other.m_elementCount = 0;
+            other.m_elements[0] = '\0';
+        }
+        return *this;
     }
 
     constexpr bool operator==(const auto& other) const noexcept

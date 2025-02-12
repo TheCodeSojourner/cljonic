@@ -5,6 +5,7 @@
 #include <cstring>
 #include <initializer_list>
 #include <type_traits>
+#include <utility>
 #include "cljonic-collection-type.hpp"
 #include "cljonic-shared.hpp"
 
@@ -130,6 +131,33 @@ class Set : public IndexInterface<T>
     constexpr T operator()(const SizeType index) const noexcept
     {
         return this->operator[](index);
+    }
+
+    constexpr Set& operator=(const Set& other) noexcept
+    {
+        if (this != &other)
+        {
+            m_elementCount = other.m_elementCount;
+            for (SizeType i{0}; i < m_elementCount; ++i)
+            {
+                m_elements[i] = other.m_elements[i];
+            }
+        }
+        return *this;
+    }
+
+    constexpr Set& operator=(Set&& other) noexcept
+    {
+        if (this != &other)
+        {
+            m_elementCount = other.m_elementCount;
+            for (SizeType i{0}; i < m_elementCount; ++i)
+            {
+                m_elements[i] = std::move(other.m_elements[i]);
+            }
+            other.m_elementCount = 0;
+        }
+        return *this;
     }
 
     constexpr bool operator==(const auto& other) const noexcept

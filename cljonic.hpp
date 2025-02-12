@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Feb  7 03:56:32 PM MST 2025
+// This file was generated Wed Feb 12 02:09:52 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -1074,6 +1074,7 @@ Repeat(T) -> Repeat<CljonicCollectionMaximumElementCount, T>;
 #include <cstring>
 #include <initializer_list>
 #include <type_traits>
+#include <utility>
 
 namespace cljonic {
 template <typename T, SizeType MaxElements>
@@ -1145,6 +1146,27 @@ constexpr T operator()(const SizeType index) const noexcept {
 return this->operator[](index);
 }
 
+constexpr Set& operator=(const Set& other) noexcept {
+if(this != &other) {
+m_elementCount = other.m_elementCount;
+for(SizeType i{0}; i < m_elementCount; ++i) {
+m_elements[i] = other.m_elements[i];
+}
+}
+return *this;
+}
+
+constexpr Set& operator=(Set&& other) noexcept {
+if(this != &other) {
+m_elementCount = other.m_elementCount;
+for(SizeType i{0}; i < m_elementCount; ++i) {
+m_elements[i] = std::move(other.m_elements[i]);
+}
+other.m_elementCount = 0;
+}
+return *this;
+}
+
 constexpr bool operator==(const auto& other) const noexcept {
 return AreEqual(*this, other);
 }
@@ -1191,6 +1213,7 @@ Set(Args...) -> Set<std::common_type_t<Args...>, sizeof...(Args)>;
 #include <cstring>
 #include <initializer_list>
 #include <type_traits>
+#include <utility>
 
 namespace cljonic {
 
@@ -1255,6 +1278,25 @@ return ValueAtIndex(index);
 
 constexpr char operator()(const SizeType index) const noexcept {
 return this->operator[](index);
+}
+
+constexpr String& operator=(const String& other) noexcept {
+if(this != &other) {
+m_elementCount = other.m_elementCount;
+for(SizeType i{0}; i <= m_elementCount; ++i)
+m_elements[i] = other.m_elements[i];
+}
+return *this;
+}
+
+constexpr String& operator=(String&& other) noexcept {
+if(this != &other) {
+m_elementCount = other.m_elementCount;
+std::move(other.m_elements, other.m_elements + other.m_elementCount + 1, m_elements);
+other.m_elementCount = 0;
+other.m_elements[0] = '\0';
+}
+return *this;
 }
 
 constexpr bool operator==(const auto& other) const noexcept {
@@ -1979,7 +2021,12 @@ static_assert(not AnyFloatingPointTypes<T, Ts...>,
               "IsDistinct should not compare floating point types for equality. Consider using IsDistinctBy to "
               "override this default.");
 
+if constexpr(AllCljonicCollections<T, Ts...>) {
+static_assert(AllEqualityComparableValueTypes<T, Ts...>,
+              "Not all IsDistinct value types are equality comparable");
+} else {
 static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all IsDistinct types are equality comparable");
+}
 
 auto tPtrs{std::array<const T*, sizeof...(Ts) + 1>{&t, static_cast<const T*>(&ts)...}};
 auto tSet{Set<T, (sizeof...(ts) + 1)>{}};

@@ -104,7 +104,15 @@ constexpr bool IsDistinct(const T& t, const Ts&... ts) noexcept
                       "IsDistinct should not compare floating point types for equality. Consider using IsDistinctBy to "
                       "override this default.");
 
-        static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all IsDistinct types are equality comparable");
+        if constexpr (AllCljonicCollections<T, Ts...>)
+        {
+            static_assert(AllEqualityComparableValueTypes<T, Ts...>,
+                          "Not all IsDistinct value types are equality comparable");
+        }
+        else
+        {
+            static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all IsDistinct types are equality comparable");
+        }
 
         auto tPtrs{std::array<const T*, sizeof...(Ts) + 1>{&t, static_cast<const T*>(&ts)...}};
         auto tSet{Set<T, (sizeof...(ts) + 1)>{}};
