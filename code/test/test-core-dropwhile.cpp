@@ -2,6 +2,7 @@
 #include "no-heap.hpp"
 #include "cljonic_catch.hpp"
 #include "cljonic-array.hpp"
+#include "cljonic-iterator.hpp"
 #include "cljonic-range.hpp"
 #include "cljonic-repeat.hpp"
 #include "cljonic-set.hpp"
@@ -16,11 +17,14 @@ SCENARIO("DropWhile", "[CljonicCoreDropWhile]")
 {
     EnableNoHeapMessagePrinting();
 
-    constexpr auto Even = [](const int i)
-    { return (0 == (i % 2)); };
+    constexpr auto Even = [](const int i) { return (0 == (i % 2)); };
 
     constexpr auto a{Array<int, 10>{0, 2, 4, 5, 6, 7, 8, 9}};
     CHECK_CLJONIC(Equal(Array{5, 6, 7, 8, 9}, DropWhile(Even, a)));
+
+    const auto itr{Iterator{[](const int i) { return i + 1; }, 0}};
+    CHECK_CLJONIC(Equal(Array{990, 991, 992, 993, 994, 995, 996, 997, 998, 999},
+                        DropWhile([](const int i) { return i < 990; }, itr)));
 
     constexpr auto rng{Range<10>{}};
     CHECK_CLJONIC(Equal(Array{1, 2, 3, 4, 5, 6, 7, 8, 9}, DropWhile(Even, rng)));
@@ -31,8 +35,7 @@ SCENARIO("DropWhile", "[CljonicCoreDropWhile]")
     constexpr auto s{Set<int, 4>{2, 4, 5, 6}};
     CHECK_CLJONIC(Equal(Array{5, 6}, DropWhile(Even, s)));
 
-    CHECK_CLJONIC(Equal(Array{'l', 'l', 'o'}, DropWhile([](const char c)
-                                                        { return ('l' != c); }, String{"Hello"})));
+    CHECK_CLJONIC(Equal(Array{'l', 'l', 'o'}, DropWhile([](const char c) { return ('l' != c); }, String{"Hello"})));
 
     DisableNoHeapMessagePrinting();
 }

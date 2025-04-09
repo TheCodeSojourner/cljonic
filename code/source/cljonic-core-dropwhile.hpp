@@ -25,19 +25,21 @@ int main()
     constexpr auto Even = [](const int i) { return (0 == (i % 2)); };
 
     constexpr auto a{Array<int, 10>{0, 2, 4, 5, 6, 7, 8, 9}};
-    constexpr auto dwA{DropWhile(Even, a)}; // immutable, sparse Array, with 0, 2, and 4
+    constexpr auto dwA{DropWhile(Even, a)}; // sparse Array, with 0, 2, and 4
+
+    const auto itr{Iterator{[](const int i) { return i + 1; }, 0}};
+    const auto dwItr{DropWhile([](const int i) { return i < 990; }, itr)}; // sparse Array, with 990 to 999
 
     constexpr auto rng{Range<10>{}};
-    constexpr auto dwRng{DropWhile(Even, rng)}; // immutable, sparse Array, with 1 to 9
+    constexpr auto dwRng{DropWhile(Even, rng)}; // sparse Array, with 1 to 9
 
     constexpr auto rpt{Repeat<10, int>{2}};
-    constexpr auto dwRpt{DropWhile(Even, rpt)}; // immutable, empty Array
+    constexpr auto dwRpt{DropWhile(Even, rpt)}; // empty Array
 
     constexpr auto s{Set<int, 4>{2, 4, 5, 6}};
-    constexpr auto dwS{DropWhile(Even, s)}; // immutable, sparse Array, with 5 and 6
+    constexpr auto dwS{DropWhile(Even, s)}; // sparse Array, with 5 and 6
 
-    constexpr auto dwStr{DropWhile([](const char c)
-                                   { return ('l' != c); }, // immutable, sparse Array, with 'l' 'l' and 'o'
+    constexpr auto dwStr{DropWhile([](const char c) { return ('l' != c); }, // sparse Array, with 'l' 'l' and 'o'
                                    String{"Hello"})};
 
     // Compiler Error: DropWhile's second parameter must be a cljonic collection

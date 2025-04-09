@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Apr  9 12:48:02 PM MDT 2025
+// This file was generated Wed Apr  9 01:19:37 PM MDT 2025
 
 namespace cljonic {
 
@@ -1694,6 +1694,29 @@ for(auto it{c.begin()}; (takeCount > 0); ++it) {
 MConj(result, *it);
 --takeCount;
 }
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C>
+constexpr auto DropWhile(F&& f, const C& c) noexcept {
+
+static_assert(IsCljonicCollection<C>, "DropWhile's second parameter must be a cljonic collection");
+
+static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
+              "DropWhile's function is not a valid unary predicate for the collection value type");
+
+auto result{Array<typename C::value_type, c.MaximumCount()>{}};
+auto conjElement(false);
+for(const auto& element : c)
+if(conjElement |= (not f(element)))
+MConj(result, element);
 return result;
 }
 
