@@ -23,6 +23,8 @@ int main()
     constexpr auto a{Array{11, 12, 13, 14}};
     constexpr auto a0{First(a)};
 
+    const auto itr{First(Iterate([](const int i) { return i + 1; }, 0))};
+
     constexpr auto rng{Range<1, 5>{}};
     constexpr auto rng0{First(rng)};
 
@@ -43,11 +45,11 @@ return 0;
 ~~~~~
 */
 template <typename C>
-constexpr auto First(const C& coll) noexcept
+constexpr auto First(const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "First's parameter must be a cljonic collection");
 
-    return coll[0];
+    return (c.Count() > 0) ? *c.begin() : c.DefaultElement();
 }
 
 } // namespace core
