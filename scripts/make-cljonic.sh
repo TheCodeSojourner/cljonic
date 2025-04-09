@@ -34,11 +34,11 @@ cat cljonic-collection-type.hpp \
     cljonic-core-equal.hpp \
     cljonic-core-equalby.hpp \
     cljonic-core-every.hpp \
+    cljonic-core-filter.hpp \
     cljonic-core-isdistinct.hpp \
     cljonic-core-isdistinctby.hpp \
     cljonic-core-iterate.hpp \
     > /tmp/cljonic-glued.hpp
-    # cljonic-core-filter.hpp \
     # cljonic-core-first.hpp \
     # cljonic-core-identical.hpp \
     # cljonic-core-identity.hpp \

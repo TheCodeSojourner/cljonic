@@ -26,18 +26,21 @@ int main()
     constexpr auto Even = [](const int i) { return (0 == (i % 2)); };
 
     constexpr auto a{Array<int, 10>{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
-    constexpr auto fA{Filter(Even, a)}; // immutable, sparse Array, with 0, 2, 4, 6, and 8
+    constexpr auto fA{Filter(Even, a)}; // sparse Array, with 0, 2, 4, 6, and 8
+
+    const auto fItr{
+        Filter(Even, Iterate([](const int i) { return i + 1; }, 0))}; // sparse Array, with 0, 2, 4, 6, ...
 
     constexpr auto rng{Range<10>{}};
-    constexpr auto fRng{Filter(Even, rng)}; // immutable, sparse Array, with 0, 2, 4, 6, and 8
+    constexpr auto fRng{Filter(Even, rng)}; // sparse Array, with 0, 2, 4, 6, and 8
 
     constexpr auto rpt{Repeat<10, int>{1}};
-    constexpr auto fRpt{Filter(Even, rpt)}; // immutable, empty Array
+    constexpr auto fRpt{Filter(Even, rpt)}; // empty Array
 
     constexpr auto s{Set<int, 4>{1, 2, 3, 4, 5, 6}};
-    constexpr auto fS{Filter(Even, s)}; // immutable, sparse Array, with 2 and 4
+    constexpr auto fS{Filter(Even, s)}; // sparse Array, with 2 and 4
 
-    constexpr auto fStr{Filter([](const char c) { return ('l' == c); }, // immutable, sparse Array, with 'l' and 'l'
+    constexpr auto fStr{Filter([](const char c) { return ('l' == c); }, // sparse Array, with 'l' and 'l'
                                String{"Hello"})};
 
     // Compiler Error: Filter's second parameter must be a cljonic collection

@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Apr  9 01:49:24 PM MDT 2025
+// This file was generated Wed Apr  9 02:04:37 PM MDT 2025
 
 namespace cljonic {
 
@@ -1813,6 +1813,27 @@ for(const auto& e : c)
 if(not f(e))
 return false;
 return true;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C>
+constexpr auto Filter(F&& f, const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "Filter's second parameter must be a cljonic collection");
+
+static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
+              "Filter's function is not a valid unary predicate for the collection value type");
+
+auto result{Array<typename C::value_type, c.MaximumCount()>{}};
+for(const auto& element : c)
+if(f(element))
+MConj(result, element);
+return result;
 }
 
 }
