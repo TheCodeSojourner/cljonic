@@ -27,7 +27,7 @@ int main()
     constexpr auto a{Array<int, 10>{0, 2, 4, 5, 6, 7, 8, 9}};
     constexpr auto dwA{DropWhile(Even, a)}; // sparse Array, with 0, 2, and 4
 
-    const auto itr{Iterator{[](const int i) { return i + 1; }, 0}};
+    const auto itr{Iterate([](const int i) { return i + 1; }, 0)};
     const auto dwItr{DropWhile([](const int i) { return i < 990; }, itr)}; // sparse Array, with 990 to 999
 
     constexpr auto rng{Range<10>{}};

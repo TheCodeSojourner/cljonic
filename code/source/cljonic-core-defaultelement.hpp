@@ -20,7 +20,7 @@ int main()
     constexpr auto a{Array{11, 12, 13, 14}};
     constexpr auto deA{DefaultElement(a)};
 
-    const auto i{Iterator{[](const int i) { return i + 1; }, 0}};
+    const auto i{Iterate([](const int i) { return i + 1; }, 0)};
     constexpr auto deI{DefaultElement(i)};
 
     constexpr auto rng{Range<1, 5>{}};

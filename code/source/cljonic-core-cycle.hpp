@@ -28,6 +28,8 @@ int main()
     const auto cycleA0{Cycle(a)};
     const auto cycleA1{Cycle(Array{11, 12, 13, 14})};
 
+    const auto cycleItr{Cycle(Iterate([](const int i) { return i + 1; }, 0))};
+
     constexpr auto rng{Range<1, 5>{}};
     const auto cycleRng0{Cycle(rng)};
     const auto cycleRng1{Cycle(Range<1, 5>{})};
@@ -41,8 +43,8 @@ int main()
     const auto cycleSet1{Cycle(Set{1, 2, 1, 3, 4})};
 
     constexpr auto str{String{"Hello"}};
-    const auto cycleStr0{Cycle(str)};;
-    const auto cycleStr1{Cycle(String{"Hello"})};;
+    const auto cycleStr0{Cycle(str)};
+    const auto cycleStr1{Cycle(String{"Hello"})};
 
     // Compiler Error: Cycle's parameter must be a cljonic collection
     // const auto c{Cycle("Hello")};

@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Apr  9 01:19:37 PM MDT 2025
+// This file was generated Wed Apr  9 01:38:25 PM MDT 2025
 
 namespace cljonic {
 
@@ -1869,6 +1869,20 @@ return AreUniqueValuesBy<F, decltype(t.begin()), T::MaximumCount()>(std::forward
 } else {
 return InnerIsDistinctBy(std::forward<F>(f), t, ts...);
 }
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename T>
+constexpr auto Iterate(F&& f, const T& t) noexcept {
+static_assert(IsUnaryFunction<F, T>, "Iterate's first parameter is not a unary function of its second parameter");
+
+return Iterator{std::forward<F>(f), t};
 }
 
 }

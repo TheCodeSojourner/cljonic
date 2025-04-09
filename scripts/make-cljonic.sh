@@ -35,6 +35,7 @@ cat cljonic-collection-type.hpp \
     cljonic-core-equalby.hpp \
     cljonic-core-isdistinct.hpp \
     cljonic-core-isdistinctby.hpp \
+    cljonic-core-iterate.hpp \
     > /tmp/cljonic-glued.hpp
     # cljonic-core-every.hpp \
     # cljonic-core-filter.hpp \
@@ -48,7 +49,6 @@ cat cljonic-collection-type.hpp \
     # cljonic-core-interpose.hpp \
     # cljonic-core-isempty.hpp \
     # cljonic-core-isfull.hpp \
-    # cljonic-core-iterate.hpp \
     # cljonic-core-last.hpp \
     # cljonic-core-lastindexof.hpp \
     # cljonic-core-lastindexofby.hpp \
