@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Apr  9 12:04:55 PM MDT 2025
+// This file was generated Wed Apr  9 12:18:34 PM MDT 2025
 
 namespace cljonic {
 
@@ -1586,6 +1586,20 @@ return Iterator{[collection = std::move(c), defaultElement, empty, initialized =
                 return empty ? defaultElement : NextElement();
                 },
                 initialElement};
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto DefaultElement(const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "DefaultElement's parameter must be a cljonic collection");
+
+return c.DefaultElement();
 }
 
 }

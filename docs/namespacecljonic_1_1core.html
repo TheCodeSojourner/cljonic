@@ -940,6 +940,9 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 <div class="line">    <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">a</a>{<a class="code hl_class" href="classcljonic_1_1_array.html">Array</a>{11, 12, 13, 14}};</div>
 <div class="line">    <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">deA</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a52ee97245848ed8c4dd9d3b06c0f41e2">DefaultElement</a>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">a</a>)};</div>
 <div class="line"> </div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">i</a>{<a class="code hl_class" href="classcljonic_1_1_iterator.html">Iterator</a>{[](<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">i</a>) { <span class="keywordflow">return</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">i</a> + 1; }, 0}};</div>
+<div class="line">    <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">deI</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a52ee97245848ed8c4dd9d3b06c0f41e2">DefaultElement</a>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">i</a>)};</div>
+<div class="line"> </div>
 <div class="line">    <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">rng</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range&lt;1, 5&gt;</a>{}};</div>
 <div class="line">    <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">deRng</a>{<a class="code hl_function" href="namespacecljonic_1_1core.html#a52ee97245848ed8c4dd9d3b06c0f41e2">DefaultElement</a>(<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">rng</a>)};</div>
 <div class="line"> </div>
@@ -957,9 +960,10 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_a52ee97245848ed8c4dd9d3b06c0f41e2"><div class="ttname"><a href="namespacecljonic_1_1core.html#a52ee97245848ed8c4dd9d3b06c0f41e2">cljonic::core::DefaultElement</a></div><div class="ttdeci">constexpr auto DefaultElement(const C &amp;c) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-defaultelement_8hpp_source.html#l00043">cljonic-core-defaultelement.hpp:43</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_iterator_html"><div class="ttname"><a href="classcljonic_1_1_iterator.html">cljonic::Iterator</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-iterator_8hpp_source.html#l00021">cljonic-iterator.hpp:22</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a52ee97245848ed8c4dd9d3b06c0f41e2"><div class="ttname"><a href="namespacecljonic_1_1core.html#a52ee97245848ed8c4dd9d3b06c0f41e2">cljonic::core::DefaultElement</a></div><div class="ttdeci">constexpr auto DefaultElement(const C &amp;c) noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-defaultelement_8hpp_source.html#l00046">cljonic-core-defaultelement.hpp:46</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-core-defaultelement_8hpp_source.html#l00043">43</a> of file <a class="el" href="cljonic-core-defaultelement_8hpp_source.html">cljonic-core-defaultelement.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-core-defaultelement_8hpp_source.html#l00046">46</a> of file <a class="el" href="cljonic-core-defaultelement_8hpp_source.html">cljonic-core-defaultelement.hpp</a>.</p>
 
 </div>
 </div>
@@ -4664,7 +4668,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 9 2025 12:04:55 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Apr 9 2025 12:18:35 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
