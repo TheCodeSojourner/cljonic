@@ -25,15 +25,15 @@ cat cljonic-collection-type.hpp \
     cljonic-core-conj.hpp \
     cljonic-core-count.hpp \
     cljonic-core-cycle.hpp \
-    cljonic-core-defaultelement.hpp \
     cljonic-core-dedupe.hpp \
     cljonic-core-dedupeby.hpp \
+    cljonic-core-defaultelement.hpp \
+    cljonic-core-drop.hpp \
     cljonic-core-equal.hpp \
     cljonic-core-equalby.hpp \
     cljonic-core-isdistinct.hpp \
     cljonic-core-isdistinctby.hpp \
     > /tmp/cljonic-glued.hpp
-    # cljonic-core-drop.hpp \
     # cljonic-core-droplast.hpp \
     # cljonic-core-dropwhile.hpp \
     # cljonic-core-every.hpp \

@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Apr  9 12:18:34 PM MDT 2025
+// This file was generated Wed Apr  9 12:35:00 PM MDT 2025
 
 namespace cljonic {
 
@@ -1596,20 +1596,6 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto DefaultElement(const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "DefaultElement's parameter must be a cljonic collection");
-
-return c.DefaultElement();
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
 constexpr auto Dedupe(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Dedupe's parameter must be a cljonic collection");
 
@@ -1651,6 +1637,43 @@ MConj(result, v);
 lastValue = v;
 }
 }
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto DefaultElement(const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "DefaultElement's parameter must be a cljonic collection");
+
+return c.DefaultElement();
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto Drop(const SizeType count, const C& c) noexcept {
+
+static_assert(IsCljonicCollection<C>, "Drop's second parameter must be a cljonic collection");
+
+auto result{Array<typename C::value_type, c.MaximumCount()>{}};
+auto dropCount{SizeType{0}};
+const auto cEnd{c.end()};
+for(auto it{c.begin()}; it != cEnd; ++it)
+if(dropCount < count)
+++dropCount;
+else
+MConj(result, *it);
 return result;
 }
 
