@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Apr  9 12:35:00 PM MDT 2025
+// This file was generated Wed Apr  9 12:48:02 PM MDT 2025
 
 namespace cljonic {
 
@@ -1674,6 +1674,26 @@ if(dropCount < count)
 ++dropCount;
 else
 MConj(result, *it);
+return result;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C>
+constexpr auto DropLast(const SizeType count, const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "DropLast's second parameter must be a cljonic collection");
+
+auto result{Array<typename C::value_type, c.MaximumCount()>{}};
+auto takeCount{(count > c.Count()) ? 0 : (c.Count() - count)};
+for(auto it{c.begin()}; (takeCount > 0); ++it) {
+MConj(result, *it);
+--takeCount;
+}
 return result;
 }
 

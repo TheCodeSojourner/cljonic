@@ -2,6 +2,7 @@
 #include "no-heap.hpp"
 #include "cljonic_catch.hpp"
 #include "cljonic-array.hpp"
+#include "cljonic-iterator.hpp"
 #include "cljonic-range.hpp"
 #include "cljonic-repeat.hpp"
 #include "cljonic-set.hpp"
@@ -22,8 +23,10 @@ SCENARIO("DropLast", "[CljonicCoreDropLast]")
     CHECK_CLJONIC(Equal(Array{0, 1, 2, 3, 4, 5, 6, 7, 8}, DropLast(1, a)));
     CHECK_CLJONIC(Equal(Array{0, 1, 2, 3, 4}, DropLast(5, a)));
     CHECK_CLJONIC(Equal(Array<int, 0>{}, DropLast(50, a)));
+    CHECK_CLJONIC(
+        Equal(Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, DropLast(990, Iterator{[](const int i) { return i + 1; }, 0})));
     CHECK_CLJONIC(Equal(Array<int, 0>{}, DropLast(50, Range<0>{})));
-    CHECK_CLJONIC(Equal(Array{"11", "11"}, DropLast(5, Repeat<7, const char *>{"11"})));
+    CHECK_CLJONIC(Equal(Array{"11", "11"}, DropLast(5, Repeat<7, const char*>{"11"})));
     CHECK_CLJONIC(Equal(Array<int, 0>{}, DropLast(5, Set{'a', 'b'})));
     CHECK_CLJONIC(Equal(Array{'H', 'e'}, DropLast(3, String{"Hello"})));
 
