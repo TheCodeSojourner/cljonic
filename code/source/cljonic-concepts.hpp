@@ -6,6 +6,9 @@
 #include <type_traits>
 #include "cljonic-collection-type.hpp"
 
+namespace cljonic
+{
+
 namespace inner_find_common_type
 {
 
@@ -33,9 +36,6 @@ struct InnerFindCommonType<T, U, Ts...>
 
 } // namespace inner_find_common_type
 
-namespace cljonic
-{
-
 using namespace inner_find_common_type;
 
 template <typename T>
@@ -48,6 +48,10 @@ concept IsBinaryPredicate = requires(P p, T a, U b) {
 
 template <typename P, typename T, typename... Ts>
 concept IsBinaryPredicateForAll = (IsBinaryPredicate<P, T, Ts> && ...);
+
+template <typename F, typename T, typename... Ts>
+concept IsBinaryPredicateForAllCombinations =
+    (IsBinaryPredicate<F, T, Ts> && ...) && (IsBinaryPredicate<F, Ts, T> && ...);
 
 template <typename T>
 concept IsCljonicArray = std::same_as<typename T::cljonic_collection_type,
@@ -74,7 +78,11 @@ concept IsCljonicSet = std::same_as<typename T::cljonic_collection_type,
                                     std::integral_constant<CljonicCollectionType, CljonicCollectionType::Set>>;
 
 template <typename T>
-concept IsCljonicArrayRangeOrRepeat = IsCljonicArray<T> or IsCljonicRange<T> or IsCljonicRepeat<T>;
+concept IsCljonicString = std::same_as<typename T::cljonic_collection_type,
+                                       std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>>;
+
+template <typename T>
+concept IsCljonicNonSet = IsCljonicCollection<T> and (not IsCljonicSet<T>);
 
 template <typename T>
 concept IsConvertibleToIntegral = std::convertible_to<T, char>     //
@@ -82,11 +90,33 @@ concept IsConvertibleToIntegral = std::convertible_to<T, char>     //
                                   or std::convertible_to<T, int>   //
                                   or std::convertible_to<T, long>  //
                                   or std::convertible_to<T, long long>;
+
 template <typename T>
 concept IsCString = std::same_as<std::decay_t<T>, char*> or std::same_as<std::decay_t<T>, const char*>;
 
 template <typename T>
+concept IsFloatingPointOrFloatingPointValueType =
+    std::floating_point<T> or (requires { typename T::value_type; } and std::floating_point<typename T::value_type>);
+
+template <typename T>
 concept IsNotCljonicCollection = not IsCljonicCollection<T>;
+
+template <typename T>
+concept IsNotCljonicSet = not IsCljonicSet<T>;
+
+template <typename T>
+concept IsReference = std::is_pointer_v<T> || std::is_reference_v<T>;
+
+template <typename T, typename U>
+concept IsReferenceAndIntegral = (IsReference<T> and std::integral<U>) or (IsReference<U> and std::integral<T>);
+
+template <typename T>
+concept IsReferenceValueType = IsReference<typename T::value_type>;
+
+template <typename T, typename U>
+concept IsReferenceAndIntegralValueType =
+    (IsReference<typename T::value_type> and std::integral<typename U::value_type>) or
+    (IsReference<typename U::value_type> and std::integral<typename T::value_type>);
 
 template <typename P, typename T>
 concept IsUnaryFunction = requires(P p, T t) {
@@ -99,7 +129,7 @@ concept IsUnaryPredicate = requires(P p, T t) {
 };
 
 template <typename T, typename... Ts>
-concept AllCljonicArrayRangeOrRepeat = (IsCljonicArrayRangeOrRepeat<T> and ... and IsCljonicArrayRangeOrRepeat<Ts>);
+concept AllCljonicNonSet = (IsCljonicNonSet<T> and ... and IsCljonicNonSet<Ts>);
 
 template <typename T, typename... Ts>
 concept AllCljonicCollections = (IsCljonicCollection<T> and ... and IsCljonicCollection<Ts>);
@@ -122,24 +152,37 @@ constexpr bool AllEqualityComparableValueTypes =
     (std::equality_comparable_with<typename T::value_type, typename Ts::value_type> and ...);
 
 template <typename T, typename... Ts>
+constexpr bool AnyFloatingPointOrFloatingPointValueType =
+    (IsFloatingPointOrFloatingPointValueType<T> or ... or IsFloatingPointOrFloatingPointValueType<Ts>);
+
+template <typename T, typename... Ts>
 constexpr bool AnyFloatingPointTypes = (std::floating_point<T> or ... or std::floating_point<Ts>);
 
 template <typename T, typename... Ts>
 concept AllNotCljonicCollections = (IsNotCljonicCollection<T> and ... and IsNotCljonicCollection<Ts>);
 
 template <typename T, typename... Ts>
+concept AllNotCljonicSets = (IsNotCljonicSet<T> and ... and IsNotCljonicSet<Ts>);
+
+template <typename T, typename... Ts>
 concept AllSameCljonicCollectionType =
     (std::same_as<typename T::cljonic_collection_type, typename Ts::cljonic_collection_type> and ...);
+
+template <typename T, typename... Ts>
+constexpr bool AnyCljonicSets = (IsCljonicSet<T> or ... or IsCljonicSet<Ts>);
 
 template <typename T, typename... Ts>
 constexpr bool AnyFloatingPointValueTypes =
     (std::floating_point<typename T::value_type> or ... or std::floating_point<typename Ts::value_type>);
 
+template <typename T, typename U>
+concept EqualityComparableValueTypes = std::equality_comparable_with<typename T::value_type, typename U::value_type>;
+
 template <typename T, typename... Ts>
 using FindCommonType = typename InnerFindCommonType<T, Ts...>::type;
 
 template <typename T, typename... Ts>
-using FindCommonValueType = typename InnerFindCommonType<typename T::value_type, typename Ts::value_type...>::type;
+using CommonValueType = typename InnerFindCommonType<typename T::value_type, typename Ts::value_type...>::type;
 
 template <typename F, IsCljonicCollection T, IsCljonicCollection... Ts>
 constexpr bool IsBinaryPredicateForAllCljonicCollections =

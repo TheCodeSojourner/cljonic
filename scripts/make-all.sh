@@ -19,6 +19,13 @@ create_build_directory () {
     echo "Done"
 }
 
+enter_build_directory () {
+    echo -n "Entering Build Directory ... "
+    cd build
+    LAST_EXIT_CODE=$?
+    echo "Done"
+}
+
 create_build_system () {
     echo -n "Creating Build System ... "
     cp ../cmake/CMakeLists.txt .
@@ -27,10 +34,12 @@ create_build_system () {
     echo "Done"
 }
 
-enter_build_directory () {
-    echo -n "Entering Build Directory ... "
-    cd build
+make_cljonic_unit_test_program () {
+    echo "Making Cljonic Unit Test Program"
+    echo
+    make -j $CPU_COUNT cljonic >/dev/null
     LAST_EXIT_CODE=$?
+    echo
     echo "Done"
 }
 
@@ -61,15 +70,6 @@ handle_make_error () { # <message>
         cd $CURRENT_DIRECTORY
         exit 1
     fi
-}
-
-make_cljonic_unit_test_program () {
-    echo "Making Cljonic Unit Test Program"
-    echo
-    make -j $CPU_COUNT cljonic >/dev/null
-    LAST_EXIT_CODE=$?
-    echo
-    echo "Done"
 }
 
 render_header () {

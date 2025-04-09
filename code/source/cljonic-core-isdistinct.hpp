@@ -10,9 +10,24 @@ namespace cljonic
 namespace core
 {
 
+template <typename T, typename... Ts>
+constexpr auto InnerIsDistinct(const T& t, const Ts&... ts) noexcept
+{
+    if constexpr (sizeof...(Ts) == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return ((not AreEqualValues(t, ts)) and ... and (InnerIsDistinct(ts...)));
+    }
+}
+
 /** \anchor Core_IsDistinct
-* The \b IsDistinct function returns true if it is called with two or more paremeters and none of them are equal, else
-* false. If it is called with only one parameter the function always returns true.
+* The \b IsDistinct function returns true if it is called with two or more paremeters and no two of them are equal, else
+* false. If it is called with one \b cljonic \b collection parameter the function returns true if no two elements of the
+* \b cljonic \b collection are equal. If it is called with one parameter that is not a \b cljonic \b collection the
+* function returns true.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -34,7 +49,7 @@ int main()
     constexpr auto b0{IsDistinct(1)};               // true whenever there's only two parameters
     constexpr auto b1{IsDistinct(1, 1)};            // false
     constexpr auto b2{IsDistinct(1, 2)};            // true
-    constexpr auto b3{IsDistinct(a)};               // true whenever there's only two parameters
+    constexpr auto b3{IsDistinct(a)};               // false
     constexpr auto b4{IsDistinct(a, r41)};          // false
     constexpr auto b5{IsDistinct(a, a13)};          // true
     constexpr auto b6{IsDistinct(r14, a13)};        // false
@@ -51,15 +66,9 @@ int main()
     //                 Consider using IsDistinctBy to override this default.
     // constexpr auto b{IsDistinct(Array{1.1, 1.2}, a)};
 
-    // Compiler Error: IsDistinct cljonic collection types are not all the same, or all Array, Range or Repeat types
-    // constexpr auto b{IsDistinct(a, Set{2, 3, 4})};
-
     // Compiler Error: IsDistinct should not compare floating point types for equality. Consider using IsDistinctBy to
     //                 override this default.
     // constexpr auto b{IsDistinct(1.1, 1)};
-
-    // Compiler Error: Not all IsDistinct types are equality comparable
-    // constexpr auto b{IsDistinct("Hello", 1)};
 
     return 0;
 }
@@ -72,50 +81,26 @@ constexpr auto IsDistinct(const T& t, const Ts&... ts) noexcept
 
     if constexpr (sizeof...(Ts) == 0)
     {
-        return true;
-    }
-    else
-    {
-        if constexpr (AllCljonicCollections<T, Ts...>)
+        if constexpr (IsNotCljonicCollection<T> or IsCljonicSet<T>)
         {
-            static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
-                          "IsDistinct should not compare cljonic floating point collection value types for "
-                          "equality. Consider using IsDistinctBy to override this default.");
-
-            static_assert(
-                AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
-                "IsDistinct cljonic collection types are not all the same, or all Array, Range or Repeat types");
-
-            constexpr auto IndexInterfacesEqual = [](const auto& t, const auto& u) noexcept
-            {
-                if (&t == &u) // if t and u point to the same IndexInterface
-                    return true;
-                if (t.Count() != u.Count())
-                    return false;
-                for (SizeType i{0}; i < t.Count(); ++i)
-                    if (not t.ElementAtIndexIsEqualToElement(i, u[i]))
-                        return false;
-                return true;
-            };
-            using I = const IndexInterface<typename T::value_type>*;
-            constexpr auto n{sizeof...(Ts) + 1};
-            const auto i{std::array<I, n>{static_cast<I>(&t), static_cast<I>(&ts)...}};
-            for (SizeType j{0}; j < n; ++j)
-                for (SizeType k{j + 1}; k < n; ++k)
-                    if (IndexInterfacesEqual(*i[j], *i[k]))
-                        return false;
             return true;
         }
         else
         {
-            static_assert(not AnyFloatingPointTypes<T, Ts...>,
-                          "IsDistinct should not compare floating point types for equality. Consider using "
-                          "IsDistinctBy to override this default.");
+            static_assert(not std::floating_point<typename T::value_type>,
+                          "IsDistinct should not compare cljonic floating point collection value types for equality. "
+                          "Consider using IsDistinctBy to override this default.");
 
-            static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all IsDistinct types are equality comparable");
-
-            return (not AreEqual(t, ts) and ...);
+            return AreUniqueValues<decltype(t.begin()), T::MaximumCount()>(t.begin(), t.end());
         }
+    }
+    else
+    {
+        static_assert(not AnyFloatingPointOrFloatingPointValueType<T, Ts...>,
+                      "IsDistinct should not compare floating point types for equality. Consider using IsDistinctBy to "
+                      "override this default.");
+
+        return InnerIsDistinct(t, ts...);
     }
 }
 

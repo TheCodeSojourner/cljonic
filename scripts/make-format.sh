@@ -10,8 +10,7 @@ format_files () {
         -style="{AllowShortBlocksOnASingleLine: false, AllowShortCaseLabelsOnASingleLine: false, AllowShortFunctionsOnASingleLine: false, AllowShortIfStatementsOnASingleLine: false, AllowShortLoopsOnASingleLine: false, AlwaysBreakTemplateDeclarations: true, BasedOnStyle: LLVM, BinPackArguments: false, BinPackParameters: false, BreakBeforeBraces: Allman, ColumnLimit: 120, Cpp11BracedListStyle: true, IndentWidth: 4, PointerAlignment: Left, SortIncludes: false, SpaceBeforeParens: ControlStatements, Standard: Latest}" \
         $CODE_CPPS \
         $CODE_HPPS \
-        resources/no-dynamic-memory.cpp \
-        resources/no-dynamic-memory.hpp \
+        resources/no-heap.hpp \
         2>/dev/null >/dev/null
     LAST_EXIT_CODE=$?
 }

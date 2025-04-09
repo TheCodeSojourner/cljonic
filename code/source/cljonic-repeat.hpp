@@ -3,41 +3,72 @@
 
 #include <concepts>
 #include <limits>
-#include "cljonic-collection-iterator.hpp"
 #include "cljonic-collection-type.hpp"
 #include "cljonic-shared.hpp"
 
 namespace cljonic
 {
+
 /** \anchor Repeat
- * The \b Repeat type is a fundamental immutable collection type in cljonic.  It is implemented as a \b lazy \b sequence
- * of a specified length of a specified value. Many \ref Namespace_Core "Core" functions accept Repeat arguments.
+ * The \b Repeat type is a fundamental \b cljonic \b collection type.  It is implemented as a \b lazy \b sequence of a
+ * specified length of a specified value. Many \ref Namespace_Core "Core" functions accept Repeat arguments.
  */
 template <SizeType MaxElements, typename T>
-class Repeat : public IndexInterface<T>
+class Repeat
 {
-    using Iterator = CollectionIterator<Repeat>;
-
     static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
     static_assert(maximumElements == MaxElements,
-                  "Attempt to create a Repeat bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+                  "Attempt to create a Repeat bigger than CljonicCollectionMaximumElementCount");
 
-    const SizeType m_elementCount;
-    const T m_elementDefault;
+    static constexpr SizeType m_elementCount{maximumElements};
+    static constexpr T m_elementDefault{T{}};
     const T m_elementValue;
 
-    constexpr auto ValueAtIndex(const SizeType index) const noexcept
+    class RepeatIterator final
     {
-        return ((m_elementCount <= 0) or (index >= m_elementCount)) ? m_elementDefault : m_elementValue;
-    }
+        SizeType m_count;
+        const T m_value;
+
+      public:
+        using value_type = T;
+
+        constexpr explicit RepeatIterator(const SizeType count, const T& value) noexcept
+            : m_count{count}, m_value{value}
+        {
+        }
+
+        [[nodiscard]] constexpr RepeatIterator(const RepeatIterator& other) noexcept = default; // Copy constructor
+
+        [[nodiscard]] constexpr const T& operator*() const noexcept
+        {
+            return m_value;
+        }
+
+        constexpr RepeatIterator& operator++() noexcept
+        {
+            ++m_count;
+            return *this;
+        }
+
+        [[nodiscard]] constexpr bool operator!=(const RepeatIterator& other) const noexcept
+        {
+            return m_count != other.m_count;
+        }
+
+        constexpr RepeatIterator& operator=(const RepeatIterator& other) noexcept
+        {
+            if (this != &other)
+                m_count = other.m_count;
+            return *this;
+        }
+    };
 
   public:
     /**
     * There are two ways to create a \b Repeat:
-    *     - <b>Repeat{value}</b> returns a \b Repeat of value \b CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT times
-    *     - <b>Repeat<count, valueType>{value}</b> returns a \b Repeat of value, which is of type valueType,
-    *     \b count times
+    *     - <b>Repeat{value}</b>: \b Repeat of value \b CljonicCollectionMaximumElementCount times
+    *     - <b>Repeat<count, valueType>{value}</b>: \b Repeat of valueType value \b count times
     *
     * Note: The \b Repeat type, unlike \b Array and \b Set, specifies the number of elements \b before the type. This is
     *       consistent with \b Clojure where something like <b>(repeat 10 "Hello")<\b> is used to create a repeating
@@ -49,11 +80,11 @@ class Repeat : public IndexInterface<T>
 
     int main()
     {
-        const auto r0{Repeat{1}};              // immutable, 1, CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT times
-        const auto r1{Repeat<10, int>{1}};     // immutable, 1, ten times
+        const auto r0{Repeat{1}};          // 1, CljonicCollectionMaximumElementCount times
+        const auto r1{Repeat<10, int>{1}}; // 1, 10 times
 
-        // Compiler Error: Attempt to create a Repeat bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
-        // const auto r{Repeat<1111, int>{1}};
+        // Compiler Error: Attempt to create a Repeat with invalid value type
+        // const auto r{Repeat<1111, int>{11}};
 
         return 0;
     }
@@ -63,51 +94,59 @@ class Repeat : public IndexInterface<T>
     using size_type = SizeType;
     using value_type = T;
 
-    constexpr explicit Repeat(const T& t) noexcept
-        : m_elementCount{maximumElements}, m_elementDefault{T{}}, m_elementValue{t}
+    constexpr explicit Repeat(const T& t) noexcept : m_elementValue{t}
     {
     }
 
-    constexpr Repeat(const Repeat& other) = default; // Copy constructor
-    constexpr Repeat(Repeat&& other) = default;      // Move constructor
-
-    [[nodiscard]] constexpr Iterator begin() const noexcept
+    constexpr explicit Repeat(T&& t) noexcept : m_elementValue{std::forward<T>(t)}
     {
-        return Iterator{*this, 0};
     }
 
-    [[nodiscard]] constexpr Iterator end() const noexcept
+    constexpr Repeat(const Repeat& other) noexcept = default; // Copy constructor
+    constexpr Repeat(Repeat&& other) noexcept = default;      // Move constructor
+
+    [[nodiscard]] constexpr bool operator==(const auto& other) const noexcept
     {
-        return Iterator{*this, m_elementCount};
+        return AreEqualValues(this, other);
     }
 
-    constexpr T operator[](const SizeType index) const noexcept override
+    [[nodiscard]] constexpr RepeatIterator begin() noexcept
     {
-        return ValueAtIndex(index);
+        return RepeatIterator{0, m_elementValue};
     }
 
-    [[nodiscard]] constexpr SizeType Count() const noexcept override
+    [[nodiscard]] constexpr RepeatIterator end() noexcept
+    {
+        return RepeatIterator{m_elementCount, m_elementValue};
+    }
+
+    [[nodiscard]] constexpr RepeatIterator begin() const noexcept
+    {
+        return RepeatIterator{0, m_elementValue};
+    }
+
+    [[nodiscard]] constexpr RepeatIterator end() const noexcept
+    {
+        return RepeatIterator{m_elementCount, m_elementValue};
+    }
+
+    [[nodiscard]] constexpr static SizeType Count() noexcept
     {
         return m_elementCount;
     }
 
-    constexpr const T& DefaultElement() const noexcept
+    [[nodiscard]] constexpr const T& DefaultElement() const noexcept
     {
         return m_elementDefault;
     }
 
-    constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override
+    [[nodiscard]] static constexpr auto MaximumCount() noexcept
     {
-        return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
-    }
-
-    static constexpr auto MaximumCount() noexcept
-    {
-        return maximumElements;
+        return m_elementCount;
     }
 }; // class Repeat
 
-// deduction guide to transform Repeat{1} into Repeat<CljonicCollectionMaximumElementCount, int>(1)
+// deduction guide to transform Repeat{1} into Repeat<CljonicCollectionMaximumElementCount, int>{1}
 template <typename T>
 Repeat(T) -> Repeat<CljonicCollectionMaximumElementCount, T>;
 

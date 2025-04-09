@@ -79,10 +79,12 @@ constexpr auto Equal(const T& t, const Ts&... ts) noexcept
                       "Equal should not compare cljonic floating point collection value types for equality. Consider "
                       "using EqualBy to override this default.");
 
-        static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
+        static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicNonSet<T, Ts...>,
                       "Equal cljonic collection types are not all the same, or all Array, Range or Repeat types");
 
-        return (AreEqual(t, ts) and ...);
+        auto AllCountsEqual = [](const auto tCount, const auto&... ts) { return ((ts.Count() == tCount) and ...); };
+        auto AllValuesEqual = [](const auto& t, const auto&... ts) { return (AreEqualValues(t, ts) and ...); };
+        return AllCountsEqual(t.Count(), ts...) and AllValuesEqual(t, ts...);
     }
     else
     {
@@ -92,7 +94,7 @@ constexpr auto Equal(const T& t, const Ts&... ts) noexcept
 
         static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all Equal types are equality comparable");
 
-        return (AreEqual(t, ts) and ...);
+        return (AreEqualValues(t, ts) and ...);
     }
 }
 

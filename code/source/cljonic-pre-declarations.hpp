@@ -1,22 +1,27 @@
 #ifndef CLJONIC_PRE_DECLARATIONSHPP
 #define CLJONIC_PRE_DECLARATIONSHPP
 
+#include "cljonic-shared.hpp"
+
 namespace cljonic
 {
 
 template <typename T, SizeType MaxElements>
 class Array;
 
-template <int... StartEndStep>
+template <typename T, typename F>
+class Iterator;
+
+template <RangeType... StartEndStep>
 class Range;
 
 template <SizeType MaxElements, typename T>
 class Repeat;
 
-template <typename T, SizeType MaxElements>
+template <typename T, SizeType MaximumElements>
 class Set;
 
-template <SizeType MaxElements>
+template <SizeType MaximumElements>
 class String;
 
 namespace core

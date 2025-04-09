@@ -1,6 +1,10 @@
 #ifndef CLJONIC_CORE_DEDUPEBY_HPP
 #define CLJONIC_CORE_DEDUPEBY_HPP
 
+#include <optional>
+#include "cljonic-array.hpp"
+#include "cljonic-concepts.hpp"
+
 namespace cljonic
 {
 
@@ -62,22 +66,22 @@ constexpr auto DedupeBy(F&& f, const C& c) noexcept
                   "DedupeBy's function is not a valid binary predicate for the collection value type");
 
     using ValueType = typename C::value_type;
-
-    constexpr auto IndexOfNextElementNotEqualToCurrentElement =
-        [](const F& fn, const C& collection, const SizeType currentIndex)
-    {
-        auto currentElement{collection[currentIndex]};
-        auto i{currentIndex + 1};
-        while ((i < collection.Count()) and fn(collection[i], currentElement))
-            ++i;
-        return i;
-    };
+    using OptionalValueType = std::optional<ValueType>;
 
     auto result{Array<ValueType, c.MaximumCount()>{}};
-    for (SizeType i{0}; i < c.Count();)
+    auto lastValue{OptionalValueType{std::nullopt}};
+    for (const auto& v : c)
     {
-        MConj(result, c[i]);
-        i = IndexOfNextElementNotEqualToCurrentElement(f, c, i);
+        if (not lastValue)
+        {
+            MConj(result, v);
+            lastValue = v;
+        }
+        else if (not f(*lastValue, v))
+        {
+            MConj(result, v);
+            lastValue = v;
+        }
     }
     return result;
 }

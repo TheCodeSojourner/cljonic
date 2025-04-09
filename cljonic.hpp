@@ -16,65 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan 30 09:39:44 AM MST 2025
-
-#ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
-#define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
-
-#include <cstddef>
-
-#ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
-#define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT 1000
-#endif
-
-namespace cljonic {
-
-using SizeType = std::size_t;
-
-constexpr auto CljonicCollectionMaximumElementCount{static_cast<SizeType>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
-
-} // namespace cljonic
-
-#endif // CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
-
-namespace cljonic {
-
-template <typename T>
-class CollectionIterator {
-const T& m_collection;
-SizeType m_index;
-
-public:
-constexpr CollectionIterator(const T& collection, const SizeType index) noexcept
-    : m_collection(collection), m_index(index) {
-}
-
-constexpr auto operator*() const noexcept -> decltype(m_collection[m_index]) {
-return m_collection[m_index];
-}
-
-constexpr CollectionIterator& operator++() noexcept {
-++m_index;
-return *this;
-}
-
-constexpr bool operator!=(const CollectionIterator& other) const noexcept {
-return m_index != other.m_index;
-}
-
-constexpr CollectionIterator& operator+=(int value) noexcept {
-m_index += value;
-return *this;
-}
-
-constexpr CollectionIterator operator+(int value) const noexcept {
-CollectionIterator temp = *this;
-temp += value;
-return temp;
-}
-};
-
-} // namespace cljonic
+// This file was generated Wed Apr  9 12:04:55 PM MDT 2025
 
 namespace cljonic {
 
@@ -93,6 +35,8 @@ enum class CljonicCollectionType {
 #include <concepts>
 #include <limits>
 #include <type_traits>
+
+namespace cljonic {
 
 namespace inner_find_common_type {
 
@@ -114,8 +58,6 @@ using type = std::conditional_t<(std::convertible_to<U, T> && ... && std::conver
 
 } // namespace inner_find_common_type
 
-namespace cljonic {
-
 using namespace inner_find_common_type;
 
 template <typename T>
@@ -128,6 +70,10 @@ concept IsBinaryPredicate = requires(P p, T a, U b) {
 
 template <typename P, typename T, typename... Ts>
 concept IsBinaryPredicateForAll = (IsBinaryPredicate<P, T, Ts> && ...);
+
+template <typename F, typename T, typename... Ts>
+concept IsBinaryPredicateForAllCombinations =
+    (IsBinaryPredicate<F, T, Ts> && ...) && (IsBinaryPredicate<F, Ts, T> && ...);
 
 template <typename T>
 concept IsCljonicArray = std::same_as<typename T::cljonic_collection_type,
@@ -154,15 +100,41 @@ concept IsCljonicSet = std::same_as<typename T::cljonic_collection_type,
                                     std::integral_constant<CljonicCollectionType, CljonicCollectionType::Set>>;
 
 template <typename T>
-concept IsCljonicArrayRangeOrRepeat = IsCljonicArray<T> or IsCljonicRange<T> or IsCljonicRepeat<T>;
+concept IsCljonicString = std::same_as<typename T::cljonic_collection_type,
+                                       std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>>;
+
+template <typename T>
+concept IsCljonicNonSet = IsCljonicCollection<T> and (not IsCljonicSet<T>);
 
 template <typename T>
 concept IsConvertibleToIntegral = std::convertible_to<T, char> or std::convertible_to<T, short> or std::convertible_to<T, int> or std::convertible_to<T, long> or std::convertible_to<T, long long>;
+
 template <typename T>
 concept IsCString = std::same_as<std::decay_t<T>, char*> or std::same_as<std::decay_t<T>, const char*>;
 
 template <typename T>
+concept IsFloatingPointOrFloatingPointValueType =
+    std::floating_point<T> or (requires { typename T::value_type; } and std::floating_point<typename T::value_type>);
+
+template <typename T>
 concept IsNotCljonicCollection = not IsCljonicCollection<T>;
+
+template <typename T>
+concept IsNotCljonicSet = not IsCljonicSet<T>;
+
+template <typename T>
+concept IsReference = std::is_pointer_v<T> || std::is_reference_v<T>;
+
+template <typename T, typename U>
+concept IsReferenceAndIntegral = (IsReference<T> and std::integral<U>) or (IsReference<U> and std::integral<T>);
+
+template <typename T>
+concept IsReferenceValueType = IsReference<typename T::value_type>;
+
+template <typename T, typename U>
+concept IsReferenceAndIntegralValueType =
+    (IsReference<typename T::value_type> and std::integral<typename U::value_type>) or
+    (IsReference<typename U::value_type> and std::integral<typename T::value_type>);
 
 template <typename P, typename T>
 concept IsUnaryFunction = requires(P p, T t) {
@@ -175,7 +147,7 @@ concept IsUnaryPredicate = requires(P p, T t) {
 };
 
 template <typename T, typename... Ts>
-concept AllCljonicArrayRangeOrRepeat = (IsCljonicArrayRangeOrRepeat<T> and ... and IsCljonicArrayRangeOrRepeat<Ts>);
+concept AllCljonicNonSet = (IsCljonicNonSet<T> and ... and IsCljonicNonSet<Ts>);
 
 template <typename T, typename... Ts>
 concept AllCljonicCollections = (IsCljonicCollection<T> and ... and IsCljonicCollection<Ts>);
@@ -198,24 +170,37 @@ constexpr bool AllEqualityComparableValueTypes =
     (std::equality_comparable_with<typename T::value_type, typename Ts::value_type> and ...);
 
 template <typename T, typename... Ts>
+constexpr bool AnyFloatingPointOrFloatingPointValueType =
+    (IsFloatingPointOrFloatingPointValueType<T> or ... or IsFloatingPointOrFloatingPointValueType<Ts>);
+
+template <typename T, typename... Ts>
 constexpr bool AnyFloatingPointTypes = (std::floating_point<T> or ... or std::floating_point<Ts>);
 
 template <typename T, typename... Ts>
 concept AllNotCljonicCollections = (IsNotCljonicCollection<T> and ... and IsNotCljonicCollection<Ts>);
 
 template <typename T, typename... Ts>
+concept AllNotCljonicSets = (IsNotCljonicSet<T> and ... and IsNotCljonicSet<Ts>);
+
+template <typename T, typename... Ts>
 concept AllSameCljonicCollectionType =
     (std::same_as<typename T::cljonic_collection_type, typename Ts::cljonic_collection_type> and ...);
+
+template <typename T, typename... Ts>
+constexpr bool AnyCljonicSets = (IsCljonicSet<T> or ... or IsCljonicSet<Ts>);
 
 template <typename T, typename... Ts>
 constexpr bool AnyFloatingPointValueTypes =
     (std::floating_point<typename T::value_type> or ... or std::floating_point<typename Ts::value_type>);
 
+template <typename T, typename U>
+concept EqualityComparableValueTypes = std::equality_comparable_with<typename T::value_type, typename U::value_type>;
+
 template <typename T, typename... Ts>
 using FindCommonType = typename InnerFindCommonType<T, Ts...>::type;
 
 template <typename T, typename... Ts>
-using FindCommonValueType = typename InnerFindCommonType<typename T::value_type, typename Ts::value_type...>::type;
+using CommonValueType = typename InnerFindCommonType<typename T::value_type, typename Ts::value_type...>::type;
 
 template <typename F, IsCljonicCollection T, IsCljonicCollection... Ts>
 constexpr bool IsBinaryPredicateForAllCljonicCollections =
@@ -224,63 +209,309 @@ constexpr bool IsBinaryPredicateForAllCljonicCollections =
 } // namespace cljonic
 
 #include <concepts>
-#include <cstring>
+#include <cstddef>
 #include <limits>
+#include <string_view>
+
+#ifndef TYPE_CLJONIC_CHAR
+#define TYPE_CLJONIC_CHAR char
+#endif
+
+#ifndef TYPE_CLJONIC_RANGE
+#define TYPE_CLJONIC_RANGE int
+#endif
+
+#ifndef CONSTANT_CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+#define CONSTANT_CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT 1000
+#endif
 
 namespace cljonic {
 
-template <typename T>
-class IndexInterface {
-public:
-virtual constexpr SizeType Count() const noexcept = 0;
-virtual constexpr T operator[](const SizeType index) const noexcept = 0;
-virtual constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept = 0;
-};
+using CharType = TYPE_CLJONIC_CHAR;
+using RangeType = TYPE_CLJONIC_RANGE;
+using SizeType = std::size_t;
 
-constexpr auto CLJONIC_INVALID_INDEX{std::numeric_limits<SizeType>::max()};
+constexpr auto CljonicCollectionMaximumElementCount{
+    static_cast<SizeType>(CONSTANT_CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
+constexpr auto CljonicInvalidIndex{std::numeric_limits<SizeType>::max()};
 
-template <typename F, typename T, typename U>
-constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept {
-
-if constexpr(IsCljonicSet<T> or IsCljonicSet<U>) {
-auto result{t.Count() == u.Count()};
-for(SizeType i{0}; (result and (i < t.Count())); ++i)
-result = t.ContainsBy(f, u[i]);
-return result;
-} else if constexpr(IsCljonicCollection<T> or IsCljonicCollection<U>) {
-auto result{t.Count() == u.Count()};
-for(SizeType i{0}; (result and (i < t.Count())); ++i)
-result = f(t[i], u[i]);
-return result;
-} else {
-return f(t, u);
+constexpr bool CStringsEqual(const char* str1, const char* str2) noexcept {
+while(*str1 and (*str1 == *str2)) {
+++str1;
+++str2;
 }
+return *str1 == *str2;
 }
 
 template <typename T, typename U>
-constexpr bool AreEqual(const T& t, const U& u) noexcept {
+constexpr bool AreEqualValues(const T& t, const U& u) {
 
 if constexpr(IsCString<T> and IsCString<U>) {
-return std::strcmp(t, u) == 0;
-} else if constexpr(IsCljonicSet<T> or IsCljonicSet<U>) {
-auto result{t.Count() == u.Count()};
-for(SizeType i{0}; (result and (i < t.Count())); ++i)
-result = t.Contains(u[i]);
-return result;
-} else if constexpr(IsCljonicCollection<T> or IsCljonicCollection<U>) {
-auto result{t.Count() == u.Count()};
-for(SizeType i{0}; (result and (i < t.Count())); ++i)
-result = AreEqual(t[i], u[i]);
-return result;
+return CStringsEqual(t, u);
+} else if constexpr(IsCString<T> and IsCljonicString<U>) {
+return CStringsEqual(t, u.c_str());
+} else if constexpr(IsCljonicString<T> and IsCString<U>) {
+return CStringsEqual(t.c_str(), u);
+} else if constexpr(IsCljonicString<T> and IsCljonicString<U>) {
+return CStringsEqual(t.c_str(), u.c_str());
+} else if constexpr((IsCljonicCollection<T> and IsNotCljonicCollection<U>) or
+                    (IsNotCljonicCollection<T> and IsCljonicCollection<U>)) {
+return false;
+} else if constexpr(IsCljonicCollection<T> and IsCljonicCollection<U>) {
+if constexpr((not IsCljonicSet<T>) and (not IsCljonicSet<U>)) {
+static constexpr auto AreNonSetCollectionsEqual =
+    []<typename FirstCollection, typename SecondCollection>(const SizeType firstCount,
+                                                            const SizeType secondCount,
+                                                            const FirstCollection& firstCollection,
+                                                            const SecondCollection& secondCollection) {
+    if constexpr((not EqualityComparableValueTypes<FirstCollection, SecondCollection>) or std::floating_point<typename FirstCollection::value_type> or std::floating_point<typename SecondCollection::value_type> or IsReferenceAndIntegralValueType<FirstCollection, SecondCollection>) {
+    return false;
+    } else if constexpr(IsCljonicRepeat<FirstCollection> and IsCljonicRepeat<SecondCollection>) {
+    return (firstCount != secondCount) ? false
+                                       : (*firstCollection.begin() == *secondCollection.begin());
+    } else {
+    if(firstCount != secondCount)
+    return false;
+    for(
+        auto itFirst{firstCollection.begin()},
+        endFirst{firstCollection.end()},
+        itSecond{secondCollection.begin()},
+        endSecond{secondCollection.end()};
+
+        ((itFirst != endFirst) and (itSecond != endSecond));
+
+        ++itFirst,
+        ++itSecond) {
+    if(not AreEqualValues(*itFirst, *itSecond))
+    return false;
+    }
+    return true;
+    }
+    };
+
+if constexpr(IsCljonicArray<T> and IsCljonicArray<U>) {
+return AreNonSetCollectionsEqual(t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicArray<T> and IsCljonicIterator<U>) {
+return AreNonSetCollectionsEqual(t.Count(), t.Count(), t, u);
+} else if constexpr(IsCljonicArray<T> and IsCljonicRange<U>) {
+return AreNonSetCollectionsEqual(t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicArray<T> and IsCljonicRepeat<U>) {
+return AreNonSetCollectionsEqual(t.Count(), t.Count(), t, u);
+} else if constexpr(IsCljonicArray<T> and IsCljonicString<U>) {
+return AreNonSetCollectionsEqual(t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicIterator<T> and IsCljonicArray<U>) {
+return AreNonSetCollectionsEqual(u.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicIterator<T> and IsCljonicIterator<U>) {
+return AreNonSetCollectionsEqual(t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicIterator<T> and IsCljonicRange<U>) {
+return AreNonSetCollectionsEqual(u.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicIterator<T> and IsCljonicRepeat<U>) {
+return AreNonSetCollectionsEqual(t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicIterator<T> and IsCljonicString<U>) {
+return AreNonSetCollectionsEqual(u.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRange<T> and IsCljonicArray<U>) {
+return AreNonSetCollectionsEqual(t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRange<T> and IsCljonicIterator<U>) {
+return AreNonSetCollectionsEqual(t.Count(), t.Count(), t, u);
+} else if constexpr(IsCljonicRange<T> and IsCljonicRange<U>) {
+return AreNonSetCollectionsEqual(t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRange<T> and IsCljonicRepeat<U>) {
+return AreNonSetCollectionsEqual(t.Count(), t.Count(), t, u);
+} else if constexpr(IsCljonicRange<T> and IsCljonicString<U>) {
+return AreNonSetCollectionsEqual(t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRepeat<T> and IsCljonicArray<U>) {
+return AreNonSetCollectionsEqual(u.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRepeat<T> and IsCljonicIterator<U>) {
+return AreNonSetCollectionsEqual(t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRepeat<T> and IsCljonicRange<U>) {
+return AreNonSetCollectionsEqual(u.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRepeat<T> and IsCljonicRepeat<U>) {
+return AreNonSetCollectionsEqual(t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRepeat<T> and IsCljonicString<U>) {
+return AreEqualValues(*t.begin(), u.c_str());
+} else if constexpr(IsCljonicString<T> and IsCljonicArray<U>) {
+return AreNonSetCollectionsEqual(t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicString<T> and IsCljonicIterator<U>) {
+return AreNonSetCollectionsEqual(t.Count(), t.Count(), t, u);
+} else if constexpr(IsCljonicString<T> and IsCljonicRange<U>) {
+return AreNonSetCollectionsEqual(t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicString<T> and IsCljonicRepeat<U>) {
+return AreEqualValues(t.c_str(), *u.begin());
+} else {
+return false;
+}
+} else if constexpr(IsCljonicSet<T> and IsCljonicSet<U>) {
+if constexpr((not EqualityComparableValueTypes<T, U>) or std::floating_point<typename T::value_type> or std::floating_point<typename U::value_type> or IsReferenceAndIntegralValueType<T, U>) {
+return false;
+} else {
+if(t.Count() != u.Count())
+return false;
+for(const auto& vt : t)
+if(not u.Contains(vt))
+return false;
+return true;
+}
+} else {
+return false;
+}
+} else if constexpr((not std::equality_comparable_with<T, U>) or std::floating_point<T> or std::floating_point<U> or IsReferenceAndIntegral<T, U>) {
+return false;
 } else {
 return t == u;
 }
 }
 
+template <typename F, typename T, typename U>
+constexpr bool AreEqualValuesBy(F&& f, const T& t, const U& u) {
+
+if constexpr(IsCljonicCollection<T> and IsCljonicCollection<U>) {
+if constexpr(not IsBinaryPredicate<F, typename T::value_type, typename U::value_type>) {
+return false;
+} else if constexpr((not IsCljonicSet<T>) and (not IsCljonicSet<U>)) {
+static constexpr auto AreNonSetCollectionsEqual =
+    []<typename FN, typename FirstCollection, typename SecondCollection>(
+        FN&& fn,
+        const SizeType firstCount,
+        const SizeType secondCount,
+        const FirstCollection& firstCollection,
+        const SecondCollection& secondCollection) {
+    if constexpr(IsCljonicRepeat<FirstCollection> and IsCljonicRepeat<SecondCollection>) {
+    return std::forward<FN>(fn)(*firstCollection.begin(), *secondCollection.begin());
+    } else {
+    if(firstCount != secondCount)
+    return false;
+    for(
+        auto itFirst{firstCollection.begin()},
+        endFirst{firstCollection.end()},
+        itSecond{secondCollection.begin()},
+        endSecond{secondCollection.end()};
+
+        ((itFirst != endFirst) and (itSecond != endSecond));
+
+        ++itFirst,
+        ++itSecond) {
+    if(not std::forward<FN>(fn)(*itFirst, *itSecond))
+    return false;
+    }
+    return true;
+    }
+    };
+
+if constexpr(IsCljonicArray<T> and IsCljonicArray<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicArray<T> and IsCljonicIterator<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), t.Count(), t, u);
+} else if constexpr(IsCljonicArray<T> and IsCljonicRange<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicArray<T> and IsCljonicRepeat<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), t.Count(), t, u);
+} else if constexpr(IsCljonicArray<T> and IsCljonicString<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicIterator<T> and IsCljonicArray<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), u.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicIterator<T> and IsCljonicIterator<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicIterator<T> and IsCljonicRange<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), u.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicIterator<T> and IsCljonicRepeat<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicIterator<T> and IsCljonicString<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), u.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRange<T> and IsCljonicArray<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRange<T> and IsCljonicIterator<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), t.Count(), t, u);
+} else if constexpr(IsCljonicRange<T> and IsCljonicRange<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRange<T> and IsCljonicRepeat<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), t.Count(), t, u);
+} else if constexpr(IsCljonicRange<T> and IsCljonicString<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRepeat<T> and IsCljonicArray<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), u.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRepeat<T> and IsCljonicIterator<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRepeat<T> and IsCljonicRange<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), u.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRepeat<T> and IsCljonicRepeat<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicRepeat<T> and IsCljonicString<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), u.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicString<T> and IsCljonicArray<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicString<T> and IsCljonicIterator<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), t.Count(), t, u);
+} else if constexpr(IsCljonicString<T> and IsCljonicRange<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), u.Count(), t, u);
+} else if constexpr(IsCljonicString<T> and IsCljonicRepeat<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), t.Count(), t, u);
+} else if constexpr(IsCljonicString<T> and IsCljonicString<U>) {
+return AreNonSetCollectionsEqual(std::forward<F>(f), t.Count(), u.Count(), t, u);
+} else {
+return false;
+}
+} else if constexpr(IsCljonicSet<T> and IsCljonicSet<U>) {
+if(t.Count() != u.Count())
+return false;
+for(const auto& vt : t)
+if(not u.ContainsBy(std::forward<F>(f), vt))
+return false;
+return true;
+} else if constexpr(IsBinaryPredicate<F, T, U>) {
+return std::forward<F>(f)(t, u);
+} else {
+return false;
+}
+} else if constexpr(IsBinaryPredicate<F, T, U>) {
+return std::forward<F>(f)(t, u);
+} else {
+return false;
+}
+}
+
+template <typename CollectionIterator, SizeType MaxElements>
+constexpr bool AreUniqueValues(const CollectionIterator& begin, const CollectionIterator& end) {
+
+std::array<typename CollectionIterator::value_type, MaxElements> collectionElements{};
+SizeType count{0};
+for(auto it{begin}; it != end; ++it) {
+for(SizeType i{0}; i < count; ++i)
+if(AreEqualValues(collectionElements[i], *it))
+return false;
+if(count < MaxElements)
+collectionElements[count++] = *it;
+else
+return false;
+}
+return true;
+}
+
+template <typename F, typename CollectionIterator, SizeType MaxElements>
+constexpr bool AreUniqueValuesBy(F&& f, const CollectionIterator& begin, const CollectionIterator& end) {
+
+std::array<typename CollectionIterator::value_type, MaxElements> collectionElements{};
+SizeType count{0};
+for(auto it{begin}; it != end; ++it) {
+for(SizeType i{0}; i < count; ++i)
+if(AreEqualValuesBy(std::forward<F>(f), collectionElements[i], *it))
+return false;
+if(count < MaxElements)
+collectionElements[count++] = *it;
+else
+return false;
+}
+return true;
+}
+
 template <typename T, typename U>
 constexpr bool FirstLessThanSecond(const T& t, const U& u) noexcept {
+
 if constexpr(IsCString<T> and IsCString<U>) {
-return std::strcmp(t, u) < 0;
+while(*t and (*t == *u)) {
+++t;
+++u;
+}
+return *t < *u;
 } else {
 return t < u;
 }
@@ -324,16 +555,19 @@ namespace cljonic {
 template <typename T, SizeType MaxElements>
 class Array;
 
-template <int... StartEndStep>
+template <typename T, typename F>
+class Iterator;
+
+template <RangeType... StartEndStep>
 class Range;
 
 template <SizeType MaxElements, typename T>
 class Repeat;
 
-template <typename T, SizeType MaxElements>
+template <typename T, SizeType MaximumElements>
 class Set;
 
-template <SizeType MaxElements>
+template <SizeType MaximumElements>
 class String;
 
 namespace core {
@@ -520,89 +754,100 @@ constexpr auto TakeWhile(F&& f, const C& c) noexcept;
 
 } // namespace cljonic
 
+#include <array>
 #include <cstring>
 #include <initializer_list>
 #include <type_traits>
 
 namespace cljonic {
-
 template <typename T, SizeType MaxElements>
-class Array : public IndexInterface<T> {
+class Array {
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
 static_assert(maximumElements == MaxElements,
-              "Attempt to create an Array bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+              "Attempt to create an Array bigger than CljonicCollectionMaximumElementCount");
 
-SizeType m_elementCount;
-T m_elementDefault;
-T m_elements[maximumElements]{};
-
-template <typename U, SizeType N>
-constexpr friend void MConj(Array<U, N>& array, const U& value);
+SizeType m_elementCount{0};
+T m_elementDefault{T{}};
+std::array<T, MaxElements> m_elements{};
 
 template <typename U, SizeType N>
-constexpr friend void MSet(Array<U, N>& array, const U& value, const SizeType index);
+constexpr friend void MConj(Array<U, N>& array, const U& value) noexcept;
 
-constexpr auto ValueAtIndex(const SizeType index) const noexcept {
-return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+template <typename U, SizeType N>
+constexpr friend void MSet(Array<U, N>& array, const U& value, const SizeType index) noexcept;
+
+class ArrayIterator final {
+const T* m_elementsPointer;
+
+public:
+using value_type = T;
+
+constexpr explicit ArrayIterator(const T* elementsPointer) noexcept : m_elementsPointer{elementsPointer} {
 }
+
+[[nodiscard]] constexpr const T& operator*() const noexcept {
+return *m_elementsPointer;
+}
+
+constexpr ArrayIterator& operator++() noexcept {
+++m_elementsPointer;
+return *this;
+}
+
+[[nodiscard]] constexpr bool operator!=(const ArrayIterator& other) const noexcept {
+return m_elementsPointer != other.m_elementsPointer;
+}
+};
 
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>;
 using size_type = SizeType;
 using value_type = T;
 
-constexpr Array() noexcept : m_elementCount(0), m_elementDefault(T{}) {
+constexpr Array() noexcept = default;
+
+constexpr Array(const std::initializer_list<T>& init) noexcept
+    : m_elementCount{std::min(init.size(), m_elements.size())}, m_elementDefault(T{}) {
+std::copy(init.begin(), (init.begin() + m_elementCount), m_elements.begin());
 }
 
-constexpr explicit Array(const std::initializer_list<const T> elements) noexcept
-    : m_elementCount(MinArgument(MaximumCount(), elements.size())), m_elementDefault(T{}) {
-for(SizeType i{0}; i < m_elementCount; ++i)
-m_elements[i] = *(elements.begin() + i);
+constexpr Array(const Array& other) noexcept = default;
+constexpr Array(Array&& other) noexcept = default;
+
+[[nodiscard]] constexpr bool operator==(const auto& other) const noexcept {
+return AreEqualValues(this, other);
 }
 
-constexpr Array(const Array& other) = default;
-constexpr Array(Array&& other) = default;
-
-constexpr const T* begin() const noexcept {
-return m_elements;
+[[nodiscard]] constexpr ArrayIterator begin() noexcept {
+return ArrayIterator{m_elements.data()};
 }
 
-constexpr const T* end() const noexcept {
-return m_elements + m_elementCount;
+[[nodiscard]] constexpr ArrayIterator end() noexcept {
+return ArrayIterator{m_elements.data() + m_elementCount};
 }
 
-constexpr T operator[](const SizeType index) const noexcept override {
-return ValueAtIndex(index);
+[[nodiscard]] constexpr ArrayIterator begin() const noexcept {
+return ArrayIterator{m_elements.data()};
 }
 
-constexpr T operator()(const SizeType index) const noexcept {
-return this->operator[](index);
+[[nodiscard]] constexpr ArrayIterator end() const noexcept {
+return ArrayIterator{m_elements.data() + m_elementCount};
 }
 
-constexpr Array& operator=(const Array& other) noexcept {
-if(this != &other) {
-m_elementCount = other.m_elementCount;
-m_elementDefault = other.m_elementDefault;
-for(SizeType i{0}; i < m_elementCount; ++i)
-m_elements[i] = other.m_elements[i];
-}
-return *this;
+[[nodiscard]] constexpr T operator()(const SizeType index) const noexcept {
+return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 }
 
-[[nodiscard]] constexpr SizeType Count() const noexcept override {
+[[nodiscard]] constexpr SizeType Count() const noexcept {
 return m_elementCount;
 }
 
-constexpr const T& DefaultElement() const noexcept {
+[[nodiscard]] constexpr const T& DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
-constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override {
-return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
-}
-
-static constexpr SizeType MaximumCount() noexcept {
+[[nodiscard]] static constexpr SizeType MaximumCount() noexcept {
 return maximumElements;
 }
 };
@@ -610,14 +855,17 @@ return maximumElements;
 template <typename... Args>
 Array(Args...) -> Array<std::common_type_t<Args...>, sizeof...(Args)>;
 
+template <typename T = int>
+Array() -> Array<T, 0>;
+
 template <typename U, SizeType N>
-constexpr void MConj(Array<U, N>& array, const U& value) {
+constexpr void MConj(Array<U, N>& array, const U& value) noexcept {
 if(array.m_elementCount < array.MaximumCount())
 array.m_elements[array.m_elementCount++] = value;
 }
 
 template <typename U, SizeType N>
-constexpr void MSet(Array<U, N>& array, const U& value, const SizeType index) {
+constexpr void MSet(Array<U, N>& array, const U& value, const SizeType index) noexcept {
 if(index < array.m_elementCount)
 array.m_elements[index] = value;
 }
@@ -630,38 +878,34 @@ array.m_elements[index] = value;
 namespace cljonic {
 template <typename F, typename T>
 class Iterator {
+static constexpr T m_elementDefault{};
 F m_f;
 T m_initialValue;
 
-class Itr {
+class IteratorIterator final {
+SizeType m_count;
 F m_f;
-SizeType m_index;
-T m_nextValue;
+T m_value;
 
 public:
 using value_type = T;
-using difference_type = std::ptrdiff_t;
-using pointer = T*;
-using reference = T&;
 
-Itr(const Iterator& iterator, SizeType index)
-    : m_f{iterator.m_f}, m_index{index}, m_nextValue{iterator.m_initialValue} {
+constexpr IteratorIterator(const SizeType count, F f, const T& value) noexcept
+    : m_count{count}, m_f{std::move(f)}, m_value{value} {
 }
 
-T operator*() const {
-return m_nextValue;
+[[nodiscard]] constexpr const T& operator*() const noexcept {
+return m_value;
 }
 
-Itr& operator++() {
-if(m_index < Iterator::MaximumCount()) {
-m_nextValue = m_f(m_nextValue);
-++m_index;
-}
+constexpr IteratorIterator& operator++() noexcept {
+++m_count;
+m_value = m_f(m_value);
 return *this;
 }
 
-bool operator!=(const Itr& other) const {
-return m_index != other.m_index;
+[[nodiscard]] constexpr bool operator!=(const IteratorIterator& other) const noexcept {
+return m_count != other.m_count;
 }
 };
 
@@ -670,33 +914,51 @@ using cljonic_collection_type = std::integral_constant<CljonicCollectionType, Cl
 using size_type = SizeType;
 using value_type = T;
 
-constexpr explicit Iterator(F&& f, const T& t) noexcept : m_f{std::forward<F>(f)}, m_initialValue{t} {
+template <typename Func, typename InitValue>
+Iterator(Func&& f, InitValue&& initialValue) noexcept
+    : m_f(std::forward<Func>(f)), m_initialValue(std::forward<InitValue>(initialValue)) {
 static_assert(IsUnaryFunction<F, T>,
               "Iterator constructor's first parameter is not a unary function of its second parameter");
 }
 
-constexpr Iterator(const Iterator& other) = default;
-constexpr Iterator(Iterator&& other) = default;
+constexpr Iterator(const Iterator& other) noexcept = default;
+constexpr Iterator(Iterator&& other) noexcept = default;
 
-Itr begin() {
-return Itr(*this, 0);
+[[nodiscard]] constexpr bool operator==(const auto& other) const noexcept {
+return AreEqualValues(this, other);
 }
 
-Itr end() {
-return Itr(*this, MaximumCount());
+[[nodiscard]] constexpr IteratorIterator begin() noexcept {
+return {0, m_f, m_initialValue};
+}
+
+[[nodiscard]] constexpr IteratorIterator end() noexcept {
+return {Count(), m_f, m_initialValue};
+}
+
+[[nodiscard]] constexpr IteratorIterator begin() const noexcept {
+return IteratorIterator{0, m_f, m_initialValue};
+}
+
+[[nodiscard]] constexpr IteratorIterator end() const noexcept {
+return IteratorIterator{Count(), m_f, m_initialValue};
 }
 
 [[nodiscard]] constexpr SizeType Count() const noexcept {
-return CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT;
+return CljonicCollectionMaximumElementCount;
+}
+
+[[nodiscard]] constexpr const T& DefaultElement() const noexcept {
+return m_elementDefault;
 }
 
 [[nodiscard]] static constexpr auto MaximumCount() noexcept {
-return CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT;
+return CljonicCollectionMaximumElementCount;
 }
 };
 
 template <typename F, typename T>
-Iterator(F&&, const T&) -> Iterator<F, T>;
+Iterator(F, T) -> Iterator<F, T>;
 
 } // namespace cljonic
 
@@ -704,170 +966,129 @@ Iterator(F&&, const T&) -> Iterator<F, T>;
 
 namespace cljonic {
 
-template <int... StartEndStep>
-class Range : public IndexInterface<int> {
-private:
+template <RangeType... StartEndStep>
+class Range {
 static_assert(sizeof...(StartEndStep) <= 3, "Number of Range parameters must be less than or equal to three");
 
-using Iterator = CollectionIterator<Range>;
+static constexpr RangeType values[] = {StartEndStep...};
 
-SizeType m_elementCount;
-int m_elementDefault;
-int m_elementStart;
-int m_elementStep;
-
-static constexpr auto RangeCount(const int start, const int end, const int step) noexcept {
-return (0 == step) ? 0 : ((end - start) / step) + ((((end - start) % step) == 0) ? 0 : 1);
+[[nodiscard]] static constexpr RangeType RangeStart() noexcept {
+return (sizeof...(StartEndStep) < 2) ? 0 : values[0];
 }
 
-static constexpr int values[] = {StartEndStep...};
+[[nodiscard]] static constexpr RangeType RangeStep() noexcept {
+return (sizeof...(StartEndStep) < 3) ? 1 : values[2];
+}
+
+[[nodiscard]] static constexpr bool
+IsEmptyRange(RangeType elementEnd, RangeType elementStart, RangeType elementStep) noexcept {
+return ((elementStep == 0) and (elementStart == elementEnd)) or ((elementStep > 0) and (elementStart >= elementEnd)) or ((elementStep < 0) and (elementStart <= elementEnd));
+}
+
+static constexpr bool IsRepeatRange(RangeType elementEnd, RangeType elementStart, RangeType elementStep) noexcept {
+return ((elementStep == 0) and (elementStart != elementEnd));
+}
+
+[[nodiscard]] static constexpr SizeType
+RangeCount(RangeType elementEnd, RangeType elementStart, RangeType elementStep) noexcept {
+
+return IsEmptyRange(elementEnd, elementStart, elementStep)
+           ? 0
+       : IsRepeatRange(elementEnd, elementStart, elementStep)
+           ? CljonicCollectionMaximumElementCount
+           : static_cast<SizeType>(((elementEnd - elementStart) / elementStep) +
+                                   ((((elementEnd - elementStart) % elementStep) == 0) ? 0 : 1));
+}
 
 static constexpr auto MaxElements = []() constexpr {
 if constexpr(sizeof...(StartEndStep) == 1) {
-if constexpr(values[0] < 0)
-return static_cast<SizeType>(0);
-else
-return static_cast<SizeType>(values[0]);
+return RangeCount(values[0], 0, 1);
 } else if constexpr(sizeof...(StartEndStep) == 2) {
-if constexpr(values[1] <= values[0])
-return static_cast<SizeType>(0);
-else
-return static_cast<SizeType>(values[1] - values[0]);
+return RangeCount(values[1], values[0], 1);
 } else if constexpr(sizeof...(StartEndStep) == 3) {
-
-if constexpr((0 == values[2]) and (values[0] == values[1]))
-return static_cast<SizeType>(0);
-else if constexpr(0 == values[2])
-return CljonicCollectionMaximumElementCount;
-else if constexpr(values[2] < 0) {
-if constexpr(values[0] <= values[1])
-return static_cast<SizeType>(0);
-else
-return static_cast<SizeType>(RangeCount(values[0], values[1], values[2]));
+return RangeCount(values[1], values[0], values[2]);
 } else {
-if constexpr(values[1] <= values[0])
-return static_cast<SizeType>(0);
-else
-return static_cast<SizeType>(RangeCount(values[0], values[1], values[2]));
-}
-} else {
-return CljonicCollectionMaximumElementCount;
+return RangeCount(static_cast<RangeType>(CljonicCollectionMaximumElementCount), 0, 1);
 }
 }();
 
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
 static_assert(maximumElements == MaxElements,
-              "Attempt to create a Range bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+              "Attempt to create a Range bigger than CljonicCollectionMaximumElementCount");
 
-constexpr void InitializeMembers(const int count, const int start, const int step) noexcept {
-m_elementCount = MinArgument(static_cast<SizeType>(count), CljonicCollectionMaximumElementCount);
-m_elementDefault = 0;
-m_elementStart = start;
-m_elementStep = step;
-}
+static constexpr SizeType m_elementCount{maximumElements};
+static constexpr RangeType m_elementDefault{};
+static constexpr RangeType m_elementStart{RangeStart()};
+static constexpr RangeType m_elementStep{RangeStep()};
 
-constexpr void Initialize() noexcept {
-InitializeMembers(CljonicCollectionMaximumElementCount, 0, 1);
-}
+class RangeIterator final {
+SizeType m_count;
+RangeType m_current;
+const RangeType m_step;
 
-constexpr void InitializeEnd(const int end) noexcept {
-if(end <= 0)
-InitializeMembers(0, 0, 1);
-else
-InitializeMembers(end, 0, 1);
-}
+public:
+using value_type = RangeType;
 
-constexpr void InitializeStartEnd(const int start, const int end) noexcept {
-if(end <= start)
-InitializeMembers(0, 0, 1);
-else
-InitializeMembers((end - start), start, 1);
+constexpr RangeIterator(const SizeType count, const RangeType current, const RangeType step) noexcept
+    : m_count{count}, m_current{current}, m_step{step} {
 }
 
-constexpr void InitializeStartEndStepWithNegativeStep(const int start, const int end, const int step) noexcept {
-if(start <= end)
-InitializeMembers(0, 0, step);
-else {
-const int count{RangeCount(start, end, step)};
-InitializeMembers(count, start, step);
-}
+[[nodiscard]] constexpr RangeIterator(const RangeIterator& other) noexcept = default;
+
+[[nodiscard]] constexpr const RangeType& operator*() const noexcept {
+return m_current;
 }
 
-constexpr void InitializeStartEndStepWithPositiveStep(const int start, const int end, const int step) noexcept {
-if(end <= start)
-InitializeMembers(0, 0, step);
-else {
-const int count{RangeCount(start, end, step)};
-InitializeMembers(count, start, step);
-}
+constexpr RangeIterator& operator++() noexcept {
+m_count += 1;
+m_current += m_step;
+return *this;
 }
 
-constexpr void InitializeStartEndStep(const int start, const int end, const int step) noexcept {
-
-if((0 == step) and (start == end))
-InitializeMembers(0, 0, 0);
-else if(0 == step)
-InitializeMembers(CljonicCollectionMaximumElementCount, start, 0);
-else if(step < 0)
-InitializeStartEndStepWithNegativeStep(start, end, step);
-else
-InitializeStartEndStepWithPositiveStep(start, end, step);
+[[nodiscard]] constexpr bool operator!=(const RangeIterator& other) const noexcept {
+return m_count != other.m_count;
 }
 
-constexpr auto ValueAtIndex(const SizeType index) const noexcept {
-return ((0 == m_elementCount) or (index >= m_elementCount))
-           ? m_elementDefault
-           : (m_elementStart + (static_cast<int>(index) * m_elementStep));
+constexpr RangeIterator& operator=(const RangeIterator& other) noexcept {
+if(this != &other) {
+m_count = other.m_count;
+m_current = other.m_current;
 }
+return *this;
+}
+};
 
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Range>;
 using size_type = SizeType;
 using value_type = int;
 
-constexpr Range() noexcept
-    : m_elementCount{static_cast<SizeType>(0)}, m_elementDefault{0}, m_elementStart{0}, m_elementStep{0} {
+constexpr Range() noexcept = default;
+constexpr Range(const Range& other) noexcept = default;
+constexpr Range(Range&& other) noexcept = default;
 
-if constexpr(sizeof...(StartEndStep) == 1) {
-InitializeEnd(values[0]);
-} else if constexpr(sizeof...(StartEndStep) == 2) {
-InitializeStartEnd(values[0], values[1]);
-} else if constexpr(sizeof...(StartEndStep) == 3) {
-InitializeStartEndStep(values[0], values[1], values[2]);
-} else {
-Initialize();
-}
+[[nodiscard]] constexpr bool operator==(const auto& other) const noexcept {
+return AreEqualValues(this, other);
 }
 
-constexpr Range(const Range& other) = default;
-constexpr Range(Range&& other) = default;
-
-[[nodiscard]] constexpr Iterator begin() const noexcept {
-return Iterator{*this, 0};
+[[nodiscard]] constexpr RangeIterator begin() const noexcept {
+return RangeIterator{0, m_elementStart, m_elementStep};
 }
 
-[[nodiscard]] constexpr Iterator end() const noexcept {
-return Iterator{*this, m_elementCount};
+[[nodiscard]] constexpr RangeIterator end() const noexcept {
+return RangeIterator{Count(), 0, 0};
 }
 
-constexpr int operator[](const SizeType index) const noexcept override {
-return ValueAtIndex(index);
-}
-
-[[nodiscard]] constexpr SizeType Count() const noexcept override {
+[[nodiscard]] constexpr SizeType Count() const noexcept {
 return m_elementCount;
 }
 
-constexpr int DefaultElement() const noexcept {
+[[nodiscard]] constexpr const RangeType& DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
-constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const int& element) const noexcept override {
-return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
-}
-
-static constexpr auto MaximumCount() noexcept {
+[[nodiscard]] static constexpr auto MaximumCount() noexcept {
 return maximumElements;
 }
 };
@@ -882,60 +1103,93 @@ Range() -> Range<>;
 namespace cljonic {
 
 template <SizeType MaxElements, typename T>
-class Repeat : public IndexInterface<T> {
-using Iterator = CollectionIterator<Repeat>;
-
+class Repeat {
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
 static_assert(maximumElements == MaxElements,
-              "Attempt to create a Repeat bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+              "Attempt to create a Repeat bigger than CljonicCollectionMaximumElementCount");
 
-const SizeType m_elementCount;
-const T m_elementDefault;
+static constexpr SizeType m_elementCount{maximumElements};
+static constexpr T m_elementDefault{T{}};
 const T m_elementValue;
 
-constexpr auto ValueAtIndex(const SizeType index) const noexcept {
-return ((m_elementCount <= 0) or (index >= m_elementCount)) ? m_elementDefault : m_elementValue;
+class RepeatIterator final {
+SizeType m_count;
+const T m_value;
+
+public:
+using value_type = T;
+
+constexpr explicit RepeatIterator(const SizeType count, const T& value) noexcept
+    : m_count{count}, m_value{value} {
 }
+
+[[nodiscard]] constexpr RepeatIterator(const RepeatIterator& other) noexcept = default;
+
+[[nodiscard]] constexpr const T& operator*() const noexcept {
+return m_value;
+}
+
+constexpr RepeatIterator& operator++() noexcept {
+++m_count;
+return *this;
+}
+
+[[nodiscard]] constexpr bool operator!=(const RepeatIterator& other) const noexcept {
+return m_count != other.m_count;
+}
+
+constexpr RepeatIterator& operator=(const RepeatIterator& other) noexcept {
+if(this != &other)
+m_count = other.m_count;
+return *this;
+}
+};
 
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Repeat>;
 using size_type = SizeType;
 using value_type = T;
 
-constexpr explicit Repeat(const T& t) noexcept
-    : m_elementCount{maximumElements}, m_elementDefault{T{}}, m_elementValue{t} {
+constexpr explicit Repeat(const T& t) noexcept : m_elementValue{t} {
 }
 
-constexpr Repeat(const Repeat& other) = default;
-constexpr Repeat(Repeat&& other) = default;
-
-[[nodiscard]] constexpr Iterator begin() const noexcept {
-return Iterator{*this, 0};
+constexpr explicit Repeat(T&& t) noexcept : m_elementValue{std::forward<T>(t)} {
 }
 
-[[nodiscard]] constexpr Iterator end() const noexcept {
-return Iterator{*this, m_elementCount};
+constexpr Repeat(const Repeat& other) noexcept = default;
+constexpr Repeat(Repeat&& other) noexcept = default;
+
+[[nodiscard]] constexpr bool operator==(const auto& other) const noexcept {
+return AreEqualValues(this, other);
 }
 
-constexpr T operator[](const SizeType index) const noexcept override {
-return ValueAtIndex(index);
+[[nodiscard]] constexpr RepeatIterator begin() noexcept {
+return RepeatIterator{0, m_elementValue};
 }
 
-[[nodiscard]] constexpr SizeType Count() const noexcept override {
+[[nodiscard]] constexpr RepeatIterator end() noexcept {
+return RepeatIterator{m_elementCount, m_elementValue};
+}
+
+[[nodiscard]] constexpr RepeatIterator begin() const noexcept {
+return RepeatIterator{0, m_elementValue};
+}
+
+[[nodiscard]] constexpr RepeatIterator end() const noexcept {
+return RepeatIterator{m_elementCount, m_elementValue};
+}
+
+[[nodiscard]] constexpr static SizeType Count() noexcept {
 return m_elementCount;
 }
 
-constexpr const T& DefaultElement() const noexcept {
+[[nodiscard]] constexpr const T& DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
-constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override {
-return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
-}
-
-static constexpr auto MaximumCount() noexcept {
-return maximumElements;
+[[nodiscard]] static constexpr auto MaximumCount() noexcept {
+return m_elementCount;
 }
 };
 
@@ -951,7 +1205,7 @@ Repeat(T) -> Repeat<CljonicCollectionMaximumElementCount, T>;
 
 namespace cljonic {
 template <typename T, SizeType MaxElements>
-class Set : public IndexInterface<T> {
+class Set {
 static_assert(not std::floating_point<T>,
               "Floating point types should not be compared for equality, hence Sets of floating point types are "
               "not allowed");
@@ -961,24 +1215,50 @@ static_assert(std::equality_comparable<T>, "A Set type must be equality comparab
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
 static_assert(maximumElements == MaxElements,
-              "Attempt to create a Set bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+              "Attempt to create a Set bigger than CljonicCollectionMaximumElementCount");
 
-SizeType m_elementCount;
-const T m_elementDefault;
-T m_elements[maximumElements]{};
+SizeType m_elementCount{0};
+const T m_elementDefault{T{}};
+std::array<T, maximumElements> m_elements{};
 
-constexpr bool IsUniqueElementBy(const auto& f, const T& element) const noexcept {
-auto result{true};
-for(SizeType i{0}; (result and (i < m_elementCount)); ++i)
-result = not AreEqualBy(f, element, m_elements[i]);
-return result;
+class SetIterator final {
+const T* m_elementsPointer;
+
+public:
+using value_type = T;
+
+constexpr explicit SetIterator(const T* elementsPointer) noexcept : m_elementsPointer{elementsPointer} {
 }
 
-constexpr bool IsUniqueElement(const T& element) const noexcept {
-auto result{true};
-for(SizeType i{0}; (result and (i < m_elementCount)); ++i)
-result = not AreEqual(element, m_elements[i]);
-return result;
+[[nodiscard]] constexpr const T& operator*() const noexcept {
+return *m_elementsPointer;
+}
+
+constexpr SetIterator& operator++() noexcept {
+++m_elementsPointer;
+return *this;
+}
+
+[[nodiscard]] constexpr bool operator!=(const SetIterator& other) const noexcept {
+return m_elementsPointer != other.m_elementsPointer;
+}
+};
+
+[[nodiscard]] constexpr bool IsUniqueElement(const T& element) const noexcept {
+const auto endIt{m_elements.begin() + m_elementCount};
+for(auto it{m_elements.begin()}; it != endIt; ++it)
+if(AreEqualValues(element, *it))
+return false;
+return true;
+}
+
+template <typename F, typename E>
+[[nodiscard]] constexpr bool IsUniqueElementBy(F&& f, E&& element) const noexcept {
+const auto endIt{m_elements.begin() + m_elementCount};
+for(auto it{m_elements.begin()}; it != endIt; ++it)
+if(AreEqualValuesBy(std::forward<F>(f), std::forward<E>(element), *it))
+return false;
+return true;
 }
 
 public:
@@ -986,11 +1266,9 @@ using cljonic_collection_type = std::integral_constant<CljonicCollectionType, Cl
 using size_type = SizeType;
 using value_type = T;
 
-constexpr Set() noexcept : m_elementCount(0), m_elementDefault(T{}) {
-}
+constexpr Set() noexcept = default;
 
-constexpr explicit Set(const std::initializer_list<const T> elements) noexcept
-    : m_elementCount(0), m_elementDefault(T{}) {
+constexpr Set(const std::initializer_list<const T> elements) noexcept : m_elementCount(0), m_elementDefault(T{}) {
 
 for(const auto& element : elements) {
 if(m_elementCount == MaximumCount())
@@ -1000,46 +1278,51 @@ m_elements[m_elementCount++] = element;
 }
 }
 
-constexpr Set(const Set& other) = default;
-constexpr Set(Set&& other) = default;
+constexpr Set(const Set& other) noexcept = default;
+constexpr Set(Set&& other) noexcept = default;
 
-constexpr const T* begin() const noexcept {
-return m_elements;
-}
-
-constexpr const T* end() const noexcept {
-return m_elements + m_elementCount;
-}
-
-constexpr T operator[](const SizeType index) const noexcept override {
-return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
-}
-
-constexpr T operator()(const T& t) const noexcept {
+[[nodiscard]] constexpr T operator()(const T& t) const noexcept {
 return Contains(t) ? t : m_elementDefault;
 }
 
-[[nodiscard]] constexpr SizeType Count() const noexcept override {
+[[nodiscard]] constexpr bool operator==(const auto& other) const noexcept {
+return AreEqualValues(this, other);
+}
+
+[[nodiscard]] constexpr SetIterator begin() noexcept {
+return SetIterator{m_elements.data()};
+}
+
+[[nodiscard]] constexpr SetIterator end() noexcept {
+return SetIterator{m_elements.data() + m_elementCount};
+}
+
+[[nodiscard]] constexpr SetIterator begin() const noexcept {
+return SetIterator{m_elements.data()};
+}
+
+[[nodiscard]] constexpr SetIterator end() const noexcept {
+return SetIterator{m_elements.data() + m_elementCount};
+}
+
+[[nodiscard]] constexpr SizeType Count() const noexcept {
 return m_elementCount;
 }
 
-constexpr bool ContainsBy(const auto& f, const T& element) const noexcept {
-return not IsUniqueElementBy(f, element);
-}
-
-constexpr bool Contains(const T& element) const noexcept {
+[[nodiscard]] constexpr bool Contains(const T& element) const noexcept {
 return not IsUniqueElement(element);
 }
 
-constexpr int DefaultElement() const noexcept {
+template <typename F, typename E>
+[[nodiscard]] constexpr bool ContainsBy(F&& f, E&& element) const noexcept {
+return not IsUniqueElementBy(std::forward<F>(f), std::forward<E>(element));
+}
+
+[[nodiscard]] constexpr int DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
-constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override {
-return (index < m_elementCount) and Contains(element);
-}
-
-static constexpr SizeType MaximumCount() noexcept {
+[[nodiscard]] static constexpr SizeType MaximumCount() noexcept {
 return maximumElements;
 }
 };
@@ -1047,102 +1330,126 @@ return maximumElements;
 template <typename... Args>
 Set(Args...) -> Set<std::common_type_t<Args...>, sizeof...(Args)>;
 
+template <typename T = int>
+Set() -> Set<T, 0>;
+
 } // namespace cljonic
 
+#include <algorithm>
 #include <cstring>
 #include <initializer_list>
+#include <string_view>
 #include <type_traits>
 
 namespace cljonic {
 
 template <SizeType MaxElements>
-class String : public IndexInterface<char> {
-using Iterator = CollectionIterator<String>;
-
+class String {
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
 static_assert(maximumElements == MaxElements,
-              "Attempt to create a String bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT");
+              "Attempt to create a String bigger than CljonicCollectionMaximumElementCount");
 
-SizeType m_elementCount;
-const char m_elementDefault;
-char m_elements[maximumElements + 1]{};
+SizeType m_elementCount{0};
+static constexpr CharType m_elementDefault{'\0'};
+std::array<CharType, (maximumElements + 1)> m_elements{};
 
-constexpr auto ValueAtIndex(const SizeType index) const noexcept {
-return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+class StringIterator final {
+const CharType* m_elementsPointer;
+
+public:
+using value_type = CharType;
+
+constexpr explicit StringIterator(const CharType* elementsPointer) noexcept : m_elementsPointer{elementsPointer} {
 }
+
+[[nodiscard]] constexpr const CharType& operator*() const noexcept {
+return *m_elementsPointer;
+}
+
+constexpr StringIterator& operator++() noexcept {
+++m_elementsPointer;
+return *this;
+}
+
+[[nodiscard]] constexpr bool operator!=(const StringIterator& other) const noexcept {
+return m_elementsPointer != other.m_elementsPointer;
+}
+};
 
 public:
 using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>;
 using size_type = SizeType;
-using value_type = char;
+using value_type = CharType;
 
-constexpr String() noexcept : m_elementCount(0), m_elementDefault('\0') {
+constexpr String() noexcept : m_elementCount(0) {
 m_elements[0] = '\0';
 }
 
-constexpr explicit String(const std::initializer_list<const char> elements) noexcept
-    : m_elementCount(0), m_elementDefault('\0') {
-for(const auto& element : elements) {
-if(m_elementCount == MaximumCount())
-break;
-m_elements[m_elementCount++] = element;
-}
+constexpr String(const std::initializer_list<CharType>& init) noexcept
+    : m_elementCount{std::min(init.size(), maximumElements)} {
+std::copy(init.begin(), {init.begin() + m_elementCount}, m_elements.begin());
 m_elements[m_elementCount] = '\0';
 }
 
-constexpr explicit String(const char* c_str) noexcept : m_elementCount(0), m_elementDefault('\0') {
-while((m_elementCount < MaximumCount()) and ('\0' != c_str[m_elementCount])) {
-m_elements[m_elementCount] = c_str[m_elementCount];
-m_elementCount += 1;
-}
+constexpr explicit String(const CharType* str) noexcept
+    : m_elementCount{std::min(std::strlen(str), maximumElements)} {
+auto strView{std::string_view{str}};
+std::copy(strView.begin(), {strView.begin() + m_elementCount}, m_elements.begin());
 m_elements[m_elementCount] = '\0';
 }
 
-constexpr String(const String& other) = default;
-constexpr String(String&& other) = default;
+constexpr String(const String& other) noexcept = default;
+constexpr String(String&& other) noexcept = default;
 
-[[nodiscard]] constexpr Iterator begin() const noexcept {
-return Iterator{*this, 0};
+[[nodiscard]] constexpr bool operator==(const auto& other) const noexcept {
+return AreEqualValues(this, other);
 }
 
-[[nodiscard]] constexpr Iterator end() const noexcept {
-return Iterator{*this, m_elementCount};
+[[nodiscard]] constexpr StringIterator begin() noexcept {
+return StringIterator{m_elements.data()};
 }
 
-constexpr char operator[](const SizeType index) const noexcept override {
-return ValueAtIndex(index);
+[[nodiscard]] constexpr StringIterator end() noexcept {
+return StringIterator{m_elements.data() + m_elementCount};
 }
 
-constexpr char operator()(const SizeType index) const noexcept {
-return this->operator[](index);
+[[nodiscard]] constexpr StringIterator begin() const noexcept {
+return StringIterator{m_elements.data()};
 }
 
-[[nodiscard]] constexpr SizeType Count() const noexcept override {
+[[nodiscard]] constexpr StringIterator end() const noexcept {
+return StringIterator{m_elements.data() + m_elementCount};
+}
+
+[[nodiscard]] constexpr CharType operator()(const SizeType index) const noexcept {
+return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
+}
+
+[[nodiscard]] constexpr const CharType* c_str() const noexcept {
+return m_elements.data();
+}
+
+[[nodiscard]] constexpr SizeType Count() const noexcept {
 return m_elementCount;
 }
 
-constexpr char DefaultElement() const noexcept {
+[[nodiscard]] constexpr CharType DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
-constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const char& element) const noexcept override {
-return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
-}
-
-static constexpr SizeType MaximumCount() noexcept {
+[[nodiscard]] static constexpr SizeType MaximumCount() noexcept {
 return maximumElements;
 }
 };
 
 template <SizeType N>
-String(const char (&)[N]) -> String<N - 1>;
+String(const CharType (&)[N]) -> String<N - 1>;
 
 template <typename... Args>
 String(Args...) -> String<sizeof...(Args)>;
 
 } // namespace cljonic
-
 namespace cljonic {
 
 namespace core {
@@ -1191,13 +1498,13 @@ static_assert(AllCljonicCollections<C, Cs...>, "All Concat parameters must be cl
 static_assert(AllConvertibleValueTypes<C, Cs...>,
               "All Concat cljonic collection value types must be interconvertible");
 
-using ResultType = FindCommonValueType<C, Cs...>;
+using ResultType = CommonValueType<C, Cs...>;
 
 constexpr auto count{SumOfCljonicCollectionMaximumCounts<C, Cs...>()};
 auto result{Array<ResultType, count>{}};
 const auto MConjCollectionOntoResult = [&](const auto& c) {
-for(SizeType i{0}; i < c.Count(); ++i)
-MConj(result, static_cast<ResultType>(c[i]));
+for(const auto& v : c)
+MConj(result, static_cast<ResultType>(v));
 };
 (MConjCollectionOntoResult(c), ..., MConjCollectionOntoResult(cs));
 return result;
@@ -1227,8 +1534,8 @@ using ResultType = typename C::value_type;
 constexpr auto count{C::MaximumCount() + sizeof...(Es)};
 auto result{Array<ResultType, count>{}};
 const auto MConjElementOntoResult = [&](const auto& e) { MConj(result, e); };
-for(SizeType i{0}; i < c.Count(); ++i)
-MConjElementOntoResult(c[i]);
+for(const auto& e : c)
+MConjElementOntoResult(e);
 (MConjElementOntoResult(es), ...);
 return result;
 }
@@ -1256,94 +1563,29 @@ return c.Count();
 namespace cljonic {
 
 namespace core {
-
-template <typename C>
-class CycleCollection {
-using ElementType = typename C::value_type;
-
-C m_collection;
-
-[[nodiscard]] constexpr SizeType IndexToElementIndex(const SizeType index) const noexcept {
-return (0 == m_collection.Count()) ? 0 : (index % m_collection.Count());
-}
-
-class CycleIterator {
-const CycleCollection& m_cycle;
-SizeType m_index;
-
-public:
-constexpr CycleIterator(const CycleCollection& cycle, const SizeType index) noexcept
-    : m_cycle(cycle), m_index(index) {
-}
-
-constexpr auto operator*() const noexcept -> decltype(m_cycle[m_index]) {
-return m_cycle[m_cycle.IndexToElementIndex(m_index)];
-}
-
-constexpr CycleIterator& operator++() noexcept {
-++m_index;
-return *this;
-}
-
-constexpr bool operator!=(const CycleIterator& other) const noexcept {
-return m_index != other.m_index;
-}
-
-constexpr CycleIterator& operator+=(const int value) noexcept {
-m_index += value;
-return *this;
-}
-
-constexpr CycleIterator operator+(const int value) const noexcept {
-CycleIterator temp = *this;
-temp += value;
-return temp;
-}
-};
-
-public:
-using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Cycle>;
-using size_type = SizeType;
-using value_type = ElementType;
-
-constexpr explicit CycleCollection(const C& collection) : m_collection(collection) {
-}
-
-constexpr explicit CycleCollection(C&& collection) : m_collection(std::move(collection)) {
-}
-
-constexpr CycleCollection(const CycleCollection& other) = default;
-constexpr CycleCollection(CycleCollection&& other) = default;
-
-[[nodiscard]] constexpr CycleIterator begin() const noexcept {
-return CycleIterator(*this, 0);
-}
-
-[[nodiscard]] constexpr CycleIterator end() const noexcept {
-return CycleIterator(*this, MaximumCount());
-}
-
-[[nodiscard]] constexpr ElementType operator[](const SizeType index) const noexcept {
-return m_collection[IndexToElementIndex(index)];
-}
-
-[[nodiscard]] constexpr SizeType Count() const noexcept {
-return MaximumCount();
-}
-
-[[nodiscard]] constexpr ElementType& DefaultElement() const noexcept {
-return m_collection.DefaultElement();
-}
-
-[[nodiscard]] constexpr SizeType MaximumCount() const noexcept {
-return (0 == m_collection.Count()) ? 0 : CljonicCollectionMaximumElementCount;
-}
-};
 template <typename C>
 constexpr auto Cycle(const C& c) noexcept {
+
 static_assert(IsCljonicCollection<C>, "Cycle's parameter must be a cljonic collection");
 
-return CycleCollection{c};
+auto defaultElement{c.DefaultElement()};
+auto empty{0 == c.Count()};
+auto initialElement{empty ? defaultElement : *c.begin()};
+return Iterator{[collection = std::move(c), defaultElement, empty, initialized = false, it = c.begin()]([[maybe_unused]] const int _) mutable noexcept {
+                auto NextElement =
+                    [&, collectionBegin = collection.begin(), collectionEnd = collection.end()]() noexcept {
+                    if(not initialized) {
+                    it = collection.begin();
+                    initialized = true;
+                    }
+                    ++it;
+                    if(not(collectionEnd != it))
+                    it = collectionBegin;
+                    return *it;
+                    };
+                return empty ? defaultElement : NextElement();
+                },
+                initialElement};
 }
 
 }
@@ -1361,12 +1603,14 @@ static_assert((not std::floating_point<typename C::value_type>),
               "Dedupe should not compare cljonic floating point collection value types for equality. Consider "
               "using DedupeBy to override this default.");
 
-return DedupeBy([](const auto& a, const auto& b) { return AreEqual(a, b); }, c);
+return DedupeBy([](const auto& a, const auto& b) { return AreEqualValues(a, b); }, c);
 }
 
 }
 
 } // namespace cljonic::core
+
+#include <optional>
 
 namespace cljonic {
 
@@ -1380,93 +1624,19 @@ static_assert(IsBinaryPredicate<std::decay_t<F>, typename C::value_type, typenam
               "DedupeBy's function is not a valid binary predicate for the collection value type");
 
 using ValueType = typename C::value_type;
-
-constexpr auto IndexOfNextElementNotEqualToCurrentElement =
-    [](const F& fn, const C& collection, const SizeType currentIndex) {
-    auto currentElement{collection[currentIndex]};
-    auto i{currentIndex + 1};
-    while((i < collection.Count()) and fn(collection[i], currentElement))
-    ++i;
-    return i;
-    };
+using OptionalValueType = std::optional<ValueType>;
 
 auto result{Array<ValueType, c.MaximumCount()>{}};
-for(SizeType i{0}; i < c.Count();) {
-MConj(result, c[i]);
-i = IndexOfNextElementNotEqualToCurrentElement(f, c, i);
+auto lastValue{OptionalValueType{std::nullopt}};
+for(const auto& v : c) {
+if(not lastValue) {
+MConj(result, v);
+lastValue = v;
+} else if(not f(*lastValue, v)) {
+MConj(result, v);
+lastValue = v;
 }
-return result;
 }
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto DefaultElement(const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "DefaultElement's parameter must be a cljonic collection");
-
-return c.DefaultElement();
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto Drop(const SizeType count, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Drop's second parameter must be a cljonic collection");
-
-auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-for(SizeType i{count}; (i < c.Count()); ++i)
-MConj(result, c[i]);
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto DropLast(const SizeType count, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "DropLast's second parameter must be a cljonic collection");
-
-auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-auto endIndex{(count > c.Count()) ? 0 : (c.Count() - count)};
-for(SizeType i{0}; (i < endIndex); ++i)
-MConj(result, c[i]);
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename C>
-constexpr auto DropWhile(F&& f, const C& c) noexcept {
-
-static_assert(IsCljonicCollection<C>, "DropWhile's second parameter must be a cljonic collection");
-
-static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
-              "DropWhile's function is not a valid unary predicate for the collection value type");
-
-auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-auto conjElement(false);
-for(const auto& element : c)
-if(conjElement |= (not f(element)))
-MConj(result, element);
 return result;
 }
 
@@ -1495,10 +1665,12 @@ static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
               "Equal should not compare cljonic floating point collection value types for equality. Consider "
               "using EqualBy to override this default.");
 
-static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
+static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicNonSet<T, Ts...>,
               "Equal cljonic collection types are not all the same, or all Array, Range or Repeat types");
 
-return (AreEqual(t, ts) and ...);
+auto AllCountsEqual = [](const auto tCount, const auto&... ts) { return ((ts.Count() == tCount) and ...); };
+auto AllValuesEqual = [](const auto& t, const auto&... ts) { return (AreEqualValues(t, ts) and ...); };
+return AllCountsEqual(t.Count(), ts...) and AllValuesEqual(t, ts...);
 } else {
 static_assert(not AnyFloatingPointTypes<T, Ts...>,
               "Equal should not compare floating point types for equality. Consider using EqualBy to override "
@@ -1506,7 +1678,7 @@ static_assert(not AnyFloatingPointTypes<T, Ts...>,
 
 static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all Equal types are equality comparable");
 
-return (AreEqual(t, ts) and ...);
+return (AreEqualValues(t, ts) and ...);
 }
 }
 
@@ -1523,235 +1695,24 @@ constexpr auto EqualBy(F&& f, const T& t, const Ts&... ts) noexcept {
 if constexpr(sizeof...(Ts) <= 0) {
 return true;
 } else if constexpr(AllCljonicCollections<T, Ts...>) {
-static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
+static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicNonSet<T, Ts...>,
               "EqualBy cljonic collection types are not all the same, or all Array, Range or Repeat types");
 
 static_assert(IsBinaryPredicateForAllCljonicCollections<std::decay_t<F>, T, Ts...>,
               "EqualBy function is not a valid binary predicate for all cljonic collection value types");
 
-return (AreEqualBy(f, t, ts) and ...);
+auto AllCountsEqual = [](const auto tCount, const auto&... ts) { return ((ts.Count() == tCount) and ...); };
+auto AllValuesEqualBy = [](F&& f, const auto& t, const auto&... ts) { return (AreEqualValuesBy(f, t, ts) and ...); };
+
+return AllCountsEqual(t.Count(), ts...) and AllValuesEqualBy(f, t, ts...);
 } else {
 static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all EqualBy types are equality comparable");
 
 static_assert(IsBinaryPredicateForAll<F, T, Ts...>,
               "EqualBy function is not a valid binary predicate for all parameters");
 
-return (AreEqualBy(f, t, ts) and ...);
+return (AreEqualValuesBy(f, t, ts) and ...);
 }
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename C>
-constexpr auto Every(F&& f, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Every's second parameter must be a cljonic collection");
-
-static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
-              "Every's function is not a valid unary predicate for the collection value type");
-
-auto result{true};
-for(SizeType i{0}; (result and (i < c.Count())); ++i)
-result = f(c[i]);
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename C>
-constexpr auto Filter(F&& f, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Filter's second parameter must be a cljonic collection");
-
-static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
-              "Filter's function is not a valid unary predicate for the collection value type");
-
-auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-for(const auto& element : c)
-if(f(element))
-MConj(result, element);
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto First(const C& coll) noexcept {
-static_assert(IsCljonicCollection<C>, "First's parameter must be a cljonic collection");
-
-return coll[0];
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename T, typename... Ts>
-constexpr auto Identical(const T& t, const Ts&... ts) noexcept {
-if constexpr(sizeof...(Ts) <= 0) {
-return true;
-} else {
-auto SameIdentity = [&](const auto& t1, const auto& t2) { return Identity(t1) == Identity(t2); };
-return (SameIdentity(t, ts) and ...);
-}
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename T>
-constexpr void* Identity(const T& t) noexcept {
-return (void*)&t;
-}
-
-}
-
-} // namespace cljonic::core
-
-#include <limits>
-
-namespace cljonic {
-
-namespace core {
-template <typename T>
-constexpr auto Inc(const T t) noexcept {
-static_assert(IsArithmetic<T>, "Inc's parameter must be an arithmetic type");
-
-return (std::numeric_limits<T>::max() == t) ? t : (t + 1);
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C, typename T>
-constexpr auto IndexOf(const C& c, const T& t) noexcept {
-
-static_assert(IsCljonicCollection<C>, "IndexOf's first parameter must be a cljonic collection");
-
-static_assert((not std::floating_point<typename C::value_type>) and (not std::floating_point<T>),
-              "IndexOf should not compare floating point types for equality. Consider using IndexOfBy to override "
-              "this default.");
-
-static_assert(std::convertible_to<T, typename C::value_type>,
-              "IndexOf's second parameter must be convertible to the collection value type");
-
-auto result{CLJONIC_INVALID_INDEX};
-for(SizeType i{0}; ((CLJONIC_INVALID_INDEX == result) and (i < c.Count())); ++i)
-if(AreEqual(c[i], t))
-result = i;
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename C, typename T>
-constexpr auto IndexOfBy(F&& f, const C& c, const T& t) noexcept {
-
-static_assert(IsCljonicCollection<C>, "IndexOfBy's second parameter must be a cljonic collection");
-
-static_assert(IsBinaryPredicate<std::decay_t<F>, typename C::value_type, typename C::value_type>,
-              "IndexOfBy's function is not a valid binary predicate for the collection value type");
-
-static_assert(std::convertible_to<T, typename C::value_type>,
-              "IndexOfBy's third parameter must be convertible to the collection value type");
-
-auto result{CLJONIC_INVALID_INDEX};
-for(SizeType i{0}; ((CLJONIC_INVALID_INDEX == result) and (i < c.Count())); ++i)
-if(f(c[i], t))
-result = i;
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-#include <concepts>
-
-namespace cljonic {
-
-namespace core {
-template <typename C, typename... Cs>
-constexpr auto Interleave(const C& c, const Cs&... cs) noexcept {
-
-static_assert(AllCljonicCollections<C, Cs...>, "Interleave's parameters must all be cljonic collections");
-
-static_assert(AllConvertibleValueTypes<C, Cs...>,
-              "All Interleave cljonic collection value types must be interconvertible");
-
-constexpr auto minimumCollectionCount{MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()};
-constexpr auto collectionsCount{sizeof...(Cs) + 1};
-constexpr auto resultCount{minimumCollectionCount * collectionsCount};
-auto result{Array<FindCommonValueType<C, Cs...>, resultCount>{}};
-for(SizeType i{0}; i < minimumCollectionCount; ++i) {
-MConj(result, c[i]);
-(MConj(result, cs[i]), ...);
-}
-return result;
-}
-
-constexpr auto Interleave() noexcept {
-return Array<int, 0>{};
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename T, typename C>
-constexpr auto Interpose(const T& t, const C& c) noexcept {
-
-static_assert(IsCljonicCollection<C>, "Interpose's second parameter must be a cljonic collection");
-
-static_assert(std::convertible_to<T, typename C::value_type>,
-              "Interpose's first parameter must be convertible to cljonic collection value type");
-
-using ResultType = typename C::value_type;
-constexpr auto collectionMaximumCount{c.MaximumCount()};
-constexpr auto resultMaximumCount{(2 * collectionMaximumCount) - 1};
-auto interposeValue{static_cast<ResultType>(t)};
-auto result{Array<ResultType, resultMaximumCount>{}};
-for(SizeType i{0}; i < collectionMaximumCount; ++i) {
-MConj(result, c[i]);
-MConj(result, interposeValue);
-}
-return result;
-}
-
-constexpr auto Interpose() noexcept {
-return Array<int, 0>{};
 }
 
 }
@@ -1763,444 +1724,35 @@ return Array<int, 0>{};
 namespace cljonic {
 
 namespace core {
+
+template <typename T, typename... Ts>
+constexpr auto InnerIsDistinct(const T& t, const Ts&... ts) noexcept {
+if constexpr(sizeof...(Ts) == 0) {
+return true;
+} else {
+return ((not AreEqualValues(t, ts)) and ... and (InnerIsDistinct(ts...)));
+}
+}
 template <typename T, typename... Ts>
 constexpr auto IsDistinct(const T& t, const Ts&... ts) noexcept {
 
 if constexpr(sizeof...(Ts) == 0) {
+if constexpr(IsNotCljonicCollection<T> or IsCljonicSet<T>) {
 return true;
 } else {
-if constexpr(AllCljonicCollections<T, Ts...>) {
-static_assert(not AnyFloatingPointValueTypes<T, Ts...>,
-              "IsDistinct should not compare cljonic floating point collection value types for "
-              "equality. Consider using IsDistinctBy to override this default.");
+static_assert(not std::floating_point<typename T::value_type>,
+              "IsDistinct should not compare cljonic floating point collection value types for equality. "
+              "Consider using IsDistinctBy to override this default.");
 
-static_assert(
-    AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
-    "IsDistinct cljonic collection types are not all the same, or all Array, Range or Repeat types");
-
-constexpr auto IndexInterfacesEqual = [](const auto& t, const auto& u) noexcept {
-if(&t == &u)
-return true;
-if(t.Count() != u.Count())
-return false;
-for(SizeType i{0}; i < t.Count(); ++i)
-if(not t.ElementAtIndexIsEqualToElement(i, u[i]))
-return false;
-return true;
-};
-using I = const IndexInterface<typename T::value_type>*;
-constexpr auto n{sizeof...(Ts) + 1};
-const auto i{std::array<I, n>{static_cast<I>(&t), static_cast<I>(&ts)...}};
-for(SizeType j{0}; j < n; ++j)
-for(SizeType k{j + 1}; k < n; ++k)
-if(IndexInterfacesEqual(*i[j], *i[k]))
-return false;
-return true;
+return AreUniqueValues<decltype(t.begin()), T::MaximumCount()>(t.begin(), t.end());
+}
 } else {
-static_assert(not AnyFloatingPointTypes<T, Ts...>,
-              "IsDistinct should not compare floating point types for equality. Consider using "
-              "IsDistinctBy to override this default.");
-
-static_assert(AllEqualityComparableTypes<T, Ts...>, "Not all IsDistinct types are equality comparable");
-
-return (not AreEqual(t, ts) and ...);
-}
-}
-}
-
-}
-
-} // namespace cljonic::core
-
-#include <array>
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename T, typename... Ts>
-constexpr auto IsDistinctBy(F&& f, const T& t, const Ts&... ts) noexcept {
-
-if constexpr(sizeof...(Ts) == 0) {
-return true;
-} else {
-if constexpr(AllCljonicCollections<T, Ts...>) {
-static_assert(
-    AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
-    "IsDistinctBy cljonic collection types are not all the same, or all Array, Range or Repeat types");
-
-static_assert(
-    IsBinaryPredicateForAllCljonicCollections<std::decay_t<F>, T, Ts...>,
-    "IsDistinctBy function is not a valid binary predicate for all cljonic collection value types");
-
-constexpr auto IndexInterfacesEqualBy = [](auto&& f, const auto& t, const auto& u) noexcept {
-if(&t == &u)
-return true;
-if(t.Count() != u.Count())
-return false;
-if constexpr(IsCljonicSet<T>) {
-constexpr auto ContainsBy = [](auto&& f, const auto& setIndex, const auto& element) noexcept {
-auto result{false};
-for(SizeType i{0}; ((not result) and (i < setIndex.Count())); ++i)
-result = f(setIndex[i], element);
-return result;
-};
-for(SizeType i{0}; i < t.Count(); ++i)
-if(not ContainsBy(f, t, u[i]))
-return false;
-return true;
-} else {
-for(SizeType i{0}; i < t.Count(); ++i)
-if(not f(t[i], u[i]))
-return false;
-return true;
-}
-};
-using I = const IndexInterface<typename T::value_type>*;
-constexpr auto n{sizeof...(Ts) + 1};
-const auto i{std::array<I, n>{static_cast<I>(&t), static_cast<I>(&ts)...}};
-for(SizeType j{0}; j < n; ++j)
-for(SizeType k{j + 1}; k < n; ++k)
-if(IndexInterfacesEqualBy(std::forward<F>(f), *i[j], *i[k]))
-return false;
-return true;
-} else {
-static_assert(IsBinaryPredicateForAll<std::decay_t<F>, T, Ts...>,
-              "IsDistinctBy function is not a valid binary predicate for all parameters");
-
-return ((f(t, ts) == false) and ...) and IsDistinctBy(std::forward<F>(f), ts...);
-}
-}
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto IsEmpty(const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "IsEmpty's parameter must be a cljonic collection");
-
-return 0 == c.Count();
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto IsFull(const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "IsFull's parameter must be a cljonic collection");
-
-return c.Count() == c.MaximumCount();
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename T>
-constexpr auto Iterate(F&& f, const T& t) noexcept {
-static_assert(IsUnaryFunction<F, T>, "Iterate's first parameter is not a unary function of its second parameter");
-
-return Iterator{std::forward<F>(f), t};
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto Last(const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Last's parameter must be a cljonic collection");
-
-return c[(c.Count() > 0) ? (c.Count() - 1) : 0];
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C, typename T>
-constexpr auto LastIndexOf(const C& c, const T& t) noexcept {
-
-static_assert(IsCljonicCollection<C>, "LastIndexOf's first parameter must be a cljonic collection");
-
-static_assert(std::equality_comparable_with<typename C::value_type, T>,
-              "LastIndexOf's second parameter is not equality comparable with the cljonic collection values");
-
-static_assert(not std::floating_point<typename C::value_type>,
-              "LastIndexOf should not compare floating point types for equality. Consider using LastIndexOfBy to "
+static_assert(not AnyFloatingPointOrFloatingPointValueType<T, Ts...>,
+              "IsDistinct should not compare floating point types for equality. Consider using IsDistinctBy to "
               "override this default.");
 
-static_assert(not std::floating_point<T>,
-              "LastIndexOf should not compare floating point types for equality. Consider using LastIndexOfBy to "
-              "override this default.");
-
-auto result{CLJONIC_INVALID_INDEX};
-for(SizeType nextIndex{c.Count()}; ((CLJONIC_INVALID_INDEX == result) and (nextIndex > 0)); --nextIndex)
-if(AreEqual(c[nextIndex - 1], t))
-result = nextIndex - 1;
-return result;
+return InnerIsDistinct(t, ts...);
 }
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename C, typename T>
-constexpr auto LastIndexOfBy(F&& f, const C& c, const T& t) noexcept {
-
-static_assert(IsCljonicCollection<C>, "LastIndexOfBy's second parameter must be a cljonic collection");
-
-static_assert(std::equality_comparable_with<typename C::value_type, T>,
-              "LastIndexOfBy's third parameter is not equality comparable with the cljonic collection values");
-
-static_assert(IsBinaryPredicate<F, typename C::value_type, T>,
-              "LastIndexOfBy's first parameter is not a valid binary predicate for the collection value type");
-
-auto result{CLJONIC_INVALID_INDEX};
-for(SizeType nextIndex{c.Count()}; ((CLJONIC_INVALID_INDEX == result) and (nextIndex > 0)); --nextIndex)
-if(f(c[nextIndex - 1], t))
-result = nextIndex - 1;
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-#include <concepts>
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename C, typename... Cs>
-constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept {
-
-static_assert(AllCljonicCollections<C, Cs...>, "Map's second through last parameters must be cljonic collections");
-
-static_assert(std::invocable<F, typename C::value_type, typename Cs::value_type...>,
-              "Map's function cannot be called with values from the specified cljonic collections");
-
-using ResultType = decltype(f(std::declval<typename C::value_type>(), std::declval<typename Cs::value_type>()...));
-
-constexpr auto count{MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()};
-auto result{Array<ResultType, count>{}};
-for(SizeType i{0}; i < c.Count(); ++i)
-MConj(result, f(c[i], cs[i]...));
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename T, typename... Ts>
-constexpr auto Max(const T& t, const Ts&... ts) noexcept {
-
-if constexpr(sizeof...(Ts) == 0) {
-static_assert(IsCljonicCollection<T>, "Max's parameter must be a cljonic collection");
-
-auto result{t.DefaultElement()};
-if(t.Count() > 0) {
-result = t[0];
-for(SizeType i{1}; i < t.Count(); ++i)
-if(result < t[i])
-result = t[i];
-}
-return result;
-} else {
-static_assert(AllNotCljonicCollections<T, Ts...>, "None of Max's parameters can be cljonic collections");
-
-auto result{t};
-(..., (void)((result < ts) ? result = ts : result));
-return result;
-}
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename T, typename... Ts>
-constexpr auto MaxBy(F&& f, const T& t, const Ts&... ts) noexcept {
-
-if constexpr(sizeof...(Ts) == 0) {
-static_assert(IsCljonicCollection<T>, "MaxBy's second parameter must be a cljonic collection");
-
-static_assert(IsBinaryPredicate<F, typename T::value_type, typename T::value_type>,
-              "MaxBy function is not a valid binary predicate for the collection value type");
-
-auto result{t.DefaultElement()};
-if(t.Count() > 0) {
-result = t[0];
-for(SizeType i{1}; i < t.Count(); ++i)
-if(f(result, t[i]))
-result = t[i];
-}
-return result;
-} else {
-static_assert(AllNotCljonicCollections<T, Ts...>,
-              "None of MaxBy's second through last parameters can be cljonic collections");
-
-static_assert(IsBinaryPredicate<F, T, T>,
-              "MaxBy function is not a valid binary predicate for the collection value type");
-
-auto result{t};
-(..., (void)(f(result, ts) ? result = ts : result));
-return result;
-}
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename T, typename... Ts>
-constexpr auto Min(const T& t, const Ts&... ts) noexcept {
-
-if constexpr(sizeof...(Ts) == 0) {
-static_assert(IsCljonicCollection<T>, "Min's parameter must be a cljonic collection");
-
-auto result{t.DefaultElement()};
-if(t.Count() > 0) {
-result = t[0];
-for(SizeType i{1}; i < t.Count(); ++i)
-if(t[i] < result)
-result = t[i];
-}
-return result;
-} else {
-static_assert(AllNotCljonicCollections<T, Ts...>, "None of Min's parameters can be cljonic collections");
-
-auto result{t};
-(..., (void)((ts < result) ? result = ts : result));
-return result;
-}
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename T, typename... Ts>
-constexpr auto MinBy(F&& f, const T& t, const Ts&... ts) noexcept {
-
-if constexpr(sizeof...(Ts) == 0) {
-static_assert(IsCljonicCollection<T>, "MinBy's second parameter must be a cljonic collection");
-
-static_assert(IsBinaryPredicate<F, typename T::value_type, typename T::value_type>,
-              "MinBy function is not a valid binary predicate for the collection value type");
-
-auto result{t.DefaultElement()};
-if(t.Count() > 0) {
-result = t[0];
-for(SizeType i{1}; i < t.Count(); ++i)
-if(not f(result, t[i]))
-result = t[i];
-}
-return result;
-} else {
-static_assert(AllNotCljonicCollections<T, Ts...>,
-              "None of MinBy's second through last parameters can be cljonic collections");
-
-static_assert(IsBinaryPredicate<F, T, T>,
-              "MinBy function is not a valid binary predicate for the collection value type");
-
-auto result{t};
-(..., (void)((not f(result, ts)) ? result = ts : result));
-return result;
-}
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename C>
-constexpr auto NotAny(F&& f, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "NotAny's second parameter must be a cljonic collection");
-
-static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
-              "NotAny's function is not a valid unary predicate for the collection value type");
-
-return (c.Count() == 0) or (not Some(std::forward<F>(f), c));
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename C>
-constexpr auto NotEvery(F&& f, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "NotEvery's second parameter must be a cljonic collection");
-
-static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
-              "NotEvery's function is not a valid unary predicate for the collection value type");
-
-return (c.Count() != 0) and (not Every(std::forward<F>(f), c));
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto Nth(const C& c, const SizeType index) noexcept {
-static_assert(IsCljonicCollection<C> and (not IsCljonicSet<C>),
-              "Nth's first parameter must be a cljonic collection other than a Set");
-
-return c[index];
-}
-
-template <typename C, typename T>
-constexpr auto Nth(const C& c, const SizeType index, const T& t) noexcept {
-static_assert(IsCljonicCollection<C> and (not IsCljonicSet<C>),
-              "Nth's first parameter must be a cljonic collection other than a Set");
-
-static_assert(std::same_as<typename C::value_type, T>,
-              "Nth's third parameter must have the same type as the values in the first parameter");
-
-return (index < c.Count()) ? c[index] : t;
 }
 
 }
@@ -2212,390 +1764,31 @@ return (index < c.Count()) ? c[index] : t;
 namespace cljonic {
 
 namespace core {
-template <typename F, typename... Args>
-constexpr auto Partial(F&& f, Args&&... args) noexcept {
-return [f = std::forward<F>(f), ... args = std::forward<Args>(args)](auto&&... rest) {
-static_assert(std::regular_invocable<F, Args..., decltype(rest)...>,
-              "Partial's function cannot be called with the specified arguments");
 
-return f(args..., std::forward<decltype(rest)>(rest)...);
-};
-}
-
-}
-
-} // namespace cljonic::core
-
-#include <numeric>
-#include <tuple>
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename C>
-constexpr auto Reduce(F&& f, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Reduce's second parameter must be a cljonic collection");
-
-static_assert(std::regular_invocable<F, typename C::value_type, typename C::value_type>,
-              "Reduce's function cannot be called with two parameters of the collection value type");
-
-using ResultType = std::invoke_result_t<F, typename C::value_type, typename C::value_type>;
-static_assert(
-    std::regular_invocable<F, ResultType, typename C::value_type>,
-    "Reduce's function cannot be called with parameters of function result type, and collection value type");
-
-return (0 == c.Count()) ? c.DefaultElement()
-                        : std::accumulate((c.begin() + 1), c.end(), *c.begin(), std::forward<F>(f));
-}
-
-template <typename F, typename T, typename C>
-constexpr auto Reduce(F&& f, const T& t, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Reduce's third parameter must be a cljonic collection");
-
-static_assert(
-    std::regular_invocable<F, T, typename C::value_type>,
-    "Reduce's function cannot be called with parameters of initial value type, and collection value type");
-
-using ResultType = std::invoke_result_t<F, T, typename C::value_type>;
-static_assert(
-    std::regular_invocable<F, ResultType, typename C::value_type>,
-    "Reduce's function cannot be called with parameters of function result type, and collection value type");
-
-return (0 == c.Count()) ? t : std::accumulate(c.begin(), c.end(), t, std::forward<F>(f));
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename C>
-constexpr auto Remove(F&& f, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Remove's second parameter must be a cljonic collection");
-
-static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
-              "Remove's function is not a valid unary predicate for the collection value type");
-
-auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-for(const auto& element : c)
-if(not f(element))
-MConj(result, element);
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-#include <concepts>
-
-namespace cljonic {
-
-namespace core {
-template <typename C1, typename C2>
-constexpr auto Replace(const C1& c1, const C2& c2) noexcept {
-
-static_assert(IsCljonicCollection<C1>, "Replace's first parameter must be a cljonic collection");
-
-static_assert(IsCljonicCollection<C2>, "Replace's second parameter must be a cljonic collection");
-
-static_assert(IsConvertibleToIntegral<typename C2::value_type>,
-              "Replace's second parameter value type must be convertible to an integral");
-
-static_assert(std::convertible_to<typename C2::value_type, typename C1::value_type>,
-              "Replace's second parameter value type must be convertible to the first parameter value type");
-
-auto result{Array<typename C1::value_type, c2.MaximumCount()>{}};
-for(SizeType i{0}; i < c2.Count(); ++i)
-MConj(result, ((c2[i] >= 0) and (static_cast<SizeType>(c2[i]) < c1.Count())) ? c1[c2[i]] : c2[i]);
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto Reverse(const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Reverse's parameter must be a cljonic collection");
-
-auto result{Array<typename C::value_type, C::MaximumCount()>{}};
-for(SizeType i{c.Count()}; i != 0; --i)
-MConj(result, c[i - 1]);
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto Second(const C& coll) noexcept {
-static_assert(IsCljonicCollection<C>, "Second's parameter must be a cljonic collection");
-
-return coll[1];
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto Seq(const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Seq's parameter must be a cljonic collection");
-
-return Take(c.MaximumCount(), c);
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto Size(const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Size's parameter must be a cljonic collection");
-
-return c.MaximumCount();
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename C>
-constexpr auto Some(F&& f, const C& c) noexcept {
-
-static_assert(IsCljonicCollection<C>, "Some's second parameter must be a cljonic collection");
-
-static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
-              "Some's function is not a valid unary predicate for the collection value type");
-
-for(const auto& i : c)
-if(f(i))
+template <typename F, typename T, typename... Ts>
+constexpr auto InnerIsDistinctBy(F&& f, const T& t, const Ts&... ts) noexcept {
+if constexpr(sizeof...(Ts) == 0) {
 return true;
-return false;
+} else {
+return ((not AreEqualValuesBy(std::forward<F>(f), t, ts)) and ... and
+        (InnerIsDistinctBy(std::forward<F>(f), ts...)));
 }
-
 }
+template <typename F, typename T, typename... Ts>
+constexpr auto IsDistinctBy(F&& f, const T& t, const Ts&... ts) noexcept {
 
-} // namespace cljonic::core
+if constexpr(sizeof...(Ts) == 0) {
+if constexpr(IsNotCljonicCollection<T> or IsCljonicSet<T>) {
+return true;
+} else {
+static_assert(IsBinaryPredicate<std::decay_t<F>, typename T::value_type, typename T::value_type>,
+              "IsDistinctBy function is not a valid binary predicate for cljonic collection value type");
 
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto Sort(const C& c) noexcept {
-
-static_assert(IsCljonicCollection<C>, "Sort's parameter must be a cljonic collection");
-
-auto result{Seq(c)};
-for(SizeType i{1}; i < result.Count(); ++i) {
-auto key = result[i];
-SizeType j = i;
-while((j > 0) and FirstLessThanSecond(key, result[j - 1])) {
-MSet(result, result[j - 1], j);
---j;
+return AreUniqueValuesBy<F, decltype(t.begin()), T::MaximumCount()>(std::forward<F>(f), t.begin(), t.end());
 }
-MSet(result, key, j);
+} else {
+return InnerIsDistinctBy(std::forward<F>(f), t, ts...);
 }
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename C>
-constexpr auto SortBy(F&& f, const C& c) noexcept {
-
-static_assert(IsCljonicCollection<C>, "SortBy's second parameter must be a cljonic collection");
-
-static_assert(IsBinaryPredicate<std::decay_t<F>, typename C::value_type, typename C::value_type>,
-              "SortBy's function is not a valid binary predicate for the collection value type");
-
-auto result{Seq(c)};
-for(SizeType i{1}; i < result.Count(); ++i) {
-auto key = result[i];
-SizeType j = i;
-while((j > 0) and f(key, result[j - 1])) {
-MSet(result, result[j - 1], j);
---j;
-}
-MSet(result, key, j);
-}
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-#include <tuple>
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto SplitAt(const SizeType count, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "SplitAt's second parameter must be a cljonic collection");
-
-return Array{Take(count, c), Drop(count, c)};
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename C>
-constexpr auto SplitWith(F&& f, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "SplitWith's second parameter must be a cljonic collection");
-
-static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
-              "SplitWith's function is not a valid unary predicate for the collection value type");
-
-const auto firstArray{TakeWhile(f, c)};
-const auto secondArray{Drop(firstArray.Count(), c)};
-return Array{firstArray, secondArray};
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto Subs(const C& c, const SizeType start, const SizeType end) noexcept {
-static_assert(IsCljonicCollection<C>, "Subs's first parameter must be a cljonic collection");
-
-return ((c.Count() == 0) or (start >= c.Count()) or (end <= start))
-           ? Array<typename C::value_type, c.MaximumCount()>{}
-           : Take((end - start), Drop(start, c));
-}
-
-template <typename C>
-constexpr auto Subs(const C& c, const SizeType start) noexcept {
-static_assert(IsCljonicCollection<C>, "Subs's first parameter must be a cljonic collection");
-
-return Subs(c, start, c.Count());
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto Take(const SizeType count, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "Take's second parameter must be a cljonic collection");
-
-auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-auto maxIndex{MinArgument(count, c.Count())};
-for(SizeType i{0}; (i < maxIndex); ++i)
-MConj(result, c[i]);
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto TakeLast(const SizeType count, const C& c) noexcept {
-static_assert(IsCljonicCollection<C>, "TakeLast's second parameter must be a cljonic collection");
-
-auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-auto startIndex{(c.Count() > count) ? (c.Count() - count) : 0};
-for(SizeType i{startIndex}; (i < c.Count()); ++i)
-MConj(result, c[i]);
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename C>
-constexpr auto TakeNth(const SizeType nth, const C& c) noexcept {
-
-static_assert(IsCljonicCollection<C>, "TakeNth's second parameter must be a cljonic collection");
-
-using ResultType = Array<typename C::value_type, c.MaximumCount()>;
-using ValueType = typename C::value_type;
-
-constexpr auto FillArray = [](ResultType& r, const ValueType& v) noexcept {
-for(SizeType i{0}; i < r.MaximumCount(); ++i)
-MConj(r, v);
-};
-constexpr auto FillArrayNth = [](ResultType& r, const C& vArray, const SizeType nth) noexcept {
-auto i{SizeType{0}};
-while(i < vArray.Count()) {
-MConj(r, vArray[i]);
-i += nth;
-}
-};
-auto result{ResultType{}};
-if((c.Count() > 0) and (0 == nth))
-FillArray(result, c[0]);
-else if(c.Count() > 0)
-FillArrayNth(result, c, nth);
-return result;
-}
-
-}
-
-} // namespace cljonic::core
-
-namespace cljonic {
-
-namespace core {
-template <typename F, typename C>
-constexpr auto TakeWhile(F&& f, const C& c) noexcept {
-
-static_assert(IsCljonicCollection<C>, "TakeWhile's second parameter must be a cljonic collection");
-
-static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
-              "TakeWhile's function is not a valid unary predicate for the collection value type");
-
-auto result{Array<typename C::value_type, c.MaximumCount()>{}};
-for(const auto& element : c)
-if(f(element))
-MConj(result, element);
-else
-break;
-return result;
 }
 
 }

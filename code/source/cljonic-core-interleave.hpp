@@ -60,7 +60,7 @@ constexpr auto Interleave(const C& c, const Cs&... cs) noexcept
     constexpr auto minimumCollectionCount{MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()};
     constexpr auto collectionsCount{sizeof...(Cs) + 1};
     constexpr auto resultCount{minimumCollectionCount * collectionsCount};
-    auto result{Array<FindCommonValueType<C, Cs...>, resultCount>{}};
+    auto result{Array<CommonValueType<C, Cs...>, resultCount>{}};
     for (SizeType i{0}; i < minimumCollectionCount; ++i)
     {
         MConj(result, c[i]);

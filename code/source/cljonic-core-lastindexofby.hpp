@@ -15,7 +15,7 @@ namespace core
 * \b collection, for which its first parameter, which must be a \b binary \b predicate, returns true when called with
 * an element of its first parameter and its third parameter. If its first parameter is never called because its second
 * parameter is empty, or its first parameter never returns true, \b LastIndexOfBy returns the value
-* \b CLJONIC_INVALID_INDEX.
+* \b CljonicInvalidIndex.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -32,7 +32,7 @@ int main()
     constexpr auto b{Array{11}};
     constexpr auto lastIndexOfByB{LastIndexOfBy(EBF, b, 11)}; // 0
 
-    constexpr auto lastIndexOfByRng{LastIndexOfBy(EBF, Range<0>{}, 3)};           // CLJONIC_INVALID_INDEX
+    constexpr auto lastIndexOfByRng{LastIndexOfBy(EBF, Range<0>{}, 3)};           // CljonicInvalidIndex
     constexpr auto lastIndexOfByRpt{LastIndexOfBy(EBF, Repeat<4, int>{11}, 11)};  // 3
     constexpr auto lastIndexOfBySet{LastIndexOfBy(EBF, Set{11, 14, 13, 14}, 13)}; // 2
     constexpr auto lastIndexOfByStr{LastIndexOfBy(EBF, String{"adcb"}, 'c')};     // 2
@@ -66,8 +66,8 @@ constexpr auto LastIndexOfBy(F&& f, const C& c, const T& t) noexcept
     static_assert(IsBinaryPredicate<F, typename C::value_type, T>,
                   "LastIndexOfBy's first parameter is not a valid binary predicate for the collection value type");
 
-    auto result{CLJONIC_INVALID_INDEX};
-    for (SizeType nextIndex{c.Count()}; ((CLJONIC_INVALID_INDEX == result) and (nextIndex > 0)); --nextIndex)
+    auto result{CljonicInvalidIndex};
+    for (SizeType nextIndex{c.Count()}; ((CljonicInvalidIndex == result) and (nextIndex > 0)); --nextIndex)
         if (f(c[nextIndex - 1], t))
             result = nextIndex - 1;
     return result;

@@ -1,5 +1,7 @@
 #include <string>
 #include "catch.hpp"
+#include "no-heap.hpp"
+#include "cljonic_catch.hpp"
 #include "cljonic-core-compose.hpp"
 
 using namespace cljonic;
@@ -37,8 +39,10 @@ const char* StrDouble(double x) noexcept
 
 SCENARIO("Compose", "[CljonicCoreCompose]")
 {
+    EnableNoHeapMessagePrinting();
+
     constexpr auto f1{Compose(StrDouble, Add1p7, Mult2, Div3, AddXY)};
-    CHECK(std::string{"897.700000"} == f1(234, 1111));
+    CHECK_CLJONIC(std::string{"897.700000"} == f1(234, 1111));
 
     constexpr auto f2{Compose(
         StrDouble,
@@ -46,7 +50,7 @@ SCENARIO("Compose", "[CljonicCoreCompose]")
         Mult2,
         [](const int x) noexcept { return std::make_tuple(x, 3); },
         AddXY)};
-    CHECK(std::string{"897.700000"} == f2(234, 1111));
+    CHECK_CLJONIC(std::string{"897.700000"} == f2(234, 1111));
 
     constexpr auto f3{Compose(
         [](const std::tuple<const int, const int>& x) noexcept
@@ -56,5 +60,7 @@ SCENARIO("Compose", "[CljonicCoreCompose]")
         },
         [](const int x) noexcept { return std::make_tuple(x, 3); },
         [](const int x, const int y) noexcept { return x + y; })};
-    CHECK(896 == f3(234, 1111));
+    CHECK_CLJONIC(896 == f3(234, 1111));
+
+    DisableNoHeapMessagePrinting();
 }

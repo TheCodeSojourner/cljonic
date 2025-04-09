@@ -1,6 +1,9 @@
 #include <limits>
 #include "catch.hpp"
+#include "no-heap.hpp"
+#include "cljonic_catch.hpp"
 #include "cljonic-array.hpp"
+#include "cljonic-iterator.hpp"
 #include "cljonic-range.hpp"
 #include "cljonic-repeat.hpp"
 #include "cljonic-set.hpp"
@@ -12,149 +15,277 @@ using namespace cljonic::core;
 
 SCENARIO("Cycle", "[CljonicCoreCycle]")
 {
-    constexpr auto a{Array{11, 12, 13, 14}};
-    constexpr auto c{Cycle(a)};
-    auto MAX_SIZE_T{CljonicCollectionMaximumElementCount};
+    EnableNoHeapMessagePrinting();
+    {
+        const auto a{Array<int, 4>{11, 12, 13, 14}};
+        const auto c{Cycle(a)};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC(11 == *it);
+        ++it;
+        CHECK_CLJONIC(12 == *it);
+        ++it;
+        CHECK_CLJONIC(13 == *it);
+        ++it;
+        CHECK_CLJONIC(14 == *it);
+        ++it;
+        CHECK_CLJONIC(11 == *it);
+    }
 
-    constexpr auto cycleA0{Cycle(a)};
-    CHECK(MAX_SIZE_T == cycleA0.Count());
-    CHECK(11 == cycleA0[0]);
-    CHECK(12 == cycleA0[1]);
-    CHECK(13 == cycleA0[2]);
-    CHECK(14 == cycleA0[3]);
-    CHECK(11 == cycleA0[4]);
-    CHECK(14 == cycleA0[MAX_SIZE_T - 1]);
+    {
+        const auto c{Cycle(Array<int, 4>{11, 12, 13, 14})};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC(11 == *it);
+        ++it;
+        CHECK_CLJONIC(12 == *it);
+        ++it;
+        CHECK_CLJONIC(13 == *it);
+        ++it;
+        CHECK_CLJONIC(14 == *it);
+        ++it;
+        CHECK_CLJONIC(11 == *it);
+    }
 
-    constexpr auto cycleA1{Cycle(Array{11, 12, 13, 14})};
-    CHECK(MAX_SIZE_T == cycleA1.Count());
-    CHECK(11 == cycleA1[0]);
-    CHECK(12 == cycleA1[1]);
-    CHECK(13 == cycleA1[2]);
-    CHECK(14 == cycleA1[3]);
-    CHECK(11 == cycleA1[4]);
-    CHECK(14 == cycleA1[MAX_SIZE_T - 1]);
+    {
+        const auto c{Cycle(Array<int, 0>{})};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+    }
+    {
+        const auto i{Iterator{[](const int i) { return i + 1; }, 1}};
+        const auto c{Cycle(i)};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC(1 == *it);
+        ++it;
+        CHECK_CLJONIC(2 == *it);
+        ++it;
+        CHECK_CLJONIC(3 == *it);
+        ++it;
+        CHECK_CLJONIC(4 == *it);
+        ++it;
+        CHECK_CLJONIC(5 == *it);
+    }
 
-    constexpr auto cycleA2{Cycle(Array<int, 0>{})};
-    CHECK(0 == cycleA2.Count());
-    CHECK(0 == cycleA2[0]);
-    CHECK(0 == cycleA2[1]);
-    CHECK(0 == cycleA2[2]);
-    CHECK(0 == cycleA2[3]);
-    CHECK(0 == cycleA2[4]);
-    CHECK(0 == cycleA2[MAX_SIZE_T - 1]);
+    {
+        const auto c{Cycle(Iterator{[](const int i) { return i + 1; }, 1})};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC(1 == *it);
+        ++it;
+        CHECK_CLJONIC(2 == *it);
+        ++it;
+        CHECK_CLJONIC(3 == *it);
+        ++it;
+        CHECK_CLJONIC(4 == *it);
+        ++it;
+        CHECK_CLJONIC(5 == *it);
+    }
 
-    constexpr auto rng{Range<1, 5>{}};
-    constexpr auto cycleRng0{Cycle(rng)};
-    CHECK(MAX_SIZE_T == cycleRng0.Count());
-    CHECK(1 == cycleRng0[0]);
-    CHECK(2 == cycleRng0[1]);
-    CHECK(3 == cycleRng0[2]);
-    CHECK(4 == cycleRng0[3]);
-    CHECK(1 == cycleRng0[4]);
-    CHECK(4 == cycleRng0[MAX_SIZE_T - 1]);
+    {
+        constexpr auto r{Range<1, 5>{}};
+        const auto c{Cycle(r)};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC(1 == *it);
+        ++it;
+        CHECK_CLJONIC(2 == *it);
+        ++it;
+        CHECK_CLJONIC(3 == *it);
+        ++it;
+        CHECK_CLJONIC(4 == *it);
+        ++it;
+        CHECK_CLJONIC(1 == *it);
+    }
 
-    constexpr auto cycleRng1{Cycle(Range<1, 5>{})};
-    CHECK(MAX_SIZE_T == cycleRng1.Count());
-    CHECK(1 == cycleRng1[0]);
-    CHECK(2 == cycleRng1[1]);
-    CHECK(3 == cycleRng1[2]);
-    CHECK(4 == cycleRng1[3]);
-    CHECK(1 == cycleRng1[4]);
-    CHECK(4 == cycleRng1[MAX_SIZE_T - 1]);
+    {
+        const auto c{Cycle(Range<1, 5>{})};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC(1 == *it);
+        ++it;
+        CHECK_CLJONIC(2 == *it);
+        ++it;
+        CHECK_CLJONIC(3 == *it);
+        ++it;
+        CHECK_CLJONIC(4 == *it);
+        ++it;
+        CHECK_CLJONIC(1 == *it);
+    }
 
-    constexpr auto cycleRng2{Cycle(Range<0>{})};
-    CHECK(0 == cycleRng2.Count());
-    CHECK(0 == cycleRng2[0]);
-    CHECK(0 == cycleRng2[1]);
-    CHECK(0 == cycleRng2[2]);
-    CHECK(0 == cycleRng2[3]);
-    CHECK(0 == cycleRng2[4]);
-    CHECK(0 == cycleRng2[MAX_SIZE_T - 1]);
+    {
+        const auto c{Cycle(Range<0>{})};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+    }
 
-    constexpr auto rpt{Repeat<3, int>{11}};
-    constexpr auto cycleRpt0{Cycle(rpt)};
-    CHECK(MAX_SIZE_T == cycleRpt0.Count());
-    CHECK(11 == cycleRpt0[0]);
-    CHECK(11 == cycleRpt0[1]);
-    CHECK(11 == cycleRpt0[2]);
-    CHECK(11 == cycleRpt0[3]);
-    CHECK(11 == cycleRpt0[4]);
-    CHECK(11 == cycleRpt0[MAX_SIZE_T - 1]);
+    {
+        constexpr auto r{Repeat<3, int>{11}};
+        const auto c{Cycle(r)};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC(11 == *it);
+        ++it;
+        CHECK_CLJONIC(11 == *it);
+        ++it;
+        CHECK_CLJONIC(11 == *it);
+        ++it;
+        CHECK_CLJONIC(11 == *it);
+        ++it;
+        CHECK_CLJONIC(11 == *it);
+    }
 
-    constexpr auto cycleRpt1{Cycle(Repeat<3, int>{11})};
-    CHECK(MAX_SIZE_T == cycleRpt1.Count());
-    CHECK(11 == cycleRpt1[0]);
-    CHECK(11 == cycleRpt1[1]);
-    CHECK(11 == cycleRpt1[2]);
-    CHECK(11 == cycleRpt1[3]);
-    CHECK(11 == cycleRpt1[4]);
-    CHECK(11 == cycleRpt1[MAX_SIZE_T - 1]);
+    {
+        const auto c{Cycle(Repeat<3, int>{11})};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC(11 == *it);
+        ++it;
+        CHECK_CLJONIC(11 == *it);
+        ++it;
+        CHECK_CLJONIC(11 == *it);
+        ++it;
+        CHECK_CLJONIC(11 == *it);
+        ++it;
+        CHECK_CLJONIC(11 == *it);
+    }
 
-    constexpr auto cycleRpt2{Cycle(Repeat<0, int>{11})};
-    CHECK(0 == cycleRpt2.Count());
-    CHECK(0 == cycleRpt2[0]);
-    CHECK(0 == cycleRpt2[1]);
-    CHECK(0 == cycleRpt2[2]);
-    CHECK(0 == cycleRpt2[3]);
-    CHECK(0 == cycleRpt2[4]);
-    CHECK(0 == cycleRpt2[MAX_SIZE_T - 1]);
+    {
+        const auto c{Cycle(Repeat<0, int>{11})};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+    }
 
-    constexpr auto set{Set{1, 2, 1, 3, 4}};
-    constexpr auto cycleSet0{Cycle(set)};
-    CHECK(MAX_SIZE_T == cycleSet0.Count());
-    CHECK(1 == cycleSet0[0]);
-    CHECK(2 == cycleSet0[1]);
-    CHECK(3 == cycleSet0[2]);
-    CHECK(4 == cycleSet0[3]);
-    CHECK(1 == cycleSet0[4]);
-    CHECK(4 == cycleSet0[MAX_SIZE_T - 1]);
+    {
+        constexpr auto s{Set{1, 2, 1, 3, 4}};
+        const auto c{Cycle(s)};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC(1 == *it);
+        ++it;
+        CHECK_CLJONIC(2 == *it);
+        ++it;
+        CHECK_CLJONIC(3 == *it);
+        ++it;
+        CHECK_CLJONIC(4 == *it);
+        ++it;
+        CHECK_CLJONIC(1 == *it);
+    }
 
-    constexpr auto cycleSet1{Cycle(Set{1, 2, 1, 3, 4})};
-    CHECK(MAX_SIZE_T == cycleSet1.Count());
-    CHECK(1 == cycleSet1[0]);
-    CHECK(2 == cycleSet1[1]);
-    CHECK(3 == cycleSet1[2]);
-    CHECK(4 == cycleSet1[3]);
-    CHECK(1 == cycleSet1[4]);
-    CHECK(4 == cycleSet1[MAX_SIZE_T - 1]);
+    {
+        const auto c{Cycle(Set{1, 2, 1, 3, 4})};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC(1 == *it);
+        ++it;
+        CHECK_CLJONIC(2 == *it);
+        ++it;
+        CHECK_CLJONIC(3 == *it);
+        ++it;
+        CHECK_CLJONIC(4 == *it);
+        ++it;
+        CHECK_CLJONIC(1 == *it);
+    }
 
-    constexpr auto cycleSet2{Cycle(Set<int, 2>{})};
-    CHECK(0 == cycleSet2.Count());
-    CHECK(0 == cycleSet2[0]);
-    CHECK(0 == cycleSet2[1]);
-    CHECK(0 == cycleSet2[2]);
-    CHECK(0 == cycleSet2[3]);
-    CHECK(0 == cycleSet2[4]);
-    CHECK(0 == cycleSet2[MAX_SIZE_T - 1]);
+    {
+        const auto c{Cycle(Set<int, 2>{})};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+        ++it;
+        CHECK_CLJONIC(0 == *it);
+    }
 
-    constexpr auto str{String{"Hello"}};
-    constexpr auto cycleStr0{Cycle(str)};
-    CHECK(MAX_SIZE_T == cycleStr0.Count());
-    CHECK('H' == cycleStr0[0]);
-    CHECK('e' == cycleStr0[1]);
-    CHECK('l' == cycleStr0[2]);
-    CHECK('l' == cycleStr0[3]);
-    CHECK('o' == cycleStr0[4]);
-    CHECK('H' == cycleStr0[5]);
-    CHECK('o' == cycleStr0[MAX_SIZE_T - 1]);
+    {
+        constexpr auto s{String{"Hello"}};
+        const auto c{Cycle(s)};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC('H' == *it);
+        ++it;
+        CHECK_CLJONIC('e' == *it);
+        ++it;
+        CHECK_CLJONIC('l' == *it);
+        ++it;
+        CHECK_CLJONIC('l' == *it);
+        ++it;
+        CHECK_CLJONIC('o' == *it);
+        ++it;
+        CHECK_CLJONIC('H' == *it);
+        ++it;
+        CHECK_CLJONIC('e' == *it);
+    }
 
-    constexpr auto cycleStr1{Cycle(String{"Hello"})};
-    CHECK(MAX_SIZE_T == cycleStr1.Count());
-    CHECK('H' == cycleStr1[0]);
-    CHECK('e' == cycleStr1[1]);
-    CHECK('l' == cycleStr1[2]);
-    CHECK('l' == cycleStr1[3]);
-    CHECK('o' == cycleStr1[4]);
-    CHECK('H' == cycleStr1[5]);
-    CHECK('o' == cycleStr1[MAX_SIZE_T - 1]);
+    {
+        const auto c{Cycle(String{"Hello"})};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC('H' == *it);
+        ++it;
+        CHECK_CLJONIC('e' == *it);
+        ++it;
+        CHECK_CLJONIC('l' == *it);
+        ++it;
+        CHECK_CLJONIC('l' == *it);
+        ++it;
+        CHECK_CLJONIC('o' == *it);
+        ++it;
+        CHECK_CLJONIC('H' == *it);
+        ++it;
+        CHECK_CLJONIC('e' == *it);
+    }
 
-    constexpr auto cycleStr2{Cycle(String{""})};
-    CHECK(0 == cycleStr2.Count());
-    CHECK('\0' == cycleStr2[0]);
-    CHECK('\0' == cycleStr2[1]);
-    CHECK('\0' == cycleStr2[2]);
-    CHECK('\0' == cycleStr2[3]);
-    CHECK('\0' == cycleStr2[4]);
-    CHECK('\0' == cycleStr2[5]);
-    CHECK('\0' == cycleStr2[MAX_SIZE_T - 1]);
+    {
+        const auto c{Cycle(String{""})};
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == c.Count());
+        auto it{c.begin()};
+        CHECK_CLJONIC('\0' == *it);
+        ++it;
+        CHECK_CLJONIC('\0' == *it);
+        ++it;
+        CHECK_CLJONIC('\0' == *it);
+        ++it;
+        CHECK_CLJONIC('\0' == *it);
+        ++it;
+        CHECK_CLJONIC('\0' == *it);
+        ++it;
+        CHECK_CLJONIC('\0' == *it);
+        ++it;
+        CHECK_CLJONIC('\0' == *it);
+    }
+    DisableNoHeapMessagePrinting();
 }

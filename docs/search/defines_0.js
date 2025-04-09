@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cljonic_5fcollection_5fmaximum_5felement_5fcount_0',['CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT',['../cljonic-collection-maximum-element-count_8hpp.html#a3de5728cfb3d964bf6b7c08224c174ad',1,'cljonic-collection-maximum-element-count.hpp']]]
+  ['constant_5fcljonic_5fcollection_5fmaximum_5felement_5fcount_0',['CONSTANT_CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT',['../cljonic-shared_8hpp.html#a5ffa38b9d983646f10b29013373ef0b9',1,'cljonic-shared.hpp']]]
 ];

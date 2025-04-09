@@ -62,13 +62,17 @@ constexpr auto EqualBy(F&& f, const T& t, const Ts&... ts) noexcept
     }
     else if constexpr (AllCljonicCollections<T, Ts...>)
     {
-        static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicArrayRangeOrRepeat<T, Ts...>,
+        static_assert(AllSameCljonicCollectionType<T, Ts...> or AllCljonicNonSet<T, Ts...>,
                       "EqualBy cljonic collection types are not all the same, or all Array, Range or Repeat types");
 
         static_assert(IsBinaryPredicateForAllCljonicCollections<std::decay_t<F>, T, Ts...>,
                       "EqualBy function is not a valid binary predicate for all cljonic collection value types");
 
-        return (AreEqualBy(f, t, ts) and ...);
+        auto AllCountsEqual = [](const auto tCount, const auto&... ts) { return ((ts.Count() == tCount) and ...); };
+        auto AllValuesEqualBy = [](F&& f, const auto& t, const auto&... ts)
+        { return (AreEqualValuesBy(f, t, ts) and ...); };
+
+        return AllCountsEqual(t.Count(), ts...) and AllValuesEqualBy(f, t, ts...);
     }
     else
     {
@@ -77,7 +81,7 @@ constexpr auto EqualBy(F&& f, const T& t, const Ts&... ts) noexcept
         static_assert(IsBinaryPredicateForAll<F, T, Ts...>,
                       "EqualBy function is not a valid binary predicate for all parameters");
 
-        return (AreEqualBy(f, t, ts) and ...);
+        return (AreEqualValuesBy(f, t, ts) and ...);
     }
 }
 

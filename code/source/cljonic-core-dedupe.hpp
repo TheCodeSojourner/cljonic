@@ -1,7 +1,9 @@
 #ifndef CLJONIC_CORE_DEDUPE_HPP
 #define CLJONIC_CORE_DEDUPE_HPP
 
+#include "cljonic-concepts.hpp"
 #include "cljonic-core-dedupeby.hpp"
+#include "cljonic-shared.hpp"
 
 namespace cljonic
 {
@@ -61,7 +63,7 @@ constexpr auto Dedupe(const C& c) noexcept
                   "Dedupe should not compare cljonic floating point collection value types for equality. Consider "
                   "using DedupeBy to override this default.");
 
-    return DedupeBy([](const auto& a, const auto& b) { return AreEqual(a, b); }, c);
+    return DedupeBy([](const auto& a, const auto& b) { return AreEqualValues(a, b); }, c);
 }
 
 } // namespace core

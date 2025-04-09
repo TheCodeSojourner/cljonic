@@ -16,6 +16,15 @@ enter_build_directory () {
     echo "Done"
 }
 
+make_cljonic_unit_test_program () {
+    echo "Making Cljonic Unit Test Program"
+    echo
+    make -j $CPU_COUNT cljonic >/dev/null
+    LAST_EXIT_CODE=$?
+    echo
+    echo "Done"
+}
+
 execute_cljonic_unit_test_program () {
     echo "Executing Cljonic Unit Test Program"
     ./cljonic
@@ -43,15 +52,6 @@ handle_make_error () { # <message>
         cd $CURRENT_DIRECTORY
         exit 1
     fi
-}
-
-make_cljonic_unit_test_program () {
-    echo "Making Cljonic Unit Test Program"
-    echo
-    make -j $CPU_COUNT cljonic >/dev/null
-    LAST_EXIT_CODE=$?
-    echo
-    echo "Done"
 }
 
 render_header () {

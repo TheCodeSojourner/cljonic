@@ -1,0 +1,8 @@
+0000000000000000000000000000000000000000 31420ea482240aeaae4b9a3b5e7e20cecf1282cb Paul Whittington <pwhitington@ricelake.com> 1741987730 -0600	commit (initial): IsDistinctBy working and tested
+31420ea482240aeaae4b9a3b5e7e20cecf1282cb 38e7a314fbe1c162fc3a4867682bab0331329ea2 Paul Whittington <pwhitington@ricelake.com> 1741989945 -0600	commit: add test-core-compose
+38e7a314fbe1c162fc3a4867682bab0331329ea2 2d06d7520b1ad2d6bfcc6671465feebb80401d7b Paul Whittington <pwhitington@ricelake.com> 1742585434 -0600	commit: update IsDistinct and IsDistinctBy
+2d06d7520b1ad2d6bfcc6671465feebb80401d7b e39c0cf606d0ec980ac669072cb166dd2111d8ab Paul Whittington <pwhitington@ricelake.com> 1742587223 -0600	commit: update Repeat and String
+e39c0cf606d0ec980ac669072cb166dd2111d8ab 940070b313795867e86c81ac168618718336055c Paul Whittington <pwhitington@ricelake.com> 1742588040 -0600	commit: update Concat
+940070b313795867e86c81ac168618718336055c 68be2b00e889286b99f852a308270e530659082e Paul Whittington <pwhitington@ricelake.com> 1742588382 -0600	commit: latest
+68be2b00e889286b99f852a308270e530659082e 37e300c31ff0f6304111f184f0324d6cd2915f77 Paul Whittington <pwhitington@ricelake.com> 1742592299 -0600	commit: add Conj
+37e300c31ff0f6304111f184f0324d6cd2915f77 c0df386978f3e8d718def8c1732031d0ce9094ec Paul Whittington <pwhitington@ricelake.com> 1742592576 -0600	commit: add Count

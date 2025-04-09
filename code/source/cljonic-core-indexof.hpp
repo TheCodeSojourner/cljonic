@@ -13,7 +13,7 @@ namespace core
 /** \anchor Core_IndexOf
 * The \b IndexOf function compares each element of its first parameter, which must be a \b cljonic \b collection, with
 * its second parameter, and if they are equal the index of the first parameter element is immediately returned. If none
-* of the first parameter elements are equal to the second parameter then \b CLJONIC_INVALID_INDEX is returned.
+* of the first parameter elements are equal to the second parameter then \b CljonicInvalidIndex is returned.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -29,7 +29,7 @@ int main()
     constexpr auto ioRng{IndexOf(rng, 4)}; // 4
 
     constexpr auto rpt{Repeat<10, int>{1}};
-    constexpr auto ioRpt{IndexOf(rpt, 9)}; // CLJONIC_INVALID_INDEX
+    constexpr auto ioRpt{IndexOf(rpt, 9)}; // CljonicInvalidIndex
 
     constexpr auto s{Set<int, 4>{1, 2, 3, 4, 5, 6}};
     constexpr auto ioS{IndexOf(s, 4)}; // 3
@@ -68,8 +68,8 @@ constexpr auto IndexOf(const C& c, const T& t) noexcept
     static_assert(std::convertible_to<T, typename C::value_type>,
                   "IndexOf's second parameter must be convertible to the collection value type");
 
-    auto result{CLJONIC_INVALID_INDEX};
-    for (SizeType i{0}; ((CLJONIC_INVALID_INDEX == result) and (i < c.Count())); ++i)
+    auto result{CljonicInvalidIndex};
+    for (SizeType i{0}; ((CljonicInvalidIndex == result) and (i < c.Count())); ++i)
         if (AreEqual(c[i], t))
             result = i;
     return result;

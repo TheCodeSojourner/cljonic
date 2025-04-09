@@ -34,8 +34,9 @@ int main()
     constexpr auto cSet{Conj(set, 15)};
 
     constexpr auto str{String{"Hello"}};
-    constexpr auto cStr{Conj(str)};;
-    constexpr auto cStrBang{Conj(str, '!', '!', '!')};;
+    constexpr auto cStr{Conj(str)};
+
+    constexpr auto cStrBang{Conj(str, '!', '!', '!')};
 
     // Compiler Error: First Conj parameter must be a cljonic collection
     // const auto c{Conj("Hello", '!')};
@@ -62,8 +63,8 @@ constexpr auto Conj(const C& c, const Es&... es) noexcept
     constexpr auto count{C::MaximumCount() + sizeof...(Es)};
     auto result{Array<ResultType, count>{}};
     const auto MConjElementOntoResult = [&](const auto& e) { MConj(result, e); };
-    for (SizeType i{0}; i < c.Count(); ++i)
-        MConjElementOntoResult(c[i]);
+    for (const auto& e : c)
+        MConjElementOntoResult(e);
     (MConjElementOntoResult(es), ...);
     return result;
 }

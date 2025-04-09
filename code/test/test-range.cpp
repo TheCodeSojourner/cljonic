@@ -1,384 +1,410 @@
 #include <type_traits>
 #include "catch.hpp"
+#include "no-heap.hpp"
+#include "cljonic_catch.hpp"
 #include "cljonic-range.hpp"
 
 using namespace cljonic;
 
 SCENARIO("Range", "[CljonicRange]")
 {
-    constexpr auto r{Range<>{}};
-    auto MAX_INDEX{CljonicCollectionMaximumElementCount};
-    auto MAX_VALUE{static_cast<decltype(r[0])>(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT)};
-
+    EnableNoHeapMessagePrinting();
     {
         constexpr auto r{Range{}};
-        CHECK(MAX_INDEX == r.Count());
-        CHECK(0 == r[0]);
-        CHECK(1 == r[1]);
-        CHECK((MAX_VALUE - 1) == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
-        CHECK(0 == r.DefaultElement());
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{0}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += 1;
+            lastElement = element;
+        }
+        CHECK_CLJONIC((CljonicCollectionMaximumElementCount - 1) == lastElement);
     }
 
     {
         constexpr auto r{Range<0>{}};
-        CHECK(0 == r.Count());
-        CHECK(0 == r[0]);
-        CHECK(0 == r[1]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(0 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(false);
+            lastElement = element;
+        }
+        CHECK_CLJONIC(1234 == lastElement);
     }
 
     {
         constexpr auto r{Range<-10>{}};
-        CHECK(0 == r.Count());
-        CHECK(0 == r[0]);
-        CHECK(0 == r[1]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(0 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(false);
+            lastElement = element;
+        }
+        CHECK_CLJONIC(1234 == lastElement);
     }
 
     {
         constexpr auto r{Range<10>{}};
-        CHECK(10 == r.Count());
-        CHECK(0 == r[0]);
-        CHECK(1 == r[1]);
-        CHECK(2 == r[2]);
-        CHECK(3 == r[3]);
-        CHECK(4 == r[4]);
-        CHECK(5 == r[5]);
-        CHECK(6 == r[6]);
-        CHECK(7 == r[7]);
-        CHECK(8 == r[8]);
-        CHECK(9 == r[9]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
-
-        auto i{0};
+        CHECK_CLJONIC(10 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{0}};
         for (const auto& element : r)
         {
-            CHECK(i == element);
-            ++i;
+            CHECK_CLJONIC(i == element);
+            i += 1;
+            lastElement = element;
         }
+        CHECK_CLJONIC(9 == lastElement);
     }
 
     {
         constexpr auto r{Range<-3, -10>{}};
-        CHECK(0 == r.Count());
-        CHECK(0 == r[0]);
-        CHECK(0 == r[1]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(0 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(false);
+            lastElement = element;
+        }
+        CHECK_CLJONIC(1234 == lastElement);
     }
 
     {
         constexpr auto r{Range<-3, -3>{}};
-        CHECK(0 == r.Count());
-        CHECK(0 == r[0]);
-        CHECK(0 == r[1]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(0 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(false);
+            lastElement = element;
+        }
+        CHECK_CLJONIC(1234 == lastElement);
     }
 
     {
         constexpr auto r{Range<-3, 10>{}};
-        CHECK(13 == r.Count());
-        CHECK(-3 == r[0]);
-        CHECK(-2 == r[1]);
-        CHECK(-1 == r[2]);
-        CHECK(0 == r[3]);
-        CHECK(1 == r[4]);
-        CHECK(2 == r[5]);
-        CHECK(3 == r[6]);
-        CHECK(4 == r[7]);
-        CHECK(5 == r[8]);
-        CHECK(6 == r[9]);
-        CHECK(7 == r[10]);
-        CHECK(8 == r[11]);
-        CHECK(9 == r[12]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(13 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{-3}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += 1;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(9 == lastElement);
     }
 
     {
         constexpr auto r{Range<10, 10, 0>{}};
-        CHECK(0 == r.Count());
-        CHECK(0 == r[0]);
-        CHECK(0 == r[1]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(0 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(false);
+            lastElement = element;
+        }
+        CHECK_CLJONIC(1234 == lastElement);
     }
 
     {
         constexpr auto r{Range<10, 20, 0>{}};
-        CHECK(MAX_INDEX == r.Count());
-        CHECK(10 == r[0]);
-        CHECK(10 == r[1]);
-        CHECK(10 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(10 == element);
+            lastElement = element;
+        }
+        CHECK_CLJONIC(10 == lastElement);
     }
 
     {
         constexpr auto r{Range<20, 10, 0>{}};
-        CHECK(MAX_INDEX == r.Count());
-        CHECK(20 == r[0]);
-        CHECK(20 == r[1]);
-        CHECK(20 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(CljonicCollectionMaximumElementCount == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(20 == element);
+            lastElement = element;
+        }
+        CHECK_CLJONIC(20 == lastElement);
     }
 
     {
         constexpr auto r{Range<3, 10, 4>{}};
-        CHECK(2 == r.Count());
-        CHECK(3 == r[0]);
-        CHECK(7 == r[1]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(2 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{3}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += 4;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(7 == lastElement);
     }
 
     {
         constexpr auto r{Range<3, 10, 3>{}};
-        CHECK(3 == r.Count());
-        CHECK(3 == r[0]);
-        CHECK(6 == r[1]);
-        CHECK(9 == r[2]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(3 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{3}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += 3;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(9 == lastElement);
     }
 
     {
         constexpr auto r{Range<100, 0, -10>{}};
-        CHECK(10 == r.Count());
-        CHECK(100 == r[0]);
-        CHECK(90 == r[1]);
-        CHECK(80 == r[2]);
-        CHECK(70 == r[3]);
-        CHECK(60 == r[4]);
-        CHECK(50 == r[5]);
-        CHECK(40 == r[6]);
-        CHECK(30 == r[7]);
-        CHECK(20 == r[8]);
-        CHECK(10 == r[9]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(10 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{100}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += -10;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(10 == lastElement);
     }
 
     {
         constexpr auto r{Range<10, -10, -1>{}};
-        CHECK(20 == r.Count());
-        CHECK(10 == r[0]);
-        CHECK(9 == r[1]);
-        CHECK(8 == r[2]);
-        CHECK(7 == r[3]);
-        CHECK(6 == r[4]);
-        CHECK(5 == r[5]);
-        CHECK(4 == r[6]);
-        CHECK(3 == r[7]);
-        CHECK(2 == r[8]);
-        CHECK(1 == r[9]);
-        CHECK(0 == r[10]);
-        CHECK(-1 == r[11]);
-        CHECK(-2 == r[12]);
-        CHECK(-3 == r[13]);
-        CHECK(-4 == r[14]);
-        CHECK(-5 == r[15]);
-        CHECK(-6 == r[16]);
-        CHECK(-7 == r[17]);
-        CHECK(-8 == r[18]);
-        CHECK(-9 == r[19]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(20 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{10}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += -1;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(-9 == lastElement);
     }
 
     {
         constexpr auto r{Range<10, 0, -1>{}};
-        CHECK(10 == r.Count());
-        CHECK(10 == r[0]);
-        CHECK(9 == r[1]);
-        CHECK(8 == r[2]);
-        CHECK(7 == r[3]);
-        CHECK(6 == r[4]);
-        CHECK(5 == r[5]);
-        CHECK(4 == r[6]);
-        CHECK(3 == r[7]);
-        CHECK(2 == r[8]);
-        CHECK(1 == r[9]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(10 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{10}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += -1;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(1 == lastElement);
     }
 
     {
         constexpr auto r{Range<5, -5, -2>{}};
-        CHECK(5 == r.Count());
-        CHECK(5 == r[0]);
-        CHECK(3 == r[1]);
-        CHECK(1 == r[2]);
-        CHECK(-1 == r[3]);
-        CHECK(-3 == r[4]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(5 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{5}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += -2;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(-3 == lastElement);
     }
 
     {
         constexpr auto r{Range<-5, 5, -1>{}};
-        CHECK(0 == r.Count());
-        CHECK(0 == r[0]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(0 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(false);
+            lastElement = element;
+        }
+        CHECK_CLJONIC(1234 == lastElement);
     }
 
     {
         constexpr auto r{Range<-1, -10, -2>{}};
-        CHECK(5 == r.Count());
-        CHECK(-1 == r[0]);
-        CHECK(-3 == r[1]);
-        CHECK(-5 == r[2]);
-        CHECK(-7 == r[3]);
-        CHECK(-9 == r[4]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(5 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{-1}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += -2;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(-9 == lastElement);
     }
 
     {
         constexpr auto r{Range<4, 0, -1>{}};
-        CHECK(4 == r.Count());
-        CHECK(4 == r[0]);
-        CHECK(3 == r[1]);
-        CHECK(2 == r[2]);
-        CHECK(1 == r[3]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(4 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{4}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += -1;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(1 == lastElement);
     }
 
     {
         constexpr auto r{Range<0, -5, -1>{}};
-        CHECK(5 == r.Count());
-        CHECK(0 == r[0]);
-        CHECK(-1 == r[1]);
-        CHECK(-2 == r[2]);
-        CHECK(-3 == r[3]);
-        CHECK(-4 == r[4]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(5 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{0}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += -1;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(-4 == lastElement);
     }
 
     {
         constexpr auto r{Range<10, 0, -15>{}};
-        CHECK(1 == r.Count());
-        CHECK(10 == r[0]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(1 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{10}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += -15;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(10 == lastElement);
     }
 
     {
         constexpr auto r{Range<-5, -10, -6>{}};
-        CHECK(1 == r.Count());
-        CHECK(-5 == r[0]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(1 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{-5}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += -6;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(-5 == lastElement);
     }
 
     {
         constexpr auto r{Range<-5, -10, 6>{}};
-        CHECK(0 == r.Count());
-        CHECK(0 == r[0]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(0 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(false);
+            lastElement = element;
+        }
+        CHECK_CLJONIC(1234 == lastElement);
     }
 
     {
         constexpr auto r{Range<0, 10, 2>{}};
-        CHECK(5 == r.Count());
-        CHECK(0 == r[0]);
-        CHECK(2 == r[1]);
-        CHECK(4 == r[2]);
-        CHECK(6 == r[3]);
-        CHECK(8 == r[4]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(5 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{0}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += 2;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(8 == lastElement);
     }
 
     {
         constexpr auto r{Range<1, 10, 3>{}};
-        CHECK(3 == r.Count());
-        CHECK(1 == r[0]);
-        CHECK(4 == r[1]);
-        CHECK(7 == r[2]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(3 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{1}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += 3;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(7 == lastElement);
     }
 
     {
         constexpr auto r{Range<5, 6, 1>{}};
-        CHECK(1 == r.Count());
-        CHECK(5 == r[0]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(1 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{5}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += 1;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(5 == lastElement);
     }
 
     {
         constexpr auto r{Range<0, 5, 1>{}};
-        CHECK(5 == r.Count());
-        CHECK(0 == r[0]);
-        CHECK(1 == r[1]);
-        CHECK(2 == r[2]);
-        CHECK(3 == r[3]);
-        CHECK(4 == r[4]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(5 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{0}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += 1;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(4 == lastElement);
     }
 
     {
         constexpr auto r{Range<10, 5, 2>{}};
-        CHECK(0 == r.Count());
-        CHECK(0 == r[0]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(0 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(false);
+            lastElement = element;
+        }
+        CHECK_CLJONIC(1234 == lastElement);
     }
 
     {
         constexpr auto r{Range<0, 0, 1>{}};
-        CHECK(0 == r.Count());
-        CHECK(0 == r[0]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(0 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(false);
+            lastElement = element;
+        }
+        CHECK_CLJONIC(1234 == lastElement);
     }
 
     {
         constexpr auto r{Range<0, 10, 20>{}};
-        CHECK(1 == r.Count());
-        CHECK(0 == r[0]);
-        CHECK(0 == r[MAX_INDEX - 1]);
-        CHECK(0 == r[-1]);
-        CHECK(0 == r[MAX_INDEX]);
+        CHECK_CLJONIC(1 == r.Count());
+        auto lastElement{TYPE_CLJONIC_RANGE{1234}};
+        auto i{TYPE_CLJONIC_RANGE{0}};
+        for (const auto& element : r)
+        {
+            CHECK_CLJONIC(i == element);
+            i += 20;
+            lastElement = element;
+        }
+        CHECK_CLJONIC(0 == lastElement);
     }
+    DisableNoHeapMessagePrinting();
 }

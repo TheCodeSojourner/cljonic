@@ -27,7 +27,7 @@ int main()
     constexpr auto rpt{Repeat<5, int>{10}};
     constexpr auto set{Set{100, 101}};
     constexpr auto str{String{"Hello"}};
-    constexpr auto c{Concat(a, rng, rpt, set, str)};
+    constexpr auto c0{Concat(a, rng, rpt, set, str)};
 
     // Compiler Error: All Concat parameters must be cljonic collections
     // const auto c{Concat("Hello", 1)};
@@ -49,14 +49,14 @@ constexpr auto Concat(const C& c, const Cs&... cs) noexcept
     static_assert(AllConvertibleValueTypes<C, Cs...>,
                   "All Concat cljonic collection value types must be interconvertible");
 
-    using ResultType = FindCommonValueType<C, Cs...>;
+    using ResultType = CommonValueType<C, Cs...>;
 
     constexpr auto count{SumOfCljonicCollectionMaximumCounts<C, Cs...>()};
     auto result{Array<ResultType, count>{}};
     const auto MConjCollectionOntoResult = [&](const auto& c)
     {
-        for (SizeType i{0}; i < c.Count(); ++i)
-            MConj(result, static_cast<ResultType>(c[i]));
+        for (const auto& v : c)
+            MConj(result, static_cast<ResultType>(v));
     };
     (MConjCollectionOntoResult(c), ..., MConjCollectionOntoResult(cs));
     return result;

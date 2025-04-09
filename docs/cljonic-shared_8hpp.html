@@ -76,39 +76,61 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">cljonic-shared.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;concepts&gt;</code><br />
-<code>#include &lt;cstring&gt;</code><br />
+<code>#include &lt;cstddef&gt;</code><br />
 <code>#include &lt;limits&gt;</code><br />
+<code>#include &lt;string_view&gt;</code><br />
 <code>#include &quot;<a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="cljonic-collection-maximum-element-count_8hpp_source.html">cljonic-collection-maximum-element-count.hpp</a>&quot;</code><br />
 </div>
 <p><a href="cljonic-shared_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_index_interface.html">cljonic::IndexInterface&lt; T &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacecljonic" id="r_namespacecljonic"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html">cljonic</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a8462f88b51f47d905e30f22335e16765" id="r_a8462f88b51f47d905e30f22335e16765"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cljonic-shared_8hpp.html#a8462f88b51f47d905e30f22335e16765">TYPE_CLJONIC_CHAR</a>&#160;&#160;&#160;char</td></tr>
+<tr class="separator:a8462f88b51f47d905e30f22335e16765"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc7759142c94c076aea1d9c256181017" id="r_abc7759142c94c076aea1d9c256181017"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cljonic-shared_8hpp.html#abc7759142c94c076aea1d9c256181017">TYPE_CLJONIC_RANGE</a>&#160;&#160;&#160;int</td></tr>
+<tr class="separator:abc7759142c94c076aea1d9c256181017"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ffa38b9d983646f10b29013373ef0b9" id="r_a5ffa38b9d983646f10b29013373ef0b9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cljonic-shared_8hpp.html#a5ffa38b9d983646f10b29013373ef0b9">CONSTANT_CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT</a>&#160;&#160;&#160;1000</td></tr>
+<tr class="separator:a5ffa38b9d983646f10b29013373ef0b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ae273e93d475a413886df1ba41143aa68" id="r_ae273e93d475a413886df1ba41143aa68"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">using</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#ae273e93d475a413886df1ba41143aa68">cljonic::CharType</a> = <a class="el" href="cljonic-shared_8hpp.html#a8462f88b51f47d905e30f22335e16765">TYPE_CLJONIC_CHAR</a></td></tr>
+<tr class="separator:ae273e93d475a413886df1ba41143aa68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f13604d53ddc5b068e635c523db04cd" id="r_a4f13604d53ddc5b068e635c523db04cd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">using</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a4f13604d53ddc5b068e635c523db04cd">cljonic::RangeType</a> = <a class="el" href="cljonic-shared_8hpp.html#abc7759142c94c076aea1d9c256181017">TYPE_CLJONIC_RANGE</a></td></tr>
+<tr class="separator:a4f13604d53ddc5b068e635c523db04cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76526d15a807537c1e579316289a1def" id="r_a76526d15a807537c1e579316289a1def"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">using</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">cljonic::SizeType</a> = std::size_t</td></tr>
+<tr class="separator:a76526d15a807537c1e579316289a1def"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ad31683337128d92b03d6935b87d12e70" id="r_ad31683337128d92b03d6935b87d12e70"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> &gt; </td></tr>
-<tr class="memitem:ad31683337128d92b03d6935b87d12e70"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#ad31683337128d92b03d6935b87d12e70">cljonic::AreEqualBy</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> &amp;&amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">t</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">u</a>) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
-<tr class="separator:ad31683337128d92b03d6935b87d12e70"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a606847c0143d28834a100b8ee968552a" id="r_a606847c0143d28834a100b8ee968552a"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> &gt; </td></tr>
-<tr class="memitem:a606847c0143d28834a100b8ee968552a"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a606847c0143d28834a100b8ee968552a">cljonic::AreEqual</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">t</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">u</a>) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
-<tr class="separator:a606847c0143d28834a100b8ee968552a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae493541dba2d8ad2fdb8f8d50ef897b" id="r_aae493541dba2d8ad2fdb8f8d50ef897b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#aae493541dba2d8ad2fdb8f8d50ef897b">cljonic::CStringsEqual</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">char</a> *<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">str1</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">char</a> *<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">str2</a>) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
+<tr class="separator:aae493541dba2d8ad2fdb8f8d50ef897b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b1b63db1aa84b3f17405790fc6814e9" id="r_a9b1b63db1aa84b3f17405790fc6814e9"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> &gt; </td></tr>
+<tr class="memitem:a9b1b63db1aa84b3f17405790fc6814e9"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a9b1b63db1aa84b3f17405790fc6814e9">cljonic::AreEqualValues</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">t</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">u</a>)</td></tr>
+<tr class="separator:a9b1b63db1aa84b3f17405790fc6814e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1ccb44b4f5b24ad48b3f077e2bab6a1" id="r_af1ccb44b4f5b24ad48b3f077e2bab6a1"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> &gt; </td></tr>
+<tr class="memitem:af1ccb44b4f5b24ad48b3f077e2bab6a1"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#af1ccb44b4f5b24ad48b3f077e2bab6a1">cljonic::AreEqualValuesBy</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> &amp;&amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">t</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">u</a>)</td></tr>
+<tr class="separator:af1ccb44b4f5b24ad48b3f077e2bab6a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a808d415ca1453149d20ba4c8bca6e7a9" id="r_a808d415ca1453149d20ba4c8bca6e7a9"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">CollectionIterator</a> , <a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a> MaxElements&gt; </td></tr>
+<tr class="memitem:a808d415ca1453149d20ba4c8bca6e7a9"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a808d415ca1453149d20ba4c8bca6e7a9">cljonic::AreUniqueValues</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">CollectionIterator</a> &amp;begin, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">CollectionIterator</a> &amp;end)</td></tr>
+<tr class="separator:a808d415ca1453149d20ba4c8bca6e7a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7619b096acabd2a8d42ca921529212f3" id="r_a7619b096acabd2a8d42ca921529212f3"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">CollectionIterator</a> , <a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a> MaxElements&gt; </td></tr>
+<tr class="memitem:a7619b096acabd2a8d42ca921529212f3"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a7619b096acabd2a8d42ca921529212f3">cljonic::AreUniqueValuesBy</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a> &amp;&amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">CollectionIterator</a> &amp;begin, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">CollectionIterator</a> &amp;end)</td></tr>
+<tr class="separator:a7619b096acabd2a8d42ca921529212f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a136c6c467b3f36831add83b62e0767" id="r_a1a136c6c467b3f36831add83b62e0767"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> , <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> &gt; </td></tr>
 <tr class="memitem:a1a136c6c467b3f36831add83b62e0767"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">bool</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a1a136c6c467b3f36831add83b62e0767">cljonic::FirstLessThanSecond</a> (<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">T</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">t</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">const</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">U</a> &amp;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">u</a>) <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">noexcept</a></td></tr>
 <tr class="separator:a1a136c6c467b3f36831add83b62e0767"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -126,13 +148,64 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a62aa433988d99c67d18c11b3234f7882" id="r_a62aa433988d99c67d18c11b3234f7882"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a62aa433988d99c67d18c11b3234f7882">cljonic::CLJONIC_INVALID_INDEX</a> {std::numeric_limits&lt;<a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a>&gt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">::max</a>()}</td></tr>
-<tr class="separator:a62aa433988d99c67d18c11b3234f7882"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcf5bef4b62f3bbeca2bfdce3499f6e3" id="r_abcf5bef4b62f3bbeca2bfdce3499f6e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#abcf5bef4b62f3bbeca2bfdce3499f6e3">cljonic::CljonicCollectionMaximumElementCount</a></td></tr>
+<tr class="separator:abcf5bef4b62f3bbeca2bfdce3499f6e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac39c33a6bd2eef2aba216db4ff0275fd" id="r_ac39c33a6bd2eef2aba216db4ff0275fd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">constexpr</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">auto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#ac39c33a6bd2eef2aba216db4ff0275fd">cljonic::CljonicInvalidIndex</a> {std::numeric_limits&lt;<a class="el" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a>&gt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">::max</a>()}</td></tr>
+<tr class="separator:ac39c33a6bd2eef2aba216db4ff0275fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a5ffa38b9d983646f10b29013373ef0b9" name="a5ffa38b9d983646f10b29013373ef0b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ffa38b9d983646f10b29013373ef0b9">&#9670;&#160;</a></span>CONSTANT_CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CONSTANT_CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT&#160;&#160;&#160;1000</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-shared_8hpp_source.html#l00019">19</a> of file <a class="el" href="cljonic-shared_8hpp_source.html">cljonic-shared.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a8462f88b51f47d905e30f22335e16765" name="a8462f88b51f47d905e30f22335e16765"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8462f88b51f47d905e30f22335e16765">&#9670;&#160;</a></span>TYPE_CLJONIC_CHAR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define TYPE_CLJONIC_CHAR&#160;&#160;&#160;char</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-shared_8hpp_source.html#l00011">11</a> of file <a class="el" href="cljonic-shared_8hpp_source.html">cljonic-shared.hpp</a>.</p>
+
+</div>
+</div>
+<a id="abc7759142c94c076aea1d9c256181017" name="abc7759142c94c076aea1d9c256181017"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc7759142c94c076aea1d9c256181017">&#9670;&#160;</a></span>TYPE_CLJONIC_RANGE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define TYPE_CLJONIC_RANGE&#160;&#160;&#160;int</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-shared_8hpp_source.html#l00015">15</a> of file <a class="el" href="cljonic-shared_8hpp_source.html">cljonic-shared.hpp</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 30 2025 09:39:44 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Apr 9 2025 12:04:55 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
