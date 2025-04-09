@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Apr  9 01:38:25 PM MDT 2025
+// This file was generated Wed Apr  9 01:49:24 PM MDT 2025
 
 namespace cljonic {
 
@@ -1793,6 +1793,26 @@ static_assert(IsBinaryPredicateForAll<F, T, Ts...>,
 
 return (AreEqualValuesBy(f, t, ts) and ...);
 }
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C>
+constexpr auto Every(F&& f, const C& c) noexcept {
+static_assert(IsCljonicCollection<C>, "Every's second parameter must be a cljonic collection");
+
+static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
+              "Every's function is not a valid unary predicate for the collection value type");
+
+for(const auto& e : c)
+if(not f(e))
+return false;
+return true;
 }
 
 }
