@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Apr 10 01:30:06 PM MDT 2025
+// This file was generated Thu Apr 10 04:04:53 PM MDT 2025
 
 namespace cljonic {
 
@@ -1967,6 +1967,55 @@ return CljonicInvalidIndex;
 template <typename F, typename C, typename T>
 constexpr auto IndexOfBy(F&& f, const C& c, const T& t) noexcept {
 return IndexOfBy(std::forward<F>(f), c, t, 0);
+}
+
+}
+
+} // namespace cljonic::core
+
+#include <concepts>
+#include <tuple>
+
+namespace cljonic {
+
+namespace core {
+template <typename C, typename... Cs>
+constexpr auto Interleave(const C& c, const Cs&... cs) noexcept {
+
+static_assert(AllCljonicNonSet<C, Cs...>, "Interleave's parameters must all be non-Set cljonic collections");
+
+static_assert(AllConvertibleValueTypes<C, Cs...>,
+              "All Interleave cljonic collection value types must be interconvertible");
+
+if constexpr(sizeof...(Cs) == 0) {
+using ResultType = typename C::value_type;
+
+constexpr auto count{C::MaximumCount()};
+auto result{Array<ResultType, count>{}};
+for(const auto& e : c)
+MConj(result, e);
+return result;
+} else {
+constexpr auto NoCollectionsAreAtEnd{
+    [](const auto& collectionTuples) noexcept {
+    return std::apply([](const auto&... tuples) { return (... and (std::get<1>(tuples) != std::get<2>(tuples))); },
+                      collectionTuples);
+    }};
+constexpr auto numberOfCollections{SizeType{sizeof...(Cs) + 1}};
+constexpr auto minimumCollectionMaximumCount{MinimumOfCljonicCollectionMaximumCounts<C, Cs...>()};
+constexpr auto resultCount{minimumCollectionMaximumCount * numberOfCollections};
+auto result{Array<CommonValueType<C, Cs...>, resultCount>{}};
+const auto MConjAndAdvance = [&](auto&... tuples) { (..., (MConj(result, *std::get<1>(tuples)), ++std::get<1>(tuples))); };
+auto collectionTuples{
+    std::tuple{std::make_tuple(&c, c.begin(), c.end()), std::make_tuple(&cs, cs.begin(), cs.end())...}};
+while(NoCollectionsAreAtEnd(collectionTuples))
+std::apply(MConjAndAdvance, collectionTuples);
+return result;
+}
+}
+
+constexpr auto Interleave() noexcept {
+return Array<int, 0>{};
 }
 
 }
