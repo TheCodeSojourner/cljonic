@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Apr 10 09:37:06 AM MDT 2025
+// This file was generated Thu Apr 10 01:03:00 PM MDT 2025
 
 namespace cljonic {
 
@@ -630,6 +630,9 @@ constexpr auto Identity(const T& t) noexcept;
 
 template <typename T>
 constexpr auto Inc(const T t) noexcept;
+
+template <typename C, typename T>
+constexpr auto IndexOf(const C& c, const T& t, const SizeType fromIndex) noexcept;
 
 template <typename C, typename T>
 constexpr auto IndexOf(const C& c, const T& t) noexcept;
@@ -1890,6 +1893,42 @@ constexpr auto Inc(const T t) noexcept {
 static_assert(IsArithmetic<T>, "Inc's parameter must be an arithmetic type");
 
 return (std::numeric_limits<T>::max() == t) ? t : (t + static_cast<T>(1));
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename C, typename T>
+constexpr auto IndexOf(const C& c, const T& t, const SizeType fromIndex) noexcept {
+
+static_assert(IsCljonicCollection<C>, "IndexOf's first parameter must be a cljonic collection");
+
+static_assert(IsCljonicNonSet<C>, "IndexOf's first parameter must not be a cljonic set");
+
+static_assert((not std::floating_point<typename C::value_type>) and (not std::floating_point<T>),
+              "IndexOf should not compare floating point types for equality. Consider using IndexOfBy to override "
+              "this default.");
+
+static_assert(std::convertible_to<T, typename C::value_type>,
+              "IndexOf's second parameter must be convertible to the collection value type");
+
+auto i{SizeType{0}};
+auto cEnd{c.end()};
+for(auto it{c.begin()}; it != cEnd; ++it)
+if((i >= fromIndex) and (AreEqualValues(*it, t)))
+return i;
+else
+++i;
+return CljonicInvalidIndex;
+}
+
+template <typename C, typename T>
+constexpr auto IndexOf(const C& c, const T& t) noexcept {
+return IndexOf(c, t, 0);
 }
 
 }

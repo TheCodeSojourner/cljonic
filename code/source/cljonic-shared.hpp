@@ -223,10 +223,10 @@ constexpr bool AreEqualValues(const T& t, const U& u)
             else
             {
                 if (t.Count() != u.Count())
-                    return false;
+                    return false; // LCOV_EXCL_LINE - This line of code may only execute at compile-time
                 for (const auto& vt : t)
                     if (not u.Contains(vt))
-                        return false;
+                        return false; // LCOV_EXCL_LINE - This line of code may only execute at compile-time
                 return true;
             }
         }
@@ -403,10 +403,10 @@ constexpr bool AreEqualValuesBy(F&& f, const T& t, const U& u)
         else if constexpr (IsCljonicSet<T> and IsCljonicSet<U>)
         {
             if (t.Count() != u.Count())
-                return false;
+                return false; // LCOV_EXCL_LINE - This line of code may only execute at compile-time
             for (const auto& vt : t)
                 if (not u.ContainsBy(std::forward<F>(f), vt))
-                    return false;
+                    return false; // LCOV_EXCL_LINE - This line of code may only execute at compile-time
             return true;
         }
         else if constexpr (IsBinaryPredicate<F, T, U>)
@@ -443,7 +443,7 @@ constexpr bool AreUniqueValues(const CollectionIterator& begin, const Collection
         if (count < MaxElements)
             collectionElements[count++] = *it;
         else
-            return false;
+            return false; // LCOV_EXCL_LINE - This line of code may only execute at compile-time
     }
     return true;
 }

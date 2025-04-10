@@ -4,7 +4,7 @@ var searchData=
   ['identical_1',['Identical',['../namespacecljonic_1_1core.html#a72d13a6bb10ebc158fada04cba9dc3e8',1,'cljonic::core']]],
   ['identity_2',['Identity',['../namespacecljonic_1_1core.html#a9fa80f1f20a846af6aa3901c582dcf9d',1,'cljonic::core']]],
   ['inc_3',['Inc',['../namespacecljonic_1_1core.html#ab04d4fc197cd257a6a0b82abbe787d52',1,'cljonic::core']]],
-  ['indexof_4',['IndexOf',['../namespacecljonic_1_1core.html#a4a7e731e808a8711e319710fca709bcb',1,'cljonic::core']]],
+  ['indexof_4',['indexof',['../namespacecljonic_1_1core.html#a4a7e731e808a8711e319710fca709bcb',1,'cljonic::core::IndexOf(const C &amp;c, const T &amp;t) noexcept'],['../namespacecljonic_1_1core.html#a473c4aff2f45e1af26f4bacf068a3854',1,'cljonic::core::IndexOf(const C &amp;c, const T &amp;t, const SizeType fromIndex) noexcept']]],
   ['indexofby_5',['IndexOfBy',['../namespacecljonic_1_1core.html#a1d80f7915c795bb43558265bb7e5c678',1,'cljonic::core']]],
   ['innerfindcommontype_6',['InnerFindCommonType',['../structcljonic_1_1inner__find__common__type_1_1_inner_find_common_type.html',1,'cljonic::inner_find_common_type']]],
   ['innerfindcommontype_3c_20t_20_3e_7',['InnerFindCommonType&lt; T &gt;',['../structcljonic_1_1inner__find__common__type_1_1_inner_find_common_type_3_01_t_01_4.html',1,'cljonic::inner_find_common_type']]],

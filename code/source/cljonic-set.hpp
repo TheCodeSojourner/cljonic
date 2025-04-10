@@ -80,7 +80,7 @@ class Set
         for (auto it{m_elements.begin()}; it != endIt; ++it)
             if (AreEqualValuesBy(std::forward<F>(f), std::forward<E>(element), *it))
                 return false;
-        return true;
+        return true; // LCOV_EXCL_LINE - This line of code may only execute at compile-time
     }
 
   public:
