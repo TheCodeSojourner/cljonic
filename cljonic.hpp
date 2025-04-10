@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Apr 10 09:06:59 AM MDT 2025
+// This file was generated Thu Apr 10 09:37:06 AM MDT 2025
 
 namespace cljonic {
 
@@ -1874,6 +1874,22 @@ namespace core {
 template <typename T>
 constexpr auto Identity(const T& t) noexcept {
 return t;
+}
+
+}
+
+} // namespace cljonic::core
+
+#include <limits>
+
+namespace cljonic {
+
+namespace core {
+template <typename T>
+constexpr auto Inc(const T t) noexcept {
+static_assert(IsArithmetic<T>, "Inc's parameter must be an arithmetic type");
+
+return (std::numeric_limits<T>::max() == t) ? t : (t + static_cast<T>(1));
 }
 
 }

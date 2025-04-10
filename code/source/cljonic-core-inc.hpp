@@ -42,7 +42,7 @@ constexpr auto Inc(const T t) noexcept
 {
     static_assert(IsArithmetic<T>, "Inc's parameter must be an arithmetic type");
 
-    return (std::numeric_limits<T>::max() == t) ? t : (t + 1);
+    return (std::numeric_limits<T>::max() == t) ? t : (t + static_cast<T>(1));
 }
 
 } // namespace core
