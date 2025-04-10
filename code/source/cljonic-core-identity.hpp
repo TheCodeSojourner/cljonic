@@ -8,7 +8,7 @@ namespace core
 {
 
 /** \anchor Core_Identity
-* The \b Identity function returns the unique identity (i.e., its address in memory) of its argument.
+* The \b Identity function returns its argument.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 

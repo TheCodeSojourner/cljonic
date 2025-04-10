@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Wed Apr  9 02:23:06 PM MDT 2025
+// This file was generated Thu Apr 10 08:40:44 AM MDT 2025
 
 namespace cljonic {
 
@@ -1848,6 +1848,20 @@ constexpr auto First(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "First's parameter must be a cljonic collection");
 
 return (c.Count() > 0) ? *c.begin() : c.DefaultElement();
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename T, typename U>
+constexpr auto Identical(const T& t, const U& u) noexcept {
+const auto tMemoryAddress{(void*)&t};
+const auto uMemoryAddress{(void*)&u};
+return tMemoryAddress == uMemoryAddress;
 }
 
 }

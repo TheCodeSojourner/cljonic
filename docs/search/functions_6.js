@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['identical_0',['Identical',['../namespacecljonic_1_1core.html#a1fbc34690dc50fafbf25fe395513feda',1,'cljonic::core']]],
+  ['identical_0',['identical',['../namespacecljonic_1_1core.html#a72d13a6bb10ebc158fada04cba9dc3e8',1,'cljonic::core::Identical(const T &amp;t, const U &amp;u) noexcept'],['../namespacecljonic_1_1core.html#a1fbc34690dc50fafbf25fe395513feda',1,'cljonic::core::Identical(const T &amp;t, const Ts &amp;... ts) noexcept']]],
   ['identity_1',['Identity',['../namespacecljonic_1_1core.html#aebaf247525436690bf61493e6b29040b',1,'cljonic::core']]],
   ['inc_2',['Inc',['../namespacecljonic_1_1core.html#ab04d4fc197cd257a6a0b82abbe787d52',1,'cljonic::core']]],
   ['indexof_3',['IndexOf',['../namespacecljonic_1_1core.html#a4a7e731e808a8711e319710fca709bcb',1,'cljonic::core']]],

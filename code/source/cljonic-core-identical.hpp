@@ -10,8 +10,7 @@ namespace core
 {
 
 /** \anchor Core_Identical
-* The \b Identical function returns true if all of its parameters return the same value when used in a call to the
-* \b cljonic \b Identity function.
+* The \b Identical function returns true if its two parameters have the same memory address.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -22,7 +21,6 @@ int main()
 {
     constexpr auto a1{Array<int, 10>{1, 2, 3, 4}};
     constexpr auto a2{Array<int, 10>{1, 2, 3, 4}};
-    constexpr auto i0{Identical(a1)};     // true
     constexpr auto i1{Identical(a1, a1)}; // true
     constexpr auto i2{Identical(a1, a2)}; // false
 
@@ -32,23 +30,19 @@ int main()
     constexpr auto y{1};
     constexpr auto i4{Identical(x, x)}; // true
     constexpr auto i5{Identical(x, y)}; // false
+    constexpr auto i6{Identical(x, 12)}; // false
+    constexpr auto i7{Identical(12, 12)}; // false
 
     return 0;
 }
 ~~~~~
 */
-template <typename T, typename... Ts>
-constexpr auto Identical(const T& t, const Ts&... ts) noexcept
+template <typename T, typename U>
+constexpr auto Identical(const T& t, const U& u) noexcept
 {
-    if constexpr (sizeof...(Ts) <= 0)
-    {
-        return true;
-    }
-    else
-    {
-        auto SameIdentity = [&](const auto& t1, const auto& t2) { return Identity(t1) == Identity(t2); };
-        return (SameIdentity(t, ts) and ...);
-    }
+    const auto tMemoryAddress{(void*)&t};
+    const auto uMemoryAddress{(void*)&u};
+    return tMemoryAddress == uMemoryAddress;
 }
 
 } // namespace core

@@ -3,17 +3,17 @@
 
 #define CHECK_CLJONIC(expr)             \
     {                                   \
-        auto x = (expr);                \
+        auto _x = (expr);               \
         DisableNoHeapMessagePrinting(); \
-        CHECK(x);                       \
+        CHECK(_x);                      \
         EnableNoHeapMessagePrinting();  \
     }
 
 #define CHECK_CLJONIC_NOT(expr)         \
     {                                   \
-        auto x = (expr);                \
+        auto _x = (expr);               \
         DisableNoHeapMessagePrinting(); \
-        CHECK(not x);                   \
+        CHECK(not _x);                  \
         EnableNoHeapMessagePrinting();  \
     }
 

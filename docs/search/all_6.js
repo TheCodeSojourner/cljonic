@@ -1,7 +1,7 @@
 var searchData=
 [
   ['i_20e_20sequence_3a_20array_20range_20repeat_20set_20and_20or_20string_0',['Seq (i.e., Sequence: Array, Range, Repeat, Set, And/Or String)',['../index.html#autotoc_md8',1,'']]],
-  ['identical_1',['Identical',['../namespacecljonic_1_1core.html#a1fbc34690dc50fafbf25fe395513feda',1,'cljonic::core']]],
+  ['identical_1',['identical',['../namespacecljonic_1_1core.html#a72d13a6bb10ebc158fada04cba9dc3e8',1,'cljonic::core::Identical(const T &amp;t, const U &amp;u) noexcept'],['../namespacecljonic_1_1core.html#a1fbc34690dc50fafbf25fe395513feda',1,'cljonic::core::Identical(const T &amp;t, const Ts &amp;... ts) noexcept']]],
   ['identity_2',['Identity',['../namespacecljonic_1_1core.html#aebaf247525436690bf61493e6b29040b',1,'cljonic::core']]],
   ['inc_3',['Inc',['../namespacecljonic_1_1core.html#ab04d4fc197cd257a6a0b82abbe787d52',1,'cljonic::core']]],
   ['indexof_4',['IndexOf',['../namespacecljonic_1_1core.html#a4a7e731e808a8711e319710fca709bcb',1,'cljonic::core']]],
