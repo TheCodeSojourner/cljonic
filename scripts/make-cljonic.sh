@@ -40,11 +40,11 @@ cat cljonic-collection-type.hpp \
     cljonic-core-identity.hpp \
     cljonic-core-inc.hpp \
     cljonic-core-indexof.hpp \
+    cljonic-core-indexofby.hpp \
     cljonic-core-isdistinct.hpp \
     cljonic-core-isdistinctby.hpp \
     cljonic-core-iterate.hpp \
     > /tmp/cljonic-glued.hpp
-    # cljonic-core-indexofby.hpp \
     # cljonic-core-interleave.hpp \
     # cljonic-core-interpose.hpp \
     # cljonic-core-isempty.hpp \

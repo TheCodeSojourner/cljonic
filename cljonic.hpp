@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Apr 10 01:03:00 PM MDT 2025
+// This file was generated Thu Apr 10 01:30:06 PM MDT 2025
 
 namespace cljonic {
 
@@ -636,6 +636,9 @@ constexpr auto IndexOf(const C& c, const T& t, const SizeType fromIndex) noexcep
 
 template <typename C, typename T>
 constexpr auto IndexOf(const C& c, const T& t) noexcept;
+
+template <typename F, typename C, typename T>
+constexpr auto IndexOfBy(F&& f, const C& c, const T& t, const SizeType fromIndex) noexcept;
 
 template <typename F, typename C, typename T>
 constexpr auto IndexOfBy(F&& f, const C& c, const T& t) noexcept;
@@ -1929,6 +1932,41 @@ return CljonicInvalidIndex;
 template <typename C, typename T>
 constexpr auto IndexOf(const C& c, const T& t) noexcept {
 return IndexOf(c, t, 0);
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename F, typename C, typename T>
+constexpr auto IndexOfBy(F&& f, const C& c, const T& t, const SizeType fromIndex) noexcept {
+
+static_assert(IsCljonicCollection<C>, "IndexOfBy's second parameter must be a cljonic collection");
+
+static_assert(IsCljonicNonSet<C>, "IndexOfBy's first parameter must not be a cljonic set");
+
+static_assert(IsBinaryPredicate<std::decay_t<F>, typename C::value_type, typename C::value_type>,
+              "IndexOfBy's function is not a valid binary predicate for the collection value type");
+
+static_assert(std::convertible_to<T, typename C::value_type>,
+              "IndexOfBy's third parameter must be convertible to the collection value type");
+
+auto i{SizeType{0}};
+auto cEnd{c.end()};
+for(auto it{c.begin()}; it != cEnd; ++it)
+if((i >= fromIndex) and (f(*it, t)))
+return i;
+else
+++i;
+return CljonicInvalidIndex;
+}
+
+template <typename F, typename C, typename T>
+constexpr auto IndexOfBy(F&& f, const C& c, const T& t) noexcept {
+return IndexOfBy(std::forward<F>(f), c, t, 0);
 }
 
 }

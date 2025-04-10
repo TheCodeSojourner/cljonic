@@ -1,5 +1,5 @@
-#ifndef CLJONIC_CORE_FILTER_HPP
-#define CLJONIC_CORE_FILTER_HPP
+#ifndef CLJONIC_CORE_INDEX_OF_HPP
+#define CLJONIC_CORE_INDEX_OF_HPP
 
 #include "cljonic-concepts.hpp"
 #include "cljonic-shared.hpp"
@@ -97,4 +97,4 @@ constexpr auto IndexOf(const C& c, const T& t) noexcept
 
 } // namespace cljonic
 
-#endif // CLJONIC_CORE_FILTER_HPP
+#endif // CLJONIC_CORE_INDEX_OF_HPP

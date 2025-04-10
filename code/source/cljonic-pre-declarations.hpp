@@ -93,6 +93,9 @@ template <typename C, typename T>
 constexpr auto IndexOf(const C& c, const T& t) noexcept;
 
 template <typename F, typename C, typename T>
+constexpr auto IndexOfBy(F&& f, const C& c, const T& t, const SizeType fromIndex) noexcept;
+
+template <typename F, typename C, typename T>
 constexpr auto IndexOfBy(F&& f, const C& c, const T& t) noexcept;
 
 constexpr auto Interleave() noexcept;
