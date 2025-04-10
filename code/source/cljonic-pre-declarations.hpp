@@ -77,11 +77,11 @@ constexpr auto Filter(F&& f, const C& c) noexcept;
 template <typename C>
 constexpr auto First(const C& coll) noexcept;
 
-template <typename T, typename... Ts>
-constexpr auto Identical(const T& t, const Ts&... ts) noexcept;
+template <typename T, typename U>
+constexpr auto Identical(const T& t, const U& u) noexcept;
 
 template <typename T>
-constexpr void* Identity(const T& t) noexcept;
+constexpr auto Identity(const T& t) noexcept;
 
 template <typename T>
 constexpr auto Inc(const T t) noexcept;

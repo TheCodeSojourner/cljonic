@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Apr 10 08:40:44 AM MDT 2025
+// This file was generated Thu Apr 10 09:06:59 AM MDT 2025
 
 namespace cljonic {
 
@@ -622,11 +622,11 @@ constexpr auto Filter(F&& f, const C& c) noexcept;
 template <typename C>
 constexpr auto First(const C& coll) noexcept;
 
-template <typename T, typename... Ts>
-constexpr auto Identical(const T& t, const Ts&... ts) noexcept;
+template <typename T, typename U>
+constexpr auto Identical(const T& t, const U& u) noexcept;
 
 template <typename T>
-constexpr void* Identity(const T& t) noexcept;
+constexpr auto Identity(const T& t) noexcept;
 
 template <typename T>
 constexpr auto Inc(const T t) noexcept;
@@ -1862,6 +1862,18 @@ constexpr auto Identical(const T& t, const U& u) noexcept {
 const auto tMemoryAddress{(void*)&t};
 const auto uMemoryAddress{(void*)&u};
 return tMemoryAddress == uMemoryAddress;
+}
+
+}
+
+} // namespace cljonic::core
+
+namespace cljonic {
+
+namespace core {
+template <typename T>
+constexpr auto Identity(const T& t) noexcept {
+return t;
 }
 
 }

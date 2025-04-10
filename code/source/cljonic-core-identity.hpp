@@ -8,7 +8,7 @@ namespace core
 {
 
 /** \anchor Core_Identity
-* The \b Identity function returns its argument.
+* The \b Identity function returns a value that is the same value as its argument.
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 
@@ -18,25 +18,37 @@ using namespace cljonic::core;
 int main()
 {
     constexpr auto a{Array{11, 12, 13, 14}};
-    const auto identityA{Identity(a)};
+    constexpr auto identityA{Identity(a)};
+    constexpr auto aEqual{Equal(a, identityA)}; // true
+
+    const auto itr{Iterator{[](const int i) { return i + 1; }, 0}};
+    const auto identityItr{Identity(itr)};
+    const auto itrEqual{Equal(itr, identityItr)}; // true
 
     constexpr auto rng{Range<1, 5>{}};
-    const auto identityRng{Identity(rng)};
+    constexpr auto identityRng{Identity(rng)};
+    constexpr auto rngEqual{Equal(rng, identityRng)}; // true
 
-    const auto b0{identityA == identityA};   // true
-    const auto b1{identityA == identityRng}; // false
+    constexpr auto rpt{Repeat<3, int>{11}};
+    constexpr auto identityRpt{Identity(rpt)};
+    constexpr auto rptEqual{Equal(rpt, identityRpt)}; // true
 
-    constexpr auto b2{Identity(1) == Identity(2)}; // false
-    const auto b3{identityA == Identity(2)};   // false
+    constexpr auto set{Set{1, 2, 3, 1}};
+    constexpr auto identitySet{Identity(set)};
+    constexpr auto setEqual{Equal(set, identitySet)}; // true
+
+    constexpr auto str{String{"Hello"}};
+    constexpr auto identityStr{Identity(str)};
+    constexpr auto strEqual{Equal(str, identityStr)}; // true
 
     return 0;
 }
 ~~~~~
 */
 template <typename T>
-constexpr void* Identity(const T& t) noexcept
+constexpr auto Identity(const T& t) noexcept
 {
-    return (void*)&t;
+    return t;
 }
 
 } // namespace core
