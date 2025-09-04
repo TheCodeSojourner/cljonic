@@ -180,9 +180,9 @@
 namespace cljonic
 {
 
-    namespace core
-    {
-    } // namespace core
+namespace core
+{
+} // namespace core
 
 } // namespace cljonic
 
