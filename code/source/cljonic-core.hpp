@@ -24,9 +24,9 @@
  * <b>Is there a pragmatic subset of Modern C++ that enables embedded systems developers to produce higher-quality, more
  * efficient, and maintainable code?</b>
  *
- * Changes to C++ have provided valuable capabilities that are time consuming to master, hence it is both valuable to
- * development organizations for their developers to use new C++ capabilities, and too expensive to train all of their
- * developers to be experts in their use.  This, too, begs another question:
+ * Changes to C++ have provided valuable capabilities that are time consuming to master, hence it is both <b> valuable
+ * to development organizations</b> for their developers to use new C++ capabilities, and <b> too expensive to train</b>
+ * all of their developers to be experts in their use.  This, too, begs a question:
  *
  * <b>Can one or two embedded systems software developers cost-effectively introduce new C++ capabilities to the entire
  * team?</b>
