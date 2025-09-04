@@ -5,8 +5,9 @@
  * \b cljonic is a \b header-only library of C++ templates and classes designed to allow an \b embedded \b systems C++
  * developer to program in a \b Functional \b Programming \b Style using a set of functions \b similar in \b name and \b
  * function to \b Clojure. To address the embedded systems focus, \b cljonic \b DOES \b NOT use the heap or exceptions,
- * and uses \b Modern \b C++ features to \b protect , \b guide , and \b teach Modern C++ . Finally, \b cljonic is a
- * library that includes unit tests with nearly <b>100% coverage</b>, and is designed to be efficiently maintained.
+ * and uses \b Modern \b C++ features to \b protect , \b guide , and \b teach Modern C++ developers. Finally, \b cljonic
+ * is a  * library that includes unit tests with nearly <b>100% coverage</b>, and is designed to be efficiently
+ * maintained.
  *
  * The motivation for \b cljonic comes from observations made about the pragmatic use of C++ for embedded systems
  * software development, the progression of the C++ language (e.g., C++11, C++14, C++17, C++20), and the counsel
