@@ -22,7 +22,7 @@ SCENARIO("IndexOf", "[CljonicCoreIndexOf]")
     constexpr auto rpt{Repeat<10, int>{1}};
     CHECK(CLJONIC_INVALID_INDEX == IndexOf(rpt, 9));
 
-    constexpr auto s{Set<int, 4>{1, 2, 3, 4, 5, 6}};
+    constexpr auto s{Set<int, 4>{1, 2, 3, 4}};
     CHECK(3 == IndexOf(s, 4));
 
     CHECK(2 == IndexOf(String{"Hello"}, 'l'));

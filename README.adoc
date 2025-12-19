@@ -22,7 +22,7 @@ are also welcome.
 
 [.big]#*Laconic*#
 
-* Expressing much in few words; brief and pithy; concise; brusque
+* Using very few words; concise to the point of seeming mysterious or rude.
 
 == Detailed Documentation
 Detailed documentation is available https://thecodesojourner.github.io/cljonic/[here].
@@ -71,13 +71,13 @@ The developer using *cljonic* should be able to write *safe* code that is *easy 
 === Default Element
 Every *cljonic collection* has a *default element* that is returned whenever a valid collection element can't be returned.
 The value of a collection's *default element* is a default initialized instance of the type of the collection's values
-(i.e., T{}).  This approach is taken to avoid using exceptions and/or error codes/states.
+(e.g., T{}).  This approach is taken to avoid using exceptions and/or error codes/states.
 
 NOTE: The design choice to use a *default element* means that *cljonic* users must take care to ensure that they know
 when a *default element* can be returned (e.g., Asking for the First element of an empty collection), and to handle things appropriately. 
 
-=== constexpr
-*cljonic* uses *constexpr* whenever possible to enable *compile-time* evaluation of expressions. Additionally, this 
+=== constexpr and consteval
+*cljonic* uses *constexpr* and *consteval* whenever possible to enable/require *compile-time* evaluation of expressions. Additionally, this 
 approach helps to dectect *undefined behavior* at compile time.
 
 == Developer Experience When Developing cljonic
@@ -107,7 +107,7 @@ embedded systems, *cljonic* uses copying.
 * In order to meet the *safe* Desired Developer Experience goal, *cljonic* does bounds-checking on all collection
 accesses. 
 
-* In order to meet the *safe* Desired Developer Experience goal, *cljonic* provides a *#define* named *CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT* that specifies the maximum number of elements that can be stored in a *cljonic Collection*, which is defaulted to *1000*. *CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT* can be changed to a larger value if needed by adding a line of code like this "*#define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT 10000*" before including *cljonic.hpp*, by directly defining *CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT* on the compiler command line, or by indirectly defining *CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT* in a build tool like *cmake*.
+* In order to meet the *safe* Desired Developer Experience goal, *cljonic* provides a *#define* named *CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT* that specifies the maximum number of elements that can be stored in a *cljonic Collection*, which is defaulted to *1000*. *CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT* can be changed to another value if needed by adding a line of code like this `#define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT 10000` before including *cljonic.hpp*, by directly defining *CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT* on the compiler command line, or by indirectly defining *CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT* in a build tool like *cmake*.
 
 == Required Resources
 * *AsciiDoc* for project documentation

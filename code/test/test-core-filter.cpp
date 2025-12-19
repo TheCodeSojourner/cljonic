@@ -24,7 +24,7 @@ SCENARIO("Filter", "[CljonicCoreFilter]")
     constexpr auto rpt{Repeat<10, int>{1}};
     CHECK(Equal(Array<int, 0>{}, Filter(Even, rpt)));
 
-    constexpr auto s{Set<int, 4>{1, 2, 3, 4, 5, 6}};
+    constexpr auto s{Set<int, 4>{1, 2, 3, 4}};
     CHECK(Equal(Array{2, 4}, Filter(Even, s)));
 
     CHECK(Equal(Array{'l', 'l'}, Filter([](const char c) { return ('l' == c); }, String{"Hello"})));

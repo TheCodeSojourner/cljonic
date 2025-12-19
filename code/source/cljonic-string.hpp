@@ -31,7 +31,7 @@ class String : public IndexInterface<char>
     const char m_elementDefault;
     char m_elements[maximumElements + 1]{}; // +1 for the null terminator
 
-    constexpr auto ValueAtIndex(const SizeType index) const noexcept
+    [[nodiscard]] constexpr auto ValueAtIndex(const SizeType index) const noexcept
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
     }
@@ -39,7 +39,7 @@ class String : public IndexInterface<char>
   public:
     /**
     * The \b String constructor returns an instance of String initialized with the chars in its argument(s). If the
-    * number of chars in its argument(s) exceeds the maximum number of elements, the extras are silently ignored.
+    * number of chars in a \b char* argument exceeds the maximum number of elements, the extras are silently ignored.
     ~~~~~{.cpp}
     #include "cljonic.hpp"
 
@@ -51,9 +51,12 @@ class String : public IndexInterface<char>
         const auto s1{String<10>{"Hello"}};                // immutable, sparse
         const auto s2{String<5>{"Hello"}};                 // immutable, full
         const auto s3{String<5>{"Hello, World"}};          // immutable, full, and contains "Hello"
-        const auto s4{String<3>{'H', 'e', 'l', 'l', 'o'}}; // immutable, sparse
+        const auto s4{String<3>{'H', 'e', 'l'}};           // immutable, full
         const auto s5{String{"Hello"}};                    // immutable, full
         const auto s6{String{'H', 'e', 'l', 'l', 'o'}};    // immutable, full
+
+        // Compiler Error: String initialized with too many elements
+        // const auto s{String<3>{'H', 'e', 'l', 'l', 'o'}};
 
         // Compiler Error: Attempt to create a String bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
         // const auto s{String<1111>{"Too Big"}};
@@ -71,15 +74,12 @@ class String : public IndexInterface<char>
         m_elements[0] = '\0';
     }
 
-    constexpr explicit String(const std::initializer_list<const char> elements) noexcept
-        : m_elementCount(0), m_elementDefault('\0')
+    template <typename... Args>
+        requires(std::same_as<std::remove_cvref_t<Args>, char> && ...)
+    constexpr explicit String(Args&&... args) noexcept : m_elementCount(0), m_elementDefault('\0')
     {
-        for (const auto& element : elements)
-        {
-            if (m_elementCount == MaximumCount())
-                break; // LCOV_EXCL_LINE - This line of code may only execute at compile-time
-            m_elements[m_elementCount++] = element;
-        }
+        static_assert(sizeof...(Args) <= MaximumCount(), "String initialized with too many elements");
+        ((m_elements[m_elementCount++] = args), ...);
         m_elements[m_elementCount] = '\0';
     }
 
@@ -93,8 +93,8 @@ class String : public IndexInterface<char>
         m_elements[m_elementCount] = '\0';
     }
 
-    constexpr String(const String& other) = default; // Copy constructor
-    constexpr String(String&& other) = default;      // Move constructor
+    constexpr String(const String& other) noexcept = default; // Copy constructor
+    constexpr String(String&& other) noexcept = default;      // Move constructor
 
     [[nodiscard]] constexpr Iterator begin() const noexcept
     {
@@ -106,12 +106,12 @@ class String : public IndexInterface<char>
         return Iterator{*this, m_elementCount};
     }
 
-    constexpr char operator[](const SizeType index) const noexcept override
+    [[nodiscard]] constexpr char operator[](const SizeType index) const noexcept override
     {
         return ValueAtIndex(index);
     }
 
-    constexpr char operator()(const SizeType index) const noexcept
+    [[nodiscard]] constexpr char operator()(const SizeType index) const noexcept
     {
         return this->operator[](index);
     }
@@ -121,17 +121,18 @@ class String : public IndexInterface<char>
         return m_elementCount;
     }
 
-    constexpr char DefaultElement() const noexcept
+    [[nodiscard]] constexpr char DefaultElement() const noexcept
     {
         return m_elementDefault;
     }
 
-    constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const char& element) const noexcept override
+    [[nodiscard]] constexpr bool ElementAtIndexIsEqualToElement(const SizeType index,
+                                                                const char& element) const noexcept override
     {
         return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
     }
 
-    static constexpr SizeType MaximumCount() noexcept
+    [[nodiscard]] static consteval SizeType MaximumCount() noexcept
     {
         return maximumElements;
     }

@@ -1,10 +1,12 @@
 #ifndef CLJONIC_PRE_DECLARATIONSHPP
 #define CLJONIC_PRE_DECLARATIONSHPP
 
+#include "cljonic-concepts.hpp"
+
 namespace cljonic
 {
 
-template <typename T, SizeType MaxElements>
+template <ValidCljonicContainerElementType T, SizeType MaxElements>
 class Array;
 
 template <int... StartEndStep>
@@ -13,7 +15,7 @@ class Range;
 template <SizeType MaxElements, typename T>
 class Repeat;
 
-template <typename T, SizeType MaxElements>
+template <ValidCljonicContainerElementType T, SizeType MaxElements>
 class Set;
 
 template <SizeType MaxElements>

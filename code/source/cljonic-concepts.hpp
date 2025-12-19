@@ -135,6 +135,14 @@ template <typename T, typename... Ts>
 constexpr bool AnyFloatingPointValueTypes =
     (std::floating_point<typename T::value_type> or ... or std::floating_point<typename Ts::value_type>);
 
+template <typename T>
+concept ValidCljonicContainerElementType =      //
+    std::is_nothrow_copy_constructible_v<T> and //
+    std::is_nothrow_move_constructible_v<T> and //
+    std::is_nothrow_copy_assignable_v<T> and    //
+    std::is_nothrow_move_assignable_v<T> and    //
+    std::is_nothrow_destructible_v<T>;
+
 template <typename T, typename... Ts>
 using FindCommonType = typename InnerFindCommonType<T, Ts...>::type;
 

@@ -6,6 +6,7 @@
 #include <initializer_list>
 #include <type_traits>
 #include "cljonic-collection-type.hpp"
+#include "cljonic-concepts.hpp"
 #include "cljonic-shared.hpp"
 
 namespace cljonic
@@ -19,7 +20,7 @@ namespace cljonic
  * within the set will return its \b default \b element.  Many \ref Namespace_Core "Core" functions accept Set
  * arguments.
  */
-template <typename T, SizeType MaxElements>
+template <ValidCljonicContainerElementType T, SizeType MaxElements>
 class Set : public IndexInterface<T>
 {
     static_assert(not std::floating_point<T>,
@@ -37,7 +38,7 @@ class Set : public IndexInterface<T>
     const T m_elementDefault;
     T m_elements[maximumElements]{};
 
-    constexpr bool IsUniqueElementBy(const auto& f, const T& element) const noexcept
+    [[nodiscard]] constexpr bool IsUniqueElementBy(const auto& f, const T& element) const noexcept
     {
         auto result{true};
         for (SizeType i{0}; (result and (i < m_elementCount)); ++i)
@@ -45,7 +46,7 @@ class Set : public IndexInterface<T>
         return result;
     }
 
-    constexpr bool IsUniqueElement(const T& element) const noexcept
+    [[nodiscard]] constexpr bool IsUniqueElement(const T& element) const noexcept
     {
         auto result{true};
         for (SizeType i{0}; (result and (i < m_elementCount)); ++i)
@@ -55,9 +56,7 @@ class Set : public IndexInterface<T>
 
   public:
     /**
-    * The \b Set constructor returns an instance of Set initialized with the unique elements in its arguments. If the
-    * number of unique elements in its arguments exceeds the maximum number of elements, the extra unique elements in
-    * its arguments are silently ignored.
+    * The \b Set constructor returns an instance of Set initialized with the unique elements in its arguments.
     ~~~~~{.cpp}
     #include "cljonic.hpp"
 
@@ -68,10 +67,11 @@ class Set : public IndexInterface<T>
         const auto s0{Set<int, 10>{}};                // immutable, empty
         const auto s1{Set<int, 10>{1, 2, 3, 4}};      // immutable, sparse
         const auto s2{Set<int, 4>{1, 2, 3, 4}};       // immutable, full
-        const auto s3{Set<int, 4>{1, 2, 3, 4, 5, 6}}; // immutable, full, but 5 and 6 are ignored
-        const auto s4{Set<int, 4>{1, 2, 1, 4, 5, 6}}; // immutable, full with 1, 2, 4, 5
         const auto s5{Set{1, 2, 3, 4}};               // immutable, full of four int values
-        const auto s6{Set{1, 2, 1, 4}};               // immutable, full of three unique int values
+        const auto s6{Set{1, 2, 1, 4}};               // immutable, sparse with three unique int values
+
+        // Compiler Error: Set initialized with too many elements
+        // constexpr auto s{Set<int, 4>{0, 2, 4, 5, 6, 7, 8, 9}};
 
         // Compiler Error:
         //     Floating point types should not be compared for equality, hence Sets of floating point types are not
@@ -79,6 +79,10 @@ class Set : public IndexInterface<T>
         // const auto s{Set{1.1, 2.2}};
 
         // Compiler Error: A Set type must be equality comparable
+        // struct NonComparable
+        // {
+        //     bool operator==(const NonComparable&) const = delete;
+        // };
         // const auto s{Set<NonComparable, 10>{}};
 
         // Compiler Error: Attempt to create a Set bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
@@ -96,40 +100,51 @@ class Set : public IndexInterface<T>
     {
     }
 
-    constexpr explicit Set(const std::initializer_list<const T> elements) noexcept
-        : m_elementCount(0), m_elementDefault(T{})
+    template <typename... Args>
+    constexpr explicit Set(Args... elements) noexcept : m_elementCount(0), m_elementDefault(T{})
     {
-        // #lizard forgives -- The complexity of this function is acceptable
-        for (const auto& element : elements)
-        {
-            if (m_elementCount == MaximumCount())
-                break; // LCOV_EXCL_LINE - This line of code may only execute at compile-time
-            if (IsUniqueElement(element))
-                m_elements[m_elementCount++] = element;
-        }
+        static_assert(sizeof...(Args) <= MaximumCount(), "Set initialized with too many elements");
+        ((IsUniqueElement(elements) ? (m_elements[m_elementCount++] = elements, void()) : void()), ...);
     }
 
-    constexpr Set(const Set& other) = default; // Copy constructor
-    constexpr Set(Set&& other) = default;      // Move constructor
+    constexpr Set(const Set& other) noexcept = default; // Copy constructor
+    constexpr Set(Set&& other) noexcept = default;      // Move constructor
 
-    constexpr const T* begin() const noexcept
+    [[nodiscard]] constexpr const T* begin() const noexcept
     {
         return m_elements;
     }
 
-    constexpr const T* end() const noexcept
+    [[nodiscard]] constexpr const T* end() const noexcept
     {
         return m_elements + m_elementCount;
     }
 
-    constexpr T operator[](const SizeType index) const noexcept override
+    [[nodiscard]] constexpr T operator[](const SizeType index) const noexcept override
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
     }
 
-    constexpr T operator()(const T& t) const noexcept
+    [[nodiscard]] constexpr T operator()(const T& t) const noexcept
     {
         return Contains(t) ? t : m_elementDefault;
+    }
+
+    constexpr Set& operator=(const Set& other) noexcept
+    {
+        if (this != &other)
+        {
+            m_elementCount = other.m_elementCount;
+            m_elementDefault = other.m_elementDefault;
+            for (SizeType i{0}; i < m_elementCount; ++i)
+                m_elements[i] = other.m_elements[i];
+        }
+        return *this;
+    }
+
+    constexpr Set& operator=(Set&& other) noexcept
+    {
+        return *this = other; // Delegate to copy assignment
     }
 
     [[nodiscard]] constexpr SizeType Count() const noexcept override
@@ -137,27 +152,28 @@ class Set : public IndexInterface<T>
         return m_elementCount;
     }
 
-    constexpr bool ContainsBy(const auto& f, const T& element) const noexcept
+    [[nodiscard]] constexpr bool ContainsBy(const auto& f, const T& element) const noexcept
     {
         return not IsUniqueElementBy(f, element);
     }
 
-    constexpr bool Contains(const T& element) const noexcept
+    [[nodiscard]] constexpr bool Contains(const T& element) const noexcept
     {
         return not IsUniqueElement(element);
     }
 
-    constexpr int DefaultElement() const noexcept
+    [[nodiscard]] constexpr int DefaultElement() const noexcept
     {
         return m_elementDefault;
     }
 
-    constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override
+    [[nodiscard]] constexpr bool ElementAtIndexIsEqualToElement(const SizeType index,
+                                                                const T& element) const noexcept override
     {
         return (index < m_elementCount) and Contains(element);
     }
 
-    static constexpr SizeType MaximumCount() noexcept
+    [[nodiscard]] static consteval SizeType MaximumCount() noexcept
     {
         return maximumElements;
     }

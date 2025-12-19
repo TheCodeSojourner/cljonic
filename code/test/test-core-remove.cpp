@@ -25,7 +25,7 @@ SCENARIO("Remove", "[CljonicCoreRemove]")
     constexpr auto rpt{Repeat<10, int>{1}};
     CHECK(Equal(Array{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, Remove(Even, rpt)));
 
-    constexpr auto s{Set<int, 4>{1, 2, 3, 4, 5, 6}};
+    constexpr auto s{Set<int, 4>{1, 2, 3, 4}};
     CHECK(Equal(Array{1, 3}, Remove(Even, s)));
 
     CHECK(Equal(Array{'H', 'e', 'o'}, Remove([](const char c) { return ('l' == c); }, String{"Hello"})));

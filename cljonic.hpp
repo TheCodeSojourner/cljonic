@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Thu Jan 30 09:39:44 AM MST 2025
+// This file was generated Fri Dec 19 01:57:45 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -211,6 +211,14 @@ template <typename T, typename... Ts>
 constexpr bool AnyFloatingPointValueTypes =
     (std::floating_point<typename T::value_type> or ... or std::floating_point<typename Ts::value_type>);
 
+template <typename T>
+concept ValidCljonicContainerElementType =
+    std::is_nothrow_copy_constructible_v<T> and
+    std::is_nothrow_move_constructible_v<T> and
+    std::is_nothrow_copy_assignable_v<T> and
+    std::is_nothrow_move_assignable_v<T> and
+    std::is_nothrow_destructible_v<T>;
+
 template <typename T, typename... Ts>
 using FindCommonType = typename InnerFindCommonType<T, Ts...>::type;
 
@@ -296,7 +304,7 @@ return (a < MinArgument(args...)) ? a : MinArgument(args...);
 }
 
 template <typename C, typename... Cs>
-constexpr auto MinimumOfCljonicCollectionMaximumCounts() {
+consteval auto MinimumOfCljonicCollectionMaximumCounts() {
 if constexpr(sizeof...(Cs) == 0) {
 return C::MaximumCount();
 } else {
@@ -305,7 +313,7 @@ return (MinArgument(C::MaximumCount(), Cs::MaximumCount()), ...);
 }
 
 template <typename C, typename... Cs>
-constexpr auto SumOfCljonicCollectionMaximumCounts() {
+consteval auto SumOfCljonicCollectionMaximumCounts() {
 if constexpr(sizeof...(Cs) == 0) {
 return C::MaximumCount();
 } else {
@@ -313,7 +321,7 @@ return (C::MaximumCount() + ... + Cs::MaximumCount());
 }
 }
 
-constexpr SizeType MaximumElements(const SizeType count) noexcept {
+consteval SizeType MaximumElements(const SizeType count) noexcept {
 return MinArgument(count, CljonicCollectionMaximumElementCount);
 }
 
@@ -321,7 +329,7 @@ return MinArgument(count, CljonicCollectionMaximumElementCount);
 
 namespace cljonic {
 
-template <typename T, SizeType MaxElements>
+template <ValidCljonicContainerElementType T, SizeType MaxElements>
 class Array;
 
 template <int... StartEndStep>
@@ -330,7 +338,7 @@ class Range;
 template <SizeType MaxElements, typename T>
 class Repeat;
 
-template <typename T, SizeType MaxElements>
+template <ValidCljonicContainerElementType T, SizeType MaxElements>
 class Set;
 
 template <SizeType MaxElements>
@@ -520,13 +528,14 @@ constexpr auto TakeWhile(F&& f, const C& c) noexcept;
 
 } // namespace cljonic
 
+#include <concepts>
 #include <cstring>
 #include <initializer_list>
 #include <type_traits>
 
 namespace cljonic {
 
-template <typename T, SizeType MaxElements>
+template <ValidCljonicContainerElementType T, SizeType MaxElements>
 class Array : public IndexInterface<T> {
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
 
@@ -543,7 +552,7 @@ constexpr friend void MConj(Array<U, N>& array, const U& value);
 template <typename U, SizeType N>
 constexpr friend void MSet(Array<U, N>& array, const U& value, const SizeType index);
 
-constexpr auto ValueAtIndex(const SizeType index) const noexcept {
+[[nodiscard]] constexpr auto ValueAtIndex(const SizeType index) const noexcept {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 }
 
@@ -555,28 +564,28 @@ using value_type = T;
 constexpr Array() noexcept : m_elementCount(0), m_elementDefault(T{}) {
 }
 
-constexpr explicit Array(const std::initializer_list<const T> elements) noexcept
-    : m_elementCount(MinArgument(MaximumCount(), elements.size())), m_elementDefault(T{}) {
-for(SizeType i{0}; i < m_elementCount; ++i)
-m_elements[i] = *(elements.begin() + i);
+template <typename... Args>
+constexpr explicit Array(Args&&... args) noexcept : m_elementCount(0), m_elementDefault(T{}) {
+static_assert(sizeof...(Args) <= MaximumCount(), "Array initialized with too many elements");
+((m_elements[m_elementCount++] = args), ...);
 }
 
-constexpr Array(const Array& other) = default;
-constexpr Array(Array&& other) = default;
+constexpr Array(const Array& other) noexcept = default;
+constexpr Array(Array&& other) noexcept = default;
 
-constexpr const T* begin() const noexcept {
+[[nodiscard]] constexpr const T* begin() const noexcept {
 return m_elements;
 }
 
-constexpr const T* end() const noexcept {
+[[nodiscard]] constexpr const T* end() const noexcept {
 return m_elements + m_elementCount;
 }
 
-constexpr T operator[](const SizeType index) const noexcept override {
+[[nodiscard]] constexpr T operator[](const SizeType index) const noexcept override {
 return ValueAtIndex(index);
 }
 
-constexpr T operator()(const SizeType index) const noexcept {
+[[nodiscard]] constexpr T operator()(const SizeType index) const noexcept {
 return this->operator[](index);
 }
 
@@ -590,19 +599,24 @@ m_elements[i] = other.m_elements[i];
 return *this;
 }
 
+constexpr Array& operator=(Array&& other) noexcept {
+return *this = other;
+}
+
 [[nodiscard]] constexpr SizeType Count() const noexcept override {
 return m_elementCount;
 }
 
-constexpr const T& DefaultElement() const noexcept {
+[[nodiscard]] constexpr const T& DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
-constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override {
+[[nodiscard]] constexpr bool ElementAtIndexIsEqualToElement(const SizeType index,
+                                                            const T& element) const noexcept override {
 return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
 }
 
-static constexpr SizeType MaximumCount() noexcept {
+[[nodiscard]] static consteval SizeType MaximumCount() noexcept {
 return maximumElements;
 }
 };
@@ -950,7 +964,7 @@ Repeat(T) -> Repeat<CljonicCollectionMaximumElementCount, T>;
 #include <type_traits>
 
 namespace cljonic {
-template <typename T, SizeType MaxElements>
+template <ValidCljonicContainerElementType T, SizeType MaxElements>
 class Set : public IndexInterface<T> {
 static_assert(not std::floating_point<T>,
               "Floating point types should not be compared for equality, hence Sets of floating point types are "
@@ -967,14 +981,14 @@ SizeType m_elementCount;
 const T m_elementDefault;
 T m_elements[maximumElements]{};
 
-constexpr bool IsUniqueElementBy(const auto& f, const T& element) const noexcept {
+[[nodiscard]] constexpr bool IsUniqueElementBy(const auto& f, const T& element) const noexcept {
 auto result{true};
 for(SizeType i{0}; (result and (i < m_elementCount)); ++i)
 result = not AreEqualBy(f, element, m_elements[i]);
 return result;
 }
 
-constexpr bool IsUniqueElement(const T& element) const noexcept {
+[[nodiscard]] constexpr bool IsUniqueElement(const T& element) const noexcept {
 auto result{true};
 for(SizeType i{0}; (result and (i < m_elementCount)); ++i)
 result = not AreEqual(element, m_elements[i]);
@@ -989,57 +1003,67 @@ using value_type = T;
 constexpr Set() noexcept : m_elementCount(0), m_elementDefault(T{}) {
 }
 
-constexpr explicit Set(const std::initializer_list<const T> elements) noexcept
-    : m_elementCount(0), m_elementDefault(T{}) {
-
-for(const auto& element : elements) {
-if(m_elementCount == MaximumCount())
-break;
-if(IsUniqueElement(element))
-m_elements[m_elementCount++] = element;
-}
+template <typename... Args>
+constexpr explicit Set(Args... elements) noexcept : m_elementCount(0), m_elementDefault(T{}) {
+static_assert(sizeof...(Args) <= MaximumCount(), "Set initialized with too many elements");
+((IsUniqueElement(elements) ? (m_elements[m_elementCount++] = elements, void()) : void()), ...);
 }
 
-constexpr Set(const Set& other) = default;
-constexpr Set(Set&& other) = default;
+constexpr Set(const Set& other) noexcept = default;
+constexpr Set(Set&& other) noexcept = default;
 
-constexpr const T* begin() const noexcept {
+[[nodiscard]] constexpr const T* begin() const noexcept {
 return m_elements;
 }
 
-constexpr const T* end() const noexcept {
+[[nodiscard]] constexpr const T* end() const noexcept {
 return m_elements + m_elementCount;
 }
 
-constexpr T operator[](const SizeType index) const noexcept override {
+[[nodiscard]] constexpr T operator[](const SizeType index) const noexcept override {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 }
 
-constexpr T operator()(const T& t) const noexcept {
+[[nodiscard]] constexpr T operator()(const T& t) const noexcept {
 return Contains(t) ? t : m_elementDefault;
+}
+
+constexpr Set& operator=(const Set& other) noexcept {
+if(this != &other) {
+m_elementCount = other.m_elementCount;
+m_elementDefault = other.m_elementDefault;
+for(SizeType i{0}; i < m_elementCount; ++i)
+m_elements[i] = other.m_elements[i];
+}
+return *this;
+}
+
+constexpr Set& operator=(Set&& other) noexcept {
+return *this = other;
 }
 
 [[nodiscard]] constexpr SizeType Count() const noexcept override {
 return m_elementCount;
 }
 
-constexpr bool ContainsBy(const auto& f, const T& element) const noexcept {
+[[nodiscard]] constexpr bool ContainsBy(const auto& f, const T& element) const noexcept {
 return not IsUniqueElementBy(f, element);
 }
 
-constexpr bool Contains(const T& element) const noexcept {
+[[nodiscard]] constexpr bool Contains(const T& element) const noexcept {
 return not IsUniqueElement(element);
 }
 
-constexpr int DefaultElement() const noexcept {
+[[nodiscard]] constexpr int DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
-constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override {
+[[nodiscard]] constexpr bool ElementAtIndexIsEqualToElement(const SizeType index,
+                                                            const T& element) const noexcept override {
 return (index < m_elementCount) and Contains(element);
 }
 
-static constexpr SizeType MaximumCount() noexcept {
+[[nodiscard]] static consteval SizeType MaximumCount() noexcept {
 return maximumElements;
 }
 };
@@ -1068,7 +1092,7 @@ SizeType m_elementCount;
 const char m_elementDefault;
 char m_elements[maximumElements + 1]{};
 
-constexpr auto ValueAtIndex(const SizeType index) const noexcept {
+[[nodiscard]] constexpr auto ValueAtIndex(const SizeType index) const noexcept {
 return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
 }
 
@@ -1081,13 +1105,11 @@ constexpr String() noexcept : m_elementCount(0), m_elementDefault('\0') {
 m_elements[0] = '\0';
 }
 
-constexpr explicit String(const std::initializer_list<const char> elements) noexcept
-    : m_elementCount(0), m_elementDefault('\0') {
-for(const auto& element : elements) {
-if(m_elementCount == MaximumCount())
-break;
-m_elements[m_elementCount++] = element;
-}
+template <typename... Args>
+requires(std::same_as<std::remove_cvref_t<Args>, char> && ...)
+constexpr explicit String(Args&&... args) noexcept : m_elementCount(0), m_elementDefault('\0') {
+static_assert(sizeof...(Args) <= MaximumCount(), "String initialized with too many elements");
+((m_elements[m_elementCount++] = args), ...);
 m_elements[m_elementCount] = '\0';
 }
 
@@ -1099,8 +1121,8 @@ m_elementCount += 1;
 m_elements[m_elementCount] = '\0';
 }
 
-constexpr String(const String& other) = default;
-constexpr String(String&& other) = default;
+constexpr String(const String& other) noexcept = default;
+constexpr String(String&& other) noexcept = default;
 
 [[nodiscard]] constexpr Iterator begin() const noexcept {
 return Iterator{*this, 0};
@@ -1110,11 +1132,11 @@ return Iterator{*this, 0};
 return Iterator{*this, m_elementCount};
 }
 
-constexpr char operator[](const SizeType index) const noexcept override {
+[[nodiscard]] constexpr char operator[](const SizeType index) const noexcept override {
 return ValueAtIndex(index);
 }
 
-constexpr char operator()(const SizeType index) const noexcept {
+[[nodiscard]] constexpr char operator()(const SizeType index) const noexcept {
 return this->operator[](index);
 }
 
@@ -1122,15 +1144,16 @@ return this->operator[](index);
 return m_elementCount;
 }
 
-constexpr char DefaultElement() const noexcept {
+[[nodiscard]] constexpr char DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
-constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const char& element) const noexcept override {
+[[nodiscard]] constexpr bool ElementAtIndexIsEqualToElement(const SizeType index,
+                                                            const char& element) const noexcept override {
 return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
 }
 
-static constexpr SizeType MaximumCount() noexcept {
+[[nodiscard]] static consteval SizeType MaximumCount() noexcept {
 return maximumElements;
 }
 };

@@ -24,7 +24,7 @@ SCENARIO("IndexOfBy", "[CljonicCoreIndexOfBy]")
     constexpr auto rpt{Repeat<10, int>{1}};
     CHECK(CLJONIC_INVALID_INDEX == IndexOfBy(SameInts, rpt, 9));
 
-    constexpr auto s{Set<int, 4>{1, 2, 3, 4, 5, 6}};
+    constexpr auto s{Set<int, 4>{1, 2, 3, 4}};
     CHECK(3 == IndexOfBy(SameInts, s, 4));
 
     CHECK(2 == IndexOfBy(SameInts, String{"Hello"}, 'l'));

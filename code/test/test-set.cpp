@@ -10,18 +10,16 @@ SCENARIO("Set", "[CljonicSet]")
         constexpr auto s0{Set<int, 10>{}};
         constexpr auto s1{Set<int, 10>{1, 2, 3, 4}};
         constexpr auto s2{Set<int, 4>{1, 2, 3, 4}};
-        constexpr auto s3{Set<int, 4>{1, 2, 3, 4, 5, 6}};
-        constexpr auto s4{Set<int, 4>{1, 2, 1, 4, 5, 6}};
-        constexpr auto s5{Set{1, 2, 3, 4}};
-        constexpr auto s6{Set{1, 2, 1, 4}};
+        constexpr auto s3{Set<int, 4>{1, 2, 1, 4}};
+        constexpr auto s4{Set{1, 2, 3, 4}};
+        constexpr auto s5{Set{1, 2, 1, 4}};
 
         CHECK(0 == s0.Count());
         CHECK(4 == s1.Count());
         CHECK(4 == s2.Count());
-        CHECK(4 == s3.Count());
+        CHECK(3 == s3.Count());
         CHECK(4 == s4.Count());
-        CHECK(4 == s5.Count());
-        CHECK(3 == s6.Count());
+        CHECK(3 == s5.Count());
 
         CHECK(not s0.Contains(1));
 
@@ -39,37 +37,30 @@ SCENARIO("Set", "[CljonicSet]")
 
         CHECK(s3.Contains(1));
         CHECK(s3.Contains(2));
-        CHECK(s3.Contains(3));
+        CHECK(not s3.Contains(3));
         CHECK(s3.Contains(4));
         CHECK(not s3.Contains(5));
 
         CHECK(s4.Contains(1));
         CHECK(s4.Contains(2));
-        CHECK(not s4.Contains(3));
+        CHECK(s4.Contains(3));
         CHECK(s4.Contains(4));
-        CHECK(s4.Contains(5));
+        CHECK(not s4.Contains(5));
 
         CHECK(s5.Contains(1));
         CHECK(s5.Contains(2));
-        CHECK(s5.Contains(3));
+        CHECK(not s5.Contains(3));
         CHECK(s5.Contains(4));
         CHECK(not s5.Contains(5));
-
-        CHECK(s6.Contains(1));
-        CHECK(s6.Contains(2));
-        CHECK(not s6.Contains(3));
-        CHECK(s6.Contains(4));
-        CHECK(not s6.Contains(5));
     }
 
     {
         constexpr auto s0{Set<const char*, 10>{}};
         constexpr auto s1{Set<const char*, 10>{"1.1", "2.1", "3.1", "4.1"}};
         constexpr auto s2{Set<const char*, 4>{"1.1", "2.1", "3.1", "4.1"}};
-        constexpr auto s3{Set<const char*, 4>{"1.1", "2.1", "3.1", "4.1", "5.1", "6.1"}};
-        constexpr auto s4{Set<const char*, 4>{"1.1", "2.1", "1.1", "4.1", "5.1", "6.1"}};
-        constexpr auto s5{Set{"1.1", "2.1", "3.1", "4.1"}};
-        constexpr auto s6{Set{"1.1", "2.1", "1.1", "4.1"}};
+        constexpr auto s3{Set<const char*, 4>{"1.1", "2.1", "1.1", "4.1"}};
+        constexpr auto s4{Set{"1.1", "2.1", "3.1", "4.1"}};
+        constexpr auto s5{Set{"1.1", "2.1", "1.1", "4.1"}};
 
         // use the strings in these buffers to test Contains with non-literal strings
         char buffer1[4];
@@ -87,7 +78,6 @@ SCENARIO("Set", "[CljonicSet]")
         CHECK(0 == s0.Count());
         CHECK(4 == s1.Count());
         CHECK(4 == s2.Count());
-        CHECK(4 == s3.Count());
         CHECK(4 == s4.Count());
 
         CHECK(not s0.Contains(buffer1));
@@ -112,8 +102,8 @@ SCENARIO("Set", "[CljonicSet]")
         CHECK(s3.Contains(buffer1));
         CHECK(not s3.Contains(buffer2));
         CHECK(s3.Contains("1.1"));
-        CHECK(s3.Contains("2.1"));
-        CHECK(s3.Contains("3.1"));
+        CHECK(s4.Contains("2.1"));
+        CHECK(not s3.Contains("3.1"));
         CHECK(s3.Contains("4.1"));
         CHECK(not s3.Contains("5.1"));
 
@@ -121,24 +111,16 @@ SCENARIO("Set", "[CljonicSet]")
         CHECK(not s4.Contains(buffer2));
         CHECK(s4.Contains("1.1"));
         CHECK(s4.Contains("2.1"));
-        CHECK(not s4.Contains("3.1"));
+        CHECK(s4.Contains("3.1"));
         CHECK(s4.Contains("4.1"));
-        CHECK(s4.Contains("5.1"));
+        CHECK(not s4.Contains("5.1"));
 
         CHECK(s5.Contains(buffer1));
         CHECK(not s5.Contains(buffer2));
         CHECK(s5.Contains("1.1"));
         CHECK(s5.Contains("2.1"));
-        CHECK(s5.Contains("3.1"));
+        CHECK(not s5.Contains("3.1"));
         CHECK(s5.Contains("4.1"));
-        CHECK(not s5.Contains("5.1"));
-
-        CHECK(s6.Contains(buffer1));
-        CHECK(not s6.Contains(buffer2));
-        CHECK(s6.Contains("1.1"));
-        CHECK(s6.Contains("2.1"));
-        CHECK(not s6.Contains("3.1"));
-        CHECK(s6.Contains("4.1"));
     }
 
     {

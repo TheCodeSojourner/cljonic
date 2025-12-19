@@ -1,10 +1,12 @@
 #ifndef CLJONIC_ARRAY_HPP
 #define CLJONIC_ARRAY_HPP
 
+#include <concepts>
 #include <cstring>
 #include <initializer_list>
 #include <type_traits>
 #include "cljonic-collection-type.hpp"
+#include "cljonic-concepts.hpp"
 #include "cljonic-shared.hpp"
 
 namespace cljonic
@@ -16,7 +18,7 @@ namespace cljonic
  * heterogeneity.</b> An \b Array is a function of its indexable elements. An \b Array called with an out-of-bounds
  * index will return its \b default \b element. Many \ref Namespace_Core "Core" functions accept Array arguments.
  */
-template <typename T, SizeType MaxElements>
+template <ValidCljonicContainerElementType T, SizeType MaxElements>
 class Array : public IndexInterface<T>
 {
     static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
@@ -34,15 +36,14 @@ class Array : public IndexInterface<T>
     template <typename U, SizeType N>
     constexpr friend void MSet(Array<U, N>& array, const U& value, const SizeType index);
 
-    constexpr auto ValueAtIndex(const SizeType index) const noexcept
+    [[nodiscard]] constexpr auto ValueAtIndex(const SizeType index) const noexcept
     {
         return (index < m_elementCount) ? m_elements[index] : m_elementDefault;
     }
 
   public:
     /**
-    * The \b Array constructor returns an instance of Array initialized with its arguments. If the number of arguments
-    * exceeds the maximum number of elements specified, the extra arguments are silently ignored.
+    * The \b Array constructor returns an instance of Array initialized with its arguments.
     ~~~~~{.cpp}
     #include "cljonic.hpp"
 
@@ -53,8 +54,10 @@ class Array : public IndexInterface<T>
         constexpr auto a0{Array<int, 10>{}};                // immutable and empty
         constexpr auto a1{Array<int, 10>{1, 2, 3, 4}};      // immutable and sparse
         constexpr auto a2{Array<int, 4>{1, 2, 3, 4}};       // immutable and full
-        constexpr auto a3{Array<int, 4>{1, 2, 3, 4, 5, 6}}; // immutable and full, and the values 5 and 6 are ignored
         constexpr auto a4{Array{1, 2, 3, 4}};               // immutable and full of four int values
+
+        // Compiler Error: Array initialized with too many elements
+        // constexpr auto a{Array<int, 4>{0, 2, 4, 5, 6, 7, 8, 9}};
 
         // Compiler Error: Attempt to create an Array bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
         // constexpr auto a{Array<int, 1111>{0, 2, 4, 5, 6, 7, 8, 9}};
@@ -71,32 +74,32 @@ class Array : public IndexInterface<T>
     {
     }
 
-    constexpr explicit Array(const std::initializer_list<const T> elements) noexcept
-        : m_elementCount(MinArgument(MaximumCount(), elements.size())), m_elementDefault(T{})
+    template <typename... Args>
+    constexpr explicit Array(Args&&... args) noexcept : m_elementCount(0), m_elementDefault(T{})
     {
-        for (SizeType i{0}; i < m_elementCount; ++i)
-            m_elements[i] = *(elements.begin() + i);
+        static_assert(sizeof...(Args) <= MaximumCount(), "Array initialized with too many elements");
+        ((m_elements[m_elementCount++] = args), ...);
     }
 
-    constexpr Array(const Array& other) = default; // Copy constructor
-    constexpr Array(Array&& other) = default;      // Move constructor
+    constexpr Array(const Array& other) noexcept = default; // Copy constructor
+    constexpr Array(Array&& other) noexcept = default;      // Move constructor
 
-    constexpr const T* begin() const noexcept
+    [[nodiscard]] constexpr const T* begin() const noexcept
     {
         return m_elements;
     }
 
-    constexpr const T* end() const noexcept
+    [[nodiscard]] constexpr const T* end() const noexcept
     {
         return m_elements + m_elementCount;
     }
 
-    constexpr T operator[](const SizeType index) const noexcept override
+    [[nodiscard]] constexpr T operator[](const SizeType index) const noexcept override
     {
         return ValueAtIndex(index);
     }
 
-    constexpr T operator()(const SizeType index) const noexcept
+    [[nodiscard]] constexpr T operator()(const SizeType index) const noexcept
     {
         return this->operator[](index);
     }
@@ -113,22 +116,28 @@ class Array : public IndexInterface<T>
         return *this;
     }
 
+    constexpr Array& operator=(Array&& other) noexcept
+    {
+        return *this = other; // Delegate to copy assignment
+    }
+
     [[nodiscard]] constexpr SizeType Count() const noexcept override
     {
         return m_elementCount;
     }
 
-    constexpr const T& DefaultElement() const noexcept
+    [[nodiscard]] constexpr const T& DefaultElement() const noexcept
     {
         return m_elementDefault;
     }
 
-    constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override
+    [[nodiscard]] constexpr bool ElementAtIndexIsEqualToElement(const SizeType index,
+                                                                const T& element) const noexcept override
     {
         return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
     }
 
-    static constexpr SizeType MaximumCount() noexcept
+    [[nodiscard]] static consteval SizeType MaximumCount() noexcept
     {
         return maximumElements;
     }

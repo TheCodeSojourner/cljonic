@@ -13,7 +13,7 @@ using namespace cljonic::core;
 SCENARIO("SplitAt", "[CljonicCoreSplitAt]")
 {
     constexpr auto a{Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
-    CHECK(Equal(Array{Array<int, 10>{}, Array{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}}, SplitAt(0, a)));
+    CHECK(Equal(Array{Array<int, 10>{}, Array<int, 10>{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}}, SplitAt(0, a)));
     CHECK(Equal(Array{Array<int, 10>{0}, Array<int, 10>{1, 2, 3, 4, 5, 6, 7, 8, 9}}, SplitAt(1, a)));
     CHECK(Equal(Array{Array<int, 10>{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, Array<int, 10>{}}, SplitAt(50, a)));
     CHECK(Equal(Array{Array<int, 0>{}, Array<int, 0>{}}, SplitAt(50, Range<0>{})));

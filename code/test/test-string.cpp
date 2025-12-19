@@ -21,7 +21,7 @@ SCENARIO("String", "[CljonicString]")
     constexpr auto s4{String{"Hello"}};
     constexpr auto s5{String<10>{'H', 'e', 'l', 'l', 'o'}};
     constexpr auto s6{String<5>{'H', 'e', 'l', 'l', 'o'}};
-    constexpr auto s7{String<4>{'H', 'e', 'l', 'l', 'o'}};
+    constexpr auto s7{String<4>{'H', 'e', 'l', 'l'}};
     constexpr auto s8{String{'H', 'e', 'l', 'l', 'o'}};
     const auto s9{String{s}};
 

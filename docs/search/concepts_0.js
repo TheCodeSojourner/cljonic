@@ -20,5 +20,6 @@ var searchData=
   ['cljonic_3a_3aiscstring_17',['IsCString',['../conceptcljonic_1_1_is_c_string.html',1,'cljonic']]],
   ['cljonic_3a_3aisnotcljoniccollection_18',['IsNotCljonicCollection',['../conceptcljonic_1_1_is_not_cljonic_collection.html',1,'cljonic']]],
   ['cljonic_3a_3aisunaryfunction_19',['IsUnaryFunction',['../conceptcljonic_1_1_is_unary_function.html',1,'cljonic']]],
-  ['cljonic_3a_3aisunarypredicate_20',['IsUnaryPredicate',['../conceptcljonic_1_1_is_unary_predicate.html',1,'cljonic']]]
+  ['cljonic_3a_3aisunarypredicate_20',['IsUnaryPredicate',['../conceptcljonic_1_1_is_unary_predicate.html',1,'cljonic']]],
+  ['cljonic_3a_3avalidcljoniccontainerelementtype_21',['ValidCljonicContainerElementType',['../conceptcljonic_1_1_valid_cljonic_container_element_type.html',1,'cljonic']]]
 ];

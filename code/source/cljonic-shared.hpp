@@ -102,7 +102,7 @@ constexpr auto MinArgument(T a, Ts... args) noexcept
 }
 
 template <typename C, typename... Cs>
-constexpr auto MinimumOfCljonicCollectionMaximumCounts()
+consteval auto MinimumOfCljonicCollectionMaximumCounts()
 {
     if constexpr (sizeof...(Cs) == 0)
     {
@@ -115,7 +115,7 @@ constexpr auto MinimumOfCljonicCollectionMaximumCounts()
 }
 
 template <typename C, typename... Cs>
-constexpr auto SumOfCljonicCollectionMaximumCounts()
+consteval auto SumOfCljonicCollectionMaximumCounts()
 {
     if constexpr (sizeof...(Cs) == 0)
     {
@@ -127,7 +127,7 @@ constexpr auto SumOfCljonicCollectionMaximumCounts()
     }
 }
 
-constexpr SizeType MaximumElements(const SizeType count) noexcept
+consteval SizeType MaximumElements(const SizeType count) noexcept
 {
     return MinArgument(count, CljonicCollectionMaximumElementCount);
 }
