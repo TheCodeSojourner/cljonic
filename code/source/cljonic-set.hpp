@@ -19,6 +19,43 @@ namespace cljonic
  * something like heterogeneity.</b> A \b Set is a function of its elements. A \b Set called with a value not contained
  * within the set will return its \b default \b element.  Many \ref Namespace_Core "Core" functions accept Set
  * arguments.
+ *
+ * The \b Set constructor returns an instance of Set initialized with the unique elements in its arguments.
+ *
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+
+ using namespace cljonic;
+
+ int main()
+ {
+     const auto s0{Set<int, 10>{}};           // immutable, empty
+     const auto s1{Set<int, 10>{1, 2, 3, 4}}; // immutable, sparse
+     const auto s2{Set<int, 4>{1, 2, 3, 4}};  // immutable, full
+     const auto s5{Set{1, 2, 3, 4}};          // immutable, full of four int values
+     const auto s6{Set{1, 2, 1, 4}};          // immutable, sparse with three unique int values
+
+     // Compiler Error: Set initialized with too many elements
+     // constexpr auto s{Set<int, 4>{0, 2, 4, 5, 6, 7, 8, 9}};
+
+     // Compiler Error:
+     //     Floating point types should not be compared for equality,
+     //     hence Sets of floating point types are not allowed
+     // const auto s{Set{1.1, 2.2}};
+
+     // Compiler Error: A Set type must be equality comparable
+     // struct NonComparable
+     // {
+     //     bool operator==(const NonComparable&) const = delete;
+     // };
+     // const auto s{Set<NonComparable, 10>{}};
+
+     // Compiler Error: Attempt to create a Set bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+     // const auto s{Set<int, 1111>{}};
+
+     return 0;
+ }
+ ~~~~~
  */
 template <ValidCljonicContainerElementType T, SizeType MaxElements>
 class Set : public IndexInterface<T>
@@ -55,44 +92,6 @@ class Set : public IndexInterface<T>
     }
 
   public:
-    /**
-    * The \b Set constructor returns an instance of Set initialized with the unique elements in its arguments.
-    *
-    ~~~~~{.cpp}
-    #include "cljonic.hpp"
-
-    using namespace cljonic;
-
-    int main()
-    {
-        const auto s0{Set<int, 10>{}};                // immutable, empty
-        const auto s1{Set<int, 10>{1, 2, 3, 4}};      // immutable, sparse
-        const auto s2{Set<int, 4>{1, 2, 3, 4}};       // immutable, full
-        const auto s5{Set{1, 2, 3, 4}};               // immutable, full of four int values
-        const auto s6{Set{1, 2, 1, 4}};               // immutable, sparse with three unique int values
-
-        // Compiler Error: Set initialized with too many elements
-        // constexpr auto s{Set<int, 4>{0, 2, 4, 5, 6, 7, 8, 9}};
-
-        // Compiler Error:
-        //     Floating point types should not be compared for equality, hence Sets of floating point types are not
-    allowed
-        // const auto s{Set{1.1, 2.2}};
-
-        // Compiler Error: A Set type must be equality comparable
-        // struct NonComparable
-        // {
-        //     bool operator==(const NonComparable&) const = delete;
-        // };
-        // const auto s{Set<NonComparable, 10>{}};
-
-        // Compiler Error: Attempt to create a Set bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
-        // const auto s{Set<int, 1111>{}};
-
-        return 0;
-    }
-    ~~~~~
-    */
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Set>;
     using size_type = SizeType;
     using value_type = T;
