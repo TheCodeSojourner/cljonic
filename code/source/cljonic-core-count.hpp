@@ -40,7 +40,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto Count(const C& c) noexcept
+[[nodiscard]] constexpr auto Count(const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Count's parameter must be a cljonic collection");
 

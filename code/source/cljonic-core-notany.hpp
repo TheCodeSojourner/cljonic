@@ -51,7 +51,7 @@ int main()
 ~~~~~
 */
 template <typename F, typename C>
-constexpr auto NotAny(F&& f, const C& c) noexcept
+[[nodiscard]] constexpr auto NotAny(F&& f, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "NotAny's second parameter must be a cljonic collection");
 

@@ -37,7 +37,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto Seq(const C& c) noexcept
+[[nodiscard]] constexpr auto Seq(const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Seq's parameter must be a cljonic collection");
 

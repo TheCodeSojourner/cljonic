@@ -49,7 +49,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto Sort(const C& c) noexcept
+[[nodiscard]] constexpr auto Sort(const C& c) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 

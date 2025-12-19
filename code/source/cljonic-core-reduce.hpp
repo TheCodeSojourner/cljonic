@@ -92,7 +92,7 @@ int main()
 ~~~~~
 */
 template <typename F, typename C>
-constexpr auto Reduce(F&& f, const C& c) noexcept
+[[nodiscard]] constexpr auto Reduce(F&& f, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Reduce's second parameter must be a cljonic collection");
 
@@ -109,7 +109,7 @@ constexpr auto Reduce(F&& f, const C& c) noexcept
 }
 
 template <typename F, typename T, typename C>
-constexpr auto Reduce(F&& f, const T& t, const C& c) noexcept
+[[nodiscard]] constexpr auto Reduce(F&& f, const T& t, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Reduce's third parameter must be a cljonic collection");
 

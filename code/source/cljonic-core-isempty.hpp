@@ -36,7 +36,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto IsEmpty(const C& c) noexcept
+[[nodiscard]] constexpr auto IsEmpty(const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "IsEmpty's parameter must be a cljonic collection");
 

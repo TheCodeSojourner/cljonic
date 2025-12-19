@@ -104,7 +104,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> F1, <span class="keyword">typename</span> F2&gt;</div>
 <div class="foldopen" id="foldopen00018" data-start="{" data-end="}">
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#a173dc7bdd588d33175a25ce4cdf668bc">   18</a></span><span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#a173dc7bdd588d33175a25ce4cdf668bc">Compose</a>(F1&amp;&amp; f1, F2&amp;&amp; f2) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#a173dc7bdd588d33175a25ce4cdf668bc">   18</a></span>[[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#a173dc7bdd588d33175a25ce4cdf668bc">Compose</a>(F1&amp;&amp; f1, F2&amp;&amp; f2) <span class="keyword">noexcept</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>{</div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="keywordflow">return</span> [f1 = std::forward&lt;F1&gt;(f1), f2 = std::forward&lt;F2&gt;(f2)]&lt;<span class="keyword">typename</span>... T&gt;(T&amp;&amp;... args)</div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    {</div>
@@ -119,7 +119,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
 <div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> F1, <span class="keyword">typename</span> F2, <span class="keyword">typename</span>... Fs&gt;</div>
 <div class="foldopen" id="foldopen00129" data-start="{" data-end="}">
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#aed686c2a58dfdfcaeb1bf555d24a2568">  129</a></span><span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#a173dc7bdd588d33175a25ce4cdf668bc">Compose</a>(F1&amp;&amp; f1, F2&amp;&amp; f2, Fs&amp;&amp;... fs) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#aed686c2a58dfdfcaeb1bf555d24a2568">  129</a></span>[[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#a173dc7bdd588d33175a25ce4cdf668bc">Compose</a>(F1&amp;&amp; f1, F2&amp;&amp; f2, Fs&amp;&amp;... fs) <span class="keyword">noexcept</span></div>
 <div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>{</div>
 <div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#a173dc7bdd588d33175a25ce4cdf668bc">Compose</a>(std::forward&lt;F1&gt;(f1), <a class="code hl_function" href="namespacecljonic_1_1core.html#a173dc7bdd588d33175a25ce4cdf668bc">Compose</a>(std::forward&lt;F2&gt;(f2), std::forward&lt;Fs&gt;(fs)...));</div>
 <div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>}</div>
@@ -137,7 +137,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 19 2025 15:25:52 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Dec 19 2025 15:41:49 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

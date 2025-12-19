@@ -39,7 +39,7 @@ return 0;
 ~~~~~
 */
 template <typename T, typename C>
-constexpr auto Interpose(const T& t, const C& c) noexcept
+[[nodiscard]] constexpr auto Interpose(const T& t, const C& c) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 
@@ -61,7 +61,7 @@ constexpr auto Interpose(const T& t, const C& c) noexcept
     return result;
 }
 
-constexpr auto Interpose() noexcept
+[[nodiscard]] constexpr auto Interpose() noexcept
 {
     return Array<int, 0>{};
 }

@@ -49,7 +49,7 @@ return 0;
 ~~~~~
 */
 template <typename F, typename C, typename... Cs>
-constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept
+[[nodiscard]] constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable.
 

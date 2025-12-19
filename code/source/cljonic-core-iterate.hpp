@@ -41,7 +41,7 @@ int main()
 ~~~~~
 */
 template <typename F, typename T>
-constexpr auto Iterate(F&& f, const T& t) noexcept
+[[nodiscard]] constexpr auto Iterate(F&& f, const T& t) noexcept
 {
     static_assert(IsUnaryFunction<F, T>, "Iterate's first parameter is not a unary function of its second parameter");
 

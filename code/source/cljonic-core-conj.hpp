@@ -48,7 +48,7 @@ int main()
 ~~~~~
 */
 template <typename C, typename... Es>
-constexpr auto Conj(const C& c, const Es&... es) noexcept
+[[nodiscard]] constexpr auto Conj(const C& c, const Es&... es) noexcept
 {
     // #lizard forgives -- The length of this function is acceptable
 

@@ -45,7 +45,7 @@ int main()
 ~~~~~
 */
 template <typename T, typename... Ts>
-constexpr auto Max(const T& t, const Ts&... ts) noexcept
+[[nodiscard]] constexpr auto Max(const T& t, const Ts&... ts) noexcept
 {
     // #lizard forgives -- The complexity and length of this function is acceptable
 

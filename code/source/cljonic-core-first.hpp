@@ -43,7 +43,7 @@ return 0;
 ~~~~~
 */
 template <typename C>
-constexpr auto First(const C& coll) noexcept
+[[nodiscard]] constexpr auto First(const C& coll) noexcept
 {
     static_assert(IsCljonicCollection<C>, "First's parameter must be a cljonic collection");
 

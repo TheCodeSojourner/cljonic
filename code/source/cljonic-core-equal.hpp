@@ -57,7 +57,7 @@ int main()
 ~~~~~
 */
 template <typename T, typename... Ts>
-constexpr auto Equal(const T& t, const Ts&... ts) noexcept
+[[nodiscard]] constexpr auto Equal(const T& t, const Ts&... ts) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 

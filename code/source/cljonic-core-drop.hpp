@@ -40,7 +40,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto Drop(const SizeType count, const C& c) noexcept
+[[nodiscard]] constexpr auto Drop(const SizeType count, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Drop's second parameter must be a cljonic collection");
 

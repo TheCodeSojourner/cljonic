@@ -43,7 +43,7 @@ return 0;
 ~~~~~
 */
 template <typename C>
-constexpr auto Second(const C& coll) noexcept
+[[nodiscard]] constexpr auto Second(const C& coll) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Second's parameter must be a cljonic collection");
 

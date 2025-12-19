@@ -40,7 +40,7 @@ int main()
 ~~~~~
 */
 template <typename C, typename... Cs>
-constexpr auto Concat(const C& c, const Cs&... cs) noexcept
+[[nodiscard]] constexpr auto Concat(const C& c, const Cs&... cs) noexcept
 {
     // #lizard forgives -- The length of this function is acceptable
 
@@ -62,7 +62,7 @@ constexpr auto Concat(const C& c, const Cs&... cs) noexcept
     return result;
 }
 
-constexpr auto Concat() noexcept
+[[nodiscard]] constexpr auto Concat() noexcept
 {
     return Array<int, 0>{};
 }

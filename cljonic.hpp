@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Dec 19 03:25:52 PM MST 2025
+// This file was generated Fri Dec 19 03:41:49 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -672,11 +672,11 @@ static_assert(IsUnaryFunction<F, T>,
 constexpr Iterator(const Iterator& other) = default;
 constexpr Iterator(Iterator&& other) = default;
 
-Itr begin() {
+[[nodiscard]] Itr begin() {
 return Itr(*this, 0);
 }
 
-Itr end() {
+[[nodiscard]] Itr end() {
 return Itr(*this, MaximumCount());
 }
 
@@ -1166,7 +1166,7 @@ concept ComposeIsCallableWith = requires(F1 f1, F2 f2, Args&&... args) {
 };
 
 template <typename F1, typename F2>
-constexpr auto Compose(F1&& f1, F2&& f2) noexcept {
+[[nodiscard]] constexpr auto Compose(F1&& f1, F2&& f2) noexcept {
 return [f1 = std::forward<F1>(f1), f2 = std::forward<F2>(f2)]<typename... T>(T&&... args) {
 static_assert(ComposeIsCallableWith<F1, F2, T...>,
               "Each Compose argument must be callable with one argument of the return type of the argument to "
@@ -1176,7 +1176,7 @@ return f1(f2(std::forward<T>(args)...));
 };
 }
 template <typename F1, typename F2, typename... Fs>
-constexpr auto Compose(F1&& f1, F2&& f2, Fs&&... fs) noexcept {
+[[nodiscard]] constexpr auto Compose(F1&& f1, F2&& f2, Fs&&... fs) noexcept {
 return Compose(std::forward<F1>(f1), Compose(std::forward<F2>(f2), std::forward<Fs>(fs)...));
 }
 
@@ -1188,7 +1188,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C, typename... Cs>
-constexpr auto Concat(const C& c, const Cs&... cs) noexcept {
+[[nodiscard]] constexpr auto Concat(const C& c, const Cs&... cs) noexcept {
 
 static_assert(AllCljonicCollections<C, Cs...>, "All Concat parameters must be cljonic collections");
 
@@ -1207,7 +1207,7 @@ MConj(result, static_cast<ResultType>(c[i]));
 return result;
 }
 
-constexpr auto Concat() noexcept {
+[[nodiscard]] constexpr auto Concat() noexcept {
 return Array<int, 0>{};
 }
 
@@ -1219,7 +1219,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C, typename... Es>
-constexpr auto Conj(const C& c, const Es&... es) noexcept {
+[[nodiscard]] constexpr auto Conj(const C& c, const Es&... es) noexcept {
 
 static_assert(IsCljonicCollection<C>, "First Conj parameter must be a cljonic collection");
 
@@ -1245,7 +1245,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto Count(const C& c) noexcept {
+[[nodiscard]] constexpr auto Count(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Count's parameter must be a cljonic collection");
 
 return c.Count();
@@ -1344,7 +1344,7 @@ return (0 == m_collection.Count()) ? 0 : CljonicCollectionMaximumElementCount;
 }
 };
 template <typename C>
-constexpr auto Cycle(const C& c) noexcept {
+[[nodiscard]] constexpr auto Cycle(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Cycle's parameter must be a cljonic collection");
 
 return CycleCollection{c};
@@ -1358,7 +1358,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto Dedupe(const C& c) noexcept {
+[[nodiscard]] constexpr auto Dedupe(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Dedupe's parameter must be a cljonic collection");
 
 static_assert((not std::floating_point<typename C::value_type>),
@@ -1376,7 +1376,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto DedupeBy(F&& f, const C& c) noexcept {
+[[nodiscard]] constexpr auto DedupeBy(F&& f, const C& c) noexcept {
 
 static_assert(IsCljonicCollection<C>, "DedupeBy's second parameter must be a cljonic collection");
 
@@ -1410,7 +1410,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto DefaultElement(const C& c) noexcept {
+[[nodiscard]] constexpr auto DefaultElement(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "DefaultElement's parameter must be a cljonic collection");
 
 return c.DefaultElement();
@@ -1424,7 +1424,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto Drop(const SizeType count, const C& c) noexcept {
+[[nodiscard]] constexpr auto Drop(const SizeType count, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Drop's second parameter must be a cljonic collection");
 
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
@@ -1441,7 +1441,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto DropLast(const SizeType count, const C& c) noexcept {
+[[nodiscard]] constexpr auto DropLast(const SizeType count, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "DropLast's second parameter must be a cljonic collection");
 
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
@@ -1459,7 +1459,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto DropWhile(F&& f, const C& c) noexcept {
+[[nodiscard]] constexpr auto DropWhile(F&& f, const C& c) noexcept {
 
 static_assert(IsCljonicCollection<C>, "DropWhile's second parameter must be a cljonic collection");
 
@@ -1482,7 +1482,7 @@ namespace cljonic {
 
 namespace core {
 template <typename T, typename... Ts>
-constexpr auto Equal(const T& t, const Ts&... ts) noexcept {
+[[nodiscard]] constexpr auto Equal(const T& t, const Ts&... ts) noexcept {
 
 if constexpr(sizeof...(Ts) == 0) {
 if constexpr(IsCljonicCollection<T>)
@@ -1522,7 +1522,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename T, typename... Ts>
-constexpr auto EqualBy(F&& f, const T& t, const Ts&... ts) noexcept {
+[[nodiscard]] constexpr auto EqualBy(F&& f, const T& t, const Ts&... ts) noexcept {
 
 if constexpr(sizeof...(Ts) <= 0) {
 return true;
@@ -1552,7 +1552,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto Every(F&& f, const C& c) noexcept {
+[[nodiscard]] constexpr auto Every(F&& f, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Every's second parameter must be a cljonic collection");
 
 static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
@@ -1572,7 +1572,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto Filter(F&& f, const C& c) noexcept {
+[[nodiscard]] constexpr auto Filter(F&& f, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Filter's second parameter must be a cljonic collection");
 
 static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
@@ -1593,7 +1593,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto First(const C& coll) noexcept {
+[[nodiscard]] constexpr auto First(const C& coll) noexcept {
 static_assert(IsCljonicCollection<C>, "First's parameter must be a cljonic collection");
 
 return coll[0];
@@ -1607,7 +1607,7 @@ namespace cljonic {
 
 namespace core {
 template <typename T, typename... Ts>
-constexpr auto Identical(const T& t, const Ts&... ts) noexcept {
+[[nodiscard]] constexpr auto Identical(const T& t, const Ts&... ts) noexcept {
 if constexpr(sizeof...(Ts) <= 0) {
 return true;
 } else {
@@ -1624,7 +1624,7 @@ namespace cljonic {
 
 namespace core {
 template <typename T>
-constexpr void* Identity(const T& t) noexcept {
+[[nodiscard]] constexpr void* Identity(const T& t) noexcept {
 return (void*)&t;
 }
 
@@ -1638,7 +1638,7 @@ namespace cljonic {
 
 namespace core {
 template <typename T>
-constexpr auto Inc(const T t) noexcept {
+[[nodiscard]] constexpr auto Inc(const T t) noexcept {
 static_assert(IsArithmetic<T>, "Inc's parameter must be an arithmetic type");
 
 return (std::numeric_limits<T>::max() == t) ? t : (t + 1);
@@ -1652,7 +1652,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C, typename T>
-constexpr auto IndexOf(const C& c, const T& t) noexcept {
+[[nodiscard]] constexpr auto IndexOf(const C& c, const T& t) noexcept {
 
 static_assert(IsCljonicCollection<C>, "IndexOf's first parameter must be a cljonic collection");
 
@@ -1678,7 +1678,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C, typename T>
-constexpr auto IndexOfBy(F&& f, const C& c, const T& t) noexcept {
+[[nodiscard]] constexpr auto IndexOfBy(F&& f, const C& c, const T& t) noexcept {
 
 static_assert(IsCljonicCollection<C>, "IndexOfBy's second parameter must be a cljonic collection");
 
@@ -1705,7 +1705,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C, typename... Cs>
-constexpr auto Interleave(const C& c, const Cs&... cs) noexcept {
+[[nodiscard]] constexpr auto Interleave(const C& c, const Cs&... cs) noexcept {
 
 static_assert(AllCljonicCollections<C, Cs...>, "Interleave's parameters must all be cljonic collections");
 
@@ -1735,7 +1735,7 @@ namespace cljonic {
 
 namespace core {
 template <typename T, typename C>
-constexpr auto Interpose(const T& t, const C& c) noexcept {
+[[nodiscard]] constexpr auto Interpose(const T& t, const C& c) noexcept {
 
 static_assert(IsCljonicCollection<C>, "Interpose's second parameter must be a cljonic collection");
 
@@ -1754,7 +1754,7 @@ MConj(result, interposeValue);
 return result;
 }
 
-constexpr auto Interpose() noexcept {
+[[nodiscard]] constexpr auto Interpose() noexcept {
 return Array<int, 0>{};
 }
 
@@ -1768,7 +1768,7 @@ namespace cljonic {
 
 namespace core {
 template <typename T, typename... Ts>
-constexpr auto IsDistinct(const T& t, const Ts&... ts) noexcept {
+[[nodiscard]] constexpr auto IsDistinct(const T& t, const Ts&... ts) noexcept {
 
 if constexpr(sizeof...(Ts) == 0) {
 return true;
@@ -1822,7 +1822,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename T, typename... Ts>
-constexpr auto IsDistinctBy(F&& f, const T& t, const Ts&... ts) noexcept {
+[[nodiscard]] constexpr auto IsDistinctBy(F&& f, const T& t, const Ts&... ts) noexcept {
 
 if constexpr(sizeof...(Ts) == 0) {
 return true;
@@ -1884,7 +1884,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto IsEmpty(const C& c) noexcept {
+[[nodiscard]] constexpr auto IsEmpty(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "IsEmpty's parameter must be a cljonic collection");
 
 return 0 == c.Count();
@@ -1898,7 +1898,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto IsFull(const C& c) noexcept {
+[[nodiscard]] constexpr auto IsFull(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "IsFull's parameter must be a cljonic collection");
 
 return c.Count() == c.MaximumCount();
@@ -1912,7 +1912,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename T>
-constexpr auto Iterate(F&& f, const T& t) noexcept {
+[[nodiscard]] constexpr auto Iterate(F&& f, const T& t) noexcept {
 static_assert(IsUnaryFunction<F, T>, "Iterate's first parameter is not a unary function of its second parameter");
 
 return Iterator{std::forward<F>(f), t};
@@ -1926,7 +1926,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto Last(const C& c) noexcept {
+[[nodiscard]] constexpr auto Last(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Last's parameter must be a cljonic collection");
 
 return c[(c.Count() > 0) ? (c.Count() - 1) : 0];
@@ -1940,7 +1940,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C, typename T>
-constexpr auto LastIndexOf(const C& c, const T& t) noexcept {
+[[nodiscard]] constexpr auto LastIndexOf(const C& c, const T& t) noexcept {
 
 static_assert(IsCljonicCollection<C>, "LastIndexOf's first parameter must be a cljonic collection");
 
@@ -1970,7 +1970,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C, typename T>
-constexpr auto LastIndexOfBy(F&& f, const C& c, const T& t) noexcept {
+[[nodiscard]] constexpr auto LastIndexOfBy(F&& f, const C& c, const T& t) noexcept {
 
 static_assert(IsCljonicCollection<C>, "LastIndexOfBy's second parameter must be a cljonic collection");
 
@@ -1997,7 +1997,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C, typename... Cs>
-constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept {
+[[nodiscard]] constexpr auto Map(F&& f, const C& c, const Cs&... cs) noexcept {
 
 static_assert(AllCljonicCollections<C, Cs...>, "Map's second through last parameters must be cljonic collections");
 
@@ -2021,7 +2021,7 @@ namespace cljonic {
 
 namespace core {
 template <typename T, typename... Ts>
-constexpr auto Max(const T& t, const Ts&... ts) noexcept {
+[[nodiscard]] constexpr auto Max(const T& t, const Ts&... ts) noexcept {
 
 if constexpr(sizeof...(Ts) == 0) {
 static_assert(IsCljonicCollection<T>, "Max's parameter must be a cljonic collection");
@@ -2051,7 +2051,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename T, typename... Ts>
-constexpr auto MaxBy(F&& f, const T& t, const Ts&... ts) noexcept {
+[[nodiscard]] constexpr auto MaxBy(F&& f, const T& t, const Ts&... ts) noexcept {
 
 if constexpr(sizeof...(Ts) == 0) {
 static_assert(IsCljonicCollection<T>, "MaxBy's second parameter must be a cljonic collection");
@@ -2088,7 +2088,7 @@ namespace cljonic {
 
 namespace core {
 template <typename T, typename... Ts>
-constexpr auto Min(const T& t, const Ts&... ts) noexcept {
+[[nodiscard]] constexpr auto Min(const T& t, const Ts&... ts) noexcept {
 
 if constexpr(sizeof...(Ts) == 0) {
 static_assert(IsCljonicCollection<T>, "Min's parameter must be a cljonic collection");
@@ -2118,7 +2118,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename T, typename... Ts>
-constexpr auto MinBy(F&& f, const T& t, const Ts&... ts) noexcept {
+[[nodiscard]] constexpr auto MinBy(F&& f, const T& t, const Ts&... ts) noexcept {
 
 if constexpr(sizeof...(Ts) == 0) {
 static_assert(IsCljonicCollection<T>, "MinBy's second parameter must be a cljonic collection");
@@ -2155,7 +2155,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto NotAny(F&& f, const C& c) noexcept {
+[[nodiscard]] constexpr auto NotAny(F&& f, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "NotAny's second parameter must be a cljonic collection");
 
 static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
@@ -2172,7 +2172,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto NotEvery(F&& f, const C& c) noexcept {
+[[nodiscard]] constexpr auto NotEvery(F&& f, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "NotEvery's second parameter must be a cljonic collection");
 
 static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
@@ -2189,7 +2189,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto Nth(const C& c, const SizeType index) noexcept {
+[[nodiscard]] constexpr auto Nth(const C& c, const SizeType index) noexcept {
 static_assert(IsCljonicCollection<C> and (not IsCljonicSet<C>),
               "Nth's first parameter must be a cljonic collection other than a Set");
 
@@ -2197,7 +2197,7 @@ return c[index];
 }
 
 template <typename C, typename T>
-constexpr auto Nth(const C& c, const SizeType index, const T& t) noexcept {
+[[nodiscard]] constexpr auto Nth(const C& c, const SizeType index, const T& t) noexcept {
 static_assert(IsCljonicCollection<C> and (not IsCljonicSet<C>),
               "Nth's first parameter must be a cljonic collection other than a Set");
 
@@ -2217,7 +2217,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename... Args>
-constexpr auto Partial(F&& f, Args&&... args) noexcept {
+[[nodiscard]] constexpr auto Partial(F&& f, Args&&... args) noexcept {
 return [f = std::forward<F>(f), ... args = std::forward<Args>(args)](auto&&... rest) {
 static_assert(std::regular_invocable<F, Args..., decltype(rest)...>,
               "Partial's function cannot be called with the specified arguments");
@@ -2237,7 +2237,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto Reduce(F&& f, const C& c) noexcept {
+[[nodiscard]] constexpr auto Reduce(F&& f, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Reduce's second parameter must be a cljonic collection");
 
 static_assert(std::regular_invocable<F, typename C::value_type, typename C::value_type>,
@@ -2253,7 +2253,7 @@ return (0 == c.Count()) ? c.DefaultElement()
 }
 
 template <typename F, typename T, typename C>
-constexpr auto Reduce(F&& f, const T& t, const C& c) noexcept {
+[[nodiscard]] constexpr auto Reduce(F&& f, const T& t, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Reduce's third parameter must be a cljonic collection");
 
 static_assert(
@@ -2276,7 +2276,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto Remove(F&& f, const C& c) noexcept {
+[[nodiscard]] constexpr auto Remove(F&& f, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Remove's second parameter must be a cljonic collection");
 
 static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
@@ -2299,7 +2299,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C1, typename C2>
-constexpr auto Replace(const C1& c1, const C2& c2) noexcept {
+[[nodiscard]] constexpr auto Replace(const C1& c1, const C2& c2) noexcept {
 
 static_assert(IsCljonicCollection<C1>, "Replace's first parameter must be a cljonic collection");
 
@@ -2325,7 +2325,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto Reverse(const C& c) noexcept {
+[[nodiscard]] constexpr auto Reverse(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Reverse's parameter must be a cljonic collection");
 
 auto result{Array<typename C::value_type, C::MaximumCount()>{}};
@@ -2342,7 +2342,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto Second(const C& coll) noexcept {
+[[nodiscard]] constexpr auto Second(const C& coll) noexcept {
 static_assert(IsCljonicCollection<C>, "Second's parameter must be a cljonic collection");
 
 return coll[1];
@@ -2356,7 +2356,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto Seq(const C& c) noexcept {
+[[nodiscard]] constexpr auto Seq(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Seq's parameter must be a cljonic collection");
 
 return Take(c.MaximumCount(), c);
@@ -2370,7 +2370,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto Size(const C& c) noexcept {
+[[nodiscard]] constexpr auto Size(const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Size's parameter must be a cljonic collection");
 
 return c.MaximumCount();
@@ -2384,7 +2384,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto Some(F&& f, const C& c) noexcept {
+[[nodiscard]] constexpr auto Some(F&& f, const C& c) noexcept {
 
 static_assert(IsCljonicCollection<C>, "Some's second parameter must be a cljonic collection");
 
@@ -2405,7 +2405,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto Sort(const C& c) noexcept {
+[[nodiscard]] constexpr auto Sort(const C& c) noexcept {
 
 static_assert(IsCljonicCollection<C>, "Sort's parameter must be a cljonic collection");
 
@@ -2430,7 +2430,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto SortBy(F&& f, const C& c) noexcept {
+[[nodiscard]] constexpr auto SortBy(F&& f, const C& c) noexcept {
 
 static_assert(IsCljonicCollection<C>, "SortBy's second parameter must be a cljonic collection");
 
@@ -2460,7 +2460,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto SplitAt(const SizeType count, const C& c) noexcept {
+[[nodiscard]] constexpr auto SplitAt(const SizeType count, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "SplitAt's second parameter must be a cljonic collection");
 
 return Array{Take(count, c), Drop(count, c)};
@@ -2474,7 +2474,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto SplitWith(F&& f, const C& c) noexcept {
+[[nodiscard]] constexpr auto SplitWith(F&& f, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "SplitWith's second parameter must be a cljonic collection");
 
 static_assert(IsUnaryPredicate<std::decay_t<F>, typename C::value_type>,
@@ -2493,7 +2493,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto Subs(const C& c, const SizeType start, const SizeType end) noexcept {
+[[nodiscard]] constexpr auto Subs(const C& c, const SizeType start, const SizeType end) noexcept {
 static_assert(IsCljonicCollection<C>, "Subs's first parameter must be a cljonic collection");
 
 return ((c.Count() == 0) or (start >= c.Count()) or (end <= start))
@@ -2502,7 +2502,7 @@ return ((c.Count() == 0) or (start >= c.Count()) or (end <= start))
 }
 
 template <typename C>
-constexpr auto Subs(const C& c, const SizeType start) noexcept {
+[[nodiscard]] constexpr auto Subs(const C& c, const SizeType start) noexcept {
 static_assert(IsCljonicCollection<C>, "Subs's first parameter must be a cljonic collection");
 
 return Subs(c, start, c.Count());
@@ -2516,7 +2516,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto Take(const SizeType count, const C& c) noexcept {
+[[nodiscard]] constexpr auto Take(const SizeType count, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "Take's second parameter must be a cljonic collection");
 
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
@@ -2534,7 +2534,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto TakeLast(const SizeType count, const C& c) noexcept {
+[[nodiscard]] constexpr auto TakeLast(const SizeType count, const C& c) noexcept {
 static_assert(IsCljonicCollection<C>, "TakeLast's second parameter must be a cljonic collection");
 
 auto result{Array<typename C::value_type, c.MaximumCount()>{}};
@@ -2552,7 +2552,7 @@ namespace cljonic {
 
 namespace core {
 template <typename C>
-constexpr auto TakeNth(const SizeType nth, const C& c) noexcept {
+[[nodiscard]] constexpr auto TakeNth(const SizeType nth, const C& c) noexcept {
 
 static_assert(IsCljonicCollection<C>, "TakeNth's second parameter must be a cljonic collection");
 
@@ -2586,7 +2586,7 @@ namespace cljonic {
 
 namespace core {
 template <typename F, typename C>
-constexpr auto TakeWhile(F&& f, const C& c) noexcept {
+[[nodiscard]] constexpr auto TakeWhile(F&& f, const C& c) noexcept {
 
 static_assert(IsCljonicCollection<C>, "TakeWhile's second parameter must be a cljonic collection");
 

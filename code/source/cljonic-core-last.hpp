@@ -43,7 +43,7 @@ return 0;
 ~~~~~
 */
 template <typename C>
-constexpr auto Last(const C& c) noexcept
+[[nodiscard]] constexpr auto Last(const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Last's parameter must be a cljonic collection");
 

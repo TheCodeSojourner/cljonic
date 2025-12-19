@@ -37,7 +37,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto Reverse(const C& c) noexcept
+[[nodiscard]] constexpr auto Reverse(const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Reverse's parameter must be a cljonic collection");
 

@@ -69,7 +69,7 @@ return 0;
 ~~~~~
 */
 template <typename C1, typename C2>
-constexpr auto Replace(const C1& c1, const C2& c2) noexcept
+[[nodiscard]] constexpr auto Replace(const C1& c1, const C2& c2) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable.
 

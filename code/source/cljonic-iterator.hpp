@@ -99,12 +99,12 @@ class Iterator
     constexpr Iterator(const Iterator& other) = default; // Copy constructor
     constexpr Iterator(Iterator&& other) = default;      // Move constructor
 
-    Itr begin()
+    [[nodiscard]] Itr begin()
     {
         return Itr(*this, 0);
     }
 
-    Itr end()
+    [[nodiscard]] Itr end()
     {
         return Itr(*this, MaximumCount());
     }

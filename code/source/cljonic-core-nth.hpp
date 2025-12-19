@@ -43,7 +43,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto Nth(const C& c, const SizeType index) noexcept
+[[nodiscard]] constexpr auto Nth(const C& c, const SizeType index) noexcept
 {
     static_assert(IsCljonicCollection<C> and (not IsCljonicSet<C>),
                   "Nth's first parameter must be a cljonic collection other than a Set");
@@ -52,7 +52,7 @@ constexpr auto Nth(const C& c, const SizeType index) noexcept
 }
 
 template <typename C, typename T>
-constexpr auto Nth(const C& c, const SizeType index, const T& t) noexcept
+[[nodiscard]] constexpr auto Nth(const C& c, const SizeType index, const T& t) noexcept
 {
     static_assert(IsCljonicCollection<C> and (not IsCljonicSet<C>),
                   "Nth's first parameter must be a cljonic collection other than a Set");

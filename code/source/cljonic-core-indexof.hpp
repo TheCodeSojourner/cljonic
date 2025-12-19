@@ -55,7 +55,7 @@ int main()
 ~~~~~
 */
 template <typename C, typename T>
-constexpr auto IndexOf(const C& c, const T& t) noexcept
+[[nodiscard]] constexpr auto IndexOf(const C& c, const T& t) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 

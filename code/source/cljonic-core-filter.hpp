@@ -51,7 +51,7 @@ int main()
 ~~~~~
 */
 template <typename F, typename C>
-constexpr auto Filter(F&& f, const C& c) noexcept
+[[nodiscard]] constexpr auto Filter(F&& f, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Filter's second parameter must be a cljonic collection");
 

@@ -40,7 +40,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto DropLast(const SizeType count, const C& c) noexcept
+[[nodiscard]] constexpr auto DropLast(const SizeType count, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "DropLast's second parameter must be a cljonic collection");
 

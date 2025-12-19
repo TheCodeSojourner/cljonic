@@ -50,7 +50,7 @@ int main()
 ~~~~~
 */
 template <typename F, typename C>
-constexpr auto Every(F&& f, const C& c) noexcept
+[[nodiscard]] constexpr auto Every(F&& f, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Every's second parameter must be a cljonic collection");
 

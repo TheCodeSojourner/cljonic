@@ -40,7 +40,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto DefaultElement(const C& c) noexcept
+[[nodiscard]] constexpr auto DefaultElement(const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "DefaultElement's parameter must be a cljonic collection");
 

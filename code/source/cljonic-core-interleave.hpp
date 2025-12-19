@@ -48,7 +48,7 @@ return 0;
 ~~~~~
 */
 template <typename C, typename... Cs>
-constexpr auto Interleave(const C& c, const Cs&... cs) noexcept
+[[nodiscard]] constexpr auto Interleave(const C& c, const Cs&... cs) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 

@@ -34,7 +34,7 @@ int main()
 ~~~~~
 */
 template <typename T>
-constexpr void* Identity(const T& t) noexcept
+[[nodiscard]] constexpr void* Identity(const T& t) noexcept
 {
     return (void*)&t;
 }

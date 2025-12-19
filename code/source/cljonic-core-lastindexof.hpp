@@ -50,7 +50,7 @@ int main()
 ~~~~~
 */
 template <typename C, typename T>
-constexpr auto LastIndexOf(const C& c, const T& t) noexcept
+[[nodiscard]] constexpr auto LastIndexOf(const C& c, const T& t) noexcept
 {
     // #lizard forgives -- The complexity and length of this function is acceptable
 

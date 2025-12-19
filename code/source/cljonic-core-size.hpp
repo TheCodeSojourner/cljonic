@@ -40,7 +40,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto Size(const C& c) noexcept
+[[nodiscard]] constexpr auto Size(const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Size's parameter must be a cljonic collection");
 

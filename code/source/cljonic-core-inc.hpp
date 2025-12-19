@@ -38,7 +38,7 @@ int main()
 ~~~~~
 */
 template <typename T>
-constexpr auto Inc(const T t) noexcept
+[[nodiscard]] constexpr auto Inc(const T t) noexcept
 {
     static_assert(IsArithmetic<T>, "Inc's parameter must be an arithmetic type");
 

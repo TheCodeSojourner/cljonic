@@ -41,7 +41,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto SplitAt(const SizeType count, const C& c) noexcept
+[[nodiscard]] constexpr auto SplitAt(const SizeType count, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "SplitAt's second parameter must be a cljonic collection");
 

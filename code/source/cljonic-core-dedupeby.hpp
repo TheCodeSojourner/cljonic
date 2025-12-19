@@ -52,7 +52,7 @@ int main()
 ~~~~~
 */
 template <typename F, typename C>
-constexpr auto DedupeBy(F&& f, const C& c) noexcept
+[[nodiscard]] constexpr auto DedupeBy(F&& f, const C& c) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 

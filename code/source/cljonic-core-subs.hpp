@@ -47,7 +47,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto Subs(const C& c, const SizeType start, const SizeType end) noexcept
+[[nodiscard]] constexpr auto Subs(const C& c, const SizeType start, const SizeType end) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Subs's first parameter must be a cljonic collection");
 
@@ -57,7 +57,7 @@ constexpr auto Subs(const C& c, const SizeType start, const SizeType end) noexce
 }
 
 template <typename C>
-constexpr auto Subs(const C& c, const SizeType start) noexcept
+[[nodiscard]] constexpr auto Subs(const C& c, const SizeType start) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Subs's first parameter must be a cljonic collection");
 

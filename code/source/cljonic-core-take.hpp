@@ -43,7 +43,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto Take(const SizeType count, const C& c) noexcept
+[[nodiscard]] constexpr auto Take(const SizeType count, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Take's second parameter must be a cljonic collection");
 

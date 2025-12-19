@@ -51,7 +51,7 @@ int main()
 ~~~~~
 */
 template <typename F, typename C>
-constexpr auto NotEvery(F&& f, const C& c) noexcept
+[[nodiscard]] constexpr auto NotEvery(F&& f, const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "NotEvery's second parameter must be a cljonic collection");
 

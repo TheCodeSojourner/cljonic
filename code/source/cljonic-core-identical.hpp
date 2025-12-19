@@ -38,7 +38,7 @@ int main()
 ~~~~~
 */
 template <typename T, typename... Ts>
-constexpr auto Identical(const T& t, const Ts&... ts) noexcept
+[[nodiscard]] constexpr auto Identical(const T& t, const Ts&... ts) noexcept
 {
     if constexpr (sizeof...(Ts) <= 0)
     {

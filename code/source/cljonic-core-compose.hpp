@@ -15,7 +15,7 @@ concept ComposeIsCallableWith = requires(F1 f1, F2 f2, Args&&... args) {
 };
 
 template <typename F1, typename F2>
-constexpr auto Compose(F1&& f1, F2&& f2) noexcept
+[[nodiscard]] constexpr auto Compose(F1&& f1, F2&& f2) noexcept
 {
     return [f1 = std::forward<F1>(f1), f2 = std::forward<F2>(f2)]<typename... T>(T&&... args)
     {
@@ -126,7 +126,7 @@ int main()
 ~~~~~
 */
 template <typename F1, typename F2, typename... Fs>
-constexpr auto Compose(F1&& f1, F2&& f2, Fs&&... fs) noexcept
+[[nodiscard]] constexpr auto Compose(F1&& f1, F2&& f2, Fs&&... fs) noexcept
 {
     return Compose(std::forward<F1>(f1), Compose(std::forward<F2>(f2), std::forward<Fs>(fs)...));
 }

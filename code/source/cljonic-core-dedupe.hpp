@@ -53,7 +53,7 @@ int main()
 ~~~~~
 */
 template <typename C>
-constexpr auto Dedupe(const C& c) noexcept
+[[nodiscard]] constexpr auto Dedupe(const C& c) noexcept
 {
     static_assert(IsCljonicCollection<C>, "Dedupe's parameter must be a cljonic collection");
 
