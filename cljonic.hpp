@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Dec 19 03:03:58 PM MST 2025
+// This file was generated Fri Dec 19 03:11:19 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -549,12 +549,16 @@ static_assert(sizeof...(Args) <= MaximumCount(), "Array initialized with too man
 constexpr Array(const Array& other) noexcept = default;
 constexpr Array(Array&& other) noexcept = default;
 
-[[nodiscard]] constexpr const T* begin() const noexcept {
-return m_elements;
+private:
+using Iterator = CollectionIterator<Array>;
+
+public:
+[[nodiscard]] constexpr Iterator begin() const noexcept {
+return Iterator{*this, 0};
 }
 
-[[nodiscard]] constexpr const T* end() const noexcept {
-return m_elements + m_elementCount;
+[[nodiscard]] constexpr Iterator end() const noexcept {
+return Iterator{*this, m_elementCount};
 }
 
 [[nodiscard]] constexpr T operator[](const SizeType index) const noexcept override {
@@ -986,12 +990,16 @@ static_assert(sizeof...(Args) <= MaximumCount(), "Set initialized with too many 
 constexpr Set(const Set& other) noexcept = default;
 constexpr Set(Set&& other) noexcept = default;
 
-[[nodiscard]] constexpr const T* begin() const noexcept {
-return m_elements;
+private:
+using Iterator = CollectionIterator<Set>;
+
+public:
+[[nodiscard]] constexpr Iterator begin() const noexcept {
+return Iterator{*this, 0};
 }
 
-[[nodiscard]] constexpr const T* end() const noexcept {
-return m_elements + m_elementCount;
+[[nodiscard]] constexpr Iterator end() const noexcept {
+return Iterator{*this, m_elementCount};
 }
 
 [[nodiscard]] constexpr T operator[](const SizeType index) const noexcept override {

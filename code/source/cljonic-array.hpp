@@ -5,6 +5,7 @@
 #include <cstring>
 #include <initializer_list>
 #include <type_traits>
+#include "cljonic-collection-iterator.hpp"
 #include "cljonic-collection-type.hpp"
 #include "cljonic-concepts.hpp"
 #include "cljonic-shared.hpp"
@@ -81,14 +82,18 @@ class Array : public IndexInterface<T>
     constexpr Array(const Array& other) noexcept = default; // Copy constructor
     constexpr Array(Array&& other) noexcept = default;      // Move constructor
 
-    [[nodiscard]] constexpr const T* begin() const noexcept
+  private:
+    using Iterator = CollectionIterator<Array>;
+
+  public:
+    [[nodiscard]] constexpr Iterator begin() const noexcept
     {
-        return m_elements;
+        return Iterator{*this, 0};
     }
 
-    [[nodiscard]] constexpr const T* end() const noexcept
+    [[nodiscard]] constexpr Iterator end() const noexcept
     {
-        return m_elements + m_elementCount;
+        return Iterator{*this, m_elementCount};
     }
 
     [[nodiscard]] constexpr T operator[](const SizeType index) const noexcept override
