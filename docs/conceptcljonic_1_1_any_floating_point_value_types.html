@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cljonic: /home/pauwhi/Downloads/junk/cljonic/code/source/cljonic-range.hpp File Reference</title>
+<title>cljonic: cljonic::AnyFloatingPointValueTypes Concept Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -71,40 +71,25 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_050edd66366d13764f98250ef6db77f6.html">code</a></li><li class="navelem"><a class="el" href="dir_a55a43e3701336a786915d81b81be99b.html">source</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacecljonic.html">cljonic</a></li><li class="navelem"><a class="el" href="conceptcljonic_1_1_any_floating_point_value_types.html">AnyFloatingPointValueTypes</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
-<a href="#namespaces">Namespaces</a> &#124;
-<a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">cljonic-range.hpp File Reference</div></div>
+  <div class="headertitle"><div class="title">cljonic::AnyFloatingPointValueTypes Concept Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;concepts&gt;</code><br />
-<code>#include &quot;<a class="el" href="cljonic-collection-iterator_8hpp_source.html">cljonic-collection-iterator.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="cljonic-collection-type_8hpp_source.html">cljonic-collection-type.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="cljonic-shared_8hpp_source.html">cljonic-shared.hpp</a>&quot;</code><br />
-</div>
-<p><a href="cljonic-range_8hpp_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcljonic_1_1_range.html">cljonic::Range&lt; StartEndStep &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
-Namespaces</h2></td></tr>
-<tr class="memitem:namespacecljonic" id="r_namespacecljonic"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html">cljonic</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a2daf9dafcf871f7bf26d704ca6c7f0ae" id="r_a2daf9dafcf871f7bf26d704ca6c7f0ae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecljonic.html#a2daf9dafcf871f7bf26d704ca6c7f0ae">cljonic::Range</a> () -&gt; <a class="el" href="classcljonic_1_1_range.html">Range</a>&lt;&gt;</td></tr>
-<tr class="separator:a2daf9dafcf871f7bf26d704ca6c7f0ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
-</div><!-- contents -->
+
+<p><code>#include &lt;<a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>&gt;</code></p>
+<h2 class="groupheader">Concept definition</h2>
+<div class="fragment"><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... <a class="code hl_variable" href="namespacecljonic.html#a9c8bd3b0fd8138f5fb72f03dac87bf50">Ts</a>&gt;</div>
+<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="conceptcljonic_1_1_any_floating_point_value_types.html">cljonic::AnyFloatingPointValueTypes</a> = </div>
+<div class="line">    (std::floating_point&lt;typename T::value_type&gt; || ... || std::floating_point&lt;typename Ts::value_type&gt;)</div>
+<div class="ttc" id="aconceptcljonic_1_1_any_floating_point_value_types_html"><div class="ttname"><a href="conceptcljonic_1_1_any_floating_point_value_types.html">cljonic::AnyFloatingPointValueTypes</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00105">cljonic-concepts.hpp:105</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a9c8bd3b0fd8138f5fb72f03dac87bf50"><div class="ttname"><a href="namespacecljonic.html#a9c8bd3b0fd8138f5fb72f03dac87bf50">cljonic::IsBinaryPredicateForAllCljonicCollections</a></div><div class="ttdeci">constexpr bool IsBinaryPredicateForAllCljonicCollections</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00123">cljonic-concepts.hpp:123</a></div></div>
+</div><!-- fragment --><a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock">
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00105">105</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated on Fri Dec 19 2025 15:03:58 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8

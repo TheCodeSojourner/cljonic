@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Dec 19 02:49:46 PM MST 2025
+// This file was generated Fri Dec 19 03:03:58 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -94,29 +94,7 @@ enum class CljonicCollectionType {
 #include <limits>
 #include <type_traits>
 
-namespace inner_find_common_type {
-
-template <typename T, typename... Ts>
-struct InnerFindCommonType;
-
-template <typename T>
-struct InnerFindCommonType<T> {
-using type = T;
-};
-
-template <typename T, typename U, typename... Ts>
-struct InnerFindCommonType<T, U, Ts...> {
-
-using type = std::conditional_t<(std::convertible_to<U, T> && ... && std::convertible_to<Ts, T>),
-                                typename InnerFindCommonType<T, Ts...>::type,
-                                typename InnerFindCommonType<U, Ts...>::type>;
-};
-
-} // namespace inner_find_common_type
-
 namespace cljonic {
-
-using namespace inner_find_common_type;
 
 template <typename T>
 concept IsArithmetic = std::integral<T> or std::floating_point<T>;
@@ -184,21 +162,20 @@ template <typename T, typename... Ts>
 concept AllCljonicSets = (IsCljonicSet<T> and ... and IsCljonicSet<Ts>);
 
 template <typename T, typename... Ts>
-constexpr bool AllConvertibleTypes = (std::convertible_to<T, Ts> and ...);
+concept AllConvertibleTypes = (std::convertible_to<T, Ts> && ...);
 
 template <typename T, typename... Ts>
-constexpr bool AllConvertibleValueTypes =
-    (AllConvertibleTypes<typename T::value_type, typename Ts::value_type> and ...);
+concept AllConvertibleValueTypes = (AllConvertibleTypes<typename T::value_type, typename Ts::value_type> && ...);
 
 template <typename T, typename... Ts>
-constexpr bool AllEqualityComparableTypes = (std::equality_comparable_with<T, Ts> and ...);
+concept AllEqualityComparableTypes = (std::equality_comparable_with<T, Ts> && ...);
 
 template <typename T, typename... Ts>
-constexpr bool AllEqualityComparableValueTypes =
-    (std::equality_comparable_with<typename T::value_type, typename Ts::value_type> and ...);
+concept AllEqualityComparableValueTypes =
+    (std::equality_comparable_with<typename T::value_type, typename Ts::value_type> && ...);
 
 template <typename T, typename... Ts>
-constexpr bool AnyFloatingPointTypes = (std::floating_point<T> or ... or std::floating_point<Ts>);
+concept AnyFloatingPointTypes = (std::floating_point<T> || ... || std::floating_point<Ts>);
 
 template <typename T, typename... Ts>
 concept AllNotCljonicCollections = (IsNotCljonicCollection<T> and ... and IsNotCljonicCollection<Ts>);
@@ -208,8 +185,8 @@ concept AllSameCljonicCollectionType =
     (std::same_as<typename T::cljonic_collection_type, typename Ts::cljonic_collection_type> and ...);
 
 template <typename T, typename... Ts>
-constexpr bool AnyFloatingPointValueTypes =
-    (std::floating_point<typename T::value_type> or ... or std::floating_point<typename Ts::value_type>);
+concept AnyFloatingPointValueTypes =
+    (std::floating_point<typename T::value_type> || ... || std::floating_point<typename Ts::value_type>);
 
 template <typename T>
 concept ValidCljonicContainerElementType =
@@ -220,10 +197,10 @@ concept ValidCljonicContainerElementType =
     std::is_nothrow_destructible_v<T>;
 
 template <typename T, typename... Ts>
-using FindCommonType = typename InnerFindCommonType<T, Ts...>::type;
+using FindCommonType = std::common_type_t<T, Ts...>;
 
 template <typename T, typename... Ts>
-using FindCommonValueType = typename InnerFindCommonType<typename T::value_type, typename Ts::value_type...>::type;
+using FindCommonValueType = std::common_type_t<typename T::value_type, typename Ts::value_type...>;
 
 template <typename F, IsCljonicCollection T, IsCljonicCollection... Ts>
 constexpr bool IsBinaryPredicateForAllCljonicCollections =
