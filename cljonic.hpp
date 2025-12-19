@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Dec 19 03:19:00 PM MST 2025
+// This file was generated Fri Dec 19 03:25:52 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -860,7 +860,7 @@ constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const int& e
 return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
 }
 
-static constexpr auto MaximumCount() noexcept {
+[[nodiscard]] static consteval auto MaximumCount() noexcept {
 return maximumElements;
 }
 };
@@ -926,7 +926,7 @@ constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& ele
 return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
 }
 
-static constexpr auto MaximumCount() noexcept {
+[[nodiscard]] static consteval auto MaximumCount() noexcept {
 return maximumElements;
 }
 };

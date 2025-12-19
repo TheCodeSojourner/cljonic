@@ -101,7 +101,7 @@ class Repeat : public IndexInterface<T>
         return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
     }
 
-    static constexpr auto MaximumCount() noexcept
+    [[nodiscard]] static consteval auto MaximumCount() noexcept
     {
         return maximumElements;
     }
