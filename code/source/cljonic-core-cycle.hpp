@@ -106,7 +106,7 @@ class CycleCollection
         return MaximumCount();
     }
 
-    [[nodiscard]] constexpr ElementType& DefaultElement() const noexcept
+    [[nodiscard]] constexpr const ElementType& DefaultElement() const noexcept
     {
         return m_collection.DefaultElement();
     }

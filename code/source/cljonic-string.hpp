@@ -120,7 +120,7 @@ class String : public IndexInterface<char>
         return m_elementCount;
     }
 
-    [[nodiscard]] constexpr char DefaultElement() const noexcept
+    [[nodiscard]] constexpr const char& DefaultElement() const noexcept
     {
         return m_elementDefault;
     }

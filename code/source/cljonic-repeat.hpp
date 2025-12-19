@@ -91,7 +91,7 @@ class Repeat : public IndexInterface<T>
         return m_elementCount;
     }
 
-    constexpr const T& DefaultElement() const noexcept
+    [[nodiscard]] constexpr const T& DefaultElement() const noexcept
     {
         return m_elementDefault;
     }

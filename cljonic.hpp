@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Dec 19 03:11:19 PM MST 2025
+// This file was generated Fri Dec 19 03:19:00 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -852,7 +852,7 @@ return ValueAtIndex(index);
 return m_elementCount;
 }
 
-constexpr int DefaultElement() const noexcept {
+[[nodiscard]] constexpr const int& DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
@@ -918,7 +918,7 @@ return ValueAtIndex(index);
 return m_elementCount;
 }
 
-constexpr const T& DefaultElement() const noexcept {
+[[nodiscard]] constexpr const T& DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
@@ -1036,7 +1036,7 @@ return not IsUniqueElementBy(f, element);
 return not IsUniqueElement(element);
 }
 
-[[nodiscard]] constexpr int DefaultElement() const noexcept {
+[[nodiscard]] constexpr const T& DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
@@ -1125,7 +1125,7 @@ return this->operator[](index);
 return m_elementCount;
 }
 
-[[nodiscard]] constexpr char DefaultElement() const noexcept {
+[[nodiscard]] constexpr const char& DefaultElement() const noexcept {
 return m_elementDefault;
 }
 
@@ -1335,7 +1335,7 @@ return m_collection[IndexToElementIndex(index)];
 return MaximumCount();
 }
 
-[[nodiscard]] constexpr ElementType& DefaultElement() const noexcept {
+[[nodiscard]] constexpr const ElementType& DefaultElement() const noexcept {
 return m_collection.DefaultElement();
 }
 

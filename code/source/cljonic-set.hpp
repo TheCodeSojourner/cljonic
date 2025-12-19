@@ -167,7 +167,7 @@ class Set : public IndexInterface<T>
         return not IsUniqueElement(element);
     }
 
-    [[nodiscard]] constexpr int DefaultElement() const noexcept
+    [[nodiscard]] constexpr const T& DefaultElement() const noexcept
     {
         return m_elementDefault;
     }

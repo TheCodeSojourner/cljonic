@@ -242,7 +242,7 @@ class Range : public IndexInterface<int>
         return m_elementCount;
     }
 
-    constexpr int DefaultElement() const noexcept
+    [[nodiscard]] constexpr const int& DefaultElement() const noexcept
     {
         return m_elementDefault;
     }
