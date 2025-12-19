@@ -69,7 +69,7 @@ template <typename C, typename... Cs>
     return result;
 }
 
-constexpr auto Interleave() noexcept
+[[nodiscard]] constexpr auto Interleave() noexcept
 {
     return Array<int, 0>{};
 }

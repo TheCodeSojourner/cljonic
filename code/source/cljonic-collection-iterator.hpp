@@ -18,7 +18,7 @@ class CollectionIterator
     {
     }
 
-    constexpr auto operator*() const noexcept -> decltype(m_collection[m_index])
+    [[nodiscard]] constexpr auto operator*() const noexcept -> decltype(m_collection[m_index])
     {
         return m_collection[m_index];
     }
@@ -29,7 +29,7 @@ class CollectionIterator
         return *this;
     }
 
-    constexpr bool operator!=(const CollectionIterator& other) const noexcept
+    [[nodiscard]] constexpr bool operator!=(const CollectionIterator& other) const noexcept
     {
         return m_index != other.m_index;
     }
@@ -40,7 +40,7 @@ class CollectionIterator
         return *this;
     }
 
-    constexpr CollectionIterator operator+(int value) const noexcept
+    [[nodiscard]] constexpr CollectionIterator operator+(int value) const noexcept
     {
         CollectionIterator temp = *this;
         temp += value;

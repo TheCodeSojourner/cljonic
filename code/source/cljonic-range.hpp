@@ -232,7 +232,7 @@ class Range : public IndexInterface<int>
         return Iterator{*this, m_elementCount};
     }
 
-    constexpr int operator[](const SizeType index) const noexcept override
+    [[nodiscard]] constexpr int operator[](const SizeType index) const noexcept override
     {
         return ValueAtIndex(index);
     }
@@ -247,7 +247,8 @@ class Range : public IndexInterface<int>
         return m_elementDefault;
     }
 
-    constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const int& element) const noexcept override
+    [[nodiscard]] constexpr bool ElementAtIndexIsEqualToElement(const SizeType index,
+                                                                const int& element) const noexcept override
     {
         return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
     }

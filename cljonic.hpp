@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Dec 19 03:41:49 PM MST 2025
+// This file was generated Fri Dec 19 03:54:31 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -49,7 +49,7 @@ constexpr CollectionIterator(const T& collection, const SizeType index) noexcept
     : m_collection(collection), m_index(index) {
 }
 
-constexpr auto operator*() const noexcept -> decltype(m_collection[m_index]) {
+[[nodiscard]] constexpr auto operator*() const noexcept -> decltype(m_collection[m_index]) {
 return m_collection[m_index];
 }
 
@@ -58,7 +58,7 @@ constexpr CollectionIterator& operator++() noexcept {
 return *this;
 }
 
-constexpr bool operator!=(const CollectionIterator& other) const noexcept {
+[[nodiscard]] constexpr bool operator!=(const CollectionIterator& other) const noexcept {
 return m_index != other.m_index;
 }
 
@@ -67,7 +67,7 @@ m_index += value;
 return *this;
 }
 
-constexpr CollectionIterator operator+(int value) const noexcept {
+[[nodiscard]] constexpr CollectionIterator operator+(int value) const noexcept {
 CollectionIterator temp = *this;
 temp += value;
 return temp;
@@ -225,7 +225,7 @@ virtual constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, cons
 constexpr auto CLJONIC_INVALID_INDEX{std::numeric_limits<SizeType>::max()};
 
 template <typename F, typename T, typename U>
-constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept {
+[[nodiscard]] constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept {
 
 if constexpr(IsCljonicSet<T> or IsCljonicSet<U>) {
 auto result{t.Count() == u.Count()};
@@ -243,7 +243,7 @@ return f(t, u);
 }
 
 template <typename T, typename U>
-constexpr bool AreEqual(const T& t, const U& u) noexcept {
+[[nodiscard]] constexpr bool AreEqual(const T& t, const U& u) noexcept {
 
 if constexpr(IsCString<T> and IsCString<U>) {
 return std::strcmp(t, u) == 0;
@@ -263,7 +263,7 @@ return t == u;
 }
 
 template <typename T, typename U>
-constexpr bool FirstLessThanSecond(const T& t, const U& u) noexcept {
+[[nodiscard]] constexpr bool FirstLessThanSecond(const T& t, const U& u) noexcept {
 if constexpr(IsCString<T> and IsCString<U>) {
 return std::strcmp(t, u) < 0;
 } else {
@@ -272,7 +272,7 @@ return t < u;
 }
 
 template <typename T, typename... Ts>
-constexpr auto MinArgument(T a, Ts... args) noexcept {
+[[nodiscard]] constexpr auto MinArgument(T a, Ts... args) noexcept {
 if constexpr(sizeof...(args) == 0) {
 return a;
 } else {
@@ -281,16 +281,16 @@ return (a < MinArgument(args...)) ? a : MinArgument(args...);
 }
 
 template <typename C, typename... Cs>
-consteval auto MinimumOfCljonicCollectionMaximumCounts() {
+[[nodiscard]] consteval auto MinimumOfCljonicCollectionMaximumCounts() {
 if constexpr(sizeof...(Cs) == 0) {
 return C::MaximumCount();
 } else {
-return (MinArgument(C::MaximumCount(), Cs::MaximumCount()), ...);
+return MinArgument(C::MaximumCount(), Cs::MaximumCount()...);
 }
 }
 
 template <typename C, typename... Cs>
-consteval auto SumOfCljonicCollectionMaximumCounts() {
+[[nodiscard]] consteval auto SumOfCljonicCollectionMaximumCounts() {
 if constexpr(sizeof...(Cs) == 0) {
 return C::MaximumCount();
 } else {
@@ -298,7 +298,7 @@ return (C::MaximumCount() + ... + Cs::MaximumCount());
 }
 }
 
-consteval SizeType MaximumElements(const SizeType count) noexcept {
+[[nodiscard]] consteval SizeType MaximumElements(const SizeType count) noexcept {
 return MinArgument(count, CljonicCollectionMaximumElementCount);
 }
 
@@ -642,7 +642,7 @@ Itr(const Iterator& iterator, SizeType index)
     : m_f{iterator.m_f}, m_index{index}, m_nextValue{iterator.m_initialValue} {
 }
 
-T operator*() const {
+[[nodiscard]] T operator*() const {
 return m_nextValue;
 }
 
@@ -654,7 +654,7 @@ m_nextValue = m_f(m_nextValue);
 return *this;
 }
 
-bool operator!=(const Itr& other) const {
+[[nodiscard]] bool operator!=(const Itr& other) const {
 return m_index != other.m_index;
 }
 };
@@ -844,7 +844,7 @@ return Iterator{*this, 0};
 return Iterator{*this, m_elementCount};
 }
 
-constexpr int operator[](const SizeType index) const noexcept override {
+[[nodiscard]] constexpr int operator[](const SizeType index) const noexcept override {
 return ValueAtIndex(index);
 }
 
@@ -856,7 +856,8 @@ return m_elementCount;
 return m_elementDefault;
 }
 
-constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const int& element) const noexcept override {
+[[nodiscard]] constexpr bool ElementAtIndexIsEqualToElement(const SizeType index,
+                                                            const int& element) const noexcept override {
 return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
 }
 
@@ -910,7 +911,7 @@ return Iterator{*this, 0};
 return Iterator{*this, m_elementCount};
 }
 
-constexpr T operator[](const SizeType index) const noexcept override {
+[[nodiscard]] constexpr T operator[](const SizeType index) const noexcept override {
 return ValueAtIndex(index);
 }
 
@@ -922,7 +923,8 @@ return m_elementCount;
 return m_elementDefault;
 }
 
-constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override {
+[[nodiscard]] constexpr bool ElementAtIndexIsEqualToElement(const SizeType index,
+                                                            const T& element) const noexcept override {
 return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
 }
 
@@ -1280,7 +1282,7 @@ constexpr CycleIterator(const CycleCollection& cycle, const SizeType index) noex
     : m_cycle(cycle), m_index(index) {
 }
 
-constexpr auto operator*() const noexcept -> decltype(m_cycle[m_index]) {
+[[nodiscard]] constexpr auto operator*() const noexcept -> decltype(m_cycle[m_index]) {
 return m_cycle[m_cycle.IndexToElementIndex(m_index)];
 }
 
@@ -1289,7 +1291,7 @@ constexpr CycleIterator& operator++() noexcept {
 return *this;
 }
 
-constexpr bool operator!=(const CycleIterator& other) const noexcept {
+[[nodiscard]] constexpr bool operator!=(const CycleIterator& other) const noexcept {
 return m_index != other.m_index;
 }
 
@@ -1298,7 +1300,7 @@ m_index += value;
 return *this;
 }
 
-constexpr CycleIterator operator+(const int value) const noexcept {
+[[nodiscard]] constexpr CycleIterator operator+(const int value) const noexcept {
 CycleIterator temp = *this;
 temp += value;
 return temp;
@@ -1723,7 +1725,7 @@ MConj(result, c[i]);
 return result;
 }
 
-constexpr auto Interleave() noexcept {
+[[nodiscard]] constexpr auto Interleave() noexcept {
 return Array<int, 0>{};
 }
 

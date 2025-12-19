@@ -40,7 +40,7 @@ class CycleCollection
         {
         }
 
-        constexpr auto operator*() const noexcept -> decltype(m_cycle[m_index])
+        [[nodiscard]] constexpr auto operator*() const noexcept -> decltype(m_cycle[m_index])
         {
             return m_cycle[m_cycle.IndexToElementIndex(m_index)];
         }
@@ -51,7 +51,7 @@ class CycleCollection
             return *this;
         }
 
-        constexpr bool operator!=(const CycleIterator& other) const noexcept
+        [[nodiscard]] constexpr bool operator!=(const CycleIterator& other) const noexcept
         {
             return m_index != other.m_index;
         }
@@ -62,7 +62,7 @@ class CycleCollection
             return *this;
         }
 
-        constexpr CycleIterator operator+(const int value) const noexcept
+        [[nodiscard]] constexpr CycleIterator operator+(const int value) const noexcept
         {
             CycleIterator temp = *this;
             temp += value;

@@ -81,7 +81,7 @@ class Repeat : public IndexInterface<T>
         return Iterator{*this, m_elementCount};
     }
 
-    constexpr T operator[](const SizeType index) const noexcept override
+    [[nodiscard]] constexpr T operator[](const SizeType index) const noexcept override
     {
         return ValueAtIndex(index);
     }
@@ -96,7 +96,8 @@ class Repeat : public IndexInterface<T>
         return m_elementDefault;
     }
 
-    constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T& element) const noexcept override
+    [[nodiscard]] constexpr bool ElementAtIndexIsEqualToElement(const SizeType index,
+                                                                const T& element) const noexcept override
     {
         return (index < m_elementCount) and AreEqual(ValueAtIndex(index), element);
     }

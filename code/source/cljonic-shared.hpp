@@ -22,7 +22,7 @@ class IndexInterface
 constexpr auto CLJONIC_INVALID_INDEX{std::numeric_limits<SizeType>::max()};
 
 template <typename F, typename T, typename U>
-constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept
+[[nodiscard]] constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 
@@ -47,7 +47,7 @@ constexpr bool AreEqualBy(F&& f, const T& t, const U& u) noexcept
 }
 
 template <typename T, typename U>
-constexpr bool AreEqual(const T& t, const U& u) noexcept
+[[nodiscard]] constexpr bool AreEqual(const T& t, const U& u) noexcept
 {
     // #lizard forgives -- The length and complexity of this function is acceptable
 
@@ -76,7 +76,7 @@ constexpr bool AreEqual(const T& t, const U& u) noexcept
 }
 
 template <typename T, typename U>
-constexpr bool FirstLessThanSecond(const T& t, const U& u) noexcept
+[[nodiscard]] constexpr bool FirstLessThanSecond(const T& t, const U& u) noexcept
 {
     if constexpr (IsCString<T> and IsCString<U>)
     {
@@ -89,7 +89,7 @@ constexpr bool FirstLessThanSecond(const T& t, const U& u) noexcept
 }
 
 template <typename T, typename... Ts>
-constexpr auto MinArgument(T a, Ts... args) noexcept
+[[nodiscard]] constexpr auto MinArgument(T a, Ts... args) noexcept
 {
     if constexpr (sizeof...(args) == 0)
     {
@@ -102,7 +102,7 @@ constexpr auto MinArgument(T a, Ts... args) noexcept
 }
 
 template <typename C, typename... Cs>
-consteval auto MinimumOfCljonicCollectionMaximumCounts()
+[[nodiscard]] consteval auto MinimumOfCljonicCollectionMaximumCounts()
 {
     if constexpr (sizeof...(Cs) == 0)
     {
@@ -110,12 +110,12 @@ consteval auto MinimumOfCljonicCollectionMaximumCounts()
     }
     else
     {
-        return (MinArgument(C::MaximumCount(), Cs::MaximumCount()), ...);
+        return MinArgument(C::MaximumCount(), Cs::MaximumCount()...);
     }
 }
 
 template <typename C, typename... Cs>
-consteval auto SumOfCljonicCollectionMaximumCounts()
+[[nodiscard]] consteval auto SumOfCljonicCollectionMaximumCounts()
 {
     if constexpr (sizeof...(Cs) == 0)
     {
@@ -127,7 +127,7 @@ consteval auto SumOfCljonicCollectionMaximumCounts()
     }
 }
 
-consteval SizeType MaximumElements(const SizeType count) noexcept
+[[nodiscard]] consteval SizeType MaximumElements(const SizeType count) noexcept
 {
     return MinArgument(count, CljonicCollectionMaximumElementCount);
 }

@@ -64,7 +64,7 @@ class Iterator
         {
         }
 
-        T operator*() const
+        [[nodiscard]] T operator*() const
         {
             return m_nextValue;
         }
@@ -79,7 +79,7 @@ class Iterator
             return *this;
         }
 
-        bool operator!=(const Itr& other) const
+        [[nodiscard]] bool operator!=(const Itr& other) const
         {
             return m_index != other.m_index;
         }

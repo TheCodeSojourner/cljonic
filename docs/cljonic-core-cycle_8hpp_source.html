@@ -120,7 +120,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        {</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        }</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator*() <span class="keyword">const</span> <span class="keyword">noexcept</span> -&gt; <span class="keyword">decltype</span>(m_cycle[m_index])</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        [[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator*() <span class="keyword">const</span> <span class="keyword">noexcept</span> -&gt; <span class="keyword">decltype</span>(m_cycle[m_index])</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>        {</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>            <span class="keywordflow">return</span> m_cycle[m_cycle.IndexToElementIndex(m_index)];</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        }</div>
@@ -131,7 +131,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        }</div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> operator!=(<span class="keyword">const</span> CycleIterator&amp; other) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        [[nodiscard]] <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> operator!=(<span class="keyword">const</span> CycleIterator&amp; other) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        {</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>            <span class="keywordflow">return</span> m_index != other.m_index;</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        }</div>
@@ -142,7 +142,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        }</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        <span class="keyword">constexpr</span> CycleIterator operator+(<span class="keyword">const</span> <span class="keywordtype">int</span> value) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        [[nodiscard]] <span class="keyword">constexpr</span> CycleIterator operator+(<span class="keyword">const</span> <span class="keywordtype">int</span> value) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        {</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>            CycleIterator temp = *<span class="keyword">this</span>;</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>            temp += value;</div>
@@ -253,7 +253,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 19 2025 15:41:49 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Dec 19 2025 15:54:32 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
