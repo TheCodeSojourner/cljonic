@@ -57,6 +57,7 @@ class Set : public IndexInterface<T>
   public:
     /**
     * The \b Set constructor returns an instance of Set initialized with the unique elements in its arguments.
+    *
     ~~~~~{.cpp}
     #include "cljonic.hpp"
 

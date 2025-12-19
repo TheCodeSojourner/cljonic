@@ -17,6 +17,27 @@ namespace cljonic
  * specified type (i.e., It is homogenous).  <b>Note that one could create an Array of a \b UNION to get something like
  * heterogeneity.</b> An \b Array is a function of its indexable elements. An \b Array called with an out-of-bounds
  * index will return its \b default \b element. Many \ref Namespace_Core "Core" functions accept Array arguments.
+ *
+ * The \b Array constructor returns an instance of Array initialized with its arguments.
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+ using namespace cljonic;
+ int main()
+ {
+     constexpr auto a0{Array<int, 10>{}};           // immutable and empty
+     constexpr auto a1{Array<int, 10>{1, 2, 3, 4}}; // immutable and sparse
+     constexpr auto a2{Array<int, 4>{1, 2, 3, 4}};  // immutable and full
+     constexpr auto a4{Array{1, 2, 3, 4}};          // immutable and full of four int values
+
+     // Compiler Error: Array initialized with too many elements
+     // constexpr auto a{Array<int, 4>{0, 2, 4, 5, 6, 7, 8, 9}};
+
+     // Compiler Error: Attempt to create an Array bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+     // constexpr auto a{Array<int, 1111>{0, 2, 4, 5, 6, 7, 8, 9}};
+
+     return 0;
+ }
+ ~~~~~
  */
 template <ValidCljonicContainerElementType T, SizeType MaxElements>
 class Array : public IndexInterface<T>
@@ -42,30 +63,6 @@ class Array : public IndexInterface<T>
     }
 
   public:
-    /**
-    * The \b Array constructor returns an instance of Array initialized with its arguments.
-    ~~~~~{.cpp}
-    #include "cljonic.hpp"
-
-    using namespace cljonic;
-
-    int main()
-    {
-        constexpr auto a0{Array<int, 10>{}};                // immutable and empty
-        constexpr auto a1{Array<int, 10>{1, 2, 3, 4}};      // immutable and sparse
-        constexpr auto a2{Array<int, 4>{1, 2, 3, 4}};       // immutable and full
-        constexpr auto a4{Array{1, 2, 3, 4}};               // immutable and full of four int values
-
-        // Compiler Error: Array initialized with too many elements
-        // constexpr auto a{Array<int, 4>{0, 2, 4, 5, 6, 7, 8, 9}};
-
-        // Compiler Error: Attempt to create an Array bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
-        // constexpr auto a{Array<int, 1111>{0, 2, 4, 5, 6, 7, 8, 9}};
-
-        return 0;
-    }
-    ~~~~~
-    */
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Array>;
     using size_type = SizeType;
     using value_type = T;

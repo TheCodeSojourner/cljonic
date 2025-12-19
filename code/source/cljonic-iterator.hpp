@@ -17,6 +17,29 @@ namespace cljonic
  * sequence is the result of calling the first parameter with the second element in the sequence, etc. If we name the
  * first parameter \b "f" and the second parameter \b "x" then the sequence is: \b x, \b f(x), \b f(f(x)),
  * \b f(f(f(x))), etc.
+ *
+ * The \b Iterator constructor returns an instance of Iterator initialized with its parameters.
+~~~~~{.cpp}
+#include "cljonic.hpp"
+
+using namespace cljonic;
+
+int TimesTen(const int x) noexcept
+{
+    return x * 10;
+}
+
+int main()
+{
+    auto i0{Iterator{[](const double d) { return 1.1 * d; }, 11.1}};
+    auto i1{Iterator{TimesTen, 1}};
+
+    // Compiler Error: Iterator constructor's first parameter is not a unary function of its second parameter
+    // const auto i{Iterator{[](const double d) { return 1.1 * d; }, "Hello"}};
+
+    return 0;
+}
+~~~~~
  */
 template <typename F, typename T>
 class Iterator
@@ -63,29 +86,6 @@ class Iterator
     };
 
   public:
-    /**
-      * The \b Iterator constructor returns an instance of Iterator initialized with its parameters.
-    ~~~~~{.cpp}
-    #include "cljonic.hpp"
-    using namespace cljonic;
-
-    int TimesTen(const int x) noexcept
-    {
-        return x * 10;
-    }
-
-    int main()
-    {
-        auto i0{Iterator{[](const double d) { return 1.1 * d; }, 11.1}};
-        auto i1{Iterator{TimesTen, 1}};
-
-        // Compiler Error: Iterator constructor's first parameter is not a unary function of its second parameter
-        // const auto i{Iterator{[](const double d) { return 1.1 * d; }, "Hello"}};
-
-        return 0;
-    }
-    ~~~~~
-    */
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Iterator>;
     using size_type = SizeType;
     using value_type = T;

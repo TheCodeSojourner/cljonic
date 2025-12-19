@@ -12,6 +12,45 @@ namespace cljonic
 /** \anchor Range
  * The \b Range type is a fundamental immutable collection type in cljonic.  It is implemented as a \b lazy \b sequence
  * of \b "int". Many \ref Namespace_Core "Core" functions accept Range arguments.
+ *
+ * There are four ways to create a \b Range:
+ *     - <b>Range{}}</b> returns a \b Range from \b 0 (zero) to \b std::numeric_limits<int>::max() by one
+ *     - <b>Range<end>{}</b> returns a \b Range from \b 0 (zero) to \b end-1 by one
+ *     - <b>Range<start, end>{}</b> returns a \b Range from \b start to \b end-1 by one
+ *     - <b>Range<start, end, step>{}</b> returns the \b Range \b start,  \b start+1*step, \b start+2*step, etc.,
+ *       while \b start+N*step is less than \b end.
+ *
+~~~~~{.cpp}
+#include "cljonic.hpp"
+
+using namespace cljonic;
+
+int main()
+{
+    const auto r0{Range{}};               // immutable, goes from 0 to std::numeric_limits<int>::max() by 1
+    const auto r1{Range<0>{}};            // immutable, empty
+    const auto r2{Range<-10>{}};          // immutable, empty
+    const auto r3{Range<10>{}};           // immutable, goes from 0 to 9 by 1
+    const auto r4{Range<-3, -10>{}};      // immutable, empty
+    const auto r5{Range<-3, -3>{}};       // immutable, empty
+    const auto r6{Range<-3, 10>{}};       // immutable, goes from -3 to 9 by 1
+    const auto r7{Range<10, 10, 0>{}};    // immutable, empty
+    const auto r8{Range<10, 20, 0>{}};    // immutable, has std::numeric_limits<int>::max() of 10
+    const auto r9{Range<20, 10, 0>{}};    // immutable, has std::numeric_limits<int>::max() of 20
+    const auto r10{Range<3, 10, 4>{}};    // immutable, has two elements: 3 and 7
+    const auto r11{Range<3, 10, 3>{}};    // immutable, has three elements: 3, 6 and 9
+    const auto r12{Range<100, 0, -10>{}}; // immutable, has ten elements: 100, 90, 80, ... and 10
+    const auto r13{Range<10, -10, -1>{}}; // immutable, has twenty elements: 10, 9, ..., 0, -1, ... -9
+
+    // Compiler Error: Number of Range parameters must be less than or equal to three
+    // const auto r{Range<10, -10, -1, 1>{}};
+
+    // Compiler Error: Attempt to create a Range bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+    // const auto r{Range<-11111, 11111>{}};
+
+    return 0;
+}
+~~~~~
  */
 template <int... StartEndStep>
 class Range : public IndexInterface<int>
@@ -154,45 +193,6 @@ class Range : public IndexInterface<int>
     }
 
   public:
-    /**
-    * There are four ways to create a \b Range:
-    *     - <b>Range{}}</b> returns a \b Range from \b 0 (zero) to \b std::numeric_limits<int>::max() by one
-    *     - <b>Range<end>{}</b> returns a \b Range from \b 0 (zero) to \b end-1 by one
-    *     - <b>Range<start, end>{}</b> returns a \b Range from \b start to \b end-1 by one
-    *     - <b>Range<start, end, step>{}</b> returns the \b Range \b start,  \b start+1*step, \b start+2*step, etc.,
-    *       while \b start+N*step is less than \b end.
-    ~~~~~{.cpp}
-    #include "cljonic.hpp"
-
-    using namespace cljonic;
-
-    int main()
-    {
-        const auto r0{Range{}};               // immutable, goes from 0 to std::numeric_limits<int>::max() by 1
-        const auto r1{Range<0>{}};            // immutable, empty
-        const auto r2{Range<-10>{}};          // immutable, empty
-        const auto r3{Range<10>{}};           // immutable, goes from 0 to 9 by 1
-        const auto r4{Range<-3, -10>{}};      // immutable, empty
-        const auto r5{Range<-3, -3>{}};       // immutable, empty
-        const auto r6{Range<-3, 10>{}};       // immutable, goes from -3 to 9 by 1
-        const auto r7{Range<10, 10, 0>{}};    // immutable, empty
-        const auto r8{Range<10, 20, 0>{}};    // immutable, has std::numeric_limits<int>::max() of 10
-        const auto r9{Range<20, 10, 0>{}};    // immutable, has std::numeric_limits<int>::max() of 20
-        const auto r10{Range<3, 10, 4>{}};    // immutable, has two elements: 3 and 7
-        const auto r11{Range<3, 10, 3>{}};    // immutable, has three elements: 3, 6 and 9
-        const auto r12{Range<100, 0, -10>{}}; // immutable, has ten elements: 100, 90, 80, ... and 10
-        const auto r13{Range<10, -10, -1>{}}; // immutable, has twenty elements: 10, 9, ..., 0, -1, ... -9
-
-        // Compiler Error: Number of Range parameters must be less than or equal to three
-        // const auto r{Range<10, -10, -1, 1>{}};
-
-        // Compiler Error: Attempt to create a Range bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
-        // const auto r{Range<-11111, 11111>{}};
-
-        return 0;
-    }
-    ~~~~~
-    */
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::Range>;
     using size_type = SizeType;
     using value_type = int;

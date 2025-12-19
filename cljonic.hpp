@@ -16,7 +16,7 @@
 // other, from this software.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// This file was generated Fri Dec 19 01:57:45 PM MST 2025
+// This file was generated Fri Dec 19 02:43:47 PM MST 2025
 
 #ifndef CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
 #define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_HPP
@@ -534,7 +534,6 @@ constexpr auto TakeWhile(F&& f, const C& c) noexcept;
 #include <type_traits>
 
 namespace cljonic {
-
 template <ValidCljonicContainerElementType T, SizeType MaxElements>
 class Array : public IndexInterface<T> {
 static constexpr SizeType maximumElements{MaximumElements(MaxElements)};
@@ -717,7 +716,6 @@ Iterator(F&&, const T&) -> Iterator<F, T>;
 #include <concepts>
 
 namespace cljonic {
-
 template <int... StartEndStep>
 class Range : public IndexInterface<int> {
 private:
@@ -894,7 +892,6 @@ Range() -> Range<>;
 #include <limits>
 
 namespace cljonic {
-
 template <SizeType MaxElements, typename T>
 class Repeat : public IndexInterface<T> {
 using Iterator = CollectionIterator<Repeat>;
@@ -1078,7 +1075,6 @@ Set(Args...) -> Set<std::common_type_t<Args...>, sizeof...(Args)>;
 #include <type_traits>
 
 namespace cljonic {
-
 template <SizeType MaxElements>
 class String : public IndexInterface<char> {
 using Iterator = CollectionIterator<String>;

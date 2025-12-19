@@ -16,6 +16,33 @@ namespace cljonic
  * are always \b NUL terminated. A \b String is a function of its indexable elements. A \b String called with an
  * out-of-bounds index will return its \b default \b element (i.e., a NUL char). Many \ref Namespace_Core "Core"
  * functions accept String arguments.
+ *
+ * The \b String constructor returns an instance of String initialized with the chars in its argument(s). If the
+ * number of chars in a \b char* argument exceeds the maximum number of elements, the extras are silently ignored.
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+
+ using namespace cljonic;
+
+ int main()
+ {
+     const auto s0{String<10>{}};                    // immutable, empty
+     const auto s1{String<10>{"Hello"}};             // immutable, sparse
+     const auto s2{String<5>{"Hello"}};              // immutable, full
+     const auto s3{String<5>{"Hello, World"}};       // immutable, full, and contains "Hello"
+     const auto s4{String<3>{'H', 'e', 'l'}};        // immutable, full
+     const auto s5{String{"Hello"}};                 // immutable, full
+     const auto s6{String{'H', 'e', 'l', 'l', 'o'}}; // immutable, full
+
+     // Compiler Error: String initialized with too many elements
+     // const auto s{String<3>{'H', 'e', 'l', 'l', 'o'}};
+
+     // Compiler Error: Attempt to create a String bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
+     // const auto s{String<1111>{"Too Big"}};
+
+     return 0;
+ }
+ ~~~~~
  */
 template <SizeType MaxElements>
 class String : public IndexInterface<char>
@@ -37,34 +64,6 @@ class String : public IndexInterface<char>
     }
 
   public:
-    /**
-    * The \b String constructor returns an instance of String initialized with the chars in its argument(s). If the
-    * number of chars in a \b char* argument exceeds the maximum number of elements, the extras are silently ignored.
-    ~~~~~{.cpp}
-    #include "cljonic.hpp"
-
-    using namespace cljonic;
-
-    int main()
-    {
-        const auto s0{String<10>{}};                       // immutable, empty
-        const auto s1{String<10>{"Hello"}};                // immutable, sparse
-        const auto s2{String<5>{"Hello"}};                 // immutable, full
-        const auto s3{String<5>{"Hello, World"}};          // immutable, full, and contains "Hello"
-        const auto s4{String<3>{'H', 'e', 'l'}};           // immutable, full
-        const auto s5{String{"Hello"}};                    // immutable, full
-        const auto s6{String{'H', 'e', 'l', 'l', 'o'}};    // immutable, full
-
-        // Compiler Error: String initialized with too many elements
-        // const auto s{String<3>{'H', 'e', 'l', 'l', 'o'}};
-
-        // Compiler Error: Attempt to create a String bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT
-        // const auto s{String<1111>{"Too Big"}};
-
-        return 0;
-    }
-    ~~~~~
-    */
     using cljonic_collection_type = std::integral_constant<CljonicCollectionType, CljonicCollectionType::String>;
     using size_type = SizeType;
     using value_type = char;

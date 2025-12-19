@@ -125,9 +125,47 @@ Static Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;int... StartEndStep&gt;<br />
-class cljonic::Range&lt; StartEndStep &gt;</div><p><a class="anchor" id="Range"></a>The <b><a class="el" href="classcljonic_1_1_range.html">Range</a></b> type is a fundamental immutable collection type in cljonic. It is implemented as a <b>lazy</b> <b>sequence</b> of <b>"int"</b>. Many <a class="el" href="namespacecljonic.html#Namespace_Core">Core</a> functions accept <a class="el" href="classcljonic_1_1_range.html">Range</a> arguments. </p>
-
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00017">17</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+class cljonic::Range&lt; StartEndStep &gt;</div><p><a class="anchor" id="Range"></a> The <b><a class="el" href="classcljonic_1_1_range.html">Range</a></b> type is a fundamental immutable collection type in cljonic. It is implemented as a <b>lazy</b> <b>sequence</b> of <b>"int"</b>. Many <a class="el" href="namespacecljonic.html#Namespace_Core">Core</a> functions accept <a class="el" href="classcljonic_1_1_range.html">Range</a> arguments.</p>
+<p>There are four ways to create a <b><a class="el" href="classcljonic_1_1_range.html">Range</a>:</b> </p><ul>
+<li><b><a class="el" href="classcljonic_1_1_range.html">Range</a>{}}</b> returns a <b><a class="el" href="classcljonic_1_1_range.html">Range</a></b> from <b>0</b> (zero) to <b>std::numeric_limits&lt;int&gt;::max()</b> by one</li>
+<li><b>Range&lt;end&gt;{}</b> returns a <b><a class="el" href="classcljonic_1_1_range.html">Range</a></b> from <b>0</b> (zero) to <b>end-1</b> by one</li>
+<li><b>Range&lt;start, end&gt;{}</b> returns a <b><a class="el" href="classcljonic_1_1_range.html">Range</a></b> from <b>start</b> to <b>end-1</b> by one</li>
+<li><b>Range&lt;start, end, step&gt;{}</b> returns the <b><a class="el" href="classcljonic_1_1_range.html">Range</a></b> <b>start</b>, <b>start+1*step</b>, <b>start+2*step</b>, etc., while <b>start+N*step</b> is less than <b>end</b>.</li>
+</ul>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">main</a>()</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r0</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range</a>{}};               <span class="comment">// immutable, goes from 0 to std::numeric_limits&lt;int&gt;::max() by 1</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r1</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range&lt;0&gt;</a>{}};            <span class="comment">// immutable, empty</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r2</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range</a>&lt;-10&gt;{}};          <span class="comment">// immutable, empty</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r3</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range&lt;10&gt;</a>{}};           <span class="comment">// immutable, goes from 0 to 9 by 1</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r4</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range</a>&lt;-3, -10&gt;{}};      <span class="comment">// immutable, empty</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r5</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range</a>&lt;-3, -3&gt;{}};       <span class="comment">// immutable, empty</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r6</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range</a>&lt;-3, 10&gt;{}};       <span class="comment">// immutable, goes from -3 to 9 by 1</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r7</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range&lt;10, 10, 0&gt;</a>{}};    <span class="comment">// immutable, empty</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r8</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range&lt;10, 20, 0&gt;</a>{}};    <span class="comment">// immutable, has std::numeric_limits&lt;int&gt;::max() of 10</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r9</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range&lt;20, 10, 0&gt;</a>{}};    <span class="comment">// immutable, has std::numeric_limits&lt;int&gt;::max() of 20</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r10</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range&lt;3, 10, 4&gt;</a>{}};    <span class="comment">// immutable, has two elements: 3 and 7</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r11</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range&lt;3, 10, 3&gt;</a>{}};    <span class="comment">// immutable, has three elements: 3, 6 and 9</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r12</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range</a>&lt;100, 0, -10&gt;{}}; <span class="comment">// immutable, has ten elements: 100, 90, 80, ... and 10</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">r13</a>{<a class="code hl_class" href="classcljonic_1_1_range.html">Range</a>&lt;10, -10, -1&gt;{}}; <span class="comment">// immutable, has twenty elements: 10, 9, ..., 0, -1, ... -9</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Compiler Error: Number of Range parameters must be less than or equal to three</span></div>
+<div class="line">    <span class="comment">// const auto r{Range&lt;10, -10, -1, 1&gt;{}};</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Compiler Error: Attempt to create a Range bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT</span></div>
+<div class="line">    <span class="comment">// const auto r{Range&lt;-11111, 11111&gt;{}};</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+<div class="ttc" id="aclasscljonic_1_1_range_html"><div class="ttname"><a href="classcljonic_1_1_range.html">cljonic::Range</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-range_8hpp_source.html#l00056">cljonic-range.hpp:57</a></div></div>
+<div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00012">cljonic-array.hpp:13</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_ac1734fb139d2b39c04e650f3d0a75eef"><div class="ttname"><a href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">cljonic::AllConvertibleTypes</a></div><div class="ttdeci">constexpr bool AllConvertibleTypes</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00111">cljonic-concepts.hpp:111</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00056">56</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a73f8a2a8b19d39dd4ff7448e242385d0" name="a73f8a2a8b19d39dd4ff7448e242385d0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a73f8a2a8b19d39dd4ff7448e242385d0">&#9670;&#160;</a></span>cljonic_collection_type</h2>
@@ -142,38 +180,7 @@ template&lt;int... StartEndStep&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">  There are four ways to create a \b Range:
-      - &lt;b&gt;Range{}}&lt;/b&gt; returns a \b Range from \b 0 (zero) to \b std::numeric_limits&lt;int&gt;::max() by one
-      - &lt;b&gt;Range&lt;end&gt;{}&lt;/b&gt; returns a \b Range from \b 0 (zero) to \b end-1 by one
-      - &lt;b&gt;Range&lt;start, end&gt;{}&lt;/b&gt; returns a \b Range from \b start to \b end-1 by one
-      - &lt;b&gt;Range&lt;start, end, step&gt;{}&lt;/b&gt; returns the \b Range \b start,  \b start+1*step, \b start+2*step, etc.,
-        while \b start+N*step is less than \b end.
-~~~~~{.cpp}
-#include "cljonic.hpp"
 
-using namespace cljonic;
-
-int main()
-{
-    const auto r0{Range{}};               // immutable, goes from 0 to std::numeric_limits&lt;int&gt;::max() by 1
-    const auto r1{Range&lt;0&gt;{}};            // immutable, empty
-    const auto r2{Range&lt;-10&gt;{}};          // immutable, empty
-    const auto r3{Range&lt;10&gt;{}};           // immutable, goes from 0 to 9 by 1
-    const auto r4{Range&lt;-3, -10&gt;{}};      // immutable, empty
-    const auto r5{Range&lt;-3, -3&gt;{}};       // immutable, empty
-    const auto r6{Range&lt;-3, 10&gt;{}};       // immutable, goes from -3 to 9 by 1
-    const auto r7{Range&lt;10, 10, 0&gt;{}};    // immutable, empty
-    const auto r8{Range&lt;10, 20, 0&gt;{}};    // immutable, has std::numeric_limits&lt;int&gt;::max() of 10
-    const auto r9{Range&lt;20, 10, 0&gt;{}};    // immutable, has std::numeric_limits&lt;int&gt;::max() of 20
-    const auto r10{Range&lt;3, 10, 4&gt;{}};    // immutable, has two elements: 3 and 7
-    const auto r11{Range&lt;3, 10, 3&gt;{}};    // immutable, has three elements: 3, 6 and 9
-    const auto r12{Range&lt;100, 0, -10&gt;{}}; // immutable, has ten elements: 100, 90, 80, ... and 10
-    const auto r13{Range&lt;10, -10, -1&gt;{}}; // immutable, has twenty elements: 10, 9, ..., 0, -1, ... -9
-</pre><p> Compiler Error: Number of <a class="el" href="classcljonic_1_1_range.html">Range</a> parameters must be less than or equal to three const auto r{<a class="el" href="classcljonic_1_1_range.html">Range</a>&lt;10, -10, -1, 1&gt;{}};</p>
-<p>Compiler Error: Attempt to create a <a class="el" href="classcljonic_1_1_range.html">Range</a> bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT const auto r{<a class="el" href="classcljonic_1_1_range.html">Range</a>&lt;-11111, 11111&gt;{}}; </p><pre class="fragment">    return 0;
-}
-~~~~~
-</pre> 
 <p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00196">196</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
 
 </div>
@@ -529,7 +536,7 @@ template&lt;int... StartEndStep&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 19 2025 13:57:46 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Dec 19 2025 14:43:47 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

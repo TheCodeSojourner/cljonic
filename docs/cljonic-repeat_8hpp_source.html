@@ -94,27 +94,27 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>{</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">template</span> &lt;SizeType MaxElements, <span class="keyword">typename</span> T&gt;</div>
-<div class="foldopen" id="foldopen00017" data-start="{" data-end="};">
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html">   17</a></span><span class="keyword">class </span><a class="code hl_class" href="classcljonic_1_1_repeat.html">Repeat</a> : <span class="keyword">public</span> <a class="code hl_class" href="classcljonic_1_1_index_interface.html">IndexInterface</a>&lt;T&gt;</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>{</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="keyword">using </span><a class="code hl_class" href="classcljonic_1_1_collection_iterator.html">Iterator</a> = <a class="code hl_class" href="classcljonic_1_1_collection_iterator.html">CollectionIterator&lt;Repeat&gt;</a>;</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="keyword">static</span> <span class="keyword">constexpr</span> <a class="code hl_typedef" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a> maximumElements{<a class="code hl_function" href="namespacecljonic.html#a2f958d11e6e528e57ee20c06e694c022">MaximumElements</a>(MaxElements)};</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keyword">static_assert</span>(maximumElements == MaxElements,</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>                  <span class="stringliteral">&quot;Attempt to create a Repeat bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT&quot;</span>);</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="keyword">const</span> <a class="code hl_typedef" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a> m_elementCount;</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <span class="keyword">const</span> T m_elementDefault;</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    <span class="keyword">const</span> T m_elementValue;</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> ValueAtIndex(<span class="keyword">const</span> <a class="code hl_typedef" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a> index) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    {</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>        <span class="keywordflow">return</span> ((m_elementCount &lt;= 0) <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">or</a> (index &gt;= m_elementCount)) ? m_elementDefault : m_elementValue;</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    }</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>  <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="keyword">template</span> &lt;SizeType MaxElements, <span class="keyword">typename</span> T&gt;</div>
+<div class="foldopen" id="foldopen00043" data-start="{" data-end="};">
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html">   43</a></span><span class="keyword">class </span><a class="code hl_class" href="classcljonic_1_1_repeat.html">Repeat</a> : <span class="keyword">public</span> <a class="code hl_class" href="classcljonic_1_1_index_interface.html">IndexInterface</a>&lt;T&gt;</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>{</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keyword">using </span><a class="code hl_class" href="classcljonic_1_1_collection_iterator.html">Iterator</a> = <a class="code hl_class" href="classcljonic_1_1_collection_iterator.html">CollectionIterator&lt;Repeat&gt;</a>;</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keyword">static</span> <span class="keyword">constexpr</span> <a class="code hl_typedef" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a> maximumElements{<a class="code hl_function" href="namespacecljonic.html#a2f958d11e6e528e57ee20c06e694c022">MaximumElements</a>(MaxElements)};</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keyword">static_assert</span>(maximumElements == MaxElements,</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>                  <span class="stringliteral">&quot;Attempt to create a Repeat bigger than CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT&quot;</span>);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keyword">const</span> <a class="code hl_typedef" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a> m_elementCount;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keyword">const</span> T m_elementDefault;</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keyword">const</span> T m_elementValue;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> ValueAtIndex(<span class="keyword">const</span> <a class="code hl_typedef" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a> index) <span class="keyword">const</span> <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    {</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        <span class="keywordflow">return</span> ((m_elementCount &lt;= 0) <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">or</a> (index &gt;= m_elementCount)) ? m_elementDefault : m_elementValue;</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    }</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>  <span class="keyword">public</span>:</div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#aec7ce22ee3a96d67e2a2cd1f2d828500">   62</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classcljonic_1_1_repeat.html#aec7ce22ee3a96d67e2a2cd1f2d828500">cljonic_collection_type</a> = std::integral_constant&lt;CljonicCollectionType, CljonicCollectionType::Repeat&gt;;</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#aeedbb9fdf399874cc00476cce161caf8">   63</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classcljonic_1_1_repeat.html#aeedbb9fdf399874cc00476cce161caf8">size_type</a> = <a class="code hl_typedef" href="namespacecljonic.html#a76526d15a807537c1e579316289a1def">SizeType</a>;</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="classcljonic_1_1_repeat.html#aac0e9acea7c5df0917ed2f17bbae9d10">   64</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classcljonic_1_1_repeat.html#aac0e9acea7c5df0917ed2f17bbae9d10">value_type</a> = T;</div>
@@ -189,7 +189,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span><span class="preprocessor">#endif </span><span class="comment">// CLJONIC_REPEAT_HPP</span></div>
 <div class="ttc" id="aclasscljonic_1_1_collection_iterator_html"><div class="ttname"><a href="classcljonic_1_1_collection_iterator.html">cljonic::CollectionIterator</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-iterator_8hpp_source.html#l00010">cljonic-collection-iterator.hpp:11</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_index_interface_html"><div class="ttname"><a href="classcljonic_1_1_index_interface.html">cljonic::IndexInterface</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-shared_8hpp_source.html#l00014">cljonic-shared.hpp:15</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_repeat_html"><div class="ttname"><a href="classcljonic_1_1_repeat.html">cljonic::Repeat</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00017">cljonic-repeat.hpp:18</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_repeat_html"><div class="ttname"><a href="classcljonic_1_1_repeat.html">cljonic::Repeat</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00043">cljonic-repeat.hpp:44</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_repeat_html_a0b9ef9361b4b292aace70b6d2b866457"><div class="ttname"><a href="classcljonic_1_1_repeat.html#a0b9ef9361b4b292aace70b6d2b866457">cljonic::Repeat::MaximumCount</a></div><div class="ttdeci">static constexpr auto MaximumCount() noexcept</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00104">cljonic-repeat.hpp:104</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_repeat_html_a3b0581718f13d8f4f2169c921e7d4c43"><div class="ttname"><a href="classcljonic_1_1_repeat.html#a3b0581718f13d8f4f2169c921e7d4c43">cljonic::Repeat::operator[]</a></div><div class="ttdeci">constexpr T operator[](const SizeType index) const noexcept override</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00084">cljonic-repeat.hpp:84</a></div></div>
 <div class="ttc" id="aclasscljonic_1_1_repeat_html_a40a4bd881c6f6c1f919b60d5db86e0f7"><div class="ttname"><a href="classcljonic_1_1_repeat.html#a40a4bd881c6f6c1f919b60d5db86e0f7">cljonic::Repeat::ElementAtIndexIsEqualToElement</a></div><div class="ttdeci">constexpr bool ElementAtIndexIsEqualToElement(const SizeType index, const T &amp;element) const noexcept override</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00099">cljonic-repeat.hpp:99</a></div></div>
@@ -214,7 +214,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 19 2025 13:57:46 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Dec 19 2025 14:43:47 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

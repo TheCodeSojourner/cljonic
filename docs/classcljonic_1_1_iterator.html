@@ -118,9 +118,31 @@ Static Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">F</a>, <a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">typename</a> T&gt;<br />
-class cljonic::Iterator&lt; F, T &gt;</div><p><a class="anchor" id="Iterator"></a>The <b><a class="el" href="classcljonic_1_1_iterator.html">Iterator</a></b> type is a fundamental immutable collection type in <b>cljonic</b>. It is implemented as a <b>lazy</b> <b>sequence</b>. The first element in the sequence is the second parameter, the second element in the sequence is the result of calling the first parameter, which must be a unary function of the type of the second parameter that returns the same type as the type of the second parameter, with the second parameter, the third element in the sequence is the result of calling the first parameter with the second element in the sequence, etc. If we name the first parameter <b>"f"</b> and the second parameter <b>"x"</b> then the sequence is: <b>x</b>, <b><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f(x)</a></b>, <b><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f(f(x))</a></b>, <b>f</b>(<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f(f(x))</a>), etc. </p>
-
-<p class="definition">Definition at line <a class="el" href="cljonic-iterator_8hpp_source.html#l00022">22</a> of file <a class="el" href="cljonic-iterator_8hpp_source.html">cljonic-iterator.hpp</a>.</p>
+class cljonic::Iterator&lt; F, T &gt;</div><p><a class="anchor" id="Iterator"></a> The <b><a class="el" href="classcljonic_1_1_iterator.html">Iterator</a></b> type is a fundamental immutable collection type in <b>cljonic</b>. It is implemented as a <b>lazy</b> <b>sequence</b>. The first element in the sequence is the second parameter, the second element in the sequence is the result of calling the first parameter, which must be a unary function of the type of the second parameter that returns the same type as the type of the second parameter, with the second parameter, the third element in the sequence is the result of calling the first parameter with the second element in the sequence, etc. If we name the first parameter <b>"f"</b> and the second parameter <b>"x"</b> then the sequence is: <b>x</b>, <b><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f(x)</a></b>, <b><a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f(f(x))</a></b>, <b>f</b>(<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">f(f(x))</a>), etc.</p>
+<p>The <b><a class="el" href="classcljonic_1_1_iterator.html">Iterator</a></b> constructor returns an instance of <a class="el" href="classcljonic_1_1_iterator.html">Iterator</a> initialized with its parameters. </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">TimesTen</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">x</a>) <span class="keyword">noexcept</span></div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">x</a> * 10;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">main</a>()</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">i0</a>{<a class="code hl_class" href="classcljonic_1_1_iterator.html">Iterator</a>{[](<span class="keyword">const</span> <span class="keywordtype">double</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">d</a>) { <span class="keywordflow">return</span> 1.1 * <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">d</a>; }, 11.1}};</div>
+<div class="line">    <span class="keyword">auto</span> <a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">i1</a>{<a class="code hl_class" href="classcljonic_1_1_iterator.html">Iterator</a>{<a class="code hl_variable" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">TimesTen</a>, 1}};</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Compiler Error: Iterator constructor&#39;s first parameter is not a unary function of its second parameter</span></div>
+<div class="line">    <span class="comment">// const auto i{Iterator{[](const double d) { return 1.1 * d; }, &quot;Hello&quot;}};</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+<div class="ttc" id="aclasscljonic_1_1_iterator_html"><div class="ttname"><a href="classcljonic_1_1_iterator.html">cljonic::Iterator</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-iterator_8hpp_source.html#l00045">cljonic-iterator.hpp:46</a></div></div>
+<div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-array_8hpp_source.html#l00012">cljonic-array.hpp:13</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_ac1734fb139d2b39c04e650f3d0a75eef"><div class="ttname"><a href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d0a75eef">cljonic::AllConvertibleTypes</a></div><div class="ttdeci">constexpr bool AllConvertibleTypes</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00111">cljonic-concepts.hpp:111</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-iterator_8hpp_source.html#l00045">45</a> of file <a class="el" href="cljonic-iterator_8hpp_source.html">cljonic-iterator.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a057c0bfc61e392b52be53be5ebcfe516" name="a057c0bfc61e392b52be53be5ebcfe516"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a057c0bfc61e392b52be53be5ebcfe516">&#9670;&#160;</a></span>cljonic_collection_type</h2>
@@ -135,24 +157,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">    The \b Iterator constructor returns an instance of Iterator initialized with its parameters.
-~~~~~{.cpp}
-#include "cljonic.hpp"
-using namespace cljonic;
 
-int TimesTen(const int x) noexcept
-{
-    return x * 10;
-}
-
-int main()
-{
-    auto i0{Iterator{[](const double d) { return 1.1 * d; }, 11.1}};
-    auto i1{Iterator{TimesTen, 1}};
-</pre><p> Compiler Error: <a class="el" href="classcljonic_1_1_iterator.html">Iterator</a> constructor's first parameter is not a unary function of its second parameter const auto i{<a class="el" href="classcljonic_1_1_iterator.html">Iterator</a>{[](const double d) { return 1.1 * d; }, "Hello"}}; </p><pre class="fragment">    return 0;
-}
-~~~~~
-</pre> 
 <p class="definition">Definition at line <a class="el" href="cljonic-iterator_8hpp_source.html#l00089">89</a> of file <a class="el" href="cljonic-iterator_8hpp_source.html">cljonic-iterator.hpp</a>.</p>
 
 </div>
@@ -413,7 +418,7 @@ template&lt;<a class="el" href="namespacecljonic.html#ac1734fb139d2b39c04e650f3d
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 19 2025 13:57:46 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Dec 19 2025 14:43:47 for cljonic by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
