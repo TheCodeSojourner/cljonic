@@ -1,0 +1,178 @@
+-- allium: 3
+
+-- Multi-source mapping free function (Clojure `map` equivalent, REQ-FN-032).
+-- `map` accepts its transforming function as the first argument followed by one
+-- or more cljonic sources (Vector, Map, Set, Queue, String collections, or
+-- Range, Repeat, Cycle, Iterate, Repeatedly producers). It applies the function
+-- to corresponding elements in traversal order and terminates when the first
+-- source is exhausted. The result is a bounded owning Vector whose element type
+-- is the function's result type over one tuple of source elements and whose
+-- compile-time capacity is the minimum of the sources' observable-count bounds,
+-- where a collection contributes its declared capacity, any producer
+-- contributes the configured observable traversal cap, and every contribution
+-- is saturated at CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE. The runtime
+-- mapped element count is the minimum of the sources' effective counts, where a
+-- collection contributes its element count, a finite producer contributes its
+-- count, and an unbounded producer contributes the configured observable
+-- traversal cap.
+-- The callback must be copy-constructible, invoked without throwing with one
+-- argument per source, and return a no-throwing storable element result. Each
+-- callback parameter must accept its corresponding source element type through
+-- a safe implicit conversion only: an identical type or a value-preserving
+-- arithmetic conversion. Narrowing conversions (for example long to int) and
+-- crossings into or out of the Boolean, character, enumeration, pointer, and
+-- user-defined domains are rejected at compile time. A callback whose parameter
+-- types are not statically inspectable (a generic lambda or a templated
+-- operator()) cannot be checked position by position and is admitted on nothrow
+-- invocability alone.
+-- Map and Set traversal order is semantically unordered, so the mapped result
+-- order carries no semantic significance for those sources. Standard-library
+-- ranges, containers, and other non-cljonic sources, throwing callbacks, and
+-- unstorable results are rejected at compile time with targeted diagnostics.
+-- The operation is constexpr, non-throwing, non-allocating, non-mutating, and
+-- preserves every source value.
+
+entity MapFunction {
+    canonical_multi_source_mapping_operation: Boolean
+    transform_function_first_argument_role: Boolean
+    one_or_more_cljonic_sources: Boolean
+    unary_source_form_maps_over_one_source: Boolean
+    variadic_sources_map_corresponding_elements_per_step: Boolean
+    terminates_when_first_source_exhausted: Boolean
+    result_is_bounded_owning_vector: Boolean
+    result_element_type_is_callback_result: Boolean
+    result_capacity_is_minimum_of_source_compile_time_bounds: Boolean
+    collections_contribute_declared_capacity: Boolean
+    producers_contribute_observation_cap: Boolean
+    runtime_mapped_element_count_is_minimum_of_source_effective_counts: Boolean
+    collections_contribute_element_count: Boolean
+    finite_producers_contribute_count: Boolean
+    unbounded_producers_contribute_observation_cap: Boolean
+    capacity_contributions_saturated_at_collection_maximum: Boolean
+    derived_capacity_exceeding_maximum_fails_at_compile_time: Boolean
+    callback_copy_constructible: Boolean
+    callback_invoked_nothrow_with_one_argument_per_source: Boolean
+    callback_result_nothrow_storable: Boolean
+    callback_parameter_types_safely_accept_corresponding_elements: Boolean
+    uninspectable_callables_fall_back_to_nothrow_invocability: Boolean
+    throwing_callback_or_unstorable_result_rejected_at_compile_time: Boolean
+    map_set_traversal_order_semantically_unordered: Boolean
+    sources_from_cljonic_domain_only: Boolean
+    standard_range_container_and_non_cljonic_sources_rejected_at_compile_time: Boolean
+    every_source_value_preserved: Boolean
+    constexpr_noexcept_nonmutating_nonallocating: Boolean
+
+    invariant CanonicalMultiSourceMappingOperation {
+        this.canonical_multi_source_mapping_operation = true
+    }
+
+    invariant TransformFunctionFirstArgumentRole {
+        this.transform_function_first_argument_role = true
+    }
+
+    invariant OneOrMoreCljonicSources {
+        this.one_or_more_cljonic_sources = true
+    }
+
+    invariant UnarySourceFormMapsOverOneSource {
+        this.unary_source_form_maps_over_one_source = true
+    }
+
+    invariant VariadicSourcesMapCorrespondingElementsPerStep {
+        this.variadic_sources_map_corresponding_elements_per_step = true
+    }
+
+    invariant TerminatesWhenFirstSourceExhausted {
+        this.terminates_when_first_source_exhausted = true
+    }
+
+    invariant ResultIsBoundedOwningVector {
+        this.result_is_bounded_owning_vector = true
+    }
+
+    invariant ResultElementTypeIsCallbackResult {
+        this.result_element_type_is_callback_result = true
+    }
+
+    invariant ResultCapacityIsMinimumOfSourceCompileTimeBounds {
+        this.result_capacity_is_minimum_of_source_compile_time_bounds = true
+    }
+
+    invariant CollectionsContributeDeclaredCapacity {
+        this.collections_contribute_declared_capacity = true
+    }
+
+    invariant ProducersContributeObservationCap {
+        this.producers_contribute_observation_cap = true
+    }
+
+    invariant RuntimeMappedElementCountIsMinimumOfSourceEffectiveCounts {
+        this.runtime_mapped_element_count_is_minimum_of_source_effective_counts = true
+    }
+
+    invariant CollectionsContributeElementCount {
+        this.collections_contribute_element_count = true
+    }
+
+    invariant FiniteProducersContributeCount {
+        this.finite_producers_contribute_count = true
+    }
+
+    invariant UnboundedProducersContributeObservationCap {
+        this.unbounded_producers_contribute_observation_cap = true
+    }
+
+    invariant CapacityContributionsSaturatedAtCollectionMaximum {
+        this.capacity_contributions_saturated_at_collection_maximum = true
+    }
+
+    invariant DerivedCapacityExceedingMaximumFailsAtCompileTime {
+        this.derived_capacity_exceeding_maximum_fails_at_compile_time = true
+    }
+
+    invariant CallbackCopyConstructible {
+        this.callback_copy_constructible = true
+    }
+
+    invariant CallbackInvokedNothrowWithOneArgumentPerSource {
+        this.callback_invoked_nothrow_with_one_argument_per_source = true
+    }
+
+    invariant CallbackResultNothrowStorable {
+        this.callback_result_nothrow_storable = true
+    }
+
+    invariant CallbackParameterTypesSafelyAcceptCorrespondingElements {
+        this.callback_parameter_types_safely_accept_corresponding_elements = true
+    }
+
+    invariant UninspectableCallablesFallBackToNothrowInvocability {
+        this.uninspectable_callables_fall_back_to_nothrow_invocability = true
+    }
+
+    invariant ThrowingCallbackOrUnstorableResultRejectedAtCompileTime {
+        this.throwing_callback_or_unstorable_result_rejected_at_compile_time = true
+    }
+
+    invariant MapSetTraversalOrderSemanticallyUnordered {
+        this.map_set_traversal_order_semantically_unordered = true
+    }
+
+    invariant SourcesFromCljonicDomainOnly {
+        this.sources_from_cljonic_domain_only = true
+    }
+
+    invariant StandardRangeContainerAndNonCljonicSourcesRejectedAtCompileTime {
+        this.standard_range_container_and_non_cljonic_sources_rejected_at_compile_time = true
+    }
+
+    invariant EverySourceValuePreserved {
+        this.every_source_value_preserved = true
+    }
+
+    invariant ConstexprNoexceptNonmutatingNonallocating {
+        this.constexpr_noexcept_nonmutating_nonallocating = true
+    }
+}
+
+actor MapFunctionOperator { identified_by: MapFunction }

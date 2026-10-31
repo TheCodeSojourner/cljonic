@@ -368,6 +368,8 @@ entity NothrowEqualityComparable {
 entity NothrowStableEqualityComparable {
     extends_stable_equality: Boolean
     extends_nothrow_collection_element: Boolean
+    requires_nothrow_comparison: Boolean
+    rejects_parameterized_standard_wrapper_regardless_of_instantiation: Boolean
 
     invariant ExtendsStableEquality {
         this.extends_stable_equality = true
@@ -375,6 +377,14 @@ entity NothrowStableEqualityComparable {
 
     invariant ExtendsNothrowCollectionElement {
         this.extends_nothrow_collection_element = true
+    }
+
+    invariant RequiresNothrowComparison {
+        this.requires_nothrow_comparison = true
+    }
+
+    invariant RejectsParameterizedStandardWrapperRegardlessOfInstantiation {
+        this.rejects_parameterized_standard_wrapper_regardless_of_instantiation = true
     }
 }
 

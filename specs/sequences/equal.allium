@@ -17,10 +17,22 @@
 -- non-throwing at any depth so the noexcept guarantee cannot be violated, and
 -- standard-library range components are rejected at any depth because `equal`
 -- is not the C++ interoperability surface. The scalar fallthrough domain is
--- arithmetic scalars, scoped enums, aggregate-like structs with a non-throwing
--- operator==, and cljonic::Variant composites; unscoped enums and pointers are
--- excluded. std::variant is rejected as an equality operand at every nesting
--- depth because it is not a supported cljonic value type.
+-- arithmetic scalars, scoped enums, user-defined class types (aggregate structs
+-- and non-aggregate classes alike) with a non-throwing operator==, and
+-- cljonic::Variant composites; unscoped enums and pointers are excluded. A
+-- non-aggregate class is admitted on the Map-key and Set-element stable-equality
+-- capability together with the non-throwing comparison `equal` requires. That
+-- combination keeps parameterized standard-library wrappers out however they are
+-- instantiated, because the standard library declares none of those comparisons
+-- non-throwing -- so a floating-point component cannot be smuggled in behind
+-- std::pair, std::optional, std::tuple, or std::variant. std::variant is rejected as an equality operand at every nesting
+-- depth because it is not a supported cljonic value type. A pair of ordinary
+-- values, and each sequential element position, may use identical types or types
+-- related by a value-preserving implicit conversion in either direction, compared
+-- in the wider type; sign-crossing, Boolean, character, enumeration, pointer, and
+-- user-defined type pairs remain rejections, and cljonic::Variant alternative
+-- identity, Map keys and values, Set elements, and String content continue to
+-- require identical types.
 
 entity EqualFunction {
     general_value_equality_operation: Boolean
@@ -33,6 +45,8 @@ entity EqualFunction {
     variadic_evaluation_left_to_right_short_circuit: Boolean
     scalar_operands_compare_via_operator_equals: Boolean
     scalar_fallthrough_domain_is_closed_value_domain: Boolean
+    non_aggregate_class_admitted_on_stable_equality_with_nothrow_comparison: Boolean
+    parameterized_standard_wrapper_rejected_regardless_of_instantiation: Boolean
     standard_variant_rejected_at_any_depth: Boolean
     standard_range_types_rejected_as_interop_surface: Boolean
     standard_range_components_rejected_at_any_depth: Boolean
@@ -45,7 +59,7 @@ entity EqualFunction {
     set_comparable_only_to_set: Boolean
     string_comparable_only_to_string: Boolean
     cross_family_and_mixed_pairs_rejected_at_compile_time: Boolean
-    sequential_elements_require_identical_element_types: Boolean
+    sequential_elements_require_identical_or_safely_convertible_types: Boolean
     sequential_comparison_is_order_sensitive: Boolean
     sequential_equality_requires_equal_observed_counts_and_elements: Boolean
     each_unbounded_operand_uses_observation_cap_regardless_of_partner: Boolean
@@ -58,7 +72,9 @@ entity EqualFunction {
     every_call_terminates: Boolean
     constexpr_noexcept_nonmutating_nonallocating: Boolean
     requires_stable_equality_components: Boolean
-    no_cross_type_numeric_unification: Boolean
+    cross_type_numeric_unification_limited_to_safe_value_preserving_pairs: Boolean
+    safe_conversion_pairs_compare_in_wider_type: Boolean
+    variant_map_set_string_identity_requires_identical_types: Boolean
     outside_supported_domain_rejected_at_compile_time: Boolean
 
     invariant GeneralValueEqualityOperation {
@@ -99,6 +115,14 @@ entity EqualFunction {
 
     invariant ScalarFallthroughDomainIsClosedValueDomain {
         this.scalar_fallthrough_domain_is_closed_value_domain = true
+    }
+
+    invariant NonAggregateClassAdmittedOnStableEqualityWithNothrowComparison {
+        this.non_aggregate_class_admitted_on_stable_equality_with_nothrow_comparison = true
+    }
+
+    invariant ParameterizedStandardWrapperRejectedRegardlessOfInstantiation {
+        this.parameterized_standard_wrapper_rejected_regardless_of_instantiation = true
     }
 
     invariant StandardVariantRejectedAtAnyDepth {
@@ -149,8 +173,8 @@ entity EqualFunction {
         this.cross_family_and_mixed_pairs_rejected_at_compile_time = true
     }
 
-    invariant SequentialElementsRequireIdenticalElementTypes {
-        this.sequential_elements_require_identical_element_types = true
+    invariant SequentialElementsRequireIdenticalOrSafelyConvertibleTypes {
+        this.sequential_elements_require_identical_or_safely_convertible_types = true
     }
 
     invariant SequentialComparisonIsOrderSensitive {
@@ -201,8 +225,16 @@ entity EqualFunction {
         this.requires_stable_equality_components = true
     }
 
-    invariant NoCrossTypeNumericUnification {
-        this.no_cross_type_numeric_unification = true
+    invariant CrossTypeNumericUnificationLimitedToSafeValuePreservingPairs {
+        this.cross_type_numeric_unification_limited_to_safe_value_preserving_pairs = true
+    }
+
+    invariant SafeConversionPairsCompareInWiderType {
+        this.safe_conversion_pairs_compare_in_wider_type = true
+    }
+
+    invariant VariantMapSetStringIdentityRequiresIdenticalTypes {
+        this.variant_map_set_string_identity_requires_identical_types = true
     }
 
     invariant OutsideSupportedDomainRejectedAtCompileTime {
