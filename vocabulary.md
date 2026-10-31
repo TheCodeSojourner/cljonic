@@ -96,11 +96,11 @@ producer building blocks used across all higher-order algorithms.
 
 
 ### Seqable
-- **Definition:** The canonical semantic capability for producing a collection's documented logical traversal representation. A `Seqable` collection provides sequence conversion without mutating the source, dynamic allocation, or exceptions; the result is an independently valid bounded value whose elements and order follow the collection's traversal semantics. `Seqable` remains independent of `Indexed`, `Lookup`, and `Associative`; the sequence requirements are implementation-backed through `seq` (`REQ-SEQ-010`), while the `Seqable` capability concept itself remains deferred.
+- **Definition:** The canonical semantic capability for producing a collection's documented logical traversal representation. A `Seqable` collection provides sequence conversion without mutating the source, dynamic allocation, or exceptions; the result is an independently valid bounded value whose elements and order follow the collection's traversal semantics. `Seqable` remains independent of `Indexed`, `Lookup`, and `Associative`; the sequence requirements are implementation-backed through `seq` (`REQ-SEQ-010`). `Seqable` is a closed capability: its membership is cljonic-owned and limited to the supported collections, and no third-party or new type can declare itself `Seqable` through a concept specialization, trait hook, or any other opt-in mechanism (`REQ-CAP-014`).
 - **Deprecated Synonyms:** sequenceable capability, sequence capability
-- **Related:** Sequenceable, Sequence, Seq, Traversal, ConstRangeTraversal, CapabilityConcept
+- **Related:** Sequenceable, Sequence, Seq, Traversal, ConstRangeTraversal, CapabilityConcept, ClosedCapability
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
-- **Examples:** `Seqable` is a deferred capability for `Vector`, `Map`, `Set`, `Queue`, and `String`; its presence does not follow merely from `is_empty` or `count`.
+- **Examples:** `Vector`, `Map`, `Set`, `Queue`, and `String` are `Seqable`; its presence does not follow merely from `is_empty` or `count`, and a structurally identical external type is never `Seqable`.
 
 
 ### Associative
@@ -240,11 +240,11 @@ producer building blocks used across all higher-order algorithms.
 
 
 ### StableEquality
-- **Definition:** A non-floating-point equality capability whose comparison is stable for the supported value and operation domain.
+- **Definition:** A non-floating-point equality capability whose comparison is stable for the supported value and operation domain. The capability is recursive over the values the library can analyze — cljonic collections, producers, `MapEntry`, `cljonic::Variant` alternatives, and scalar values — and stops at a user-defined aggregate boundary: a simple aggregate that provides a non-throwing `operator==`, defaulted or user-written, is stable-equality-capable on the strength of its own comparison, and its internal equality semantics, including any floating-point members, are the author's responsibility (`REQ-NUM-018`). Detectability is the criterion: every floating-point equality comparison the library can detect — raw floating-point operands, `Set` element types, `Map` key types, and detectable floating-point-bearing components — is rejected at compile time, and no detectable comparison is ever silently admitted (`REQ-NUM-019`).
 - **Deprecated Synonyms:** stable equality comparable, equality capability
-- **Related:** GeneralEquality, NumericEquality, AggregateLikeStruct
+- **Related:** GeneralEquality, NumericEquality, AggregateLikeStruct, SimpleAggregateBoundary, AggregateEqualityBoundary
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
-- **Examples:** `StableEqualityComparable<T>` admits a type for equality-dependent operations when `a == b` returns `bool`.
+- **Examples:** `StableEqualityComparable<T>` admits a type for equality-dependent operations when `a == b` returns `bool`; `Vector<double, 2>` is rejected because the library can analyze the element type, while `Vector<MyStruct, 2>` is admitted when `MyStruct::operator==` is non-throwing even if `MyStruct` contains a `double` member.
 
 
 ### TotalOrder
@@ -459,7 +459,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### Equal
-- **Definition:** The canonical named general-equality free function mapped conceptually to Clojure's `=`. It implements GeneralEquality over the supported stable-equality domain in the three arities of Clojure's `=`: a unary form that returns true for a single domain-admitted operand, a binary form that compares a pair, and a variadic form that holds exactly when every adjacent operand pair compares equal by the same family rules, evaluated left to right and short-circuited at the first unequal pair, with every adjacent pair and the unary operand individually compile-time gated. Non-collection, non-producer values compare via `==` over the closed value domain of arithmetic scalars, scoped enumerations, aggregate-like structs with a non-throwing `operator==`, and `cljonic::Variant` composites; unscoped enumerations and pointer types are rejected; floating-point values are rejected at compile time at any depth, including nested inside any operand in any arity; the comparison is non-throwing at any depth so the `noexcept` guarantee cannot be violated; standard-library range and container types are rejected at any depth because `equal` is not the C++ interoperability surface, and `std::variant` is rejected because it is not a supported cljonic value type; cljonic collections and producers compare by their equality family, with the SequentialEquality family mutually comparable by bounded logical observation and Map, Set, and String comparable only to their own kind; incompatible-family and mixed cljonic-to-non-cljonic pairs fail at compile time. Comparison is recursive over nested values and lazy and element-wise for sequential operands. Sequential equality requires equal observed counts and ordered observed elements, and terminates at the first differing element pair or exhaustion of the shorter logical observation. Each unbounded producer operand uses its configured observable traversal cap, whether the other operand is finite or unbounded; equality makes no claim beyond the observed bounds. This does not introduce automatic traversal of nested producers or replace their specified parameter equality.
+- **Definition:** The canonical named general-equality free function mapped conceptually to Clojure's `=`. It implements GeneralEquality over the supported stable-equality domain in the three arities of Clojure's `=`: a unary form that returns true for a single domain-admitted operand, a binary form that compares a pair, and a variadic form that holds exactly when every adjacent operand pair compares equal by the same family rules, evaluated left to right and short-circuited at the first unequal pair, with every adjacent pair and the unary operand individually compile-time gated. Non-collection, non-producer values compare via `==` over the closed value domain of arithmetic scalars, scoped enumerations, aggregate-like structs with a non-throwing `operator==`, and `cljonic::Variant` composites; unscoped enumerations and pointer types are rejected; floating-point values are rejected at compile time at any depth the library can analyze, including nested inside any operand in any arity, while a user-defined aggregate struct with a non-throwing `operator==` is admitted as a boundary whose internal equality semantics are the author's responsibility (`REQ-NUM-018`); the comparison is non-throwing at any depth so the `noexcept` guarantee cannot be violated; standard-library range and container types are rejected at any depth because `equal` is not the C++ interoperability surface, and `std::variant` is rejected because it is not a supported cljonic value type; cljonic collections and producers compare by their equality family, with the SequentialEquality family mutually comparable by bounded logical observation and Map, Set, and String comparable only to their own kind; incompatible-family and mixed cljonic-to-non-cljonic pairs fail at compile time. Comparison is recursive over nested values and lazy and element-wise for sequential operands. Sequential equality requires equal observed counts and ordered observed elements, and terminates at the first differing element pair or exhaustion of the shorter logical observation. Each unbounded producer operand uses its configured observable traversal cap, whether the other operand is finite or unbounded; equality makes no claim beyond the observed bounds. This does not introduce automatic traversal of nested producers or replace their specified parameter equality.
 - **Deprecated Synonyms:** `=`, general equality function, Clojure equals
 - **Related:** GeneralEquality, SequentialEquality, NumericEquality, StableEqualityComparable, NothrowEqualityComparable, ProducerParameterEquality, FiniteDeepEquality, AlternativeStrictEquality, CompileTimeFailure
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
@@ -1397,6 +1397,13 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Examples:** `SequenceableCollection<C>` is a CapabilityConcept requiring non-throwing `count()` observation; `is_empty(value)` also accepts `SequenceableProducer` and follows the same count observation.
 
 
+### ClosedCapability
+- **Definition:** A semantic capability whose membership is fixed by the library and cannot be conferred by a type outside the library's owned value family. A closed capability exposes no concept-specialization point, trait hook, adopter-supplied trait, or opt-in mechanism through which an external or new type can declare itself a member, and structural similarity to a member type never substitutes for library-owned nominal admission. `Seqable` is closed (`REQ-CAP-014`); the closure is stated per capability and does not by itself extend to `Indexed`, `Lookup`, `Associative`, or `Conjable`.
+- **Deprecated Synonyms:** none
+- **Related:** Seqable, CapabilityConcept, SequenceableCollection
+- **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
+- **Examples:** No external or new type can satisfy `Seqable`; a user-defined `struct` with `count()` and a matching range interface remains non-`Seqable`, because membership is library-owned rather than structural.
+
 ### SequenceableCollection
 - **Definition:** The C++ concept identifier implementing the current collection sequenceable CapabilityConcept baseline, requiring non-throwing `count` observation on an admitted collection. The public `is_empty(value)` free function accepts either `SequenceableCollection` or `SequenceableProducer` and derives its result from `count(value) == 0`; no collection `is_empty()` member is required. SequenceableCollection is intentionally bootstrapped and may grow only when a public operation needs stronger sequence behavior; it is not the complete semantic definition of `Sequenceable` and does not by itself imply `ConstRangeTraversal`, indexed access, lookup, contiguous storage, or a particular iterator category.
 - **Deprecated Synonyms:** sequenceable_cljonic_collection, sequenceable collection concept
@@ -1454,7 +1461,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### StableEqualityComparable
-- **Definition:** The C++ concept identifier implementing the StableEquality capability: a non-floating-point, non-callable equality comparison admitting a type for equality-dependent operations. For composite values, StableEqualityComparable is recursive: it is satisfied only when every stored component admits stable equality. For producers, StableEqualityComparable is satisfied only when every stored parameter admits stable equality and the producer provides producer parameter equality as governed by ProducerParameterEquality.
+- **Definition:** The C++ concept identifier implementing the StableEquality capability: a non-floating-point, non-callable equality comparison admitting a type for equality-dependent operations. For composite values, StableEqualityComparable is recursive: it is satisfied only when every stored component admits stable equality. The recursion covers exactly the components the library can analyze; a user-defined aggregate is a boundary, so the concept admits it when its own `operator==` is non-throwing and performs no member-level inspection of it (`REQ-NUM-018`). For producers, StableEqualityComparable is satisfied only when every stored parameter admits stable equality and the producer provides producer parameter equality as governed by ProducerParameterEquality.
 - **Deprecated Synonyms:** stable_equality_comparable, stable equality comparable concept
 - **Related:** StableEquality, TotalOrder, TotallyOrdered, AggregateLikeStruct, AlternativeStrictEquality, ProducerParameterEquality, Map, Set, MapEntry
 - **Usage:** Architecture, specification, implementation, tests, and documentation
@@ -1598,12 +1605,19 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### SimpleAggregateBoundary
-- **Definition:** The admissible user-defined element, key, and value type boundary: simple aggregates are permitted only when every capability required by the applicable collection and operation is non-allocating and does not require forbidden runtime services. Storage alone does not require equality or ordering.
+- **Definition:** The admissible user-defined element, key, and value type boundary: simple aggregates are permitted only when every capability required by the applicable collection and operation is non-allocating and does not require forbidden runtime services. Storage alone does not require equality or ordering. Equality is admitted through the aggregate's own non-throwing `operator==`, defaulted or user-written; the library does not analyze the members, so the aggregate's internal equality semantics — including floating-point, NaN, and precision behavior — are the author's responsibility (`REQ-NUM-018`).
 - **Deprecated Synonyms:** aggregate type boundary, user-defined aggregate boundary
-- **Related:** NoHeapConstraint, NoExceptionConstraint, StaticInspectableStorage
+- **Related:** NoHeapConstraint, NoExceptionConstraint, StaticInspectableStorage, StableEquality, AggregateEqualityBoundary
 - **Usage:** Requirements, architecture, implementation, and tests
-- **Examples:** A user-defined aggregate may be stored in a Vector when its required construction, copying, moving, and destruction capabilities satisfy the applicable operation contract.
+- **Examples:** A user-defined aggregate may be stored in a Vector when its required construction, copying, moving, and destruction capabilities satisfy the applicable operation contract; the same aggregate may be used in equality-dependent positions, including as a Map key or Set element, when its `operator==` is non-throwing.
 
+
+### AggregateEqualityBoundary
+- **Definition:** The rule that cljonic's stable-equality recursion stops at a user-defined aggregate. The aggregate is admitted on the strength of its own non-throwing `operator==`, defaulted or user-written, and the library performs no member-level analysis of it, so the semantic correctness of that aggregate's equality — including any floating-point, NaN, or precision behavior — belongs to the type's author. The boundary exists because no standard reflection is available to analyze arbitrary members; the type's own comparison is the contract.
+- **Deprecated Synonyms:** aggregate equality escape, user-defined equality boundary
+- **Related:** SimpleAggregateBoundary, StableEquality, StableEqualityComparable, AggregateLikeStruct, NumericEquality
+- **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
+- **Examples:** `struct MyStruct { double x; int n; auto operator==(const MyStruct&) const -> bool = default; };` is stable-equality-capable and may be a Map key or Set element, even though it stores a `double`; `Vector<double, 2>` remains rejected because the library can analyze that element type.
 
 ## Relationship Notes
 
