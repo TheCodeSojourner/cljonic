@@ -30,8 +30,8 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 
 λ REQ-COLL-004(x).
   ∀ context: the library provides a bounded map with key/value association, lookup, association, removal, membership, and count
-  ∧ ∀ (sequence conversion ∧ traversal): deferred future capabilities
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  ∧ ∀ (sequence conversion ∧ traversal): `requirements-backed` through `REQ-SEQ-001`–`014`
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-COLL-004A(x).
   ∀ association of an existing map key: replaces its associated value in the returned map without increasing the map count or requiring additional capacity
@@ -52,8 +52,8 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 
 λ REQ-COLL-005(x).
   ∀ context: the library provides a bounded set with membership, insertion, removal, and count
-  ∧ ∀ (sequence conversion ∧ traversal): deferred future capabilities
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  ∧ ∀ (sequence conversion ∧ traversal): `requirements-backed` through `REQ-SEQ-001`–`014`
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-COLL-005A(x).
   ∀ insertion of a set value already present: successful no-op in the returned set ∧ preserves the set count ∧ ¬∃ requirement of additional capacity
@@ -67,8 +67,8 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 
 λ REQ-COLL-006(x).
   ∀ context: the library provides a bounded FIFO queue with insertion at the rear, removal at the front, peek, and count
-  ∧ ∀ (sequence conversion ∧ traversal): deferred future capabilities
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  ∧ ∀ (sequence conversion ∧ traversal): `requirements-backed` through `REQ-SEQ-001`–`014`
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-COLL-007(x).
   ∀ collection_capacity: encoded in each collection type ∧ bounded by a documented configuration-time limit
@@ -194,23 +194,23 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-COLL-020B(x).
-  ∀ context: the library models collection behavior using the Clojure-style capability definitions in `REQ-CAP-001` through `REQ-CAP-009` and `REQ-CAP-013`, including `Indexed`, `Lookup`, `Seqable`, `Associative`, and `Conjable`, while preserving the bounded, non-allocating, value-semantic implementation model
-  ∧ ∀ `Seqable` capability ∧ its traversal operations: deferred according to the lifecycle rules in this module
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  ∀ context: the library models collection behavior using the Clojure-style capability definitions in `REQ-CAP-001` through `REQ-CAP-009`, `REQ-CAP-013`, and `REQ-CAP-014`, including `Indexed`, `Lookup`, `Seqable`, `Associative`, and `Conjable`, while preserving the bounded, non-allocating, value-semantic implementation model
+  ∧ ∀ `Seqable` capability ∧ its traversal operations: `requirements-backed` through `REQ-SEQ-001`–`014` ∧ closed to external declaration under `REQ-CAP-014`
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-COLL-020C(x).
-  ∀ `Vector<T, N>`: satisfies the `Indexed`, `Lookup`, and Clojure-style `Associative` capability semantics under the supported bounded model ∧ satisfies `Seqable` when the deferred `Seqable` capability is implemented for vectors
+  ∀ `Vector<T, N>`: satisfies the `Indexed`, `Lookup`, and Clojure-style `Associative` capability semantics under the supported bounded model ∧ satisfies `Seqable` under the closed capability set of `REQ-CAP-014`
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-COLL-020D(x).
-  ∀ `Map<K, V, N>`: satisfies the `Associative` and `Lookup` capability semantics under the supported bounded model ∧ satisfies `Seqable` when the deferred `Seqable` capability is implemented for maps
+  ∀ `Map<K, V, N>`: satisfies the `Associative` and `Lookup` capability semantics under the supported bounded model ∧ satisfies `Seqable` under the closed capability set of `REQ-CAP-014`
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-COLL-020E(x).
   ∀ `Set<T, N>`: satisfies the `Lookup` capability for value-membership lookup, where a present value is the associated lookup result and an absent value follows the documented default or fallback policy
   ∧ ∀ `Queue<T, N>`: ¬∃ requirement to satisfy `Indexed` ∨ `Lookup` ∨ `Associative` ∧ exposes only the sequence and queue operations approved for its lifecycle
-  ∧ ∀ both types: satisfy `Seqable` when the deferred `Seqable` capability is implemented for them
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  ∧ ∀ both types: satisfy `Seqable` under the closed capability set of `REQ-CAP-014`
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-COLL-020F(x).
   ∀ free_function: constrained by the capability required by the operation — `assoc` and `can_assoc` valid only for collections satisfying `Associative`, `get` only for collections satisfying `Lookup`, and `seq` for collections satisfying `Seqable` plus the supported producers admitted by `REQ-SEQ-010`
@@ -284,7 +284,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 λ REQ-COLL-020S(x).
   ∀ context: the lifecycle classification is `requirements-backed` for `Indexed`, `Lookup`, `Associative`, and `Conjable`, and for `count`, `get`, `contains`, `conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`, `first`, `next`, and `has_next` over their supported collection inputs
   ∧ ∀ `rest`: lifecycle classification is `requirements-backed` over every input admitted by `next` under `REQ-SEQ-001`–`009` and `REQ-SEQ-012`
-  ∧ ∀ `seq`: `requirements-backed` over the input domain and semantics defined by `REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014` ∧ ∀ `Seqable`: remains `deferred` as a capability concept until separately implemented
+  ∧ ∀ `seq`: `requirements-backed` over the input domain and semantics defined by `REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014` ∧ ∀ `Seqable`: remains a closed capability concept that no type outside the cljonic-owned collection family may declare (`REQ-CAP-014`)
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-COLL-020T(x).
@@ -585,7 +585,8 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ operand ∧ ∀ stored component at any depth: its equality comparison is non-throwing, so the `noexcept` guarantee cannot be violated; a value whose comparison may throw (including an aggregate-like struct whose `operator==` is not `noexcept`) is outside the supported domain and fails at compile time
   ∧ ∀ context: `equal` is a named free-function operation distinct from the native `==` operators defined by `REQ-COLL-021` and `REQ-FN-014B`
   ∧ ∀ non_collection ∧ non_producer value: the fallthrough domain is the closed value domain — arithmetic scalars, scoped enumerations, aggregate-like structs with a non-throwing `operator==`, and `cljonic::Variant` composites of those; unscoped enumerations and pointer types (including pointers to functions and pointers to member functions) are outside the fallthrough domain and rejected at compile time
-  ∧ ∀ floating_point_value at any depth (including nested inside any operand in any arity): rejected at compile time per `REQ-NUM-006`
+  ∧ ∀ floating_point_value at any depth analyzable within a cljonic composite (including nested inside any operand in any arity): rejected at compile time per `REQ-NUM-006`
+  ∧ ∀ user-defined aggregate struct operand ∨ stored component: admitted under `REQ-NUM-018` when it provides a non-throwing `operator==` ∧ the numeric recursion boundary stops at that type ∧ its internal equality semantics, including any floating-point members, are the author's responsibility
   ∧ ∀ standard_library range ∨ container type at any depth (as an operand, as a stored component of a cljonic collection or producer, or as a `cljonic::Variant` alternative): rejected at compile time because `equal` is not part of the C++ interoperability surface
   ∧ ∀ standard_library `std::variant` (as an operand, stored component, or alternative): rejected at compile time because it is not a supported cljonic value type (`REQ-CAP-011`)
   ∧ ∀ both operands cljonic collections ∨ producers: equality classified by equality family — Vector, Queue, Cycle, Iterate, Range, Repeat, and Repeatedly form one sequential family (`SequentialEquality`) whose members are comparable by produced sequence (same elements in the same order, compared with identical element types) regardless of their concrete types; Map comparable only to Map; Set only to Set; String only to String
@@ -593,7 +594,7 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ sequential_comparison: equal ≡ same(observed_count ∧ ordered_elements) | compare_only(bounded_logical_observations) ∧ ¬claim(equality_beyond_observation_bound)
   ∧ ∀ sequential_comparison: order-sensitive ∧ lazy_elementwise ∧ ¬eager_materialization ∧ terminate(first_unequal_pair ∨ shorter_exhausted_logical_count)
   ∧ ∀ producer_operand: unbounded_complete_sequence → ¬reject_solely_for_unboundedness ∧ observe_only(configured_bounded_traversal)
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-FN-002H(x).
   ∀ context: `not_equal` implements the canonical negation of general value equality as the counterpart of `equal` (`REQ-FN-002G`), in the three arities of Clojure's `not=`

@@ -77,8 +77,9 @@ This module establishes the C++20 concept capability framework, result status ou
   ∀ context: `Seqable` means a capability for producing the collection's documented logical traversal representation
   ∧ ∀ collection: satisfies `Seqable` only when its sequence conversion is available under the lifecycle rules for that collection
   ∧ ∀ Seqable_collection: provides sequence conversion without mutating the source, dynamic allocation, or exceptions ∧ sequence result is an independently valid bounded value whose elements and order follow the collection's documented traversal semantics
-  ∧ ∀ sequence_traversal: deferred until the requirements in `REQ-SEQ-001` through `REQ-SEQ-014` become implementation-backed
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  ∧ ∀ sequence_traversal: implementation-backed through `REQ-SEQ-001` through `REQ-SEQ-014`
+  ∧ ∀ declaration_of_Seqable: closed to external extension under `REQ-CAP-014`
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-CAP-004(x).
   ∀ context: `Associative` means a capability for non-mutating association of a key and value into a collection, producing a new collection value
@@ -104,7 +105,7 @@ This module establishes the C++20 concept capability framework, result status ou
 
 λ REQ-CAP-008(x).
   ∀ supported_collection_family: required capability participation is — `Vector` satisfies `Indexed`, `Lookup`, `Associative`, and `Conjable`; `Map` satisfies `Lookup`, `Associative`, and `Conjable`; `Set` satisfies `Lookup` and `Conjable`; `String` satisfies `Indexed`, `Lookup`, `Associative`, and `Conjable`; `Queue` satisfies `Conjable` and none of `Indexed`, `Lookup`, or `Associative` by default
-  ∧ ∀ collection: satisfies `Seqable` only when the deferred sequence requirements are implemented for that collection
+  ∧ ∀ collection: satisfies `Seqable` only when its sequence requirements are implementation-backed for that collection ∧ ¬∃ type outside the cljonic-owned collection family declares itself `Seqable` (`REQ-CAP-014`)
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-CAP-009(x).
@@ -155,6 +156,13 @@ This module establishes the C++20 concept capability framework, result status ou
   ∧ ∀ Conjable_collection: defines its value type and capacity policy ∧ provides `conj` and a non-throwing, non-allocating `can_conj` preflight that agrees with `conj` for immutable inputs ∧ preserves its source collection
   ∧ ∀ context: `Conjable` does not by itself imply `Associative`, `Indexed`, or `Lookup`
   {source: stakeholder_decided, decided_by: original_spec_author}
+
+λ REQ-CAP-014(x).
+  ∀ `Seqable` declaration: closed to external extension ∧ ¬∃ declaration mechanism by which a type outside the cljonic-owned collection family (`Vector`, `Map`, `Set`, `Queue`, `String`) confers `Seqable` on itself
+  ∧ ∀ third-party type ∧ ∀ new type: must never be able to declare itself `Seqable`; the library provides no concept-specialization point, trait hook, adopter-supplied trait, or opt-in mechanism that confers the capability
+  ∧ ∀ structural similarity to a supported collection: does not confer `Seqable` ∧ never substitutes for cljonic-owned nominal admission (`REQ-CAP-009`, `REQ-COLL-001`)
+  rationale: capability identity is library-owned; an external declaration point would let a type claim sequence semantics cljonic cannot guarantee, trace, or constrain at the public API boundary
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: AI_inferred}
 
 ## Canonical Type, Result, and Status Model
 

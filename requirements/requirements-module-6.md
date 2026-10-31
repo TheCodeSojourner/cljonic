@@ -48,8 +48,9 @@ This module specifies the checked fixed-width numeric contract, scalar compariso
 λ REQ-NUM-007(x).
   ∀ collection operation that compares values: applies the same numeric capability constraints recursively to its element, key, and value types
   ∧ ∀ equality of collections containing raw floating-point values: rejected by default even when the collection itself can store those values, because nested floating-point comparisons may not be stable across supported environments
+  ∧ ∀ recursion: traverses only the components the library can analyze — cljonic collections, producers, `MapEntry`, `cljonic::Variant` alternatives, and the scalars themselves — ∧ stops at a user-defined aggregate boundary under `REQ-NUM-018`
   rationale: nested floating-point comparisons may not be stable across supported environments, even when storage is permitted
-  {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: origin_artifact}
 
 λ REQ-NUM-008(x).
   ∀ numeric_conversion_operation: has an explicit target type ∧ ¬∃ selection of its result type through a global configuration constant
@@ -100,6 +101,26 @@ This module specifies the checked fixed-width numeric contract, scalar compariso
   ∧ ∀ such_operation: obeys the applicable compile-time capability, representability, overflow, division-by-zero, shift-count, floating-point, and preflight requirements
   ∧ ∀ raw floating-point value: remains excluded from operations that require the stable equality, identity, or total-order capabilities defined by this document
   {source: stakeholder_decided, decided_by: original_spec_author}
+
+λ REQ-NUM-018(x).
+  ∀ user-defined aggregate struct that provides `operator==` — defaulted ∨ user-written — and that comparison is non-throwing: admitted to the stable equality domain as a stable-equality-capable type, whether or not it contains floating-point members
+  ∧ ∀ such aggregate: the numeric capability recursion of `REQ-NUM-007` stops at this type boundary ∧ the library performs no member-level analysis of it ∧ the library never inspects, requires, or reasons about its individual members
+  ∧ ∀ equality semantics inside such an aggregate, including floating-point, NaN, and precision behavior: the responsibility of the type's author, not of cljonic; admitting the type is an explicit transfer of that burden to the user
+  ∧ ∀ user-defined aggregate without an available non-throwing `operator==`: outside the stable equality domain ∧ rejected at compile time
+  ∧ ∀ context: this boundary is an admitted limitation of the type system, not a defect — C++23 provides no standard reflection, so member-level analysis of an arbitrary user-defined aggregate is unavailable; C++26 static reflection would be required to close it
+  rationale: a type that states its own equality contract is a trustworthy boundary; refusing to admit it would remove ordinary C++ value types from the collection domain without making the equality any more verifiable
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: AI_inferred}
+
+λ REQ-NUM-019(x).
+  ∀ floating-point equality comparison that is statically detectable at compile time: rejected at compile time ∧ never deferred to a runtime check
+  ∧ ∀ raw floating-point operand of `equal` ∨ `not_equal` (any arity): rejected at compile time
+  ∧ ∀ `Set` element type ∧ ∀ `Map` key type that is a raw floating-point type: rejected at compile time, because set membership and map key lookup are equality comparisons
+  ∧ ∀ element, key, value, producer-parameter, or `Variant` alternative type of a cljonic collection, producer, `MapEntry`, or composite that is detectable as floating-point-bearing: rejected at compile time wherever that component participates in equality
+  ∧ ∀ context: detectability is the criterion — every floating-point equality comparison the library can detect must be rejected ∧ ¬∃ detectable comparison that is silently admitted
+  ∧ ∀ undetectable case (a floating-point member inside an opaque user-defined aggregate): governed by `REQ-NUM-018` ∧ ¬∃ claim that it was detected
+  ∧ ∀ storage independent of equality: storing a floating-point value where the operation never compares it (for example `Vector<double, N>` element storage or `Map<int, double, N>` value storage) remains permitted ∧ every equality operation over such a collection remains rejected at compile time
+  rationale: floating-point identity is not stable across supported environments; the defensible policy is to reject every detectable instance and to state honestly where detection stops
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: AI_inferred}
 
 λ REQ-FN-002N(x).
   ∀ context: the supported free-function vocabulary includes `can_add`, `can_subtract`, and `can_multiply` for checked fixed-width arithmetic preflight
