@@ -387,10 +387,18 @@ concept TotallyOrdered = StableEqualityComparable<T> && std::totally_ordered<T>;
 template <typename T>
 concept NothrowEqualityComparable = StableEqualityComparable<T> && concepts_detail::nothrow_equality_v<T>;
 
-/** Requires stable equality combined with non-throwing collection storage,
- *  the admission contract shared by map keys and set elements. */
+/** Requires stable equality combined with non-throwing collection storage and a
+ *  non-throwing comparison: the admission contract shared by map keys and set
+ *  elements.
+ *
+ *  The comparison requirement is what keeps a parameterized standard-library
+ *  wrapper out of a key or element position: `std::pair`, `std::optional`,
+ *  `std::tuple`, and `std::variant` do not declare their comparisons
+ *  non-throwing, so a floating-point component cannot be smuggled into a map key
+ *  or set element behind one, whatever the wrapper is instantiated with. */
 template <typename T>
-concept NothrowStableEqualityComparable = StableEqualityComparable<T> && NothrowCollectionElement<T>;
+concept NothrowStableEqualityComparable =
+    StableEqualityComparable<T> && NothrowCollectionElement<T> && concepts_detail::nothrow_equality_v<T>;
 
 /** Requires a `cljonic::Variant` alternative admissible for storage:
  *  non-throwing collection storage. Floating-point and callable alternatives

@@ -7,9 +7,9 @@ namespace cljonic {
 /** \anchor NotEqual
  * The \b not_equal free function compares one or more values for inequality.
  *
- * It is the negation of \ref Equal "equal" and uses the same supported values and comparison rules. Calling
- * `not_equal` with one value returns false. With multiple values, it returns true when at least one adjacent pair is
- * unequal.
+ * It is the negation of \ref Equal "equal" and uses the same supported values and comparison rules, including
+ * comparing ordinary values of the same type or of types that convert safely to one another. Calling `not_equal` with
+ * one value returns false. With multiple values, it returns true when at least one adjacent pair is unequal.
  *
  * \b Examples
  *
@@ -90,8 +90,9 @@ template <typename Lhs, typename Rhs>
 [[nodiscard]] constexpr auto not_equal([[maybe_unused]] const Lhs& lhs, [[maybe_unused]] const Rhs& rhs) -> bool {
     static_assert(concepts_detail::dependent_false<Lhs, Rhs>,
                   "cljonic::not_equal: these two values cannot be compared for inequality. not_equal supports the same "
-                  "values as equal -- both must be ordinary values of the same type, or two values from the same "
-                  "cljonic family: Vector, Queue, and all producers (the sequential family), a Map, a Set, or a "
+                  "values as equal -- both must be ordinary values of the same type or of types that convert safely "
+                  "to one another, or two values from the same cljonic family: Vector, Queue, and all producers "
+                  "(the sequential family), a Map, a Set, or a "
                   "String. Floating-point values, callables, pointers, unscoped enums, standard-library range and "
                   "container types, the standard-library variant, values whose equality can throw, and pairs that mix "
                   "cljonic and non-cljonic values are not supported.");
@@ -105,8 +106,9 @@ template <typename Lhs, typename Rhs, typename... Rest>
     static_assert(concepts_detail::dependent_false<Lhs, Rhs>,
                   "cljonic::not_equal: at least one adjacent pair of values cannot be compared for inequality. "
                   "not_equal supports the same values as equal. With three or more operands, every adjacent pair must "
-                  "follow the same rule as the two-operand form -- both ordinary values of the same type, or two "
-                  "values from the same cljonic family -- Vector, Queue, and all producers (the sequential family), a "
+                  "follow the same rule as the two-operand form -- both ordinary values of the same type or of types "
+                  "that convert safely to one another, or two values from the same cljonic family -- Vector, Queue, "
+                  "and all producers (the sequential family), a "
                   "Map, a Set, or a String. Floating-point values, callables, pointers, unscoped enums, "
                   "standard-library range and container types, the standard-library variant, values whose equality can "
                   "throw, and pairs that mix cljonic and non-cljonic values are not supported.");

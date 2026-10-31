@@ -118,7 +118,7 @@
  *   is_negative, is_odd, is_positive, is_zero, \ref Iterate "iterate"
  * - juxt
  * - keep, keep_indexed, keys
- * - make_keyword_enum_name_map, map, \ref MapEntryFactory "map_entry", map_indexed, mapcat, mapv, max, max_key,
+ * - make_keyword_enum_name_map, \ref MapFunction "map", \ref MapEntryFactory "map_entry", map_indexed, mapcat, mapv, max, max_key,
  *   merge, merge_with, min, min_key, mod, mult
  * - negate, \ref Next "next", nfirst, nnext, not_any, \ref NotEmpty "not_empty", \ref NotEqual "not_equal",
  *   not_every, nth, nthnext, nthrest
@@ -568,10 +568,18 @@ concept TotallyOrdered = StableEqualityComparable<T> && std::totally_ordered<T>;
 template <typename T>
 concept NothrowEqualityComparable = StableEqualityComparable<T> && concepts_detail::nothrow_equality_v<T>;
 
-/** Requires stable equality combined with non-throwing collection storage,
- *  the admission contract shared by map keys and set elements. */
+/** Requires stable equality combined with non-throwing collection storage and a
+ *  non-throwing comparison: the admission contract shared by map keys and set
+ *  elements.
+ *
+ *  The comparison requirement is what keeps a parameterized standard-library
+ *  wrapper out of a key or element position: `std::pair`, `std::optional`,
+ *  `std::tuple`, and `std::variant` do not declare their comparisons
+ *  non-throwing, so a floating-point component cannot be smuggled into a map key
+ *  or set element behind one, whatever the wrapper is instantiated with. */
 template <typename T>
-concept NothrowStableEqualityComparable = StableEqualityComparable<T> && NothrowCollectionElement<T>;
+concept NothrowStableEqualityComparable =
+    StableEqualityComparable<T> && NothrowCollectionElement<T> && concepts_detail::nothrow_equality_v<T>;
 
 /** Requires a `cljonic::Variant` alternative admissible for storage:
  *  non-throwing collection storage. Floating-point and callable alternatives
@@ -3437,7 +3445,17 @@ template <typename T>
 inline constexpr bool in_non_cljonic_fallthrough_domain_v =
     !is_cljonic_collection_v<T> && !is_cljonic_producer_v<T> && !std::ranges::range<T> &&
     ((std::is_arithmetic_v<T> || std::is_scoped_enum_v<T>) || std::is_aggregate_v<T> || is_cljonic_map_entry_v<T> ||
-     is_cljonic_variant_v<T>);
+     is_cljonic_variant_v<T> ||
+     // Non-aggregate user-defined classes (REQ-NUM-018, aligned 2026-10-31):
+     // admitted on the stable-equality capability that map keys and set elements
+     // require, together with the non-throwing comparison `equal` itself
+     // requires. Requiring the *comparison* to be non-throwing (not merely
+     // storage) keeps parameterized wrappers whose inner types the library
+     // cannot analyze out of the domain: the standard library does not declare
+     // its wrapper comparisons `noexcept`, so std::pair, std::optional,
+     // std::tuple, and std::variant stay rejected however they are instantiated,
+     // and a floating-point member cannot be smuggled in behind a wrapper.
+     (std::is_class_v<T> && !is_std_variant_v<T> && concepts::NothrowEqualityComparable<T>));
 
 // Equality-family classification for the general-equality free function `equal`
 // (REQ-FN-002G): Vector and Queue join all five producers in the sequential
@@ -3518,17 +3536,28 @@ concept EqualDomainValue = concepts::NothrowEqualityComparable<T> && !contains_s
 
 // Equality-family gates shared by equal's overloads and not_equal's delegated
 // gate (REQ-FN-002G, REQ-FN-002H); these are not ordering capabilities.
+// Safe cross-type comparison (REQ-FN-002G, human decision 2026-10-31): a pair
+// is comparable when the types are identical or related by a value-preserving
+// implicit conversion in either direction, and the comparison happens in the
+// wider type. Narrowing value relations are harmless under widening; sign
+// crossings, Boolean, character, enumeration, pointer, and user-defined pairs
+// are never safely convertible. Map, Set, String, and Variant alternative
+// identity keep the identical-type rule.
+template <typename Lhs, typename Rhs>
+concept SafelyComparablePair =
+    std::same_as<Lhs, Rhs> || concepts::SafeImplicitConversion<Lhs, Rhs> || concepts::SafeImplicitConversion<Rhs, Lhs>;
+
 template <typename Lhs, typename Rhs>
 concept EqualScalarPairAdmissible =
     equal_family_of_v<Lhs> == equality_family::none && equal_family_of_v<Rhs> == equality_family::none &&
-    in_non_cljonic_fallthrough_domain_v<Lhs> && in_non_cljonic_fallthrough_domain_v<Rhs> && std::same_as<Lhs, Rhs> &&
-    EqualDomainValue<Lhs>;
+    in_non_cljonic_fallthrough_domain_v<Lhs> && in_non_cljonic_fallthrough_domain_v<Rhs> &&
+    SafelyComparablePair<Lhs, Rhs> && EqualDomainValue<Lhs> && EqualDomainValue<Rhs>;
 
 template <typename Lhs, typename Rhs>
 concept EqualSequentialPairAdmissible =
     equal_family_of_v<Lhs> == equality_family::sequential && equal_family_of_v<Rhs> == equality_family::sequential &&
-    std::same_as<equal_value_type_of_t<Lhs>, equal_value_type_of_t<Rhs>> &&
-    EqualDomainValue<equal_value_type_of_t<Lhs>>;
+    SafelyComparablePair<equal_value_type_of_t<Lhs>, equal_value_type_of_t<Rhs>> &&
+    EqualDomainValue<equal_value_type_of_t<Lhs>> && EqualDomainValue<equal_value_type_of_t<Rhs>>;
 
 template <typename Lhs, typename Rhs>
 concept EqualStringPairAdmissible =
@@ -3639,11 +3668,19 @@ namespace cljonic {
  * \b Equal compares values by their contents:
  *
  * - Calling `equal` with one value always returns true.
- * - Two ordinary values compare equal when they are the same type and compare
- *   equal with `==` (e.g., `int`, a scoped enum, or a simple struct with an
- *   explicit or defaulted `operator==`). The comparison must not throw, so a
- *   type whose `==` can throw is not supported; pointers and unscoped enums
- *   are not supported either.
+ * - Two ordinary values compare equal when they are the same type, or types that
+ *   convert safely to one another, and compare equal with `==` (e.g., `int`, a
+ *   scoped enum, or a user-defined class with an explicit or defaulted `operator==`).
+ *   `int` and `long` compare equal when they hold the same number, because a
+ *   safe conversion never changes a value; comparing a signed value against an
+ *   unsigned one, or a character against a number, is not supported. The
+ *   comparison must not throw, so a type whose `==` can throw is not supported;
+ *   pointers and unscoped enums are not supported either.
+ *
+ *   A user-defined class states its own equality contract, and the library never inspects its members: whether it
+ *   is a plain aggregate struct or a class with its own constructors, it is supported when `==` cannot throw. The
+ *   library makes no claim about whether that `==` is correct, including for floating-point members. A non-aggregate
+ *   class is supported on the same terms that admit it as a map key or a set element.
  * - \ref Vector "Vectors" and \ref Queue "Queues" compare equal when they contain the same elements in the same order;
  *   producers (\ref Range "Ranges", \ref Repeat "Repeats", \ref Cycle "Cycles", \ref Iterate "Iterate", and
  *   \ref Repeatedly "Repeatedly") compare equal when they produce the same elements in the same order. When comparing
@@ -3656,9 +3693,9 @@ namespace cljonic {
  *   insertion order.
  * - \ref String "Strings" compare equal when they hold the same characters.
  *
- * Compared collections and sets must have matching element types, and compared maps must have matching key and value
- * types. Collections are never compared to ordinary values. Values that cannot be compared stably, such as
- * floating-point numbers, are not supported.
+ * Compared collections and sets must have element types that are the same or convert safely to one another, and
+ * compared maps must have matching key and value types. Collections are never compared to ordinary values. Values that
+ * cannot be compared stably, such as floating-point numbers, are not supported.
  *
  * \ref Iterate "Iterate" and \ref Repeatedly "Repeatedly" values cannot be compared stably because their step is a
  * callable, so they are not supported as map keys, set elements, or nested components. Standard-library range and
@@ -3675,6 +3712,14 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+
+ struct Point {
+   int x;
+   int y;
+   constexpr auto operator==(const Point &other) const noexcept -> bool {
+     return x == other.x && y == other.y;
+   }
+ };
 
  int main() {
    // Compile-time demonstration.
@@ -3695,8 +3740,12 @@ namespace cljonic {
    static_assert(!equal(1, 2, 1)); // stops at the first unequal pair
    static_assert(equal(v, r, q));  // Vector, Range, and Queue with the
                                    // same elements compare equal
-   static_assert(equal(v, r));     // Vector vs Range
-   static_assert(equal(v, q));     // Vector vs Queue
+   static_assert(equal(Point{1, 2}, Point{1, 2})); // user-defined class
+   static_assert(equal(1, 1L)); // int and long compare through a safe
+                                // conversion to the wider type
+   static_assert(equal(vector(1, 2), vector<long, 2>(1L, 2L)));
+   static_assert(equal(v, r)); // Vector vs Range
+   static_assert(equal(v, q)); // Vector vs Queue
    static_assert(equal(vector(1, 1, 1), rep));
    static_assert(equal(m1, m2));     // Map equality ignores entry order
    static_assert(equal(s1, s2));     // Set equality ignores element order
@@ -3787,7 +3836,9 @@ template <typename Lhs, typename Rhs>
 [[nodiscard]] constexpr auto equal([[maybe_unused]] const Lhs& lhs, [[maybe_unused]] const Rhs& rhs) -> bool {
     static_assert(concepts_detail::dependent_false<Lhs, Rhs>,
                   "cljonic::equal: these two values cannot be compared for equality. They must both be ordinary values "
-                  "of the same type, or two values from the same cljonic family -- Vector, Queue, and all producers "
+                  "of the same type or of types that convert safely to one another (a widening conversion that "
+                  "preserves every value, such as int to long), or two values from the same cljonic family -- Vector, "
+                  "Queue, and all producers "
                   "(the sequential family), a Map, a Set, or a String. Floating-point values, callables, pointers, "
                   "unscoped enums, standard-library range and container types, the standard-library variant, values "
                   "whose equality can throw, and pairs that mix cljonic and non-cljonic values are not supported.");
@@ -3801,9 +3852,11 @@ template <typename Lhs, typename Rhs, typename... Rest>
     static_assert(
         concepts_detail::dependent_false<Lhs, Rhs>,
         "cljonic::equal: at least one adjacent pair of values cannot be compared for equality. With three or more "
-        "operands, every adjacent pair must follow the same rule as the two-operand form -- both ordinary values of "
-        "the same type, or two values from the same cljonic family -- Vector, Queue, and all producers (the sequential "
-        "family), a Map, a Set, or a String. Floating-point values, callables, pointers, unscoped enums, "
+        "operands, every adjacent pair must follow the same rule as the two-operand form -- both ordinary values "
+        "of the same type or of types that convert safely to one another, or two values from the same cljonic family "
+        "-- "
+        "Vector, Queue, and all producers (the sequential family), a Map, a Set, or a String. Floating-point values, "
+        "callables, pointers, unscoped enums, "
         "standard-library range and container types, the standard-library variant, values whose equality can throw, "
         "and pairs that mix cljonic and non-cljonic values are not supported.");
     return false;
@@ -7826,6 +7879,254 @@ constexpr auto is_empty([[maybe_unused]] const C& collection) noexcept -> void {
 
 } // namespace cljonic
 // End cljonic-is-empty.hpp
+// Begin cljonic-map-function.hpp
+#pragma once
+
+#include <algorithm>
+#include <tuple>
+#include <utility>
+
+
+namespace cljonic {
+
+namespace concepts_detail {
+// Static parameter-type extraction for the callables `map` can inspect: a
+// function pointer, or a class type with one non-template operator(). A generic
+// lambda or a templated operator() is not inspectable and reports known=false.
+template <typename P>
+struct CallableSignatureParameters {
+    static constexpr bool known = false;
+    using type = std::tuple<>;
+};
+
+template <typename R, typename C, typename... Args>
+struct CallableSignatureParameters<R (C::*)(Args...) const noexcept> {
+    static constexpr bool known = true;
+    using type = std::tuple<Args...>;
+};
+
+template <typename R, typename C, typename... Args>
+struct CallableSignatureParameters<R (C::*)(Args...) const> {
+    static constexpr bool known = true;
+    using type = std::tuple<Args...>;
+};
+
+template <typename R, typename C, typename... Args>
+struct CallableSignatureParameters<R (C::*)(Args...) noexcept> {
+    static constexpr bool known = true;
+    using type = std::tuple<Args...>;
+};
+
+template <typename R, typename C, typename... Args>
+struct CallableSignatureParameters<R (C::*)(Args...)> {
+    static constexpr bool known = true;
+    using type = std::tuple<Args...>;
+};
+
+template <typename R, typename... Args>
+struct CallableSignatureParameters<R (*)(Args...) noexcept> {
+    static constexpr bool known = true;
+    using type = std::tuple<Args...>;
+};
+
+template <typename R, typename... Args>
+struct CallableSignatureParameters<R (*)(Args...)> {
+    static constexpr bool known = true;
+    using type = std::tuple<Args...>;
+};
+
+template <typename F>
+struct CallableParameters : CallableSignatureParameters<F> {};
+
+template <typename F>
+    requires requires { &F::operator(); }
+struct CallableParameters<F> : CallableSignatureParameters<decltype(&F::operator())> {};
+
+// Per-position parameter rule (REQ-FN-032): when the callback's parameter types
+// are statically known, each parameter must accept its corresponding source
+// element through a safe implicit conversion. Narrowing conversions and
+// Boolean/character/enumeration/pointer/user-defined crossings are rejected. A
+// callback with fewer parameters than sources is rejected; extra parameters may
+// take defaults.
+template <typename Params, typename IndexSequence, typename... Sources>
+struct MapParametersSafe;
+
+template <typename Params, std::size_t... Index, typename... Sources>
+struct MapParametersSafe<Params, std::index_sequence<Index...>, Sources...>
+    : std::bool_constant<(concepts::SafeImplicitConversion<std::tuple_element_t<Index, Params>,
+                                                           std::ranges::range_value_t<const Sources>> &&
+                          ...)> {};
+
+template <typename F, typename... Sources>
+inline constexpr bool map_parameters_safe_v = [] constexpr {
+    using Parameters = CallableParameters<std::decay_t<F>>::type;
+    if constexpr (!CallableParameters<std::decay_t<F>>::known) {
+        return true;
+    } else if constexpr (std::tuple_size_v<Parameters> < sizeof...(Sources)) {
+        return false;
+    } else {
+        return MapParametersSafe<Parameters, std::index_sequence_for<Sources...>, Sources...>::value;
+    }
+}();
+
+// Guarded admission for the multi-source `map` free function (REQ-FN-032):
+// every source must be a cljonic source, the transforming function must be
+// copy-constructible and invoked without throwing with one argument per
+// source, its result must be a nothrow-storable element, and -- when its
+// parameter types are inspectable -- every parameter must safely accept the
+// corresponding source element.
+template <typename F, typename... Sources>
+concept MapCallable =
+    (sizeof...(Sources) >= 1) && (concepts::CljonicSource<Sources> && ...) &&
+    std::copy_constructible<std::decay_t<F>> && std::is_nothrow_copy_constructible_v<std::decay_t<F>> &&
+    std::is_nothrow_invocable_v<const std::decay_t<F>&, std::ranges::range_reference_t<const Sources>...> &&
+    concepts::NothrowCollectionElement<
+        std::invoke_result_t<const std::decay_t<F>&, std::ranges::range_reference_t<const Sources>...>> &&
+    map_parameters_safe_v<F, Sources...>;
+
+template <typename F, typename... Sources>
+using MapResultType = std::invoke_result_t<const std::decay_t<F>&, std::ranges::range_reference_t<const Sources>...>;
+
+// Compile-time observable-count bound per source: a collection contributes its
+// declared capacity; any producer contributes the configured observable
+// traversal cap (REQ-FN-032 result-capacity policy).
+template <typename Source>
+[[nodiscard]] constexpr auto map_source_bound() noexcept -> std::size_t {
+    if constexpr (concepts::CljonicCollection<Source>) {
+        return Source::capacity();
+    } else {
+        return CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
+    }
+}
+
+template <typename... Sources>
+inline constexpr std::size_t MapResultCapacity = [] constexpr {
+    std::size_t minimum = CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
+    ((minimum = std::min(minimum, map_source_bound<Sources>())), ...);
+    return minimum;
+}();
+
+} // namespace concepts_detail
+
+/** \anchor MapFunction
+ * The \b map free function applies its transforming function to corresponding elements of one or more cljonic sources.
+ * The function is the first argument, followed by one or more sources: a \ref Vector "Vector", \ref Map "Map", \ref
+ * Set "Set", \ref Queue "Queue", or \ref String "String" collection, or a \ref Range "Range", \ref Repeat "Repeat",
+ * \ref Cycle "Cycle", \ref Iterate "Iterate", or \ref Repeatedly "Repeatedly" producer. A unary function is applied
+ * over one source, a binary function over two sources, and so on; traversal terminates when the first source is
+ * exhausted. Map and Set traversal order is not semantically significant, so the mapped result order carries no
+ * semantic significance for those sources.
+ *
+ * The result is a bounded owning \ref Vector "Vector" of the function results. Its capacity is the compile-time
+ * minimum of the sources' observable-count bounds: a collection contributes its declared capacity and any producer
+ * contributes the configured observable traversal cap, every contribution saturated at
+ * CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE. The runtime number of mapped elements is the minimum of the sources'
+ * effective counts: a collection contributes its element count, a finite producer its count, and an unbounded producer
+ * its configured observable traversal cap. Every source value is preserved.
+ *
+ * The transforming function must be copy-constructible, invoked without throwing with one argument per source, and
+ * return a storable element result. Each parameter must accept the corresponding source element through a safe
+ * implicit conversion: an identical type, or a value-preserving arithmetic conversion such as `int` to `long`. A
+ * narrowing conversion such as `long` to `int`, and any conversion that crosses the Boolean, character, enumeration,
+ * pointer, or user-defined domains, is rejected at compile time. A callback whose parameter types are not statically
+ * inspectable -- a generic lambda, or a class with a templated `operator()` -- is admitted on nothrow invocation
+ * alone. Standard-library ranges and containers, functions that can throw, and results that cannot be stored are
+ * rejected at compile time.
+ *
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+ using namespace cljonic;
+
+ int main() {
+   // Compile-time demonstration.
+   constexpr auto inc = [](int value) noexcept { return value + 1; };
+   constexpr auto add = [](int lhs, int rhs) noexcept { return lhs + rhs; };
+   constexpr auto v = vector(1, 2, 3);
+   constexpr auto singles = map(inc, v);
+   static_assert(equal(singles, vector(2, 3, 4)));
+
+   constexpr auto r = Range{1, 4, 1}; // produces 1, 2, 3
+   constexpr auto q = queue(10, 20, 30, 40);
+   constexpr auto pairs = map(add, v, q); // terminates at the shorter source
+   static_assert(equal(pairs, vector(11, 22, 33)));
+
+   constexpr auto triple = [](int a, int b, int c) noexcept {
+     return a + b + c;
+   };
+   constexpr auto triples = map(triple, v, r, repeat(2, 100));
+   static_assert(equal(triples, vector(102, 104)));
+
+   constexpr auto over_producer = map(inc, repeat(3, 7));
+   static_assert(equal(over_producer, vector(8, 8, 8)));
+
+   constexpr auto entry_value = [](const auto &entry) noexcept {
+     return entry.value;
+   };
+   constexpr auto over_map = map(entry_value, hash_map(1, 10, 2, 20));
+   static_assert(equal(over_map, vector(10, 20)) ||
+                 equal(over_map, vector(20, 10))); // Map order is unordered
+
+   constexpr auto next_char = [](char c) noexcept {
+     return static_cast<char>(c + 1);
+   };
+   constexpr auto over_string = map(next_char, string<4>("abc"));
+   static_assert(equal(over_string, vector('b', 'c', 'd')));
+
+   // Runtime demonstration.
+   const auto runtime_base = 1;
+   const auto runtime_v =
+       vector(runtime_base, runtime_base + 1, runtime_base + 2);
+   const auto runtime_q = queue(runtime_base * 10, (runtime_base + 1) * 10,
+                                (runtime_base + 2) * 10);
+   const auto runtime_pairs = map(add, runtime_v, runtime_q);
+
+   return (count(runtime_pairs) == 3 && runtime_pairs(0) == 11 &&
+           runtime_pairs(1) == 22 && runtime_pairs(2) == 33)
+              ? 0
+              : 1;
+ }
+ ~~~~~
+ */
+template <typename F, typename... Sources>
+    requires concepts_detail::MapCallable<F, Sources...>
+[[nodiscard]] constexpr auto map(const F& function, const Sources&... sources) noexcept
+    -> Vector<concepts_detail::MapResultType<F, Sources...>, concepts_detail::MapResultCapacity<Sources...>> {
+    constexpr auto capacity = concepts_detail::MapResultCapacity<Sources...>;
+    using Result = concepts_detail::MapResultType<F, Sources...>;
+
+    const std::size_t mapped_count =
+        std::min({static_cast<std::size_t>(sources.count())..., static_cast<std::size_t>(capacity)});
+
+    auto iterators = std::tuple{sources.begin()...};
+    Vector<Result, capacity> result{};
+    for (std::size_t index = 0U; index < mapped_count; ++index) {
+        const auto value =
+            std::apply([&function](const auto&... iterator) { return std::invoke(function, *iterator...); }, iterators);
+        result = result.conj(value);
+        std::apply([](auto&... iterator) { (++iterator, ...); }, iterators);
+    }
+    return result;
+}
+
+// Diagnostic fallback (REQ-DIAG-009): a call outside the admitted domain names
+// the domain instead of listing failed concept candidates. It produces no value.
+template <typename F, typename... Sources>
+    requires(!concepts_detail::MapCallable<F, Sources...>)
+constexpr auto map([[maybe_unused]] const F& function, [[maybe_unused]] const Sources&... sources) noexcept -> void {
+    static_assert(
+        concepts_detail::dependent_false<F, Sources...>,
+        "cljonic::map: expected a transforming function followed by one or more compatible cljonic sources. Each "
+        "source must be a Vector, Map, Set, Queue, or String collection, or a Range, Repeat, Cycle, Iterate, or "
+        "Repeatedly producer. The function must be copy-constructible, invoked without throwing with one argument "
+        "per source, and return a storable element result. Each function parameter must accept the corresponding "
+        "source element through a safe implicit conversion: an identical type or a value-preserving arithmetic "
+        "conversion, never a narrowing conversion and never a cross into or out of the Boolean, character, "
+        "enumeration, pointer, or user-defined domains. At least one source is required. Standard-library ranges "
+        "and containers are not supported.");
+}
+
+} // namespace cljonic
+// End cljonic-map-function.hpp
 // Begin cljonic-not-empty.hpp
 #pragma once
 
@@ -7886,9 +8187,9 @@ namespace cljonic {
 /** \anchor NotEqual
  * The \b not_equal free function compares one or more values for inequality.
  *
- * It is the negation of \ref Equal "equal" and uses the same supported values and comparison rules. Calling
- * `not_equal` with one value returns false. With multiple values, it returns true when at least one adjacent pair is
- * unequal.
+ * It is the negation of \ref Equal "equal" and uses the same supported values and comparison rules, including
+ * comparing ordinary values of the same type or of types that convert safely to one another. Calling `not_equal` with
+ * one value returns false. With multiple values, it returns true when at least one adjacent pair is unequal.
  *
  * \b Examples
  *
@@ -7969,8 +8270,9 @@ template <typename Lhs, typename Rhs>
 [[nodiscard]] constexpr auto not_equal([[maybe_unused]] const Lhs& lhs, [[maybe_unused]] const Rhs& rhs) -> bool {
     static_assert(concepts_detail::dependent_false<Lhs, Rhs>,
                   "cljonic::not_equal: these two values cannot be compared for inequality. not_equal supports the same "
-                  "values as equal -- both must be ordinary values of the same type, or two values from the same "
-                  "cljonic family: Vector, Queue, and all producers (the sequential family), a Map, a Set, or a "
+                  "values as equal -- both must be ordinary values of the same type or of types that convert safely "
+                  "to one another, or two values from the same cljonic family: Vector, Queue, and all producers "
+                  "(the sequential family), a Map, a Set, or a "
                   "String. Floating-point values, callables, pointers, unscoped enums, standard-library range and "
                   "container types, the standard-library variant, values whose equality can throw, and pairs that mix "
                   "cljonic and non-cljonic values are not supported.");
@@ -7984,8 +8286,9 @@ template <typename Lhs, typename Rhs, typename... Rest>
     static_assert(concepts_detail::dependent_false<Lhs, Rhs>,
                   "cljonic::not_equal: at least one adjacent pair of values cannot be compared for inequality. "
                   "not_equal supports the same values as equal. With three or more operands, every adjacent pair must "
-                  "follow the same rule as the two-operand form -- both ordinary values of the same type, or two "
-                  "values from the same cljonic family -- Vector, Queue, and all producers (the sequential family), a "
+                  "follow the same rule as the two-operand form -- both ordinary values of the same type or of types "
+                  "that convert safely to one another, or two values from the same cljonic family -- Vector, Queue, "
+                  "and all producers (the sequential family), a "
                   "Map, a Set, or a String. Floating-point values, callables, pointers, unscoped enums, "
                   "standard-library range and container types, the standard-library variant, values whose equality can "
                   "throw, and pairs that mix cljonic and non-cljonic values are not supported.");

@@ -19,7 +19,17 @@ template <typename T>
 inline constexpr bool in_non_cljonic_fallthrough_domain_v =
     !is_cljonic_collection_v<T> && !is_cljonic_producer_v<T> && !std::ranges::range<T> &&
     ((std::is_arithmetic_v<T> || std::is_scoped_enum_v<T>) || std::is_aggregate_v<T> || is_cljonic_map_entry_v<T> ||
-     is_cljonic_variant_v<T>);
+     is_cljonic_variant_v<T> ||
+     // Non-aggregate user-defined classes (REQ-NUM-018, aligned 2026-10-31):
+     // admitted on the stable-equality capability that map keys and set elements
+     // require, together with the non-throwing comparison `equal` itself
+     // requires. Requiring the *comparison* to be non-throwing (not merely
+     // storage) keeps parameterized wrappers whose inner types the library
+     // cannot analyze out of the domain: the standard library does not declare
+     // its wrapper comparisons `noexcept`, so std::pair, std::optional,
+     // std::tuple, and std::variant stay rejected however they are instantiated,
+     // and a floating-point member cannot be smuggled in behind a wrapper.
+     (std::is_class_v<T> && !is_std_variant_v<T> && concepts::NothrowEqualityComparable<T>));
 
 // Equality-family classification for the general-equality free function `equal`
 // (REQ-FN-002G): Vector and Queue join all five producers in the sequential
@@ -100,17 +110,28 @@ concept EqualDomainValue = concepts::NothrowEqualityComparable<T> && !contains_s
 
 // Equality-family gates shared by equal's overloads and not_equal's delegated
 // gate (REQ-FN-002G, REQ-FN-002H); these are not ordering capabilities.
+// Safe cross-type comparison (REQ-FN-002G, human decision 2026-10-31): a pair
+// is comparable when the types are identical or related by a value-preserving
+// implicit conversion in either direction, and the comparison happens in the
+// wider type. Narrowing value relations are harmless under widening; sign
+// crossings, Boolean, character, enumeration, pointer, and user-defined pairs
+// are never safely convertible. Map, Set, String, and Variant alternative
+// identity keep the identical-type rule.
+template <typename Lhs, typename Rhs>
+concept SafelyComparablePair =
+    std::same_as<Lhs, Rhs> || concepts::SafeImplicitConversion<Lhs, Rhs> || concepts::SafeImplicitConversion<Rhs, Lhs>;
+
 template <typename Lhs, typename Rhs>
 concept EqualScalarPairAdmissible =
     equal_family_of_v<Lhs> == equality_family::none && equal_family_of_v<Rhs> == equality_family::none &&
-    in_non_cljonic_fallthrough_domain_v<Lhs> && in_non_cljonic_fallthrough_domain_v<Rhs> && std::same_as<Lhs, Rhs> &&
-    EqualDomainValue<Lhs>;
+    in_non_cljonic_fallthrough_domain_v<Lhs> && in_non_cljonic_fallthrough_domain_v<Rhs> &&
+    SafelyComparablePair<Lhs, Rhs> && EqualDomainValue<Lhs> && EqualDomainValue<Rhs>;
 
 template <typename Lhs, typename Rhs>
 concept EqualSequentialPairAdmissible =
     equal_family_of_v<Lhs> == equality_family::sequential && equal_family_of_v<Rhs> == equality_family::sequential &&
-    std::same_as<equal_value_type_of_t<Lhs>, equal_value_type_of_t<Rhs>> &&
-    EqualDomainValue<equal_value_type_of_t<Lhs>>;
+    SafelyComparablePair<equal_value_type_of_t<Lhs>, equal_value_type_of_t<Rhs>> &&
+    EqualDomainValue<equal_value_type_of_t<Lhs>> && EqualDomainValue<equal_value_type_of_t<Rhs>>;
 
 template <typename Lhs, typename Rhs>
 concept EqualStringPairAdmissible =
@@ -221,11 +242,19 @@ namespace cljonic {
  * \b Equal compares values by their contents:
  *
  * - Calling `equal` with one value always returns true.
- * - Two ordinary values compare equal when they are the same type and compare
- *   equal with `==` (e.g., `int`, a scoped enum, or a simple struct with an
- *   explicit or defaulted `operator==`). The comparison must not throw, so a
- *   type whose `==` can throw is not supported; pointers and unscoped enums
- *   are not supported either.
+ * - Two ordinary values compare equal when they are the same type, or types that
+ *   convert safely to one another, and compare equal with `==` (e.g., `int`, a
+ *   scoped enum, or a user-defined class with an explicit or defaulted `operator==`).
+ *   `int` and `long` compare equal when they hold the same number, because a
+ *   safe conversion never changes a value; comparing a signed value against an
+ *   unsigned one, or a character against a number, is not supported. The
+ *   comparison must not throw, so a type whose `==` can throw is not supported;
+ *   pointers and unscoped enums are not supported either.
+ *
+ *   A user-defined class states its own equality contract, and the library never inspects its members: whether it
+ *   is a plain aggregate struct or a class with its own constructors, it is supported when `==` cannot throw. The
+ *   library makes no claim about whether that `==` is correct, including for floating-point members. A non-aggregate
+ *   class is supported on the same terms that admit it as a map key or a set element.
  * - \ref Vector "Vectors" and \ref Queue "Queues" compare equal when they contain the same elements in the same order;
  *   producers (\ref Range "Ranges", \ref Repeat "Repeats", \ref Cycle "Cycles", \ref Iterate "Iterate", and
  *   \ref Repeatedly "Repeatedly") compare equal when they produce the same elements in the same order. When comparing
@@ -238,9 +267,9 @@ namespace cljonic {
  *   insertion order.
  * - \ref String "Strings" compare equal when they hold the same characters.
  *
- * Compared collections and sets must have matching element types, and compared maps must have matching key and value
- * types. Collections are never compared to ordinary values. Values that cannot be compared stably, such as
- * floating-point numbers, are not supported.
+ * Compared collections and sets must have element types that are the same or convert safely to one another, and
+ * compared maps must have matching key and value types. Collections are never compared to ordinary values. Values that
+ * cannot be compared stably, such as floating-point numbers, are not supported.
  *
  * \ref Iterate "Iterate" and \ref Repeatedly "Repeatedly" values cannot be compared stably because their step is a
  * callable, so they are not supported as map keys, set elements, or nested components. Standard-library range and
@@ -257,6 +286,14 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+
+ struct Point {
+   int x;
+   int y;
+   constexpr auto operator==(const Point &other) const noexcept -> bool {
+     return x == other.x && y == other.y;
+   }
+ };
 
  int main() {
    // Compile-time demonstration.
@@ -277,8 +314,12 @@ namespace cljonic {
    static_assert(!equal(1, 2, 1)); // stops at the first unequal pair
    static_assert(equal(v, r, q));  // Vector, Range, and Queue with the
                                    // same elements compare equal
-   static_assert(equal(v, r));     // Vector vs Range
-   static_assert(equal(v, q));     // Vector vs Queue
+   static_assert(equal(Point{1, 2}, Point{1, 2})); // user-defined class
+   static_assert(equal(1, 1L)); // int and long compare through a safe
+                                // conversion to the wider type
+   static_assert(equal(vector(1, 2), vector<long, 2>(1L, 2L)));
+   static_assert(equal(v, r)); // Vector vs Range
+   static_assert(equal(v, q)); // Vector vs Queue
    static_assert(equal(vector(1, 1, 1), rep));
    static_assert(equal(m1, m2));     // Map equality ignores entry order
    static_assert(equal(s1, s2));     // Set equality ignores element order
@@ -369,7 +410,9 @@ template <typename Lhs, typename Rhs>
 [[nodiscard]] constexpr auto equal([[maybe_unused]] const Lhs& lhs, [[maybe_unused]] const Rhs& rhs) -> bool {
     static_assert(concepts_detail::dependent_false<Lhs, Rhs>,
                   "cljonic::equal: these two values cannot be compared for equality. They must both be ordinary values "
-                  "of the same type, or two values from the same cljonic family -- Vector, Queue, and all producers "
+                  "of the same type or of types that convert safely to one another (a widening conversion that "
+                  "preserves every value, such as int to long), or two values from the same cljonic family -- Vector, "
+                  "Queue, and all producers "
                   "(the sequential family), a Map, a Set, or a String. Floating-point values, callables, pointers, "
                   "unscoped enums, standard-library range and container types, the standard-library variant, values "
                   "whose equality can throw, and pairs that mix cljonic and non-cljonic values are not supported.");
@@ -383,9 +426,11 @@ template <typename Lhs, typename Rhs, typename... Rest>
     static_assert(
         concepts_detail::dependent_false<Lhs, Rhs>,
         "cljonic::equal: at least one adjacent pair of values cannot be compared for equality. With three or more "
-        "operands, every adjacent pair must follow the same rule as the two-operand form -- both ordinary values of "
-        "the same type, or two values from the same cljonic family -- Vector, Queue, and all producers (the sequential "
-        "family), a Map, a Set, or a String. Floating-point values, callables, pointers, unscoped enums, "
+        "operands, every adjacent pair must follow the same rule as the two-operand form -- both ordinary values "
+        "of the same type or of types that convert safely to one another, or two values from the same cljonic family "
+        "-- "
+        "Vector, Queue, and all producers (the sequential family), a Map, a Set, or a String. Floating-point values, "
+        "callables, pointers, unscoped enums, "
         "standard-library range and container types, the standard-library variant, values whose equality can throw, "
         "and pairs that mix cljonic and non-cljonic values are not supported.");
     return false;

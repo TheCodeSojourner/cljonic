@@ -107,7 +107,7 @@
  *   is_negative, is_odd, is_positive, is_zero, \ref Iterate "iterate"
  * - juxt
  * - keep, keep_indexed, keys
- * - make_keyword_enum_name_map, map, \ref MapEntryFactory "map_entry", map_indexed, mapcat, mapv, max, max_key,
+ * - make_keyword_enum_name_map, \ref MapFunction "map", \ref MapEntryFactory "map_entry", map_indexed, mapcat, mapv, max, max_key,
  *   merge, merge_with, min, min_key, mod, mult
  * - negate, \ref Next "next", nfirst, nnext, not_any, \ref NotEmpty "not_empty", \ref NotEqual "not_equal",
  *   not_every, nth, nthnext, nthrest
@@ -185,6 +185,7 @@
 #include <cljonic-into.hpp>
 #include <cljonic-is-empty.hpp>
 #include <cljonic-iterate.hpp>
+#include <cljonic-map-function.hpp>
 #include <cljonic-map.hpp>
 #include <cljonic-next.hpp>
 #include <cljonic-not-empty.hpp>
