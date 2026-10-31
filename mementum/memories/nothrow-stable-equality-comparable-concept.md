@@ -2,12 +2,26 @@
 type: Decision
 symbol: 🎯
 title: nothrow-stable-equality-comparable-concept
-related: [concept-naming-convention.md, two-level-concept-model.md, refine-concepts-with-narrower-capabilities.md]
+related: [concept-naming-convention.md, two-level-concept-model.md, parameterized-wrapper-smuggling.md, value-equality-domain.md]
 ---
-Added `NothrowStableEqualityComparable` to `cljonic-concepts.hpp`: `StableEqualityComparable<T> && NothrowCollectionElement<T>`. This is the shared admission contract for map keys and set elements (both need non-throwing storage AND stable equality), analogous to how `TotallyOrdered` layers `std::totally_ordered` on `StableEqualityComparable`.
+`NothrowStableEqualityComparable` in `cljonic-concepts.hpp` is the shared
+admission contract for map keys and set elements:
 
-`Map`'s `KeyType` template parameter now uses this concept directly instead of a separate trailing `requires` clause: `template <concepts::NothrowStableEqualityComparable KeyType, concepts::NothrowCollectionElement ValueType, std::size_t CapacityValue>`.
+```cpp
+StableEqualityComparable<T> && NothrowCollectionElement<T> &&
+concepts_detail::nothrow_equality_v<T>
+```
 
-Propagated to: `specs/capabilities/concepts.allium` (new entity + actor), `vocabulary.md`, `tests/cljonic-concepts-spec-tests.cpp` (dedicated TEST_CASE with TRACE_IDs).
+The third term was added 2026-10-31 (human decision) and is the durable part of
+this memory: the original concept required only nothrow *storage*, so
+`hash_set(std::pair<double,double>{...})` and `hash_set(std::optional<double>{...})`
+compiled — a floating-point equality smuggled through a standard wrapper that
+the walkers cannot see inside. Requiring a non-throwing `operator==` rejects
+those wrappers for every instantiation (the standard library declares no
+non-throwing comparison on them) without any exclusion list, while user classes
+with `noexcept operator==` still pass (REQ-NUM-018).
 
-Next: `Set`'s element type (`src/cljonic-set.hpp`) currently only requires `StableEqualityComparable`, not also `NothrowCollectionElement`. When Set gets its requirements-first review pass, replace its element constraint with `NothrowStableEqualityComparable` for consistency with Map.
+Set's element constraint uses the concept too, so the earlier "propagate to Set"
+follow-up is closed. Propagated to `specs/capabilities/concepts.allium`
+(`RequiresNothrowComparison`, `RejectsParameterizedStandardWrapperRegardlessOfInstantiation`),
+`vocabulary.md`, the architecture concept snippet, and both factory harnesses.

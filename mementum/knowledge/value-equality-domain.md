@@ -60,18 +60,42 @@ std::equality_comparable<T>
   `contains_standard_range`) are specialized per header and recurse through
   `cljonic::Variant` alternatives, cljonic collections, `MapEntry`, and producer
   stored parameters. (`std::variant` specializations were removed 2026-10-02.)
-- `NothrowStableEqualityComparable = StableEqualityComparable &&
-  NothrowCollectionElement` is the map-key / set-element storage contract.
 - `NothrowEqualityComparable = StableEqualityComparable &&
-  concepts_detail::nothrow_equality_v<T>` additionally requires a non-throwing
-  `operator==`. Because `equal` / `not_equal` are `noexcept`, a value whose
-  comparison may throw is rejected by contract (added 2026-10-02).
+  concepts_detail::nothrow_equality_v<T>` requires a non-throwing `operator==`.
+  Because `equal` / `not_equal` are `noexcept`, a value whose comparison may
+  throw is rejected by contract (added 2026-10-02).
+- `NothrowStableEqualityComparable = StableEqualityComparable &&
+  NothrowCollectionElement && concepts_detail::nothrow_equality_v<T>` is the
+  map-key / set-element contract. The non-throwing-comparison term was added
+  2026-10-31 (human decision) and is the wrapper-smuggling defence: with only
+  nothrow *storage*, `hash_set(std::pair<double,double>{...})` and
+  `hash_set(std::optional<double>{...})` compiled, smuggling a floating-point
+  equality past the walkers. Every parameterized standard wrapper now fails
+  admission for every instantiation because the standard library declares no
+  non-throwing comparison on them — no exclusion list required, and user classes
+  with `noexcept operator==` still pass (REQ-NUM-018).
+- Heap-freedom is not queryable in C++23; the nothrow contract is its
+  enforceable proxy (REQ-PLAT-009 forbids indirect allocation too). See
+  `nothrow-contract-is-the-heap-freedom-proxy.md`.
 
 ## Fallthrough domain and rejection diagnostics
 
 The non-cljonic `equal` operand fallthrough is the closed value domain:
-arithmetic scalars, scoped enumerations, aggregate-like structs with a
-non-throwing `==`, and `cljonic::Variant` composites. Unscoped enums, pointers,
+arithmetic scalars, scoped enumerations, user-defined class types (aggregate
+structs and non-aggregate classes alike) with a non-throwing `==`, and
+`cljonic::Variant` composites. A non-aggregate class is admitted on
+`NothrowEqualityComparable` — the stable-equality capability plus the non-throwing
+comparison `equal` itself requires — which is the equality half of the storage
+contract (storage additionally needs nothrow copy/assign, which `equal` does not
+because it never copies an operand, so a throwing-copy type with `noexcept ==`
+is comparable but not storable).
+
+Safe implicit conversions (human decision 2026-10-31, REQ-FN-002G) relax the
+identity rule for **scalar operands and sequential element positions**: a pair
+whose types are related by a value-preserving conversion in either direction
+compares in the wider type (`equal(1, 1L)` is true). Sign crossings, character,
+bool, enumeration, pointer, and distinct-user-defined pairs stay rejected, and
+`equal` remains outside the C++ interop surface. Unscoped enums, pointers,
 standard range/container types, and `std::variant` are rejected at any depth
 (2026-10-02). Out-of-domain operands produce one targeted `RejectionDiagnostic`
 (REQ-DIAG-009) instead of a list of rejected concept candidates; domain support
@@ -111,8 +135,11 @@ and as a Map key / Set element, and is permitted only as the internal backend of
 provided only when every alternative satisfies `ComparableVariantAlternative`
 (`NothrowStableEqualityComparable && NothrowEqualityComparable`), so a
 float-bearing `Variant` is storable but not comparable. Same alternative AND
-that alternative's values compare equal. No cross-type numeric unification
-(`Variant<int,long>{1}` is not `Variant<int,long>{1L}`), no hash-based equality.
+that alternative's values compare equal. No cross-type numeric unification in
+alternative identity (`Variant<int,long>{1}` is not `Variant<int,long>{1L}` —
+still FINAL; the 2026-10-31 safe-conversion rule for scalar operands and
+sequential elements does not reach variant alternatives, Map keys/values, Set
+elements, or String content), no hash-based equality.
 `Variant` has no valueless state.
 
 **This decision is final (human decision, 2026-09-25):** alternative-strict is

@@ -1,5 +1,50 @@
 ## Current Session State
 
+- last_session_id: cd2557ba-31f0-4f16-b376-a4958740a6b7
+- current_timestamp: 2026-10-31T16:27:18-06:00
+- session_complete: true
+- recover: 1. The human must re-run `make git`; it previously aborted at `map-compile-fail` because that harness ended with `raise SystemExit(main)` (missing call), so it printed a function repr and exited 1. Fixed and re-verified through the gate path; the product changes from this session are still uncommitted. 2. Three `requirements/` clauses (`REQ-CAP-014`, `REQ-NUM-018`, `REQ-NUM-019`) still carry `rationale_source: AI_inferred` without `rationale_approved_by: human`; only `/gybis-req-tend` can regularize that. 3. Thru-family work remains deferred by human instruction. 4. Architecture convention: embedded code snippets in `architecture.md` must mirror the shipped concept definitions.
+
+Task:
+1. `/cljonic-api-complete map` — COMPLETE: activated the variadic multi-source `map` free function end to end (requirements REQ-FN-032 lifted out of deferral, vocabulary `MapFunction`, architecture `λ S2_map_function_contract`, new `specs/sequences/map.allium` with 27 invariants, `src/cljonic-map-function.hpp` registered in the umbrella plus the cheatsheet, spec tests, no-heap probe, and a new `map-compile-fail` harness wired into the Makefile). Result is a bounded owning `Vector`: capacity is the compile-time minimum of the sources' observable-count bounds (collection capacity, or the observation cap for any producer), runtime element count is the minimum of effective counts, traversal stops at the first exhausted source.
+2. Callback conversion rule debate — COMPLETE: first implementation admitted any standard conversion; on human direction it now requires a safe implicit conversion per parameter position (`SafeImplicitConversion`, value-preserving only), with uninspectable callables (generic lambdas) falling back to nothrow invocability. Implemented via parameter-type introspection for non-template callables and function pointers.
+3. `equal` safe conversions — COMPLETE: human reversed the standing "cross-type numeric unification permanently out of scope" decision for `equal`/`not_equal`. Scalar operands and sequential element positions now compare through a value-preserving conversion in either direction, in the wider type. `cljonic::Variant` alternative identity, Map keys/values, Set elements, and String content keep identical types.
+4. `equal` user-defined class admission — COMPLETE: REQ-NUM-018 extended from aggregate structs to any user-defined class type with a non-throwing `operator==`; non-aggregate classes are admitted on the stable-equality capability plus the non-throwing comparison `equal` requires.
+5. Parameterized-wrapper hole — COMPLETE: a coworker's objection (a wrapper can hide a rejected component such as floating point) was confirmed empirically and fixed by requiring a non-throwing comparison in BOTH equality and storage admission, so `std::pair`/`std::optional`/`std::tuple`/`std::variant` are rejected however instantiated, without an exclusion list.
+6. Storage tightening — COMPLETE: `NothrowStableEqualityComparable` now includes `nothrow_equality_v<T>`; `hash_set(std::pair<double,double>)` and `hash_set(std::optional<double>)` no longer compile.
+7. `map-compile-fail` entry-point defect — COMPLETE: `raise SystemExit(main)` (no call) made the harness a no-op that "passed" in 0.09s; fixed to `main()` and re-verified via `make map-compile-fail` and `scripts/run-compile-fail.py`.
+
+Questions:
+1. None blocking. The one open item is the `AI_inferred` rationale marker on `REQ-NUM-018` (touched this session) and its two siblings; that needs a human `/gybis-req-tend` decision.
+
+Decisions:
+1. Human (2026-10-31): activate the variadic multi-source `map` (Clojure arity shape), returning a bounded owning `Vector`; capacity = compile-time minimum of observable-count bounds, saturated at the collection maximum.
+2. Human (2026-10-31): callback parameters must accept their corresponding source element through a safe implicit conversion only (identical or value-preserving), never narrowing and never crossing the Boolean, character, enumeration, pointer, or user-defined domains; uninspectable callables fall back to nothrow invocability.
+3. Human (2026-10-31): `equal`/`not_equal` admit value-preserving conversions for scalar operands and sequential element positions, either direction, compared in the wider type; this supersedes the earlier blanket ban while variant alternative identity, Map, Set, and String stay identical-type.
+4. Human (2026-10-31): user-defined class types (aggregate or not) with a non-throwing `operator==` are equality-admissible; the library performs no member analysis and the author owns the semantics (REQ-NUM-018).
+5. Human (2026-10-31): tighten storage admission so map keys and set elements require a non-throwing comparison as well as nothrow storage, closing the parameterized-wrapper smuggling route.
+6. Human (2026-10-31, standing): do not add "no-heap standard-library structures" to the C++ interoperability surface as a guarantee. Heap-freedom is necessary but not sufficient; the nothrow contract is the enforceable proxy and the interop surface stays narrow (const non-owning views, span/range sources).
+
+Validation:
+1. `map` slice: `map-compile-fail:ok` (11 rejection, 15 admission, 3 diagnostic-content cases × two builds), spec tests 40 assertions, sanitizer suite green, `traceability-spec-to-code:ok` after snapshot refresh, `no-heap:ok`, `docs-examples:compiled=42`, coverage `lines=100.0%`.
+2. `equal`/storage slice: `equal-compile-fail:ok`, `not-equal-compile-fail:ok`, `hash-set-factory-compile-fail:ok`, `hash-map-factory-compile-fail:ok`, `primitive-compile-fail:ok`, `traceability-spec-to-code:ok`, docs-examples 42, no-heap ok, coverage 100.0%, sanitizer 301/301, `upsert-gate-fast:ok`.
+3. `make git` (human-run): aborted at `map-compile-fail` on the entry-point defect. After the fix, `make map-compile-fail` → ok and `run-compile-fail.py --targets map-compile-fail` → `validation:map-compile-fail:ok`, `compile-fail:ok`; the adjacent compile-fail targets also pass through the same runner. The human still needs a clean end-to-end `make git`.
+
+Next:
+1. Re-run `make git` and commit the product changes (uncommitted: `map` API, `equal` safe conversions, storage tightening, harness fixes).
+2. Optional: `/gybis-req-tend` on `REQ-CAP-014`, `REQ-NUM-018`, `REQ-NUM-019` to regularize the `AI_inferred` rationale markers.
+3. Candidate next slices: the remaining REQ-FN-002C comparison family (`equal_by`, `identical`, then the ordering functions); `comp` (REQ-FN-033) stays deferred.
+4. Thru-family work stays deferred until the human instructs otherwise.
+
+Carry-forward (unaddressed, remember for later):
+1. `comp` (REQ-FN-033) remains deferred; `clojure-thread-family-for-cpp.md` is the thru-family handoff artifact.
+2. User-defined aggregates with floating-point members remain unanalyzable (no reflection); REQ-NUM-018 transfers that contract to the author.
+3. Set duplicate insertion in a constexpr context still hits `std::abort()`.
+4. REQ-SEQ-022 operation-level specification reconciliation for the remaining operation families (`mementum/knowledge/cljonic-next-agenda.md`).
+5. `REQ-COLL-020R` `value_type` vs `association_value_type` wording remains noted from prior state.
+
+## Current Session State
+
 - last_session_id: 7c617293-129a-4244-99fa-9a7b1ece3333
 - current_timestamp: 2026-10-31T14:42:51-06:00
 - session_complete: true
