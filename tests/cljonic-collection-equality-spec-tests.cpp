@@ -7,6 +7,17 @@
 
 #define TRACE_ID(id_literal) INFO("trace-id: " id_literal)
 
+namespace {
+
+struct FloatAggregate {
+    double value;
+    int tag;
+
+    auto operator==(const FloatAggregate&) const noexcept -> bool = default;
+};
+
+} // namespace
+
 // ============================================================================
 // Runtime traversal coverage for collection begin()/end()
 // ============================================================================
@@ -264,4 +275,27 @@ TEST_CASE("Recursive collection equality over variant and nested collections", "
     // unbounded sequences; callable-bearing producers are rejected for
     // producer parameter equality at the type boundary and are verified by the
     // variant-compile-fail gate.
+}
+
+TEST_CASE("Aggregate equality boundary is caller-owned", "[equality][aggregate]") {
+    TRACE_ID("invariant.CollectionEquality.AggregateBoundaryEqualityIsCallerOwned");
+
+    using namespace cljonic::concepts;
+
+    // REQ-NUM-018: the library cannot analyze aggregate members, so an
+    // aggregate with a non-throwing operator== is admitted as a boundary even
+    // when it stores a floating-point member.
+    STATIC_REQUIRE(StableEqualityComparable<FloatAggregate>);
+    STATIC_REQUIRE(StableEqualityComparable<cljonic::Vector<FloatAggregate, 4>>);
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<cljonic::Vector<double, 4>>);
+
+    constexpr cljonic::Vector<FloatAggregate, 2> left{FloatAggregate{1.5, 1}};
+    constexpr cljonic::Vector<FloatAggregate, 2> right{FloatAggregate{1.5, 1}};
+    constexpr cljonic::Vector<FloatAggregate, 2> other{FloatAggregate{2.5, 1}};
+    STATIC_REQUIRE(left == right);
+    STATIC_REQUIRE_FALSE(left == other);
+
+    // The aggregate is usable where stable equality is a storage requirement.
+    constexpr cljonic::Set<FloatAggregate, 4> set{FloatAggregate{1.5, 1}};
+    STATIC_REQUIRE(set.contains(FloatAggregate{1.5, 1}));
 }

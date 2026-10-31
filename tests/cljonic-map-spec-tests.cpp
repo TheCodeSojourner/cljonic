@@ -46,7 +46,7 @@ TEST_CASE("Map construction and basic lookup", "[map]") {
     TRACE_ID("invariant.Map.SupportsDefaultFallbackLookup");
     TRACE_ID("invariant.Map.SupportsLookupCapability");
     TRACE_ID("invariant.Map.SupportsAssociativeCapability");
-    TRACE_ID("invariant.Map.SeqableLifecycleIsDeferred");
+    TRACE_ID("invariant.Map.SeqableCapabilityIsClosed");
     TRACE_ID("invariant.Map.SupportsAssocUpdate");
     TRACE_ID("invariant.Map.SupportsCanAssocPreflight");
     TRACE_ID("invariant.Map.AssocReplacesExistingValue");

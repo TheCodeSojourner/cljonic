@@ -45,7 +45,7 @@ TEST_CASE("Set construction and basic operations", "[set]") {
     TRACE_ID("invariant.Set.SupportsDefaultFallbackLookup");
     TRACE_ID("invariant.Set.SupportsLookupCapability");
     TRACE_ID("invariant.Set.RejectsAssociativeCapability");
-    TRACE_ID("invariant.Set.SeqableLifecycleIsDeferred");
+    TRACE_ID("invariant.Set.SeqableCapabilityIsClosed");
     TRACE_ID("invariant.Set.MissingValueReturnsDefaultElement");
     TRACE_ID("invariant.Set.MissingValueReturnsSuppliedFallback");
     TRACE_ID("invariant.Set.CanonicalResultStatusModelIsDeclared");
@@ -91,6 +91,13 @@ TEST_CASE("Set construction and basic operations", "[set]") {
     REQUIRE(duplicate_literal.count() == 3U);
     REQUIRE(duplicate_literal.contains(2));
     // A duplicate pack is rejected when evaluated as a constant expression.
+
+    // RuntimeDuplicateConstructionDeduplicates (REQ-COLL-019): the explicitly
+    // saturated form deduplicates at runtime instead of rejecting.
+    const auto explicit_duplicate_literal = Set<int, 4>{1, 1};
+    REQUIRE(explicit_duplicate_literal.count() == 1U);
+    REQUIRE(explicit_duplicate_literal.capacity() == 4U);
+    REQUIRE(explicit_duplicate_literal.contains(1));
 
     // conj adds elements (copy-on-modify semantics)
     constexpr auto s1 = s.conj(10);

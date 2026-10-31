@@ -40,7 +40,7 @@ TEST_CASE("Queue FIFO construction and operations", "[queue]") {
     TRACE_ID("invariant.Queue.RejectsIndexedCapability");
     TRACE_ID("invariant.Queue.RejectsLookupCapability");
     TRACE_ID("invariant.Queue.RejectsAssociativeCapability");
-    TRACE_ID("invariant.Queue.SeqableLifecycleIsDeferred");
+    TRACE_ID("invariant.Queue.SeqableCapabilityIsClosed");
     TRACE_ID("invariant.Queue.SupportsPeekOperation");
     TRACE_ID("invariant.Queue.SupportsPopOperation");
     TRACE_ID("invariant.Queue.SupportsConjOperation");

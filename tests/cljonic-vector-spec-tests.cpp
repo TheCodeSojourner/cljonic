@@ -136,7 +136,7 @@ TEST_CASE("Vector canonical preflight predicates model index validity and emptin
     TRACE_ID("invariant.Vector.SupportsDefaultFallbackLookup");
     TRACE_ID("invariant.Vector.SupportsLookupCapability");
     TRACE_ID("invariant.Vector.SupportsAssociativeCapability");
-    TRACE_ID("invariant.Vector.SeqableLifecycleIsDeferred");
+    TRACE_ID("invariant.Vector.SeqableCapabilityIsClosed");
     TRACE_ID("invariant.Vector.SupportsAssocUpdate");
     TRACE_ID("invariant.Vector.SupportsCanAssocPreflight");
     TRACE_ID("invariant.Vector.AssocReplacesExistingIndex");

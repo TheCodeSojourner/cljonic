@@ -15,6 +15,43 @@
 
 namespace {
 
+struct FloatAggregate {
+    double value;
+    int tag;
+
+    auto operator==(const FloatAggregate&) const noexcept -> bool = default;
+};
+
+struct UserEqualityAggregate {
+    double value;
+    int tag;
+
+    [[nodiscard]] auto operator==(const UserEqualityAggregate& other) const noexcept -> bool {
+        return tag == other.tag;
+    }
+};
+
+struct NoEqualityAggregate {
+    double value;
+};
+
+// Nominal walker-coverage gate probes: both types are nominally admitted
+// cljonic collections with non-throwing equality, so the only difference that
+// can make them non-`StableEqualityComparable` is the coverage declaration.
+struct UndeclaredNominalComposite {
+    int value;
+
+    friend constexpr auto operator==(const UndeclaredNominalComposite&, const UndeclaredNominalComposite&) noexcept
+        -> bool = default;
+};
+
+struct DeclaredNominalComposite {
+    int value;
+
+    friend constexpr auto operator==(const DeclaredNominalComposite&, const DeclaredNominalComposite&) noexcept
+        -> bool = default;
+};
+
 template <typename C>
 concept HasIsEmptyMember = requires(const C& collection) { collection.is_empty(); };
 
@@ -286,6 +323,25 @@ struct collection_traits<BracketLike> {
     static constexpr collection_kind kind = collection_kind::vector;
 };
 
+// Walker-coverage gate probes (REQ-NUM-019): both are nominal composites;
+// only DeclaredNominalComposite declares coverage.
+template <>
+struct collection_traits<UndeclaredNominalComposite> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::vector;
+};
+
+template <>
+struct collection_traits<DeclaredNominalComposite> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::vector;
+};
+
+template <>
+struct walker_coverage<DeclaredNominalComposite> {
+    static constexpr bool declared = true;
+};
+
 } // namespace cljonic::concepts_detail
 
 namespace cljonic::concepts_detail {
@@ -428,6 +484,7 @@ TEST_CASE("SequenceableCollection structural capability", "[concepts][collection
     TRACE_ID("entity-fields.SequenceableCollection");
     TRACE_ID("invariant.SequenceableCollection.RequiresNonThrowingCount");
     TRACE_ID("invariant.SequenceableCollection.LayeredOnNominalAdmission");
+    TRACE_ID("invariant.SequenceableCollection.ClosedToExternalDeclaration");
 
     // RequiresNonThrowingCount: VectorLike has no is_empty() member.
     STATIC_REQUIRE(SequenceableCollection<VectorLike>);
@@ -566,6 +623,7 @@ TEST_CASE("StableEqualityComparable value capability", "[concepts][value]") {
     TRACE_ID("entity-fields.StableEqualityComparable");
     TRACE_ID("invariant.StableEqualityComparable.RequiresBoolEquality");
     TRACE_ID("invariant.StableEqualityComparable.RejectsFloatingPoint");
+    TRACE_ID("invariant.StableEqualityComparable.AggregateBoundaryEqualityIsCallerOwned");
 
     // RequiresBoolEquality.
     STATIC_REQUIRE(StableEqualityComparable<int>);
@@ -575,6 +633,54 @@ TEST_CASE("StableEqualityComparable value capability", "[concepts][value]") {
     // instabilities in map keys and set elements.
     STATIC_REQUIRE_FALSE(StableEqualityComparable<float>);
     STATIC_REQUIRE_FALSE(StableEqualityComparable<double>);
+
+    // AggregateBoundaryEqualityIsCallerOwned (REQ-NUM-018): a user-defined
+    // aggregate is admitted on its own non-throwing operator==, so member-level
+    // floating-point analysis never happens and its semantics are the author's.
+    STATIC_REQUIRE(StableEqualityComparable<FloatAggregate>);
+    STATIC_REQUIRE(StableEqualityComparable<UserEqualityAggregate>);
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<NoEqualityAggregate>);
+}
+
+TEST_CASE("Nominal walker coverage is gated", "[concepts][value][composite]") {
+    using namespace cljonic::concepts;
+    using namespace cljonic::concepts_detail;
+
+    TRACE_ID("invariant.StableEqualityComparable.NominalWalkerCoverageIsGated");
+
+    // Every library-owned composite declares that the walkers reach its
+    // components, so adding one such type cannot silently escape detection.
+    STATIC_REQUIRE(walker_coverage_declared_v<cljonic::Vector<int, 4>>);
+    STATIC_REQUIRE(walker_coverage_declared_v<cljonic::Map<int, int, 4>>);
+    STATIC_REQUIRE(walker_coverage_declared_v<cljonic::Set<int, 4>>);
+    STATIC_REQUIRE(walker_coverage_declared_v<cljonic::Queue<int, 4>>);
+    STATIC_REQUIRE(walker_coverage_declared_v<cljonic::String<8>>);
+    STATIC_REQUIRE(walker_coverage_declared_v<cljonic::MapEntry<int, int>>);
+    STATIC_REQUIRE(walker_coverage_declared_v<cljonic::Variant<int, long>>);
+    STATIC_REQUIRE(walker_coverage_declared_v<cljonic::Range<int>>);
+    STATIC_REQUIRE(walker_coverage_declared_v<cljonic::Repeat<int>>);
+    STATIC_REQUIRE(walker_coverage_declared_v<cljonic::Cycle<cljonic::Vector<int, 4>>>);
+    STATIC_REQUIRE(walker_coverage_declared_v<cljonic::Iterate<int, int (*)(int) noexcept>>);
+    STATIC_REQUIRE(walker_coverage_declared_v<cljonic::Repeatedly<int, int (*)() noexcept>>);
+
+    // Non-composite types are exempt: their members cannot be analyzed at all.
+    STATIC_REQUIRE_FALSE(is_cljonic_composite_v<int>);
+    STATIC_REQUIRE(walker_coverage_ok_v<int>);
+    STATIC_REQUIRE(walker_coverage_ok_v<FloatAggregate>);
+
+    // A nominal composite that forgets the declaration is rejected even though
+    // it is nominally admitted and has non-throwing equality.
+    STATIC_REQUIRE(CljonicCollection<UndeclaredNominalComposite>);
+    STATIC_REQUIRE(std::equality_comparable<UndeclaredNominalComposite>);
+    STATIC_REQUIRE(is_cljonic_composite_v<UndeclaredNominalComposite>);
+    STATIC_REQUIRE_FALSE(walker_coverage_declared_v<UndeclaredNominalComposite>);
+    STATIC_REQUIRE_FALSE(walker_coverage_ok_v<UndeclaredNominalComposite>);
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<UndeclaredNominalComposite>);
+
+    // Declaring coverage is the only difference, and it flips the verdict.
+    STATIC_REQUIRE(CljonicCollection<DeclaredNominalComposite>);
+    STATIC_REQUIRE(walker_coverage_declared_v<DeclaredNominalComposite>);
+    STATIC_REQUIRE(StableEqualityComparable<DeclaredNominalComposite>);
 }
 
 TEST_CASE("TotallyOrdered value capability", "[concepts][value]") {

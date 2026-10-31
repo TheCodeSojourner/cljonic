@@ -11,6 +11,10 @@ import os
 import subprocess
 
 FAILURE_CASES = {
+    # Raw floating-point element / key types: floating-point equality is always
+    # detectable here, so admission must fail at compile time.
+    "Set-float-element": ("cljonic::Set<double, 4>", ""),
+    "Map-float-key": ("cljonic::Map<double, int, 4>", ""),
     "Map-variant-float": ("cljonic::Map<cljonic::Variant<int, double>, int, 4>", ""),
     "Set-variant-float": ("cljonic::Set<cljonic::Variant<int, float>, 4>", ""),
     "MapEntry-variant-float": ("cljonic::Set<cljonic::MapEntry<cljonic::Variant<int, double>, int>, 4>", ""),

@@ -86,7 +86,7 @@ TEST_CASE("String construction and indexed operations", "[string]") {
     TRACE_ID("invariant.String.AcceptsNonbooleanNoncharacterIntegerIndexTypes");
     TRACE_ID("invariant.String.SupportsLookupCapability");
     TRACE_ID("invariant.String.SupportsAssociativeCapability");
-    TRACE_ID("invariant.String.SeqableLifecycleIsDeferred");
+    TRACE_ID("invariant.String.SeqableCapabilityIsClosed");
     TRACE_ID("invariant.String.SupportsAssocUpdate");
     TRACE_ID("invariant.String.SupportsCanAssocPreflight");
     TRACE_ID("invariant.String.SupportsConjOperation");
