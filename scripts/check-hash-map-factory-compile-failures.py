@@ -19,6 +19,11 @@ FAILURE_CASES = {
     "oversized-pair-count": "  (void)cljonic::hash_map(1, 10, 2, 20, 3, 30);",
     "explicit-capacity-too-small": "  (void)cljonic::hash_map<int, int, 1>(1, 10, 2, 20);",
     "explicit-capacity-over-maximum": "  (void)cljonic::hash_map<int, int, 3>();",
+    # Parameterized standard-library wrappers stay out of key positions, so a
+    # floating-point component cannot be smuggled in behind one (REQ-CAP-010).
+    "std-pair-key": "  (void)cljonic::hash_map(std::pair<int, int>{1, 2}, 10);",
+    "std-optional-key": "  (void)cljonic::hash_map(std::optional<int>{1}, 10);",
+    "std-pair-float-key": "  (void)cljonic::hash_map(std::pair<double, double>{1.0, 2.0}, 10);",
 }
 
 PASS_CASES = {
@@ -84,6 +89,8 @@ def compile_case(compiler: list[str], include_dir: str, header: str, body: str) 
     source = "\n".join(
         (
             "#define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT 2",
+            "#include <optional>",
+            "#include <utility>",
             f'#include "{header}"',
             "int main() {",
             body,

@@ -33,6 +33,7 @@ FALLBACK_MARKER = "dependent_false"
 REGISTRY: dict[str, str] = {
     # Free-function and source-constructor fallbacks already in place.
     "cljonic-equal.hpp": "fallback",
+    "cljonic-map-function.hpp": "fallback",
     "cljonic-not-equal.hpp": "fallback",
     "cljonic-assoc.hpp": "fallback",
     "cljonic-can-assoc.hpp": "fallback",

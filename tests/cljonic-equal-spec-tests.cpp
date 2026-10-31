@@ -2,6 +2,7 @@
 #include <array>
 #include <catch2/catch_test_macros.hpp>
 #include <concepts>
+#include <optional>
 #include <span>
 #include <type_traits>
 #include <variant>
@@ -18,6 +19,21 @@ constexpr int inc_fn(int v) noexcept {
 constexpr int gen_fn() noexcept {
     return 1;
 }
+
+// Non-aggregate: the user-provided constructor keeps it out of the aggregate
+// class, so admission comes from the Map-key/Set-element contract.
+struct Scaled {
+    int value;
+
+    constexpr Scaled() noexcept : value(0) {
+    }
+    constexpr explicit Scaled(int v) noexcept : value(v) {
+    }
+
+    [[nodiscard]] constexpr auto operator==(const Scaled& other) const noexcept -> bool {
+        return value == other.value;
+    }
+};
 
 struct Pixel {
     int x;
@@ -70,6 +86,8 @@ TEST_CASE("equal implements general value equality over the supported domain", "
     using cljonic::String;
     using cljonic::Vector;
 
+    using cljonic::concepts_detail::EqualPairAdmissible;
+
     TRACE_ID("entity-fields.EqualFunction");
     TRACE_ID("invariant.EqualFunction.GeneralValueEqualityOperation");
     TRACE_ID("invariant.EqualFunction.NamedOperationDistinctFromOperatorEquals");
@@ -81,6 +99,8 @@ TEST_CASE("equal implements general value equality over the supported domain", "
     TRACE_ID("invariant.EqualFunction.VariadicEvaluationLeftToRightShortCircuit");
     TRACE_ID("invariant.EqualFunction.ScalarOperandsCompareViaOperatorEquals");
     TRACE_ID("invariant.EqualFunction.ScalarFallthroughDomainIsClosedValueDomain");
+    TRACE_ID("invariant.EqualFunction.NonAggregateClassAdmittedOnStableEqualityWithNothrowComparison");
+    TRACE_ID("invariant.EqualFunction.ParameterizedStandardWrapperRejectedRegardlessOfInstantiation");
     TRACE_ID("invariant.EqualFunction.StandardRangeTypesRejectedAsInteropSurface");
     TRACE_ID("invariant.EqualFunction.StandardRangeComponentsRejectedAtAnyDepth");
     TRACE_ID("invariant.EqualFunction.UnscopedEnumsAndPointersExcludedFromFallthrough");
@@ -89,7 +109,7 @@ TEST_CASE("equal implements general value equality over the supported domain", "
     TRACE_ID("invariant.EqualFunction.CljonicNonscalarPairsClassifiedByEqualityFamily");
     TRACE_ID("invariant.EqualFunction.SequentialFamilyMutuallyComparableByProducedSequence");
     TRACE_ID("invariant.EqualFunction.SequentialComparisonIsOrderSensitive");
-    TRACE_ID("invariant.EqualFunction.SequentialElementsRequireIdenticalElementTypes");
+    TRACE_ID("invariant.EqualFunction.SequentialElementsRequireIdenticalOrSafelyConvertibleTypes");
     TRACE_ID("invariant.EqualFunction.MapComparableOnlyToMap");
     TRACE_ID("invariant.EqualFunction.SetComparableOnlyToSet");
     TRACE_ID("invariant.EqualFunction.StringComparableOnlyToString");
@@ -103,7 +123,9 @@ TEST_CASE("equal implements general value equality over the supported domain", "
     TRACE_ID("invariant.EqualFunction.EveryCallTerminates");
     TRACE_ID("invariant.EqualFunction.ConstexprNoexceptNonmutatingNonallocating");
     TRACE_ID("invariant.EqualFunction.RequiresStableEqualityComponents");
-    TRACE_ID("invariant.EqualFunction.NoCrossTypeNumericUnification");
+    TRACE_ID("invariant.EqualFunction.CrossTypeNumericUnificationLimitedToSafeValuePreservingPairs");
+    TRACE_ID("invariant.EqualFunction.SafeConversionPairsCompareInWiderType");
+    TRACE_ID("invariant.EqualFunction.VariantMapSetStringIdentityRequiresIdenticalTypes");
 
     // ------------------------------------------------------------------------
     // Scalar fallthrough within the closed value domain (compile time).
@@ -118,6 +140,48 @@ TEST_CASE("equal implements general value equality over the supported domain", "
     STATIC_REQUIRE(equal(Pixel{1, 2}, Pixel{1, 2}));
     STATIC_REQUIRE(!equal(Pixel{1, 2}, Pixel{1, 3}));
     STATIC_REQUIRE(equal(MapEntry<int, int>{1, 2}, MapEntry<int, int>{1, 2}));
+
+    // ------------------------------------------------------------------------
+    // Safe value-preserving conversions (REQ-FN-002G, human decision
+    // 2026-10-31): a pair compares in the wider type, in either direction, so a
+    // narrowing value relation is harmless. Sign, character, Boolean, pointer,
+    // enumeration, and user-defined pairs stay rejected.
+    // ------------------------------------------------------------------------
+    // A non-aggregate user-defined class is admitted on exactly the Map-key and
+    // Set-element contract (REQ-NUM-018, aligned 2026-10-31).
+    STATIC_REQUIRE(EqualPairAdmissible<Scaled, Scaled>);
+    STATIC_REQUIRE(equal(Scaled{2}, Scaled{2}));
+    STATIC_REQUIRE(!equal(Scaled{2}, Scaled{3}));
+    STATIC_REQUIRE(cljonic::concepts::NothrowEqualityComparable<Scaled>);
+    STATIC_REQUIRE(count(cljonic::hash_set(Scaled{1}, Scaled{2})) == 2);
+
+    // Parameterized standard-library wrappers are rejected however instantiated:
+    // their comparisons are not declared non-throwing, so a floating-point
+    // component cannot be smuggled in behind one.
+    STATIC_REQUIRE(!EqualPairAdmissible<std::pair<int, int>, std::pair<int, int>>);
+    STATIC_REQUIRE(!EqualPairAdmissible<std::optional<double>, std::optional<double>>);
+    STATIC_REQUIRE(!EqualPairAdmissible<std::tuple<int>, std::tuple<int>>);
+    STATIC_REQUIRE(!EqualPairAdmissible<std::variant<int, long>, std::variant<int, long>>);
+
+    STATIC_REQUIRE(equal(1, 1L));
+    STATIC_REQUIRE(!equal(1, 2L));
+    STATIC_REQUIRE(equal(1L, 1));
+    STATIC_REQUIRE(equal(0, 0L) && equal(-1, -1L));
+    STATIC_REQUIRE(!EqualPairAdmissible<int, unsigned>);
+    STATIC_REQUIRE(!EqualPairAdmissible<unsigned, int>);
+    STATIC_REQUIRE(!EqualPairAdmissible<char, int>);
+    STATIC_REQUIRE(!EqualPairAdmissible<bool, int>);
+    STATIC_REQUIRE(!EqualPairAdmissible<int, double>); // floating point stays rejected
+    STATIC_REQUIRE(equal(Vector<int, 3>(1, 2, 3), Vector<long, 3>(1L, 2L, 3L)));
+    STATIC_REQUIRE(!equal(Vector<int, 3>(1, 2, 3), Vector<long, 3>(1L, 2L, 4L)));
+    STATIC_REQUIRE(equal(Vector<int, 3>(1, 2, 3), Range<long>{1, 4, 1}));
+    STATIC_REQUIRE(equal(Queue<int, 2>(1, 2), Vector<long, 2>(1L, 2L)));
+    // Map key/value, Set element, String content, and Variant alternative
+    // identity keep the identical-type rule.
+    STATIC_REQUIRE(!EqualPairAdmissible<Map<int, int, 2>, Map<long, int, 2>>);
+    STATIC_REQUIRE(!EqualPairAdmissible<Set<int, 2>, Set<long, 2>>);
+    STATIC_REQUIRE(!EqualPairAdmissible<Vector<int, 2>, Vector<char, 2>>);
+    STATIC_REQUIRE(!equal(cljonic::Variant<int, long>{1}, cljonic::Variant<int, long>{1L}));
     STATIC_REQUIRE(!equal(MapEntry<int, int>{1, 2}, MapEntry<int, int>{1, 3}));
     STATIC_REQUIRE(equal(cljonic::Variant<int, long>{1}, cljonic::Variant<int, long>{1}));
     STATIC_REQUIRE(!equal(cljonic::Variant<int, long>{1}, cljonic::Variant<int, long>{2}));

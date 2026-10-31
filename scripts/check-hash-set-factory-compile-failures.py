@@ -17,6 +17,20 @@ FAILURE_CASES = {
     "oversized-argument-count": "  (void)cljonic::hash_set(1, 10, 100);",
     "explicit-capacity-too-small": "  (void)cljonic::hash_set<int, 1>(1, 10);",
     "explicit-capacity-over-maximum": "  (void)cljonic::hash_set<int, 3>();",
+    # Parameterized standard-library wrappers stay out of element positions, so
+    # a floating-point component cannot be smuggled in behind one (REQ-CAP-010).
+    "std-pair-element": "  (void)cljonic::hash_set(std::pair<int, int>{1, 2});",
+    "std-pair-float-element": "  (void)cljonic::hash_set(std::pair<double, double>{1.0, 2.0});",
+    "std-optional-element": "  (void)cljonic::hash_set(std::optional<int>{1});",
+    "std-optional-float-element": "  (void)cljonic::hash_set(std::optional<double>{1.0});",
+    "std-tuple-element": "  (void)cljonic::hash_set(std::tuple<int>{1});",
+    "throwing-comparison-element": (
+        "  struct ThrowingEq {\n"
+        "    ThrowingEq() noexcept = default;\n"
+        "    bool operator==(const ThrowingEq&) const { return true; }\n"
+        "  };\n"
+        "  (void)cljonic::hash_set(ThrowingEq{});"
+    ),
 }
 
 PASS_CASES = {
@@ -78,6 +92,9 @@ def compile_case(compiler: list[str], include_dir: str, header: str, body: str) 
     source = "\n".join(
         (
             "#define CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT 2",
+            "#include <optional>",
+            "#include <tuple>",
+            "#include <utility>",
             f'#include "{header}"',
             "int main() {",
             body,

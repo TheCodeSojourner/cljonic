@@ -4,8 +4,10 @@
 #include <deque>
 #include <functional>
 #include <map>
+#include <optional>
 #include <set>
 #include <string>
+#include <tuple>
 #include <variant>
 #include <vector>
 
@@ -716,6 +718,8 @@ TEST_CASE("NothrowStableEqualityComparable value capability", "[concepts][value]
     TRACE_ID("entity-fields.NothrowStableEqualityComparable");
     TRACE_ID("invariant.NothrowStableEqualityComparable.ExtendsStableEquality");
     TRACE_ID("invariant.NothrowStableEqualityComparable.ExtendsNothrowCollectionElement");
+    TRACE_ID("invariant.NothrowStableEqualityComparable.RequiresNothrowComparison");
+    TRACE_ID("invariant.NothrowStableEqualityComparable.RejectsParameterizedStandardWrapperRegardlessOfInstantiation");
 
     // ExtendsStableEquality and ExtendsNothrowCollectionElement: the map key
     // and set element admission contract requires both capabilities.
@@ -729,6 +733,22 @@ TEST_CASE("NothrowStableEqualityComparable value capability", "[concepts][value]
 
     // A stable-equality type may lack ordering yet still satisfy this concept.
     STATIC_REQUIRE_FALSE(TotallyOrdered<EqualityOnly>);
+
+    // RequiresNothrowComparison: a throwing comparison is rejected even when
+    // storage is non-throwing, because key lookup and set membership would
+    // otherwise be able to throw.
+    STATIC_REQUIRE(StableEqualityComparable<ThrowingEqualityOnly>);
+    STATIC_REQUIRE(NothrowCollectionElement<ThrowingEqualityOnly>);
+    STATIC_REQUIRE_FALSE(NothrowStableEqualityComparable<ThrowingEqualityOnly>);
+
+    // RejectsParameterizedStandardWrapperRegardlessOfInstantiation: a wrapper
+    // whose stored types the library cannot analyze stays out of key and
+    // element positions, so a floating-point component cannot be smuggled in.
+    STATIC_REQUIRE_FALSE(NothrowStableEqualityComparable<std::pair<int, int>>);
+    STATIC_REQUIRE_FALSE(NothrowStableEqualityComparable<std::pair<double, double>>);
+    STATIC_REQUIRE_FALSE(NothrowStableEqualityComparable<std::optional<int>>);
+    STATIC_REQUIRE_FALSE(NothrowStableEqualityComparable<std::tuple<int>>);
+    STATIC_REQUIRE_FALSE(NothrowStableEqualityComparable<std::variant<int, long>>);
 }
 
 TEST_CASE("NothrowEqualityComparable value capability", "[concepts][value]") {

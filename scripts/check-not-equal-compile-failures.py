@@ -51,10 +51,12 @@ FAILURE_CASES = {
     # The standard-library variant is not a cljonic value type.
     "NotEqual-std-variant": ("(void)cljonic::not_equal(std::variant<int, long>{1}, "
                              "std::variant<int, long>{1});"),
-    # Cross-type numeric and element-type rules.
-    "NotEqual-scalar-cross-type": "(void)cljonic::not_equal(1, 1L);",
-    "NotEqual-sequential-element-cross-type": ("(void)cljonic::not_equal(cljonic::Vector<int, 2>{1}, "
-                                               "cljonic::Range<long>{1, 3, 1});"),
+    # Cross-type rules: value-preserving pairs are admitted (see PASS_CASES),
+    # while sign-crossing, character, Boolean, and identity-sensitive pairs stay
+    # rejected.
+    "NotEqual-scalar-sign-crossing": "(void)cljonic::not_equal(1, 1U);",
+    "NotEqual-scalar-character-crossing": "(void)cljonic::not_equal('a', 65);",
+    "NotEqual-scalar-boolean-crossing": "(void)cljonic::not_equal(true, 1);",
     "NotEqual-map-key-cross-type": ("(void)cljonic::not_equal(cljonic::Map<int, int, 2>{}, "
                                     "cljonic::Map<long, int, 2>{});"),
     # Callables are outside the stable-equality domain.
@@ -72,8 +74,8 @@ FAILURE_CASES = {
     "NotEqual-variadic-cross-family-tail": ("(void)cljonic::not_equal(cljonic::Vector<int, 2>{1}, "
                                             "cljonic::Vector<int, 2>{1}, cljonic::Set<int, 2>{});"),
     "NotEqual-variadic-float-adjacent": "(void)cljonic::not_equal(1, 1.0, 1);",
-    "NotEqual-variadic-element-cross-type": ("(void)cljonic::not_equal(cljonic::Vector<int, 2>{1}, "
-                                             "cljonic::Range<long>{1, 3, 1}, cljonic::Vector<int, 2>{1});"),
+    "NotEqual-variadic-element-character-crossing": ("(void)cljonic::not_equal(cljonic::Vector<int, 2>{1}, "
+                                                     "cljonic::Vector<char, 2>{'1'}, cljonic::Vector<int, 2>{1});"),
     "NotEqual-variadic-std-range-tail": ("(void)cljonic::not_equal(1, 1, std::vector<int>{1});"),
     "NotEqual-variadic-mixed-family-chain": ("(void)cljonic::not_equal(cljonic::Map<int, int, 4>"
                                              "{cljonic::MapEntry<int, int>{1, 10}}, "
@@ -82,6 +84,10 @@ FAILURE_CASES = {
 }
 
 PASS_CASES = {
+    # Safe value-preserving conversions inherited from equal (2026-10-31).
+    "NotEqual-scalar-safe-widening": "(void)cljonic::not_equal(1, 1L);",
+    "NotEqual-sequential-element-safe-widening": ("(void)cljonic::not_equal(cljonic::Vector<int, 2>{1}, "
+                                                   "cljonic::Range<long>{1, 3, 1});"),
     "NotEqual-scalar": "(void)cljonic::not_equal(1, 1);",
     "NotEqual-enum": ("enum class NotEqualColor { Red, Green }; "
                       "(void)cljonic::not_equal(NotEqualColor::Red, NotEqualColor::Red);"),

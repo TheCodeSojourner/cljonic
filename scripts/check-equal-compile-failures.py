@@ -68,12 +68,27 @@ FAILURE_CASES = {
     # A throwing operator== is outside the non-throwing equality domain.
     "Equal-throwing-aggregate": ("ThrowingEqual a{}; ThrowingEqual b{}; "
                                   "(void)cljonic::equal(a, b);"),
-    # Cross-type numeric and element-type rules.
-    "Equal-scalar-cross-type": "(void)cljonic::equal(1, 1L);",
-    "Equal-sequential-element-cross-type": ("(void)cljonic::equal(cljonic::Vector<int, 2>{1}, "
-                                            "cljonic::Range<long>{1, 3, 1});"),
+    # Cross-type rules: value-preserving pairs are admitted (see PASS_CASES),
+    # while sign-crossing, character, Boolean, and identity-sensitive pairs stay
+    # rejected.
+    "Equal-scalar-sign-crossing": "(void)cljonic::equal(1, 1U);",
+    "Equal-scalar-sign-crossing-reverse": "(void)cljonic::equal(1U, 1);",
+    "Equal-scalar-character-crossing": "(void)cljonic::equal('a', 65);",
+    "Equal-scalar-boolean-crossing": "(void)cljonic::equal(true, 1);",
     "Equal-map-key-cross-type": ("(void)cljonic::equal(cljonic::Map<int, int, 2>{}, "
                                  "cljonic::Map<long, int, 2>{});"),
+    "Equal-set-element-cross-type": "(void)cljonic::equal(cljonic::Set<int, 2>{}, cljonic::Set<long, 2>{});",
+    # Parameterized standard-library wrappers stay outside the value domain,
+    # however instantiated (a floating-point component must not be smuggled in).
+    "Equal-std-pair": ("(void)cljonic::equal(std::pair<int, int>{1, 2}, std::pair<int, int>{1, 2});"),
+    "Equal-std-pair-with-float": ("(void)cljonic::equal(std::pair<double, double>{1.0, 2.0}, "
+                                  "std::pair<double, double>{1.0, 2.0});"),
+    "Equal-std-optional": "(void)cljonic::equal(std::optional<int>{1}, std::optional<int>{1});",
+    "Equal-std-optional-with-float": ("(void)cljonic::equal(std::optional<double>{1.0}, "
+                                      "std::optional<double>{1.0});"),
+    "Equal-std-tuple": "(void)cljonic::equal(std::tuple<int>{1}, std::tuple<int>{1});",
+    "Equal-sequential-element-character-crossing": ("(void)cljonic::equal(cljonic::Vector<int, 2>{1}, "
+                                                    "cljonic::Vector<char, 2>{'1'});"),
     # Callables are outside the stable-equality domain.
     "Equal-callable-bearing-producer": ("(void)cljonic::equal(cljonic::Iterate<int, int (*)(int)>{}, "
                                         "cljonic::Iterate<int, int (*)(int)>{});"),
@@ -89,8 +104,8 @@ FAILURE_CASES = {
     "Equal-variadic-cross-family-tail": ("(void)cljonic::equal(cljonic::Vector<int, 2>{1}, "
                                          "cljonic::Vector<int, 2>{1}, cljonic::Set<int, 2>{});"),
     "Equal-variadic-float-adjacent": "(void)cljonic::equal(1, 1.0, 1);",
-    "Equal-variadic-element-cross-type": ("(void)cljonic::equal(cljonic::Vector<int, 2>{1}, "
-                                          "cljonic::Range<long>{1, 3, 1}, cljonic::Vector<int, 2>{1});"),
+    "Equal-variadic-element-character-crossing": ("(void)cljonic::equal(cljonic::Vector<int, 2>{1}, "
+                                                  "cljonic::Vector<char, 2>{'1'}, cljonic::Vector<int, 2>{1});"),
     "Equal-variadic-std-range-tail": ("(void)cljonic::equal(1, 1, std::vector<int>{1});"),
     "Equal-variadic-mixed-family-chain": ("(void)cljonic::equal(cljonic::Map<int, int, 4>"
                                           "{cljonic::MapEntry<int, int>{1, 10}}, "
@@ -99,6 +114,13 @@ FAILURE_CASES = {
 }
 
 PASS_CASES = {
+    # Safe value-preserving conversions (REQ-FN-002G, human decision 2026-10-31).
+    "Equal-scalar-safe-widening": "(void)cljonic::equal(1, 1L);",
+    "Equal-scalar-safe-widening-reverse": "(void)cljonic::equal(1L, 1);",
+    "Equal-sequential-element-safe-widening": ("(void)cljonic::equal(cljonic::Vector<int, 2>{1}, "
+                                                  "cljonic::Range<long>{1, 3, 1});"),
+    "Equal-variadic-element-safe-widening": ("(void)cljonic::equal(cljonic::Vector<int, 2>{1}, "
+                                               "cljonic::Range<long>{1, 3, 1}, cljonic::Vector<int, 2>{1});"),
     "Equal-scalar": "(void)cljonic::equal(1, 1);",
     "Equal-enum": ("enum class EqualColor { Red, Green }; "
                    "(void)cljonic::equal(EqualColor::Red, EqualColor::Red);"),
@@ -164,6 +186,8 @@ def compile_case(compiler: list[str], include_dir: str, header: str, body: str, 
         (
             "#include <array>",
             "#include <map>",
+            "#include <optional>",
+            "#include <tuple>",
             "#include <span>",
             "#include <string>",
             "#include <string_view>",

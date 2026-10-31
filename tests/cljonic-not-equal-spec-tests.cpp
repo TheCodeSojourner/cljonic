@@ -49,6 +49,10 @@ TEST_CASE("not_equal negates general value equality over the supported domain", 
     // relationship not_equal(a, b) == !equal(a, b).
     // ------------------------------------------------------------------------
     STATIC_REQUIRE(not_equal(1, 2));
+    // Safe value-preserving conversions are inherited from equal.
+    STATIC_REQUIRE(not_equal(1, 2L));
+    STATIC_REQUIRE(!not_equal(1, 1L));
+    STATIC_REQUIRE(not_equal(cljonic::vector(1, 2), cljonic::vector<long, 2>(1L, 3L)));
     STATIC_REQUIRE(!not_equal(1, 1));
     STATIC_REQUIRE(not_equal('a', 'b'));
     STATIC_REQUIRE(!not_equal('a', 'a'));
