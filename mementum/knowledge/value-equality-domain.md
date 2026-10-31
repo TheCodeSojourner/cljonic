@@ -34,6 +34,26 @@ std::equality_comparable<T>
 
 - Floats are rejected as a class (NaN/precision instability); storability
   (REQ-NUM-001) never implies equality.
+- Detection policy (REQ-NUM-019, human 2026-10-31): every floating-point
+  equality comparison that can be detected statically is rejected at compile
+  time, and no detectable comparison may be silently admitted. Concretely this
+  covers raw floating-point operands of `equal`/`not_equal`, a `Set` element
+  type, a `Map` key type, and any floating-point-bearing component the walkers
+  can see. Storage that is never compared stays permitted (`Vector<double, N>`
+  elements, `Map<int, double, N>` values), while equality over such collections
+  stays rejected. Detection stops at an opaque user-defined aggregate
+  (REQ-NUM-018), and that limit is stated rather than papered over.
+- The detection obligation is enforced nominally, not by convention
+  (`REQ-NUM-019`, `StableEqualityComparable.NominalWalkerCoverageIsGated`). The
+  walkers are enumerative, so the unspecialized form answers "no floating point"
+  for anything it does not know. Each library-owned composite therefore declares
+  `concepts_detail::walker_coverage<Self>` in its own header. The primary
+  template denies coverage, so a nominal composite that forgets the declaration
+  is not `StableEqualityComparable` — the omission fails at first equality use
+  instead of silently admitting a detectable floating-point comparison. Types
+  outside the nominal domain are exempt, because their members are unanalyzable.
+  Adding a library-owned composite now requires: nominal trait, the three walker
+  specializations, and the coverage declaration.
 - Callables are rejected as a class, including function pointers (a function
   pointer has `operator==` but admits only address-as-key semantics).
 - The walkers (`contains_floating_point` / `contains_callable` /
@@ -103,12 +123,24 @@ propagation.
 
 ## Known limitations (do not rediscover these)
 
-1. User-defined aggregates with float members are unanalyzable (no reflection);
-   the walker cannot enforce recursion for them. Documented limitation, revisit
-   with the aggregate story.
-2. Set duplicate insertion at compile time aborts (`std::abort()` is not a
-   constant expression); verify duplicate no-op behavior at runtime, use
-   distinct elements in constexpr contexts.
+1. User-defined aggregates are a deliberate boundary, not a defect (human
+   decision, 2026-10-31, `REQ-NUM-018`). An aggregate providing a non-throwing
+   `operator==` — defaulted or user-written — is admitted to the stable equality
+   domain even when it stores floats; the recursion of `REQ-NUM-007` stops at
+   the type boundary and the equality semantics are the author's responsibility.
+   The boundary exists because C++23 has no standard reflection and the
+   available approximations (structured-bindings aggregate tie ala Boost.PFR,
+   aggregate field-count probing) are aggregate-only, arity-bounded, and blind
+   to private/base members. C++26 static reflection (P2996) would be needed to
+   analyze members instead. An aggregate without an available non-throwing
+   `operator==` remains rejected.
+2. Set duplicate insertion at compile time is rejected by a declared-never-
+   defined trap (`rejected_duplicate_value_at_compile_time()`), so the diagnostic
+   reads as a non-constexpr call rather than `'abort()' is not a constant
+   expression` (fixed in 70674bf). Runtime pack construction deduplicates
+   (`Set{1, 2, 2, 3}`, `Set<int, 4>{1, 1}` under REQ-COLL-019); use distinct
+   elements in constexpr contexts, because a constant-evaluated duplicate is a
+   deliberate compile-time error.
 3. Single range-typed constructor argument selects the source constructor, not
    the pack constructor; tests use multi-element packs (pending design
    decision, see state.md carry-forward).
