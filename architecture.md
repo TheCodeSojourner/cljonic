@@ -723,6 +723,11 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ ∀adjacent_pair(x) ∧ ∀unary_operand(x) → satisfy(compile_time_domain_gating(x))
   | equal(x) → distinct_from(operator== (x)) ∧ scoped_to(supported_stable_equality_domain(x))
     ∧ constexpr(x) ∧ noexcept(x)
+  | ordinary_value_pair(x) → require(identical_types(x) ∨ safe_widening_relation_in_either_direction(x))
+    ∧ compare_in_wider_type(x) ∧ ¬∃ truncation_or_saturation(x)
+    ∧ sign_crossing_pair(x) ∨ boolean_pair(x) ∨ character_pair(x) ∨ enumeration_pair(x) ∨ pointer_pair(x)
+      ∨ user_defined_pair(x) → compile_time_rejection(x)
+    ∧ equality_remains_equivalence_relation(x) because(admitted_conversions_are_injective_on_values(x))
   | non_cljonic_scalar_operands(x) → compare_via(operator== (x))
     ∧ fallthrough_domain(x) ≡ closed_value_domain(
         arithmetic_scalars ∨ scoped_enumerations
@@ -736,17 +741,31 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | floating_point_component(x) → compile_time_rejection(x) ∧ at_any_analyzable_depth(x)
     ∧ detectability_is_the_criterion(x) ∧ trace_to(REQ-NUM-019) ∧ ¬∃ silent_admission_of_detectable_comparison(x)
     ∧ aggregate_boundary(x) → stop_recursion(x) ∧ defer_semantics_to_type_author(x)
-  | user_defined_aggregate(x) with(nothrow_operator_equality(x)) → admit(x) ∧ ¬analyze_members(x)
+  | user_defined_class_type(x) ≡ aggregate_struct(x) ∨ non_aggregate_class(x)
+    ∧ user_defined_class_type(x) with(nothrow_operator_equality(x)) → admit(x) ∧ ¬analyze_members(x)
     ∧ internal_equality_semantics_belong_to(type_author(x)) ∧ trace_to(REQ-NUM-018)
+    ∧ non_aggregate_class(x) → admit_on(NothrowEqualityComparable(x))
+      ∧ require(the_stable_equality_and_nothrow_comparison_shared_with(map_key_admission(x) ∧ set_element_admission(x)))
+      ∧ storage_contract_additionally_requires(nothrow_copy_construction(x) ∧ nothrow_copy_assignment(x))
+        which_equal_does_not_need(x) because(equal_never_copies_an_operand(x))
+    ∧ parameterized_standard_wrapper(x) (`std::pair` ∨ `std::optional` ∨ `std::tuple` ∨ `std::variant`)
+      → compile_time_rejection(x) ∧ regardless_of_instantiation(x)
+      because(inner_types_are_not_analyzable(x) ∧ floating_point_could_be_smuggled_in(x))
+      ∧ mechanism(x) ≡ ¬nothrow_comparison(x) so(no_exclusion_list_is_required(x))
   | value_whose_equality_comparison_may_throw(x) → compile_time_rejection(x)
     because(noexcept_guarantee_cannot_be_violated(x))
   | sequential_family(x) ≡ Vector ∨ Queue ∨ Cycle ∨ Iterate ∨ Range ∨ Repeat ∨ Repeatedly
-    ∧ sequential_family_pair(x) → compare(produced_sequence(x)) ∧ require(identical_element_types(x))
+    ∧ sequential_family_pair(x) → compare(produced_sequence(x))
+      ∧ require(identical_element_types(x) ∨ safe_widening_relation_in_either_direction(element_types(x)))
+      ∧ compare_elements_in_wider_type(x)
     ∧ equal_when(equal_observed_counts(x) ∧ equal_observed_elements_in_logical_order(x))
     ∧ compare_order_sensitive(x) ∧ lazy_element_wise(x) ∧ early_exit_on_first_difference(x)
     ∧ each_unbounded_operand(x) → use(configured_observable_traversal_cap(x))
       ∧ regardless_of(other_operand_finite_or_unbounded(x))
     ∧ every_call_terminates(x) ∧ ¬claim(equality_beyond_observed_bounds(x))
+  | identical_type_identity(x) ≡ Map key_and_value_types(x) ∨ Set element_type(x) ∨ String content(x)
+    ∨ cljonic_variant_alternative_identity(x)
+    ∧ identical_type_identity(x) → require(identical_types(x)) ∧ ¬∃ safe_conversion_leak(x)
   | Map(x) → comparable_only_to(Map) | Set(x) → comparable_only_to(Set) | String(x) → comparable_only_to(String)
   | incompatible_family_pair(x) ∨ mixed_cljonic_non_cljonic_pair(x) → compile_time_rejection(x)
   | nested_producer_component(x) → compare_via(producer_parameter_equality(x))
@@ -996,6 +1015,25 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | first_operation(x) → constexpr ∧ noexcept ∧ non_mutating ∧ non_allocating
   | rejected_input(x) → provide(targeted_rejection_diagnostic(x))
 
+λ S2_map_function_contract(x). map(transform, sources...) → admit(∀ source: CljonicSource(source) ∧ ∀ n ≥ 1: arity(sources) = n ∧ callable_transform(x))(x)
+  | callable_transform(x) → require(copy_constructible(x) ∧ nothrow_invocation_with_one_argument_per_source(x) ∧ storable_nothrow_result(x))
+  | callable_parameter_position(x) → require(SafeImplicitConversion(declared_parameter_type, corresponding_source_element_type))
+    ∧ narrowing_conversion(x) → reject_at_compile_time(x)
+    ∧ domain_crossing(Boolean ∨ character ∨ enumeration ∨ pointer ∨ user_defined)(x) → reject_at_compile_time(x)
+  | uninspectable_callback(generic_lambda ∨ templated_operator_call)(x) → admit_on(nothrow_invocability(x))
+  | arity(sources) = 1 → return(Vector<transform_result, effective_count(source₁)> of transform(source₁(i)) in_traversal_order)
+  | arity(sources) = n > 1 → invoke(transform with one corresponding element from each source per_step)
+    ∧ terminate(when_first_source_exhausted)
+    ∧ return(Vector<transform_result, min_over_sources(effective_count)> of successive transform results in_step_order)
+  | effective_count(source) ≡ collection(source) → count(source)
+    ∧ finite_producer(source) → count(source)
+    ∧ unbounded_producer(source) → observable_traversal_cap
+    ∧ each_contribution_saturated_at(CollectionMaximumElementCount)
+  | Map_source(x) ∨ Set_source(x) → traversal_order_semantically_unordered(x)
+  | standard_library_range ∨ container ∨ non_cljonic_source ∨ throwing_callback ∨ unstorable_result → reject_at_compile_time_with(targeted_diagnostic_naming(map ∧ supported_domains) ∧ REQ-DIAG-009)
+  | preserve(every_source_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
+  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-032)
+
 λ S2_disj_function_contract(x). disj(set, values...) → admit(CljonicSet(set) ∧ ∀ value: SafeImplicitConversion(value, Set::value_type))
   | arity(values) = 0 → return(unchanged_copy(set))
   | arity(values) > 0 → fold(left_to_right, Set::disj, set, values)
@@ -1140,6 +1178,19 @@ concept TotallyOrdered = StableEqualityComparable<T> && std::totally_ordered<T>;
 template<class T>
 concept NothrowEqualityComparable =
     StableEqualityComparable<T> &&
+    cljonic::concepts_detail::nothrow_equality_v<T>;
+
+// NothrowStableEqualityComparable is the map-key and set-element admission
+// contract: stable equality, nothrow storage, and a nothrow comparison. The
+// comparison requirement keeps a parameterized standard-library wrapper out of
+// key and element positions whatever it is instantiated with, because such a
+// wrapper declares no nothrow comparison and would otherwise hide an
+// unsupported component (a floating-point value, for example) from the
+// recursive walkers.
+template<class T>
+concept NothrowStableEqualityComparable =
+    StableEqualityComparable<T> &&
+    NothrowCollectionElement<T> &&
     cljonic::concepts_detail::nothrow_equality_v<T>;
 ```
 
