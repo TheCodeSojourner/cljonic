@@ -563,4 +563,11 @@ template <typename KeyType, typename ValueType, std::size_t CapacityValue>
 struct contains_standard_range<Map<KeyType, ValueType, CapacityValue>>
     : std::bool_constant<contains_standard_range_v<KeyType> || contains_standard_range_v<ValueType>> {};
 
+// Nominal walker coverage (REQ-NUM-019): Map declares that the walkers reach both
+// its key and value types.
+template <typename KeyType, typename ValueType, std::size_t CapacityValue>
+struct walker_coverage<Map<KeyType, ValueType, CapacityValue>> {
+    static constexpr bool declared = true;
+};
+
 } // namespace cljonic::concepts_detail

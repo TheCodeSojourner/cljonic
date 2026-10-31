@@ -390,4 +390,11 @@ struct contains_callable<Range<T>> : std::bool_constant<contains_callable_v<T>> 
 template <typename T>
 struct contains_standard_range<Range<T>> : std::bool_constant<contains_standard_range_v<T>> {};
 
+// Nominal walker coverage (REQ-NUM-019): Range declares that the walkers reach its
+// element type.
+template <typename T>
+struct walker_coverage<Range<T>> {
+    static constexpr bool declared = true;
+};
+
 } // namespace cljonic::concepts_detail

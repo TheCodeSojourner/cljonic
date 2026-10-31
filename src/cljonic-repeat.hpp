@@ -297,4 +297,11 @@ struct contains_callable<Repeat<T>> : std::bool_constant<contains_callable_v<T>>
 template <concepts::NothrowCollectionElement T>
 struct contains_standard_range<Repeat<T>> : std::bool_constant<contains_standard_range_v<T>> {};
 
+// Nominal walker coverage (REQ-NUM-019): Repeat declares that the walkers reach
+// its value type.
+template <concepts::NothrowCollectionElement T>
+struct walker_coverage<Repeat<T>> {
+    static constexpr bool declared = true;
+};
+
 } // namespace cljonic::concepts_detail

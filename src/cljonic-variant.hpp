@@ -249,4 +249,11 @@ template <typename... Alternatives>
 struct contains_standard_range<cljonic::Variant<Alternatives...>>
     : std::bool_constant<(contains_standard_range_v<Alternatives> || ...)> {};
 
+// Nominal walker coverage (REQ-NUM-019): Variant declares that the walkers reach
+// every alternative.
+template <typename... Alternatives>
+struct walker_coverage<cljonic::Variant<Alternatives...>> {
+    static constexpr bool declared = true;
+};
+
 } // namespace cljonic::concepts_detail

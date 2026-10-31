@@ -331,4 +331,12 @@ template <concepts::NothrowCollectionElement T, typename Step>
     requires concepts::RepeatedlyStep<T, Step>
 struct contains_standard_range<Repeatedly<T, Step>> : std::bool_constant<contains_standard_range_v<T>> {};
 
+// Nominal walker coverage (REQ-NUM-019): Repeatedly declares that the walkers
+// reach its value type.
+template <concepts::NothrowCollectionElement T, typename Step>
+    requires concepts::RepeatedlyStep<T, Step>
+struct walker_coverage<Repeatedly<T, Step>> {
+    static constexpr bool declared = true;
+};
+
 } // namespace cljonic::concepts_detail

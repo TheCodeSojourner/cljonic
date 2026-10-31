@@ -294,6 +294,35 @@ struct contains_standard_range
 template <typename T>
 inline constexpr bool contains_standard_range_v = contains_standard_range<std::remove_cvref_t<T>>::value;
 
+// Nominal walker-coverage gate (REQ-NUM-019). The recursive walkers above are
+// enumerative, not reflective: the unspecialized form reports "no floating
+// point / no callable" for every type it does not know. That default is correct
+// only for types whose members are genuinely unanalyzable (a user-defined
+// aggregate, REQ-NUM-018). A library-owned composite exposes its components as
+// template arguments, so its omission from the walkers would silently admit a
+// detectable floating-point comparison.
+//
+// Each library-owned composite therefore declares coverage in its own header.
+// The primary template denies coverage, so an added type that opts into a
+// nominal trait without opting into walker coverage is not stable-equality
+// comparable.
+template <typename T>
+struct walker_coverage {
+    static constexpr bool declared = false;
+};
+
+template <typename T>
+inline constexpr bool is_cljonic_composite_v =
+    is_cljonic_collection_v<T> || is_cljonic_producer_v<T> || is_cljonic_map_entry_v<T> || is_cljonic_variant_v<T>;
+
+template <typename T>
+inline constexpr bool walker_coverage_declared_v = walker_coverage<std::remove_cvref_t<T>>::declared;
+
+// Types outside the nominal domain keep the benefit of the doubt: their members
+// cannot be analyzed at all, so no coverage declaration is possible or required.
+template <typename T>
+inline constexpr bool walker_coverage_ok_v = !is_cljonic_composite_v<T> || walker_coverage_declared_v<T>;
+
 } // namespace concepts_detail
 
 namespace concepts {
@@ -337,10 +366,13 @@ concept NothrowElementConstruction = SafeImplicitConversion<T, Arg> && requires(
  *
  *  For composite values this is recursive: every stored component must admit
  *  stable equality, callable components are always rejected, and the composite's
- *  own equality must be valid. */
+ *  own equality must be valid. A library-owned composite must also declare that
+ *  the walkers reach its components (`walker_coverage`), so an added composite
+ *  that skips the declaration fails here instead of silently admitting a
+ *  detectable floating-point comparison. */
 template <typename T>
 concept StableEqualityComparable = std::equality_comparable<T> && !concepts_detail::contains_floating_point_v<T> &&
-                                   !concepts_detail::contains_callable_v<T>;
+                                   !concepts_detail::contains_callable_v<T> && concepts_detail::walker_coverage_ok_v<T>;
 
 /** Requires a strict total ordering layered on stable equality. */
 template <typename T>

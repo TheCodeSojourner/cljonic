@@ -243,4 +243,12 @@ template <concepts::NothrowCollectionElement T, typename Step>
     requires concepts::IterateStep<T, Step>
 struct contains_standard_range<Iterate<T, Step>> : std::bool_constant<contains_standard_range_v<T>> {};
 
+// Nominal walker coverage (REQ-NUM-019): Iterate declares that the walkers reach
+// its value type.
+template <concepts::NothrowCollectionElement T, typename Step>
+    requires concepts::IterateStep<T, Step>
+struct walker_coverage<Iterate<T, Step>> {
+    static constexpr bool declared = true;
+};
+
 } // namespace cljonic::concepts_detail

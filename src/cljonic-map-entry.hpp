@@ -106,6 +106,13 @@ template <typename KeyType, typename ValueType>
 struct contains_standard_range<cljonic::MapEntry<KeyType, ValueType>>
     : std::bool_constant<contains_standard_range_v<KeyType> || contains_standard_range_v<ValueType>> {};
 
+// Nominal walker coverage (REQ-NUM-019): MapEntry declares that the walkers reach
+// both its key and value types.
+template <typename KeyType, typename ValueType>
+struct walker_coverage<cljonic::MapEntry<KeyType, ValueType>> {
+    static constexpr bool declared = true;
+};
+
 struct DeducedMapEntryKeyType {};
 struct DeducedMapEntryValueType {};
 

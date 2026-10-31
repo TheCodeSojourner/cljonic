@@ -483,4 +483,11 @@ template <typename ElementType, std::size_t CapacityValue>
 struct contains_standard_range<Vector<ElementType, CapacityValue>>
     : std::bool_constant<contains_standard_range_v<ElementType>> {};
 
+// Nominal walker coverage (REQ-NUM-019): Vector declares that the floating-point,
+// callable, and standard-range walkers reach its element type.
+template <typename ElementType, std::size_t CapacityValue>
+struct walker_coverage<Vector<ElementType, CapacityValue>> {
+    static constexpr bool declared = true;
+};
+
 } // namespace cljonic::concepts_detail

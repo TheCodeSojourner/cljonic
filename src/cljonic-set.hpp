@@ -557,4 +557,11 @@ struct contains_callable<Set<T, CapacityValue>> : std::bool_constant<contains_ca
 template <typename T, std::size_t CapacityValue>
 struct contains_standard_range<Set<T, CapacityValue>> : std::bool_constant<contains_standard_range_v<T>> {};
 
+// Nominal walker coverage (REQ-NUM-019): Set declares that the walkers reach its
+// element type.
+template <typename T, std::size_t CapacityValue>
+struct walker_coverage<Set<T, CapacityValue>> {
+    static constexpr bool declared = true;
+};
+
 } // namespace cljonic::concepts_detail

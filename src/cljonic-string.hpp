@@ -542,4 +542,11 @@ struct contains_callable<String<CapacityValue>> : std::false_type {};
 template <std::size_t CapacityValue>
 struct contains_standard_range<String<CapacityValue>> : std::false_type {};
 
+// Nominal walker coverage (REQ-NUM-019): String declares that the walkers reach
+// its character element type (always a character, never floating point).
+template <std::size_t CapacityValue>
+struct walker_coverage<String<CapacityValue>> {
+    static constexpr bool declared = true;
+};
+
 } // namespace cljonic::concepts_detail

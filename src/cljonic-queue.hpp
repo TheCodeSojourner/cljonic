@@ -439,4 +439,11 @@ struct contains_callable<Queue<T, CapacityValue>> : std::bool_constant<contains_
 template <typename T, std::size_t CapacityValue>
 struct contains_standard_range<Queue<T, CapacityValue>> : std::bool_constant<contains_standard_range_v<T>> {};
 
+// Nominal walker coverage (REQ-NUM-019): Queue declares that the walkers reach its
+// element type.
+template <typename T, std::size_t CapacityValue>
+struct walker_coverage<Queue<T, CapacityValue>> {
+    static constexpr bool declared = true;
+};
+
 } // namespace cljonic::concepts_detail

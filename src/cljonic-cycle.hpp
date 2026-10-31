@@ -275,4 +275,11 @@ struct contains_callable<Cycle<Source>> : std::bool_constant<contains_callable_v
 template <concepts::CljonicSource Source>
 struct contains_standard_range<Cycle<Source>> : std::bool_constant<contains_standard_range_v<Source>> {};
 
+// Nominal walker coverage (REQ-NUM-019): Cycle declares that the walkers reach
+// its source type.
+template <concepts::CljonicSource Source>
+struct walker_coverage<Cycle<Source>> {
+    static constexpr bool declared = true;
+};
+
 } // namespace cljonic::concepts_detail
