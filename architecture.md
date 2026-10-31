@@ -409,7 +409,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | Seqable(x) → documented_logical_traversal_representation(x)
     ∧ non_mutating_sequence_conversion(x) ∧ bounded_independently_valid_result(x)
     ∧ sequence_requirements_are_implementation_backed_through(seq ∧ REQ-SEQ-010)
-    ∧ capability_concept(x) → remain_deferred_until_separately_implemented
+    ∧ capability_concept(x) → closed_to_external_declaration(x) ∧ membership_owned_by(cljonic_collection_family(x)) ∧ trace_to(REQ-CAP-014)
   | Associative(x) → non_mutating_key_value_association(x) ∧ return(new_collection_value(x))
     ∧ preserve_source(x) ∧ define(key_value_and_capacity_policy(x))
     ∧ non_throwing_non_allocating_preflight(can_assoc(x))
@@ -428,8 +428,8 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   String: Indexed ∧ Lookup ∧ Associative ∧ Conjable,
   Queue: none_of(Indexed ∧ Lookup ∧ Associative) ∧ Conjable
   }
-  | Seqable(x) → lifecycle_deferred_as_capability_concept(each_supported_collection(x))
-    ∧ sequence_requirements_are_implementation_backed_through(seq ∧ REQ-SEQ-010)
+  | Seqable(x) → closed_capability(x) for each_supported_collection(x) ∧ ¬∃ external_or_new_type_declares(Seqable(x))
+    ∧ sequence_requirements_are_implementation_backed_through(seq ∧ REQ-SEQ-010) ∧ trace_to(REQ-CAP-014)
   | capability_matrix(x) → govern(public_concepts ∧ free_function_constraints ∧ documentation_names)
 
 λ S2_vector_factory_contract(x). vector(args...) → construct(owning_Vector_from_individual_arguments_in_order(x))
@@ -733,7 +733,11 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | standard_range_or_container_type(x) → compile_time_rejection(x) ∧ at_any_depth(x)
     ∧ standard_range_stored_component(x) → compile_time_rejection(x)
     because(equal_is_not_interop_surface(x))
-  | floating_point_component(x) → compile_time_rejection(x) ∧ at_any_depth(x)
+  | floating_point_component(x) → compile_time_rejection(x) ∧ at_any_analyzable_depth(x)
+    ∧ detectability_is_the_criterion(x) ∧ trace_to(REQ-NUM-019) ∧ ¬∃ silent_admission_of_detectable_comparison(x)
+    ∧ aggregate_boundary(x) → stop_recursion(x) ∧ defer_semantics_to_type_author(x)
+  | user_defined_aggregate(x) with(nothrow_operator_equality(x)) → admit(x) ∧ ¬analyze_members(x)
+    ∧ internal_equality_semantics_belong_to(type_author(x)) ∧ trace_to(REQ-NUM-018)
   | value_whose_equality_comparison_may_throw(x) → compile_time_rejection(x)
     because(noexcept_guarantee_cannot_be_violated(x))
   | sequential_family(x) ≡ Vector ∨ Queue ∨ Cycle ∨ Iterate ∨ Range ∨ Repeat ∨ Repeatedly
@@ -1149,7 +1153,8 @@ concept NothrowEqualityComparable =
 
 ```cpp
 // SequenceableCollection is the current observation baseline; it does not imply
-// the independent Seqable lifecycle capability. Emptiness is derived by the
+// the independent, closed Seqable capability (REQ-CAP-014), which no type outside
+// the cljonic-owned collection family can declare. Emptiness is derived by the
 // is_empty free function from count(), not required as a collection member.
 template<class C>
 concept SequenceableCollection =
