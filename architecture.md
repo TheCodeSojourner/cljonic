@@ -1116,11 +1116,16 @@ concept ComparableVariantAlternative =
 // StableEqualityComparable is recursive over composite components:
 // a composite admits stable equality only when every stored component
 // admits stable equality; callable components never admit stable equality.
+// A library-owned composite must additionally declare that the walkers
+// reach its components (`walker_coverage`), so an added composite that
+// skips the declaration fails here instead of silently admitting a
+// detectable floating-point comparison.
 template<class T>
 concept StableEqualityComparable =
     std::equality_comparable<T> &&
     !cljonic::concepts_detail::contains_floating_point_v<T> &&
-    !cljonic::concepts_detail::contains_callable_v<T>;
+    !cljonic::concepts_detail::contains_callable_v<T> &&
+    cljonic::concepts_detail::walker_coverage_ok_v<T>;
 
 template<class T>
 concept TotallyOrdered = StableEqualityComparable<T> && std::totally_ordered<T>;
