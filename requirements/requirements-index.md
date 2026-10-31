@@ -15,7 +15,7 @@ MUST ≡ ∀/¬ (required by constraint) | SHOULD ≡ ∧ preferred | MAY ≡ �
 ## Conventions
 
 - **granularity**: `library_contract` — cljonic-grade clause density permitted; compound operator contracts MAY be marked `compound_by_design: true` in clause footers.
-- **deferred_marker**: section headings containing `(Deferred` or a blockquote opener asserting non-binding status; scope ends at the next heading of equal or higher level. Module 3 defers `REQ-FN-002A`–`002B` (`REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014` were promoted to binding on 2026-10-30); the `rest` remainder operation is active under `REQ-SEQ-001`–`009` and `REQ-SEQ-012`. Module 5 defers `REQ-FN-032`–`033`. The former Module 7 collection-factory direction (`REQ-FN-029B`/`029C`) was retired on 2026-10-23 after all six factories became active.
+- **deferred_marker**: section headings containing `(Deferred` or a blockquote opener asserting non-binding status; scope ends at the next heading of equal or higher level. Module 3 defers `REQ-FN-002A`–`002B` (`REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014` were promoted to binding on 2026-10-30); the `rest` remainder operation is active under `REQ-SEQ-001`–`009` and `REQ-SEQ-012`. Module 5 defers `REQ-FN-033`; `REQ-FN-032` (multi-source `map`) was promoted to binding on 2026-10-31. The former Module 7 collection-factory direction (`REQ-FN-029B`/`029C`) was retired on 2026-10-23 after all six factories became active.
 - **numbering**: designators are allocated topically, not monotonically across modules. Number gaps (for example `REQ-COLL-003`, `REQ-PLAT-011`) and cross-module restarts (for example `REQ-FN-002*` in Modules 3, 6, and 7) are intentional; do not renumber to satisfy a generic monotonicity heuristic. A designator is a stable identifier within its owning module: suffix shape is an opaque disambiguator, not an ordering or hierarchy signal. Approved forms such as `REQ-COLL-020AA`, `REQ-FN-002A1`, and `REQ-FN-002A2` are canonical and MUST NOT be renamed for stylistic consistency; future designators are allocated by topic and human approval, without requiring suffixes to follow one uniform pattern.
 
 ## Module Implementation Order & Summary
@@ -38,7 +38,7 @@ MUST ≡ ∀/¬ (required by constraint) | SHOULD ≡ ∧ preferred | MAY ≡ �
 
 5. **[requirements-module-5.md](requirements-module-5.md)** — *Higher-Order Algorithms & Traversal*
    - **Purpose**: Records future higher-order transformation requirements and the bounded collection-shaping/traversal family.
-   - **Scope**: The free-function APIs for multi-source mapping (`map`) and right-to-left composition (`comp`) are deferred and non-binding (`REQ-FN-032`–`033`); this does not defer the `cljonic::Map` type. The collection-shaping/traversal family is separately inventoried by `REQ-SEQ-022` and requires individually named downstream behavioral specifications before implementation.
+   - **Scope**: The free-function API for right-to-left composition (`comp`) is deferred and non-binding (`REQ-FN-033`); this does not defer the `cljonic::Map` type. The multi-source `map` free function is binding under `REQ-FN-032`. The collection-shaping/traversal family is separately inventoried by `REQ-SEQ-022` and requires individually named downstream behavioral specifications before implementation.
 
 6. **[requirements-module-6.md](requirements-module-6.md)** — *Numeric & Callable Convenience*
    - **Purpose**: Adds scalar arithmetic, bitwise math, conversion/parsing controls, and functional closure builders.

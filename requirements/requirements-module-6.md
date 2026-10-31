@@ -48,7 +48,7 @@ This module specifies the checked fixed-width numeric contract, scalar compariso
 λ REQ-NUM-007(x).
   ∀ collection operation that compares values: applies the same numeric capability constraints recursively to its element, key, and value types
   ∧ ∀ equality of collections containing raw floating-point values: rejected by default even when the collection itself can store those values, because nested floating-point comparisons may not be stable across supported environments
-  ∧ ∀ recursion: traverses only the components the library can analyze — cljonic collections, producers, `MapEntry`, `cljonic::Variant` alternatives, and the scalars themselves — ∧ stops at a user-defined aggregate boundary under `REQ-NUM-018`
+  ∧ ∀ recursion: traverses only the components the library can analyze — cljonic collections, producers, `MapEntry`, `cljonic::Variant` alternatives, and the scalars themselves — ∧ stops at a user-defined class boundary under `REQ-NUM-018`
   rationale: nested floating-point comparisons may not be stable across supported environments, even when storage is permitted
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: origin_artifact}
 
@@ -103,11 +103,13 @@ This module specifies the checked fixed-width numeric contract, scalar compariso
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-NUM-018(x).
-  ∀ user-defined aggregate struct that provides `operator==` — defaulted ∨ user-written — and that comparison is non-throwing: admitted to the stable equality domain as a stable-equality-capable type, whether or not it contains floating-point members
-  ∧ ∀ such aggregate: the numeric capability recursion of `REQ-NUM-007` stops at this type boundary ∧ the library performs no member-level analysis of it ∧ the library never inspects, requires, or reasons about its individual members
-  ∧ ∀ equality semantics inside such an aggregate, including floating-point, NaN, and precision behavior: the responsibility of the type's author, not of cljonic; admitting the type is an explicit transfer of that burden to the user
-  ∧ ∀ user-defined aggregate without an available non-throwing `operator==`: outside the stable equality domain ∧ rejected at compile time
-  ∧ ∀ context: this boundary is an admitted limitation of the type system, not a defect — C++23 provides no standard reflection, so member-level analysis of an arbitrary user-defined aggregate is unavailable; C++26 static reflection would be required to close it
+  ∀ user-defined class type — an aggregate struct ∨ a non-aggregate class — that provides `operator==` — defaulted ∨ user-written — and that comparison is non-throwing: admitted to the stable equality domain as a stable-equality-capable type, whether or not it contains floating-point members
+  ∧ ∀ such type: the numeric capability recursion of `REQ-NUM-007` stops at this type boundary ∧ the library performs no member-level analysis of it ∧ the library never inspects, requires, or reasons about its individual members
+  ∧ ∀ equality semantics inside such a type, including floating-point, NaN, and precision behavior: the responsibility of the type's author, not of cljonic; admitting the type is an explicit transfer of that burden to the user
+  ∧ ∀ user-defined class type without an available non-throwing `operator==`: outside the stable equality domain ∧ rejected at compile time
+  ∧ ∀ non-aggregate user-defined class: admission requires the stable-equality capability and the non-throwing comparison that the map-key and set-element contract also requires; that contract additionally requires non-throwing copy construction and assignment, which `equal` does not need because it never copies an operand
+  ∧ ∀ parameterized standard-library wrapper (`std::pair`, `std::optional`, `std::tuple`, `std::variant`) ∧ ∀ other wrapper whose inner types the library cannot analyze: rejected however instantiated, because a floating-point or otherwise unsupported component could otherwise be smuggled in behind the wrapper; the standard library declares none of these comparisons non-throwing, so admission by the non-throwing-comparison rule already excludes them and no separate exclusion list is needed
+  ∧ ∀ context: this boundary is an admitted limitation of the type system, not a defect — C++23 provides no standard reflection, so member-level analysis of an arbitrary user-defined class is unavailable; C++26 static reflection would be required to close it
   rationale: a type that states its own equality contract is a trustworthy boundary; refusing to admit it would remove ordinary C++ value types from the collection domain without making the equality any more verifiable
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: AI_inferred}
 

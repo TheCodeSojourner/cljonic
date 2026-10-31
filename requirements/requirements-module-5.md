@@ -2,18 +2,28 @@
 
 ## Purpose and Scope
 
-This module records future higher-order sequence transformation requirements and specifies the collection-shaping/traversal inventory. The free-function APIs `map` (multi-source mapping) and `comp` are explicitly deferred; this does not defer the `cljonic::Map` collection type or its existing operations.
+This module records higher-order sequence transformation requirements and specifies the collection-shaping/traversal inventory. The free-function API `comp` is explicitly deferred; this does not defer the `cljonic::Map` collection type or its existing operations.
 
 ## Deferred Higher-Order Free Functions (Non-binding)
 
-> **Deferred future work — non-binding.** The public free functions `map` (multi-source mapping) and `comp` are not part of the current supported API. Their requirements below record intended future behavior only; neither function is implementation-ready until its lifecycle is approved and its behavioral specification, tests, and implementation are propagated. This deferral does not apply to `cljonic::Map` or existing Map operations.
+> **Deferred future work — non-binding.** The public free function `comp` is not part of the current supported API. Its requirement below records intended future behavior only; the function is not implementation-ready until its lifecycle is approved and its behavioral specification, tests, and implementation are propagated. This deferral does not apply to `cljonic::Map` or existing Map operations, and does not apply to the multi-source `map` free function, which is binding under `REQ-FN-032`.
 
 ### Function Composition (`comp`) & Multi-Source `map`
 
 λ REQ-FN-032(x).
-  ∀ `map`: accepts its transforming function as the first argument, followed by one or more compatible source collections
-  ∧ ∀ multi-source `map`: invokes the function with corresponding values from the source collections according to its documented termination and capacity policy
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  ∀ `map`: accepts its transforming function as the first argument, followed by one or more compatible sources
+  ∧ ∀ source: admitted exactly when it is a cljonic source (a Vector, Map, Set, Queue, or String collection, or a Range, Repeat, Cycle, Iterate, or Repeatedly producer) ∧ ∀ standard-library range ∨ container ∨ non-cljonic source: rejected at compile time
+  ∧ ∀ `map(f, source)`: returns a bounded owning Vector whose element type is the function's result type over one source element ∧ whose logical elements are `f` applied to each source element in traversal order
+  ∧ ∀ multi-source `map(f, source₁, …, sourceₙ)`: invokes `f` with one corresponding element from each source per step ∧ terminates when the first source is exhausted ∧ returns a bounded owning Vector of the successive `f` results in step order
+  ∧ ∀ result capacity: a compile-time minimum over sources of each source's observable-count bound, where a collection contributes its declared capacity ∧ any producer contributes the configured observable traversal cap ∧ each contribution saturated at `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE` ∧ the statically derived capacity failing that bound: fails at compile time
+  ∧ ∀ runtime mapped element count: the minimum of the sources' effective counts, where a collection contributes its element count ∧ a finite producer contributes its count ∧ an unbounded producer contributes the configured observable traversal cap
+  ∧ ∀ callback `f`: copy-constructible ∧ invoked without throwing with one argument per source (a unary function over one source, a binary function over two sources, and so on) ∧ returns a storable element result satisfying the no-throwing element contract ∧ ∀ callback that can throw ∨ whose result cannot be stored: rejected at compile time
+  ∧ ∀ callback parameter position: the declared parameter type accepts the corresponding source element type only through a safe implicit conversion — an identical type ∨ a value-preserving arithmetic conversion per the implicit-conversion rules ∧ ∀ narrowing conversion (for example `long` to `int` ∨ `double` to `float`) ∧ ∀ crossing into ∨ out of the Boolean, character, enumeration, pointer, or user-defined domains: rejected at compile time
+  ∧ ∀ callback whose parameter types are not statically inspectable (a generic lambda ∨ a templated `operator()`): the safe-conversion rule cannot be evaluated ∧ such a callback is admitted only when the per-position argument correspondence is nothrow-invocable, and the inspectable-parameter rule applies whenever the parameter types are statically known
+  ∧ ∀ Map ∨ Set source: traversal order is semantically unordered ∧ the mapped result order carries no semantic significance
+  ∧ ∀ `map` operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ preserves every source value ∧ compile-time domain gating with targeted rejection diagnostics naming `map` and its supported domains
+  rationale: the human approved activating the variadic multi-source `map` free function on 2026-10-31 with a bounded owning Vector result, min-source capacity derivation saturated at the collection maximum, nothrow-invocable callbacks, and the cljonic-source domain, mirroring Clojure's termination and multi-source arity shape within the materialization-first model; the human further approved on 2026-10-31 that callback parameter conversion follows the library's safe implicit-conversion policy (narrowing and domain-crossing conversions rejected) rather than unrestricted overload resolution, with uninspectable callables falling back to nothrow invocability
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: origin_artifact}
 
 λ REQ-FN-033(x).
   ∀ `comp`: accepts zero or more compatible element functions ∧ composes them into one callable value
@@ -42,4 +52,4 @@ This module records future higher-order sequence transformation requirements and
 ## Traceability and Related Requirements
 
 - **Downstream Artifact**: Free-function templates for sequence shaping, slicing, filtering, mapping, grouping, and ordering.
-- **Governed REQs**: `REQ-SEQ-022`, `REQ-FN-032`, `REQ-FN-033`.
+- **Governed REQs**: `REQ-SEQ-022`, `REQ-FN-032` (binding), `REQ-FN-033` (deferred).
