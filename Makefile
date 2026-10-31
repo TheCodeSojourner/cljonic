@@ -31,6 +31,7 @@ COMPILE_FAIL_TARGETS = \
 	range-compile-fail \
 	variant-compile-fail \
 	equal-compile-fail \
+	map-compile-fail \
 	not-equal-compile-fail \
 	assoc-compile-fail \
 	can-assoc-compile-fail \
@@ -56,7 +57,7 @@ GIT_INDEPENDENT_CHECKS = lint-check complexity-cli header-guards diagnostic-cove
 .PHONY: compile-fail compile-fail-registry
 .PHONY: distclean
 .PHONY: _git-preflight _git-prepare _git-checks _git-sanitizer _git-coverage _git-no-heap _git-probe
-.PHONY: help all test clean configure coverage coverage-cli sanitizer sanitizer-cli complexity complexity-cli format format-doc-samples core-cheatsheet-format docs-examples lint no-heap-src no-heap-symbols no-heap range-compile-fail variant-compile-fail equal-compile-fail not-equal-compile-fail assoc-compile-fail can-assoc-compile-fail can-conj-compile-fail conj-compile-fail character-is-valid-compile-fail primitive-compile-fail source-construction-compile-fail producer-compile-fail ctad-compile-fail vector-factory-compile-fail hash-map-factory-compile-fail map-entry-factory-compile-fail hash-set-factory-compile-fail queue-factory-compile-fail string-factory-compile-fail header-guards diagnostic-coverage diagnostic-message-labels requirements-structure vocabulary-structure audit-scripts trace-id-check _traceability-obligation-ids-current _traceability-test-ids-current traceability-spec-to-code traceability-spec-to-code-update-snapshot traceability-category-report upsert-fast upsert-gate-fast upsert-gate upsert-gate-strict docs git validate cljonic cljonic-test
+.PHONY: help all test clean configure coverage coverage-cli sanitizer sanitizer-cli complexity complexity-cli format format-doc-samples core-cheatsheet-format docs-examples lint no-heap-src no-heap-symbols no-heap range-compile-fail variant-compile-fail equal-compile-fail map-compile-fail not-equal-compile-fail assoc-compile-fail can-assoc-compile-fail can-conj-compile-fail conj-compile-fail character-is-valid-compile-fail primitive-compile-fail source-construction-compile-fail producer-compile-fail ctad-compile-fail vector-factory-compile-fail hash-map-factory-compile-fail map-entry-factory-compile-fail hash-set-factory-compile-fail queue-factory-compile-fail string-factory-compile-fail header-guards diagnostic-coverage diagnostic-message-labels requirements-structure vocabulary-structure audit-scripts trace-id-check _traceability-obligation-ids-current _traceability-test-ids-current traceability-spec-to-code traceability-spec-to-code-update-snapshot traceability-category-report upsert-fast upsert-gate-fast upsert-gate upsert-gate-strict docs git validate cljonic cljonic-test
 
 help:
 	@printf '%-12s %s\n' 'all' 'Incremental parallel build and test run'
@@ -104,6 +105,7 @@ help:
 	@printf '%-12s %s\n' 'queue-factory-compile-fail' 'Verify queue factory admission, capacity bounds, and targeted rejection diagnostics'
 	@printf '%-12s %s\n' 'string-factory-compile-fail' 'Verify string factory admission, capacity bounds, and targeted rejection diagnostics'
 	@printf '%-12s %s\n' 'map-entry-factory-compile-fail' 'Verify map_entry factory arity, element admission, and targeted rejection diagnostics'
+	@printf '%-12s %s\n' 'map-compile-fail' 'Verify map source, callback, and result admission with targeted rejection diagnostics'
 	@printf '%-12s %s\n' 'ctad-compile-fail' 'Verify out-of-domain Range deduction fails with one labeled REQ-DIAG-012 message'
 	@printf '%-12s %s\n' 'test' 'Incremental parallel rebuild and modular/generated parallel test run'
 	@printf '%-12s %s\n' 'traceability-category-report' 'Non-blocking obligation-family diagnostics from snapshot vs test TRACE_ID coverage'
@@ -206,6 +208,9 @@ equal-compile-fail: cljonic scripts/check-equal-compile-failures.py
 
 not-equal-compile-fail: cljonic scripts/check-not-equal-compile-failures.py
 	@python3 scripts/check-not-equal-compile-failures.py
+
+map-compile-fail: cljonic scripts/check-map-compile-failures.py
+	@python3 scripts/check-map-compile-failures.py
 
 assoc-compile-fail: cljonic scripts/check-assoc-compile-failures.py
 	@python3 scripts/check-assoc-compile-failures.py
@@ -470,6 +475,7 @@ upsert-gate:
 	@$(MAKE) --no-print-directory -s variant-compile-fail
 	@$(MAKE) --no-print-directory -s equal-compile-fail
 	@$(MAKE) --no-print-directory -s not-equal-compile-fail
+	@$(MAKE) --no-print-directory -s map-compile-fail
 	@$(MAKE) --no-print-directory -s assoc-compile-fail
 	@$(MAKE) --no-print-directory -s can-assoc-compile-fail
 	@$(MAKE) --no-print-directory -s primitive-compile-fail
@@ -519,6 +525,7 @@ validate:
 	@$(MAKE) --no-print-directory -s variant-compile-fail
 	@$(MAKE) --no-print-directory -s equal-compile-fail
 	@$(MAKE) --no-print-directory -s not-equal-compile-fail
+	@$(MAKE) --no-print-directory -s map-compile-fail
 	@$(MAKE) --no-print-directory -s assoc-compile-fail
 	@$(MAKE) --no-print-directory -s can-assoc-compile-fail
 	@$(MAKE) --no-print-directory -s primitive-compile-fail
