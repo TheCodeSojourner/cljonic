@@ -402,6 +402,12 @@ requires ( sizeof...(Args) == 2U &amp;&amp; concepts_detail::MapEntryFactoryElem
 &lt; <a class="el" href="namespacecljonic_1_1concepts__detail.html#a0c4856675ca54bc133c73838d249b745">concepts_detail::map_entry_factory_key_type_t</a>&lt;RequestedKeyType, RequestedValueType, Args...&gt;,<br class="typebreak" />
  <a class="el" href="namespacecljonic_1_1concepts__detail.html#a18e5a109e7c1975cc241e98324f9098f">concepts_detail::map_entry_factory_value_type_t</a>&lt;RequestedKeyType, RequestedValueType, Args...&gt;, Args...&gt;)</td></tr>
 <tr class="memitem:ad3a7df452955035736e3f2fb14e1622b template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#ad3a7df452955035736e3f2fb14e1622b">map_entry</a> (Args &amp;&amp;... args) noexcept -&gt; void</td></tr>
+<tr class="memitem:a72a6c4be35095c2de7761f8b06dcc60a" id="r_a72a6c4be35095c2de7761f8b06dcc60a"><td class="memTemplParams" colspan="2">template&lt;typename F, typename... Sources&gt; <br />
+requires concepts_detail::MapCallable&lt;F, Sources...&gt;</td></tr>
+<tr class="memitem:a72a6c4be35095c2de7761f8b06dcc60a template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a72a6c4be35095c2de7761f8b06dcc60a">map</a> (const F &amp;function, const Sources &amp;... sources) noexcept -&gt; <a class="el" href="classcljonic_1_1_vector.html">Vector</a>&lt; <a class="el" href="namespacecljonic_1_1concepts__detail.html#acd03078ebbd961d98d7a20eccc2fec71">concepts_detail::MapResultType</a>&lt; F, Sources... &gt;, <a class="el" href="namespacecljonic_1_1concepts__detail.html#a7170435d41687410eef0a49fdcd5be4c">concepts_detail::MapResultCapacity</a>&lt; Sources... &gt; &gt;</td></tr>
+<tr class="memitem:aeeaa88d7f4da8485832fccaa88ba43fb" id="r_aeeaa88d7f4da8485832fccaa88ba43fb"><td class="memTemplParams" colspan="2">template&lt;typename F, typename... Sources&gt; <br />
+requires (!concepts_detail::MapCallable&lt;F, Sources...&gt;)</td></tr>
+<tr class="memitem:aeeaa88d7f4da8485832fccaa88ba43fb template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#aeeaa88d7f4da8485832fccaa88ba43fb">map</a> (const F &amp;function, const Sources &amp;... sources) noexcept -&gt; void</td></tr>
 <tr class="memitem:a3d0418044393656d692cccbab2756b80" id="r_a3d0418044393656d692cccbab2756b80"><td class="memTemplParams" colspan="2">template&lt;typename KeyType, typename ValueType, typename... Rest&gt; </td></tr>
 <tr class="memitem:a3d0418044393656d692cccbab2756b80 template"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a3d0418044393656d692cccbab2756b80">Map</a> (<a class="el" href="structcljonic_1_1_map_entry.html">MapEntry</a>&lt; KeyType, ValueType &gt;, Rest...) -&gt; Map&lt; KeyType, ValueType, 1+sizeof...(Rest)&gt;</td></tr>
 <tr class="memitem:a95868dde22b2951086145a4881852d69" id="r_a95868dde22b2951086145a4881852d69"><td class="memTemplParams" colspan="2">template&lt;typename KeyType, typename ValueType, std::size_t Extent&gt; <br />
@@ -2526,7 +2532,7 @@ requires concepts_detail::DisjAdmissible&lt;C, Values...&gt;</div>
 <div class="line"> </div>
 <div class="line">  <span class="keywordflow">return</span> (!<a class="code hl_function" href="#a5b8275162678a23d519d3711df6d9a2b">contains</a>(s1_runtime, 99) &amp;&amp; <a class="code hl_function" href="#acc881adb41275d2d6cb0aed6b943ad5b">is_empty</a>(s1_runtime)) ? 0 : 1;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_html_a3379aa2a8b5ffa4566662c4b4a1455c2"><div class="ttname"><a href="#a3379aa2a8b5ffa4566662c4b4a1455c2">cljonic::equal</a></div><div class="ttdeci">constexpr auto equal(const Lhs &amp;lhs, const Rhs &amp;rhs) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-equal_8hpp_source.html#l00304">cljonic-equal.hpp:304</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a3379aa2a8b5ffa4566662c4b4a1455c2"><div class="ttname"><a href="#a3379aa2a8b5ffa4566662c4b4a1455c2">cljonic::equal</a></div><div class="ttdeci">constexpr auto equal(const Lhs &amp;lhs, const Rhs &amp;rhs) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-equal_8hpp_source.html#l00345">cljonic-equal.hpp:345</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a523eadba6652db67d95d3e910ec80008"><div class="ttname"><a href="#a523eadba6652db67d95d3e910ec80008">cljonic::disj</a></div><div class="ttdeci">constexpr auto disj(const C &amp;collection, const Values &amp;... values) noexcept -&gt; C</div><div class="ttdef"><b>Definition</b> <a href="cljonic-disj_8hpp_source.html#l00052">cljonic-disj.hpp:52</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_acc881adb41275d2d6cb0aed6b943ad5b"><div class="ttname"><a href="#acc881adb41275d2d6cb0aed6b943ad5b">cljonic::is_empty</a></div><div class="ttdeci">constexpr auto is_empty(const C &amp;collection) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-is-empty_8hpp_source.html#l00052">cljonic-is-empty.hpp:52</a></div></div>
 </div><!-- fragment --> 
@@ -2968,7 +2974,7 @@ requires (!concepts_detail::EqualPairAdmissible&lt;Lhs, Rhs&gt;)</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00369">369</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00410">410</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
 
 </div>
 </div>
@@ -3002,7 +3008,7 @@ requires concepts_detail::EqualSetPairAdmissible&lt;Lhs, Rhs&gt;</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00331">331</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00372">372</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
 
 </div>
 </div>
@@ -3036,7 +3042,7 @@ requires concepts_detail::EqualMapPairAdmissible&lt;Lhs, Rhs&gt;</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00322">322</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00363">363</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
 
 </div>
 </div>
@@ -3070,7 +3076,7 @@ requires concepts_detail::EqualStringPairAdmissible&lt;Lhs, Rhs&gt;</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00316">316</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00357">357</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
 
 </div>
 </div>
@@ -3104,7 +3110,7 @@ requires concepts_detail::EqualSequentialPairAdmissible&lt;Lhs, Rhs&gt;</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00310">310</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00351">351</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
 
 </div>
 </div>
@@ -3141,19 +3147,29 @@ requires concepts_detail::EqualScalarPairAdmissible&lt;Lhs, Rhs&gt;</div>
 <p><b>Equal</b> compares values by their contents:</p>
 <ul>
 <li>Calling <span class="tt"><a class="el" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a></span> with one value always returns true.</li>
-<li>Two ordinary values compare equal when they are the same type and compare equal with <span class="tt">==</span> (e.g., <span class="tt">int</span>, a scoped enum, or a simple struct with an explicit or defaulted <span class="tt">operator==</span>). The comparison must not throw, so a type whose <span class="tt">==</span> can throw is not supported; pointers and unscoped enums are not supported either.</li>
+<li><p class="startli">Two ordinary values compare equal when they are the same type, or types that convert safely to one another, and compare equal with <span class="tt">==</span> (e.g., <span class="tt">int</span>, a scoped enum, or a user-defined class with an explicit or defaulted <span class="tt">operator==</span>). <span class="tt">int</span> and <span class="tt">long</span> compare equal when they hold the same number, because a safe conversion never changes a value; comparing a signed value against an unsigned one, or a character against a number, is not supported. The comparison must not throw, so a type whose <span class="tt">==</span> can throw is not supported; pointers and unscoped enums are not supported either.</p>
+<p class="startli">A user-defined class states its own equality contract, and the library never inspects its members: whether it is a plain aggregate struct or a class with its own constructors, it is supported when <span class="tt">==</span> cannot throw. The library makes no claim about whether that <span class="tt">==</span> is correct, including for floating-point members. A non-aggregate class is supported on the same terms that admit it as a map key or a set element.</p>
+</li>
 <li><a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vectors</a> and <a class="el" href="classcljonic_1_1_queue.html#Queue" title="Queue">Queues</a> compare equal when they contain the same elements in the same order; producers (<a class="el" href="classcljonic_1_1_range.html#Range" title="Range">Ranges</a>, <a class="el" href="classcljonic_1_1_repeat.html#Repeat" title="Repeat">Repeats</a>, <a class="el" href="classcljonic_1_1_cycle.html#Cycle" title="Cycle">Cycles</a>, <a class="el" href="classcljonic_1_1_iterate.html#Iterate" title="Iterate">Iterate</a>, and <a class="el" href="classcljonic_1_1_repeatedly.html#Repeatedly" title="Repeatedly">Repeatedly</a>) compare equal when they produce the same elements in the same order. When comparing producers, at most <b>CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</b> elements are compared, so this also works for two unbounded producers.</li>
 <li><a class="el" href="classcljonic_1_1_map.html#Map" title="Map">Maps</a> compare equal when they hold the same entries, regardless of insertion order.</li>
 <li><a class="el" href="classcljonic_1_1_set.html#Set" title="Set">Sets</a> compare equal when they hold the same elements, regardless of insertion order.</li>
 <li><a class="el" href="classcljonic_1_1_string.html#String" title="String">Strings</a> compare equal when they hold the same characters.</li>
 </ul>
-<p>Compared collections and sets must have matching element types, and compared maps must have matching key and value types. Collections are never compared to ordinary values. Values that cannot be compared stably, such as floating-point numbers, are not supported.</p>
+<p>Compared collections and sets must have element types that are the same or convert safely to one another, and compared maps must have matching key and value types. Collections are never compared to ordinary values. Values that cannot be compared stably, such as floating-point numbers, are not supported.</p>
 <p><a class="el" href="classcljonic_1_1_iterate.html#Iterate" title="Iterate">Iterate</a> and <a class="el" href="classcljonic_1_1_repeatedly.html#Repeatedly" title="Repeatedly">Repeatedly</a> values cannot be compared stably because their step is a callable, so they are not supported as map keys, set elements, or nested components. Standard-library range and container types are not supported at any depth.</p>
 <p>Nested collections and composite values compare by the same rules; a nested producer that admits stable equality is compared by its stored parameters.</p>
 <p>With more than two arguments, every adjacent pair is compared, from left to right, stopping at the first unequal pair.</p>
 <p><b>Examples</b> </p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">struct </span>Point {</div>
+<div class="line">  <span class="keywordtype">int</span> x;</div>
+<div class="line">  <span class="keywordtype">int</span> y;</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> operator==(<span class="keyword">const</span> Point &amp;other) <span class="keyword">const</span> <span class="keyword">noexcept</span> -&gt; <span class="keywordtype">bool</span> {</div>
+<div class="line">    <span class="keywordflow">return</span> x == other.x &amp;&amp; y == other.y;</div>
+<div class="line">  }</div>
+<div class="line">};</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main() {</div>
 <div class="line">  <span class="comment">// Compile-time demonstration.</span></div>
@@ -3174,8 +3190,12 @@ requires concepts_detail::EqualScalarPairAdmissible&lt;Lhs, Rhs&gt;</div>
 <div class="line">  <span class="keyword">static_assert</span>(!<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(1, 2, 1)); <span class="comment">// stops at the first unequal pair</span></div>
 <div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(v, r, q));  <span class="comment">// Vector, Range, and Queue with the</span></div>
 <div class="line">                                  <span class="comment">// same elements compare equal</span></div>
-<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(v, r));     <span class="comment">// Vector vs Range</span></div>
-<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(v, q));     <span class="comment">// Vector vs Queue</span></div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(Point{1, 2}, Point{1, 2})); <span class="comment">// user-defined class</span></div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(1, 1L)); <span class="comment">// int and long compare through a safe</span></div>
+<div class="line">                               <span class="comment">// conversion to the wider type</span></div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(<a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(1, 2), <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector&lt;long, 2&gt;</a>(1L, 2L)));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(v, r)); <span class="comment">// Vector vs Range</span></div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(v, q)); <span class="comment">// Vector vs Queue</span></div>
 <div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(<a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(1, 1, 1), rep));</div>
 <div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(m1, m2));     <span class="comment">// Map equality ignores entry order</span></div>
 <div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(s1, s2));     <span class="comment">// Set equality ignores element order</span></div>
@@ -3196,7 +3216,7 @@ requires concepts_detail::EqualScalarPairAdmissible&lt;Lhs, Rhs&gt;</div>
 <div class="line">}</div>
 <div class="ttc" id="aclasscljonic_1_1_variant_html"><div class="ttname"><a href="classcljonic_1_1_variant.html">cljonic::Variant</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-variant_8hpp_source.html#l00130">cljonic-variant.hpp:130</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00304">304</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00345">345</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
 
 </div>
 </div>
@@ -3235,7 +3255,7 @@ requires ((sizeof...(Rest) &gt;= 1) &amp;&amp; (!<a class="el" href="namespacecl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00381">381</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00424">424</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
 
 </div>
 </div>
@@ -3274,7 +3294,7 @@ requires ((sizeof...(Rest) &gt;= 1) &amp;&amp; <a class="el" href="namespacecljo
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00346">346</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00387">387</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
 
 </div>
 </div>
@@ -3304,7 +3324,7 @@ requires (!concepts_detail::EqualPairAdmissible&lt;T, T&gt;)</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00359">359</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00400">400</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
 
 </div>
 </div>
@@ -3334,7 +3354,7 @@ requires concepts_detail::EqualPairAdmissible&lt;T, T&gt;</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00340">340</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00381">381</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
 
 </div>
 </div>
@@ -4876,6 +4896,130 @@ requires (Extent != std::dynamic_extent)</div>
 
 </div>
 </div>
+<a id="a72a6c4be35095c2de7761f8b06dcc60a" name="a72a6c4be35095c2de7761f8b06dcc60a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72a6c4be35095c2de7761f8b06dcc60a">&#9670;&#160;</a></span>map() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F, typename... Sources&gt; <br />
+requires concepts_detail::MapCallable&lt;F, Sources...&gt;</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::map </td>
+          <td>(</td>
+          <td class="paramtype">const F &amp;</td>          <td class="paramname"><span class="paramname"><em>function</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Sources &amp;...</td>          <td class="paramname"><span class="paramname"><em>sources</em></span>&#160;) -&gt; <a class="el" href="classcljonic_1_1_vector.html">Vector</a>&lt; <a class="el" href="namespacecljonic_1_1concepts__detail.html#acd03078ebbd961d98d7a20eccc2fec71">concepts_detail::MapResultType</a>&lt; F, Sources... &gt;, <a class="el" href="namespacecljonic_1_1concepts__detail.html#a7170435d41687410eef0a49fdcd5be4c">concepts_detail::MapResultCapacity</a>&lt; Sources... &gt; &gt;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="anchor" id="MapFunction"></a> The <b>map</b> free function applies its transforming function to corresponding elements of one or more cljonic sources. The function is the first argument, followed by one or more sources: a <a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vector</a>, <a class="el" href="classcljonic_1_1_map.html#Map" title="Map">Map</a>, <a class="el" href="classcljonic_1_1_set.html#Set" title="Set">Set</a>, <a class="el" href="classcljonic_1_1_queue.html#Queue" title="Queue">Queue</a>, or <a class="el" href="classcljonic_1_1_string.html#String" title="String">String</a> collection, or a <a class="el" href="classcljonic_1_1_range.html#Range" title="Range">Range</a>, <a class="el" href="classcljonic_1_1_repeat.html#Repeat" title="Repeat">Repeat</a>, <a class="el" href="classcljonic_1_1_cycle.html#Cycle" title="Cycle">Cycle</a>, <a class="el" href="classcljonic_1_1_iterate.html#Iterate" title="Iterate">Iterate</a>, or <a class="el" href="classcljonic_1_1_repeatedly.html#Repeatedly" title="Repeatedly">Repeatedly</a> producer. A unary function is applied over one source, a binary function over two sources, and so on; traversal terminates when the first source is exhausted. <a class="el" href="classcljonic_1_1_map.html">Map</a> and <a class="el" href="classcljonic_1_1_set.html">Set</a> traversal order is not semantically significant, so the mapped result order carries no semantic significance for those sources.</p>
+<p>The result is a bounded owning <a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vector</a> of the function results. Its capacity is the compile-time minimum of the sources' observable-count bounds: a collection contributes its declared capacity and any producer contributes the configured observable traversal cap, every contribution saturated at CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE. The runtime number of mapped elements is the minimum of the sources' effective counts: a collection contributes its element count, a finite producer its count, and an unbounded producer its configured observable traversal cap. Every source value is preserved.</p>
+<p>The transforming function must be copy-constructible, invoked without throwing with one argument per source, and return a storable element result. Each parameter must accept the corresponding source element through a safe implicit conversion: an identical type, or a value-preserving arithmetic conversion such as <span class="tt">int</span> to <span class="tt">long</span>. A narrowing conversion such as <span class="tt">long</span> to <span class="tt">int</span>, and any conversion that crosses the Boolean, character, enumeration, pointer, or user-defined domains, is rejected at compile time. A callback whose parameter types are not statically inspectable &ndash; a generic lambda, or a class with a templated <span class="tt">operator()</span> &ndash; is admitted on nothrow invocation alone. Standard-library ranges and containers, functions that can throw, and results that cannot be stored are rejected at compile time.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">  <span class="comment">// Compile-time demonstration.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> inc = [](<span class="keywordtype">int</span> value) <span class="keyword">noexcept</span> { <span class="keywordflow">return</span> value + 1; };</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> add = [](<span class="keywordtype">int</span> lhs, <span class="keywordtype">int</span> rhs) <span class="keyword">noexcept</span> { <span class="keywordflow">return</span> lhs + rhs; };</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> v = <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(1, 2, 3);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> singles = <a class="code hl_function" href="#a72a6c4be35095c2de7761f8b06dcc60a">map</a>(inc, v);</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(singles, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(2, 3, 4)));</div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> r = <a class="code hl_class" href="classcljonic_1_1_range.html">Range</a>{1, 4, 1}; <span class="comment">// produces 1, 2, 3</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> q = <a class="code hl_function" href="#a2693300957a43d0bb2d4c29634a838f7">queue</a>(10, 20, 30, 40);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> pairs = <a class="code hl_function" href="#a72a6c4be35095c2de7761f8b06dcc60a">map</a>(add, v, q); <span class="comment">// terminates at the shorter source</span></div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(pairs, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(11, 22, 33)));</div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> triple = [](<span class="keywordtype">int</span> a, <span class="keywordtype">int</span> b, <span class="keywordtype">int</span> c) <span class="keyword">noexcept</span> {</div>
+<div class="line">    <span class="keywordflow">return</span> a + b + c;</div>
+<div class="line">  };</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> triples = <a class="code hl_function" href="#a72a6c4be35095c2de7761f8b06dcc60a">map</a>(triple, v, r, <a class="code hl_function" href="#af31c4c3eb2e82ffcc9d64da7ea5ca8bc">repeat</a>(2, 100));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(triples, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(102, 104)));</div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> over_producer = <a class="code hl_function" href="#a72a6c4be35095c2de7761f8b06dcc60a">map</a>(inc, <a class="code hl_function" href="#af31c4c3eb2e82ffcc9d64da7ea5ca8bc">repeat</a>(3, 7));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(over_producer, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(8, 8, 8)));</div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> entry_value = [](<span class="keyword">const</span> <span class="keyword">auto</span> &amp;entry) <span class="keyword">noexcept</span> {</div>
+<div class="line">    <span class="keywordflow">return</span> entry.value;</div>
+<div class="line">  };</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> over_map = <a class="code hl_function" href="#a72a6c4be35095c2de7761f8b06dcc60a">map</a>(entry_value, <a class="code hl_function" href="#a2aa4197e029c665443f7f5d0ebcf61d8">hash_map</a>(1, 10, 2, 20));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(over_map, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(10, 20)) ||</div>
+<div class="line">                <a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(over_map, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(20, 10))); <span class="comment">// Map order is unordered</span></div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> next_char = [](<span class="keywordtype">char</span> c) <span class="keyword">noexcept</span> {</div>
+<div class="line">    <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(c + 1);</div>
+<div class="line">  };</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> over_string = <a class="code hl_function" href="#a72a6c4be35095c2de7761f8b06dcc60a">map</a>(next_char, <a class="code hl_function" href="#aac92eb77175a67beb451582c5786027e">string&lt;4&gt;</a>(<span class="stringliteral">&quot;abc&quot;</span>));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(over_string, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(<span class="charliteral">&#39;b&#39;</span>, <span class="charliteral">&#39;c&#39;</span>, <span class="charliteral">&#39;d&#39;</span>)));</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// Runtime demonstration.</span></div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_base = 1;</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_v =</div>
+<div class="line">      <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(runtime_base, runtime_base + 1, runtime_base + 2);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_q = <a class="code hl_function" href="#a2693300957a43d0bb2d4c29634a838f7">queue</a>(runtime_base * 10, (runtime_base + 1) * 10,</div>
+<div class="line">                               (runtime_base + 2) * 10);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_pairs = <a class="code hl_function" href="#a72a6c4be35095c2de7761f8b06dcc60a">map</a>(add, runtime_v, runtime_q);</div>
+<div class="line"> </div>
+<div class="line">  <span class="keywordflow">return</span> (<a class="code hl_function" href="#af5da07418b370bc5072eacf31957e0ee">count</a>(runtime_pairs) == 3 &amp;&amp; runtime_pairs(0) == 11 &amp;&amp;</div>
+<div class="line">          runtime_pairs(1) == 22 &amp;&amp; runtime_pairs(2) == 33)</div>
+<div class="line">             ? 0</div>
+<div class="line">             : 1;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacecljonic_html_a72a6c4be35095c2de7761f8b06dcc60a"><div class="ttname"><a href="#a72a6c4be35095c2de7761f8b06dcc60a">cljonic::map</a></div><div class="ttdeci">constexpr auto map(const F &amp;function, const Sources &amp;... sources) noexcept -&gt; Vector&lt; concepts_detail::MapResultType&lt; F, Sources... &gt;, concepts_detail::MapResultCapacity&lt; Sources... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-map-function_8hpp_source.html#l00212">cljonic-map-function.hpp:212</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_af31c4c3eb2e82ffcc9d64da7ea5ca8bc"><div class="ttname"><a href="#af31c4c3eb2e82ffcc9d64da7ea5ca8bc">cljonic::repeat</a></div><div class="ttdeci">constexpr auto repeat(T &amp;&amp;value) noexcept -&gt; Repeat&lt; std::remove_cvref_t&lt; T &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00248">cljonic-repeat.hpp:248</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-map-function_8hpp_source.html#l00212">212</a> of file <a class="el" href="cljonic-map-function_8hpp_source.html">cljonic-map-function.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aeeaa88d7f4da8485832fccaa88ba43fb" name="aeeaa88d7f4da8485832fccaa88ba43fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeeaa88d7f4da8485832fccaa88ba43fb">&#9670;&#160;</a></span>map() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F, typename... Sources&gt; <br />
+requires (!concepts_detail::MapCallable&lt;F, Sources...&gt;)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::map </td>
+          <td>(</td>
+          <td class="paramtype">const F &amp;</td>          <td class="paramname"><span class="paramname"><em>function</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Sources &amp;...</td>          <td class="paramname"><span class="paramname"><em>sources</em></span>&#160;) -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-map-function_8hpp_source.html#l00235">235</a> of file <a class="el" href="cljonic-map-function_8hpp_source.html">cljonic-map-function.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a0276d2cc4a963af9ddbc2ad7aa6ac4f0" name="a0276d2cc4a963af9ddbc2ad7aa6ac4f0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0276d2cc4a963af9ddbc2ad7aa6ac4f0">&#9670;&#160;</a></span>map_entry() <span class="overload">[1/4]</span></h2>
 
@@ -5074,11 +5218,11 @@ template&lt;concepts_detail::NextSequenceableCollection C&gt; </div>
 <div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#af5da07418b370bc5072eacf31957e0ee">count</a>(vector_tail) == 2);</div>
 <div class="line">  <span class="keyword">static_assert</span>(vector_tail(0) == 20 &amp;&amp; vector_tail(1) == 30);</div>
 <div class="line"> </div>
-<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> map = <a class="code hl_function" href="#a2aa4197e029c665443f7f5d0ebcf61d8">hash_map</a>(1, 100, 2, 200);</div>
-<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> map_tail = <a class="code hl_function" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a>(map);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="#a72a6c4be35095c2de7761f8b06dcc60a">map</a> = <a class="code hl_function" href="#a2aa4197e029c665443f7f5d0ebcf61d8">hash_map</a>(1, 100, 2, 200);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> map_tail = <a class="code hl_function" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a>(<a class="code hl_function" href="#a72a6c4be35095c2de7761f8b06dcc60a">map</a>);</div>
 <div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#af5da07418b370bc5072eacf31957e0ee">count</a>(map_tail) == 1);</div>
 <div class="line">  <span class="comment">// The entry dropped by next is the first one in traversal order.</span></div>
-<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> dropped_key = <a class="code hl_function" href="#af6ac025d9f9bb2d29bcf7442c05b17e0">first</a>(<a class="code hl_function" href="#af6ac025d9f9bb2d29bcf7442c05b17e0">first</a>(map));</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> dropped_key = <a class="code hl_function" href="#af6ac025d9f9bb2d29bcf7442c05b17e0">first</a>(<a class="code hl_function" href="#af6ac025d9f9bb2d29bcf7442c05b17e0">first</a>(<a class="code hl_function" href="#a72a6c4be35095c2de7761f8b06dcc60a">map</a>));</div>
 <div class="line">  <span class="keyword">static_assert</span>(!<a class="code hl_function" href="#a5b8275162678a23d519d3711df6d9a2b">contains</a>(map_tail, dropped_key));</div>
 <div class="line"> </div>
 <div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> set = <a class="code hl_function" href="#ab920b6f72a40bc9c9d4b1c69662e149e">hash_set</a>(10, 20, 30);</div>
@@ -5191,7 +5335,6 @@ template&lt;concepts_detail::NextSequenceableCollection C&gt; </div>
 <div class="ttc" id="anamespacecljonic_html_a63b0a319ce6349c3b49b17b3ab5db240"><div class="ttname"><a href="#a63b0a319ce6349c3b49b17b3ab5db240">cljonic::cycle</a></div><div class="ttdeci">constexpr auto cycle(const Source &amp;source) noexcept -&gt; Cycle&lt; Source &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-cycle_8hpp_source.html#l00243">cljonic-cycle.hpp:243</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_accdefad78fa9bf05274fc5d2bbf48983"><div class="ttname"><a href="#accdefad78fa9bf05274fc5d2bbf48983">cljonic::next</a></div><div class="ttdeci">constexpr auto next(const C &amp;collection) noexcept -&gt; concepts_detail::NextResult&lt; C &gt;::type</div><div class="ttdef"><b>Definition</b> <a href="cljonic-next_8hpp_source.html#l00350">cljonic-next.hpp:350</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_ada46d509c8f0d0124e524878e323c208"><div class="ttname"><a href="#ada46d509c8f0d0124e524878e323c208">cljonic::repeatedly</a></div><div class="ttdeci">constexpr auto repeatedly(Step &amp;&amp;step) noexcept -&gt; Repeatedly&lt; T, std::decay_t&lt; Step &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeatedly_8hpp_source.html#l00271">cljonic-repeatedly.hpp:271</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_af31c4c3eb2e82ffcc9d64da7ea5ca8bc"><div class="ttname"><a href="#af31c4c3eb2e82ffcc9d64da7ea5ca8bc">cljonic::repeat</a></div><div class="ttdeci">constexpr auto repeat(T &amp;&amp;value) noexcept -&gt; Repeat&lt; std::remove_cvref_t&lt; T &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00248">cljonic-repeat.hpp:248</a></div></div>
 </div><!-- fragment --> 
 <p class="definition">Definition at line <a class="el" href="cljonic-next_8hpp_source.html#l00350">350</a> of file <a class="el" href="cljonic-next_8hpp_source.html">cljonic-next.hpp</a>.</p>
 
@@ -5441,7 +5584,7 @@ requires ((sizeof...(Rest) &gt;= 1) &amp;&amp; (!<a class="el" href="namespacecl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-not-equal_8hpp_source.html#l00103">103</a> of file <a class="el" href="cljonic-not-equal_8hpp_source.html">cljonic-not-equal.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-not-equal_8hpp_source.html#l00104">104</a> of file <a class="el" href="cljonic-not-equal_8hpp_source.html">cljonic-not-equal.hpp</a>.</p>
 
 </div>
 </div>
@@ -5540,7 +5683,7 @@ requires concepts_detail::EqualPairAdmissible&lt;T, T&gt;</div>
 </table>
 </div><div class="memdoc">
 <p><a class="anchor" id="NotEqual"></a> The <b>not_equal</b> free function compares one or more values for inequality.</p>
-<p>It is the negation of <a class="el" href="#Equal" title="Equal">equal</a> and uses the same supported values and comparison rules. Calling <span class="tt"><a class="el" href="#a52f3ba9511cd0e5899669f9450adbdfb">not_equal</a></span> with one value returns false. With multiple values, it returns true when at least one adjacent pair is unequal.</p>
+<p>It is the negation of <a class="el" href="#Equal" title="Equal">equal</a> and uses the same supported values and comparison rules, including comparing ordinary values of the same type or of types that convert safely to one another. Calling <span class="tt"><a class="el" href="#a52f3ba9511cd0e5899669f9450adbdfb">not_equal</a></span> with one value returns false. With multiple values, it returns true when at least one adjacent pair is unequal.</p>
 <p><b>Examples</b> </p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
