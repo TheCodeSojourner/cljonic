@@ -144,4 +144,4 @@ This module specifies the checked fixed-width numeric contract, scalar compariso
 ## Traceability and Related Requirements
 
 - **Downstream Artifact**: Numeric functions, checked arithmetic helpers, bitwise functions, and callable builder adapters (`partial`, `juxt`, `fnil`, `complement`, `apply`).
-- **Governed REQs**: `REQ-NUM-000`–`017`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`.
+- **Governed REQs**: `REQ-NUM-000`–`019`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`.
