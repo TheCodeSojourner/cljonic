@@ -1,5 +1,32 @@
 ## Current Session State
 
+- last_session_id: 7c617293-129a-4244-99fa-9a7b1ece3333
+- current_timestamp: 2026-10-31T14:42:51-06:00
+- session_complete: true
+- recover: 1. Run `/cljonic-full-converge-auto` again only after new artifact changes; this session's full-repository convergence run left no unresolved divergences in its scope. 2. Three `requirements/` clauses (`REQ-CAP-014`, `REQ-NUM-018`, `REQ-NUM-019`) still carry `rationale_source: AI_inferred` without an explicit `rationale_approved_by: human` marker; resolving that needs human approval via `/gybis-req-tend` (a maintenance-run cannot grant it). 3. Thru-family work remains deferred by human instruction until the human says otherwise. 4. Architecture convention: embedded code snippets in architecture.md must mirror the shipped concept definitions (a drift there was the only arch-weed finding this session).
+
+Task:
+1. Ran `/gybis-init` orientation, then the human invoked `/cljonic-full-converge-auto` (whole-repository convergence, standing preapproval for listed passes and owning-skill repairs, no commit/stage/revert, aggregate gate `make upsert-gate-fast` only).
+2. Layer checks: requirements — one mechanical repair (module-6 `Governed REQs` footer omitted `REQ-NUM-018`/`REQ-NUM-019`; extended to `REQ-NUM-000`-`019`; `make requirements-structure` ok, 348 clauses); vocabulary PASS (200 terms, 0 issues); architecture PASS; specs PASS (allium check + analyse 49/49 files zero diagnostics/zero findings).
+3. Adjacent weeds: req-weed (requirements to vocabulary only) 0 findings; vocab-weed (vocabulary to architecture only) 0 findings; arch-weed (architecture to specifications only) 1 finding repaired — the `StableEqualityComparable` snippet in `architecture.md` omitted `concepts_detail::walker_coverage_ok_v<T>` required by spec invariant `NominalWalkerCoverageIsGated` and the shipped code; snippet plus explanatory comment updated. spec-weed (specifications to implementation/tests only) 0 findings.
+4. Evidence reconciliation: 2078 unique plan obligations across 49 spec files; 2068 TRACE_IDs in tests, zero extras; the 10 unmatched obligations belong to the deliberately deferred `VariantFreeFunctionApi` entity (`specs/capabilities/variant-api.allium`, `-- lifecycle: deferred` Slice B) which the traceability tooling excludes — correct by design. No-heap probes present for the equality, seq/rest, and producer families. Coverage table satisfied; no deficits.
+5. Validation: `make traceability-spec-to-code` ok, `make diagnostic-coverage` ok, full ctest 300/300, `make no-heap` ok, `make docs-examples` compiled=41 all ok, `make variant-compile-fail` and `make equal-compile-fail` ok, `make upsert-gate-fast` ok.
+6. The human committed the two repairs (a68dc47 requirements footer, bbbf5a5 architecture snippet) and regenerated docs (8fcf4fd).
+
+Questions:
+1. None blocking. The only open item is the AI_inferred rationale-approval marker question for the three 2026-10-31 human-decided clauses; it needs a human `/gybis-req-tend` decision, not a maintenance pass.
+
+Decisions:
+1. Human (2026-10-31, standing preapproval via `/cljonic-full-converge-auto`): maintenance convergence may apply owning-skill-recommended, identity-preserving, non-normative repairs without per-finding approval; normative changes and rationale-approval markers stay outside that authority.
+2. Human (2026-10-31): the three mechanical/doc repairs from this run were committed as a68dc47, bbbf5a5, and 8fcf4fd.
+
+Next:
+1. Thru-family work stays deferred until the human instructs otherwise; `clojure-thread-family-for-cpp.md` remains the handoff artifact.
+2. If the human wants the AI_inferred rationale markers regularized, run `/gybis-req-tend` on `REQ-CAP-014`, `REQ-NUM-018`, and `REQ-NUM-019`.
+3. Nothing else outstanding; the repository converged at 8fcf4fd with all gates green.
+
+## Current Session State
+
 - last_session_id: 01180c83-75cc-478f-8530-6fa2a2cc2fee
 - current_timestamp: 2026-10-31T14:21:41-06:00
 - session_complete: true
