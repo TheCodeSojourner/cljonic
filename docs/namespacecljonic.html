@@ -1454,7 +1454,7 @@ requires concepts::ConjableCollection&lt;C&gt;</div>
 <div class="line"> </div>
 <div class="line">  <span class="keywordflow">return</span> q_ok ? 0 : 1;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_html_a0276d2cc4a963af9ddbc2ad7aa6ac4f0"><div class="ttname"><a href="#a0276d2cc4a963af9ddbc2ad7aa6ac4f0">cljonic::map_entry</a></div><div class="ttdeci">constexpr auto map_entry(Args &amp;&amp;... args) noexcept -&gt; MapEntry&lt; concepts_detail::map_entry_factory_key_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, concepts_detail::map_entry_factory_value_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-map-entry_8hpp_source.html#l00167">cljonic-map-entry.hpp:167</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a0276d2cc4a963af9ddbc2ad7aa6ac4f0"><div class="ttname"><a href="#a0276d2cc4a963af9ddbc2ad7aa6ac4f0">cljonic::map_entry</a></div><div class="ttdeci">constexpr auto map_entry(Args &amp;&amp;... args) noexcept -&gt; MapEntry&lt; concepts_detail::map_entry_factory_key_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, concepts_detail::map_entry_factory_value_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-map-entry_8hpp_source.html#l00174">cljonic-map-entry.hpp:174</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a2693300957a43d0bb2d4c29634a838f7"><div class="ttname"><a href="#a2693300957a43d0bb2d4c29634a838f7">cljonic::queue</a></div><div class="ttdeci">constexpr auto queue(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::queue_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Queue&lt; concepts_detail::queue_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-queue_8hpp_source.html#l00330">cljonic-queue.hpp:330</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_aac92eb77175a67beb451582c5786027e"><div class="ttname"><a href="#aac92eb77175a67beb451582c5786027e">cljonic::string</a></div><div class="ttdeci">constexpr auto string(Literal &amp;&amp;literal) noexcept -&gt; String&lt; std::extent_v&lt; std::remove_cvref_t&lt; Literal &gt; &gt; - 1U &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-string_8hpp_source.html#l00432">cljonic-string.hpp:432</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_ab920b6f72a40bc9c9d4b1c69662e149e"><div class="ttname"><a href="#ab920b6f72a40bc9c9d4b1c69662e149e">cljonic::hash_set</a></div><div class="ttdeci">constexpr auto hash_set(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::hash_set_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Set&lt; concepts_detail::hash_set_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-set_8hpp_source.html#l00429">cljonic-set.hpp:429</a></div></div>
@@ -4908,7 +4908,7 @@ requires ( concepts_detail::MapEntryFactoryElementTypes&lt; <a class="el" href="
 <p><a class="anchor" id="MapEntryFactory"></a>Creates a <a class="el" href="structcljonic_1_1_map_entry.html#MapEntry" title="MapEntry">MapEntry</a> from exactly one key and one value.</p>
 <p>Deduced calls use the unqualified types of the key and value arguments. Explicit types use <code>map_entry&lt;Key</code>, Value&gt;(...). A <a class="el" href="structcljonic_1_1_map_entry.html">MapEntry</a> is a fixed pair, so unlike the collection factories there is no capacity parameter and no spare-capacity form. </p>
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map-entry_8hpp_source.html#l00167">167</a> of file <a class="el" href="cljonic-map-entry_8hpp_source.html">cljonic-map-entry.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-map-entry_8hpp_source.html#l00174">174</a> of file <a class="el" href="cljonic-map-entry_8hpp_source.html">cljonic-map-entry.hpp</a>.</p>
 
 </div>
 </div>
@@ -4942,7 +4942,7 @@ requires ( sizeof...(Args) == 2U &amp;&amp; concepts_detail::MapEntryFactoryElem
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map-entry_8hpp_source.html#l00204">204</a> of file <a class="el" href="cljonic-map-entry_8hpp_source.html">cljonic-map-entry.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-map-entry_8hpp_source.html#l00211">211</a> of file <a class="el" href="cljonic-map-entry_8hpp_source.html">cljonic-map-entry.hpp</a>.</p>
 
 </div>
 </div>
@@ -4974,7 +4974,7 @@ requires (sizeof...(Args) == 2U &amp;&amp; !concepts_detail::MapEntryFactoryElem
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map-entry_8hpp_source.html#l00189">189</a> of file <a class="el" href="cljonic-map-entry_8hpp_source.html">cljonic-map-entry.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-map-entry_8hpp_source.html#l00196">196</a> of file <a class="el" href="cljonic-map-entry_8hpp_source.html">cljonic-map-entry.hpp</a>.</p>
 
 </div>
 </div>
@@ -5004,7 +5004,7 @@ requires (sizeof...(Args) != 2U)</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map-entry_8hpp_source.html#l00178">178</a> of file <a class="el" href="cljonic-map-entry_8hpp_source.html">cljonic-map-entry.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-map-entry_8hpp_source.html#l00185">185</a> of file <a class="el" href="cljonic-map-entry_8hpp_source.html">cljonic-map-entry.hpp</a>.</p>
 
 </div>
 </div>
