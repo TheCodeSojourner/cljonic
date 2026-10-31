@@ -10,6 +10,7 @@ entity CollectionEquality {
     no_implicit_sequence_equality_for_producers: Boolean
     producer_components_use_producer_parameter_equality: Boolean
     no_cross_type_numeric_unification: Boolean
+    aggregate_boundary_equality_is_caller_owned: Boolean
 
     invariant OrderSensitiveForVectorStringQueue {
         this.order_sensitive_for_vector_string_queue = true
@@ -45,6 +46,10 @@ entity CollectionEquality {
 
     invariant NoCrossTypeNumericUnification {
         this.no_cross_type_numeric_unification = true
+    }
+
+    invariant AggregateBoundaryEqualityIsCallerOwned {
+        this.aggregate_boundary_equality_is_caller_owned = true
     }
 }
 

@@ -111,6 +111,7 @@ entity CljonicString {
 entity SequenceableCollection {
     requires_non_throwing_count: Boolean
     layered_on_nominal_admission: Boolean
+    closed_to_external_declaration: Boolean
 
     invariant RequiresNonThrowingCount {
         this.requires_non_throwing_count = true
@@ -118,6 +119,10 @@ entity SequenceableCollection {
 
     invariant LayeredOnNominalAdmission {
         this.layered_on_nominal_admission = true
+    }
+
+    invariant ClosedToExternalDeclaration {
+        this.closed_to_external_declaration = true
     }
 }
 
@@ -279,6 +284,8 @@ entity StableEqualityComparable {
     recurses_over_components: Boolean
     recurses_into_producer_parameters: Boolean
     rejects_callable_components: Boolean
+    aggregate_boundary_equality_is_caller_owned: Boolean
+    nominal_walker_coverage_is_gated: Boolean
 
     invariant RequiresBoolEquality {
         this.requires_bool_equality = true
@@ -298,6 +305,14 @@ entity StableEqualityComparable {
 
     invariant RejectsCallableComponents {
         this.rejects_callable_components = true
+    }
+
+    invariant AggregateBoundaryEqualityIsCallerOwned {
+        this.aggregate_boundary_equality_is_caller_owned = true
+    }
+
+    invariant NominalWalkerCoverageIsGated {
+        this.nominal_walker_coverage_is_gated = true
     }
 }
 

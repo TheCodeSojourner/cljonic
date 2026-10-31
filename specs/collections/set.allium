@@ -35,7 +35,7 @@ entity Set {
     supports_default_fallback_lookup: Boolean
     supports_lookup_capability: Boolean
     rejects_associative_capability: Boolean
-    seqable_lifecycle_is_deferred: Boolean
+    seqable_capability_is_closed: Boolean
     missing_value_returns_default_element: Boolean
     missing_value_returns_supplied_fallback: Boolean
     canonical_result_status_model_is_declared: Boolean
@@ -192,8 +192,8 @@ entity Set {
         this.rejects_associative_capability = true
     }
 
-    invariant SeqableLifecycleIsDeferred {
-        this.seqable_lifecycle_is_deferred = true
+    invariant SeqableCapabilityIsClosed {
+        this.seqable_capability_is_closed = true
     }
 
     invariant MissingValueReturnsDefaultElement {

@@ -31,7 +31,7 @@ entity Queue {
     rejects_indexed_capability: Boolean
     rejects_lookup_capability: Boolean
     rejects_associative_capability: Boolean
-    seqable_lifecycle_is_deferred: Boolean
+    seqable_capability_is_closed: Boolean
     supports_peek_operation: Boolean
     supports_pop_operation: Boolean
     supports_conj_operation: Boolean
@@ -167,8 +167,8 @@ entity Queue {
         this.rejects_associative_capability = true
     }
 
-    invariant SeqableLifecycleIsDeferred {
-        this.seqable_lifecycle_is_deferred = true
+    invariant SeqableCapabilityIsClosed {
+        this.seqable_capability_is_closed = true
     }
 
     invariant SupportsPeekOperation {

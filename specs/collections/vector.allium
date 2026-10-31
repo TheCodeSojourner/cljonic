@@ -33,7 +33,7 @@ entity Vector {
     supports_default_fallback_lookup: Boolean
     supports_lookup_capability: Boolean
     supports_associative_capability: Boolean
-    seqable_lifecycle_is_deferred: Boolean
+    seqable_capability_is_closed: Boolean
     supports_assoc_update: Boolean
     supports_can_assoc_preflight: Boolean
     assoc_replaces_existing_index: Boolean
@@ -193,8 +193,8 @@ entity Vector {
         this.supports_associative_capability = true
     }
 
-    invariant SeqableLifecycleIsDeferred {
-        this.seqable_lifecycle_is_deferred = true
+    invariant SeqableCapabilityIsClosed {
+        this.seqable_capability_is_closed = true
     }
 
     invariant SupportsAssocUpdate {
