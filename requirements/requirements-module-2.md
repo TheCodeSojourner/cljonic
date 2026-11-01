@@ -525,4 +525,4 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
 ## Traceability and Related Requirements
 
 - **Downstream Artifact**: C++20 concepts, preflight predicates, compile-time assertions, and result status type definitions.
-- **Governed REQs**: `REQ-CONV-001`–`002`, `REQ-CONV-002A`–`002E`, `REQ-CONV-003`, `REQ-CAP-001`–`013`, `REQ-BOUNDS-001`–`010`, `REQ-BOUNDS-010A`–`010D`, `REQ-BOUNDS-011`–`018`, `REQ-ERR-001`–`010`, `REQ-DIAG-001`–`012`, `REQ-CONST-001`–`004`, `REQ-VOCAB-001`–`013`.
+- **Governed REQs**: `REQ-CONV-001`–`002`, `REQ-CONV-002A`–`002E`, `REQ-CONV-003`, `REQ-CAP-001`–`013`, `REQ-CAP-012A`, `REQ-CAP-014`, `REQ-BOUNDS-001`–`010`, `REQ-BOUNDS-010A`–`010D`, `REQ-BOUNDS-011`–`018`, `REQ-ERR-001`–`010`, `REQ-DIAG-001`–`012`, `REQ-CONST-001`–`004`, `REQ-VOCAB-001`–`013`.
