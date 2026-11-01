@@ -1,5 +1,34 @@
 ## Current Session State
 
+- last_session_id: c2284362-2ae1-4c30-82cb-94c0ba4846f6
+- current_timestamp: 2026-11-01T14:18:20-07:00
+- session_complete: true
+- recover: 1. One product change is uncommitted and user-owned: the `Governed REQs` footer in `requirements/requirements-module-2.md` now also declares `REQ-CAP-012A` and `REQ-CAP-014` (both clauses present; the footer was mechanically stale). Commit it via the normal human commit flow (`make git`). 2. Three `requirements/` clauses (`REQ-CAP-014`, `REQ-NUM-018`, `REQ-NUM-019`) still carry `rationale_source: AI_inferred` without `rationale_approved_by: human`; only `/gybis-req-tend` can regularize that. 3. Thru-family work remains deferred by human instruction. 4. Architecture convention: embedded code snippets in `architecture.md` must mirror the shipped concept definitions.
+
+Task:
+1. `/gybis-init` orientation — COMPLETE: read `mementum/state.md` (newest block `cd2557ba`), recent memory commits (`7a00dda`, `bd51cc9`, `b26ea9d`), and the standard recall set; reported the orient manifest.
+2. `/cljonic-full-converge-auto` — COMPLETE, CONVERGED: layer checks (req-check PASS after one repair; vocab-check PASS 201 terms, all Related links resolve; arch-check PASS, `S2_map_function_contract` verified to mirror shipped `cljonic-map-function.hpp`; spec-check PASS, 50 `.allium` files, zero diagnostics/findings), adjacent weeds all converged (req→vocab: REQ-FN-032/CAP-014/NUM-018 terms canonical; vocab→arch: 6 candidate tokens all code identifiers or case-folded variants, every S2 contract has a vocab term; arch→specs: `map.allium`'s 27 invariants mirror the arch contract; specs→impl/tests: `traceability-spec-to-code:ok`, map no-heap probe present and registered), evidence reconciliation complete (full obligation table for REQ-FN-032 across spec tests, no-heap probe, compile-fail harness, and Doxygen example), integration `make upsert-gate-fast:ok`.
+3. Repaired this run: `requirements-module-2.md` `Governed REQs` footer omission of `REQ-CAP-012A`/`REQ-CAP-014` — the only genuine divergence found; everything else reused current evidence from the green bd51cc9 baseline (worktree was clean at `7a00dda`).
+
+Questions:
+1. None blocking. The standing open item remains the `AI_inferred` rationale markers needing `/gybis-req-tend`.
+
+Decisions:
+1. AI (2026-11-01, mechanical): corrected the module-2 footer to declare `REQ-CAP-012A` and `REQ-CAP-014` under the converge-auto standing preapproval (identity-preserving, upstream mechanical staleness); product commit left to the human.
+2. Standing (unchanged): all six 2026-10-31 human decisions from session `cd2557ba` (map activation, safe-conversion callbacks, `equal` value-preserving conversions, user-defined class equality admission, storage tightening, no-heap-stdlib-interop exclusion) remain in force.
+
+Validation:
+1. `make requirements-structure:ok` (348 clauses, unique) after the footer repair; `make vocabulary-structure:ok terms=201`; `allium check specs` + `allium analyse specs` clean across 50 files; `make traceability-spec-to-code:ok`; `make map-compile-fail:ok` (re-verified); `make no-heap:ok` (scan + both probe binaries executed); `make docs-examples:ok` (compiled=42, freshly extracted, linked, executed); integration `make upsert-gate-fast:ok`.
+2. Generated-output drift check: `make cljonic` ran via docs-examples; `cljonic.hpp` unchanged → generated artifacts match final sources. HTML `docs/` regeneration deferred to the user's final `make git`.
+
+Next:
+1. Human: commit the one-line `requirements-module-2.md` footer repair via `make git`.
+2. `/gybis-req-tend` on `REQ-CAP-014`, `REQ-NUM-018`, `REQ-NUM-019` to regularize the `AI_inferred` rationale markers.
+3. Candidate next slices: remaining REQ-FN-002C comparison family (`equal_by`, `identical`, then ordering functions); `comp` (REQ-FN-033) stays deferred.
+4. Thru-family work stays deferred until the human instructs otherwise.
+
+## Current Session State
+
 - last_session_id: cd2557ba-31f0-4f16-b376-a4958740a6b7
 - current_timestamp: 2026-10-31T16:27:18-06:00
 - session_complete: true
