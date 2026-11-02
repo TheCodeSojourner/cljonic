@@ -33,12 +33,13 @@ var searchData=
   ['cljonic_2dpop_2ehpp_30',['cljonic-pop.hpp',['../cljonic-pop_8hpp.html',1,'']]],
   ['cljonic_2dqueue_2ehpp_31',['cljonic-queue.hpp',['../cljonic-queue_8hpp.html',1,'']]],
   ['cljonic_2drange_2ehpp_32',['cljonic-range.hpp',['../cljonic-range_8hpp.html',1,'']]],
-  ['cljonic_2drepeat_2ehpp_33',['cljonic-repeat.hpp',['../cljonic-repeat_8hpp.html',1,'']]],
-  ['cljonic_2drepeatedly_2ehpp_34',['cljonic-repeatedly.hpp',['../cljonic-repeatedly_8hpp.html',1,'']]],
-  ['cljonic_2drest_2ehpp_35',['cljonic-rest.hpp',['../cljonic-rest_8hpp.html',1,'']]],
-  ['cljonic_2dseq_2ehpp_36',['cljonic-seq.hpp',['../cljonic-seq_8hpp.html',1,'']]],
-  ['cljonic_2dset_2ehpp_37',['cljonic-set.hpp',['../cljonic-set_8hpp.html',1,'']]],
-  ['cljonic_2dstring_2ehpp_38',['cljonic-string.hpp',['../cljonic-string_8hpp.html',1,'']]],
-  ['cljonic_2dvariant_2ehpp_39',['cljonic-variant.hpp',['../cljonic-variant_8hpp.html',1,'']]],
-  ['cljonic_2dvector_2ehpp_40',['cljonic-vector.hpp',['../cljonic-vector_8hpp.html',1,'']]]
+  ['cljonic_2dreduce_2dfunction_2ehpp_33',['cljonic-reduce-function.hpp',['../cljonic-reduce-function_8hpp.html',1,'']]],
+  ['cljonic_2drepeat_2ehpp_34',['cljonic-repeat.hpp',['../cljonic-repeat_8hpp.html',1,'']]],
+  ['cljonic_2drepeatedly_2ehpp_35',['cljonic-repeatedly.hpp',['../cljonic-repeatedly_8hpp.html',1,'']]],
+  ['cljonic_2drest_2ehpp_36',['cljonic-rest.hpp',['../cljonic-rest_8hpp.html',1,'']]],
+  ['cljonic_2dseq_2ehpp_37',['cljonic-seq.hpp',['../cljonic-seq_8hpp.html',1,'']]],
+  ['cljonic_2dset_2ehpp_38',['cljonic-set.hpp',['../cljonic-set_8hpp.html',1,'']]],
+  ['cljonic_2dstring_2ehpp_39',['cljonic-string.hpp',['../cljonic-string_8hpp.html',1,'']]],
+  ['cljonic_2dvariant_2ehpp_40',['cljonic-variant.hpp',['../cljonic-variant_8hpp.html',1,'']]],
+  ['cljonic_2dvector_2ehpp_41',['cljonic-vector.hpp',['../cljonic-vector_8hpp.html',1,'']]]
 ];

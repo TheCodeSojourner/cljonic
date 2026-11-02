@@ -542,6 +542,18 @@ requires concepts_detail::RangeFactoryArguments&lt;RequestedElementType, Args...
 <tr class="memitem:af0a7309afff86104ade6eba0a71908cb" id="r_af0a7309afff86104ade6eba0a71908cb"><td class="memTemplParams" colspan="2">template&lt;typename RequestedElementType = concepts_detail::DeducedRangeElementType, typename... Args&gt; <br />
 requires (!concepts_detail::RangeFactoryArguments&lt;RequestedElementType, Args...&gt;)</td></tr>
 <tr class="memitem:af0a7309afff86104ade6eba0a71908cb template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#af0a7309afff86104ade6eba0a71908cb">range</a> (Args &amp;&amp;... args) noexcept -&gt; void</td></tr>
+<tr class="memitem:a6bdcdd08f0ea16541778946953f25442" id="r_a6bdcdd08f0ea16541778946953f25442"><td class="memTemplParams" colspan="2">template&lt;typename F, typename Source&gt; <br />
+requires concepts_detail::ReduceCallable&lt;F, Source&gt;</td></tr>
+<tr class="memitem:a6bdcdd08f0ea16541778946953f25442 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a6bdcdd08f0ea16541778946953f25442">reduce</a> (const F &amp;function, const Source &amp;source) noexcept -&gt; <a class="el" href="structcljonic_1_1concepts__detail_1_1_reduce_accumulator_from_signature.html">concepts_detail::ReduceAccumulatorFromSignature</a>&lt; F &gt;::type</td></tr>
+<tr class="memitem:a167d28ae5299f57fde58c154b243dd09" id="r_a167d28ae5299f57fde58c154b243dd09"><td class="memTemplParams" colspan="2">template&lt;typename F, typename Initial, typename Source&gt; <br />
+requires concepts_detail::ReduceCallableWithInitial&lt;F, Initial, Source&gt;</td></tr>
+<tr class="memitem:a167d28ae5299f57fde58c154b243dd09 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a167d28ae5299f57fde58c154b243dd09">reduce</a> (const F &amp;function, const Initial &amp;initial, const Source &amp;source) noexcept -&gt; <a class="el" href="structcljonic_1_1concepts__detail_1_1_reduce_accumulator.html">concepts_detail::ReduceAccumulator</a>&lt; F, Initial &gt;::type</td></tr>
+<tr class="memitem:aad7a0ecb92d51dae45d88f9ddea6a101" id="r_aad7a0ecb92d51dae45d88f9ddea6a101"><td class="memTemplParams" colspan="2">template&lt;typename F, typename Source&gt; <br />
+requires (!concepts_detail::ReduceCallable&lt;F, Source&gt;)</td></tr>
+<tr class="memitem:aad7a0ecb92d51dae45d88f9ddea6a101 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#aad7a0ecb92d51dae45d88f9ddea6a101">reduce</a> (const F &amp;function, const Source &amp;source) noexcept -&gt; void</td></tr>
+<tr class="memitem:a036b04b9e897bbdf53961612ba881117" id="r_a036b04b9e897bbdf53961612ba881117"><td class="memTemplParams" colspan="2">template&lt;typename F, typename Initial, typename Source&gt; <br />
+requires (!concepts_detail::ReduceCallableWithInitial&lt;F, Initial, Source&gt;)</td></tr>
+<tr class="memitem:a036b04b9e897bbdf53961612ba881117 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a036b04b9e897bbdf53961612ba881117">reduce</a> (const F &amp;function, const Initial &amp;initial, const Source &amp;source) noexcept -&gt; void</td></tr>
 <tr class="memitem:a60031e5b341a21ae5b89c5a42bd49589" id="r_a60031e5b341a21ae5b89c5a42bd49589"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; <br />
 requires (!concepts::NothrowCollectionElement&lt;T&gt;)</td></tr>
 <tr class="memitem:a60031e5b341a21ae5b89c5a42bd49589 template"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a60031e5b341a21ae5b89c5a42bd49589">Repeat</a> (const T &amp;) -&gt; Repeat&lt; <a class="el" href="structcljonic_1_1concepts__detail_1_1_repeat_element_domain_violation.html">concepts_detail::RepeatElementDomainViolation</a> &gt;</td></tr>
@@ -4979,10 +4991,10 @@ requires concepts_detail::MapCallable&lt;F, Sources...&gt;</div>
 <div class="line">             ? 0</div>
 <div class="line">             : 1;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_html_a72a6c4be35095c2de7761f8b06dcc60a"><div class="ttname"><a href="#a72a6c4be35095c2de7761f8b06dcc60a">cljonic::map</a></div><div class="ttdeci">constexpr auto map(const F &amp;function, const Sources &amp;... sources) noexcept -&gt; Vector&lt; concepts_detail::MapResultType&lt; F, Sources... &gt;, concepts_detail::MapResultCapacity&lt; Sources... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-map-function_8hpp_source.html#l00212">cljonic-map-function.hpp:212</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a72a6c4be35095c2de7761f8b06dcc60a"><div class="ttname"><a href="#a72a6c4be35095c2de7761f8b06dcc60a">cljonic::map</a></div><div class="ttdeci">constexpr auto map(const F &amp;function, const Sources &amp;... sources) noexcept -&gt; Vector&lt; concepts_detail::MapResultType&lt; F, Sources... &gt;, concepts_detail::MapResultCapacity&lt; Sources... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-map-function_8hpp_source.html#l00160">cljonic-map-function.hpp:160</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_af31c4c3eb2e82ffcc9d64da7ea5ca8bc"><div class="ttname"><a href="#af31c4c3eb2e82ffcc9d64da7ea5ca8bc">cljonic::repeat</a></div><div class="ttdeci">constexpr auto repeat(T &amp;&amp;value) noexcept -&gt; Repeat&lt; std::remove_cvref_t&lt; T &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-repeat_8hpp_source.html#l00248">cljonic-repeat.hpp:248</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-map-function_8hpp_source.html#l00212">212</a> of file <a class="el" href="cljonic-map-function_8hpp_source.html">cljonic-map-function.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-map-function_8hpp_source.html#l00160">160</a> of file <a class="el" href="cljonic-map-function_8hpp_source.html">cljonic-map-function.hpp</a>.</p>
 
 </div>
 </div>
@@ -5016,7 +5028,7 @@ requires (!concepts_detail::MapCallable&lt;F, Sources...&gt;)</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map-function_8hpp_source.html#l00235">235</a> of file <a class="el" href="cljonic-map-function_8hpp_source.html">cljonic-map-function.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-map-function_8hpp_source.html#l00183">183</a> of file <a class="el" href="cljonic-map-function_8hpp_source.html">cljonic-map-function.hpp</a>.</p>
 
 </div>
 </div>
@@ -6285,6 +6297,211 @@ requires (!concepts_detail::RangeFactoryArguments&lt;RequestedElementType, Args.
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00366">366</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a167d28ae5299f57fde58c154b243dd09" name="a167d28ae5299f57fde58c154b243dd09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a167d28ae5299f57fde58c154b243dd09">&#9670;&#160;</a></span>reduce() <span class="overload">[1/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F, typename Initial, typename Source&gt; <br />
+requires concepts_detail::ReduceCallableWithInitial&lt;F, Initial, Source&gt;</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::reduce </td>
+          <td>(</td>
+          <td class="paramtype">const F &amp;</td>          <td class="paramname"><span class="paramname"><em>function</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Initial &amp;</td>          <td class="paramname"><span class="paramname"><em>initial</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Source &amp;</td>          <td class="paramname"><span class="paramname"><em>source</em></span>&#160;) -&gt; <a class="el" href="structcljonic_1_1concepts__detail_1_1_reduce_accumulator.html">concepts_detail::ReduceAccumulator</a>&lt; F, Initial &gt;::type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-reduce-function_8hpp_source.html#l00244">244</a> of file <a class="el" href="cljonic-reduce-function_8hpp_source.html">cljonic-reduce-function.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a036b04b9e897bbdf53961612ba881117" name="a036b04b9e897bbdf53961612ba881117"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a036b04b9e897bbdf53961612ba881117">&#9670;&#160;</a></span>reduce() <span class="overload">[2/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F, typename Initial, typename Source&gt; <br />
+requires (!concepts_detail::ReduceCallableWithInitial&lt;F, Initial, Source&gt;)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::reduce </td>
+          <td>(</td>
+          <td class="paramtype">const F &amp;</td>          <td class="paramname"><span class="paramname"><em>function</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Initial &amp;</td>          <td class="paramname"><span class="paramname"><em>initial</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Source &amp;</td>          <td class="paramname"><span class="paramname"><em>source</em></span>&#160;) -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-reduce-function_8hpp_source.html#l00273">273</a> of file <a class="el" href="cljonic-reduce-function_8hpp_source.html">cljonic-reduce-function.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a6bdcdd08f0ea16541778946953f25442" name="a6bdcdd08f0ea16541778946953f25442"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6bdcdd08f0ea16541778946953f25442">&#9670;&#160;</a></span>reduce() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F, typename Source&gt; <br />
+requires concepts_detail::ReduceCallable&lt;F, Source&gt;</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::reduce </td>
+          <td>(</td>
+          <td class="paramtype">const F &amp;</td>          <td class="paramname"><span class="paramname"><em>function</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Source &amp;</td>          <td class="paramname"><span class="paramname"><em>source</em></span>&#160;) -&gt; <a class="el" href="structcljonic_1_1concepts__detail_1_1_reduce_accumulator_from_signature.html">concepts_detail::ReduceAccumulatorFromSignature</a>&lt; F &gt;::type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="anchor" id="ReduceFunction"></a> The <b>reduce</b> free function folds a cljonic source into a single value. Two forms are available: <span class="tt">reduce(f, source)</span> starts from the source's first element, and <span class="tt">reduce(f, initial, source)</span> starts from an initial value. The source is a <a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vector</a>, <a class="el" href="classcljonic_1_1_map.html#Map" title="Map">Map</a>, <a class="el" href="classcljonic_1_1_set.html#Set" title="Set">Set</a>, <a class="el" href="classcljonic_1_1_queue.html#Queue" title="Queue">Queue</a>, or <a class="el" href="classcljonic_1_1_string.html#String" title="String">String</a> collection, or a <a class="el" href="classcljonic_1_1_range.html#Range" title="Range">Range</a>, <a class="el" href="classcljonic_1_1_repeat.html#Repeat" title="Repeat">Repeat</a>, <a class="el" href="classcljonic_1_1_cycle.html#Cycle" title="Cycle">Cycle</a>, <a class="el" href="classcljonic_1_1_iterate.html#Iterate" title="Iterate">Iterate</a>, or <a class="el" href="classcljonic_1_1_repeatedly.html#Repeatedly" title="Repeatedly">Repeatedly</a> producer.</p>
+<p>The reducing function is called as <span class="tt">f(accumulator, element)</span> from left to right and must return the accumulator type. Its result type is therefore always the same as its first parameter type. The accumulator must be a storable element type, and the function must be copyable and non-throwing.</p>
+<p>The accumulator type is the function's first parameter type when its parameters can be inspected. Because the first form has no initial value to supply that type, its function must be inspectable: a generic callable whose parameter types cannot be inspected must use the form with an explicit initial value, where the initial value's type becomes the accumulator type.</p>
+<p><span class="tt"><a class="el" href="#a6bdcdd08f0ea16541778946953f25442">reduce</a></span> visits <span class="tt">count(source)</span> elements, capped at <span class="tt"><a class="el" href="#a41fa65c16edb0a95aa942c48307777d6">CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</a></span>, so an unbounded producer is folded over its observable traversal cap and every call terminates. It never stops early. Over an empty source, the form without an initial value returns the accumulator's default value; the form with an initial value returns that initial value. <span class="tt"><a class="el" href="classcljonic_1_1_map.html">Map</a></span> and <span class="tt"><a class="el" href="classcljonic_1_1_set.html">Set</a></span> traversal order is not semantically significant, so a fold over those sources depends on the function's own commutativity. Every source value is preserved.</p>
+<p>Without an initial value, the first source element must convert safely to the accumulator type. In either form, each callback parameter must safely accept its corresponding argument; when an initial value is supplied, it must also convert safely to the accumulator type. Safe conversion means an identical type or a value-preserving conversion such as <span class="tt">int</span> to <span class="tt">long</span>. A narrowing conversion such as <span class="tt">long</span> to <span class="tt">int</span>, and any conversion that crosses the Boolean, character, enumeration, pointer, or user-defined domains, is rejected at compile time. Standard-library ranges and containers, functions that can throw, and accumulators that cannot be stored are rejected at compile time.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">struct </span>Summary {</div>
+<div class="line">  <span class="keywordtype">int</span> items{};</div>
+<div class="line">  <span class="keywordtype">int</span> sum{};</div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">  <span class="comment">// Compile-time demonstration.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> add = [](<span class="keywordtype">int</span> lhs, <span class="keywordtype">int</span> rhs) <span class="keyword">noexcept</span> { <span class="keywordflow">return</span> lhs + rhs; };</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> v = <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(1, 2, 3);</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a6bdcdd08f0ea16541778946953f25442">reduce</a>(add, v) == 6);      <span class="comment">// 1 + 2 + 3</span></div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a6bdcdd08f0ea16541778946953f25442">reduce</a>(add, 10, v) == 16); <span class="comment">// 10 + 1 + 2 + 3</span></div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a6bdcdd08f0ea16541778946953f25442">reduce</a>(add, 0, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector&lt;int, 0&gt;</a>()) ==</div>
+<div class="line">                0); <span class="comment">// empty explicit-initial form</span></div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a6bdcdd08f0ea16541778946953f25442">reduce</a>(add, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector&lt;int, 0&gt;</a>()) == 0); <span class="comment">// default accumulator</span></div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> summarize = [](Summary accumulator, <span class="keywordtype">int</span> value) <span class="keyword">noexcept</span> {</div>
+<div class="line">    <span class="keywordflow">return</span> Summary{accumulator.items + 1, accumulator.sum + value};</div>
+<div class="line">  };</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> summary = <a class="code hl_function" href="#a6bdcdd08f0ea16541778946953f25442">reduce</a>(summarize, Summary{}, v);</div>
+<div class="line">  <span class="keyword">static_assert</span>(summary.items == 3 &amp;&amp; summary.sum == 6);</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// A wider accumulator: each element converts safely from int to long.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> add_long = [](<span class="keywordtype">long</span> lhs, <span class="keywordtype">long</span> rhs) <span class="keyword">noexcept</span> {</div>
+<div class="line">    <span class="keywordflow">return</span> lhs + rhs;</div>
+<div class="line">  };</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a6bdcdd08f0ea16541778946953f25442">reduce</a>(add_long, v) == 6L);</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// An explicit initial value can select an accumulator unlike the element</span></div>
+<div class="line">  <span class="comment">// type.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> count_positive = [](<span class="keywordtype">int</span> accumulator, <span class="keywordtype">long</span> value) <span class="keyword">noexcept</span> {</div>
+<div class="line">    <span class="keywordflow">return</span> accumulator + (value &gt; 0L ? 1 : 0);</div>
+<div class="line">  };</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a6bdcdd08f0ea16541778946953f25442">reduce</a>(count_positive, 0, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(10L, 20L)) == 2);</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// Producers are folded over their observable elements.</span></div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a6bdcdd08f0ea16541778946953f25442">reduce</a>(add, <a class="code hl_class" href="classcljonic_1_1_range.html">Range</a>{1, 4, 1}) == 6); <span class="comment">// produces 1, 2, 3</span></div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// Map and Set traversal order is not semantically significant.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> s = <a class="code hl_function" href="#ab920b6f72a40bc9c9d4b1c69662e149e">hash_set</a>(1, 2, 3);</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a6bdcdd08f0ea16541778946953f25442">reduce</a>(add, 0, s) == 6);</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// Runtime demonstration.</span></div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_base = 1;</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_v =</div>
+<div class="line">      <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(runtime_base, runtime_base + 1, runtime_base + 2);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_sum = <a class="code hl_function" href="#a6bdcdd08f0ea16541778946953f25442">reduce</a>(add, runtime_v);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_seeded = <a class="code hl_function" href="#a6bdcdd08f0ea16541778946953f25442">reduce</a>(add, runtime_base * 10, runtime_v);</div>
+<div class="line"> </div>
+<div class="line">  <span class="keywordflow">return</span> (runtime_sum == 6 &amp;&amp; runtime_seeded == 16) ? 0 : 1;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacecljonic_html_a6bdcdd08f0ea16541778946953f25442"><div class="ttname"><a href="#a6bdcdd08f0ea16541778946953f25442">cljonic::reduce</a></div><div class="ttdeci">constexpr auto reduce(const F &amp;function, const Source &amp;source) noexcept -&gt; concepts_detail::ReduceAccumulatorFromSignature&lt; F &gt;::type</div><div class="ttdef"><b>Definition</b> <a href="cljonic-reduce-function_8hpp_source.html#l00228">cljonic-reduce-function.hpp:228</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-reduce-function_8hpp_source.html#l00228">228</a> of file <a class="el" href="cljonic-reduce-function_8hpp_source.html">cljonic-reduce-function.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aad7a0ecb92d51dae45d88f9ddea6a101" name="aad7a0ecb92d51dae45d88f9ddea6a101"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad7a0ecb92d51dae45d88f9ddea6a101">&#9670;&#160;</a></span>reduce() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F, typename Source&gt; <br />
+requires (!concepts_detail::ReduceCallable&lt;F, Source&gt;)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::reduce </td>
+          <td>(</td>
+          <td class="paramtype">const F &amp;</td>          <td class="paramname"><span class="paramname"><em>function</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Source &amp;</td>          <td class="paramname"><span class="paramname"><em>source</em></span>&#160;) -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-reduce-function_8hpp_source.html#l00256">256</a> of file <a class="el" href="cljonic-reduce-function_8hpp_source.html">cljonic-reduce-function.hpp</a>.</p>
 
 </div>
 </div>

@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['equal_5fassociation_5fvalue_5ftype_5fof_5ft_0',['equal_association_value_type_of_t',['../namespacecljonic_1_1concepts__detail.html#a9ec0bbabc401295eef4c14d6b7ac411c',1,'cljonic::concepts_detail']]],
-  ['equal_5fkey_5ftype_5fof_5ft_1',['equal_key_type_of_t',['../namespacecljonic_1_1concepts__detail.html#ae2dc0d847f235ce019b6f419da417da0',1,'cljonic::concepts_detail']]],
-  ['equal_5fvalue_5ftype_5fof_5ft_2',['equal_value_type_of_t',['../namespacecljonic_1_1concepts__detail.html#af46aae7552edc34934c804902a920529',1,'cljonic::concepts_detail']]]
+  ['difference_5ftype_0',['difference_type',['../classcljonic_1_1_cycle_1_1const__iterator.html#ae1486ae71b8f519f220c7b314394021e',1,'cljonic::Cycle::const_iterator::difference_type'],['../classcljonic_1_1_iterate_1_1const__iterator.html#a11c63232ded6d8f95a6e64c2db5fec38',1,'cljonic::Iterate::const_iterator::difference_type'],['../classcljonic_1_1_queue_1_1const__iterator.html#a5a858949fd0abf4030e0933525aa9236',1,'cljonic::Queue::const_iterator::difference_type'],['../classcljonic_1_1_range_1_1const__iterator.html#a63607c0402eab5d809caf2e064d77df9',1,'cljonic::Range::const_iterator::difference_type'],['../classcljonic_1_1_repeat_1_1const__iterator.html#a22711a19f3e160ede41b07e3098fcf3d',1,'cljonic::Repeat::const_iterator::difference_type'],['../classcljonic_1_1_repeatedly_1_1const__iterator.html#ac394bf794fc55b794e3f5b4128938579',1,'cljonic::Repeatedly::const_iterator::difference_type']]]
 ];
