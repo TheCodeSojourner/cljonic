@@ -30,7 +30,9 @@ numbering is an integration checklist, not a different dependency order.
 - Traceability snapshots must be synchronized via `make traceability-spec-to-code-update-snapshot`.
 
 ### 2. Header Implementation & Doxygen Documentation (`src/`)
-- Each API must live in its own dedicated header (`src/cljonic-{name}.hpp`).
+- Collection type headers use `src/cljonic-collection-{name}.hpp`, producer
+  type headers use `src/cljonic-producer-{name}.hpp`, and standalone public
+  operation headers use `src/cljonic-{name}.hpp` without a `-function` suffix.
 - Included in the public header aggregator `src/cljonic-core.hpp`.
 - Single-header artifact `cljonic.hpp` must be regenerated via `make cljonic`.
 - Every header must feature complete Doxygen documentation with a runnable `main()` example program containing both:
