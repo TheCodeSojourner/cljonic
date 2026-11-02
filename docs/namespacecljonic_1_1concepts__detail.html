@@ -353,38 +353,38 @@ Concepts</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a21d18a5fa2793a101149643b79c1684f" id="r_a21d18a5fa2793a101149643b79c1684f"><td class="memTemplParams" colspan="2">template&lt;typename F&gt; </td></tr>
-<tr class="memitem:a21d18a5fa2793a101149643b79c1684f template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a21d18a5fa2793a101149643b79c1684f">CallableParameterTypes</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">CallableParameters</a>&lt;std::decay_t&lt;F&gt;&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td></tr>
-<tr class="memitem:af46aae7552edc34934c804902a920529" id="r_af46aae7552edc34934c804902a920529"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:af46aae7552edc34934c804902a920529 template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#af46aae7552edc34934c804902a920529">equal_value_type_of_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1equal__value__type__of.html">equal_value_type_of</a>&lt;T&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td></tr>
-<tr class="memitem:ae2dc0d847f235ce019b6f419da417da0" id="r_ae2dc0d847f235ce019b6f419da417da0"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:ae2dc0d847f235ce019b6f419da417da0 template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#ae2dc0d847f235ce019b6f419da417da0">equal_key_type_of_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1equal__key__type__of.html">equal_key_type_of</a>&lt;T&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td></tr>
-<tr class="memitem:a9ec0bbabc401295eef4c14d6b7ac411c" id="r_a9ec0bbabc401295eef4c14d6b7ac411c"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:a9ec0bbabc401295eef4c14d6b7ac411c template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a9ec0bbabc401295eef4c14d6b7ac411c">equal_association_value_type_of_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1equal__association__value__type__of.html">equal_association_value_type_of</a>&lt;T&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td></tr>
-<tr class="memitem:ae46a50969fc7e3aa7ab58557eac0a098" id="r_ae46a50969fc7e3aa7ab58557eac0a098"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K&gt; </td></tr>
-<tr class="memitem:ae46a50969fc7e3aa7ab58557eac0a098 template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#ae46a50969fc7e3aa7ab58557eac0a098">get_result_t</a> = decltype(std::declval&lt;const C&amp;&gt;()(std::declval&lt;const K&amp;&gt;()))</td></tr>
 <tr class="memitem:a0c4856675ca54bc133c73838d249b745" id="r_a0c4856675ca54bc133c73838d249b745"><td class="memTemplParams" colspan="2">template&lt;typename RequestedKeyType, typename RequestedValueType, typename... Args&gt; </td></tr>
 <tr class="memitem:a0c4856675ca54bc133c73838d249b745 template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a0c4856675ca54bc133c73838d249b745">map_entry_factory_key_type_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1map__entry__factory__types.html">map_entry_factory_types</a>&lt;RequestedKeyType, RequestedValueType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1map__entry__factory__types.html">::key_type</a></td></tr>
 <tr class="memitem:a18e5a109e7c1975cc241e98324f9098f" id="r_a18e5a109e7c1975cc241e98324f9098f"><td class="memTemplParams" colspan="2">template&lt;typename RequestedKeyType, typename RequestedValueType, typename... Args&gt; </td></tr>
 <tr class="memitem:a18e5a109e7c1975cc241e98324f9098f template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a18e5a109e7c1975cc241e98324f9098f">map_entry_factory_value_type_t</a></td></tr>
-<tr class="memitem:acd03078ebbd961d98d7a20eccc2fec71" id="r_acd03078ebbd961d98d7a20eccc2fec71"><td class="memTemplParams" colspan="2">template&lt;typename F, typename... Sources&gt; </td></tr>
-<tr class="memitem:acd03078ebbd961d98d7a20eccc2fec71 template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#acd03078ebbd961d98d7a20eccc2fec71">MapResultType</a> = std::invoke_result_t&lt;const std::decay_t&lt;F&gt;&amp;, std::ranges::range_reference_t&lt;const Sources&gt;...&gt;</td></tr>
 <tr class="memitem:a7f6109650d659764ba97cd048b69b6da" id="r_a7f6109650d659764ba97cd048b69b6da"><td class="memTemplParams" colspan="2">template&lt;typename RequestedKeyType, typename RequestedValueType, typename... Args&gt; </td></tr>
 <tr class="memitem:a7f6109650d659764ba97cd048b69b6da template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a7f6109650d659764ba97cd048b69b6da">hash_map_factory_key_type_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1hash__map__factory__types.html">hash_map_factory_types</a>&lt;RequestedKeyType, RequestedValueType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1map__entry__factory__types.html">::key_type</a></td></tr>
 <tr class="memitem:a175d4c7cc34bd4cceef730e38a94c876" id="r_a175d4c7cc34bd4cceef730e38a94c876"><td class="memTemplParams" colspan="2">template&lt;typename RequestedKeyType, typename RequestedValueType, typename... Args&gt; </td></tr>
 <tr class="memitem:a175d4c7cc34bd4cceef730e38a94c876 template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a175d4c7cc34bd4cceef730e38a94c876">hash_map_factory_value_type_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1hash__map__factory__types.html">hash_map_factory_types</a>&lt;RequestedKeyType, RequestedValueType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1map__entry__factory__types.html">::value_type</a></td></tr>
 <tr class="memitem:a3baef0270ed18e426beb5d6c3ad8f70b" id="r_a3baef0270ed18e426beb5d6c3ad8f70b"><td class="memTemplParams" colspan="2">template&lt;typename RequestedElementType, typename... Args&gt; </td></tr>
-<tr class="memitem:a3baef0270ed18e426beb5d6c3ad8f70b template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a3baef0270ed18e426beb5d6c3ad8f70b">queue_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">queue_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td></tr>
+<tr class="memitem:a3baef0270ed18e426beb5d6c3ad8f70b template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a3baef0270ed18e426beb5d6c3ad8f70b">queue_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">queue_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td></tr>
+<tr class="memitem:a604fe498ab6373001c2261cee678026e" id="r_a604fe498ab6373001c2261cee678026e"><td class="memTemplParams" colspan="2">template&lt;typename RequestedElementType, typename... Args&gt; </td></tr>
+<tr class="memitem:a604fe498ab6373001c2261cee678026e template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a604fe498ab6373001c2261cee678026e">hash_set_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1hash__set__factory__element__type.html">hash_set_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td></tr>
+<tr class="memitem:a6b4025d2e219eea10ac1e5c4a7cd07ca" id="r_a6b4025d2e219eea10ac1e5c4a7cd07ca"><td class="memTemplParams" colspan="2">template&lt;typename RequestedElementType, typename... Args&gt; </td></tr>
+<tr class="memitem:a6b4025d2e219eea10ac1e5c4a7cd07ca template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a6b4025d2e219eea10ac1e5c4a7cd07ca">vector_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1vector__factory__element__type.html">vector_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td></tr>
+<tr class="memitem:a21d18a5fa2793a101149643b79c1684f" id="r_a21d18a5fa2793a101149643b79c1684f"><td class="memTemplParams" colspan="2">template&lt;typename F&gt; </td></tr>
+<tr class="memitem:a21d18a5fa2793a101149643b79c1684f template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a21d18a5fa2793a101149643b79c1684f">CallableParameterTypes</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">CallableParameters</a>&lt;std::decay_t&lt;F&gt;&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td></tr>
+<tr class="memitem:af46aae7552edc34934c804902a920529" id="r_af46aae7552edc34934c804902a920529"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
+<tr class="memitem:af46aae7552edc34934c804902a920529 template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#af46aae7552edc34934c804902a920529">equal_value_type_of_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1equal__value__type__of.html">equal_value_type_of</a>&lt;T&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td></tr>
+<tr class="memitem:ae2dc0d847f235ce019b6f419da417da0" id="r_ae2dc0d847f235ce019b6f419da417da0"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
+<tr class="memitem:ae2dc0d847f235ce019b6f419da417da0 template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#ae2dc0d847f235ce019b6f419da417da0">equal_key_type_of_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1equal__key__type__of.html">equal_key_type_of</a>&lt;T&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td></tr>
+<tr class="memitem:a9ec0bbabc401295eef4c14d6b7ac411c" id="r_a9ec0bbabc401295eef4c14d6b7ac411c"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
+<tr class="memitem:a9ec0bbabc401295eef4c14d6b7ac411c template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a9ec0bbabc401295eef4c14d6b7ac411c">equal_association_value_type_of_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1equal__association__value__type__of.html">equal_association_value_type_of</a>&lt;T&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td></tr>
+<tr class="memitem:ae46a50969fc7e3aa7ab58557eac0a098" id="r_ae46a50969fc7e3aa7ab58557eac0a098"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K&gt; </td></tr>
+<tr class="memitem:ae46a50969fc7e3aa7ab58557eac0a098 template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#ae46a50969fc7e3aa7ab58557eac0a098">get_result_t</a> = decltype(std::declval&lt;const C&amp;&gt;()(std::declval&lt;const K&amp;&gt;()))</td></tr>
+<tr class="memitem:acd03078ebbd961d98d7a20eccc2fec71" id="r_acd03078ebbd961d98d7a20eccc2fec71"><td class="memTemplParams" colspan="2">template&lt;typename F, typename... Sources&gt; </td></tr>
+<tr class="memitem:acd03078ebbd961d98d7a20eccc2fec71 template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#acd03078ebbd961d98d7a20eccc2fec71">MapResultType</a> = std::invoke_result_t&lt;const std::decay_t&lt;F&gt;&amp;, std::ranges::range_reference_t&lt;const Sources&gt;...&gt;</td></tr>
 <tr class="memitem:a7374f5d60031561f5b3ca2daa0134359" id="r_a7374f5d60031561f5b3ca2daa0134359"><td class="memTemplParams" colspan="2">template&lt;typename RequestedElementType, typename... Args&gt; </td></tr>
-<tr class="memitem:a7374f5d60031561f5b3ca2daa0134359 template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a7374f5d60031561f5b3ca2daa0134359">range_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1range__factory__element__type.html">range_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td></tr>
+<tr class="memitem:a7374f5d60031561f5b3ca2daa0134359 template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a7374f5d60031561f5b3ca2daa0134359">range_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1range__factory__element__type.html">range_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td></tr>
 <tr class="memitem:a2fe556ac0880b5c5d60477ef16bff2f1" id="r_a2fe556ac0880b5c5d60477ef16bff2f1"><td class="memTemplParams" colspan="2">template&lt;typename Source&gt; </td></tr>
 <tr class="memitem:a2fe556ac0880b5c5d60477ef16bff2f1 template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a2fe556ac0880b5c5d60477ef16bff2f1">ReduceElement</a> = std::ranges::range_value_t&lt;const Source&gt;</td></tr>
 <tr class="memitem:a1dfd930a87d3498274b83c9f0e4d9b8f" id="r_a1dfd930a87d3498274b83c9f0e4d9b8f"><td class="memTemplParams" colspan="2">template&lt;typename Source&gt; </td></tr>
 <tr class="memitem:a1dfd930a87d3498274b83c9f0e4d9b8f template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a1dfd930a87d3498274b83c9f0e4d9b8f">ReduceElementReference</a> = std::ranges::range_reference_t&lt;const Source&gt;</td></tr>
-<tr class="memitem:a604fe498ab6373001c2261cee678026e" id="r_a604fe498ab6373001c2261cee678026e"><td class="memTemplParams" colspan="2">template&lt;typename RequestedElementType, typename... Args&gt; </td></tr>
-<tr class="memitem:a604fe498ab6373001c2261cee678026e template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a604fe498ab6373001c2261cee678026e">hash_set_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1hash__set__factory__element__type.html">hash_set_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td></tr>
-<tr class="memitem:a6b4025d2e219eea10ac1e5c4a7cd07ca" id="r_a6b4025d2e219eea10ac1e5c4a7cd07ca"><td class="memTemplParams" colspan="2">template&lt;typename RequestedElementType, typename... Args&gt; </td></tr>
-<tr class="memitem:a6b4025d2e219eea10ac1e5c4a7cd07ca template"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a6b4025d2e219eea10ac1e5c4a7cd07ca">vector_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1vector__factory__element__type.html">vector_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -438,6 +438,23 @@ Functions</h2></td></tr>
 <tr class="memitem:a1fb29103b68deec639740ad527003d69 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a1fb29103b68deec639740ad527003d69">unsigned_value_fits_char</a> (T value) noexcept -&gt; bool</td></tr>
 <tr class="memitem:a44caa6451a82185e99690a6b5b0aefbc" id="r_a44caa6451a82185e99690a6b5b0aefbc"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
 <tr class="memitem:a44caa6451a82185e99690a6b5b0aefbc template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a44caa6451a82185e99690a6b5b0aefbc">value_fits_char</a> (T value) noexcept -&gt; bool</td></tr>
+<tr class="memitem:adec8aee7ccd3ccebc559b47e07d062f1" id="r_adec8aee7ccd3ccebc559b47e07d062f1"><td class="memTemplParams" colspan="2">template&lt;typename KeyType, typename <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, typename Tuple, std::size_t... PairIndices&gt; </td></tr>
+<tr class="memitem:adec8aee7ccd3ccebc559b47e07d062f1 template"><td class="memItemLeft">consteval auto&#160;</td><td class="memItemRight"><a class="el" href="#adec8aee7ccd3ccebc559b47e07d062f1">hash_map_factory_pairs_are_nothrow</a> (std::index_sequence&lt; PairIndices... &gt; indices) noexcept -&gt; bool</td></tr>
+<tr class="memitem:a9b2281b180f44b7863736972baaa0440" id="r_a9b2281b180f44b7863736972baaa0440"><td class="memTemplParams" colspan="2">template&lt;typename KeyType, typename <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, typename... Args&gt; </td></tr>
+<tr class="memitem:a9b2281b180f44b7863736972baaa0440 template"><td class="memItemLeft">consteval auto&#160;</td><td class="memItemRight"><a class="el" href="#a9b2281b180f44b7863736972baaa0440">hash_map_factory_arguments_are_nothrow</a> () noexcept -&gt; bool</td></tr>
+<tr class="memitem:a17ee2b84c411b69ca47454d7dcf451fe" id="r_a17ee2b84c411b69ca47454d7dcf451fe"><td class="memItemLeft">concept&#160;</td><td class="memItemRight"><a class="el" href="#a17ee2b84c411b69ca47454d7dcf451fe">Args</a> ()</td></tr>
+<tr class="memitem:a4aee245a87d94393c24a90b3ea8c3e45" id="r_a4aee245a87d94393c24a90b3ea8c3e45"><td class="memTemplParams" colspan="2">template&lt;typename KeyType, typename <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, std::size_t Capacity&gt; </td></tr>
+<tr class="memitem:a4aee245a87d94393c24a90b3ea8c3e45 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a4aee245a87d94393c24a90b3ea8c3e45">build_hash_map_factory_result</a> (<a class="el" href="classcljonic_1_1_map.html">Map</a>&lt; KeyType, <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, Capacity &gt; result) noexcept -&gt; <a class="el" href="classcljonic_1_1_map.html">Map</a>&lt; KeyType, <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, Capacity &gt;</td></tr>
+<tr class="memitem:a25e3773a553af3e6f8902a528e0923da" id="r_a25e3773a553af3e6f8902a528e0923da"><td class="memTemplParams" colspan="2">template&lt;typename KeyType, typename <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, std::size_t Capacity, typename KeyArgument, typename ValueArgument, typename... Rest&gt; </td></tr>
+<tr class="memitem:a25e3773a553af3e6f8902a528e0923da template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a25e3773a553af3e6f8902a528e0923da">build_hash_map_factory_result</a> (<a class="el" href="classcljonic_1_1_map.html">Map</a>&lt; KeyType, <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, Capacity &gt; result, KeyArgument &amp;&amp;key, ValueArgument &amp;&amp;value, Rest &amp;&amp;... rest) noexcept -&gt; <a class="el" href="classcljonic_1_1_map.html">Map</a>&lt; KeyType, <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, Capacity &gt;</td></tr>
+<tr class="memitem:aaad150c956c029caafe2db7c1a8d32ab" id="r_aaad150c956c029caafe2db7c1a8d32ab"><td class="memTemplParams" colspan="2">template&lt;typename Source, typename... Args&gt; </td></tr>
+<tr class="memitem:aaad150c956c029caafe2db7c1a8d32ab template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#aaad150c956c029caafe2db7c1a8d32ab">string_factory_reject_text_source</a> () noexcept -&gt; void</td></tr>
+<tr class="memitem:a758899eb67880957d0a63f8e7aeadd4e" id="r_a758899eb67880957d0a63f8e7aeadd4e"><td class="memTemplParams" colspan="2">template&lt;std::size_t Capacity, typename... Args&gt; </td></tr>
+<tr class="memitem:a758899eb67880957d0a63f8e7aeadd4e template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a758899eb67880957d0a63f8e7aeadd4e">string_factory_reject_capacity_call</a> () noexcept -&gt; void</td></tr>
+<tr class="memitem:ac54c8021ed24727d70949f0dbffae7ca" id="r_ac54c8021ed24727d70949f0dbffae7ca"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:ac54c8021ed24727d70949f0dbffae7ca template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#ac54c8021ed24727d70949f0dbffae7ca">string_factory_reject_deduced_call</a> () noexcept -&gt; void</td></tr>
+<tr class="memitem:a08f1734ff4a595de13b69800a9f28122" id="r_a08f1734ff4a595de13b69800a9f28122"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:a08f1734ff4a595de13b69800a9f28122 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a08f1734ff4a595de13b69800a9f28122">string_factory_reject_empty_call</a> () noexcept -&gt; void</td></tr>
 <tr class="memitem:a4ca1374dc952d90d209ac69dbee803c6" id="r_a4ca1374dc952d90d209ac69dbee803c6"><td class="memTemplParams" colspan="2">template&lt;IntegerIndexType IndexType&gt; </td></tr>
 <tr class="memitem:a4ca1374dc952d90d209ac69dbee803c6 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a4ca1374dc952d90d209ac69dbee803c6">try_normalize_index</a> (IndexType index) noexcept -&gt; std::optional&lt; std::size_t &gt;</td></tr>
 <tr class="memitem:a7170267924d77e1a2a3f23394976665d" id="r_a7170267924d77e1a2a3f23394976665d"><td class="memTemplParams" colspan="2">template&lt;ProducerCount Count&gt; </td></tr>
@@ -467,15 +484,6 @@ requires MaterializableSource&lt;Dest, Source&gt;</td></tr>
 <tr class="memitem:a6b6a0aedeba9f6ec243d75cf3f2de072 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a6b6a0aedeba9f6ec243d75cf3f2de072">diagnose_get_fallback</a> () noexcept -&gt; void</td></tr>
 <tr class="memitem:a7a00f1b2190c3a770ad7269e25ba76c1" id="r_a7a00f1b2190c3a770ad7269e25ba76c1"><td class="memTemplParams" colspan="2">template&lt;typename Source&gt; </td></tr>
 <tr class="memitem:a7a00f1b2190c3a770ad7269e25ba76c1 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a7a00f1b2190c3a770ad7269e25ba76c1">map_source_bound</a> () noexcept -&gt; std::size_t</td></tr>
-<tr class="memitem:adec8aee7ccd3ccebc559b47e07d062f1" id="r_adec8aee7ccd3ccebc559b47e07d062f1"><td class="memTemplParams" colspan="2">template&lt;typename KeyType, typename <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, typename Tuple, std::size_t... PairIndices&gt; </td></tr>
-<tr class="memitem:adec8aee7ccd3ccebc559b47e07d062f1 template"><td class="memItemLeft">consteval auto&#160;</td><td class="memItemRight"><a class="el" href="#adec8aee7ccd3ccebc559b47e07d062f1">hash_map_factory_pairs_are_nothrow</a> (std::index_sequence&lt; PairIndices... &gt; indices) noexcept -&gt; bool</td></tr>
-<tr class="memitem:a9b2281b180f44b7863736972baaa0440" id="r_a9b2281b180f44b7863736972baaa0440"><td class="memTemplParams" colspan="2">template&lt;typename KeyType, typename <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, typename... Args&gt; </td></tr>
-<tr class="memitem:a9b2281b180f44b7863736972baaa0440 template"><td class="memItemLeft">consteval auto&#160;</td><td class="memItemRight"><a class="el" href="#a9b2281b180f44b7863736972baaa0440">hash_map_factory_arguments_are_nothrow</a> () noexcept -&gt; bool</td></tr>
-<tr class="memitem:a17ee2b84c411b69ca47454d7dcf451fe" id="r_a17ee2b84c411b69ca47454d7dcf451fe"><td class="memItemLeft">concept&#160;</td><td class="memItemRight"><a class="el" href="#a17ee2b84c411b69ca47454d7dcf451fe">Args</a> ()</td></tr>
-<tr class="memitem:a4aee245a87d94393c24a90b3ea8c3e45" id="r_a4aee245a87d94393c24a90b3ea8c3e45"><td class="memTemplParams" colspan="2">template&lt;typename KeyType, typename <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, std::size_t Capacity&gt; </td></tr>
-<tr class="memitem:a4aee245a87d94393c24a90b3ea8c3e45 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a4aee245a87d94393c24a90b3ea8c3e45">build_hash_map_factory_result</a> (<a class="el" href="classcljonic_1_1_map.html">Map</a>&lt; KeyType, <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, Capacity &gt; result) noexcept -&gt; <a class="el" href="classcljonic_1_1_map.html">Map</a>&lt; KeyType, <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, Capacity &gt;</td></tr>
-<tr class="memitem:a25e3773a553af3e6f8902a528e0923da" id="r_a25e3773a553af3e6f8902a528e0923da"><td class="memTemplParams" colspan="2">template&lt;typename KeyType, typename <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, std::size_t Capacity, typename KeyArgument, typename ValueArgument, typename... Rest&gt; </td></tr>
-<tr class="memitem:a25e3773a553af3e6f8902a528e0923da template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a25e3773a553af3e6f8902a528e0923da">build_hash_map_factory_result</a> (<a class="el" href="classcljonic_1_1_map.html">Map</a>&lt; KeyType, <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, Capacity &gt; result, KeyArgument &amp;&amp;key, ValueArgument &amp;&amp;value, Rest &amp;&amp;... rest) noexcept -&gt; <a class="el" href="classcljonic_1_1_map.html">Map</a>&lt; KeyType, <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>, Capacity &gt;</td></tr>
 <tr class="memitem:a9b46baa4743b2009e85962f2d207bceb" id="r_a9b46baa4743b2009e85962f2d207bceb"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a9b46baa4743b2009e85962f2d207bceb">next_tail_capacity</a> (const std::size_t capacity) noexcept -&gt; std::size_t</td></tr>
 <tr class="memitem:ae596b8dc192bb5cb3e15a1a3030db3be" id="r_ae596b8dc192bb5cb3e15a1a3030db3be"><td class="memTemplParams" colspan="2">template&lt;concepts::CljonicRange P&gt; </td></tr>
 <tr class="memitem:ae596b8dc192bb5cb3e15a1a3030db3be template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#ae596b8dc192bb5cb3e15a1a3030db3be">next_producer_tail</a> (const P &amp;producer) noexcept -&gt; P</td></tr>
@@ -493,14 +501,6 @@ requires MaterializableSource&lt;Dest, Source&gt;</td></tr>
 <tr class="memitem:a57dc107fd093729d3ee39998d1c0f0af template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a57dc107fd093729d3ee39998d1c0f0af">reduce_fold</a> (const F &amp;function, Accumulator accumulator, Iterator iterator, std::size_t remaining) noexcept -&gt; Accumulator</td></tr>
 <tr class="memitem:a35cd627752d7c58231fd17957b3bd260" id="r_a35cd627752d7c58231fd17957b3bd260"><td class="memTemplParams" colspan="2">template&lt;typename Result, typename C&gt; </td></tr>
 <tr class="memitem:a35cd627752d7c58231fd17957b3bd260 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a35cd627752d7c58231fd17957b3bd260">materialize_traversal</a> (const C &amp;value) noexcept -&gt; Result</td></tr>
-<tr class="memitem:aaad150c956c029caafe2db7c1a8d32ab" id="r_aaad150c956c029caafe2db7c1a8d32ab"><td class="memTemplParams" colspan="2">template&lt;typename Source, typename... Args&gt; </td></tr>
-<tr class="memitem:aaad150c956c029caafe2db7c1a8d32ab template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#aaad150c956c029caafe2db7c1a8d32ab">string_factory_reject_text_source</a> () noexcept -&gt; void</td></tr>
-<tr class="memitem:a758899eb67880957d0a63f8e7aeadd4e" id="r_a758899eb67880957d0a63f8e7aeadd4e"><td class="memTemplParams" colspan="2">template&lt;std::size_t Capacity, typename... Args&gt; </td></tr>
-<tr class="memitem:a758899eb67880957d0a63f8e7aeadd4e template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a758899eb67880957d0a63f8e7aeadd4e">string_factory_reject_capacity_call</a> () noexcept -&gt; void</td></tr>
-<tr class="memitem:ac54c8021ed24727d70949f0dbffae7ca" id="r_ac54c8021ed24727d70949f0dbffae7ca"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:ac54c8021ed24727d70949f0dbffae7ca template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#ac54c8021ed24727d70949f0dbffae7ca">string_factory_reject_deduced_call</a> () noexcept -&gt; void</td></tr>
-<tr class="memitem:a08f1734ff4a595de13b69800a9f28122" id="r_a08f1734ff4a595de13b69800a9f28122"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:a08f1734ff4a595de13b69800a9f28122 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a08f1734ff4a595de13b69800a9f28122">string_factory_reject_empty_call</a> () noexcept -&gt; void</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -508,6 +508,16 @@ Variables</h2></td></tr>
 <tr class="memitem:a570dcc6213b05f494ff55d6be1497334 template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#a570dcc6213b05f494ff55d6be1497334">all_assoc_pairs_admissible_v</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1all__assoc__pairs__admissible.html">all_assoc_pairs_admissible</a>&lt;C, Pairs...&gt;::value</td></tr>
 <tr class="memitem:a114dcd4fdd8002bf42637725872f8f56" id="r_a114dcd4fdd8002bf42637725872f8f56"><td class="memTemplParams" colspan="2">template&lt;typename C, typename... Arguments&gt; </td></tr>
 <tr class="memitem:a114dcd4fdd8002bf42637725872f8f56 template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#a114dcd4fdd8002bf42637725872f8f56">all_assoc_arguments_admissible_v</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1all__assoc__arguments__admissible.html">all_assoc_arguments_admissible</a>&lt;C, Arguments...&gt;::value</td></tr>
+<tr class="memitem:a11275eadb20422d2d9a7effa05b3c845" id="r_a11275eadb20422d2d9a7effa05b3c845"><td class="memTemplParams" colspan="2">template&lt;typename KeyType, typename <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>&gt; </td></tr>
+<tr class="memitem:a11275eadb20422d2d9a7effa05b3c845 template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#a11275eadb20422d2d9a7effa05b3c845">is_cljonic_map_entry_v&lt; cljonic::MapEntry&lt; KeyType, ValueType &gt; &gt;</a> = true</td></tr>
+<tr class="memitem:ab9fb80516a7a093c3cebc31ef2cb7bb3" id="r_ab9fb80516a7a093c3cebc31ef2cb7bb3"><td class="memItemLeft">concept&#160;</td><td class="memItemRight"><a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a></td></tr>
+<tr class="memitem:a404e64bf977f53e18a3e39726e8a7e7a" id="r_a404e64bf977f53e18a3e39726e8a7e7a"><td class="memItemLeft">concept&#160;</td><td class="memItemRight"><a class="el" href="#a404e64bf977f53e18a3e39726e8a7e7a">DeducedQueueElementType</a></td></tr>
+<tr class="memitem:afb3e26178fd89606bb39cf5b6be2948d" id="r_afb3e26178fd89606bb39cf5b6be2948d"><td class="memItemLeft">concept&#160;</td><td class="memItemRight"><a class="el" href="#afb3e26178fd89606bb39cf5b6be2948d">DeducedHashSetElementType</a></td></tr>
+<tr class="memitem:afff1155dcd436302983eda6334ecbcca" id="r_afff1155dcd436302983eda6334ecbcca"><td class="memTemplParams" colspan="2">template&lt;typename Array&gt; </td></tr>
+<tr class="memitem:afff1155dcd436302983eda6334ecbcca template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#afff1155dcd436302983eda6334ecbcca">string_factory_literal_exceeds_maximum_v</a></td></tr>
+<tr class="memitem:ad040d18e48767d08f266494d07163d36" id="r_ad040d18e48767d08f266494d07163d36"><td class="memTemplParams" colspan="2">template&lt;typename Source&gt; </td></tr>
+<tr class="memitem:ad040d18e48767d08f266494d07163d36 template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#ad040d18e48767d08f266494d07163d36">string_factory_literal_v</a></td></tr>
+<tr class="memitem:ad58b0c594269eed9336e2c6938d40d25" id="r_ad58b0c594269eed9336e2c6938d40d25"><td class="memItemLeft">concept&#160;</td><td class="memItemRight"><a class="el" href="#ad58b0c594269eed9336e2c6938d40d25">DeducedVectorElementType</a></td></tr>
 <tr class="memitem:ab8fd50010c5a1e2e4f202ac1d645d757" id="r_ab8fd50010c5a1e2e4f202ac1d645d757"><td class="memTemplParams" colspan="2">template&lt;typename...&gt; </td></tr>
 <tr class="memitem:ab8fd50010c5a1e2e4f202ac1d645d757 template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#ab8fd50010c5a1e2e4f202ac1d645d757">dependent_false</a> = false</td></tr>
 <tr class="memitem:a3889b714b08533483ca70718c5f1d55c" id="r_a3889b714b08533483ca70718c5f1d55c"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
@@ -556,24 +566,14 @@ Variables</h2></td></tr>
 <tr class="memitem:a3ed7e407136a560445c71d669f768152 template"><td class="memItemLeft">constexpr <a class="el" href="#ac021cea1f07aaa9ffdaf2830762bea39">equality_family</a>&#160;</td><td class="memItemRight"><a class="el" href="#a3ed7e407136a560445c71d669f768152">equal_family_of_v</a></td></tr>
 <tr class="memitem:acd7526228af5a829349aa3e83ee12d45" id="r_acd7526228af5a829349aa3e83ee12d45"><td class="memTemplParams" colspan="2">template&lt;typename... Ts&gt; </td></tr>
 <tr class="memitem:acd7526228af5a829349aa3e83ee12d45 template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#acd7526228af5a829349aa3e83ee12d45">all_adjacent_pairs_admissible_v</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1all__adjacent__pairs__admissible.html">all_adjacent_pairs_admissible</a>&lt;Ts...&gt;::value</td></tr>
-<tr class="memitem:a11275eadb20422d2d9a7effa05b3c845" id="r_a11275eadb20422d2d9a7effa05b3c845"><td class="memTemplParams" colspan="2">template&lt;typename KeyType, typename <a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a>&gt; </td></tr>
-<tr class="memitem:a11275eadb20422d2d9a7effa05b3c845 template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#a11275eadb20422d2d9a7effa05b3c845">is_cljonic_map_entry_v&lt; cljonic::MapEntry&lt; KeyType, ValueType &gt; &gt;</a> = true</td></tr>
 <tr class="memitem:abf6841198e6622a15e3333e628094e04" id="r_abf6841198e6622a15e3333e628094e04"><td class="memTemplParams" colspan="2">template&lt;typename F, typename... Sources&gt; </td></tr>
 <tr class="memitem:abf6841198e6622a15e3333e628094e04 template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#abf6841198e6622a15e3333e628094e04">map_parameters_safe_v</a></td></tr>
 <tr class="memitem:a7170435d41687410eef0a49fdcd5be4c" id="r_a7170435d41687410eef0a49fdcd5be4c"><td class="memTemplParams" colspan="2">template&lt;typename... Sources&gt; </td></tr>
 <tr class="memitem:a7170435d41687410eef0a49fdcd5be4c template"><td class="memItemLeft">constexpr std::size_t&#160;</td><td class="memItemRight"><a class="el" href="#a7170435d41687410eef0a49fdcd5be4c">MapResultCapacity</a></td></tr>
-<tr class="memitem:ab9fb80516a7a093c3cebc31ef2cb7bb3" id="r_ab9fb80516a7a093c3cebc31ef2cb7bb3"><td class="memItemLeft">concept&#160;</td><td class="memItemRight"><a class="el" href="#ab9fb80516a7a093c3cebc31ef2cb7bb3">ValueType</a></td></tr>
-<tr class="memitem:a404e64bf977f53e18a3e39726e8a7e7a" id="r_a404e64bf977f53e18a3e39726e8a7e7a"><td class="memItemLeft">concept&#160;</td><td class="memItemRight"><a class="el" href="#a404e64bf977f53e18a3e39726e8a7e7a">DeducedQueueElementType</a></td></tr>
 <tr class="memitem:a9dfe9f54ebdeddfadf9b703d7d283308" id="r_a9dfe9f54ebdeddfadf9b703d7d283308"><td class="memItemLeft">concept&#160;</td><td class="memItemRight"><a class="el" href="#a9dfe9f54ebdeddfadf9b703d7d283308">DeducedRangeElementType</a></td></tr>
 <tr class="memitem:ab3f077c21cea0bd15d5eb26942575617" id="r_ab3f077c21cea0bd15d5eb26942575617"><td class="memItemLeft">constexpr std::size_t&#160;</td><td class="memItemRight"><a class="el" href="#ab3f077c21cea0bd15d5eb26942575617">ReduceRequiredParameterCount</a> = 2U</td></tr>
 <tr class="memitem:ab88696ee448750e90271f862b46ea934" id="r_ab88696ee448750e90271f862b46ea934"><td class="memTemplParams" colspan="2">template&lt;typename F, typename Source&gt; </td></tr>
 <tr class="memitem:ab88696ee448750e90271f862b46ea934 template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#ab88696ee448750e90271f862b46ea934">reduce_parameters_safe_v</a></td></tr>
-<tr class="memitem:afb3e26178fd89606bb39cf5b6be2948d" id="r_afb3e26178fd89606bb39cf5b6be2948d"><td class="memItemLeft">concept&#160;</td><td class="memItemRight"><a class="el" href="#afb3e26178fd89606bb39cf5b6be2948d">DeducedHashSetElementType</a></td></tr>
-<tr class="memitem:afff1155dcd436302983eda6334ecbcca" id="r_afff1155dcd436302983eda6334ecbcca"><td class="memTemplParams" colspan="2">template&lt;typename Array&gt; </td></tr>
-<tr class="memitem:afff1155dcd436302983eda6334ecbcca template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#afff1155dcd436302983eda6334ecbcca">string_factory_literal_exceeds_maximum_v</a></td></tr>
-<tr class="memitem:ad040d18e48767d08f266494d07163d36" id="r_ad040d18e48767d08f266494d07163d36"><td class="memTemplParams" colspan="2">template&lt;typename Source&gt; </td></tr>
-<tr class="memitem:ad040d18e48767d08f266494d07163d36 template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#ad040d18e48767d08f266494d07163d36">string_factory_literal_v</a></td></tr>
-<tr class="memitem:ad58b0c594269eed9336e2c6938d40d25" id="r_ad58b0c594269eed9336e2c6938d40d25"><td class="memItemLeft">concept&#160;</td><td class="memItemRight"><a class="el" href="#ad58b0c594269eed9336e2c6938d40d25">DeducedVectorElementType</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="anchor" id="Seq"></a> The <b>seq</b> free function returns the logical traversal elements of a <span class="tt"><a class="el" href="classcljonic_1_1_vector.html">Vector</a></span>, <span class="tt"><a class="el" href="classcljonic_1_1_map.html">Map</a></span>, <span class="tt"><a class="el" href="classcljonic_1_1_set.html">Set</a></span>, <span class="tt"><a class="el" href="classcljonic_1_1_queue.html">Queue</a></span>, or <span class="tt"><a class="el" href="classcljonic_1_1_string.html">String</a></span> value, or of a supported <a class="el" href="classcljonic_1_1_range.html#Range" title="Range">Range</a>, <a class="el" href="classcljonic_1_1_repeat.html#Repeat" title="Repeat">Repeat</a>, <a class="el" href="classcljonic_1_1_cycle.html#Cycle" title="Cycle">Cycle</a>, <a class="el" href="classcljonic_1_1_iterate.html#Iterate" title="Iterate">Iterate</a>, or <a class="el" href="classcljonic_1_1_repeatedly.html#Repeatedly" title="Repeatedly">Repeatedly</a> producer, as an owning, value-semantic <a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vector</a> in traversal order.</p>
@@ -628,16 +628,16 @@ Variables</h2></td></tr>
 <div class="line">             ? 0</div>
 <div class="line">             : 1;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclasscljonic_1_1_range_html"><div class="ttname"><a href="classcljonic_1_1_range.html">cljonic::Range</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-range_8hpp_source.html#l00098">cljonic-range.hpp:98</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_range_html"><div class="ttname"><a href="classcljonic_1_1_range.html">cljonic::Range</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-range_8hpp_source.html#l00098">cljonic-producer-range.hpp:98</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a2e9b3e27bfcfd4e694144ca6f355b122a6ba8844da718b4a65f60dbfd0d92d6ef"><div class="ttname"><a href="#a2e9b3e27bfcfd4e694144ca6f355b122a6ba8844da718b4a65f60dbfd0d92d6ef">cljonic::concepts_detail::collection_kind::vector</a></div><div class="ttdeci">@ vector</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00069">cljonic-concepts.hpp:69</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-assoc_8hpp_source.html#l00006">cljonic-assoc.hpp:6</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_a0276d2cc4a963af9ddbc2ad7aa6ac4f0"><div class="ttname"><a href="namespacecljonic.html#a0276d2cc4a963af9ddbc2ad7aa6ac4f0">cljonic::map_entry</a></div><div class="ttdeci">constexpr auto map_entry(Args &amp;&amp;... args) noexcept -&gt; MapEntry&lt; concepts_detail::map_entry_factory_key_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, concepts_detail::map_entry_factory_value_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-map-entry_8hpp_source.html#l00174">cljonic-map-entry.hpp:174</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_a11e270768e9485445f2885cdecb1c4eb"><div class="ttname"><a href="namespacecljonic.html#a11e270768e9485445f2885cdecb1c4eb">cljonic::vector</a></div><div class="ttdeci">constexpr auto vector(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Vector&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-vector_8hpp_source.html#l00400">cljonic-vector.hpp:400</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_a2693300957a43d0bb2d4c29634a838f7"><div class="ttname"><a href="namespacecljonic.html#a2693300957a43d0bb2d4c29634a838f7">cljonic::queue</a></div><div class="ttdeci">constexpr auto queue(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::queue_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Queue&lt; concepts_detail::queue_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-queue_8hpp_source.html#l00330">cljonic-queue.hpp:330</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_a2aa4197e029c665443f7f5d0ebcf61d8"><div class="ttname"><a href="namespacecljonic.html#a2aa4197e029c665443f7f5d0ebcf61d8">cljonic::hash_map</a></div><div class="ttdeci">constexpr auto hash_map(Args &amp;&amp;... args) noexcept -&gt; Map&lt; concepts_detail::hash_map_factory_key_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, concepts_detail::hash_map_factory_value_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, sizeof...(Args)/2U &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-map_8hpp_source.html#l00440">cljonic-map.hpp:440</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a0276d2cc4a963af9ddbc2ad7aa6ac4f0"><div class="ttname"><a href="namespacecljonic.html#a0276d2cc4a963af9ddbc2ad7aa6ac4f0">cljonic::map_entry</a></div><div class="ttdeci">constexpr auto map_entry(Args &amp;&amp;... args) noexcept -&gt; MapEntry&lt; concepts_detail::map_entry_factory_key_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, concepts_detail::map_entry_factory_value_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-map-entry_8hpp_source.html#l00174">cljonic-collection-map-entry.hpp:174</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a11e270768e9485445f2885cdecb1c4eb"><div class="ttname"><a href="namespacecljonic.html#a11e270768e9485445f2885cdecb1c4eb">cljonic::vector</a></div><div class="ttdeci">constexpr auto vector(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Vector&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-vector_8hpp_source.html#l00400">cljonic-collection-vector.hpp:400</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a2693300957a43d0bb2d4c29634a838f7"><div class="ttname"><a href="namespacecljonic.html#a2693300957a43d0bb2d4c29634a838f7">cljonic::queue</a></div><div class="ttdeci">constexpr auto queue(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::queue_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Queue&lt; concepts_detail::queue_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-queue_8hpp_source.html#l00330">cljonic-collection-queue.hpp:330</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a2aa4197e029c665443f7f5d0ebcf61d8"><div class="ttname"><a href="namespacecljonic.html#a2aa4197e029c665443f7f5d0ebcf61d8">cljonic::hash_map</a></div><div class="ttdeci">constexpr auto hash_map(Args &amp;&amp;... args) noexcept -&gt; Map&lt; concepts_detail::hash_map_factory_key_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, concepts_detail::hash_map_factory_value_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, sizeof...(Args)/2U &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-map_8hpp_source.html#l00440">cljonic-collection-map.hpp:440</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a3379aa2a8b5ffa4566662c4b4a1455c2"><div class="ttname"><a href="namespacecljonic.html#a3379aa2a8b5ffa4566662c4b4a1455c2">cljonic::equal</a></div><div class="ttdeci">constexpr auto equal(const Lhs &amp;lhs, const Rhs &amp;rhs) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-equal_8hpp_source.html#l00345">cljonic-equal.hpp:345</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a41fa65c16edb0a95aa942c48307777d6"><div class="ttname"><a href="namespacecljonic.html#a41fa65c16edb0a95aa942c48307777d6">cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</a></div><div class="ttdeci">constexpr std::size_t CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-collection-maximum-element-count_8hpp_source.html#l00016">cljonic-core-collection-maximum-element-count.hpp:16</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_a63314a7947b7251553be23329779260a"><div class="ttname"><a href="namespacecljonic.html#a63314a7947b7251553be23329779260a">cljonic::iterate</a></div><div class="ttdeci">constexpr auto iterate(Step &amp;&amp;step, T &amp;&amp;initial) noexcept -&gt; Iterate&lt; std::remove_cvref_t&lt; T &gt;, std::decay_t&lt; Step &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-iterate_8hpp_source.html#l00199">cljonic-iterate.hpp:199</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a63314a7947b7251553be23329779260a"><div class="ttname"><a href="namespacecljonic.html#a63314a7947b7251553be23329779260a">cljonic::iterate</a></div><div class="ttdeci">constexpr auto iterate(Step &amp;&amp;step, T &amp;&amp;initial) noexcept -&gt; Iterate&lt; std::remove_cvref_t&lt; T &gt;, std::decay_t&lt; Step &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-iterate_8hpp_source.html#l00199">cljonic-producer-iterate.hpp:199</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_aab04c75f932397ee1b904c9e39413c00"><div class="ttname"><a href="namespacecljonic.html#aab04c75f932397ee1b904c9e39413c00">cljonic::seq</a></div><div class="ttdeci">constexpr auto seq(const C &amp;value) noexcept -&gt; C</div><div class="ttdef"><b>Definition</b> <a href="cljonic-seq_8hpp_source.html#l00095">cljonic-seq.hpp:95</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_af5da07418b370bc5072eacf31957e0ee"><div class="ttname"><a href="namespacecljonic.html#af5da07418b370bc5072eacf31957e0ee">cljonic::count</a></div><div class="ttdeci">constexpr auto count(const C &amp;collection) noexcept -&gt; std::size_t</div><div class="ttdef"><b>Definition</b> <a href="cljonic-count_8hpp_source.html#l00049">cljonic-count.hpp:49</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_af6ac025d9f9bb2d29bcf7442c05b17e0"><div class="ttname"><a href="namespacecljonic.html#af6ac025d9f9bb2d29bcf7442c05b17e0">cljonic::first</a></div><div class="ttdeci">constexpr auto first(const MapEntry&lt; KeyType, ValueType &gt; &amp;entry) noexcept -&gt; KeyType</div><div class="ttdef"><b>Definition</b> <a href="cljonic-first_8hpp_source.html#l00054">cljonic-first.hpp:54</a></div></div>
@@ -651,7 +651,7 @@ Variables</h2></td></tr>
 template&lt;typename F&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="#a21d18a5fa2793a101149643b79c1684f">cljonic::concepts_detail::CallableParameterTypes</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">CallableParameters</a>&lt;std::decay_t&lt;F&gt;&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td>
+          <td class="memname">using <a class="el" href="#a21d18a5fa2793a101149643b79c1684f">cljonic::concepts_detail::CallableParameterTypes</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">CallableParameters</a>&lt;std::decay_t&lt;F&gt;&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -669,7 +669,7 @@ template&lt;typename F&gt; </div>
 template&lt;typename T&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="#a9ec0bbabc401295eef4c14d6b7ac411c">cljonic::concepts_detail::equal_association_value_type_of_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1equal__association__value__type__of.html">equal_association_value_type_of</a>&lt;T&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td>
+          <td class="memname">using <a class="el" href="#a9ec0bbabc401295eef4c14d6b7ac411c">cljonic::concepts_detail::equal_association_value_type_of_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1equal__association__value__type__of.html">equal_association_value_type_of</a>&lt;T&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -687,7 +687,7 @@ template&lt;typename T&gt; </div>
 template&lt;typename T&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="#ae2dc0d847f235ce019b6f419da417da0">cljonic::concepts_detail::equal_key_type_of_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1equal__key__type__of.html">equal_key_type_of</a>&lt;T&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td>
+          <td class="memname">using <a class="el" href="#ae2dc0d847f235ce019b6f419da417da0">cljonic::concepts_detail::equal_key_type_of_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1equal__key__type__of.html">equal_key_type_of</a>&lt;T&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -705,7 +705,7 @@ template&lt;typename T&gt; </div>
 template&lt;typename T&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="#af46aae7552edc34934c804902a920529">cljonic::concepts_detail::equal_value_type_of_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1equal__value__type__of.html">equal_value_type_of</a>&lt;T&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td>
+          <td class="memname">using <a class="el" href="#af46aae7552edc34934c804902a920529">cljonic::concepts_detail::equal_value_type_of_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1equal__value__type__of.html">equal_value_type_of</a>&lt;T&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -746,7 +746,7 @@ template&lt;typename RequestedKeyType, typename RequestedValueType, typename... 
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map_8hpp_source.html#l00372">372</a> of file <a class="el" href="cljonic-map_8hpp_source.html">cljonic-map.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-map_8hpp_source.html#l00372">372</a> of file <a class="el" href="cljonic-collection-map_8hpp_source.html">cljonic-collection-map.hpp</a>.</p>
 
 </div>
 </div>
@@ -764,7 +764,7 @@ template&lt;typename RequestedKeyType, typename RequestedValueType, typename... 
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map_8hpp_source.html#l00375">375</a> of file <a class="el" href="cljonic-map_8hpp_source.html">cljonic-map.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-map_8hpp_source.html#l00375">375</a> of file <a class="el" href="cljonic-collection-map_8hpp_source.html">cljonic-collection-map.hpp</a>.</p>
 
 </div>
 </div>
@@ -777,12 +777,12 @@ template&lt;typename RequestedKeyType, typename RequestedValueType, typename... 
 template&lt;typename RequestedElementType, typename... Args&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="#a604fe498ab6373001c2261cee678026e">cljonic::concepts_detail::hash_set_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1hash__set__factory__element__type.html">hash_set_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td>
+          <td class="memname">using <a class="el" href="#a604fe498ab6373001c2261cee678026e">cljonic::concepts_detail::hash_set_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1hash__set__factory__element__type.html">hash_set_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-set_8hpp_source.html#l00351">351</a> of file <a class="el" href="cljonic-set_8hpp_source.html">cljonic-set.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-set_8hpp_source.html#l00351">351</a> of file <a class="el" href="cljonic-collection-set_8hpp_source.html">cljonic-collection-set.hpp</a>.</p>
 
 </div>
 </div>
@@ -800,7 +800,7 @@ template&lt;typename RequestedKeyType, typename RequestedValueType, typename... 
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map-entry_8hpp_source.html#l00132">132</a> of file <a class="el" href="cljonic-map-entry_8hpp_source.html">cljonic-map-entry.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-map-entry_8hpp_source.html#l00132">132</a> of file <a class="el" href="cljonic-collection-map-entry_8hpp_source.html">cljonic-collection-map-entry.hpp</a>.</p>
 
 </div>
 </div>
@@ -820,9 +820,9 @@ template&lt;typename RequestedKeyType, typename RequestedValueType, typename... 
 <b>Initial value:</b><div class="fragment"><div class="line"> </div>
 <div class="line"><a class="code hl_struct" href="structcljonic_1_1concepts__detail_1_1map__entry__factory__types.html">map_entry_factory_types</a>&lt;RequestedKeyType, RequestedValueType, <a class="code hl_function" href="#a17ee2b84c411b69ca47454d7dcf451fe">Args</a>...&gt;<a class="code hl_class" href="structcljonic_1_1concepts__detail_1_1map__entry__factory__types.html">::value_type</a></div>
 <div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a17ee2b84c411b69ca47454d7dcf451fe"><div class="ttname"><a href="#a17ee2b84c411b69ca47454d7dcf451fe">cljonic::concepts_detail::Args</a></div><div class="ttdeci">concept Args()</div></div>
-<div class="ttc" id="astructcljonic_1_1concepts__detail_1_1map__entry__factory__types_html"><div class="ttname"><a href="structcljonic_1_1concepts__detail_1_1map__entry__factory__types.html">cljonic::concepts_detail::map_entry_factory_types</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-map-entry_8hpp_source.html#l00120">cljonic-map-entry.hpp:120</a></div></div>
+<div class="ttc" id="astructcljonic_1_1concepts__detail_1_1map__entry__factory__types_html"><div class="ttname"><a href="structcljonic_1_1concepts__detail_1_1map__entry__factory__types.html">cljonic::concepts_detail::map_entry_factory_types</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-map-entry_8hpp_source.html#l00120">cljonic-collection-map-entry.hpp:120</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-map-entry_8hpp_source.html#l00135">135</a> of file <a class="el" href="cljonic-map-entry_8hpp_source.html">cljonic-map-entry.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-map-entry_8hpp_source.html#l00135">135</a> of file <a class="el" href="cljonic-collection-map-entry_8hpp_source.html">cljonic-collection-map-entry.hpp</a>.</p>
 
 </div>
 </div>
@@ -840,7 +840,7 @@ template&lt;typename F, typename... Sources&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map-function_8hpp_source.html#l00056">56</a> of file <a class="el" href="cljonic-map-function_8hpp_source.html">cljonic-map-function.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-map_8hpp_source.html#l00056">56</a> of file <a class="el" href="cljonic-map_8hpp_source.html">cljonic-map.hpp</a>.</p>
 
 </div>
 </div>
@@ -853,12 +853,12 @@ template&lt;typename F, typename... Sources&gt; </div>
 template&lt;typename RequestedElementType, typename... Args&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="#a3baef0270ed18e426beb5d6c3ad8f70b">cljonic::concepts_detail::queue_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">queue_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td>
+          <td class="memname">using <a class="el" href="#a3baef0270ed18e426beb5d6c3ad8f70b">cljonic::concepts_detail::queue_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">queue_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-queue_8hpp_source.html#l00307">307</a> of file <a class="el" href="cljonic-queue_8hpp_source.html">cljonic-queue.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-queue_8hpp_source.html#l00307">307</a> of file <a class="el" href="cljonic-collection-queue_8hpp_source.html">cljonic-collection-queue.hpp</a>.</p>
 
 </div>
 </div>
@@ -871,12 +871,12 @@ template&lt;typename RequestedElementType, typename... Args&gt; </div>
 template&lt;typename RequestedElementType, typename... Args&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="#a7374f5d60031561f5b3ca2daa0134359">cljonic::concepts_detail::range_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1range__factory__element__type.html">range_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td>
+          <td class="memname">using <a class="el" href="#a7374f5d60031561f5b3ca2daa0134359">cljonic::concepts_detail::range_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1range__factory__element__type.html">range_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00310">310</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-range_8hpp_source.html#l00310">310</a> of file <a class="el" href="cljonic-producer-range_8hpp_source.html">cljonic-producer-range.hpp</a>.</p>
 
 </div>
 </div>
@@ -894,7 +894,7 @@ template&lt;typename Source&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-reduce-function_8hpp_source.html#l00018">18</a> of file <a class="el" href="cljonic-reduce-function_8hpp_source.html">cljonic-reduce-function.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-reduce_8hpp_source.html#l00018">18</a> of file <a class="el" href="cljonic-reduce_8hpp_source.html">cljonic-reduce.hpp</a>.</p>
 
 </div>
 </div>
@@ -912,7 +912,7 @@ template&lt;typename Source&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-reduce-function_8hpp_source.html#l00021">21</a> of file <a class="el" href="cljonic-reduce-function_8hpp_source.html">cljonic-reduce-function.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-reduce_8hpp_source.html#l00021">21</a> of file <a class="el" href="cljonic-reduce_8hpp_source.html">cljonic-reduce.hpp</a>.</p>
 
 </div>
 </div>
@@ -925,12 +925,12 @@ template&lt;typename Source&gt; </div>
 template&lt;typename RequestedElementType, typename... Args&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="#a6b4025d2e219eea10ac1e5c4a7cd07ca">cljonic::concepts_detail::vector_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1vector__factory__element__type.html">vector_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a></td>
+          <td class="memname">using <a class="el" href="#a6b4025d2e219eea10ac1e5c4a7cd07ca">cljonic::concepts_detail::vector_factory_element_t</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1vector__factory__element__type.html">vector_factory_element_type</a>&lt;RequestedElementType, Args...&gt;<a class="el" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-vector_8hpp_source.html#l00377">377</a> of file <a class="el" href="cljonic-vector_8hpp_source.html">cljonic-vector.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-vector_8hpp_source.html#l00377">377</a> of file <a class="el" href="cljonic-collection-vector_8hpp_source.html">cljonic-collection-vector.hpp</a>.</p>
 
 </div>
 </div>
@@ -1073,7 +1073,7 @@ template&lt;typename KeyType, typename <a class="el" href="#ab9fb80516a7a093c3ce
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map_8hpp_source.html#l00407">407</a> of file <a class="el" href="cljonic-map_8hpp_source.html">cljonic-map.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-map_8hpp_source.html#l00407">407</a> of file <a class="el" href="cljonic-collection-map_8hpp_source.html">cljonic-collection-map.hpp</a>.</p>
 
 </div>
 </div>
@@ -1116,7 +1116,7 @@ template&lt;typename KeyType, typename <a class="el" href="#ab9fb80516a7a093c3ce
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map_8hpp_source.html#l00414">414</a> of file <a class="el" href="cljonic-map_8hpp_source.html">cljonic-map.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-map_8hpp_source.html#l00414">414</a> of file <a class="el" href="cljonic-collection-map_8hpp_source.html">cljonic-collection-map.hpp</a>.</p>
 
 </div>
 </div>
@@ -1581,7 +1581,7 @@ template&lt;typename KeyType, typename <a class="el" href="#ab9fb80516a7a093c3ce
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map_8hpp_source.html#l00386">386</a> of file <a class="el" href="cljonic-map_8hpp_source.html">cljonic-map.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-map_8hpp_source.html#l00386">386</a> of file <a class="el" href="cljonic-collection-map_8hpp_source.html">cljonic-collection-map.hpp</a>.</p>
 
 </div>
 </div>
@@ -1610,7 +1610,7 @@ template&lt;typename KeyType, typename <a class="el" href="#ab9fb80516a7a093c3ce
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map_8hpp_source.html#l00379">379</a> of file <a class="el" href="cljonic-map_8hpp_source.html">cljonic-map.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-map_8hpp_source.html#l00379">379</a> of file <a class="el" href="cljonic-collection-map_8hpp_source.html">cljonic-collection-map.hpp</a>.</p>
 
 </div>
 </div>
@@ -1639,7 +1639,7 @@ template&lt;typename Source&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map-function_8hpp_source.html#l00062">62</a> of file <a class="el" href="cljonic-map-function_8hpp_source.html">cljonic-map-function.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-map_8hpp_source.html#l00062">62</a> of file <a class="el" href="cljonic-map_8hpp_source.html">cljonic-map.hpp</a>.</p>
 
 </div>
 </div>
@@ -1974,7 +1974,7 @@ template&lt;typename F, typename Iterator, typename Accumulator&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-reduce-function_8hpp_source.html#l00128">128</a> of file <a class="el" href="cljonic-reduce-function_8hpp_source.html">cljonic-reduce-function.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-reduce_8hpp_source.html#l00128">128</a> of file <a class="el" href="cljonic-reduce_8hpp_source.html">cljonic-reduce.hpp</a>.</p>
 
 </div>
 </div>
@@ -2003,7 +2003,7 @@ template&lt;typename Source&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-reduce-function_8hpp_source.html#l00122">122</a> of file <a class="el" href="cljonic-reduce-function_8hpp_source.html">cljonic-reduce-function.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-reduce_8hpp_source.html#l00122">122</a> of file <a class="el" href="cljonic-reduce_8hpp_source.html">cljonic-reduce.hpp</a>.</p>
 
 </div>
 </div>
@@ -2128,7 +2128,7 @@ template&lt;std::size_t Capacity, typename... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00385">385</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-string_8hpp_source.html#l00385">385</a> of file <a class="el" href="cljonic-collection-string_8hpp_source.html">cljonic-collection-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -2157,7 +2157,7 @@ template&lt;typename... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00397">397</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-string_8hpp_source.html#l00397">397</a> of file <a class="el" href="cljonic-collection-string_8hpp_source.html">cljonic-collection-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -2186,7 +2186,7 @@ template&lt;typename... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00409">409</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-string_8hpp_source.html#l00409">409</a> of file <a class="el" href="cljonic-collection-string_8hpp_source.html">cljonic-collection-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -2215,7 +2215,7 @@ template&lt;typename Source, typename... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00368">368</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-string_8hpp_source.html#l00368">368</a> of file <a class="el" href="cljonic-collection-string_8hpp_source.html">cljonic-collection-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -2553,7 +2553,7 @@ template&lt;typename T&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-set_8hpp_source.html#l00355">355</a> of file <a class="el" href="cljonic-set_8hpp_source.html">cljonic-set.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-set_8hpp_source.html#l00355">355</a> of file <a class="el" href="cljonic-collection-set_8hpp_source.html">cljonic-collection-set.hpp</a>.</p>
 
 </div>
 </div>
@@ -2569,7 +2569,7 @@ template&lt;typename T&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-queue_8hpp_source.html#l00311">311</a> of file <a class="el" href="cljonic-queue_8hpp_source.html">cljonic-queue.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-queue_8hpp_source.html#l00311">311</a> of file <a class="el" href="cljonic-collection-queue_8hpp_source.html">cljonic-collection-queue.hpp</a>.</p>
 
 </div>
 </div>
@@ -2585,7 +2585,7 @@ template&lt;typename T&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-range_8hpp_source.html#l00314">314</a> of file <a class="el" href="cljonic-range_8hpp_source.html">cljonic-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-range_8hpp_source.html#l00314">314</a> of file <a class="el" href="cljonic-producer-range_8hpp_source.html">cljonic-producer-range.hpp</a>.</p>
 
 </div>
 </div>
@@ -2601,7 +2601,7 @@ template&lt;typename T&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-vector_8hpp_source.html#l00381">381</a> of file <a class="el" href="cljonic-vector_8hpp_source.html">cljonic-vector.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-vector_8hpp_source.html#l00381">381</a> of file <a class="el" href="cljonic-collection-vector_8hpp_source.html">cljonic-collection-vector.hpp</a>.</p>
 
 </div>
 </div>
@@ -2837,7 +2837,7 @@ template&lt;typename KeyType, typename <a class="el" href="#ab9fb80516a7a093c3ce
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map-entry_8hpp_source.html#l00092">92</a> of file <a class="el" href="cljonic-map-entry_8hpp_source.html">cljonic-map-entry.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-map-entry_8hpp_source.html#l00092">92</a> of file <a class="el" href="cljonic-collection-map-entry_8hpp_source.html">cljonic-collection-map-entry.hpp</a>.</p>
 
 </div>
 </div>
@@ -2941,7 +2941,7 @@ template&lt;typename F, typename... Sources&gt; </div>
 </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">                                            = [] <span class="keyword">constexpr</span> {</div>
-<div class="line">    <span class="keyword">using </span>Parameters = <a class="code hl_struct" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">CallableParameters&lt;std::decay_t&lt;F&gt;</a>&gt;<a class="code hl_class" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">::type</a>;</div>
+<div class="line">    <span class="keyword">using </span>Parameters = <a class="code hl_struct" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">CallableParameters&lt;std::decay_t&lt;F&gt;</a>&gt;<a class="code hl_class" href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">::type</a>;</div>
 <div class="line">    <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (!<a class="code hl_struct" href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">CallableParameters&lt;std::decay_t&lt;F&gt;</a>&gt;::known) {</div>
 <div class="line">        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line">    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::tuple_size_v&lt;Parameters&gt; &lt; <span class="keyword">sizeof</span>...(Sources)) {</div>
@@ -2951,8 +2951,9 @@ template&lt;typename F, typename... Sources&gt; </div>
 <div class="line">    }</div>
 <div class="line">}()</div>
 <div class="ttc" id="astructcljonic_1_1concepts__detail_1_1_callable_parameters_html"><div class="ttname"><a href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">cljonic::concepts_detail::CallableParameters</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00128">cljonic-concepts.hpp:128</a></div></div>
+<div class="ttc" id="astructcljonic_1_1concepts__detail_1_1queue__factory__element__type_html"><div class="ttname"><a href="structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html">cljonic::concepts_detail::type</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-map-function_8hpp_source.html#l00029">29</a> of file <a class="el" href="cljonic-map-function_8hpp_source.html">cljonic-map-function.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-map_8hpp_source.html#l00029">29</a> of file <a class="el" href="cljonic-map_8hpp_source.html">cljonic-map.hpp</a>.</p>
 
 </div>
 </div>
@@ -2982,9 +2983,9 @@ template&lt;typename... Sources&gt; </div>
 <div class="line">    ((minimum = std::min(minimum, <a class="code hl_function" href="#a7a00f1b2190c3a770ad7269e25ba76c1">map_source_bound&lt;Sources&gt;</a>())), ...);</div>
 <div class="line">    <span class="keywordflow">return</span> minimum;</div>
 <div class="line">}()</div>
-<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a7a00f1b2190c3a770ad7269e25ba76c1"><div class="ttname"><a href="#a7a00f1b2190c3a770ad7269e25ba76c1">cljonic::concepts_detail::map_source_bound</a></div><div class="ttdeci">constexpr auto map_source_bound() noexcept -&gt; std::size_t</div><div class="ttdef"><b>Definition</b> <a href="cljonic-map-function_8hpp_source.html#l00062">cljonic-map-function.hpp:62</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a7a00f1b2190c3a770ad7269e25ba76c1"><div class="ttname"><a href="#a7a00f1b2190c3a770ad7269e25ba76c1">cljonic::concepts_detail::map_source_bound</a></div><div class="ttdeci">constexpr auto map_source_bound() noexcept -&gt; std::size_t</div><div class="ttdef"><b>Definition</b> <a href="cljonic-map_8hpp_source.html#l00062">cljonic-map.hpp:62</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-map-function_8hpp_source.html#l00071">71</a> of file <a class="el" href="cljonic-map-function_8hpp_source.html">cljonic-map-function.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-map_8hpp_source.html#l00071">71</a> of file <a class="el" href="cljonic-map_8hpp_source.html">cljonic-map.hpp</a>.</p>
 
 </div>
 </div>
@@ -3071,9 +3072,9 @@ template&lt;typename F, typename Source&gt; </div>
 <div class="line">        <span class="keywordflow">return</span> <a class="code hl_struct" href="structcljonic_1_1concepts__detail_1_1_reduce_parameters_safe.html">ReduceParametersSafe&lt;CallableParameterTypes&lt;F&gt;</a>, Source&gt;::value;</div>
 <div class="line">    }</div>
 <div class="line">}()</div>
-<div class="ttc" id="astructcljonic_1_1concepts__detail_1_1_reduce_parameters_safe_html"><div class="ttname"><a href="structcljonic_1_1concepts__detail_1_1_reduce_parameters_safe.html">cljonic::concepts_detail::ReduceParametersSafe</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-reduce-function_8hpp_source.html#l00069">cljonic-reduce-function.hpp:69</a></div></div>
+<div class="ttc" id="astructcljonic_1_1concepts__detail_1_1_reduce_parameters_safe_html"><div class="ttname"><a href="structcljonic_1_1concepts__detail_1_1_reduce_parameters_safe.html">cljonic::concepts_detail::ReduceParametersSafe</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-reduce_8hpp_source.html#l00069">cljonic-reduce.hpp:69</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-reduce-function_8hpp_source.html#l00090">90</a> of file <a class="el" href="cljonic-reduce-function_8hpp_source.html">cljonic-reduce-function.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-reduce_8hpp_source.html#l00090">90</a> of file <a class="el" href="cljonic-reduce_8hpp_source.html">cljonic-reduce.hpp</a>.</p>
 
 </div>
 </div>
@@ -3097,7 +3098,7 @@ template&lt;typename F, typename Source&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-reduce-function_8hpp_source.html#l00023">23</a> of file <a class="el" href="cljonic-reduce-function_8hpp_source.html">cljonic-reduce-function.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-reduce_8hpp_source.html#l00023">23</a> of file <a class="el" href="cljonic-reduce_8hpp_source.html">cljonic-reduce.hpp</a>.</p>
 
 </div>
 </div>
@@ -3180,7 +3181,7 @@ template&lt;typename Array&gt; </div>
 <b>Initial value:</b><div class="fragment"><div class="line">                                                           =</div>
 <div class="line">std::is_array_v&lt;Array&gt; &amp;&amp; (std::extent_v&lt;Array&gt; &gt; <a class="code hl_variable" href="namespacecljonic.html#a41fa65c16edb0a95aa942c48307777d6">CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</a> + 1U)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00415">415</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-string_8hpp_source.html#l00415">415</a> of file <a class="el" href="cljonic-collection-string_8hpp_source.html">cljonic-collection-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -3209,7 +3210,7 @@ template&lt;typename Source&gt; </div>
 <div class="line">std::is_array_v&lt;std::remove_cvref_t&lt;Source&gt;&gt; &amp;&amp;</div>
 <div class="line">std::same_as&lt;std::remove_cv_t&lt;std::remove_extent_t&lt;std::remove_cvref_t&lt;Source&gt;&gt;&gt;, <span class="keywordtype">char</span>&gt;</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-string_8hpp_source.html#l00419">419</a> of file <a class="el" href="cljonic-string_8hpp_source.html">cljonic-string.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-string_8hpp_source.html#l00419">419</a> of file <a class="el" href="cljonic-collection-string_8hpp_source.html">cljonic-collection-string.hpp</a>.</p>
 
 </div>
 </div>
@@ -3293,7 +3294,7 @@ template&lt;typename To, typename From&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-map_8hpp_source.html#l00393">393</a> of file <a class="el" href="cljonic-map_8hpp_source.html">cljonic-map.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-map_8hpp_source.html#l00393">393</a> of file <a class="el" href="cljonic-collection-map_8hpp_source.html">cljonic-collection-map.hpp</a>.</p>
 
 </div>
 </div>
