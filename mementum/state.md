@@ -1,5 +1,28 @@
 ## Current Session State
 
+- last_session_id: 2eed547b-7bf5-4c46-bd32-1bf8b4f19c15
+- current_timestamp: 2026-11-02T10:53:16-07:00
+- session_complete: true
+- recover: 1. The reduce feature and generated HTML were committed by the user in the recent `REQ-FN-034` implementation/test/spec/vocabulary/architecture commits and `26b3b1f Update docs`; only this state-file update remains uncommitted. 2. A coworker's coverage run initially reported 99.9% because the no-initial empty-source default return lacked runtime coverage; a runtime assertion fixed it, and isolated `coverage-cli` reached 100.0% without modifying existing `build-coverage/`. 3. Preserve the current Doxygen example's user-defined `Summary` accumulator; a proposal to implement `map` using `reduce` was reviewed and declined because it would be implementation-oriented and demonstrate only unary mapping.
+
+Task:
+1. `/cljonic-api-complete reduce` — COMPLETE: activated `reduce(f, source)` and `reduce(f, initial, source)` over cljonic collections and producers. Contract is recorded in REQ-FN-034, vocabulary `ReduceFunction`, S2 architecture, and `specs/sequences/reduce.allium` (32 traced obligations). No-initial requires an inspectable callback signature, safely converts the first element to the accumulator, and returns the accumulator default for empty input. Explicit-initial supports uninspectable callables and does not require source elements to convert to the accumulator type. Both forms fold the saturated observed count, terminate on unbounded producers, preserve inputs, and require nonthrowing callback behavior.
+2. Added the API header, umbrella include and cheatsheet entry, shared callable-signature introspection (map behavior preserved), ordinary tests, modular/single-header no-heap probe, compile-fail harness, diagnostics registration, generated amalgamation, and a Doxygen example with scalar, producer, unordered Set, and user-defined `Summary` reductions.
+3. Investigated the coworker’s coverage log: the sole uncovered line was the runtime empty no-initial branch. Added runtime coverage in the spec test and no-heap probe. The gcov checksum warnings reflected stale profile data; isolated coverage validation avoided the existing coverage directory.
+
+Questions:
+1. None open. Human-approved behavior: two arities; all supported cljonic sources; callback receives `(accumulator, element)` and returns exactly the accumulator value type; always traverses; empty no-initial yields the accumulator's default value; unbounded producers use the configured observation cap; no-initial requires inspectable parameters; generic callbacks require an explicit initial value. Doxygen direction: retain the structured `Summary` demonstration rather than showing `map` implemented through `reduce`.
+
+Validation:
+1. `make upsert-gate-fast:ok`; focused `[reduce],[map]` tests; `make reduce-compile-fail`; `make no-heap` (both modular and single-header probe executables built and run); `make docs-examples` (43 examples compiled, linked, and executed); exact trace check and authoritative traceability (32 obligations); requirements/vocabulary structure; Allium check/analyse; lint; complexity; diagnostics; and audit-scripts all passed.
+2. `make coverage-cli COVERAGE_BUILD_DIR=/tmp/cljonic-reduce-coverage` passed at 100.0% line coverage in a fresh isolated build. User later committed the generated HTML docs. No product changes remain uncommitted; only this mementum state update is pending commit.
+
+Next:
+1. Commit this mementum state update with the fini session commit message.
+2. Existing deferred work is unchanged: rationale markers in REQ-CAP-014/REQ-NUM-018/REQ-NUM-019 need `/gybis-req-tend`; thru-family remains deferred.
+
+## Current Session State
+
 - last_session_id: c2284362-2ae1-4c30-82cb-94c0ba4846f6
 - current_timestamp: 2026-11-01T14:18:20-07:00
 - session_complete: true
