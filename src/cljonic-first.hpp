@@ -1,7 +1,7 @@
 #pragma once
 
+#include <cljonic-collection-map.hpp>
 #include <cljonic-concepts.hpp>
-#include <cljonic-map.hpp>
 
 namespace cljonic {
 

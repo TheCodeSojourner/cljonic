@@ -1430,7 +1430,7 @@ template <typename C, typename V1, typename V2, typename... Rest>
 #include <type_traits>
 #include <utility>
 
-// Begin cljonic-string.hpp
+// Begin cljonic-collection-string.hpp
 #pragma once
 
 #include <array>
@@ -1999,7 +1999,7 @@ struct walker_coverage<String<CapacityValue>> {
 };
 
 } // namespace cljonic::concepts_detail
-// End cljonic-string.hpp
+// End cljonic-collection-string.hpp
 
 namespace cljonic {
 
@@ -2096,42 +2096,38 @@ template <typename T>
 
 } // namespace cljonic
 // End cljonic-character-is-valid.hpp
-// Begin cljonic-conj.hpp
+// Begin cljonic-collection-map.hpp
 #pragma once
+
+#include <array>
+#include <cstddef>
+#include <ranges>
+#include <span>
+#include <tuple>
+#include <utility>
+
+// Begin cljonic-collection-map-entry.hpp
+#pragma once
+
+#include <type_traits>
+#include <utility>
 
 
 namespace cljonic {
 
-namespace concepts_detail {
-
-template <typename C, typename T>
-concept ConjValueAdmissible = concepts::ConjableCollection<C> && requires(const C& collection, const T& value) {
-    { collection.conj(value) } noexcept -> std::same_as<C>;
-};
-
-} // namespace concepts_detail
-
-/** \anchor Conj
- * The \b conj free function returns a \ref concepts::CljonicCollection "collection" with the supplied values added.
- * Each operation returns a distinct collection value and preserves the source.
+/** \anchor MapEntry
+ * A MapEntry is a value-semantic pair representing a single key-value association. Its fields are public, but MapEntry
+ * is not a C++ aggregate.
  *
- * Supported for \ref Vector "Vector", \ref Set "Set", \ref Map "Map", \ref Queue "Queue", and \ref String "String".
- * \ref Vector "Vector" appends at the end. \ref Queue "Queue" enqueues at the rear. \ref String "String" appends at
- * its logical count. For \ref String "String", invalid characters are rejected at compile time and replaced with `.`
- * at runtime; see \ref String "String" for character validation and normalization policy.
+ * Use the \ref MapEntryFactory "map_entry" factory as the idiomatic creation surface at runtime or during constant
+ * evaluation. A MapEntry is a fixed pair, so the factory has no capacity parameter.
  *
- * \ref Set "Set" adds absent elements; duplicates are no-ops. \ref Map "Map" associates a \ref MapEntry; an existing
- * key's value is replaced.
+ * Keys must support reliable, non-throwing equality comparison and non-throwing storage operations. Values must have a
+ * default value and be copyable, assignable, and destructible without throwing, so the entry remains safe to copy and
+ * update in bounded collections. Keys and values may themselves be cljonic collections or producers, including nested
+ * cljonic composites, provided they satisfy their respective constraints.
  *
- * At full capacity, \ref Vector "Vector", \ref Queue "Queue", and \ref String "String" return unchanged copies. A full
- * \ref Set "Set" or \ref Map "Map" also returns an unchanged copy when the element or key is absent.
- *
- * Three arities are provided: `conj(collection)` returns an unchanged copy, `conj(collection, value)` adds one value,
- * and `conj(collection, value₁, value₂, …)` adds two or more values left to right, so `conj(c, x₁, x₂)`
- * equals `conj(conj(c, x₁), x₂)`. Each value must be one the collection can hold, as described above; a value that
- * does not fit because the collection is full is skipped.
- *
- * Stored values follow the \ref implicit-conversions "safe implicit conversion rules".
+ * Key and value construction follows the \ref implicit-conversions "safe implicit conversion rules".
  *
  * \b Examples
  ~~~~~{.cpp}
@@ -2140,307 +2136,2030 @@ concept ConjValueAdmissible = concepts::ConjableCollection<C> && requires(const 
 
  int main() {
    // Compile-time demonstration.
-   constexpr auto q_const = conj(queue<int, 4>(), 10);
-   constexpr auto s_const = conj(hash_set<int, 4>(), 20);
-   static_assert(peek(q_const) == 10);
-   static_assert(contains(s_const, 20));
+   constexpr auto m_const = hash_map(1, 100, 2, 200);
+   static_assert(first(m_const) == map_entry(1, 100) ||
+                 first(m_const) == map_entry(2, 200));
 
-   constexpr auto v_const = conj(vector<int, 4>(10, 20), 30);
-   static_assert(v_const(2) == 30);
-   constexpr auto text_const = conj(string<4>("Hi"), '!');
-   static_assert(text_const(2) == '!');
-   constexpr auto m_const = conj(hash_map<int, int, 4>(), map_entry(1, 100));
-   static_assert(m_const(1) == 100);
+   // Explicit key and value types are available when deduction is not wanted.
+   constexpr auto e_explicit = map_entry<long, long>(1, 100);
 
-   // Zero-value and variadic arities.
-   constexpr auto v_same = conj(v_const);
-   static_assert(v_same.count() == 3);
-   constexpr auto v_many = conj(vector<int, 4>(10), 20, 30);
-   static_assert(v_many(2) == 30);
-   constexpr auto text_many = conj(string<4>("H"), 'i', '!');
-   static_assert(text_many(2) == '!');
+   // Runtime demonstration: a Map is created with hash_map and its entries,
+   // each a MapEntry value, can be traversed, compared, and added.
+   const auto m_runtime = hash_map<int, int, 4>(1, 100, 2, 200);
 
-   // Runtime demonstration.
-   auto q_runtime = queue<int, 4>();
-   const auto q1 = conj(q_runtime, 100);
+   auto value_sum = 0;
+   for (const auto &entry : m_runtime) {
+     value_sum += entry.value;
+   }
 
-   return (peek(q1) == 100) ? 0 : 1;
+   const auto m_fuller = conj(m_runtime, map_entry(3, 300));
+
+   return (value_sum == 300 && m_fuller(3) == 300 && e_explicit.key == 1) ? 0
+                                                                          : 1;
  }
  ~~~~~
  */
-template <typename C, typename T>
-    requires concepts_detail::ConjValueAdmissible<C, T>
-[[nodiscard]] constexpr auto conj(const C& collection, const T& value) noexcept(noexcept(collection.conj(value))) -> C {
-    return collection.conj(value);
+template <concepts::NothrowStableEqualityComparable KeyType, concepts::NothrowCollectionElement ValueType>
+struct MapEntry {
+    using key_type = KeyType;
+    using value_type = ValueType;
+    using mapped_type = ValueType;
+
+    KeyType key{};
+    ValueType value{};
+
+    constexpr MapEntry() noexcept = default;
+
+    template <typename Key>
+        requires concepts::NothrowElementConstruction<KeyType, Key>
+    constexpr explicit MapEntry(Key&& entry_key) noexcept : key(std::forward<Key>(entry_key)) {
+    }
+
+    template <typename Key, typename Value>
+        requires concepts::NothrowElementConstruction<KeyType, Key> &&
+                     concepts::NothrowElementConstruction<ValueType, Value>
+    constexpr MapEntry(Key&& entry_key, Value&& entry_value) noexcept
+        : key(std::forward<Key>(entry_key)), value(std::forward<Value>(entry_value)) {
+    }
+
+    [[nodiscard]] constexpr auto operator==(const MapEntry& other) const noexcept -> bool
+        requires concepts::StableEqualityComparable<KeyType> && concepts::StableEqualityComparable<ValueType>
+    {
+        return key == other.key && value == other.value;
+    }
+};
+
+template <typename Key, typename Value>
+MapEntry(Key, Value) -> MapEntry<Key, Value>;
+
+} // namespace cljonic
+
+namespace cljonic::concepts_detail {
+
+template <typename KeyType, typename ValueType>
+inline constexpr bool is_cljonic_map_entry_v<cljonic::MapEntry<KeyType, ValueType>> = true;
+
+// MapEntry inherits the recursive component analysis of the closed cljonic
+// value domain: it admits stable equality only when both its key and value
+// components admit stable equality (REQ-CAP-010).
+template <typename KeyType, typename ValueType>
+struct contains_floating_point<cljonic::MapEntry<KeyType, ValueType>>
+    : std::bool_constant<contains_floating_point_v<KeyType> || contains_floating_point_v<ValueType>> {};
+
+template <typename KeyType, typename ValueType>
+struct contains_callable<cljonic::MapEntry<KeyType, ValueType>>
+    : std::bool_constant<contains_callable_v<KeyType> || contains_callable_v<ValueType>> {};
+
+template <typename KeyType, typename ValueType>
+struct contains_standard_range<cljonic::MapEntry<KeyType, ValueType>>
+    : std::bool_constant<contains_standard_range_v<KeyType> || contains_standard_range_v<ValueType>> {};
+
+// Nominal walker coverage (REQ-NUM-019): MapEntry declares that the walkers reach
+// both its key and value types.
+template <typename KeyType, typename ValueType>
+struct walker_coverage<cljonic::MapEntry<KeyType, ValueType>> {
+    static constexpr bool declared = true;
+};
+
+struct DeducedMapEntryKeyType {};
+struct DeducedMapEntryValueType {};
+
+template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
+struct map_entry_factory_types {
+    using key_type = RequestedKeyType;
+    using value_type = RequestedValueType;
+};
+
+template <typename KeyArgument, typename ValueArgument>
+struct map_entry_factory_types<DeducedMapEntryKeyType, DeducedMapEntryValueType, KeyArgument, ValueArgument> {
+    using key_type = std::remove_cvref_t<KeyArgument>;
+    using value_type = std::remove_cvref_t<ValueArgument>;
+};
+
+template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
+using map_entry_factory_key_type_t = map_entry_factory_types<RequestedKeyType, RequestedValueType, Args...>::key_type;
+
+template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
+using map_entry_factory_value_type_t =
+    map_entry_factory_types<RequestedKeyType, RequestedValueType, Args...>::value_type;
+
+template <typename KeyType, typename ValueType, typename... Args>
+struct map_entry_factory_arguments_are_nothrow : std::false_type {};
+
+template <typename KeyType, typename ValueType, typename KeyArgument, typename ValueArgument>
+struct map_entry_factory_arguments_are_nothrow<KeyType, ValueType, KeyArgument, ValueArgument>
+    : std::bool_constant<concepts::NothrowElementConstruction<KeyType, KeyArgument> &&
+                         concepts::NothrowElementConstruction<ValueType, ValueArgument>> {};
+
+template <typename KeyType, typename ValueType>
+concept MapEntryFactoryElementTypes =
+    concepts::NothrowStableEqualityComparable<KeyType> && concepts::NothrowCollectionElement<ValueType>;
+
+template <typename KeyType, typename ValueType, typename... Args>
+concept MapEntryFactoryArguments = map_entry_factory_arguments_are_nothrow<KeyType, ValueType, Args...>::value;
+
+} // namespace cljonic::concepts_detail
+
+namespace cljonic {
+
+/** \anchor MapEntryFactory
+ * Creates a \ref MapEntry "MapEntry" from exactly one key and one value.
+ *
+ * Deduced calls use the unqualified types of the key and value arguments. Explicit types use \c map_entry<Key,
+ * Value>(...). A MapEntry is a fixed pair, so unlike the collection factories there is no capacity parameter and no
+ * spare-capacity form.
+ */
+template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
+          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
+    requires(
+        concepts_detail::MapEntryFactoryElementTypes<
+            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
+        sizeof...(Args) == 2U &&
+        concepts_detail::MapEntryFactoryArguments<
+            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...>)
+[[nodiscard]] constexpr auto map_entry(Args&&... args) noexcept
+    -> MapEntry<concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+                concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> {
+    using KeyType = concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>;
+    using ValueType = concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>;
+    return MapEntry<KeyType, ValueType>{std::forward<Args>(args)...};
 }
 
-/** Zero-value `conj`: returns an unchanged copy of the collection, matching Clojure's `(conj coll)`. */
-template <typename C>
-    requires concepts::ConjableCollection<C>
-[[nodiscard]] constexpr auto conj(const C& collection) noexcept -> C {
-    return collection;
+template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
+          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
+    requires(sizeof...(Args) != 2U)
+constexpr auto map_entry([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
+                  "cljonic::map_entry: requires exactly one key argument and one value argument.");
 }
+
+template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
+          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
+    requires(sizeof...(Args) == 2U &&
+             !concepts_detail::MapEntryFactoryElementTypes<
+                 concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+                 concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>>)
+constexpr auto map_entry([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
+                  "cljonic::map_entry: key and value types must satisfy MapEntry element requirements.");
+}
+
+template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
+          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
+    requires(
+        sizeof...(Args) == 2U &&
+        concepts_detail::MapEntryFactoryElementTypes<
+            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
+        !concepts_detail::MapEntryFactoryArguments<
+            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...>)
+constexpr auto map_entry([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
+                  "cljonic::map_entry: the key and value must safely construct their declared types without "
+                  "throwing.");
+}
+
+} // namespace cljonic
+// End cljonic-collection-map-entry.hpp
+
+namespace cljonic {
+
+/** \anchor Map
+ * A Map is a bounded, associative collection that maps unique keys to values and provides callable lookup with
+ * optional fallback values. Other operations use the library's free-function API.
+ *
+ * The \c hash_map factory is the idiomatic way to create Map values, at runtime or during constant evaluation. It
+ * accepts alternating keys and values, and a later duplicate key replaces the earlier value. Use \c hash_map(k, v,
+ * ...) to infer the key type, value type, and capacity, \c hash_map<K, V>(k, v, ...) to select the key and value
+ * types, or \c hash_map<K, V, Capacity>(k, v, ...) to provide an explicit capacity, including for an empty map. \c
+ * Map<K, V, Capacity> remains the value's type.
+ *
+ * Direct construction is useful when importing a C++ range or view: its entries are copied into the Map. A cljonic
+ * collection or producer is not a constructor source.
+ *
+ * Construction with more entries than the available capacity is rejected at compile time. Construction from entries
+ * requires the exact declared entry type. Keys, mapped values, and fallbacks follow the \ref implicit-conversions
+ * "safe implicit conversion rules".
+ *
+ \b Examples
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+ using namespace cljonic;
+
+ struct Key {
+   int id;
+   friend constexpr bool operator==(const Key &, const Key &) noexcept = default;
+ };
+
+ struct Value {
+   int amount = 0;
+   friend constexpr bool operator==(const Value &,
+                                    const Value &) noexcept = default;
+ };
+
+ using AccountEntry = MapEntry<Key, Value>;
+ using AccountMap = Map<Key, Value, 2>;
+
+ int main() {
+   // The factory is the idiomatic way to create maps. It accepts
+   // alternating keys and values.
+   constexpr auto factory_map = hash_map(Key{1}, Value{10}, Key{2}, Value{20});
+   static_assert(factory_map(Key{2}).amount == 20);
+
+   // Explicit key, value, and capacity types create an empty Map with room
+   // for later associations.
+   constexpr auto reserved = hash_map<Key, Value, 4>();
+
+   // Missing `reserved(Key{1})` returns the fallback value
+   static_assert(reserved(Key{1}).amount == 0);
+
+   // The factory also works with runtime values.
+   const auto runtime_amount = 40;
+   const auto runtime_factory = hash_map(Key{4}, Value{runtime_amount});
+
+   // Runtime CTAD deduces Map<Key, Value, 1> from the map_entry value.
+   auto runtime = hash_map(Key{3}, Value{30});
+   const auto present = runtime(Key{3});
+   const auto missing = runtime(Key{4}, Value{77});
+
+   // A standard view pipeline can use an existing Map as its source and
+   // Construct another Map from the transformed entries.
+   const auto copied_view =
+       runtime | std::views::transform([](const AccountEntry &entry) noexcept {
+         return map_entry(entry.key, Value{entry.value.amount * 2});
+       });
+   const auto from_pipeline = AccountMap{copied_view};
+
+   // A named map type and its named entry type make the intended value model
+   // explicit. A later duplicate key replaces the earlier value (i.e., the
+   // right-most value associated with a duplicate key).
+   constexpr auto literal =
+       AccountMap{map_entry(Key{1}, Value{10}), map_entry(Key{1}, Value{20})};
+
+   // A Map is callable for present-key lookup and missing-key fallback.
+   static_assert(literal(Key{1}).amount == 20);
+   static_assert(literal(Key{2}).amount == 0);
+   static_assert(literal(Key{2}, Value{99}).amount == 99);
+
+   // ---------------------------------------------------------------------------
+   // C++ interoperability: a Map supports const traversal and exposes a
+   // non-owning std::span view. Range/view sources are copied into owned
+   // storage, retaining only the bounded prefix that fits the capacity.
+   // ---------------------------------------------------------------------------
+   static constexpr AccountEntry source_entries[] = {
+       map_entry(Key{10}, Value{100}), map_entry(Key{20}, Value{200})};
+   constexpr auto source_span = std::span{source_entries};
+   constexpr auto from_span = AccountMap{source_span};
+   static_assert(from_span(Key{10}).amount == 100);
+   static_assert(from_span(Key{20}).amount == 200);
+
+   constexpr auto from_span_ctad = Map{source_span};
+   static_assert(from_span_ctad(Key{10}).amount == 100);
+   static_assert(from_span_ctad.view().size() == 2);
+
+   // Constructing a Map from a runtime C++ array/span
+   AccountEntry runtime_buffer[] = {map_entry(Key{100}, Value{1000}),
+                                    map_entry(Key{200}, Value{2000})};
+   const auto runtime_from_span =
+       Map<Key, Value, 4>{std::span<const AccountEntry>{runtime_buffer, 2}};
+
+   // Use C++ interoperability to sum the values in a map.
+   auto value_sum = 0;
+   for (const auto &entry : runtime) {
+     value_sum += entry.value.amount;
+   }
+
+   const auto runtime_view = runtime.view();
+
+   return (present.amount == 30 && missing.amount == 77 && value_sum == 30 &&
+           runtime_view.size() == 1 && runtime_view[0].value.amount == 30 &&
+           factory_map(Key{1}).amount == 10 &&
+           runtime_factory(Key{4}).amount == 40 &&
+           from_span(Key{10}).amount == 100 &&
+           from_pipeline(Key{3}).amount == 60 &&
+           runtime_from_span(Key{100}).amount == 1000)
+              ? 0
+              : 1;
+ }
+ ~~~~~
+ */
+template <concepts::NothrowStableEqualityComparable KeyType, concepts::NothrowCollectionElement ValueType,
+          std::size_t CapacityValue>
+    requires(!concepts_detail::is_std_variant_v<KeyType>)
+class Map {
+  public:
+    using key_type = KeyType;
+    using lookup_type = key_type;
+    using mapped_type = ValueType;
+    using association_value_type = ValueType;
+    using value_type = MapEntry<KeyType, ValueType>;
+
+    static_assert(
+        CapacityValue <= cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE,
+        "cljonic::Map: CapacityValue exceeds "
+        "CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT=" CLJONIC_STRINGIFY(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT));
+
+    template <typename... Args>
+    explicit(sizeof...(Args) ==
+             1) constexpr Map(Args&&... args) noexcept((concepts::NothrowElementConstruction<value_type, Args> &&
+                                                        ...)) {
+        static_assert(sizeof...(Args) <= CapacityValue, "cljonic::Map: initializer count exceeds Map CapacityValue");
+        static_assert(((std::same_as<std::remove_cvref_t<Args>, value_type> &&
+                        concepts::NothrowElementConstruction<value_type, Args>) &&
+                       ...),
+                      "cljonic::Map: constructor requires all arguments to construct "
+                      "the exact MapEntry type without throwing");
+
+        ((*this = assoc_entry(value_type{std::forward<Args>(args)})), ...);
+    }
+
+    // A cljonic collection or producer is not a SourceConstruction source
+    // (REQ-FN-027A); materialize it via into, preflighted by fits_into.
+    template <std::ranges::input_range SourceRange>
+        requires(!concepts_detail::is_cljonic_collection_v<SourceRange> &&
+                 !concepts_detail::is_cljonic_producer_v<SourceRange> &&
+                 !std::same_as<std::remove_cvref_t<SourceRange>, value_type>)
+    explicit constexpr Map(SourceRange&& source) noexcept(
+        (concepts::NothrowRangeConstruction<value_type, SourceRange>)) {
+        static_assert(concepts::NothrowRangeConstruction<value_type, SourceRange>,
+                      "cljonic::Map: range/view constructor requires each source element to construct "
+                      "the exact MapEntry type and requires non-throwing traversal");
+        static_assert(concepts_detail::static_extent_fits_v<SourceRange, CapacityValue>,
+                      "cljonic::Map: static-extent range source exceeds Map CapacityValue");
+
+        std::size_t copy_count = 0;
+        for (auto&& item : std::forward<SourceRange>(source)) {
+            if (copy_count++ >= CapacityValue) {
+                break;
+            }
+            *this = assoc_entry(value_type{std::forward<decltype(item)>(item)});
+        }
+    }
+
+    // Diagnostic fallback (REQ-DIAG-010): a cljonic collection or producer is
+    // not a SourceConstruction source. This overload exists only to explain the
+    // rejection -- it produces no value and is never a supported call target.
+    template <typename SourceValue>
+        requires((concepts_detail::is_cljonic_collection_v<SourceValue> ||
+                  concepts_detail::is_cljonic_producer_v<SourceValue>) &&
+                 !std::same_as<std::remove_cvref_t<SourceValue>, value_type>)
+    explicit constexpr Map([[maybe_unused]] SourceValue&& source) noexcept {
+        static_assert(concepts_detail::dependent_false<SourceValue>,
+                      "cljonic::Map: you cannot construct a Map from a cljonic collection or producer. A Map is built "
+                      "from MapEntry elements, or from a non-cljonic C++ range or view.");
+    }
+
+    [[nodiscard]] static constexpr auto capacity() noexcept -> std::size_t {
+        return CapacityValue;
+    }
+
+    [[nodiscard]] constexpr auto count() const noexcept -> std::size_t {
+        return logical_size_;
+    }
+
+    [[nodiscard]] constexpr auto operator==(const Map& other) const noexcept -> bool
+        requires concepts::StableEqualityComparable<KeyType> && concepts::StableEqualityComparable<ValueType>
+    {
+        if (logical_size_ != other.logical_size_) {
+            return false;
+        }
+        for (std::size_t i = 0; i < logical_size_; ++i) {
+            if (!matches_entry(other, i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    [[nodiscard]] constexpr auto contains(const KeyType& key) const noexcept -> bool {
+        return find_index(key) < logical_size_;
+    }
+
+    [[nodiscard]] constexpr auto operator()(const KeyType& key, const ValueType& fallback = ValueType{}) const noexcept
+        -> ValueType {
+        const auto idx = find_index(key);
+        return (idx < logical_size_) ? entries_[idx].value : fallback;
+    }
+
+    [[nodiscard]] constexpr auto can_assoc(const KeyType& key, [[maybe_unused]] const ValueType& value) const noexcept
+        -> bool {
+        return contains(key) || (logical_size_ < CapacityValue);
+    }
+
+    [[nodiscard]] constexpr auto assoc(const KeyType& key, const ValueType& value) const noexcept -> Map {
+        Map result = *this;
+        const auto idx = result.find_index(key);
+        if (idx < result.logical_size_) {
+            result.entries_[idx].value = value;
+        } else if (result.logical_size_ < CapacityValue) {
+            result.entries_[result.logical_size_] = value_type{key, value};
+            ++result.logical_size_;
+        }
+        return result;
+    }
+
+    /** Returns true when the entry's key is present or the map has room for one
+     *  more entry. */
+    [[nodiscard]] constexpr auto can_conj(const value_type& entry) const noexcept -> bool {
+        return contains(entry.key) || (logical_size_ < CapacityValue);
+    }
+
+    /** Associates the entry's key with its value on a copy: an existing key
+     *  replaces its value without increasing count; an absent key is added only
+     *  when capacity remains. Returns an unchanged copy when full. */
+    [[nodiscard]] constexpr auto conj(const value_type& entry) const noexcept -> Map {
+        return assoc(entry.key, entry.value);
+    }
+
+    [[nodiscard]] constexpr auto dissoc(const KeyType& key) const noexcept -> Map {
+        Map result = *this;
+        const auto idx = result.find_index(key);
+        if (idx < result.logical_size_) {
+            if (idx + 1U < result.logical_size_) {
+                result.entries_[idx] = result.entries_[result.logical_size_ - 1U];
+            }
+            --result.logical_size_;
+        }
+        return result;
+    }
+
+    [[nodiscard]] constexpr auto begin() const noexcept -> const value_type* {
+        return entries_.data();
+    }
+
+    [[nodiscard]] constexpr auto end() const noexcept -> const value_type* {
+        return entries_.data() + logical_size_;
+    }
+
+    [[nodiscard]] constexpr auto view() const noexcept -> std::span<const value_type> {
+        return {entries_.data(), logical_size_};
+    }
+
+    template <typename Key>
+        requires(!concepts::SafeImplicitConversion<KeyType, Key>)
+    auto contains(const Key& key) const -> bool = delete;
+
+    template <typename Key, typename Fallback = ValueType>
+        requires(!concepts::SafeImplicitConversion<KeyType, Key> ||
+                 !concepts::SafeImplicitConversion<ValueType, Fallback>)
+    auto operator()(const Key& key, const Fallback& fallback = Fallback{}) const -> ValueType = delete;
+
+    template <typename Key, typename Value>
+        requires(!concepts::SafeImplicitConversion<KeyType, Key> || !concepts::SafeImplicitConversion<ValueType, Value>)
+    auto can_assoc(const Key& key, const Value& value) const -> bool = delete;
+
+    template <typename Key, typename Value>
+        requires(!concepts::SafeImplicitConversion<KeyType, Key> || !concepts::SafeImplicitConversion<ValueType, Value>)
+    auto assoc(const Key& key, const Value& value) const -> Map = delete;
+
+    template <typename Entry>
+        requires(!std::same_as<std::remove_cvref_t<Entry>, value_type>)
+    auto can_conj(const Entry& entry) const -> bool = delete;
+
+    template <typename Entry>
+        requires(!std::same_as<std::remove_cvref_t<Entry>, value_type>)
+    auto conj(const Entry& entry) const -> Map = delete;
+
+    template <typename Key>
+        requires(!concepts::SafeImplicitConversion<KeyType, Key>)
+    auto dissoc(const Key& key) const -> Map = delete;
+
+  private:
+    [[nodiscard]] constexpr auto find_index(const KeyType& key) const noexcept -> std::size_t {
+        for (std::size_t i = 0; i < logical_size_; ++i) {
+            if (entries_[i].key == key) {
+                return i;
+            }
+        }
+        return logical_size_;
+    }
+
+    [[nodiscard]] constexpr auto matches_entry(const Map& other, std::size_t index) const noexcept -> bool {
+        const auto idx = other.find_index(entries_[index].key);
+        if (idx >= other.logical_size_) {
+            return false;
+        }
+        return entries_[index].value == other.entries_[idx].value;
+    }
+
+    [[nodiscard]] constexpr auto assoc_entry(const value_type& entry) const noexcept -> Map {
+        return assoc(entry.key, entry.value);
+    }
+
+    std::array<value_type, CapacityValue> entries_{};
+    std::size_t logical_size_{0};
+};
+
+template <typename KeyType, typename ValueType, typename... Rest>
+Map(MapEntry<KeyType, ValueType>, Rest...) -> Map<KeyType, ValueType, 1 + sizeof...(Rest)>;
+
+template <typename KeyType, typename ValueType, std::size_t Extent>
+    requires(Extent != std::dynamic_extent)
+Map(std::span<const MapEntry<KeyType, ValueType>, Extent>) -> Map<KeyType, ValueType, Extent>;
+
+template <typename KeyType, typename ValueType, std::size_t Extent>
+    requires(Extent != std::dynamic_extent)
+Map(std::span<MapEntry<KeyType, ValueType>, Extent>) -> Map<KeyType, ValueType, Extent>;
 
 namespace concepts_detail {
 
-// Every value in the argument list is admissible for the collection. The
-// recursion consumes one value per step; an empty tail is admissible.
-template <typename C, typename... Values>
-struct all_conj_values_admissible : std::true_type {};
+struct DeducedHashMapKeyType {};
+struct DeducedHashMapValueType {};
 
-template <typename C, typename T, typename... Rest>
-struct all_conj_values_admissible<C, T, Rest...>
-    : std::bool_constant<ConjValueAdmissible<C, T> && all_conj_values_admissible<C, Rest...>::value> {};
+template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
+struct hash_map_factory_types {
+    using key_type = RequestedKeyType;
+    using value_type = RequestedValueType;
+};
 
-template <typename C, typename... Values>
-inline constexpr bool all_conj_values_admissible_v = all_conj_values_admissible<C, Values...>::value;
+template <typename FirstKey, typename FirstValue, typename... Rest>
+struct hash_map_factory_types<DeducedHashMapKeyType, DeducedHashMapValueType, FirstKey, FirstValue, Rest...> {
+    using key_type = std::remove_cvref_t<FirstKey>;
+    using value_type = std::remove_cvref_t<FirstValue>;
+};
 
-// Left-to-right fold of the remaining values into an accumulator that already
-// holds the first value(s); each step reuses the single-value overload's
-// contract. The accumulator is threaded by reference (never passed by value) so
-// the fold cannot be intercepted by a collection's source-construction
-// constructor.
-template <typename C>
-constexpr void fold_conj_values_into([[maybe_unused]] C& result) noexcept {
+template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
+using hash_map_factory_key_type_t = hash_map_factory_types<RequestedKeyType, RequestedValueType, Args...>::key_type;
+
+template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
+using hash_map_factory_value_type_t = hash_map_factory_types<RequestedKeyType, RequestedValueType, Args...>::value_type;
+
+template <typename KeyType, typename ValueType, typename Tuple, std::size_t... PairIndices>
+[[nodiscard]] consteval auto
+hash_map_factory_pairs_are_nothrow([[maybe_unused]] std::index_sequence<PairIndices...> indices) noexcept -> bool {
+    return (concepts::NothrowElementConstruction<KeyType, std::tuple_element_t<2U * PairIndices, Tuple>> && ...) &&
+           (concepts::NothrowElementConstruction<ValueType, std::tuple_element_t<(2U * PairIndices) + 1U, Tuple>> &&
+            ...);
 }
 
-template <typename C, typename T, typename... Rest>
-constexpr void fold_conj_values_into(C& result, const T& value, const Rest&... rest) noexcept {
-    result = result.conj(value);
-    fold_conj_values_into(result, rest...);
+template <typename KeyType, typename ValueType, typename... Args>
+[[nodiscard]] consteval auto hash_map_factory_arguments_are_nothrow() noexcept -> bool {
+    return hash_map_factory_pairs_are_nothrow<KeyType, ValueType, std::tuple<Args...>>(
+        std::make_index_sequence<sizeof...(Args) / 2U>{});
 }
 
-} // namespace concepts_detail
+template <typename KeyType, typename ValueType, typename... Args>
+concept HashMapFactoryPairArguments = sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
+                                      hash_map_factory_arguments_are_nothrow<KeyType, ValueType, Args...>();
 
-/** Variadic `conj`: adds two or more values left to right, as if they were added one at a time. Each value must be one
- *  the collection can hold; a value that does not fit because the collection is full is skipped, and the remaining
- *  values are still added. */
-template <typename C, typename T1, typename T2, typename... Rest>
-    requires concepts::ConjableCollection<C> && concepts_detail::all_conj_values_admissible_v<C, T1, T2, Rest...>
-[[nodiscard]] constexpr auto conj(const C& collection, const T1& value1, const T2& value2, const Rest&... rest) noexcept
-    -> C {
-    C result = conj(conj(collection, value1), value2);
-    concepts_detail::fold_conj_values_into(result, rest...);
+template <typename KeyType, typename ValueType>
+concept HashMapFactoryElementTypes = concepts::NothrowStableEqualityComparable<KeyType> &&
+                                     concepts::NothrowCollectionElement<ValueType> && !is_std_variant_v<KeyType>;
+
+template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
+concept HashMapFactoryCapacityArguments =
+    HashMapFactoryElementTypes<KeyType, ValueType> && Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
+    sizeof...(Args) % 2U == 0U && sizeof...(Args) / 2U <= Capacity &&
+    sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
+    (sizeof...(Args) == 0U || HashMapFactoryPairArguments<KeyType, ValueType, Args...>);
+
+template <typename KeyType, typename ValueType, std::size_t Capacity>
+[[nodiscard]] constexpr auto build_hash_map_factory_result(Map<KeyType, ValueType, Capacity> result) noexcept
+    -> Map<KeyType, ValueType, Capacity> {
     return result;
 }
 
-// Diagnostic fallback (REQ-DIAG-009): explain collection and value-domain
-// rejections without making either a supported call target.
-template <typename C, typename T>
-    requires concepts::CljonicCollection<C> && (!concepts::ConjableCollection<C>)
-[[nodiscard]] constexpr auto conj([[maybe_unused]] const C& collection, [[maybe_unused]] const T& value) noexcept -> C {
-    static_assert(concepts_detail::dependent_false<C>, "cljonic::conj: the first argument must be a Vector, a Set, a "
-                                                       "Map, a Queue, or a String.");
-    return collection;
+template <typename KeyType, typename ValueType, std::size_t Capacity, typename KeyArgument, typename ValueArgument,
+          typename... Rest>
+[[nodiscard]] constexpr auto build_hash_map_factory_result(Map<KeyType, ValueType, Capacity> result, KeyArgument&& key,
+                                                           ValueArgument&& value, Rest&&... rest) noexcept
+    -> Map<KeyType, ValueType, Capacity> {
+    return build_hash_map_factory_result(
+        result.assoc(std::forward<KeyArgument>(key), std::forward<ValueArgument>(value)), std::forward<Rest>(rest)...);
 }
-
-template <typename C, typename T>
-    requires concepts::ConjableCollection<C> && (!concepts_detail::ConjValueAdmissible<C, T>)
-[[nodiscard]] constexpr auto conj([[maybe_unused]] const C& collection, [[maybe_unused]] const T& value) noexcept -> C {
-    static_assert(concepts_detail::dependent_false<C, T>,
-                  "cljonic::conj: this value cannot be added to the collection with conj. A Map takes a MapEntry; "
-                  "other collections take a value of the type they store.");
-    return collection;
-}
-
-template <typename C>
-    requires concepts::CljonicCollection<C> && (!concepts::ConjableCollection<C>)
-[[nodiscard]] constexpr auto conj([[maybe_unused]] const C& collection) noexcept -> C {
-    static_assert(concepts_detail::dependent_false<C>, "cljonic::conj: the first argument must be a Vector, a Set, a "
-                                                       "Map, a Queue, or a String.");
-    return collection;
-}
-
-template <typename C, typename T1, typename T2, typename... Rest>
-    requires concepts::CljonicCollection<C> && (!concepts::ConjableCollection<C>)
-[[nodiscard]] constexpr auto conj([[maybe_unused]] const C& collection, [[maybe_unused]] const T1& value1,
-                                  [[maybe_unused]] const T2& value2, [[maybe_unused]] const Rest&... rest) noexcept
-    -> C {
-    static_assert(concepts_detail::dependent_false<C>, "cljonic::conj: the first argument must be a Vector, a Set, a "
-                                                       "Map, a Queue, or a String.");
-    return collection;
-}
-
-template <typename C, typename T1, typename T2, typename... Rest>
-    requires concepts::ConjableCollection<C> && (!concepts_detail::all_conj_values_admissible_v<C, T1, T2, Rest...>)
-[[nodiscard]] constexpr auto conj([[maybe_unused]] const C& collection, [[maybe_unused]] const T1& value1,
-                                  [[maybe_unused]] const T2& value2, [[maybe_unused]] const Rest&... rest) noexcept
-    -> C {
-    static_assert(concepts_detail::dependent_false<C>,
-                  "cljonic::conj: every value after the collection must be one this collection can add. A Map takes "
-                  "MapEntry values; other collections take a value of the type they store.");
-    return collection;
-}
-
-} // namespace cljonic
-// End cljonic-conj.hpp
-// Begin cljonic-contains.hpp
-#pragma once
-
-
-namespace cljonic {
-
-namespace concepts_detail {
-
-template <typename C>
-concept ContainsLookupCollection =
-    concepts::LookupCollection<C> && (concepts::CljonicMap<C> || concepts::CljonicSet<C>);
-
-template <typename C>
-concept ContainsIndexedCollection =
-    concepts::IndexedCollection<C> && (concepts::CljonicVector<C> || concepts::CljonicString<C>);
-
-template <typename C>
-concept ContainsSupportedCollection = ContainsLookupCollection<C> || ContainsIndexedCollection<C>;
-
-template <typename C, typename K>
-concept ContainsAdmissible =
-    (ContainsLookupCollection<C> && concepts::SafeImplicitConversion<typename C::lookup_type, K>) ||
-    (ContainsIndexedCollection<C> && IntegerIndexType<K>);
 
 } // namespace concepts_detail
 
-/** \anchor Contains
- * The \b contains free function tests key presence, element membership, or index validity in a \ref Map "Map", \ref
- * Set "Set", \ref Vector "Vector", or \ref String "String". It returns `true` when the key or element is present, or
- * when the index is valid; otherwise, it returns `false`.
+/** \anchor HashMapFactory
+ * Creates a bounded \ref Map "Map" from alternating key/value arguments.
  *
- * \ref Map "Map" keys and \ref Set "Set" elements admit their declared type and safe numeric widening that preserves
- * every source value. \ref Vector "Vector" and \ref String "String" accept an integer index.
- *
- * \b Examples
- ~~~~~{.cpp}
- #include "cljonic.hpp"
- using namespace cljonic;
-
- int main() {
-   // Compile-time demonstration.
-   constexpr auto v_const = vector(10, 20, 30);
-   constexpr auto m_const = hash_map(1, 100);
-   constexpr auto s_const = hash_set(5);
-   constexpr auto st_const = string("abc");
-   static_assert(contains(v_const, 0));
-   static_assert(!contains(v_const, 9));
-   static_assert(contains(m_const, 1));
-   static_assert(!contains(m_const, 2));
-   static_assert(contains(s_const, 5));
-   static_assert(!contains(s_const, 8));
-   static_assert(contains(st_const, 1));
-
-   // Runtime demonstration.
-   auto v_runtime = vector(10, 20);
-   const auto in_range = contains(v_runtime, 0);
-
-   return (in_range && !contains(v_runtime, 9)) ? 0 : 1;
- }
- ~~~~~
+ * Deduced calls use the first pair's unqualified types and have capacity equal to their pair count. Explicit types use
+ * \c hash_map<Key, Value>(...); explicit capacity uses \c hash_map<Key, Value, Capacity>(...), including for an empty
+ * map.
  */
-template <typename C, typename K>
-    requires concepts_detail::ContainsAdmissible<C, K>
-[[nodiscard]] constexpr auto contains(const C& collection, const K& key) noexcept(noexcept(collection.contains(key)))
-    -> bool {
-    return collection.contains(key);
+template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
+          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
+    requires(
+        concepts_detail::HashMapFactoryElementTypes<
+            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
+        concepts_detail::HashMapFactoryPairArguments<
+            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...> &&
+        sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
+[[nodiscard]] constexpr auto hash_map(Args&&... args) noexcept
+    -> Map<concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+           concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>,
+           sizeof...(Args) / 2U> {
+    using KeyType = concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>;
+    using ValueType = concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>;
+    return concepts_detail::build_hash_map_factory_result<KeyType, ValueType, sizeof...(Args) / 2U>(
+        Map<KeyType, ValueType, sizeof...(Args) / 2U>{}, std::forward<Args>(args)...);
 }
 
-template <typename C, typename K>
-    requires(concepts::CljonicCollection<C> || concepts::CljonicProducer<C>) &&
-            (!concepts_detail::ContainsSupportedCollection<C>)
-[[nodiscard]] constexpr auto contains([[maybe_unused]] const C& collection, [[maybe_unused]] const K& key) noexcept
-    -> bool {
-    static_assert(concepts_detail::dependent_false<C>,
-                  "cljonic::contains: the first argument must be a Map, Set, Vector, or String.");
-    return false;
+template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
+          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
+    requires(sizeof...(Args) == 0U || sizeof...(Args) % 2U != 0U)
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
+                  "cljonic::hash_map: empty calls require explicit key, value, and capacity types; nonempty calls "
+                  "require complete alternating key/value pairs.");
 }
 
-template <typename C, typename K>
-    requires concepts_detail::ContainsSupportedCollection<C> && (!concepts_detail::ContainsAdmissible<C, K>)
-[[nodiscard]] constexpr auto contains([[maybe_unused]] const C& collection, [[maybe_unused]] const K& key) noexcept
-    -> bool {
-    if constexpr (concepts_detail::ContainsLookupCollection<C>) {
-        static_assert(concepts_detail::dependent_false<C, K>,
-                      "cljonic::contains: the lookup value must convert safely to the map's key type or the set's "
-                      "element type, without losing values or changing its meaning.");
-    } else {
-        static_assert(concepts_detail::dependent_false<C, K>,
-                      "cljonic::contains: a Vector or a String index must be a non-boolean, non-character integer "
-                      "type.");
-    }
-    return false;
+template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
+          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
+    requires(sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
+             !concepts_detail::HashMapFactoryElementTypes<
+                 concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+                 concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>>)
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
+                  "cljonic::hash_map: key and value types must satisfy Map element requirements.");
+}
+
+template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
+          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
+    requires(sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
+             concepts_detail::HashMapFactoryElementTypes<
+                 concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+                 concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
+             sizeof...(Args) / 2U > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
+                  "cljonic::hash_map: pair count exceeds CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
+}
+
+template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
+          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
+    requires(
+        sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
+        concepts_detail::HashMapFactoryElementTypes<
+            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
+        sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
+        !concepts_detail::HashMapFactoryPairArguments<
+            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...>)
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
+                  "cljonic::hash_map: every key and value must safely construct its declared type without "
+                  "throwing.");
+}
+
+/** Creates a bounded Map with explicit capacity, including an empty Map. */
+template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
+    requires concepts_detail::HashMapFactoryCapacityArguments<KeyType, ValueType, Capacity, Args...>
+[[nodiscard]] constexpr auto hash_map(Args&&... args) noexcept -> Map<KeyType, ValueType, Capacity> {
+    return concepts_detail::build_hash_map_factory_result<KeyType, ValueType, Capacity>(
+        Map<KeyType, ValueType, Capacity>{}, std::forward<Args>(args)...);
+}
+
+template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
+    requires(!concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType>)
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
+                  "cljonic::hash_map: key and value types must satisfy Map element requirements.");
+}
+
+template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
+    requires(concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType> &&
+             Capacity > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
+                  "cljonic::hash_map: capacity exceeds CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
+}
+
+template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
+    requires(concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType> &&
+             Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
+             (sizeof...(Args) % 2U != 0U || sizeof...(Args) / 2U > Capacity))
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
+                  "cljonic::hash_map: arguments must be complete key/value pairs and fit within the selected "
+                  "capacity.");
+}
+
+template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
+    requires(concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType> &&
+             Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE && sizeof...(Args) % 2U == 0U &&
+             sizeof...(Args) / 2U <= Capacity &&
+             sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE && sizeof...(Args) > 0U &&
+             !concepts_detail::HashMapFactoryPairArguments<KeyType, ValueType, Args...>)
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
+                  "cljonic::hash_map: every key and value must safely construct its declared type without "
+                  "throwing.");
 }
 
 } // namespace cljonic
-// End cljonic-contains.hpp
-// Begin cljonic-count.hpp
+
+namespace cljonic::concepts_detail {
+
+template <typename KeyType, typename ValueType, std::size_t CapacityValue>
+struct collection_traits<Map<KeyType, ValueType, CapacityValue>> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::map;
+};
+
+template <typename KeyType, typename ValueType, std::size_t CapacityValue>
+struct contains_floating_point<Map<KeyType, ValueType, CapacityValue>>
+    : std::bool_constant<contains_floating_point_v<KeyType> || contains_floating_point_v<ValueType>> {};
+
+template <typename KeyType, typename ValueType, std::size_t CapacityValue>
+struct contains_callable<Map<KeyType, ValueType, CapacityValue>>
+    : std::bool_constant<contains_callable_v<KeyType> || contains_callable_v<ValueType>> {};
+
+template <typename KeyType, typename ValueType, std::size_t CapacityValue>
+struct contains_standard_range<Map<KeyType, ValueType, CapacityValue>>
+    : std::bool_constant<contains_standard_range_v<KeyType> || contains_standard_range_v<ValueType>> {};
+
+// Nominal walker coverage (REQ-NUM-019): Map declares that the walkers reach both
+// its key and value types.
+template <typename KeyType, typename ValueType, std::size_t CapacityValue>
+struct walker_coverage<Map<KeyType, ValueType, CapacityValue>> {
+    static constexpr bool declared = true;
+};
+
+} // namespace cljonic::concepts_detail
+// End cljonic-collection-map.hpp
+// Begin cljonic-collection-queue.hpp
 #pragma once
 
+#include <array>
 #include <cstddef>
+#include <iterator>
+#include <ranges>
+#include <type_traits>
+#include <utility>
+
 
 namespace cljonic {
 
-/** \anchor Count
- * The \b count free function returns the number of elements in a \ref concepts::SequenceableCollection "collection" or
- * \ref concepts::SequenceableProducer "producer".
+/** \anchor Queue
+ * A Queue is a bounded FIFO collection. Operations use the library's free-function API.
  *
- * For unbounded \ref concepts::SequenceableProducer "producers", it returns \b
- * CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE.
+ * The \c queue factory is the idiomatic way to create Queue values at runtime or during constant evaluation. Use \c
+ * queue(e, ...) to infer the element type and capacity, \c queue<T>(e, ...) to select the element type, \c queue<T,
+ * Capacity>(e, ...) to provide an explicit capacity, or \c queue<T>() for an empty zero-capacity Queue. \c Queue<T,
+ * Capacity> remains the value's type.
  *
- * \b Examples
+ * Direct construction can import a C++ range or view: its elements are copied into the Queue. A cljonic value is not
+ * copied as a range/view source. With an explicit element type, a cljonic argument is accepted as one element only
+ * when its type exactly matches the declared element type. Without explicit template arguments, a sole cljonic
+ * argument determines the element type and yields a one-element collection. Elements may themselves be cljonic
+ * collections or producers, including nested cljonic composites.
+ *
+ * Construction with more values than the available capacity is rejected at compile time. Elements follow the \ref
+ * implicit-conversions "safe implicit conversion rules".
+ *
+ \b Examples
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
 
  int main() {
-   // Compile-time demonstration.
-   constexpr auto v_const = vector(1, 2, 3);
-   constexpr auto m_const = hash_map(1, 100);
-   constexpr auto q_const = queue(9);
-   constexpr auto r_const = Range{0, 5};
-   constexpr auto finite_repeat = Repeat{3, 7};
-   constexpr auto unbounded_repeat = Repeat{7};
-   constexpr auto unbounded_range = Range{0, 0, 0};
-   static_assert(count(v_const) == 3);
-   static_assert(count(m_const) == 1);
-   static_assert(count(q_const) == 1);
-   static_assert(count(r_const) == 5);
-   static_assert(count(finite_repeat) == 3);
-   static_assert(count(unbounded_repeat) ==
-                 CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
-   static_assert(count(unbounded_range) ==
-                 CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
+   // The factory infers Queue<int, 3> from the argument count.
+   [[maybe_unused]] constexpr auto ints_at_capacity = queue(1, 2, 3);
 
-   // Runtime demonstration.
-   auto v_runtime = vector(10, 20);
-   const auto sz = count(v_runtime);
+   // Explicit capacity permits a partially populated Queue and an empty Queue.
+   [[maybe_unused]] constexpr auto ints_populated = queue<int, 4>(1, 2);
+   [[maybe_unused]] constexpr auto ints_empty = queue<int, 4>();
 
-   return (sz == 2) ? 0 : 1;
+   // --------------------------------------------------------------------------
+   // C++ interoperability: a Queue supports const traversal and accepts owned
+   // materialization from bounded range/view sources without mutating them.
+   // --------------------------------------------------------------------------
+   static constexpr int source_values[] = {10, 20, 30};
+   constexpr auto source_span = std::span{source_values};
+   constexpr auto from_span = Queue<int, 4>{source_span};
+   static_assert(from_span.begin()[0] == 10);
+   static_assert(from_span.begin()[2] == 30);
+
+   constexpr auto from_span_ctad = Queue{source_span};
+   static_assert(from_span_ctad.begin()[1] == 20);
+
+   // A standard view pipeline can use an existing Queue as its source and
+   // Construct another Queue from the transformed values.
+   const auto pipeline_source = queue(1, 2, 3);
+   const auto shifted_view =
+       pipeline_source |
+       std::views::transform([](int value) noexcept { return value + 10; });
+   const auto from_pipeline = Queue<int, 4>{shifted_view};
+
+   // Constructing a Queue from a runtime C++ array/span
+   int runtime_buffer[] = {100, 200, 300};
+   const auto runtime_from_span =
+       Queue<int, 4>{std::span<const int>{runtime_buffer, 3}};
+
+   // Use C++ interoperability to sum the elements of the queue.
+   auto fifo_sum = 0;
+   for (const auto value : runtime_buffer) {
+     fifo_sum += value;
+   }
+
+   auto from_span_sum = 0;
+   for (const auto value : from_span) {
+     from_span_sum += value;
+   }
+
+   auto runtime_from_span_sum = 0;
+   for (const auto value : runtime_from_span) {
+     runtime_from_span_sum += value;
+   }
+
+   return (fifo_sum == 600 && from_span_sum == 60 &&
+           runtime_from_span_sum == 600 && peek(from_pipeline) == 11)
+              ? 0
+              : 1;
  }
  ~~~~~
  */
-template <typename C>
-    requires concepts::SequenceableCollection<C> || concepts::SequenceableProducer<C>
-[[nodiscard]] constexpr auto count(const C& collection) noexcept -> std::size_t {
-    return collection.count();
+template <concepts::NothrowCollectionElement T, std::size_t CapacityValue>
+class Queue {
+  public:
+    using value_type = T;
+
+    class const_iterator {
+      public:
+        using value_type = T;
+        using difference_type = std::ptrdiff_t;
+        using iterator_category = std::forward_iterator_tag;
+        using iterator_concept = std::forward_iterator_tag;
+
+        constexpr const_iterator() noexcept = default;
+
+        [[nodiscard]] constexpr auto operator*() const noexcept -> const value_type& {
+            return queue_->elements_[(queue_->head_ + offset_) % CapacityValue];
+        }
+
+        [[nodiscard]] constexpr auto operator[](difference_type index) const noexcept -> const value_type& {
+            return queue_->elements_[(queue_->head_ + offset_ + static_cast<std::size_t>(index)) % CapacityValue];
+        }
+
+        constexpr auto operator++() noexcept -> const_iterator& {
+            ++offset_;
+            return *this;
+        }
+
+        constexpr auto operator++(int) noexcept -> const_iterator {
+            const_iterator result = *this;
+            ++(*this);
+            return result;
+        }
+
+        [[nodiscard]] friend constexpr auto operator==(const const_iterator&, const const_iterator&) noexcept
+            -> bool = default;
+
+      private:
+        friend class Queue;
+
+        constexpr const_iterator(const Queue* queue, std::size_t offset) noexcept : queue_(queue), offset_(offset) {
+        }
+
+        const Queue* queue_{nullptr};
+        std::size_t offset_{0};
+    };
+
+    static_assert(
+        CapacityValue <= cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE,
+        "cljonic::Queue: CapacityValue exceeds "
+        "CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT=" CLJONIC_STRINGIFY(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT));
+
+    template <typename... Args>
+    explicit(sizeof...(Args) ==
+             1) constexpr Queue(Args&&... args) noexcept((concepts::NothrowElementConstruction<T, Args> && ...)) {
+        static_assert(sizeof...(Args) <= CapacityValue,
+                      "cljonic::Queue: initializer count exceeds Queue CapacityValue");
+        static_assert((concepts::NothrowElementConstruction<T, Args> && ...),
+                      "cljonic::Queue: constructor requires all arguments to construct "
+                      "T without throwing and convert safely without losing values or changing their meaning");
+
+        ((*this = conj(T(std::forward<Args>(args)))), ...);
+    }
+
+    // A cljonic collection or producer is not a SourceConstruction source
+    // (REQ-FN-027A); materialize it via into, preflighted by fits_into.
+    template <std::ranges::input_range SourceRange>
+        requires(!concepts_detail::is_cljonic_collection_v<SourceRange> &&
+                 !concepts_detail::is_cljonic_producer_v<SourceRange> &&
+                 !std::same_as<std::remove_cvref_t<SourceRange>, value_type>)
+    explicit constexpr Queue(SourceRange&& source) noexcept(
+        (concepts::NothrowRangeConstruction<value_type, SourceRange>)) {
+        static_assert(
+            concepts::NothrowRangeConstruction<value_type, SourceRange>,
+            "cljonic::Queue: range/view constructor requires safe element conversion and non-throwing traversal");
+        static_assert(concepts_detail::static_extent_fits_v<SourceRange, CapacityValue>,
+                      "cljonic::Queue: static-extent range source exceeds Queue CapacityValue");
+
+        std::size_t copy_count = 0;
+        for (auto&& item : std::forward<SourceRange>(source)) {
+            if (copy_count++ >= CapacityValue) {
+                break;
+            }
+            *this = conj(value_type(std::forward<decltype(item)>(item)));
+        }
+    }
+
+    // Diagnostic fallback (REQ-DIAG-010): a cljonic collection or producer is
+    // not a SourceConstruction source. This overload exists only to explain the
+    // rejection -- it produces no value and is never a supported call target.
+    template <typename SourceValue>
+        requires((concepts_detail::is_cljonic_collection_v<SourceValue> ||
+                  concepts_detail::is_cljonic_producer_v<SourceValue>) &&
+                 !std::same_as<std::remove_cvref_t<SourceValue>, value_type>)
+    explicit constexpr Queue([[maybe_unused]] SourceValue&& source) noexcept {
+        static_assert(
+            concepts_detail::dependent_false<SourceValue>,
+            "cljonic::Queue: you cannot construct a Queue from a cljonic collection or producer. A Queue is built from "
+            "its individual elements, or from a non-cljonic C++ range or view. To keep it as a single element, write "
+            "Queue{...}.");
+    }
+
+    [[nodiscard]] static constexpr auto capacity() noexcept -> std::size_t {
+        return CapacityValue;
+    }
+
+    [[nodiscard]] constexpr auto count() const noexcept -> std::size_t {
+        return logical_size_;
+    }
+
+    [[nodiscard]] constexpr auto operator==(const Queue& other) const noexcept -> bool
+        requires concepts::StableEqualityComparable<T>
+    {
+        if (logical_size_ != other.logical_size_) {
+            return false;
+        }
+        for (std::size_t i = 0; i < logical_size_; ++i) {
+            const auto lhs_index = (head_ + i) % CapacityValue;
+            const auto rhs_index = (other.head_ + i) % CapacityValue;
+            if (!(elements_[lhs_index] == other.elements_[rhs_index])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    [[nodiscard]] constexpr auto begin() const noexcept -> const_iterator {
+        return {this, 0U};
+    }
+
+    [[nodiscard]] constexpr auto end() const noexcept -> const_iterator {
+        return {this, logical_size_};
+    }
+
+    /** Returns true when there is room for one more element; the value does not
+     *  affect the result. */
+    [[nodiscard]] constexpr auto can_conj([[maybe_unused]] const T& value) const noexcept -> bool {
+        return logical_size_ < CapacityValue;
+    }
+
+    /** Adds an element to the back of a copy of the queue (enqueue). Returns an
+     * unchanged copy when full. */
+    [[nodiscard]] constexpr auto conj(const T& element) const noexcept -> Queue {
+        Queue result = *this;
+        if constexpr (CapacityValue > 0U) {
+            if (result.logical_size_ < CapacityValue) {
+                const auto tail = (result.head_ + result.logical_size_) % CapacityValue;
+                result.elements_[tail] = element;
+                ++result.logical_size_;
+            }
+        }
+        return result;
+    }
+
+    /** Peeks at the front element without removing it. Returns the
+     * default value when empty. */
+    [[nodiscard]] constexpr auto peek() const noexcept -> T {
+        return (logical_size_ > 0) ? elements_[head_] : T{};
+    }
+
+    /** Removes the front element from a copy of the queue (dequeue). Returns an
+     * unchanged copy when empty. */
+    [[nodiscard]] constexpr auto pop() const noexcept -> Queue {
+        Queue result = *this;
+        if constexpr (CapacityValue > 0U) {
+            if (result.logical_size_ > 0) {
+                result.head_ = (result.head_ + 1) % CapacityValue;
+                --result.logical_size_;
+            }
+        }
+        return result;
+    }
+
+    template <typename Value>
+        requires(!concepts::SafeImplicitConversion<T, Value>)
+    auto can_conj(const Value& value) const -> bool = delete;
+
+    template <typename Value>
+        requires(!concepts::SafeImplicitConversion<T, Value>)
+    auto conj(const Value& value) const -> Queue = delete;
+
+  private:
+    std::array<value_type, CapacityValue> elements_{};
+    std::size_t head_{0};
+    std::size_t logical_size_{0};
+};
+
+template <typename First, typename... Rest>
+Queue(First, Rest...) -> Queue<First, 1 + sizeof...(Rest)>;
+
+// EnclosureConstruction (REQ-FN-027A): a sole Queue argument wraps as one element.
+template <typename ElementType, std::size_t CapacityValue>
+Queue(Queue<ElementType, CapacityValue>) -> Queue<Queue<ElementType, CapacityValue>, 1>;
+
+template <typename SourceElement, std::size_t Extent>
+    requires(Extent != std::dynamic_extent)
+Queue(std::span<SourceElement, Extent>) -> Queue<std::remove_cv_t<SourceElement>, Extent>;
+
+namespace concepts_detail {
+
+struct DeducedQueueElementType {};
+
+template <typename RequestedElementType, typename... Args>
+struct queue_factory_element_type {
+    using type = RequestedElementType;
+};
+
+template <typename First, typename... Rest>
+struct queue_factory_element_type<DeducedQueueElementType, First, Rest...> {
+    using type = std::remove_cvref_t<First>;
+};
+
+template <typename RequestedElementType, typename... Args>
+using queue_factory_element_t = queue_factory_element_type<RequestedElementType, Args...>::type;
+
+template <typename RequestedElementType, typename... Args>
+concept QueueFactoryHasElementType =
+    sizeof...(Args) > 0U || !std::same_as<RequestedElementType, DeducedQueueElementType>;
+
+template <typename RequestedElementType, typename... Args>
+concept QueueFactoryArguments =
+    QueueFactoryHasElementType<RequestedElementType, Args...> &&
+    concepts::NothrowCollectionElement<queue_factory_element_t<RequestedElementType, Args...>> &&
+    sizeof...(Args) <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
+    (concepts::NothrowElementConstruction<queue_factory_element_t<RequestedElementType, Args...>, Args> && ...);
+
+template <typename ElementType, std::size_t Capacity, typename... Args>
+concept QueueFactoryCapacityArguments =
+    concepts::NothrowCollectionElement<ElementType> && Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
+    sizeof...(Args) <= Capacity && (concepts::NothrowElementConstruction<ElementType, Args> && ...);
+
+} // namespace concepts_detail
+
+/** Creates a bounded Queue from its arguments, or a typed empty zero-capacity Queue when called as \c queue<T>(). */
+template <typename RequestedElementType = concepts_detail::DeducedQueueElementType, typename... Args>
+    requires concepts_detail::QueueFactoryArguments<RequestedElementType, Args...>
+[[nodiscard]] constexpr auto queue(Args&&... args) noexcept(
+    (concepts::NothrowElementConstruction<concepts_detail::queue_factory_element_t<RequestedElementType, Args...>,
+                                          Args> &&
+     ...)) -> Queue<concepts_detail::queue_factory_element_t<RequestedElementType, Args...>, sizeof...(Args)> {
+    using ElementType = concepts_detail::queue_factory_element_t<RequestedElementType, Args...>;
+    return Queue<ElementType, sizeof...(Args)>{std::forward<Args>(args)...};
 }
 
-template <typename C>
-    requires(!concepts::SequenceableCollection<C> && !concepts::SequenceableProducer<C>)
-[[nodiscard]] constexpr auto count([[maybe_unused]] const C& collection) noexcept -> std::size_t {
-    static_assert(concepts_detail::dependent_false<C>,
-                  "cljonic::count: expected a Vector, Map, Set, Queue, String, Range, Repeat, Cycle, Iterate, or "
-                  "Repeatedly value.");
-    return 0U;
+template <typename RequestedElementType = concepts_detail::DeducedQueueElementType, typename... Args>
+    requires(!concepts_detail::QueueFactoryArguments<RequestedElementType, Args...>)
+constexpr auto queue([[maybe_unused]] Args&&... args) noexcept -> void {
+    using ElementType = concepts_detail::queue_factory_element_t<RequestedElementType, Args...>;
+    if constexpr (!concepts_detail::QueueFactoryHasElementType<RequestedElementType, Args...>) {
+        static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
+                      "cljonic::queue: an empty Queue requires an explicit element type; write queue<T>().");
+    } else if constexpr (!concepts::NothrowCollectionElement<ElementType>) {
+        static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
+                      "cljonic::queue: the element type must satisfy NothrowCollectionElement.");
+    } else if constexpr (sizeof...(Args) > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE) {
+        static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
+                      "cljonic::queue: argument count exceeds CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
+    } else {
+        static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
+                      "cljonic::queue: every argument must safely construct the element type without throwing.");
+    }
+}
+
+/** \anchor QueueFactory
+ * Creates a bounded \ref Queue "Queue" from individual element arguments.
+ *
+ * Deduced calls use the first argument's unqualified type and have capacity equal to their argument count, with the
+ * first argument becoming the queue front. Explicit element type uses \c queue<T>(...); explicit capacity uses \c
+ * queue<T, Capacity>(...), including for an empty queue; \c queue<T>() creates an empty zero-capacity Queue. An
+ * untyped empty call is rejected at compile time.
+ *
+ \b Examples
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+ using namespace cljonic;
+
+ int main() {
+   // Deduced calls infer the element type from the first argument and the
+   // capacity from the argument count. The first argument becomes the front.
+   constexpr auto fifo = queue(1, 2, 3);
+   static_assert(fifo.capacity() == 3);
+   static_assert(fifo.peek() == 1);
+   static_assert(fifo.pop().peek() == 2);
+   static_assert(fifo.pop().pop().pop() == Queue<int, 3>{});
+
+   // Explicit element type and explicit capacity create a queue with room for
+   // later conj operations, including an empty zero-capacity queue.
+   constexpr auto reserved = queue<int, 4>();
+   constexpr auto zero = queue<int, 0>();
+
+   // The factory also works with runtime values.
+   const auto runtime_value = 40;
+   const auto runtime_queue = queue(runtime_value, 50);
+
+   // A named queue type keeps the element and capacity contract explicit.
+   constexpr auto typed = queue<int, 4>(1, 2, 3);
+
+   return (typed.count() == 3 && typed.peek() == 1 && reserved.count() == 0 &&
+           zero.count() == 0 && runtime_queue.peek() == 40)
+              ? 0
+              : 1;
+ }
+ ~~~~~
+ */
+template <typename ElementType, std::size_t Capacity, typename... Args>
+    requires concepts_detail::QueueFactoryCapacityArguments<ElementType, Capacity, Args...>
+[[nodiscard]] constexpr auto queue(Args&&... args) noexcept((concepts::NothrowElementConstruction<ElementType, Args> &&
+                                                             ...)) -> Queue<ElementType, Capacity> {
+    return Queue<ElementType, Capacity>{std::forward<Args>(args)...};
+}
+
+template <typename ElementType, std::size_t Capacity, typename... Args>
+    requires(!concepts_detail::QueueFactoryCapacityArguments<ElementType, Capacity, Args...>)
+constexpr auto queue([[maybe_unused]] Args&&... args) noexcept -> void {
+    if constexpr (!concepts::NothrowCollectionElement<ElementType>) {
+        static_assert(concepts_detail::dependent_false<ElementType, Args...>,
+                      "cljonic::queue: the element type must satisfy NothrowCollectionElement.");
+    } else if constexpr (Capacity > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE) {
+        static_assert(concepts_detail::dependent_false<ElementType, Args...>,
+                      "cljonic::queue: capacity exceeds CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
+    } else if constexpr (sizeof...(Args) > Capacity) {
+        static_assert(concepts_detail::dependent_false<ElementType, Args...>,
+                      "cljonic::queue: capacity must be at least the number of arguments.");
+    } else {
+        static_assert(concepts_detail::dependent_false<ElementType, Args...>,
+                      "cljonic::queue: every argument must safely construct the element type without throwing.");
+    }
 }
 
 } // namespace cljonic
-// End cljonic-count.hpp
-// Begin cljonic-cycle.hpp
+
+namespace cljonic::concepts_detail {
+
+template <typename T, std::size_t CapacityValue>
+struct collection_traits<Queue<T, CapacityValue>> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::queue;
+};
+
+template <typename T, std::size_t CapacityValue>
+struct contains_floating_point<Queue<T, CapacityValue>> : std::bool_constant<contains_floating_point_v<T>> {};
+
+template <typename T, std::size_t CapacityValue>
+struct contains_callable<Queue<T, CapacityValue>> : std::bool_constant<contains_callable_v<T>> {};
+
+template <typename T, std::size_t CapacityValue>
+struct contains_standard_range<Queue<T, CapacityValue>> : std::bool_constant<contains_standard_range_v<T>> {};
+
+// Nominal walker coverage (REQ-NUM-019): Queue declares that the walkers reach its
+// element type.
+template <typename T, std::size_t CapacityValue>
+struct walker_coverage<Queue<T, CapacityValue>> {
+    static constexpr bool declared = true;
+};
+
+} // namespace cljonic::concepts_detail
+// End cljonic-collection-queue.hpp
+// Begin cljonic-collection-set.hpp
+#pragma once
+
+#include <array>
+#include <cstddef>
+#include <ranges>
+#include <span>
+#include <type_traits>
+#include <utility>
+
+
+namespace cljonic {
+
+/** \anchor Set
+ * A Set is a bounded, unordered collection that provides callable lookup with
+ optional fallback values. Other
+ * operations use the library's free-function API.
+ *
+ * The \c hash_set factory is the idiomatic way to create Set values,
+ at runtime or during constant
+ * evaluation. It accepts individual elements, and runtime duplicates
+ deduplicate. Use \c hash_set(e, ...) to infer the
+ * element type and capacity, \c hash_set<T>(e, ...) to select the element type,
+ or \c hash_set<T, Capacity>(e, ...) to
+ * provide an explicit capacity, including for an empty set. \c Set<T, Capacity>
+ remains the value's type.
+ *
+ * Direct construction can import a C++ range or view: its elements are copied
+ into the Set. A cljonic value is not
+ * copied as a range/view source. With an explicit element type, a cljonic
+ argument is accepted as one element only
+ * when its type exactly matches the declared element type. Without explicit
+ template arguments, a sole cljonic
+ * argument determines the element type and yields a one-element collection.
+ Elements may themselves be cljonic
+ * collections or producers, including nested cljonic composites.
+ *
+ * Construction with more values than the available capacity is rejected at
+ compile time. Elements and fallbacks follow
+ * the \ref implicit-conversions "safe implicit conversion rules".
+ *
+ \b Examples
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+ using namespace cljonic;
+
+ using AccountId = int;
+ using AccountSet = Set<AccountId, 4>;
+
+ int main() {
+   // The factory is the idiomatic way to create sets.
+   constexpr auto factory_set = hash_set(1, 2, 3);
+   static_assert(factory_set(2) == 2);
+
+   // A named set type makes the element and capacity contract explicit. A
+   // duplicate value is a no-op. Constant-evaluated duplicate construction is
+   // rejected at compile time.
+   constexpr auto literal = AccountSet{1, 2, 3};
+   static_assert(literal(2) == 2);
+   static_assert(literal(99) == 0);
+   static_assert(literal(99, -1) == -1);
+
+   // Runtime duplicates deduplicate; the deduced capacity still equals the
+   // argument count.
+   auto runtime = hash_set(10, 20, 20);
+   const auto present = runtime(10);
+   const auto missing = runtime(30, -1);
+
+   // A standard view pipeline can use an existing Set as its source and
+   // Construct another Set from the transformed values.
+   const auto doubled_view =
+       runtime |
+       std::views::transform([](int value) noexcept { return value * 2; });
+   const auto from_pipeline = AccountSet{doubled_view};
+
+   // -------------------------------------------------------------------------
+   // C++ interoperability: a Set supports const traversal and exposes a
+   // non-owning std::span view. Range/view sources are copied into owned
+   // storage, retaining only the bounded prefix that fits the capacity.
+   // -------------------------------------------------------------------------
+   static constexpr int source_values[] = {11, 22, 11, 33};
+   constexpr auto source_span = std::span{source_values};
+   constexpr auto from_span = AccountSet{source_span};
+   static_assert(from_span(11) == 11);
+   static_assert(from_span(22) == 22);
+   static_assert(from_span(33) == 33);
+   static_assert(from_span(99) == 0);
+
+   constexpr auto from_span_ctad = Set{source_span};
+   static_assert(from_span_ctad(22) == 22);
+   static_assert(from_span_ctad.view().size() == 3);
+
+   int runtime_buffer[] = {100, 200, 300};
+   const auto runtime_from_span =
+       Set<int, 4>{std::span<const int>{runtime_buffer, 3}};
+
+   // Const C++ interoperability exposes the active elements as a range and
+   // as a non-owning contiguous standard view. Set traversal order is not
+   // semantically ordered.
+   static_assert(literal.view().size() == 3);
+
+   // Use C++ interoperability to sum the values in a set.
+   auto observed_sum = 0;
+   for (const auto value : runtime) {
+     observed_sum += value;
+   }
+
+   const auto runtime_view = runtime.view();
+
+   return (present == 10 && missing == -1 && observed_sum == 30 &&
+           from_pipeline(20) == 20 && runtime_view.size() == 2 &&
+           runtime_from_span(100) == 100 && runtime_from_span(300) == 300)
+              ? 0
+              : 1;
+ }
+ ~~~~~
+ */
+template <concepts::NothrowStableEqualityComparable T, std::size_t CapacityValue>
+    requires(!concepts_detail::is_std_variant_v<T>)
+class Set {
+  public:
+    using value_type = T;
+    using lookup_type = value_type;
+
+    static_assert(
+        CapacityValue <= cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE,
+        "cljonic::Set: CapacityValue exceeds "
+        "CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT=" CLJONIC_STRINGIFY(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT));
+
+    template <typename... Args>
+    explicit(sizeof...(Args) ==
+             1) constexpr Set(Args&&... args) noexcept((concepts::NothrowElementConstruction<T, Args> && ...)) {
+        static_assert(sizeof...(Args) <= CapacityValue, "cljonic::Set: initializer count exceeds Set CapacityValue");
+        static_assert((concepts::NothrowElementConstruction<T, Args> && ...),
+                      "cljonic::Set: constructor requires all arguments to construct "
+                      "T without throwing and convert safely without losing values or "
+                      "changing their meaning");
+
+        const auto duplicate = append_constructed(std::forward<Args>(args)...);
+
+        if consteval {
+            if (duplicate) {
+                rejected_duplicate_value_at_compile_time();
+            }
+        }
+    }
+
+    // A cljonic collection or producer is not a SourceConstruction source
+    // (REQ-FN-027A); materialize it via into, preflighted by fits_into.
+    template <std::ranges::input_range SourceRange>
+        requires(!concepts_detail::is_cljonic_collection_v<SourceRange> &&
+                 !concepts_detail::is_cljonic_producer_v<SourceRange> &&
+                 !std::same_as<std::remove_cvref_t<SourceRange>, value_type>)
+    explicit constexpr Set(SourceRange&& source) noexcept(
+        (concepts::NothrowRangeConstruction<value_type, SourceRange>)) {
+        static_assert(concepts::NothrowRangeConstruction<value_type, SourceRange>,
+                      "cljonic::Set: range/view constructor requires each source "
+                      "element to construct "
+                      "T safely and requires non-throwing traversal");
+        static_assert(concepts_detail::static_extent_fits_v<SourceRange, CapacityValue>,
+                      "cljonic::Set: static-extent range source exceeds Set CapacityValue");
+
+        std::size_t copy_count = 0;
+        for (auto&& item : std::forward<SourceRange>(source)) {
+            if (copy_count++ >= CapacityValue) {
+                break;
+            }
+            *this = conj(value_type(std::forward<decltype(item)>(item)));
+        }
+    }
+
+    // Diagnostic fallback (REQ-DIAG-010): a cljonic collection or producer is
+    // not a SourceConstruction source. This overload exists only to explain the
+    // rejection -- it produces no value and is never a supported call target.
+    template <typename SourceValue>
+        requires((concepts_detail::is_cljonic_collection_v<SourceValue> ||
+                  concepts_detail::is_cljonic_producer_v<SourceValue>) &&
+                 !std::same_as<std::remove_cvref_t<SourceValue>, value_type>)
+    explicit constexpr Set([[maybe_unused]] SourceValue&& source) noexcept {
+        static_assert(concepts_detail::dependent_false<SourceValue>,
+                      "cljonic::Set: you cannot construct a Set from a cljonic collection or producer. A Set is built "
+                      "from its individual elements, or from a non-cljonic C++ range or view. To keep it as a single "
+                      "element, write hash_set(...).");
+    }
+
+    [[nodiscard]] static constexpr auto capacity() noexcept -> std::size_t {
+        return CapacityValue;
+    }
+
+    [[nodiscard]] constexpr auto count() const noexcept -> std::size_t {
+        return logical_size_;
+    }
+
+    [[nodiscard]] constexpr auto operator==(const Set& other) const noexcept -> bool
+        requires concepts::StableEqualityComparable<T>
+    {
+        if (logical_size_ != other.logical_size_) {
+            return false;
+        }
+        for (std::size_t i = 0; i < logical_size_; ++i) {
+            if (other.find_index(elements_[i]) >= other.logical_size_) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    [[nodiscard]] constexpr auto begin() const noexcept -> const value_type* {
+        return elements_.data();
+    }
+
+    [[nodiscard]] constexpr auto end() const noexcept -> const value_type* {
+        return elements_.data() + logical_size_;
+    }
+
+    [[nodiscard]] constexpr auto view() const noexcept -> std::span<const value_type> {
+        return {elements_.data(), logical_size_};
+    }
+
+    [[nodiscard]] constexpr auto contains(const T& element) const noexcept -> bool {
+        return find_index(element) < logical_size_;
+    }
+
+    /** Returns the stored element value when present; otherwise returns the
+     * supplied fallback. */
+    [[nodiscard]] constexpr auto operator()(const T& element, const T& fallback = T{}) const noexcept -> T {
+        const auto idx = find_index(element);
+        return (idx < logical_size_) ? elements_[idx] : fallback;
+    }
+
+    /** Returns true when the element is already present or the set has room for
+   * one more. */
+    [[nodiscard]] constexpr auto can_conj(const T& element) const noexcept -> bool {
+        return contains(element) || (logical_size_ < CapacityValue);
+    }
+
+    /** Adds an element to a copy of the set. If the element is already present or
+   * capacity is full, returns an unchanged copy. */
+    [[nodiscard]] constexpr auto conj(const T& element) const noexcept -> Set {
+        Set result = *this;
+        if (!result.contains(element) && result.logical_size_ < CapacityValue) {
+            result.elements_[result.logical_size_] = element;
+            ++result.logical_size_;
+        }
+        return result;
+    }
+
+    /** Removes an element via swap-and-remove if present; always returns a valid
+   * copy. */
+    [[nodiscard]] constexpr auto disj(const T& element) const noexcept -> Set {
+        Set result = *this;
+        const auto idx = result.find_index(element);
+        if (idx < result.logical_size_) {
+            if (idx + 1U < result.logical_size_) {
+                result.elements_[idx] = result.elements_[result.logical_size_ - 1U];
+            }
+            --result.logical_size_;
+        }
+        return result;
+    }
+
+    template <typename Value>
+        requires(!concepts::SafeImplicitConversion<T, Value>)
+    auto contains(const Value& value) const -> bool = delete;
+
+    template <typename Value, typename Fallback = T>
+        requires(!concepts::SafeImplicitConversion<T, Value> || !concepts::SafeImplicitConversion<T, Fallback>)
+    auto operator()(const Value& value, const Fallback& fallback = Fallback{}) const -> T = delete;
+
+    template <typename Value>
+        requires(!concepts::SafeImplicitConversion<T, Value>)
+    auto can_conj(const Value& value) const -> bool = delete;
+
+    template <typename Value>
+        requires(!concepts::SafeImplicitConversion<T, Value>)
+    auto conj(const Value& value) const -> Set = delete;
+
+    template <typename Value>
+        requires(!concepts::SafeImplicitConversion<T, Value>)
+    auto disj(const Value& value) const -> Set = delete;
+
+  private:
+    template <typename Arg>
+    constexpr auto append_constructed(Arg&& arg) noexcept -> bool {
+        T value{std::forward<Arg>(arg)};
+        if (contains(value)) {
+            return true;
+        }
+        *this = conj(value);
+        return false;
+    }
+
+    template <typename... Args>
+    constexpr auto append_constructed(Args&&... args) noexcept -> bool {
+        bool duplicate = false;
+        ((duplicate = append_constructed(std::forward<Args>(args)) || duplicate), ...);
+        return duplicate;
+    }
+
+    /** Returns `logical_size_` when the element is absent. */
+    [[nodiscard]] constexpr auto find_index(const T& element) const noexcept -> std::size_t {
+        for (std::size_t i = 0; i < logical_size_; ++i) {
+            if (elements_[i] == element) {
+                return i;
+            }
+        }
+        return logical_size_;
+    }
+
+    // Compile-time-only rejection trap (REQ-COLL-019B): a Set pack construction
+    // with a duplicate value is ill-formed when evaluated as a constant
+    // expression, mirroring Clojure's reader error for a `#{...}` literal with a
+    // duplicate key. Declared but never defined, and reached only inside
+    // `if consteval`, so ordinary runtime construction deduplicates
+    // (REQ-COLL-019) without a runtime diagnostic.
+    static void rejected_duplicate_value_at_compile_time() noexcept;
+
+    std::array<value_type, CapacityValue> elements_{};
+    std::size_t logical_size_{0};
+};
+
+template <typename First, typename... Rest>
+Set(First, Rest...) -> Set<First, 1 + sizeof...(Rest)>;
+
+// EnclosureConstruction (REQ-FN-027A): a sole Set argument wraps as one
+// element.
+template <typename ElementType, std::size_t CapacityValue>
+Set(Set<ElementType, CapacityValue>) -> Set<Set<ElementType, CapacityValue>, 1>;
+
+template <typename SourceElement, std::size_t Extent>
+    requires(Extent != std::dynamic_extent)
+Set(std::span<SourceElement, Extent>) -> Set<std::remove_cv_t<SourceElement>, Extent>;
+
+namespace concepts_detail {
+
+struct DeducedHashSetElementType {};
+
+template <typename RequestedElementType, typename... Args>
+struct hash_set_factory_element_type {
+    using type = RequestedElementType;
+};
+
+template <typename First, typename... Rest>
+struct hash_set_factory_element_type<DeducedHashSetElementType, First, Rest...> {
+    using type = std::remove_cvref_t<First>;
+};
+
+template <typename RequestedElementType, typename... Args>
+using hash_set_factory_element_t = hash_set_factory_element_type<RequestedElementType, Args...>::type;
+
+template <typename RequestedElementType, typename... Args>
+concept HashSetFactoryHasElementType =
+    sizeof...(Args) > 0U || !std::same_as<RequestedElementType, DeducedHashSetElementType>;
+
+template <typename RequestedElementType, typename... Args>
+concept HashSetFactoryArguments =
+    HashSetFactoryHasElementType<RequestedElementType, Args...> &&
+    concepts::NothrowStableEqualityComparable<hash_set_factory_element_t<RequestedElementType, Args...>> &&
+    !is_std_variant_v<hash_set_factory_element_t<RequestedElementType, Args...>> &&
+    sizeof...(Args) <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
+    (concepts::NothrowElementConstruction<hash_set_factory_element_t<RequestedElementType, Args...>, Args> && ...);
+
+template <typename ElementType, std::size_t Capacity, typename... Args>
+concept HashSetFactoryCapacityArguments =
+    concepts::NothrowStableEqualityComparable<ElementType> && !is_std_variant_v<ElementType> &&
+    Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE && sizeof...(Args) <= Capacity &&
+    (concepts::NothrowElementConstruction<ElementType, Args> && ...);
+
+} // namespace concepts_detail
+
+/** \anchor HashSetFactory
+ * Creates a bounded \ref Set "Set" from individual element arguments.
+ *
+ * Deduced calls use the first argument's unqualified type and have capacity
+ equal to their argument count, with
+ * runtime duplicates deduplicating per \ref Set "Set" construction semantics.
+ Explicit element type uses \c
+ * hash_set<T>(...); explicit capacity uses \c hash_set<T, Capacity>(...),
+ including for an empty set. An untyped empty
+ * call is rejected at compile time.
+ *
+ \b Examples
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+ using namespace cljonic;
+
+ using AccountId = int;
+ using AccountSet = Set<AccountId, 4>;
+
+ int main() {
+   // The factory is the idiomatic way to create sets. Deduced
+   // calls infer the element type from the first argument and the capacity
+   // from the argument count.
+   constexpr auto factory_set = hash_set(1, 2, 3);
+   static_assert(factory_set(2) == 2);
+   static_assert(factory_set(99) == 0);
+   static_assert(factory_set(99, -1) == -1);
+
+   // Explicit element type and explicit capacity create a set with room for
+   // later conj operations, including an empty zero-capacity set.
+   constexpr auto reserved = hash_set<int, 4>();
+   constexpr auto zero = hash_set<int, 0>();
+   static_assert(is_empty(reserved));
+   static_assert(is_empty(zero));
+
+   // Runtime duplicates deduplicate; the deduced capacity still equals the
+   // argument count.
+   const auto runtime_duplicate = hash_set(10, 20, 20);
+
+   // The factory also works with runtime values.
+   const auto runtime_value = 40;
+   const auto runtime_set = hash_set(runtime_value, 50);
+
+   // A named set type keeps the element and capacity contract explicit.
+   constexpr auto typed = hash_set<AccountSet::value_type, 4>(1, 2, 3);
+
+   return (typed(1) == 1 && runtime_duplicate(20) == 20 &&
+           runtime_duplicate(30, -1) == -1 && runtime_set(50) == 50 &&
+           runtime_set(99, -1) == -1)
+              ? 0
+              : 1;
+ }
+ ~~~~~
+ */
+template <typename RequestedElementType = concepts_detail::DeducedHashSetElementType, typename... Args>
+    requires(concepts_detail::HashSetFactoryArguments<RequestedElementType, Args...> && sizeof...(Args) > 0U)
+[[nodiscard]] constexpr auto hash_set(Args&&... args) noexcept(
+    (concepts::NothrowElementConstruction<concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>,
+                                          Args> &&
+     ...)) -> Set<concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>, sizeof...(Args)> {
+    using ElementType = concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>;
+    return Set<ElementType, sizeof...(Args)>{std::forward<Args>(args)...};
+}
+
+template <typename RequestedElementType = concepts_detail::DeducedHashSetElementType, typename... Args>
+    requires(sizeof...(Args) == 0U && std::same_as<RequestedElementType, concepts_detail::DeducedHashSetElementType>)
+constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
+                  "cljonic::hash_set: empty calls require explicit element and "
+                  "capacity types.");
+}
+
+template <typename RequestedElementType = concepts_detail::DeducedHashSetElementType, typename... Args>
+    requires(sizeof...(Args) == 0U && !std::same_as<RequestedElementType, concepts_detail::DeducedHashSetElementType>)
+constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
+                  "cljonic::hash_set: empty calls require explicit element and "
+                  "capacity types.");
+}
+
+template <typename RequestedElementType = concepts_detail::DeducedHashSetElementType, typename... Args>
+    requires(
+        sizeof...(Args) > 0U &&
+        (!concepts::NothrowStableEqualityComparable<
+             concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>> ||
+         concepts_detail::is_std_variant_v<concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>>))
+constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
+                  "cljonic::hash_set: the element type must satisfy Set element "
+                  "requirements.");
+}
+
+template <typename RequestedElementType = concepts_detail::DeducedHashSetElementType, typename... Args>
+    requires(sizeof...(Args) > 0U &&
+             concepts::NothrowStableEqualityComparable<
+                 concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>> &&
+             !concepts_detail::is_std_variant_v<
+                 concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>> &&
+             sizeof...(Args) > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
+constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
+                  "cljonic::hash_set: argument count exceeds "
+                  "CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
+}
+
+template <typename RequestedElementType = concepts_detail::DeducedHashSetElementType, typename... Args>
+    requires(sizeof...(Args) > 0U &&
+             concepts::NothrowStableEqualityComparable<
+                 concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>> &&
+             !concepts_detail::is_std_variant_v<
+                 concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>> &&
+             sizeof...(Args) <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
+             !(concepts::NothrowElementConstruction<
+                   concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>, Args> &&
+               ...))
+constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
+                  "cljonic::hash_set: every argument must safely construct the "
+                  "element type without throwing.");
+}
+
+/** Creates a bounded Set with an explicit capacity, including for an empty
+ * argument pack. */
+template <typename ElementType, std::size_t Capacity, typename... Args>
+    requires concepts_detail::HashSetFactoryCapacityArguments<ElementType, Capacity, Args...>
+[[nodiscard]] constexpr auto
+hash_set(Args&&... args) noexcept((concepts::NothrowElementConstruction<ElementType, Args> && ...))
+    -> Set<ElementType, Capacity> {
+    return Set<ElementType, Capacity>{std::forward<Args>(args)...};
+}
+
+template <typename ElementType, std::size_t Capacity, typename... Args>
+    requires(!concepts::NothrowStableEqualityComparable<ElementType> || concepts_detail::is_std_variant_v<ElementType>)
+constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<ElementType, Args...>,
+                  "cljonic::hash_set: the element type must satisfy Set element "
+                  "requirements.");
+}
+
+template <typename ElementType, std::size_t Capacity, typename... Args>
+    requires(concepts::NothrowStableEqualityComparable<ElementType> &&
+             !concepts_detail::is_std_variant_v<ElementType> &&
+             Capacity > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
+constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<ElementType, Args...>, "cljonic::hash_set: capacity exceeds "
+                                                                          "CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
+}
+
+template <typename ElementType, std::size_t Capacity, typename... Args>
+    requires(concepts::NothrowStableEqualityComparable<ElementType> &&
+             !concepts_detail::is_std_variant_v<ElementType> &&
+             Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE && sizeof...(Args) > Capacity)
+constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<ElementType, Args...>,
+                  "cljonic::hash_set: arguments must fit within the selected capacity.");
+}
+
+template <typename ElementType, std::size_t Capacity, typename... Args>
+    requires(concepts::NothrowStableEqualityComparable<ElementType> &&
+             !concepts_detail::is_std_variant_v<ElementType> &&
+             Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE && sizeof...(Args) <= Capacity &&
+             sizeof...(Args) > 0U && !(concepts::NothrowElementConstruction<ElementType, Args> && ...))
+constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<ElementType, Args...>,
+                  "cljonic::hash_set: every argument must safely construct the "
+                  "element type without throwing.");
+}
+
+} // namespace cljonic
+
+namespace cljonic::concepts_detail {
+
+template <typename T, std::size_t CapacityValue>
+struct collection_traits<Set<T, CapacityValue>> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::set;
+};
+
+template <typename T, std::size_t CapacityValue>
+struct contains_floating_point<Set<T, CapacityValue>> : std::bool_constant<contains_floating_point_v<T>> {};
+
+template <typename T, std::size_t CapacityValue>
+struct contains_callable<Set<T, CapacityValue>> : std::bool_constant<contains_callable_v<T>> {};
+
+template <typename T, std::size_t CapacityValue>
+struct contains_standard_range<Set<T, CapacityValue>> : std::bool_constant<contains_standard_range_v<T>> {};
+
+// Nominal walker coverage (REQ-NUM-019): Set declares that the walkers reach its
+// element type.
+template <typename T, std::size_t CapacityValue>
+struct walker_coverage<Set<T, CapacityValue>> {
+    static constexpr bool declared = true;
+};
+
+} // namespace cljonic::concepts_detail
+// End cljonic-collection-set.hpp
+// Begin cljonic-collection-variant.hpp
 #pragma once
 
 #include <cstddef>
-#include <ranges>
+#include <type_traits>
 #include <utility>
+#include <variant>
 
-// Begin cljonic-vector.hpp
+namespace cljonic {
+
+namespace variant_detail {
+
+// The converting constructor selects exactly one alternative by decayed type;
+// zero or multiple matches leave the constructor non-viable, so an ambiguous or
+// foreign argument is rejected at compile time rather than converting.
+template <typename T, typename... Alternatives>
+inline constexpr std::size_t matching_alternative_count_v =
+    (std::size_t{0} + ... + (std::same_as<T, Alternatives> ? std::size_t{1} : std::size_t{0}));
+
+// Alternative-strict equality within a single active index. Recursion is by
+// index so only same-alternative comparisons are instantiated: a two-variant
+// std::visit would instantiate cross-alternative comparisons (which need not
+// exist) and fail to compile.
+template <std::size_t Index = 0, typename Variant>
+[[nodiscard]] constexpr auto same_index_equal(const Variant& lhs, const Variant& rhs) noexcept -> bool {
+    if constexpr (Index + 1 == std::variant_size_v<Variant>) {
+        // Last alternative: the caller guarantees the active index matches.
+        return std::get<Index>(lhs) == std::get<Index>(rhs);
+    } else {
+        if (lhs.index() == Index) {
+            return std::get<Index>(lhs) == std::get<Index>(rhs);
+        }
+        return same_index_equal<Index + 1>(lhs, rhs);
+    }
+}
+
+// Alternative-strict ordering within a single active index; mirrors
+// same_index_equal so only same-alternative comparisons are instantiated.
+template <std::size_t Index = 0, typename Variant>
+[[nodiscard]] constexpr auto same_index_less(const Variant& lhs, const Variant& rhs) noexcept -> bool {
+    if constexpr (Index + 1 == std::variant_size_v<Variant>) {
+        // Last alternative: the caller guarantees the active index matches.
+        return std::get<Index>(lhs) < std::get<Index>(rhs);
+    } else {
+        if (lhs.index() == Index) {
+            return std::get<Index>(lhs) < std::get<Index>(rhs);
+        }
+        return same_index_less<Index + 1>(lhs, rhs);
+    }
+}
+
+} // namespace variant_detail
+
+namespace concepts_detail {
+
+/** Internal tag (REQ-DIAG-012): selects the `Variant` diagnostic
+ *  specialization. A `Variant`'s alternatives are never deducible from its
+ *  constructor arguments, so any deduced `Variant` is a rejected deduction. */
+struct VariantDomainViolation {};
+
+/** The `Variant` class-template gate (REQ-DIAG-012): at least one storable
+ *  alternative, or the internal diagnostic tag used only to redirect a rejected
+ *  deduction. */
+template <typename... Alternatives>
+concept VariantClassArgument =
+    (sizeof...(Alternatives) >= 1 && (concepts::NothrowVariantAlternative<Alternatives> && ...)) ||
+    (sizeof...(Alternatives) == 1 && (std::same_as<std::remove_cvref_t<Alternatives>, VariantDomainViolation> && ...));
+
+} // namespace concepts_detail
+
+/** \anchor Variant
+ * A Variant is the supported composite value in the cljonic value domain. It holds exactly one of several alternatives
+ * and has no empty or valueless state.
+ *
+ * Every alternative must have a default value and be copyable without throwing, so a Variant is a storable value: it
+ * can be a map value, a vector element, or a queue element.
+ *
+ * Two values compare equal only when they hold the same alternative and that alternative's values compare equal
+ * (alternative-strict equality). Values holding different alternatives always compare unequal.
+ *
+ * Equality is provided only when every alternative is comparable without throwing; otherwise `==` is not provided and
+ * the value cannot be used in an equality position. A Variant may therefore be storable without being comparable,
+ * exactly like a collection of floating-point numbers. When it is comparable, a Variant takes part in cljonic
+ * equality: as an `equal` or `not_equal` operand, as a map key or set element, and as a stored member of a collection
+ * or producer whose own equality is used. When it is not, all of those equality positions reject it.
+ *
+ * Use the lowercase \c variant factory to construct a Variant with its alternative types named explicitly. The factory
+ * supports default construction and construction from one exact alternative type.
+ *
+ * \b Examples
+ *
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+ using namespace cljonic;
+
+ int main() {
+   // Like other C++ types, a Variant type can be named with an ordinary alias.
+   using MyVariant = cljonic::Variant<int, long>;
+
+   // Default construction holds the first alternative at its default value; the
+   // first alternative here is int, whose default value is 0.
+   [[maybe_unused]] constexpr MyVariant defaulted{};
+   [[maybe_unused]] constexpr auto defaulted_by_factory = variant<int, long>();
+
+   // A converting construction selects the alternative matching the argument's
+   // decayed type; an argument matching no alternative is rejected at compile
+   // time.
+   [[maybe_unused]] constexpr MyVariant as_int{1};
+   [[maybe_unused]] constexpr MyVariant as_long{1L};
+   [[maybe_unused]] constexpr auto as_long_by_factory = variant<int, long>(1L);
+
+   // Copy construction preserves the active alternative and its value.
+   [[maybe_unused]] constexpr auto copied = as_int;
+
+   // A Variant nests inside another Variant and is storable as a collection
+   // element or a map key.
+   [[maybe_unused]] constexpr auto nested =
+       Variant<Variant<int, long>, char>{as_int};
+   [[maybe_unused]] constexpr auto as_vector_element =
+       vector(MyVariant{1}, MyVariant{2L});
+   [[maybe_unused]] constexpr auto as_set_element = hash_set(MyVariant{1});
+   [[maybe_unused]] constexpr auto as_map_key = map_entry(as_int, 1);
+
+   return 0;
+ }
+ ~~~~~
+ */
+template <typename... Alternatives>
+    requires concepts_detail::VariantClassArgument<Alternatives...>
+class Variant {
+  public:
+    constexpr Variant() noexcept = default;
+
+    template <typename T>
+        requires(variant_detail::matching_alternative_count_v<std::remove_cvref_t<T>, Alternatives...> == 1)
+    explicit constexpr Variant(const T& value) noexcept : storage_{value} {
+    }
+
+    /** Returns the zero-based index of the active alternative. */
+    [[nodiscard]] constexpr auto index() const noexcept -> std::size_t {
+        return storage_.index();
+    }
+
+    /** Reports whether the active alternative is \p T. */
+    template <typename T>
+    [[nodiscard]] constexpr auto holds() const noexcept -> bool {
+        return std::holds_alternative<T>(storage_);
+    }
+
+    /** Alternative-strict equality; provided only when every alternative is
+     *  comparable without throwing. */
+    [[nodiscard]] friend constexpr auto operator==(const Variant& lhs, const Variant& rhs) noexcept -> bool
+        requires(concepts::ComparableVariantAlternative<Alternatives> && ...)
+    {
+        return (lhs.storage_.index() == rhs.storage_.index()) &&
+               variant_detail::same_index_equal(lhs.storage_, rhs.storage_);
+    }
+
+    /** Alternative-strict ordering; provided only when every alternative is
+     *  totally ordered. Alternatives are ordered by index first, then by value. */
+    [[nodiscard]] friend constexpr auto operator<(const Variant& lhs, const Variant& rhs) noexcept -> bool
+        requires(concepts::TotallyOrdered<Alternatives> && ...)
+    {
+        return (lhs.storage_.index() != rhs.storage_.index())
+                   ? (lhs.storage_.index() < rhs.storage_.index())
+                   : variant_detail::same_index_less(lhs.storage_, rhs.storage_);
+    }
+    [[nodiscard]] friend constexpr auto operator>(const Variant& lhs, const Variant& rhs) noexcept -> bool
+        requires(concepts::TotallyOrdered<Alternatives> && ...)
+    {
+        return rhs < lhs;
+    }
+
+    [[nodiscard]] friend constexpr auto operator<=(const Variant& lhs, const Variant& rhs) noexcept -> bool
+        requires(concepts::TotallyOrdered<Alternatives> && ...)
+    {
+        return !(rhs < lhs);
+    }
+
+    [[nodiscard]] friend constexpr auto operator>=(const Variant& lhs, const Variant& rhs) noexcept -> bool
+        requires(concepts::TotallyOrdered<Alternatives> && ...)
+    {
+        return !(lhs < rhs);
+    }
+
+  private:
+    std::variant<Alternatives...> storage_{};
+};
+
+/** \anchor VariantFactory
+ * Constructs a \ref Variant with its alternative types specified explicitly. The value form uses the same
+ * exact-alternative selection rule as direct construction; it does not infer or expand the alternative list.
+ */
+template <typename... Alternatives>
+[[nodiscard]] constexpr auto variant() noexcept -> Variant<Alternatives...> {
+    return {};
+}
+
+template <typename... Alternatives, typename T>
+    requires(variant_detail::matching_alternative_count_v<std::remove_cvref_t<T>, Alternatives...> == 1)
+[[nodiscard]] constexpr auto variant(const T& value) noexcept -> Variant<Alternatives...> {
+    return Variant<Alternatives...>{value};
+}
+
+/** Diagnostic specialization (REQ-DIAG-012): selected by the redirecting
+ *  deduction guide below. A `Variant`'s alternatives are never deducible from
+ *  its constructor arguments, so every deduced `Variant` reaches this
+ *  specialization, which turns the failed-deduction candidate list into one
+ *  targeted message. */
+template <>
+class Variant<concepts_detail::VariantDomainViolation> {
+  public:
+    template <typename... Args>
+    constexpr explicit Variant([[maybe_unused]] Args&&... args) noexcept {
+        static_assert(concepts_detail::dependent_false<Args...>,
+                      "cljonic::Variant: the alternative types cannot be deduced from this argument. Name the "
+                      "alternatives explicitly, as in cljonic::Variant<int, long>{value}.");
+    }
+};
+
+/** Redirecting deduction guide (REQ-DIAG-012). No admitted `Variant` deduction
+ *  exists, so this guide can never affect a supported construction. */
+template <typename T>
+Variant(const T&) -> Variant<concepts_detail::VariantDomainViolation>;
+
+} // namespace cljonic
+
+namespace cljonic::concepts_detail {
+
+// Nominal admission for the cljonic composite value type (REQ-CAP-011).
+template <typename... Alternatives>
+struct cljonic_variant_traits<cljonic::Variant<Alternatives...>> {
+    static constexpr bool is_cljonic_variant = true;
+};
+
+// Recursive component analysis: a cljonic::Variant is a composite, so each
+// walker recurses over its alternatives, mirroring the collection and producer
+// headers. std::variant is never admitted, so no standard-library specialization
+// exists.
+template <typename... Alternatives>
+struct contains_floating_point<cljonic::Variant<Alternatives...>>
+    : std::bool_constant<(contains_floating_point_v<Alternatives> || ...)> {};
+
+template <typename... Alternatives>
+struct contains_callable<cljonic::Variant<Alternatives...>>
+    : std::bool_constant<(contains_callable_v<Alternatives> || ...)> {};
+
+template <typename... Alternatives>
+struct contains_standard_range<cljonic::Variant<Alternatives...>>
+    : std::bool_constant<(contains_standard_range_v<Alternatives> || ...)> {};
+
+// Nominal walker coverage (REQ-NUM-019): Variant declares that the walkers reach
+// every alternative.
+template <typename... Alternatives>
+struct walker_coverage<cljonic::Variant<Alternatives...>> {
+    static constexpr bool declared = true;
+};
+
+} // namespace cljonic::concepts_detail
+// End cljonic-collection-variant.hpp
+// Begin cljonic-collection-vector.hpp
 #pragma once
 
 #include <array>
@@ -2931,285 +4650,344 @@ struct walker_coverage<Vector<ElementType, CapacityValue>> {
 };
 
 } // namespace cljonic::concepts_detail
-// End cljonic-vector.hpp
+// End cljonic-collection-vector.hpp
+// Begin cljonic-conj.hpp
+#pragma once
+
 
 namespace cljonic {
 
 namespace concepts_detail {
 
-struct CycleNextAccess;
-
-/** Internal tag (REQ-DIAG-012): selects the `Cycle` diagnostic specialization
- *  during an out-of-domain class template argument deduction. */
-struct CycleSourceDomainViolation {};
-
-/** The `Cycle` class-template gate (REQ-DIAG-012): a valid cycle source, or the
- *  internal diagnostic tag used only to redirect a rejected deduction. Naming
- *  the rule as one concept also keeps the emitted constraint readable. */
-template <typename Source>
-concept CycleClassArgument =
-    ValidCycleSource<Source> || std::same_as<std::remove_cvref_t<Source>, CycleSourceDomainViolation>;
+template <typename C, typename T>
+concept ConjValueAdmissible = concepts::ConjableCollection<C> && requires(const C& collection, const T& value) {
+    { collection.conj(value) } noexcept -> std::same_as<C>;
+};
 
 } // namespace concepts_detail
 
-/** \anchor Cycle
- * A Cycle is an unbounded producer over an owned source value, which must be a cljonic collection or producer. The
- * source's elements may themselves be cljonic collections or producers, including nested cljonic composites. A finite
- * source sequence is repeated from the beginning after exhaustion.
+/** \anchor Conj
+ * The \b conj free function returns a \ref concepts::CljonicCollection "collection" with the supplied values added.
+ * Each operation returns a distinct collection value and preserves the source.
  *
- * The only approved public form is `cycle(source)`. It supports const C++ range traversal in both constant evaluation
- * and runtime code. Values can be passed directly to cljonic operations that accept a source.
+ * Supported for \ref Vector "Vector", \ref Set "Set", \ref Map "Map", \ref Queue "Queue", and \ref String "String".
+ * \ref Vector "Vector" appends at the end. \ref Queue "Queue" enqueues at the rear. \ref String "String" appends at
+ * its logical count. For \ref String "String", invalid characters are rejected at compile time and replaced with `.`
+ * at runtime; see \ref String "String" for character validation and normalization policy.
  *
- * Observation yields at most \b CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE elements.
+ * \ref Set "Set" adds absent elements; duplicates are no-ops. \ref Map "Map" associates a \ref MapEntry; an existing
+ * key's value is replaced.
  *
+ * At full capacity, \ref Vector "Vector", \ref Queue "Queue", and \ref String "String" return unchanged copies. A full
+ * \ref Set "Set" or \ref Map "Map" also returns an unchanged copy when the element or key is absent.
+ *
+ * Three arities are provided: `conj(collection)` returns an unchanged copy, `conj(collection, value)` adds one value,
+ * and `conj(collection, value₁, value₂, …)` adds two or more values left to right, so `conj(c, x₁, x₂)`
+ * equals `conj(conj(c, x₁), x₂)`. Each value must be one the collection can hold, as described above; a value that
+ * does not fit because the collection is full is skipped.
+ *
+ * Stored values follow the \ref implicit-conversions "safe implicit conversion rules".
+ *
+ * \b Examples
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
 
  int main() {
-   [[maybe_unused]] constexpr auto finite_cycle = cycle(vector(1, 2, 3));
-   [[maybe_unused]] constexpr auto unbounded_cycle = cycle(Range{0, 0, 0});
+   // Compile-time demonstration.
+   constexpr auto q_const = conj(queue<int, 4>(), 10);
+   constexpr auto s_const = conj(hash_set<int, 4>(), 20);
+   static_assert(peek(q_const) == 10);
+   static_assert(contains(s_const, 20));
 
-   // -----------------------------------------------------------------------
-   // C++ interoperability: Cycle supports const traversal.
-   // -----------------------------------------------------------------------
-   auto runtime_cycle = cycle(vector(4, 5, 6));
-   auto runtime_unbounded_cycle = cycle(Range{0, 0, 0});
+   constexpr auto v_const = conj(vector<int, 4>(10, 20), 30);
+   static_assert(v_const(2) == 30);
+   constexpr auto text_const = conj(string<4>("Hi"), '!');
+   static_assert(text_const(2) == '!');
+   constexpr auto m_const = conj(hash_map<int, int, 4>(), map_entry(1, 100));
+   static_assert(m_const(1) == 100);
 
-   // Use C++ interoperability to observe a finite source cycle at runtime.
-   auto runtime_sum = 0;
-   auto runtime_count = 0;
-   for (const auto value : runtime_cycle) {
-     runtime_sum += value;
-     if (++runtime_count == 5) {
-       break;
-     }
-   }
+   // Zero-value and variadic arities.
+   constexpr auto v_same = conj(v_const);
+   static_assert(v_same.count() == 3);
+   constexpr auto v_many = conj(vector<int, 4>(10), 20, 30);
+   static_assert(v_many(2) == 30);
+   constexpr auto text_many = conj(string<4>("H"), 'i', '!');
+   static_assert(text_many(2) == '!');
 
-   // Use C++ interoperability to observe an unbounded source cycle at runtime.
-   auto runtime_unbounded_sum = 0;
-   auto runtime_unbounded_count = 0;
-   for (const auto value : runtime_unbounded_cycle) {
-     runtime_unbounded_sum += value;
-     if (++runtime_unbounded_count == 4) {
-       break;
-     }
-   }
+   // Runtime demonstration.
+   auto q_runtime = queue<int, 4>();
+   const auto q1 = conj(q_runtime, 100);
 
-   return runtime_count == 5 && runtime_sum == 24 &&
-                  runtime_unbounded_count == 4 && runtime_unbounded_sum == 0
-              ? 0
-              : 1;
+   return (peek(q1) == 100) ? 0 : 1;
  }
  ~~~~~
  */
-template <concepts_detail::CycleClassArgument Source>
-class Cycle {
-    friend struct concepts_detail::CycleNextAccess;
-
-  public:
-    using source_type = Source;
-    using value_type = std::ranges::range_value_t<const Source>;
-    using source_iterator = std::ranges::iterator_t<const Source>;
-    using source_sentinel = std::ranges::sentinel_t<const Source>;
-
-    class const_iterator {
-      public:
-        using value_type = Cycle::value_type;
-        using difference_type = std::ptrdiff_t;
-
-        constexpr const_iterator() noexcept = default;
-
-        constexpr const_iterator(const Source* source, source_iterator current, source_sentinel end,
-                                 std::size_t remaining, bool restart) noexcept
-            : source_(source), current_(std::move(current)), end_(std::move(end)), remaining_(remaining),
-              restart_(restart) {
-        }
-
-        [[nodiscard]] constexpr auto operator*() const noexcept -> decltype(auto) {
-            return *current_;
-        }
-
-        constexpr auto operator++() noexcept -> const_iterator& {
-            if (remaining_ == 0U) {
-                remaining_ = 0U;
-                return *this;
-            }
-            --remaining_;
-            ++current_;
-            if (remaining_ != 0U && current_ == end_) {
-                advance_after_source_end();
-            }
-            return *this;
-        }
-
-        constexpr auto operator++(int) noexcept -> const_iterator {
-            auto previous = *this;
-            ++(*this);
-            return previous;
-        }
-
-        [[nodiscard]] friend constexpr auto operator==(const const_iterator& lhs, const const_iterator& rhs) noexcept
-            -> bool {
-            return lhs.remaining_ == rhs.remaining_;
-        }
-
-      private:
-        constexpr void advance_after_source_end() noexcept {
-            current_ = std::ranges::begin(*source_);
-            end_ = std::ranges::end(*source_);
-            remaining_ = restart_ ? remaining_ : 0U;
-        }
-
-        const Source* source_{nullptr};
-        source_iterator current_{};
-        source_sentinel end_{};
-        std::size_t remaining_{0U};
-        bool restart_{false};
-    };
-
-    constexpr Cycle() noexcept = default;
-
-    constexpr explicit Cycle(const Source& source) noexcept : source_(source) {
-    }
-
-    template <typename OtherSource>
-        requires(!std::same_as<std::remove_cvref_t<OtherSource>, Source>)
-    explicit Cycle(OtherSource source) = delete;
-
-    [[nodiscard]] constexpr auto count() const noexcept -> std::size_t {
-        return count_;
-    }
-
-    [[nodiscard]] constexpr auto is_finite() const noexcept -> bool {
-        return is_finite_;
-    }
-
-    [[nodiscard]] constexpr auto begin() const noexcept -> const_iterator {
-        const auto source_count = source_.count();
-        const auto source_begin = std::ranges::begin(source_);
-        const auto source_end = std::ranges::end(source_);
-        const auto source_is_finite = source_finiteness();
-        if (source_count == 0U || source_begin == source_end) {
-            return const_iterator{&source_, source_begin, source_end, 0U, source_is_finite};
-        }
-        const auto current = source_is_finite ? source_begin_at_offset(source_begin) : source_begin;
-        return const_iterator{&source_, current, source_end, count(), source_is_finite};
-    }
-
-    [[nodiscard]] constexpr auto end() const noexcept -> const_iterator {
-        return const_iterator{};
-    }
-
-    /** Producer parameter equality (REQ-FN-014B): compares only the stored
-     *  owned source, count, finite-form, and starting-offset parameters, never the produced
-     *  sequence.
-     *
-     *  It is the only producer parameter-equality surface; the `equal` free
-     *  function instead compares bounded logical observations of the produced
-     *  sequences. The owned source compares by its own stable equality, so
-     *  `cycle(vector(1, 2, 3)) == cycle(vector(1, 2, 3))` is true while
-     *  `cycle(vector(1, 2, 3)) == cycle(vector(1, 2, 4))` is false. O(1), no
-     *  traversal, no allocation. */
-    [[nodiscard]] friend constexpr auto operator==(const Cycle& lhs, const Cycle& rhs) noexcept -> bool
-        requires concepts::StableEqualityComparable<Source>
-    {
-        return lhs.source_ == rhs.source_ && lhs.count_ == rhs.count_ && lhs.is_finite_ == rhs.is_finite_ &&
-               lhs.starting_offset_ == rhs.starting_offset_;
-    }
-
-  private:
-    [[nodiscard]] constexpr auto source_begin_at_offset(source_iterator current) const noexcept -> source_iterator {
-        for (auto offset = std::size_t{0U}; offset < starting_offset_; ++offset) {
-            ++current;
-        }
-        return current;
-    }
-
-    constexpr Cycle(const Source& source, std::size_t starting_offset) noexcept
-        : source_(source), starting_offset_(starting_offset) {
-    }
-
-    [[nodiscard]] constexpr auto source_finiteness() const noexcept -> bool {
-        if constexpr (concepts::CljonicProducer<Source>) {
-            return source_.is_finite();
-        }
-        return true;
-    }
-
-    Source source_{};
-    std::size_t count_{CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE};
-    bool is_finite_{false};
-    std::size_t starting_offset_{0U};
-};
-
-/** Diagnostic specialization (REQ-DIAG-012): reached only through the
- *  redirecting deduction guide below. Constructing it is always a compile-time
- *  error whose single message names the class template, the rejected argument
- *  type, and the violated domain rule. */
-template <>
-class Cycle<concepts_detail::CycleSourceDomainViolation> {
-  public:
-    template <typename... Args>
-    constexpr explicit Cycle([[maybe_unused]] Args&&... args) noexcept {
-        static_assert(concepts_detail::dependent_false<Args...>,
-                      "cljonic::Cycle: the source argument cannot be used to build a Cycle. The source must be a "
-                      "cljonic collection or producer whose element type is storable without throwing.");
-    }
-};
-
-/** Redirecting deduction guide (REQ-DIAG-012): viable only for a rejected
- *  deduction, so an admitted deduction is never affected. */
-template <typename Source>
-    requires(!concepts_detail::ValidCycleSource<Source>)
-Cycle(const Source&) -> Cycle<concepts_detail::CycleSourceDomainViolation>;
-
-template <concepts::CljonicSource Source>
-    requires concepts::NothrowCollectionElement<std::ranges::range_value_t<const Source>>
-[[nodiscard]] constexpr auto cycle(const Source& source) noexcept -> Cycle<Source> {
-    return Cycle<Source>{source};
+template <typename C, typename T>
+    requires concepts_detail::ConjValueAdmissible<C, T>
+[[nodiscard]] constexpr auto conj(const C& collection, const T& value) noexcept(noexcept(collection.conj(value))) -> C {
+    return collection.conj(value);
 }
 
-// Diagnostic fallback (REQ-DIAG-009): the source argument is outside the closed
-// producer domain. This overload explains the rejection; it never returns a
-// value and is never a supported call target.
-template <typename Source>
-    requires(!concepts_detail::ValidCycleSource<Source>)
-constexpr auto cycle([[maybe_unused]] Source source) noexcept -> concepts_detail::RejectedProducerFactory {
-    static_assert(concepts_detail::dependent_false<Source>,
-                  "cljonic::cycle: the source argument cannot be used to build a Cycle. The source must be a cljonic "
-                  "collection or producer.");
-    return {};
+/** Zero-value `conj`: returns an unchanged copy of the collection, matching Clojure's `(conj coll)`. */
+template <typename C>
+    requires concepts::ConjableCollection<C>
+[[nodiscard]] constexpr auto conj(const C& collection) noexcept -> C {
+    return collection;
+}
+
+namespace concepts_detail {
+
+// Every value in the argument list is admissible for the collection. The
+// recursion consumes one value per step; an empty tail is admissible.
+template <typename C, typename... Values>
+struct all_conj_values_admissible : std::true_type {};
+
+template <typename C, typename T, typename... Rest>
+struct all_conj_values_admissible<C, T, Rest...>
+    : std::bool_constant<ConjValueAdmissible<C, T> && all_conj_values_admissible<C, Rest...>::value> {};
+
+template <typename C, typename... Values>
+inline constexpr bool all_conj_values_admissible_v = all_conj_values_admissible<C, Values...>::value;
+
+// Left-to-right fold of the remaining values into an accumulator that already
+// holds the first value(s); each step reuses the single-value overload's
+// contract. The accumulator is threaded by reference (never passed by value) so
+// the fold cannot be intercepted by a collection's source-construction
+// constructor.
+template <typename C>
+constexpr void fold_conj_values_into([[maybe_unused]] C& result) noexcept {
+}
+
+template <typename C, typename T, typename... Rest>
+constexpr void fold_conj_values_into(C& result, const T& value, const Rest&... rest) noexcept {
+    result = result.conj(value);
+    fold_conj_values_into(result, rest...);
+}
+
+} // namespace concepts_detail
+
+/** Variadic `conj`: adds two or more values left to right, as if they were added one at a time. Each value must be one
+ *  the collection can hold; a value that does not fit because the collection is full is skipped, and the remaining
+ *  values are still added. */
+template <typename C, typename T1, typename T2, typename... Rest>
+    requires concepts::ConjableCollection<C> && concepts_detail::all_conj_values_admissible_v<C, T1, T2, Rest...>
+[[nodiscard]] constexpr auto conj(const C& collection, const T1& value1, const T2& value2, const Rest&... rest) noexcept
+    -> C {
+    C result = conj(conj(collection, value1), value2);
+    concepts_detail::fold_conj_values_into(result, rest...);
+    return result;
+}
+
+// Diagnostic fallback (REQ-DIAG-009): explain collection and value-domain
+// rejections without making either a supported call target.
+template <typename C, typename T>
+    requires concepts::CljonicCollection<C> && (!concepts::ConjableCollection<C>)
+[[nodiscard]] constexpr auto conj([[maybe_unused]] const C& collection, [[maybe_unused]] const T& value) noexcept -> C {
+    static_assert(concepts_detail::dependent_false<C>, "cljonic::conj: the first argument must be a Vector, a Set, a "
+                                                       "Map, a Queue, or a String.");
+    return collection;
+}
+
+template <typename C, typename T>
+    requires concepts::ConjableCollection<C> && (!concepts_detail::ConjValueAdmissible<C, T>)
+[[nodiscard]] constexpr auto conj([[maybe_unused]] const C& collection, [[maybe_unused]] const T& value) noexcept -> C {
+    static_assert(concepts_detail::dependent_false<C, T>,
+                  "cljonic::conj: this value cannot be added to the collection with conj. A Map takes a MapEntry; "
+                  "other collections take a value of the type they store.");
+    return collection;
+}
+
+template <typename C>
+    requires concepts::CljonicCollection<C> && (!concepts::ConjableCollection<C>)
+[[nodiscard]] constexpr auto conj([[maybe_unused]] const C& collection) noexcept -> C {
+    static_assert(concepts_detail::dependent_false<C>, "cljonic::conj: the first argument must be a Vector, a Set, a "
+                                                       "Map, a Queue, or a String.");
+    return collection;
+}
+
+template <typename C, typename T1, typename T2, typename... Rest>
+    requires concepts::CljonicCollection<C> && (!concepts::ConjableCollection<C>)
+[[nodiscard]] constexpr auto conj([[maybe_unused]] const C& collection, [[maybe_unused]] const T1& value1,
+                                  [[maybe_unused]] const T2& value2, [[maybe_unused]] const Rest&... rest) noexcept
+    -> C {
+    static_assert(concepts_detail::dependent_false<C>, "cljonic::conj: the first argument must be a Vector, a Set, a "
+                                                       "Map, a Queue, or a String.");
+    return collection;
+}
+
+template <typename C, typename T1, typename T2, typename... Rest>
+    requires concepts::ConjableCollection<C> && (!concepts_detail::all_conj_values_admissible_v<C, T1, T2, Rest...>)
+[[nodiscard]] constexpr auto conj([[maybe_unused]] const C& collection, [[maybe_unused]] const T1& value1,
+                                  [[maybe_unused]] const T2& value2, [[maybe_unused]] const Rest&... rest) noexcept
+    -> C {
+    static_assert(concepts_detail::dependent_false<C>,
+                  "cljonic::conj: every value after the collection must be one this collection can add. A Map takes "
+                  "MapEntry values; other collections take a value of the type they store.");
+    return collection;
 }
 
 } // namespace cljonic
+// End cljonic-conj.hpp
+// Begin cljonic-contains.hpp
+#pragma once
 
-namespace cljonic::concepts_detail {
 
-template <typename Source>
-struct producer_traits<Cycle<Source>> {
-    static constexpr bool is_cljonic_producer = true;
-    static constexpr producer_kind kind = producer_kind::cycle;
-};
+namespace cljonic {
 
-template <concepts::CljonicSource Source>
-struct contains_floating_point<Cycle<Source>> : std::bool_constant<contains_floating_point_v<Source>> {};
+namespace concepts_detail {
 
-template <concepts::CljonicSource Source>
-struct contains_callable<Cycle<Source>> : std::bool_constant<contains_callable_v<Source>> {};
+template <typename C>
+concept ContainsLookupCollection =
+    concepts::LookupCollection<C> && (concepts::CljonicMap<C> || concepts::CljonicSet<C>);
 
-template <concepts::CljonicSource Source>
-struct contains_standard_range<Cycle<Source>> : std::bool_constant<contains_standard_range_v<Source>> {};
+template <typename C>
+concept ContainsIndexedCollection =
+    concepts::IndexedCollection<C> && (concepts::CljonicVector<C> || concepts::CljonicString<C>);
 
-// Nominal walker coverage (REQ-NUM-019): Cycle declares that the walkers reach
-// its source type.
-template <concepts::CljonicSource Source>
-struct walker_coverage<Cycle<Source>> {
-    static constexpr bool declared = true;
-};
+template <typename C>
+concept ContainsSupportedCollection = ContainsLookupCollection<C> || ContainsIndexedCollection<C>;
 
-} // namespace cljonic::concepts_detail
-// End cljonic-cycle.hpp
+template <typename C, typename K>
+concept ContainsAdmissible =
+    (ContainsLookupCollection<C> && concepts::SafeImplicitConversion<typename C::lookup_type, K>) ||
+    (ContainsIndexedCollection<C> && IntegerIndexType<K>);
+
+} // namespace concepts_detail
+
+/** \anchor Contains
+ * The \b contains free function tests key presence, element membership, or index validity in a \ref Map "Map", \ref
+ * Set "Set", \ref Vector "Vector", or \ref String "String". It returns `true` when the key or element is present, or
+ * when the index is valid; otherwise, it returns `false`.
+ *
+ * \ref Map "Map" keys and \ref Set "Set" elements admit their declared type and safe numeric widening that preserves
+ * every source value. \ref Vector "Vector" and \ref String "String" accept an integer index.
+ *
+ * \b Examples
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+ using namespace cljonic;
+
+ int main() {
+   // Compile-time demonstration.
+   constexpr auto v_const = vector(10, 20, 30);
+   constexpr auto m_const = hash_map(1, 100);
+   constexpr auto s_const = hash_set(5);
+   constexpr auto st_const = string("abc");
+   static_assert(contains(v_const, 0));
+   static_assert(!contains(v_const, 9));
+   static_assert(contains(m_const, 1));
+   static_assert(!contains(m_const, 2));
+   static_assert(contains(s_const, 5));
+   static_assert(!contains(s_const, 8));
+   static_assert(contains(st_const, 1));
+
+   // Runtime demonstration.
+   auto v_runtime = vector(10, 20);
+   const auto in_range = contains(v_runtime, 0);
+
+   return (in_range && !contains(v_runtime, 9)) ? 0 : 1;
+ }
+ ~~~~~
+ */
+template <typename C, typename K>
+    requires concepts_detail::ContainsAdmissible<C, K>
+[[nodiscard]] constexpr auto contains(const C& collection, const K& key) noexcept(noexcept(collection.contains(key)))
+    -> bool {
+    return collection.contains(key);
+}
+
+template <typename C, typename K>
+    requires(concepts::CljonicCollection<C> || concepts::CljonicProducer<C>) &&
+            (!concepts_detail::ContainsSupportedCollection<C>)
+[[nodiscard]] constexpr auto contains([[maybe_unused]] const C& collection, [[maybe_unused]] const K& key) noexcept
+    -> bool {
+    static_assert(concepts_detail::dependent_false<C>,
+                  "cljonic::contains: the first argument must be a Map, Set, Vector, or String.");
+    return false;
+}
+
+template <typename C, typename K>
+    requires concepts_detail::ContainsSupportedCollection<C> && (!concepts_detail::ContainsAdmissible<C, K>)
+[[nodiscard]] constexpr auto contains([[maybe_unused]] const C& collection, [[maybe_unused]] const K& key) noexcept
+    -> bool {
+    if constexpr (concepts_detail::ContainsLookupCollection<C>) {
+        static_assert(concepts_detail::dependent_false<C, K>,
+                      "cljonic::contains: the lookup value must convert safely to the map's key type or the set's "
+                      "element type, without losing values or changing its meaning.");
+    } else {
+        static_assert(concepts_detail::dependent_false<C, K>,
+                      "cljonic::contains: a Vector or a String index must be a non-boolean, non-character integer "
+                      "type.");
+    }
+    return false;
+}
+
+} // namespace cljonic
+// End cljonic-contains.hpp
+// Begin cljonic-count.hpp
+#pragma once
+
+#include <cstddef>
+
+namespace cljonic {
+
+/** \anchor Count
+ * The \b count free function returns the number of elements in a \ref concepts::SequenceableCollection "collection" or
+ * \ref concepts::SequenceableProducer "producer".
+ *
+ * For unbounded \ref concepts::SequenceableProducer "producers", it returns \b
+ * CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE.
+ *
+ * \b Examples
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+ using namespace cljonic;
+
+ int main() {
+   // Compile-time demonstration.
+   constexpr auto v_const = vector(1, 2, 3);
+   constexpr auto m_const = hash_map(1, 100);
+   constexpr auto q_const = queue(9);
+   constexpr auto r_const = Range{0, 5};
+   constexpr auto finite_repeat = Repeat{3, 7};
+   constexpr auto unbounded_repeat = Repeat{7};
+   constexpr auto unbounded_range = Range{0, 0, 0};
+   static_assert(count(v_const) == 3);
+   static_assert(count(m_const) == 1);
+   static_assert(count(q_const) == 1);
+   static_assert(count(r_const) == 5);
+   static_assert(count(finite_repeat) == 3);
+   static_assert(count(unbounded_repeat) ==
+                 CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
+   static_assert(count(unbounded_range) ==
+                 CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
+
+   // Runtime demonstration.
+   auto v_runtime = vector(10, 20);
+   const auto sz = count(v_runtime);
+
+   return (sz == 2) ? 0 : 1;
+ }
+ ~~~~~
+ */
+template <typename C>
+    requires concepts::SequenceableCollection<C> || concepts::SequenceableProducer<C>
+[[nodiscard]] constexpr auto count(const C& collection) noexcept -> std::size_t {
+    return collection.count();
+}
+
+template <typename C>
+    requires(!concepts::SequenceableCollection<C> && !concepts::SequenceableProducer<C>)
+[[nodiscard]] constexpr auto count([[maybe_unused]] const C& collection) noexcept -> std::size_t {
+    static_assert(concepts_detail::dependent_false<C>,
+                  "cljonic::count: expected a Vector, Map, Set, Queue, String, Range, Repeat, Cycle, Iterate, or "
+                  "Repeatedly value.");
+    return 0U;
+}
+
+} // namespace cljonic
+// End cljonic-count.hpp
 // Begin cljonic-disj.hpp
 #pragma once
 
@@ -3924,795 +5702,6 @@ template <typename Lhs, typename Rhs, typename... Rest>
 // Begin cljonic-first.hpp
 #pragma once
 
-// Begin cljonic-map.hpp
-#pragma once
-
-#include <array>
-#include <cstddef>
-#include <ranges>
-#include <span>
-#include <tuple>
-#include <utility>
-
-// Begin cljonic-map-entry.hpp
-#pragma once
-
-#include <type_traits>
-#include <utility>
-
-
-namespace cljonic {
-
-/** \anchor MapEntry
- * A MapEntry is a value-semantic pair representing a single key-value association. Its fields are public, but MapEntry
- * is not a C++ aggregate.
- *
- * Use the \ref MapEntryFactory "map_entry" factory as the idiomatic creation surface at runtime or during constant
- * evaluation. A MapEntry is a fixed pair, so the factory has no capacity parameter.
- *
- * Keys must support reliable, non-throwing equality comparison and non-throwing storage operations. Values must have a
- * default value and be copyable, assignable, and destructible without throwing, so the entry remains safe to copy and
- * update in bounded collections. Keys and values may themselves be cljonic collections or producers, including nested
- * cljonic composites, provided they satisfy their respective constraints.
- *
- * Key and value construction follows the \ref implicit-conversions "safe implicit conversion rules".
- *
- * \b Examples
- ~~~~~{.cpp}
- #include "cljonic.hpp"
- using namespace cljonic;
-
- int main() {
-   // Compile-time demonstration.
-   constexpr auto m_const = hash_map(1, 100, 2, 200);
-   static_assert(first(m_const) == map_entry(1, 100) ||
-                 first(m_const) == map_entry(2, 200));
-
-   // Explicit key and value types are available when deduction is not wanted.
-   constexpr auto e_explicit = map_entry<long, long>(1, 100);
-
-   // Runtime demonstration: a Map is created with hash_map and its entries,
-   // each a MapEntry value, can be traversed, compared, and added.
-   const auto m_runtime = hash_map<int, int, 4>(1, 100, 2, 200);
-
-   auto value_sum = 0;
-   for (const auto &entry : m_runtime) {
-     value_sum += entry.value;
-   }
-
-   const auto m_fuller = conj(m_runtime, map_entry(3, 300));
-
-   return (value_sum == 300 && m_fuller(3) == 300 && e_explicit.key == 1) ? 0
-                                                                          : 1;
- }
- ~~~~~
- */
-template <concepts::NothrowStableEqualityComparable KeyType, concepts::NothrowCollectionElement ValueType>
-struct MapEntry {
-    using key_type = KeyType;
-    using value_type = ValueType;
-    using mapped_type = ValueType;
-
-    KeyType key{};
-    ValueType value{};
-
-    constexpr MapEntry() noexcept = default;
-
-    template <typename Key>
-        requires concepts::NothrowElementConstruction<KeyType, Key>
-    constexpr explicit MapEntry(Key&& entry_key) noexcept : key(std::forward<Key>(entry_key)) {
-    }
-
-    template <typename Key, typename Value>
-        requires concepts::NothrowElementConstruction<KeyType, Key> &&
-                     concepts::NothrowElementConstruction<ValueType, Value>
-    constexpr MapEntry(Key&& entry_key, Value&& entry_value) noexcept
-        : key(std::forward<Key>(entry_key)), value(std::forward<Value>(entry_value)) {
-    }
-
-    [[nodiscard]] constexpr auto operator==(const MapEntry& other) const noexcept -> bool
-        requires concepts::StableEqualityComparable<KeyType> && concepts::StableEqualityComparable<ValueType>
-    {
-        return key == other.key && value == other.value;
-    }
-};
-
-template <typename Key, typename Value>
-MapEntry(Key, Value) -> MapEntry<Key, Value>;
-
-} // namespace cljonic
-
-namespace cljonic::concepts_detail {
-
-template <typename KeyType, typename ValueType>
-inline constexpr bool is_cljonic_map_entry_v<cljonic::MapEntry<KeyType, ValueType>> = true;
-
-// MapEntry inherits the recursive component analysis of the closed cljonic
-// value domain: it admits stable equality only when both its key and value
-// components admit stable equality (REQ-CAP-010).
-template <typename KeyType, typename ValueType>
-struct contains_floating_point<cljonic::MapEntry<KeyType, ValueType>>
-    : std::bool_constant<contains_floating_point_v<KeyType> || contains_floating_point_v<ValueType>> {};
-
-template <typename KeyType, typename ValueType>
-struct contains_callable<cljonic::MapEntry<KeyType, ValueType>>
-    : std::bool_constant<contains_callable_v<KeyType> || contains_callable_v<ValueType>> {};
-
-template <typename KeyType, typename ValueType>
-struct contains_standard_range<cljonic::MapEntry<KeyType, ValueType>>
-    : std::bool_constant<contains_standard_range_v<KeyType> || contains_standard_range_v<ValueType>> {};
-
-// Nominal walker coverage (REQ-NUM-019): MapEntry declares that the walkers reach
-// both its key and value types.
-template <typename KeyType, typename ValueType>
-struct walker_coverage<cljonic::MapEntry<KeyType, ValueType>> {
-    static constexpr bool declared = true;
-};
-
-struct DeducedMapEntryKeyType {};
-struct DeducedMapEntryValueType {};
-
-template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
-struct map_entry_factory_types {
-    using key_type = RequestedKeyType;
-    using value_type = RequestedValueType;
-};
-
-template <typename KeyArgument, typename ValueArgument>
-struct map_entry_factory_types<DeducedMapEntryKeyType, DeducedMapEntryValueType, KeyArgument, ValueArgument> {
-    using key_type = std::remove_cvref_t<KeyArgument>;
-    using value_type = std::remove_cvref_t<ValueArgument>;
-};
-
-template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
-using map_entry_factory_key_type_t = map_entry_factory_types<RequestedKeyType, RequestedValueType, Args...>::key_type;
-
-template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
-using map_entry_factory_value_type_t =
-    map_entry_factory_types<RequestedKeyType, RequestedValueType, Args...>::value_type;
-
-template <typename KeyType, typename ValueType, typename... Args>
-struct map_entry_factory_arguments_are_nothrow : std::false_type {};
-
-template <typename KeyType, typename ValueType, typename KeyArgument, typename ValueArgument>
-struct map_entry_factory_arguments_are_nothrow<KeyType, ValueType, KeyArgument, ValueArgument>
-    : std::bool_constant<concepts::NothrowElementConstruction<KeyType, KeyArgument> &&
-                         concepts::NothrowElementConstruction<ValueType, ValueArgument>> {};
-
-template <typename KeyType, typename ValueType>
-concept MapEntryFactoryElementTypes =
-    concepts::NothrowStableEqualityComparable<KeyType> && concepts::NothrowCollectionElement<ValueType>;
-
-template <typename KeyType, typename ValueType, typename... Args>
-concept MapEntryFactoryArguments = map_entry_factory_arguments_are_nothrow<KeyType, ValueType, Args...>::value;
-
-} // namespace cljonic::concepts_detail
-
-namespace cljonic {
-
-/** \anchor MapEntryFactory
- * Creates a \ref MapEntry "MapEntry" from exactly one key and one value.
- *
- * Deduced calls use the unqualified types of the key and value arguments. Explicit types use \c map_entry<Key,
- * Value>(...). A MapEntry is a fixed pair, so unlike the collection factories there is no capacity parameter and no
- * spare-capacity form.
- */
-template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
-          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
-    requires(
-        concepts_detail::MapEntryFactoryElementTypes<
-            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
-        sizeof...(Args) == 2U &&
-        concepts_detail::MapEntryFactoryArguments<
-            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...>)
-[[nodiscard]] constexpr auto map_entry(Args&&... args) noexcept
-    -> MapEntry<concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-                concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> {
-    using KeyType = concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>;
-    using ValueType = concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>;
-    return MapEntry<KeyType, ValueType>{std::forward<Args>(args)...};
-}
-
-template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
-          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
-    requires(sizeof...(Args) != 2U)
-constexpr auto map_entry([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
-                  "cljonic::map_entry: requires exactly one key argument and one value argument.");
-}
-
-template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
-          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
-    requires(sizeof...(Args) == 2U &&
-             !concepts_detail::MapEntryFactoryElementTypes<
-                 concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-                 concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>>)
-constexpr auto map_entry([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
-                  "cljonic::map_entry: key and value types must satisfy MapEntry element requirements.");
-}
-
-template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
-          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
-    requires(
-        sizeof...(Args) == 2U &&
-        concepts_detail::MapEntryFactoryElementTypes<
-            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
-        !concepts_detail::MapEntryFactoryArguments<
-            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...>)
-constexpr auto map_entry([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
-                  "cljonic::map_entry: the key and value must safely construct their declared types without "
-                  "throwing.");
-}
-
-} // namespace cljonic
-// End cljonic-map-entry.hpp
-
-namespace cljonic {
-
-/** \anchor Map
- * A Map is a bounded, associative collection that maps unique keys to values and provides callable lookup with
- * optional fallback values. Other operations use the library's free-function API.
- *
- * The \c hash_map factory is the idiomatic way to create Map values, at runtime or during constant evaluation. It
- * accepts alternating keys and values, and a later duplicate key replaces the earlier value. Use \c hash_map(k, v,
- * ...) to infer the key type, value type, and capacity, \c hash_map<K, V>(k, v, ...) to select the key and value
- * types, or \c hash_map<K, V, Capacity>(k, v, ...) to provide an explicit capacity, including for an empty map. \c
- * Map<K, V, Capacity> remains the value's type.
- *
- * Direct construction is useful when importing a C++ range or view: its entries are copied into the Map. A cljonic
- * collection or producer is not a constructor source.
- *
- * Construction with more entries than the available capacity is rejected at compile time. Construction from entries
- * requires the exact declared entry type. Keys, mapped values, and fallbacks follow the \ref implicit-conversions
- * "safe implicit conversion rules".
- *
- \b Examples
- ~~~~~{.cpp}
- #include "cljonic.hpp"
- using namespace cljonic;
-
- struct Key {
-   int id;
-   friend constexpr bool operator==(const Key &, const Key &) noexcept = default;
- };
-
- struct Value {
-   int amount = 0;
-   friend constexpr bool operator==(const Value &,
-                                    const Value &) noexcept = default;
- };
-
- using AccountEntry = MapEntry<Key, Value>;
- using AccountMap = Map<Key, Value, 2>;
-
- int main() {
-   // The factory is the idiomatic way to create maps. It accepts
-   // alternating keys and values.
-   constexpr auto factory_map = hash_map(Key{1}, Value{10}, Key{2}, Value{20});
-   static_assert(factory_map(Key{2}).amount == 20);
-
-   // Explicit key, value, and capacity types create an empty Map with room
-   // for later associations.
-   constexpr auto reserved = hash_map<Key, Value, 4>();
-
-   // Missing `reserved(Key{1})` returns the fallback value
-   static_assert(reserved(Key{1}).amount == 0);
-
-   // The factory also works with runtime values.
-   const auto runtime_amount = 40;
-   const auto runtime_factory = hash_map(Key{4}, Value{runtime_amount});
-
-   // Runtime CTAD deduces Map<Key, Value, 1> from the map_entry value.
-   auto runtime = hash_map(Key{3}, Value{30});
-   const auto present = runtime(Key{3});
-   const auto missing = runtime(Key{4}, Value{77});
-
-   // A standard view pipeline can use an existing Map as its source and
-   // Construct another Map from the transformed entries.
-   const auto copied_view =
-       runtime | std::views::transform([](const AccountEntry &entry) noexcept {
-         return map_entry(entry.key, Value{entry.value.amount * 2});
-       });
-   const auto from_pipeline = AccountMap{copied_view};
-
-   // A named map type and its named entry type make the intended value model
-   // explicit. A later duplicate key replaces the earlier value (i.e., the
-   // right-most value associated with a duplicate key).
-   constexpr auto literal =
-       AccountMap{map_entry(Key{1}, Value{10}), map_entry(Key{1}, Value{20})};
-
-   // A Map is callable for present-key lookup and missing-key fallback.
-   static_assert(literal(Key{1}).amount == 20);
-   static_assert(literal(Key{2}).amount == 0);
-   static_assert(literal(Key{2}, Value{99}).amount == 99);
-
-   // ---------------------------------------------------------------------------
-   // C++ interoperability: a Map supports const traversal and exposes a
-   // non-owning std::span view. Range/view sources are copied into owned
-   // storage, retaining only the bounded prefix that fits the capacity.
-   // ---------------------------------------------------------------------------
-   static constexpr AccountEntry source_entries[] = {
-       map_entry(Key{10}, Value{100}), map_entry(Key{20}, Value{200})};
-   constexpr auto source_span = std::span{source_entries};
-   constexpr auto from_span = AccountMap{source_span};
-   static_assert(from_span(Key{10}).amount == 100);
-   static_assert(from_span(Key{20}).amount == 200);
-
-   constexpr auto from_span_ctad = Map{source_span};
-   static_assert(from_span_ctad(Key{10}).amount == 100);
-   static_assert(from_span_ctad.view().size() == 2);
-
-   // Constructing a Map from a runtime C++ array/span
-   AccountEntry runtime_buffer[] = {map_entry(Key{100}, Value{1000}),
-                                    map_entry(Key{200}, Value{2000})};
-   const auto runtime_from_span =
-       Map<Key, Value, 4>{std::span<const AccountEntry>{runtime_buffer, 2}};
-
-   // Use C++ interoperability to sum the values in a map.
-   auto value_sum = 0;
-   for (const auto &entry : runtime) {
-     value_sum += entry.value.amount;
-   }
-
-   const auto runtime_view = runtime.view();
-
-   return (present.amount == 30 && missing.amount == 77 && value_sum == 30 &&
-           runtime_view.size() == 1 && runtime_view[0].value.amount == 30 &&
-           factory_map(Key{1}).amount == 10 &&
-           runtime_factory(Key{4}).amount == 40 &&
-           from_span(Key{10}).amount == 100 &&
-           from_pipeline(Key{3}).amount == 60 &&
-           runtime_from_span(Key{100}).amount == 1000)
-              ? 0
-              : 1;
- }
- ~~~~~
- */
-template <concepts::NothrowStableEqualityComparable KeyType, concepts::NothrowCollectionElement ValueType,
-          std::size_t CapacityValue>
-    requires(!concepts_detail::is_std_variant_v<KeyType>)
-class Map {
-  public:
-    using key_type = KeyType;
-    using lookup_type = key_type;
-    using mapped_type = ValueType;
-    using association_value_type = ValueType;
-    using value_type = MapEntry<KeyType, ValueType>;
-
-    static_assert(
-        CapacityValue <= cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE,
-        "cljonic::Map: CapacityValue exceeds "
-        "CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT=" CLJONIC_STRINGIFY(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT));
-
-    template <typename... Args>
-    explicit(sizeof...(Args) ==
-             1) constexpr Map(Args&&... args) noexcept((concepts::NothrowElementConstruction<value_type, Args> &&
-                                                        ...)) {
-        static_assert(sizeof...(Args) <= CapacityValue, "cljonic::Map: initializer count exceeds Map CapacityValue");
-        static_assert(((std::same_as<std::remove_cvref_t<Args>, value_type> &&
-                        concepts::NothrowElementConstruction<value_type, Args>) &&
-                       ...),
-                      "cljonic::Map: constructor requires all arguments to construct "
-                      "the exact MapEntry type without throwing");
-
-        ((*this = assoc_entry(value_type{std::forward<Args>(args)})), ...);
-    }
-
-    // A cljonic collection or producer is not a SourceConstruction source
-    // (REQ-FN-027A); materialize it via into, preflighted by fits_into.
-    template <std::ranges::input_range SourceRange>
-        requires(!concepts_detail::is_cljonic_collection_v<SourceRange> &&
-                 !concepts_detail::is_cljonic_producer_v<SourceRange> &&
-                 !std::same_as<std::remove_cvref_t<SourceRange>, value_type>)
-    explicit constexpr Map(SourceRange&& source) noexcept(
-        (concepts::NothrowRangeConstruction<value_type, SourceRange>)) {
-        static_assert(concepts::NothrowRangeConstruction<value_type, SourceRange>,
-                      "cljonic::Map: range/view constructor requires each source element to construct "
-                      "the exact MapEntry type and requires non-throwing traversal");
-        static_assert(concepts_detail::static_extent_fits_v<SourceRange, CapacityValue>,
-                      "cljonic::Map: static-extent range source exceeds Map CapacityValue");
-
-        std::size_t copy_count = 0;
-        for (auto&& item : std::forward<SourceRange>(source)) {
-            if (copy_count++ >= CapacityValue) {
-                break;
-            }
-            *this = assoc_entry(value_type{std::forward<decltype(item)>(item)});
-        }
-    }
-
-    // Diagnostic fallback (REQ-DIAG-010): a cljonic collection or producer is
-    // not a SourceConstruction source. This overload exists only to explain the
-    // rejection -- it produces no value and is never a supported call target.
-    template <typename SourceValue>
-        requires((concepts_detail::is_cljonic_collection_v<SourceValue> ||
-                  concepts_detail::is_cljonic_producer_v<SourceValue>) &&
-                 !std::same_as<std::remove_cvref_t<SourceValue>, value_type>)
-    explicit constexpr Map([[maybe_unused]] SourceValue&& source) noexcept {
-        static_assert(concepts_detail::dependent_false<SourceValue>,
-                      "cljonic::Map: you cannot construct a Map from a cljonic collection or producer. A Map is built "
-                      "from MapEntry elements, or from a non-cljonic C++ range or view.");
-    }
-
-    [[nodiscard]] static constexpr auto capacity() noexcept -> std::size_t {
-        return CapacityValue;
-    }
-
-    [[nodiscard]] constexpr auto count() const noexcept -> std::size_t {
-        return logical_size_;
-    }
-
-    [[nodiscard]] constexpr auto operator==(const Map& other) const noexcept -> bool
-        requires concepts::StableEqualityComparable<KeyType> && concepts::StableEqualityComparable<ValueType>
-    {
-        if (logical_size_ != other.logical_size_) {
-            return false;
-        }
-        for (std::size_t i = 0; i < logical_size_; ++i) {
-            if (!matches_entry(other, i)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    [[nodiscard]] constexpr auto contains(const KeyType& key) const noexcept -> bool {
-        return find_index(key) < logical_size_;
-    }
-
-    [[nodiscard]] constexpr auto operator()(const KeyType& key, const ValueType& fallback = ValueType{}) const noexcept
-        -> ValueType {
-        const auto idx = find_index(key);
-        return (idx < logical_size_) ? entries_[idx].value : fallback;
-    }
-
-    [[nodiscard]] constexpr auto can_assoc(const KeyType& key, [[maybe_unused]] const ValueType& value) const noexcept
-        -> bool {
-        return contains(key) || (logical_size_ < CapacityValue);
-    }
-
-    [[nodiscard]] constexpr auto assoc(const KeyType& key, const ValueType& value) const noexcept -> Map {
-        Map result = *this;
-        const auto idx = result.find_index(key);
-        if (idx < result.logical_size_) {
-            result.entries_[idx].value = value;
-        } else if (result.logical_size_ < CapacityValue) {
-            result.entries_[result.logical_size_] = value_type{key, value};
-            ++result.logical_size_;
-        }
-        return result;
-    }
-
-    /** Returns true when the entry's key is present or the map has room for one
-     *  more entry. */
-    [[nodiscard]] constexpr auto can_conj(const value_type& entry) const noexcept -> bool {
-        return contains(entry.key) || (logical_size_ < CapacityValue);
-    }
-
-    /** Associates the entry's key with its value on a copy: an existing key
-     *  replaces its value without increasing count; an absent key is added only
-     *  when capacity remains. Returns an unchanged copy when full. */
-    [[nodiscard]] constexpr auto conj(const value_type& entry) const noexcept -> Map {
-        return assoc(entry.key, entry.value);
-    }
-
-    [[nodiscard]] constexpr auto dissoc(const KeyType& key) const noexcept -> Map {
-        Map result = *this;
-        const auto idx = result.find_index(key);
-        if (idx < result.logical_size_) {
-            if (idx + 1U < result.logical_size_) {
-                result.entries_[idx] = result.entries_[result.logical_size_ - 1U];
-            }
-            --result.logical_size_;
-        }
-        return result;
-    }
-
-    [[nodiscard]] constexpr auto begin() const noexcept -> const value_type* {
-        return entries_.data();
-    }
-
-    [[nodiscard]] constexpr auto end() const noexcept -> const value_type* {
-        return entries_.data() + logical_size_;
-    }
-
-    [[nodiscard]] constexpr auto view() const noexcept -> std::span<const value_type> {
-        return {entries_.data(), logical_size_};
-    }
-
-    template <typename Key>
-        requires(!concepts::SafeImplicitConversion<KeyType, Key>)
-    auto contains(const Key& key) const -> bool = delete;
-
-    template <typename Key, typename Fallback = ValueType>
-        requires(!concepts::SafeImplicitConversion<KeyType, Key> ||
-                 !concepts::SafeImplicitConversion<ValueType, Fallback>)
-    auto operator()(const Key& key, const Fallback& fallback = Fallback{}) const -> ValueType = delete;
-
-    template <typename Key, typename Value>
-        requires(!concepts::SafeImplicitConversion<KeyType, Key> || !concepts::SafeImplicitConversion<ValueType, Value>)
-    auto can_assoc(const Key& key, const Value& value) const -> bool = delete;
-
-    template <typename Key, typename Value>
-        requires(!concepts::SafeImplicitConversion<KeyType, Key> || !concepts::SafeImplicitConversion<ValueType, Value>)
-    auto assoc(const Key& key, const Value& value) const -> Map = delete;
-
-    template <typename Entry>
-        requires(!std::same_as<std::remove_cvref_t<Entry>, value_type>)
-    auto can_conj(const Entry& entry) const -> bool = delete;
-
-    template <typename Entry>
-        requires(!std::same_as<std::remove_cvref_t<Entry>, value_type>)
-    auto conj(const Entry& entry) const -> Map = delete;
-
-    template <typename Key>
-        requires(!concepts::SafeImplicitConversion<KeyType, Key>)
-    auto dissoc(const Key& key) const -> Map = delete;
-
-  private:
-    [[nodiscard]] constexpr auto find_index(const KeyType& key) const noexcept -> std::size_t {
-        for (std::size_t i = 0; i < logical_size_; ++i) {
-            if (entries_[i].key == key) {
-                return i;
-            }
-        }
-        return logical_size_;
-    }
-
-    [[nodiscard]] constexpr auto matches_entry(const Map& other, std::size_t index) const noexcept -> bool {
-        const auto idx = other.find_index(entries_[index].key);
-        if (idx >= other.logical_size_) {
-            return false;
-        }
-        return entries_[index].value == other.entries_[idx].value;
-    }
-
-    [[nodiscard]] constexpr auto assoc_entry(const value_type& entry) const noexcept -> Map {
-        return assoc(entry.key, entry.value);
-    }
-
-    std::array<value_type, CapacityValue> entries_{};
-    std::size_t logical_size_{0};
-};
-
-template <typename KeyType, typename ValueType, typename... Rest>
-Map(MapEntry<KeyType, ValueType>, Rest...) -> Map<KeyType, ValueType, 1 + sizeof...(Rest)>;
-
-template <typename KeyType, typename ValueType, std::size_t Extent>
-    requires(Extent != std::dynamic_extent)
-Map(std::span<const MapEntry<KeyType, ValueType>, Extent>) -> Map<KeyType, ValueType, Extent>;
-
-template <typename KeyType, typename ValueType, std::size_t Extent>
-    requires(Extent != std::dynamic_extent)
-Map(std::span<MapEntry<KeyType, ValueType>, Extent>) -> Map<KeyType, ValueType, Extent>;
-
-namespace concepts_detail {
-
-struct DeducedHashMapKeyType {};
-struct DeducedHashMapValueType {};
-
-template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
-struct hash_map_factory_types {
-    using key_type = RequestedKeyType;
-    using value_type = RequestedValueType;
-};
-
-template <typename FirstKey, typename FirstValue, typename... Rest>
-struct hash_map_factory_types<DeducedHashMapKeyType, DeducedHashMapValueType, FirstKey, FirstValue, Rest...> {
-    using key_type = std::remove_cvref_t<FirstKey>;
-    using value_type = std::remove_cvref_t<FirstValue>;
-};
-
-template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
-using hash_map_factory_key_type_t = hash_map_factory_types<RequestedKeyType, RequestedValueType, Args...>::key_type;
-
-template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
-using hash_map_factory_value_type_t = hash_map_factory_types<RequestedKeyType, RequestedValueType, Args...>::value_type;
-
-template <typename KeyType, typename ValueType, typename Tuple, std::size_t... PairIndices>
-[[nodiscard]] consteval auto
-hash_map_factory_pairs_are_nothrow([[maybe_unused]] std::index_sequence<PairIndices...> indices) noexcept -> bool {
-    return (concepts::NothrowElementConstruction<KeyType, std::tuple_element_t<2U * PairIndices, Tuple>> && ...) &&
-           (concepts::NothrowElementConstruction<ValueType, std::tuple_element_t<(2U * PairIndices) + 1U, Tuple>> &&
-            ...);
-}
-
-template <typename KeyType, typename ValueType, typename... Args>
-[[nodiscard]] consteval auto hash_map_factory_arguments_are_nothrow() noexcept -> bool {
-    return hash_map_factory_pairs_are_nothrow<KeyType, ValueType, std::tuple<Args...>>(
-        std::make_index_sequence<sizeof...(Args) / 2U>{});
-}
-
-template <typename KeyType, typename ValueType, typename... Args>
-concept HashMapFactoryPairArguments = sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
-                                      hash_map_factory_arguments_are_nothrow<KeyType, ValueType, Args...>();
-
-template <typename KeyType, typename ValueType>
-concept HashMapFactoryElementTypes = concepts::NothrowStableEqualityComparable<KeyType> &&
-                                     concepts::NothrowCollectionElement<ValueType> && !is_std_variant_v<KeyType>;
-
-template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
-concept HashMapFactoryCapacityArguments =
-    HashMapFactoryElementTypes<KeyType, ValueType> && Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
-    sizeof...(Args) % 2U == 0U && sizeof...(Args) / 2U <= Capacity &&
-    sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
-    (sizeof...(Args) == 0U || HashMapFactoryPairArguments<KeyType, ValueType, Args...>);
-
-template <typename KeyType, typename ValueType, std::size_t Capacity>
-[[nodiscard]] constexpr auto build_hash_map_factory_result(Map<KeyType, ValueType, Capacity> result) noexcept
-    -> Map<KeyType, ValueType, Capacity> {
-    return result;
-}
-
-template <typename KeyType, typename ValueType, std::size_t Capacity, typename KeyArgument, typename ValueArgument,
-          typename... Rest>
-[[nodiscard]] constexpr auto build_hash_map_factory_result(Map<KeyType, ValueType, Capacity> result, KeyArgument&& key,
-                                                           ValueArgument&& value, Rest&&... rest) noexcept
-    -> Map<KeyType, ValueType, Capacity> {
-    return build_hash_map_factory_result(
-        result.assoc(std::forward<KeyArgument>(key), std::forward<ValueArgument>(value)), std::forward<Rest>(rest)...);
-}
-
-} // namespace concepts_detail
-
-/** \anchor HashMapFactory
- * Creates a bounded \ref Map "Map" from alternating key/value arguments.
- *
- * Deduced calls use the first pair's unqualified types and have capacity equal to their pair count. Explicit types use
- * \c hash_map<Key, Value>(...); explicit capacity uses \c hash_map<Key, Value, Capacity>(...), including for an empty
- * map.
- */
-template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
-          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
-    requires(
-        concepts_detail::HashMapFactoryElementTypes<
-            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
-        concepts_detail::HashMapFactoryPairArguments<
-            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...> &&
-        sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
-[[nodiscard]] constexpr auto hash_map(Args&&... args) noexcept
-    -> Map<concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-           concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>,
-           sizeof...(Args) / 2U> {
-    using KeyType = concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>;
-    using ValueType = concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>;
-    return concepts_detail::build_hash_map_factory_result<KeyType, ValueType, sizeof...(Args) / 2U>(
-        Map<KeyType, ValueType, sizeof...(Args) / 2U>{}, std::forward<Args>(args)...);
-}
-
-template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
-          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
-    requires(sizeof...(Args) == 0U || sizeof...(Args) % 2U != 0U)
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
-                  "cljonic::hash_map: empty calls require explicit key, value, and capacity types; nonempty calls "
-                  "require complete alternating key/value pairs.");
-}
-
-template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
-          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
-    requires(sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
-             !concepts_detail::HashMapFactoryElementTypes<
-                 concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-                 concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>>)
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
-                  "cljonic::hash_map: key and value types must satisfy Map element requirements.");
-}
-
-template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
-          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
-    requires(sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
-             concepts_detail::HashMapFactoryElementTypes<
-                 concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-                 concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
-             sizeof...(Args) / 2U > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
-                  "cljonic::hash_map: pair count exceeds CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
-}
-
-template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
-          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
-    requires(
-        sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
-        concepts_detail::HashMapFactoryElementTypes<
-            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
-        sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
-        !concepts_detail::HashMapFactoryPairArguments<
-            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...>)
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
-                  "cljonic::hash_map: every key and value must safely construct its declared type without "
-                  "throwing.");
-}
-
-/** Creates a bounded Map with explicit capacity, including an empty Map. */
-template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
-    requires concepts_detail::HashMapFactoryCapacityArguments<KeyType, ValueType, Capacity, Args...>
-[[nodiscard]] constexpr auto hash_map(Args&&... args) noexcept -> Map<KeyType, ValueType, Capacity> {
-    return concepts_detail::build_hash_map_factory_result<KeyType, ValueType, Capacity>(
-        Map<KeyType, ValueType, Capacity>{}, std::forward<Args>(args)...);
-}
-
-template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
-    requires(!concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType>)
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
-                  "cljonic::hash_map: key and value types must satisfy Map element requirements.");
-}
-
-template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
-    requires(concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType> &&
-             Capacity > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
-                  "cljonic::hash_map: capacity exceeds CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
-}
-
-template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
-    requires(concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType> &&
-             Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
-             (sizeof...(Args) % 2U != 0U || sizeof...(Args) / 2U > Capacity))
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
-                  "cljonic::hash_map: arguments must be complete key/value pairs and fit within the selected "
-                  "capacity.");
-}
-
-template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
-    requires(concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType> &&
-             Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE && sizeof...(Args) % 2U == 0U &&
-             sizeof...(Args) / 2U <= Capacity &&
-             sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE && sizeof...(Args) > 0U &&
-             !concepts_detail::HashMapFactoryPairArguments<KeyType, ValueType, Args...>)
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
-                  "cljonic::hash_map: every key and value must safely construct its declared type without "
-                  "throwing.");
-}
-
-} // namespace cljonic
-
-namespace cljonic::concepts_detail {
-
-template <typename KeyType, typename ValueType, std::size_t CapacityValue>
-struct collection_traits<Map<KeyType, ValueType, CapacityValue>> {
-    static constexpr bool is_cljonic_collection = true;
-    static constexpr collection_kind kind = collection_kind::map;
-};
-
-template <typename KeyType, typename ValueType, std::size_t CapacityValue>
-struct contains_floating_point<Map<KeyType, ValueType, CapacityValue>>
-    : std::bool_constant<contains_floating_point_v<KeyType> || contains_floating_point_v<ValueType>> {};
-
-template <typename KeyType, typename ValueType, std::size_t CapacityValue>
-struct contains_callable<Map<KeyType, ValueType, CapacityValue>>
-    : std::bool_constant<contains_callable_v<KeyType> || contains_callable_v<ValueType>> {};
-
-template <typename KeyType, typename ValueType, std::size_t CapacityValue>
-struct contains_standard_range<Map<KeyType, ValueType, CapacityValue>>
-    : std::bool_constant<contains_standard_range_v<KeyType> || contains_standard_range_v<ValueType>> {};
-
-// Nominal walker coverage (REQ-NUM-019): Map declares that the walkers reach both
-// its key and value types.
-template <typename KeyType, typename ValueType, std::size_t CapacityValue>
-struct walker_coverage<Map<KeyType, ValueType, CapacityValue>> {
-    static constexpr bool declared = true;
-};
-
-} // namespace cljonic::concepts_detail
-// End cljonic-map.hpp
 
 namespace cljonic {
 
@@ -5026,7 +6015,292 @@ constexpr auto get([[maybe_unused]] const C& collection, [[maybe_unused]] const 
 // Begin cljonic-next.hpp
 #pragma once
 
-// Begin cljonic-iterate.hpp
+// Begin cljonic-producer-cycle.hpp
+#pragma once
+
+#include <cstddef>
+#include <ranges>
+#include <utility>
+
+
+namespace cljonic {
+
+namespace concepts_detail {
+
+struct CycleNextAccess;
+
+/** Internal tag (REQ-DIAG-012): selects the `Cycle` diagnostic specialization
+ *  during an out-of-domain class template argument deduction. */
+struct CycleSourceDomainViolation {};
+
+/** The `Cycle` class-template gate (REQ-DIAG-012): a valid cycle source, or the
+ *  internal diagnostic tag used only to redirect a rejected deduction. Naming
+ *  the rule as one concept also keeps the emitted constraint readable. */
+template <typename Source>
+concept CycleClassArgument =
+    ValidCycleSource<Source> || std::same_as<std::remove_cvref_t<Source>, CycleSourceDomainViolation>;
+
+} // namespace concepts_detail
+
+/** \anchor Cycle
+ * A Cycle is an unbounded producer over an owned source value, which must be a cljonic collection or producer. The
+ * source's elements may themselves be cljonic collections or producers, including nested cljonic composites. A finite
+ * source sequence is repeated from the beginning after exhaustion.
+ *
+ * The only approved public form is `cycle(source)`. It supports const C++ range traversal in both constant evaluation
+ * and runtime code. Values can be passed directly to cljonic operations that accept a source.
+ *
+ * Observation yields at most \b CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE elements.
+ *
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+ using namespace cljonic;
+
+ int main() {
+   [[maybe_unused]] constexpr auto finite_cycle = cycle(vector(1, 2, 3));
+   [[maybe_unused]] constexpr auto unbounded_cycle = cycle(Range{0, 0, 0});
+
+   // -----------------------------------------------------------------------
+   // C++ interoperability: Cycle supports const traversal.
+   // -----------------------------------------------------------------------
+   auto runtime_cycle = cycle(vector(4, 5, 6));
+   auto runtime_unbounded_cycle = cycle(Range{0, 0, 0});
+
+   // Use C++ interoperability to observe a finite source cycle at runtime.
+   auto runtime_sum = 0;
+   auto runtime_count = 0;
+   for (const auto value : runtime_cycle) {
+     runtime_sum += value;
+     if (++runtime_count == 5) {
+       break;
+     }
+   }
+
+   // Use C++ interoperability to observe an unbounded source cycle at runtime.
+   auto runtime_unbounded_sum = 0;
+   auto runtime_unbounded_count = 0;
+   for (const auto value : runtime_unbounded_cycle) {
+     runtime_unbounded_sum += value;
+     if (++runtime_unbounded_count == 4) {
+       break;
+     }
+   }
+
+   return runtime_count == 5 && runtime_sum == 24 &&
+                  runtime_unbounded_count == 4 && runtime_unbounded_sum == 0
+              ? 0
+              : 1;
+ }
+ ~~~~~
+ */
+template <concepts_detail::CycleClassArgument Source>
+class Cycle {
+    friend struct concepts_detail::CycleNextAccess;
+
+  public:
+    using source_type = Source;
+    using value_type = std::ranges::range_value_t<const Source>;
+    using source_iterator = std::ranges::iterator_t<const Source>;
+    using source_sentinel = std::ranges::sentinel_t<const Source>;
+
+    class const_iterator {
+      public:
+        using value_type = Cycle::value_type;
+        using difference_type = std::ptrdiff_t;
+
+        constexpr const_iterator() noexcept = default;
+
+        constexpr const_iterator(const Source* source, source_iterator current, source_sentinel end,
+                                 std::size_t remaining, bool restart) noexcept
+            : source_(source), current_(std::move(current)), end_(std::move(end)), remaining_(remaining),
+              restart_(restart) {
+        }
+
+        [[nodiscard]] constexpr auto operator*() const noexcept -> decltype(auto) {
+            return *current_;
+        }
+
+        constexpr auto operator++() noexcept -> const_iterator& {
+            if (remaining_ == 0U) {
+                remaining_ = 0U;
+                return *this;
+            }
+            --remaining_;
+            ++current_;
+            if (remaining_ != 0U && current_ == end_) {
+                advance_after_source_end();
+            }
+            return *this;
+        }
+
+        constexpr auto operator++(int) noexcept -> const_iterator {
+            auto previous = *this;
+            ++(*this);
+            return previous;
+        }
+
+        [[nodiscard]] friend constexpr auto operator==(const const_iterator& lhs, const const_iterator& rhs) noexcept
+            -> bool {
+            return lhs.remaining_ == rhs.remaining_;
+        }
+
+      private:
+        constexpr void advance_after_source_end() noexcept {
+            current_ = std::ranges::begin(*source_);
+            end_ = std::ranges::end(*source_);
+            remaining_ = restart_ ? remaining_ : 0U;
+        }
+
+        const Source* source_{nullptr};
+        source_iterator current_{};
+        source_sentinel end_{};
+        std::size_t remaining_{0U};
+        bool restart_{false};
+    };
+
+    constexpr Cycle() noexcept = default;
+
+    constexpr explicit Cycle(const Source& source) noexcept : source_(source) {
+    }
+
+    template <typename OtherSource>
+        requires(!std::same_as<std::remove_cvref_t<OtherSource>, Source>)
+    explicit Cycle(OtherSource source) = delete;
+
+    [[nodiscard]] constexpr auto count() const noexcept -> std::size_t {
+        return count_;
+    }
+
+    [[nodiscard]] constexpr auto is_finite() const noexcept -> bool {
+        return is_finite_;
+    }
+
+    [[nodiscard]] constexpr auto begin() const noexcept -> const_iterator {
+        const auto source_count = source_.count();
+        const auto source_begin = std::ranges::begin(source_);
+        const auto source_end = std::ranges::end(source_);
+        const auto source_is_finite = source_finiteness();
+        if (source_count == 0U || source_begin == source_end) {
+            return const_iterator{&source_, source_begin, source_end, 0U, source_is_finite};
+        }
+        const auto current = source_is_finite ? source_begin_at_offset(source_begin) : source_begin;
+        return const_iterator{&source_, current, source_end, count(), source_is_finite};
+    }
+
+    [[nodiscard]] constexpr auto end() const noexcept -> const_iterator {
+        return const_iterator{};
+    }
+
+    /** Producer parameter equality (REQ-FN-014B): compares only the stored
+     *  owned source, count, finite-form, and starting-offset parameters, never the produced
+     *  sequence.
+     *
+     *  It is the only producer parameter-equality surface; the `equal` free
+     *  function instead compares bounded logical observations of the produced
+     *  sequences. The owned source compares by its own stable equality, so
+     *  `cycle(vector(1, 2, 3)) == cycle(vector(1, 2, 3))` is true while
+     *  `cycle(vector(1, 2, 3)) == cycle(vector(1, 2, 4))` is false. O(1), no
+     *  traversal, no allocation. */
+    [[nodiscard]] friend constexpr auto operator==(const Cycle& lhs, const Cycle& rhs) noexcept -> bool
+        requires concepts::StableEqualityComparable<Source>
+    {
+        return lhs.source_ == rhs.source_ && lhs.count_ == rhs.count_ && lhs.is_finite_ == rhs.is_finite_ &&
+               lhs.starting_offset_ == rhs.starting_offset_;
+    }
+
+  private:
+    [[nodiscard]] constexpr auto source_begin_at_offset(source_iterator current) const noexcept -> source_iterator {
+        for (auto offset = std::size_t{0U}; offset < starting_offset_; ++offset) {
+            ++current;
+        }
+        return current;
+    }
+
+    constexpr Cycle(const Source& source, std::size_t starting_offset) noexcept
+        : source_(source), starting_offset_(starting_offset) {
+    }
+
+    [[nodiscard]] constexpr auto source_finiteness() const noexcept -> bool {
+        if constexpr (concepts::CljonicProducer<Source>) {
+            return source_.is_finite();
+        }
+        return true;
+    }
+
+    Source source_{};
+    std::size_t count_{CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE};
+    bool is_finite_{false};
+    std::size_t starting_offset_{0U};
+};
+
+/** Diagnostic specialization (REQ-DIAG-012): reached only through the
+ *  redirecting deduction guide below. Constructing it is always a compile-time
+ *  error whose single message names the class template, the rejected argument
+ *  type, and the violated domain rule. */
+template <>
+class Cycle<concepts_detail::CycleSourceDomainViolation> {
+  public:
+    template <typename... Args>
+    constexpr explicit Cycle([[maybe_unused]] Args&&... args) noexcept {
+        static_assert(concepts_detail::dependent_false<Args...>,
+                      "cljonic::Cycle: the source argument cannot be used to build a Cycle. The source must be a "
+                      "cljonic collection or producer whose element type is storable without throwing.");
+    }
+};
+
+/** Redirecting deduction guide (REQ-DIAG-012): viable only for a rejected
+ *  deduction, so an admitted deduction is never affected. */
+template <typename Source>
+    requires(!concepts_detail::ValidCycleSource<Source>)
+Cycle(const Source&) -> Cycle<concepts_detail::CycleSourceDomainViolation>;
+
+template <concepts::CljonicSource Source>
+    requires concepts::NothrowCollectionElement<std::ranges::range_value_t<const Source>>
+[[nodiscard]] constexpr auto cycle(const Source& source) noexcept -> Cycle<Source> {
+    return Cycle<Source>{source};
+}
+
+// Diagnostic fallback (REQ-DIAG-009): the source argument is outside the closed
+// producer domain. This overload explains the rejection; it never returns a
+// value and is never a supported call target.
+template <typename Source>
+    requires(!concepts_detail::ValidCycleSource<Source>)
+constexpr auto cycle([[maybe_unused]] Source source) noexcept -> concepts_detail::RejectedProducerFactory {
+    static_assert(concepts_detail::dependent_false<Source>,
+                  "cljonic::cycle: the source argument cannot be used to build a Cycle. The source must be a cljonic "
+                  "collection or producer.");
+    return {};
+}
+
+} // namespace cljonic
+
+namespace cljonic::concepts_detail {
+
+template <typename Source>
+struct producer_traits<Cycle<Source>> {
+    static constexpr bool is_cljonic_producer = true;
+    static constexpr producer_kind kind = producer_kind::cycle;
+};
+
+template <concepts::CljonicSource Source>
+struct contains_floating_point<Cycle<Source>> : std::bool_constant<contains_floating_point_v<Source>> {};
+
+template <concepts::CljonicSource Source>
+struct contains_callable<Cycle<Source>> : std::bool_constant<contains_callable_v<Source>> {};
+
+template <concepts::CljonicSource Source>
+struct contains_standard_range<Cycle<Source>> : std::bool_constant<contains_standard_range_v<Source>> {};
+
+// Nominal walker coverage (REQ-NUM-019): Cycle declares that the walkers reach
+// its source type.
+template <concepts::CljonicSource Source>
+struct walker_coverage<Cycle<Source>> {
+    static constexpr bool declared = true;
+};
+
+} // namespace cljonic::concepts_detail
+// End cljonic-producer-cycle.hpp
+// Begin cljonic-producer-iterate.hpp
 #pragma once
 
 #include <concepts>
@@ -5279,456 +6553,8 @@ struct walker_coverage<Iterate<T, Step>> {
 };
 
 } // namespace cljonic::concepts_detail
-// End cljonic-iterate.hpp
-// Begin cljonic-queue.hpp
-#pragma once
-
-#include <array>
-#include <cstddef>
-#include <iterator>
-#include <ranges>
-#include <type_traits>
-#include <utility>
-
-
-namespace cljonic {
-
-/** \anchor Queue
- * A Queue is a bounded FIFO collection. Operations use the library's free-function API.
- *
- * The \c queue factory is the idiomatic way to create Queue values at runtime or during constant evaluation. Use \c
- * queue(e, ...) to infer the element type and capacity, \c queue<T>(e, ...) to select the element type, \c queue<T,
- * Capacity>(e, ...) to provide an explicit capacity, or \c queue<T>() for an empty zero-capacity Queue. \c Queue<T,
- * Capacity> remains the value's type.
- *
- * Direct construction can import a C++ range or view: its elements are copied into the Queue. A cljonic value is not
- * copied as a range/view source. With an explicit element type, a cljonic argument is accepted as one element only
- * when its type exactly matches the declared element type. Without explicit template arguments, a sole cljonic
- * argument determines the element type and yields a one-element collection. Elements may themselves be cljonic
- * collections or producers, including nested cljonic composites.
- *
- * Construction with more values than the available capacity is rejected at compile time. Elements follow the \ref
- * implicit-conversions "safe implicit conversion rules".
- *
- \b Examples
- ~~~~~{.cpp}
- #include "cljonic.hpp"
- using namespace cljonic;
-
- int main() {
-   // The factory infers Queue<int, 3> from the argument count.
-   [[maybe_unused]] constexpr auto ints_at_capacity = queue(1, 2, 3);
-
-   // Explicit capacity permits a partially populated Queue and an empty Queue.
-   [[maybe_unused]] constexpr auto ints_populated = queue<int, 4>(1, 2);
-   [[maybe_unused]] constexpr auto ints_empty = queue<int, 4>();
-
-   // --------------------------------------------------------------------------
-   // C++ interoperability: a Queue supports const traversal and accepts owned
-   // materialization from bounded range/view sources without mutating them.
-   // --------------------------------------------------------------------------
-   static constexpr int source_values[] = {10, 20, 30};
-   constexpr auto source_span = std::span{source_values};
-   constexpr auto from_span = Queue<int, 4>{source_span};
-   static_assert(from_span.begin()[0] == 10);
-   static_assert(from_span.begin()[2] == 30);
-
-   constexpr auto from_span_ctad = Queue{source_span};
-   static_assert(from_span_ctad.begin()[1] == 20);
-
-   // A standard view pipeline can use an existing Queue as its source and
-   // Construct another Queue from the transformed values.
-   const auto pipeline_source = queue(1, 2, 3);
-   const auto shifted_view =
-       pipeline_source |
-       std::views::transform([](int value) noexcept { return value + 10; });
-   const auto from_pipeline = Queue<int, 4>{shifted_view};
-
-   // Constructing a Queue from a runtime C++ array/span
-   int runtime_buffer[] = {100, 200, 300};
-   const auto runtime_from_span =
-       Queue<int, 4>{std::span<const int>{runtime_buffer, 3}};
-
-   // Use C++ interoperability to sum the elements of the queue.
-   auto fifo_sum = 0;
-   for (const auto value : runtime_buffer) {
-     fifo_sum += value;
-   }
-
-   auto from_span_sum = 0;
-   for (const auto value : from_span) {
-     from_span_sum += value;
-   }
-
-   auto runtime_from_span_sum = 0;
-   for (const auto value : runtime_from_span) {
-     runtime_from_span_sum += value;
-   }
-
-   return (fifo_sum == 600 && from_span_sum == 60 &&
-           runtime_from_span_sum == 600 && peek(from_pipeline) == 11)
-              ? 0
-              : 1;
- }
- ~~~~~
- */
-template <concepts::NothrowCollectionElement T, std::size_t CapacityValue>
-class Queue {
-  public:
-    using value_type = T;
-
-    class const_iterator {
-      public:
-        using value_type = T;
-        using difference_type = std::ptrdiff_t;
-        using iterator_category = std::forward_iterator_tag;
-        using iterator_concept = std::forward_iterator_tag;
-
-        constexpr const_iterator() noexcept = default;
-
-        [[nodiscard]] constexpr auto operator*() const noexcept -> const value_type& {
-            return queue_->elements_[(queue_->head_ + offset_) % CapacityValue];
-        }
-
-        [[nodiscard]] constexpr auto operator[](difference_type index) const noexcept -> const value_type& {
-            return queue_->elements_[(queue_->head_ + offset_ + static_cast<std::size_t>(index)) % CapacityValue];
-        }
-
-        constexpr auto operator++() noexcept -> const_iterator& {
-            ++offset_;
-            return *this;
-        }
-
-        constexpr auto operator++(int) noexcept -> const_iterator {
-            const_iterator result = *this;
-            ++(*this);
-            return result;
-        }
-
-        [[nodiscard]] friend constexpr auto operator==(const const_iterator&, const const_iterator&) noexcept
-            -> bool = default;
-
-      private:
-        friend class Queue;
-
-        constexpr const_iterator(const Queue* queue, std::size_t offset) noexcept : queue_(queue), offset_(offset) {
-        }
-
-        const Queue* queue_{nullptr};
-        std::size_t offset_{0};
-    };
-
-    static_assert(
-        CapacityValue <= cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE,
-        "cljonic::Queue: CapacityValue exceeds "
-        "CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT=" CLJONIC_STRINGIFY(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT));
-
-    template <typename... Args>
-    explicit(sizeof...(Args) ==
-             1) constexpr Queue(Args&&... args) noexcept((concepts::NothrowElementConstruction<T, Args> && ...)) {
-        static_assert(sizeof...(Args) <= CapacityValue,
-                      "cljonic::Queue: initializer count exceeds Queue CapacityValue");
-        static_assert((concepts::NothrowElementConstruction<T, Args> && ...),
-                      "cljonic::Queue: constructor requires all arguments to construct "
-                      "T without throwing and convert safely without losing values or changing their meaning");
-
-        ((*this = conj(T(std::forward<Args>(args)))), ...);
-    }
-
-    // A cljonic collection or producer is not a SourceConstruction source
-    // (REQ-FN-027A); materialize it via into, preflighted by fits_into.
-    template <std::ranges::input_range SourceRange>
-        requires(!concepts_detail::is_cljonic_collection_v<SourceRange> &&
-                 !concepts_detail::is_cljonic_producer_v<SourceRange> &&
-                 !std::same_as<std::remove_cvref_t<SourceRange>, value_type>)
-    explicit constexpr Queue(SourceRange&& source) noexcept(
-        (concepts::NothrowRangeConstruction<value_type, SourceRange>)) {
-        static_assert(
-            concepts::NothrowRangeConstruction<value_type, SourceRange>,
-            "cljonic::Queue: range/view constructor requires safe element conversion and non-throwing traversal");
-        static_assert(concepts_detail::static_extent_fits_v<SourceRange, CapacityValue>,
-                      "cljonic::Queue: static-extent range source exceeds Queue CapacityValue");
-
-        std::size_t copy_count = 0;
-        for (auto&& item : std::forward<SourceRange>(source)) {
-            if (copy_count++ >= CapacityValue) {
-                break;
-            }
-            *this = conj(value_type(std::forward<decltype(item)>(item)));
-        }
-    }
-
-    // Diagnostic fallback (REQ-DIAG-010): a cljonic collection or producer is
-    // not a SourceConstruction source. This overload exists only to explain the
-    // rejection -- it produces no value and is never a supported call target.
-    template <typename SourceValue>
-        requires((concepts_detail::is_cljonic_collection_v<SourceValue> ||
-                  concepts_detail::is_cljonic_producer_v<SourceValue>) &&
-                 !std::same_as<std::remove_cvref_t<SourceValue>, value_type>)
-    explicit constexpr Queue([[maybe_unused]] SourceValue&& source) noexcept {
-        static_assert(
-            concepts_detail::dependent_false<SourceValue>,
-            "cljonic::Queue: you cannot construct a Queue from a cljonic collection or producer. A Queue is built from "
-            "its individual elements, or from a non-cljonic C++ range or view. To keep it as a single element, write "
-            "Queue{...}.");
-    }
-
-    [[nodiscard]] static constexpr auto capacity() noexcept -> std::size_t {
-        return CapacityValue;
-    }
-
-    [[nodiscard]] constexpr auto count() const noexcept -> std::size_t {
-        return logical_size_;
-    }
-
-    [[nodiscard]] constexpr auto operator==(const Queue& other) const noexcept -> bool
-        requires concepts::StableEqualityComparable<T>
-    {
-        if (logical_size_ != other.logical_size_) {
-            return false;
-        }
-        for (std::size_t i = 0; i < logical_size_; ++i) {
-            const auto lhs_index = (head_ + i) % CapacityValue;
-            const auto rhs_index = (other.head_ + i) % CapacityValue;
-            if (!(elements_[lhs_index] == other.elements_[rhs_index])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    [[nodiscard]] constexpr auto begin() const noexcept -> const_iterator {
-        return {this, 0U};
-    }
-
-    [[nodiscard]] constexpr auto end() const noexcept -> const_iterator {
-        return {this, logical_size_};
-    }
-
-    /** Returns true when there is room for one more element; the value does not
-     *  affect the result. */
-    [[nodiscard]] constexpr auto can_conj([[maybe_unused]] const T& value) const noexcept -> bool {
-        return logical_size_ < CapacityValue;
-    }
-
-    /** Adds an element to the back of a copy of the queue (enqueue). Returns an
-     * unchanged copy when full. */
-    [[nodiscard]] constexpr auto conj(const T& element) const noexcept -> Queue {
-        Queue result = *this;
-        if constexpr (CapacityValue > 0U) {
-            if (result.logical_size_ < CapacityValue) {
-                const auto tail = (result.head_ + result.logical_size_) % CapacityValue;
-                result.elements_[tail] = element;
-                ++result.logical_size_;
-            }
-        }
-        return result;
-    }
-
-    /** Peeks at the front element without removing it. Returns the
-     * default value when empty. */
-    [[nodiscard]] constexpr auto peek() const noexcept -> T {
-        return (logical_size_ > 0) ? elements_[head_] : T{};
-    }
-
-    /** Removes the front element from a copy of the queue (dequeue). Returns an
-     * unchanged copy when empty. */
-    [[nodiscard]] constexpr auto pop() const noexcept -> Queue {
-        Queue result = *this;
-        if constexpr (CapacityValue > 0U) {
-            if (result.logical_size_ > 0) {
-                result.head_ = (result.head_ + 1) % CapacityValue;
-                --result.logical_size_;
-            }
-        }
-        return result;
-    }
-
-    template <typename Value>
-        requires(!concepts::SafeImplicitConversion<T, Value>)
-    auto can_conj(const Value& value) const -> bool = delete;
-
-    template <typename Value>
-        requires(!concepts::SafeImplicitConversion<T, Value>)
-    auto conj(const Value& value) const -> Queue = delete;
-
-  private:
-    std::array<value_type, CapacityValue> elements_{};
-    std::size_t head_{0};
-    std::size_t logical_size_{0};
-};
-
-template <typename First, typename... Rest>
-Queue(First, Rest...) -> Queue<First, 1 + sizeof...(Rest)>;
-
-// EnclosureConstruction (REQ-FN-027A): a sole Queue argument wraps as one element.
-template <typename ElementType, std::size_t CapacityValue>
-Queue(Queue<ElementType, CapacityValue>) -> Queue<Queue<ElementType, CapacityValue>, 1>;
-
-template <typename SourceElement, std::size_t Extent>
-    requires(Extent != std::dynamic_extent)
-Queue(std::span<SourceElement, Extent>) -> Queue<std::remove_cv_t<SourceElement>, Extent>;
-
-namespace concepts_detail {
-
-struct DeducedQueueElementType {};
-
-template <typename RequestedElementType, typename... Args>
-struct queue_factory_element_type {
-    using type = RequestedElementType;
-};
-
-template <typename First, typename... Rest>
-struct queue_factory_element_type<DeducedQueueElementType, First, Rest...> {
-    using type = std::remove_cvref_t<First>;
-};
-
-template <typename RequestedElementType, typename... Args>
-using queue_factory_element_t = queue_factory_element_type<RequestedElementType, Args...>::type;
-
-template <typename RequestedElementType, typename... Args>
-concept QueueFactoryHasElementType =
-    sizeof...(Args) > 0U || !std::same_as<RequestedElementType, DeducedQueueElementType>;
-
-template <typename RequestedElementType, typename... Args>
-concept QueueFactoryArguments =
-    QueueFactoryHasElementType<RequestedElementType, Args...> &&
-    concepts::NothrowCollectionElement<queue_factory_element_t<RequestedElementType, Args...>> &&
-    sizeof...(Args) <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
-    (concepts::NothrowElementConstruction<queue_factory_element_t<RequestedElementType, Args...>, Args> && ...);
-
-template <typename ElementType, std::size_t Capacity, typename... Args>
-concept QueueFactoryCapacityArguments =
-    concepts::NothrowCollectionElement<ElementType> && Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
-    sizeof...(Args) <= Capacity && (concepts::NothrowElementConstruction<ElementType, Args> && ...);
-
-} // namespace concepts_detail
-
-/** Creates a bounded Queue from its arguments, or a typed empty zero-capacity Queue when called as \c queue<T>(). */
-template <typename RequestedElementType = concepts_detail::DeducedQueueElementType, typename... Args>
-    requires concepts_detail::QueueFactoryArguments<RequestedElementType, Args...>
-[[nodiscard]] constexpr auto queue(Args&&... args) noexcept(
-    (concepts::NothrowElementConstruction<concepts_detail::queue_factory_element_t<RequestedElementType, Args...>,
-                                          Args> &&
-     ...)) -> Queue<concepts_detail::queue_factory_element_t<RequestedElementType, Args...>, sizeof...(Args)> {
-    using ElementType = concepts_detail::queue_factory_element_t<RequestedElementType, Args...>;
-    return Queue<ElementType, sizeof...(Args)>{std::forward<Args>(args)...};
-}
-
-template <typename RequestedElementType = concepts_detail::DeducedQueueElementType, typename... Args>
-    requires(!concepts_detail::QueueFactoryArguments<RequestedElementType, Args...>)
-constexpr auto queue([[maybe_unused]] Args&&... args) noexcept -> void {
-    using ElementType = concepts_detail::queue_factory_element_t<RequestedElementType, Args...>;
-    if constexpr (!concepts_detail::QueueFactoryHasElementType<RequestedElementType, Args...>) {
-        static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
-                      "cljonic::queue: an empty Queue requires an explicit element type; write queue<T>().");
-    } else if constexpr (!concepts::NothrowCollectionElement<ElementType>) {
-        static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
-                      "cljonic::queue: the element type must satisfy NothrowCollectionElement.");
-    } else if constexpr (sizeof...(Args) > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE) {
-        static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
-                      "cljonic::queue: argument count exceeds CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
-    } else {
-        static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
-                      "cljonic::queue: every argument must safely construct the element type without throwing.");
-    }
-}
-
-/** \anchor QueueFactory
- * Creates a bounded \ref Queue "Queue" from individual element arguments.
- *
- * Deduced calls use the first argument's unqualified type and have capacity equal to their argument count, with the
- * first argument becoming the queue front. Explicit element type uses \c queue<T>(...); explicit capacity uses \c
- * queue<T, Capacity>(...), including for an empty queue; \c queue<T>() creates an empty zero-capacity Queue. An
- * untyped empty call is rejected at compile time.
- *
- \b Examples
- ~~~~~{.cpp}
- #include "cljonic.hpp"
- using namespace cljonic;
-
- int main() {
-   // Deduced calls infer the element type from the first argument and the
-   // capacity from the argument count. The first argument becomes the front.
-   constexpr auto fifo = queue(1, 2, 3);
-   static_assert(fifo.capacity() == 3);
-   static_assert(fifo.peek() == 1);
-   static_assert(fifo.pop().peek() == 2);
-   static_assert(fifo.pop().pop().pop() == Queue<int, 3>{});
-
-   // Explicit element type and explicit capacity create a queue with room for
-   // later conj operations, including an empty zero-capacity queue.
-   constexpr auto reserved = queue<int, 4>();
-   constexpr auto zero = queue<int, 0>();
-
-   // The factory also works with runtime values.
-   const auto runtime_value = 40;
-   const auto runtime_queue = queue(runtime_value, 50);
-
-   // A named queue type keeps the element and capacity contract explicit.
-   constexpr auto typed = queue<int, 4>(1, 2, 3);
-
-   return (typed.count() == 3 && typed.peek() == 1 && reserved.count() == 0 &&
-           zero.count() == 0 && runtime_queue.peek() == 40)
-              ? 0
-              : 1;
- }
- ~~~~~
- */
-template <typename ElementType, std::size_t Capacity, typename... Args>
-    requires concepts_detail::QueueFactoryCapacityArguments<ElementType, Capacity, Args...>
-[[nodiscard]] constexpr auto queue(Args&&... args) noexcept((concepts::NothrowElementConstruction<ElementType, Args> &&
-                                                             ...)) -> Queue<ElementType, Capacity> {
-    return Queue<ElementType, Capacity>{std::forward<Args>(args)...};
-}
-
-template <typename ElementType, std::size_t Capacity, typename... Args>
-    requires(!concepts_detail::QueueFactoryCapacityArguments<ElementType, Capacity, Args...>)
-constexpr auto queue([[maybe_unused]] Args&&... args) noexcept -> void {
-    if constexpr (!concepts::NothrowCollectionElement<ElementType>) {
-        static_assert(concepts_detail::dependent_false<ElementType, Args...>,
-                      "cljonic::queue: the element type must satisfy NothrowCollectionElement.");
-    } else if constexpr (Capacity > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE) {
-        static_assert(concepts_detail::dependent_false<ElementType, Args...>,
-                      "cljonic::queue: capacity exceeds CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
-    } else if constexpr (sizeof...(Args) > Capacity) {
-        static_assert(concepts_detail::dependent_false<ElementType, Args...>,
-                      "cljonic::queue: capacity must be at least the number of arguments.");
-    } else {
-        static_assert(concepts_detail::dependent_false<ElementType, Args...>,
-                      "cljonic::queue: every argument must safely construct the element type without throwing.");
-    }
-}
-
-} // namespace cljonic
-
-namespace cljonic::concepts_detail {
-
-template <typename T, std::size_t CapacityValue>
-struct collection_traits<Queue<T, CapacityValue>> {
-    static constexpr bool is_cljonic_collection = true;
-    static constexpr collection_kind kind = collection_kind::queue;
-};
-
-template <typename T, std::size_t CapacityValue>
-struct contains_floating_point<Queue<T, CapacityValue>> : std::bool_constant<contains_floating_point_v<T>> {};
-
-template <typename T, std::size_t CapacityValue>
-struct contains_callable<Queue<T, CapacityValue>> : std::bool_constant<contains_callable_v<T>> {};
-
-template <typename T, std::size_t CapacityValue>
-struct contains_standard_range<Queue<T, CapacityValue>> : std::bool_constant<contains_standard_range_v<T>> {};
-
-// Nominal walker coverage (REQ-NUM-019): Queue declares that the walkers reach its
-// element type.
-template <typename T, std::size_t CapacityValue>
-struct walker_coverage<Queue<T, CapacityValue>> {
-    static constexpr bool declared = true;
-};
-
-} // namespace cljonic::concepts_detail
-// End cljonic-queue.hpp
-// Begin cljonic-range.hpp
+// End cljonic-producer-iterate.hpp
+// Begin cljonic-producer-range.hpp
 #pragma once
 
 #include <concepts>
@@ -6127,8 +6953,8 @@ struct walker_coverage<Range<T>> {
 };
 
 } // namespace cljonic::concepts_detail
-// End cljonic-range.hpp
-// Begin cljonic-repeat.hpp
+// End cljonic-producer-range.hpp
+// Begin cljonic-producer-repeat.hpp
 #pragma once
 
 #include <cstddef>
@@ -6434,8 +7260,8 @@ struct walker_coverage<Repeat<T>> {
 };
 
 } // namespace cljonic::concepts_detail
-// End cljonic-repeat.hpp
-// Begin cljonic-repeatedly.hpp
+// End cljonic-producer-repeat.hpp
+// Begin cljonic-producer-repeatedly.hpp
 #pragma once
 
 #include <concepts>
@@ -6776,573 +7602,7 @@ struct walker_coverage<Repeatedly<T, Step>> {
 };
 
 } // namespace cljonic::concepts_detail
-// End cljonic-repeatedly.hpp
-// Begin cljonic-set.hpp
-#pragma once
-
-#include <array>
-#include <cstddef>
-#include <ranges>
-#include <span>
-#include <type_traits>
-#include <utility>
-
-
-namespace cljonic {
-
-/** \anchor Set
- * A Set is a bounded, unordered collection that provides callable lookup with
- optional fallback values. Other
- * operations use the library's free-function API.
- *
- * The \c hash_set factory is the idiomatic way to create Set values,
- at runtime or during constant
- * evaluation. It accepts individual elements, and runtime duplicates
- deduplicate. Use \c hash_set(e, ...) to infer the
- * element type and capacity, \c hash_set<T>(e, ...) to select the element type,
- or \c hash_set<T, Capacity>(e, ...) to
- * provide an explicit capacity, including for an empty set. \c Set<T, Capacity>
- remains the value's type.
- *
- * Direct construction can import a C++ range or view: its elements are copied
- into the Set. A cljonic value is not
- * copied as a range/view source. With an explicit element type, a cljonic
- argument is accepted as one element only
- * when its type exactly matches the declared element type. Without explicit
- template arguments, a sole cljonic
- * argument determines the element type and yields a one-element collection.
- Elements may themselves be cljonic
- * collections or producers, including nested cljonic composites.
- *
- * Construction with more values than the available capacity is rejected at
- compile time. Elements and fallbacks follow
- * the \ref implicit-conversions "safe implicit conversion rules".
- *
- \b Examples
- ~~~~~{.cpp}
- #include "cljonic.hpp"
- using namespace cljonic;
-
- using AccountId = int;
- using AccountSet = Set<AccountId, 4>;
-
- int main() {
-   // The factory is the idiomatic way to create sets.
-   constexpr auto factory_set = hash_set(1, 2, 3);
-   static_assert(factory_set(2) == 2);
-
-   // A named set type makes the element and capacity contract explicit. A
-   // duplicate value is a no-op. Constant-evaluated duplicate construction is
-   // rejected at compile time.
-   constexpr auto literal = AccountSet{1, 2, 3};
-   static_assert(literal(2) == 2);
-   static_assert(literal(99) == 0);
-   static_assert(literal(99, -1) == -1);
-
-   // Runtime duplicates deduplicate; the deduced capacity still equals the
-   // argument count.
-   auto runtime = hash_set(10, 20, 20);
-   const auto present = runtime(10);
-   const auto missing = runtime(30, -1);
-
-   // A standard view pipeline can use an existing Set as its source and
-   // Construct another Set from the transformed values.
-   const auto doubled_view =
-       runtime |
-       std::views::transform([](int value) noexcept { return value * 2; });
-   const auto from_pipeline = AccountSet{doubled_view};
-
-   // -------------------------------------------------------------------------
-   // C++ interoperability: a Set supports const traversal and exposes a
-   // non-owning std::span view. Range/view sources are copied into owned
-   // storage, retaining only the bounded prefix that fits the capacity.
-   // -------------------------------------------------------------------------
-   static constexpr int source_values[] = {11, 22, 11, 33};
-   constexpr auto source_span = std::span{source_values};
-   constexpr auto from_span = AccountSet{source_span};
-   static_assert(from_span(11) == 11);
-   static_assert(from_span(22) == 22);
-   static_assert(from_span(33) == 33);
-   static_assert(from_span(99) == 0);
-
-   constexpr auto from_span_ctad = Set{source_span};
-   static_assert(from_span_ctad(22) == 22);
-   static_assert(from_span_ctad.view().size() == 3);
-
-   int runtime_buffer[] = {100, 200, 300};
-   const auto runtime_from_span =
-       Set<int, 4>{std::span<const int>{runtime_buffer, 3}};
-
-   // Const C++ interoperability exposes the active elements as a range and
-   // as a non-owning contiguous standard view. Set traversal order is not
-   // semantically ordered.
-   static_assert(literal.view().size() == 3);
-
-   // Use C++ interoperability to sum the values in a set.
-   auto observed_sum = 0;
-   for (const auto value : runtime) {
-     observed_sum += value;
-   }
-
-   const auto runtime_view = runtime.view();
-
-   return (present == 10 && missing == -1 && observed_sum == 30 &&
-           from_pipeline(20) == 20 && runtime_view.size() == 2 &&
-           runtime_from_span(100) == 100 && runtime_from_span(300) == 300)
-              ? 0
-              : 1;
- }
- ~~~~~
- */
-template <concepts::NothrowStableEqualityComparable T, std::size_t CapacityValue>
-    requires(!concepts_detail::is_std_variant_v<T>)
-class Set {
-  public:
-    using value_type = T;
-    using lookup_type = value_type;
-
-    static_assert(
-        CapacityValue <= cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE,
-        "cljonic::Set: CapacityValue exceeds "
-        "CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT=" CLJONIC_STRINGIFY(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT));
-
-    template <typename... Args>
-    explicit(sizeof...(Args) ==
-             1) constexpr Set(Args&&... args) noexcept((concepts::NothrowElementConstruction<T, Args> && ...)) {
-        static_assert(sizeof...(Args) <= CapacityValue, "cljonic::Set: initializer count exceeds Set CapacityValue");
-        static_assert((concepts::NothrowElementConstruction<T, Args> && ...),
-                      "cljonic::Set: constructor requires all arguments to construct "
-                      "T without throwing and convert safely without losing values or "
-                      "changing their meaning");
-
-        const auto duplicate = append_constructed(std::forward<Args>(args)...);
-
-        if consteval {
-            if (duplicate) {
-                rejected_duplicate_value_at_compile_time();
-            }
-        }
-    }
-
-    // A cljonic collection or producer is not a SourceConstruction source
-    // (REQ-FN-027A); materialize it via into, preflighted by fits_into.
-    template <std::ranges::input_range SourceRange>
-        requires(!concepts_detail::is_cljonic_collection_v<SourceRange> &&
-                 !concepts_detail::is_cljonic_producer_v<SourceRange> &&
-                 !std::same_as<std::remove_cvref_t<SourceRange>, value_type>)
-    explicit constexpr Set(SourceRange&& source) noexcept(
-        (concepts::NothrowRangeConstruction<value_type, SourceRange>)) {
-        static_assert(concepts::NothrowRangeConstruction<value_type, SourceRange>,
-                      "cljonic::Set: range/view constructor requires each source "
-                      "element to construct "
-                      "T safely and requires non-throwing traversal");
-        static_assert(concepts_detail::static_extent_fits_v<SourceRange, CapacityValue>,
-                      "cljonic::Set: static-extent range source exceeds Set CapacityValue");
-
-        std::size_t copy_count = 0;
-        for (auto&& item : std::forward<SourceRange>(source)) {
-            if (copy_count++ >= CapacityValue) {
-                break;
-            }
-            *this = conj(value_type(std::forward<decltype(item)>(item)));
-        }
-    }
-
-    // Diagnostic fallback (REQ-DIAG-010): a cljonic collection or producer is
-    // not a SourceConstruction source. This overload exists only to explain the
-    // rejection -- it produces no value and is never a supported call target.
-    template <typename SourceValue>
-        requires((concepts_detail::is_cljonic_collection_v<SourceValue> ||
-                  concepts_detail::is_cljonic_producer_v<SourceValue>) &&
-                 !std::same_as<std::remove_cvref_t<SourceValue>, value_type>)
-    explicit constexpr Set([[maybe_unused]] SourceValue&& source) noexcept {
-        static_assert(concepts_detail::dependent_false<SourceValue>,
-                      "cljonic::Set: you cannot construct a Set from a cljonic collection or producer. A Set is built "
-                      "from its individual elements, or from a non-cljonic C++ range or view. To keep it as a single "
-                      "element, write hash_set(...).");
-    }
-
-    [[nodiscard]] static constexpr auto capacity() noexcept -> std::size_t {
-        return CapacityValue;
-    }
-
-    [[nodiscard]] constexpr auto count() const noexcept -> std::size_t {
-        return logical_size_;
-    }
-
-    [[nodiscard]] constexpr auto operator==(const Set& other) const noexcept -> bool
-        requires concepts::StableEqualityComparable<T>
-    {
-        if (logical_size_ != other.logical_size_) {
-            return false;
-        }
-        for (std::size_t i = 0; i < logical_size_; ++i) {
-            if (other.find_index(elements_[i]) >= other.logical_size_) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    [[nodiscard]] constexpr auto begin() const noexcept -> const value_type* {
-        return elements_.data();
-    }
-
-    [[nodiscard]] constexpr auto end() const noexcept -> const value_type* {
-        return elements_.data() + logical_size_;
-    }
-
-    [[nodiscard]] constexpr auto view() const noexcept -> std::span<const value_type> {
-        return {elements_.data(), logical_size_};
-    }
-
-    [[nodiscard]] constexpr auto contains(const T& element) const noexcept -> bool {
-        return find_index(element) < logical_size_;
-    }
-
-    /** Returns the stored element value when present; otherwise returns the
-     * supplied fallback. */
-    [[nodiscard]] constexpr auto operator()(const T& element, const T& fallback = T{}) const noexcept -> T {
-        const auto idx = find_index(element);
-        return (idx < logical_size_) ? elements_[idx] : fallback;
-    }
-
-    /** Returns true when the element is already present or the set has room for
-   * one more. */
-    [[nodiscard]] constexpr auto can_conj(const T& element) const noexcept -> bool {
-        return contains(element) || (logical_size_ < CapacityValue);
-    }
-
-    /** Adds an element to a copy of the set. If the element is already present or
-   * capacity is full, returns an unchanged copy. */
-    [[nodiscard]] constexpr auto conj(const T& element) const noexcept -> Set {
-        Set result = *this;
-        if (!result.contains(element) && result.logical_size_ < CapacityValue) {
-            result.elements_[result.logical_size_] = element;
-            ++result.logical_size_;
-        }
-        return result;
-    }
-
-    /** Removes an element via swap-and-remove if present; always returns a valid
-   * copy. */
-    [[nodiscard]] constexpr auto disj(const T& element) const noexcept -> Set {
-        Set result = *this;
-        const auto idx = result.find_index(element);
-        if (idx < result.logical_size_) {
-            if (idx + 1U < result.logical_size_) {
-                result.elements_[idx] = result.elements_[result.logical_size_ - 1U];
-            }
-            --result.logical_size_;
-        }
-        return result;
-    }
-
-    template <typename Value>
-        requires(!concepts::SafeImplicitConversion<T, Value>)
-    auto contains(const Value& value) const -> bool = delete;
-
-    template <typename Value, typename Fallback = T>
-        requires(!concepts::SafeImplicitConversion<T, Value> || !concepts::SafeImplicitConversion<T, Fallback>)
-    auto operator()(const Value& value, const Fallback& fallback = Fallback{}) const -> T = delete;
-
-    template <typename Value>
-        requires(!concepts::SafeImplicitConversion<T, Value>)
-    auto can_conj(const Value& value) const -> bool = delete;
-
-    template <typename Value>
-        requires(!concepts::SafeImplicitConversion<T, Value>)
-    auto conj(const Value& value) const -> Set = delete;
-
-    template <typename Value>
-        requires(!concepts::SafeImplicitConversion<T, Value>)
-    auto disj(const Value& value) const -> Set = delete;
-
-  private:
-    template <typename Arg>
-    constexpr auto append_constructed(Arg&& arg) noexcept -> bool {
-        T value{std::forward<Arg>(arg)};
-        if (contains(value)) {
-            return true;
-        }
-        *this = conj(value);
-        return false;
-    }
-
-    template <typename... Args>
-    constexpr auto append_constructed(Args&&... args) noexcept -> bool {
-        bool duplicate = false;
-        ((duplicate = append_constructed(std::forward<Args>(args)) || duplicate), ...);
-        return duplicate;
-    }
-
-    /** Returns `logical_size_` when the element is absent. */
-    [[nodiscard]] constexpr auto find_index(const T& element) const noexcept -> std::size_t {
-        for (std::size_t i = 0; i < logical_size_; ++i) {
-            if (elements_[i] == element) {
-                return i;
-            }
-        }
-        return logical_size_;
-    }
-
-    // Compile-time-only rejection trap (REQ-COLL-019B): a Set pack construction
-    // with a duplicate value is ill-formed when evaluated as a constant
-    // expression, mirroring Clojure's reader error for a `#{...}` literal with a
-    // duplicate key. Declared but never defined, and reached only inside
-    // `if consteval`, so ordinary runtime construction deduplicates
-    // (REQ-COLL-019) without a runtime diagnostic.
-    static void rejected_duplicate_value_at_compile_time() noexcept;
-
-    std::array<value_type, CapacityValue> elements_{};
-    std::size_t logical_size_{0};
-};
-
-template <typename First, typename... Rest>
-Set(First, Rest...) -> Set<First, 1 + sizeof...(Rest)>;
-
-// EnclosureConstruction (REQ-FN-027A): a sole Set argument wraps as one
-// element.
-template <typename ElementType, std::size_t CapacityValue>
-Set(Set<ElementType, CapacityValue>) -> Set<Set<ElementType, CapacityValue>, 1>;
-
-template <typename SourceElement, std::size_t Extent>
-    requires(Extent != std::dynamic_extent)
-Set(std::span<SourceElement, Extent>) -> Set<std::remove_cv_t<SourceElement>, Extent>;
-
-namespace concepts_detail {
-
-struct DeducedHashSetElementType {};
-
-template <typename RequestedElementType, typename... Args>
-struct hash_set_factory_element_type {
-    using type = RequestedElementType;
-};
-
-template <typename First, typename... Rest>
-struct hash_set_factory_element_type<DeducedHashSetElementType, First, Rest...> {
-    using type = std::remove_cvref_t<First>;
-};
-
-template <typename RequestedElementType, typename... Args>
-using hash_set_factory_element_t = hash_set_factory_element_type<RequestedElementType, Args...>::type;
-
-template <typename RequestedElementType, typename... Args>
-concept HashSetFactoryHasElementType =
-    sizeof...(Args) > 0U || !std::same_as<RequestedElementType, DeducedHashSetElementType>;
-
-template <typename RequestedElementType, typename... Args>
-concept HashSetFactoryArguments =
-    HashSetFactoryHasElementType<RequestedElementType, Args...> &&
-    concepts::NothrowStableEqualityComparable<hash_set_factory_element_t<RequestedElementType, Args...>> &&
-    !is_std_variant_v<hash_set_factory_element_t<RequestedElementType, Args...>> &&
-    sizeof...(Args) <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
-    (concepts::NothrowElementConstruction<hash_set_factory_element_t<RequestedElementType, Args...>, Args> && ...);
-
-template <typename ElementType, std::size_t Capacity, typename... Args>
-concept HashSetFactoryCapacityArguments =
-    concepts::NothrowStableEqualityComparable<ElementType> && !is_std_variant_v<ElementType> &&
-    Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE && sizeof...(Args) <= Capacity &&
-    (concepts::NothrowElementConstruction<ElementType, Args> && ...);
-
-} // namespace concepts_detail
-
-/** \anchor HashSetFactory
- * Creates a bounded \ref Set "Set" from individual element arguments.
- *
- * Deduced calls use the first argument's unqualified type and have capacity
- equal to their argument count, with
- * runtime duplicates deduplicating per \ref Set "Set" construction semantics.
- Explicit element type uses \c
- * hash_set<T>(...); explicit capacity uses \c hash_set<T, Capacity>(...),
- including for an empty set. An untyped empty
- * call is rejected at compile time.
- *
- \b Examples
- ~~~~~{.cpp}
- #include "cljonic.hpp"
- using namespace cljonic;
-
- using AccountId = int;
- using AccountSet = Set<AccountId, 4>;
-
- int main() {
-   // The factory is the idiomatic way to create sets. Deduced
-   // calls infer the element type from the first argument and the capacity
-   // from the argument count.
-   constexpr auto factory_set = hash_set(1, 2, 3);
-   static_assert(factory_set(2) == 2);
-   static_assert(factory_set(99) == 0);
-   static_assert(factory_set(99, -1) == -1);
-
-   // Explicit element type and explicit capacity create a set with room for
-   // later conj operations, including an empty zero-capacity set.
-   constexpr auto reserved = hash_set<int, 4>();
-   constexpr auto zero = hash_set<int, 0>();
-   static_assert(is_empty(reserved));
-   static_assert(is_empty(zero));
-
-   // Runtime duplicates deduplicate; the deduced capacity still equals the
-   // argument count.
-   const auto runtime_duplicate = hash_set(10, 20, 20);
-
-   // The factory also works with runtime values.
-   const auto runtime_value = 40;
-   const auto runtime_set = hash_set(runtime_value, 50);
-
-   // A named set type keeps the element and capacity contract explicit.
-   constexpr auto typed = hash_set<AccountSet::value_type, 4>(1, 2, 3);
-
-   return (typed(1) == 1 && runtime_duplicate(20) == 20 &&
-           runtime_duplicate(30, -1) == -1 && runtime_set(50) == 50 &&
-           runtime_set(99, -1) == -1)
-              ? 0
-              : 1;
- }
- ~~~~~
- */
-template <typename RequestedElementType = concepts_detail::DeducedHashSetElementType, typename... Args>
-    requires(concepts_detail::HashSetFactoryArguments<RequestedElementType, Args...> && sizeof...(Args) > 0U)
-[[nodiscard]] constexpr auto hash_set(Args&&... args) noexcept(
-    (concepts::NothrowElementConstruction<concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>,
-                                          Args> &&
-     ...)) -> Set<concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>, sizeof...(Args)> {
-    using ElementType = concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>;
-    return Set<ElementType, sizeof...(Args)>{std::forward<Args>(args)...};
-}
-
-template <typename RequestedElementType = concepts_detail::DeducedHashSetElementType, typename... Args>
-    requires(sizeof...(Args) == 0U && std::same_as<RequestedElementType, concepts_detail::DeducedHashSetElementType>)
-constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
-                  "cljonic::hash_set: empty calls require explicit element and "
-                  "capacity types.");
-}
-
-template <typename RequestedElementType = concepts_detail::DeducedHashSetElementType, typename... Args>
-    requires(sizeof...(Args) == 0U && !std::same_as<RequestedElementType, concepts_detail::DeducedHashSetElementType>)
-constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
-                  "cljonic::hash_set: empty calls require explicit element and "
-                  "capacity types.");
-}
-
-template <typename RequestedElementType = concepts_detail::DeducedHashSetElementType, typename... Args>
-    requires(
-        sizeof...(Args) > 0U &&
-        (!concepts::NothrowStableEqualityComparable<
-             concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>> ||
-         concepts_detail::is_std_variant_v<concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>>))
-constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
-                  "cljonic::hash_set: the element type must satisfy Set element "
-                  "requirements.");
-}
-
-template <typename RequestedElementType = concepts_detail::DeducedHashSetElementType, typename... Args>
-    requires(sizeof...(Args) > 0U &&
-             concepts::NothrowStableEqualityComparable<
-                 concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>> &&
-             !concepts_detail::is_std_variant_v<
-                 concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>> &&
-             sizeof...(Args) > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
-constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
-                  "cljonic::hash_set: argument count exceeds "
-                  "CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
-}
-
-template <typename RequestedElementType = concepts_detail::DeducedHashSetElementType, typename... Args>
-    requires(sizeof...(Args) > 0U &&
-             concepts::NothrowStableEqualityComparable<
-                 concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>> &&
-             !concepts_detail::is_std_variant_v<
-                 concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>> &&
-             sizeof...(Args) <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
-             !(concepts::NothrowElementConstruction<
-                   concepts_detail::hash_set_factory_element_t<RequestedElementType, Args...>, Args> &&
-               ...))
-constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
-                  "cljonic::hash_set: every argument must safely construct the "
-                  "element type without throwing.");
-}
-
-/** Creates a bounded Set with an explicit capacity, including for an empty
- * argument pack. */
-template <typename ElementType, std::size_t Capacity, typename... Args>
-    requires concepts_detail::HashSetFactoryCapacityArguments<ElementType, Capacity, Args...>
-[[nodiscard]] constexpr auto
-hash_set(Args&&... args) noexcept((concepts::NothrowElementConstruction<ElementType, Args> && ...))
-    -> Set<ElementType, Capacity> {
-    return Set<ElementType, Capacity>{std::forward<Args>(args)...};
-}
-
-template <typename ElementType, std::size_t Capacity, typename... Args>
-    requires(!concepts::NothrowStableEqualityComparable<ElementType> || concepts_detail::is_std_variant_v<ElementType>)
-constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<ElementType, Args...>,
-                  "cljonic::hash_set: the element type must satisfy Set element "
-                  "requirements.");
-}
-
-template <typename ElementType, std::size_t Capacity, typename... Args>
-    requires(concepts::NothrowStableEqualityComparable<ElementType> &&
-             !concepts_detail::is_std_variant_v<ElementType> &&
-             Capacity > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
-constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<ElementType, Args...>, "cljonic::hash_set: capacity exceeds "
-                                                                          "CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
-}
-
-template <typename ElementType, std::size_t Capacity, typename... Args>
-    requires(concepts::NothrowStableEqualityComparable<ElementType> &&
-             !concepts_detail::is_std_variant_v<ElementType> &&
-             Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE && sizeof...(Args) > Capacity)
-constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<ElementType, Args...>,
-                  "cljonic::hash_set: arguments must fit within the selected capacity.");
-}
-
-template <typename ElementType, std::size_t Capacity, typename... Args>
-    requires(concepts::NothrowStableEqualityComparable<ElementType> &&
-             !concepts_detail::is_std_variant_v<ElementType> &&
-             Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE && sizeof...(Args) <= Capacity &&
-             sizeof...(Args) > 0U && !(concepts::NothrowElementConstruction<ElementType, Args> && ...))
-constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<ElementType, Args...>,
-                  "cljonic::hash_set: every argument must safely construct the "
-                  "element type without throwing.");
-}
-
-} // namespace cljonic
-
-namespace cljonic::concepts_detail {
-
-template <typename T, std::size_t CapacityValue>
-struct collection_traits<Set<T, CapacityValue>> {
-    static constexpr bool is_cljonic_collection = true;
-    static constexpr collection_kind kind = collection_kind::set;
-};
-
-template <typename T, std::size_t CapacityValue>
-struct contains_floating_point<Set<T, CapacityValue>> : std::bool_constant<contains_floating_point_v<T>> {};
-
-template <typename T, std::size_t CapacityValue>
-struct contains_callable<Set<T, CapacityValue>> : std::bool_constant<contains_callable_v<T>> {};
-
-template <typename T, std::size_t CapacityValue>
-struct contains_standard_range<Set<T, CapacityValue>> : std::bool_constant<contains_standard_range_v<T>> {};
-
-// Nominal walker coverage (REQ-NUM-019): Set declares that the walkers reach its
-// element type.
-template <typename T, std::size_t CapacityValue>
-struct walker_coverage<Set<T, CapacityValue>> {
-    static constexpr bool declared = true;
-};
-
-} // namespace cljonic::concepts_detail
-// End cljonic-set.hpp
+// End cljonic-producer-repeatedly.hpp
 
 #include <cstddef>
 #include <functional>
@@ -7936,7 +8196,7 @@ constexpr auto is_empty([[maybe_unused]] const C& collection) noexcept -> void {
 
 } // namespace cljonic
 // End cljonic-is-empty.hpp
-// Begin cljonic-map-function.hpp
+// Begin cljonic-map.hpp
 #pragma once
 
 #include <algorithm>
@@ -8131,7 +8391,7 @@ constexpr auto map([[maybe_unused]] const F& function, [[maybe_unused]] const So
 }
 
 } // namespace cljonic
-// End cljonic-map-function.hpp
+// End cljonic-map.hpp
 // Begin cljonic-not-empty.hpp
 #pragma once
 
@@ -8433,7 +8693,7 @@ constexpr auto pop([[maybe_unused]] const C& collection) noexcept -> void {
 
 } // namespace cljonic
 // End cljonic-pop.hpp
-// Begin cljonic-reduce-function.hpp
+// Begin cljonic-reduce.hpp
 #pragma once
 
 #include <algorithm>
@@ -8718,7 +8978,7 @@ constexpr auto reduce([[maybe_unused]] const F& function, [[maybe_unused]] const
 }
 
 } // namespace cljonic
-// End cljonic-reduce-function.hpp
+// End cljonic-reduce.hpp
 // Begin cljonic-rest.hpp
 #pragma once
 
@@ -8922,266 +9182,6 @@ constexpr auto seq([[maybe_unused]] const C& value) noexcept -> void {
 
 } // namespace cljonic
 // End cljonic-seq.hpp
-// Begin cljonic-variant.hpp
-#pragma once
-
-#include <cstddef>
-#include <type_traits>
-#include <utility>
-#include <variant>
-
-namespace cljonic {
-
-namespace variant_detail {
-
-// The converting constructor selects exactly one alternative by decayed type;
-// zero or multiple matches leave the constructor non-viable, so an ambiguous or
-// foreign argument is rejected at compile time rather than converting.
-template <typename T, typename... Alternatives>
-inline constexpr std::size_t matching_alternative_count_v =
-    (std::size_t{0} + ... + (std::same_as<T, Alternatives> ? std::size_t{1} : std::size_t{0}));
-
-// Alternative-strict equality within a single active index. Recursion is by
-// index so only same-alternative comparisons are instantiated: a two-variant
-// std::visit would instantiate cross-alternative comparisons (which need not
-// exist) and fail to compile.
-template <std::size_t Index = 0, typename Variant>
-[[nodiscard]] constexpr auto same_index_equal(const Variant& lhs, const Variant& rhs) noexcept -> bool {
-    if constexpr (Index + 1 == std::variant_size_v<Variant>) {
-        // Last alternative: the caller guarantees the active index matches.
-        return std::get<Index>(lhs) == std::get<Index>(rhs);
-    } else {
-        if (lhs.index() == Index) {
-            return std::get<Index>(lhs) == std::get<Index>(rhs);
-        }
-        return same_index_equal<Index + 1>(lhs, rhs);
-    }
-}
-
-// Alternative-strict ordering within a single active index; mirrors
-// same_index_equal so only same-alternative comparisons are instantiated.
-template <std::size_t Index = 0, typename Variant>
-[[nodiscard]] constexpr auto same_index_less(const Variant& lhs, const Variant& rhs) noexcept -> bool {
-    if constexpr (Index + 1 == std::variant_size_v<Variant>) {
-        // Last alternative: the caller guarantees the active index matches.
-        return std::get<Index>(lhs) < std::get<Index>(rhs);
-    } else {
-        if (lhs.index() == Index) {
-            return std::get<Index>(lhs) < std::get<Index>(rhs);
-        }
-        return same_index_less<Index + 1>(lhs, rhs);
-    }
-}
-
-} // namespace variant_detail
-
-namespace concepts_detail {
-
-/** Internal tag (REQ-DIAG-012): selects the `Variant` diagnostic
- *  specialization. A `Variant`'s alternatives are never deducible from its
- *  constructor arguments, so any deduced `Variant` is a rejected deduction. */
-struct VariantDomainViolation {};
-
-/** The `Variant` class-template gate (REQ-DIAG-012): at least one storable
- *  alternative, or the internal diagnostic tag used only to redirect a rejected
- *  deduction. */
-template <typename... Alternatives>
-concept VariantClassArgument =
-    (sizeof...(Alternatives) >= 1 && (concepts::NothrowVariantAlternative<Alternatives> && ...)) ||
-    (sizeof...(Alternatives) == 1 && (std::same_as<std::remove_cvref_t<Alternatives>, VariantDomainViolation> && ...));
-
-} // namespace concepts_detail
-
-/** \anchor Variant
- * A Variant is the supported composite value in the cljonic value domain. It holds exactly one of several alternatives
- * and has no empty or valueless state.
- *
- * Every alternative must have a default value and be copyable without throwing, so a Variant is a storable value: it
- * can be a map value, a vector element, or a queue element.
- *
- * Two values compare equal only when they hold the same alternative and that alternative's values compare equal
- * (alternative-strict equality). Values holding different alternatives always compare unequal.
- *
- * Equality is provided only when every alternative is comparable without throwing; otherwise `==` is not provided and
- * the value cannot be used in an equality position. A Variant may therefore be storable without being comparable,
- * exactly like a collection of floating-point numbers. When it is comparable, a Variant takes part in cljonic
- * equality: as an `equal` or `not_equal` operand, as a map key or set element, and as a stored member of a collection
- * or producer whose own equality is used. When it is not, all of those equality positions reject it.
- *
- * Use the lowercase \c variant factory to construct a Variant with its alternative types named explicitly. The factory
- * supports default construction and construction from one exact alternative type.
- *
- * \b Examples
- *
- ~~~~~{.cpp}
- #include "cljonic.hpp"
- using namespace cljonic;
-
- int main() {
-   // Like other C++ types, a Variant type can be named with an ordinary alias.
-   using MyVariant = cljonic::Variant<int, long>;
-
-   // Default construction holds the first alternative at its default value; the
-   // first alternative here is int, whose default value is 0.
-   [[maybe_unused]] constexpr MyVariant defaulted{};
-   [[maybe_unused]] constexpr auto defaulted_by_factory = variant<int, long>();
-
-   // A converting construction selects the alternative matching the argument's
-   // decayed type; an argument matching no alternative is rejected at compile
-   // time.
-   [[maybe_unused]] constexpr MyVariant as_int{1};
-   [[maybe_unused]] constexpr MyVariant as_long{1L};
-   [[maybe_unused]] constexpr auto as_long_by_factory = variant<int, long>(1L);
-
-   // Copy construction preserves the active alternative and its value.
-   [[maybe_unused]] constexpr auto copied = as_int;
-
-   // A Variant nests inside another Variant and is storable as a collection
-   // element or a map key.
-   [[maybe_unused]] constexpr auto nested =
-       Variant<Variant<int, long>, char>{as_int};
-   [[maybe_unused]] constexpr auto as_vector_element =
-       vector(MyVariant{1}, MyVariant{2L});
-   [[maybe_unused]] constexpr auto as_set_element = hash_set(MyVariant{1});
-   [[maybe_unused]] constexpr auto as_map_key = map_entry(as_int, 1);
-
-   return 0;
- }
- ~~~~~
- */
-template <typename... Alternatives>
-    requires concepts_detail::VariantClassArgument<Alternatives...>
-class Variant {
-  public:
-    constexpr Variant() noexcept = default;
-
-    template <typename T>
-        requires(variant_detail::matching_alternative_count_v<std::remove_cvref_t<T>, Alternatives...> == 1)
-    explicit constexpr Variant(const T& value) noexcept : storage_{value} {
-    }
-
-    /** Returns the zero-based index of the active alternative. */
-    [[nodiscard]] constexpr auto index() const noexcept -> std::size_t {
-        return storage_.index();
-    }
-
-    /** Reports whether the active alternative is \p T. */
-    template <typename T>
-    [[nodiscard]] constexpr auto holds() const noexcept -> bool {
-        return std::holds_alternative<T>(storage_);
-    }
-
-    /** Alternative-strict equality; provided only when every alternative is
-     *  comparable without throwing. */
-    [[nodiscard]] friend constexpr auto operator==(const Variant& lhs, const Variant& rhs) noexcept -> bool
-        requires(concepts::ComparableVariantAlternative<Alternatives> && ...)
-    {
-        return (lhs.storage_.index() == rhs.storage_.index()) &&
-               variant_detail::same_index_equal(lhs.storage_, rhs.storage_);
-    }
-
-    /** Alternative-strict ordering; provided only when every alternative is
-     *  totally ordered. Alternatives are ordered by index first, then by value. */
-    [[nodiscard]] friend constexpr auto operator<(const Variant& lhs, const Variant& rhs) noexcept -> bool
-        requires(concepts::TotallyOrdered<Alternatives> && ...)
-    {
-        return (lhs.storage_.index() != rhs.storage_.index())
-                   ? (lhs.storage_.index() < rhs.storage_.index())
-                   : variant_detail::same_index_less(lhs.storage_, rhs.storage_);
-    }
-    [[nodiscard]] friend constexpr auto operator>(const Variant& lhs, const Variant& rhs) noexcept -> bool
-        requires(concepts::TotallyOrdered<Alternatives> && ...)
-    {
-        return rhs < lhs;
-    }
-
-    [[nodiscard]] friend constexpr auto operator<=(const Variant& lhs, const Variant& rhs) noexcept -> bool
-        requires(concepts::TotallyOrdered<Alternatives> && ...)
-    {
-        return !(rhs < lhs);
-    }
-
-    [[nodiscard]] friend constexpr auto operator>=(const Variant& lhs, const Variant& rhs) noexcept -> bool
-        requires(concepts::TotallyOrdered<Alternatives> && ...)
-    {
-        return !(lhs < rhs);
-    }
-
-  private:
-    std::variant<Alternatives...> storage_{};
-};
-
-/** \anchor VariantFactory
- * Constructs a \ref Variant with its alternative types specified explicitly. The value form uses the same
- * exact-alternative selection rule as direct construction; it does not infer or expand the alternative list.
- */
-template <typename... Alternatives>
-[[nodiscard]] constexpr auto variant() noexcept -> Variant<Alternatives...> {
-    return {};
-}
-
-template <typename... Alternatives, typename T>
-    requires(variant_detail::matching_alternative_count_v<std::remove_cvref_t<T>, Alternatives...> == 1)
-[[nodiscard]] constexpr auto variant(const T& value) noexcept -> Variant<Alternatives...> {
-    return Variant<Alternatives...>{value};
-}
-
-/** Diagnostic specialization (REQ-DIAG-012): selected by the redirecting
- *  deduction guide below. A `Variant`'s alternatives are never deducible from
- *  its constructor arguments, so every deduced `Variant` reaches this
- *  specialization, which turns the failed-deduction candidate list into one
- *  targeted message. */
-template <>
-class Variant<concepts_detail::VariantDomainViolation> {
-  public:
-    template <typename... Args>
-    constexpr explicit Variant([[maybe_unused]] Args&&... args) noexcept {
-        static_assert(concepts_detail::dependent_false<Args...>,
-                      "cljonic::Variant: the alternative types cannot be deduced from this argument. Name the "
-                      "alternatives explicitly, as in cljonic::Variant<int, long>{value}.");
-    }
-};
-
-/** Redirecting deduction guide (REQ-DIAG-012). No admitted `Variant` deduction
- *  exists, so this guide can never affect a supported construction. */
-template <typename T>
-Variant(const T&) -> Variant<concepts_detail::VariantDomainViolation>;
-
-} // namespace cljonic
-
-namespace cljonic::concepts_detail {
-
-// Nominal admission for the cljonic composite value type (REQ-CAP-011).
-template <typename... Alternatives>
-struct cljonic_variant_traits<cljonic::Variant<Alternatives...>> {
-    static constexpr bool is_cljonic_variant = true;
-};
-
-// Recursive component analysis: a cljonic::Variant is a composite, so each
-// walker recurses over its alternatives, mirroring the collection and producer
-// headers. std::variant is never admitted, so no standard-library specialization
-// exists.
-template <typename... Alternatives>
-struct contains_floating_point<cljonic::Variant<Alternatives...>>
-    : std::bool_constant<(contains_floating_point_v<Alternatives> || ...)> {};
-
-template <typename... Alternatives>
-struct contains_callable<cljonic::Variant<Alternatives...>>
-    : std::bool_constant<(contains_callable_v<Alternatives> || ...)> {};
-
-template <typename... Alternatives>
-struct contains_standard_range<cljonic::Variant<Alternatives...>>
-    : std::bool_constant<(contains_standard_range_v<Alternatives> || ...)> {};
-
-// Nominal walker coverage (REQ-NUM-019): Variant declares that the walkers reach
-// every alternative.
-template <typename... Alternatives>
-struct walker_coverage<cljonic::Variant<Alternatives...>> {
-    static constexpr bool declared = true;
-};
-
-} // namespace cljonic::concepts_detail
-// End cljonic-variant.hpp
 
 namespace cljonic::core {}
 // End cljonic-core.hpp

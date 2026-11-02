@@ -1,16 +1,16 @@
 #pragma once
 
+#include <cljonic-collection-map.hpp>
+#include <cljonic-collection-queue.hpp>
+#include <cljonic-collection-set.hpp>
+#include <cljonic-collection-string.hpp>
+#include <cljonic-collection-vector.hpp>
 #include <cljonic-concepts.hpp>
-#include <cljonic-cycle.hpp>
-#include <cljonic-iterate.hpp>
-#include <cljonic-map.hpp>
-#include <cljonic-queue.hpp>
-#include <cljonic-range.hpp>
-#include <cljonic-repeat.hpp>
-#include <cljonic-repeatedly.hpp>
-#include <cljonic-set.hpp>
-#include <cljonic-string.hpp>
-#include <cljonic-vector.hpp>
+#include <cljonic-producer-cycle.hpp>
+#include <cljonic-producer-iterate.hpp>
+#include <cljonic-producer-range.hpp>
+#include <cljonic-producer-repeat.hpp>
+#include <cljonic-producer-repeatedly.hpp>
 
 #include <cstddef>
 #include <functional>

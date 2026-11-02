@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <utility>
 
-#include <cljonic-string.hpp>
+#include <cljonic-collection-string.hpp>
 
 namespace cljonic {
 
