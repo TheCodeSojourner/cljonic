@@ -1,5 +1,26 @@
 ## Current Session State
 
+- last_session_id: 00a58e8c-70e2-4dc5-80ac-7f93553a78bf
+- current_timestamp: 2026-11-02T15:50:21-07:00
+- session_complete: true
+- recover: 1. The collection/producer header taxonomy and map/reduce operation header renames are complete; the user's `make git` run regenerated the Doxygen HTML, and the coverage-noise fix is committed with the product changes.
+  2. The coverage targets now delete stale `.gcda` profiles before configure/build so build-time test discovery does not emit `libgcov` checksum warnings.
+- Task:
+  1. Renamed collection headers to `cljonic-collection-*.hpp`, producer headers to `cljonic-producer-*.hpp`, and standalone map/reduce headers to `cljonic-map.hpp` and `cljonic-reduce.hpp`. Updated includes, diagnostics registration, build paths, generated `cljonic.hpp`, and related guidance.
+  2. Fixed noisy coverage output by moving targeted `.gcda` cleanup before configure/build in both coverage targets.
+- Questions:
+  1. None open.
+- Decisions:
+  1. Human approved the naming taxonomy in S2 + S1 with FP orientation; no behavioral specification changes were needed.
+  2. Human approved updating the coverage memory with the verified cleanup-order rule.
+- Validation:
+  1. 304/304 CTest tests; `make no-heap`; 43 examples via `make docs-examples`; `make upsert-gate-fast`; `make cljonic`; all three CMake caches use the renamed vector header.
+  2. `make coverage-cli` outputs `coverage:lines=100.0%` without checksum warnings; `make audit-scripts` and `git diff --check` pass.
+- Next:
+  1. No follow-up pending; the naming refactor, generated documentation, and coverage-noise fix are complete.
+
+## Current Session State
+
 - last_session_id: 2eed547b-7bf5-4c46-bd32-1bf8b4f19c15
 - current_timestamp: 2026-11-02T10:53:16-07:00
 - session_complete: true
