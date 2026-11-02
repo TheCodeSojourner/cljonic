@@ -10,58 +10,6 @@
 namespace cljonic {
 
 namespace concepts_detail {
-// Static parameter-type extraction for the callables `map` can inspect: a
-// function pointer, or a class type with one non-template operator(). A generic
-// lambda or a templated operator() is not inspectable and reports known=false.
-template <typename P>
-struct CallableSignatureParameters {
-    static constexpr bool known = false;
-    using type = std::tuple<>;
-};
-
-template <typename R, typename C, typename... Args>
-struct CallableSignatureParameters<R (C::*)(Args...) const noexcept> {
-    static constexpr bool known = true;
-    using type = std::tuple<Args...>;
-};
-
-template <typename R, typename C, typename... Args>
-struct CallableSignatureParameters<R (C::*)(Args...) const> {
-    static constexpr bool known = true;
-    using type = std::tuple<Args...>;
-};
-
-template <typename R, typename C, typename... Args>
-struct CallableSignatureParameters<R (C::*)(Args...) noexcept> {
-    static constexpr bool known = true;
-    using type = std::tuple<Args...>;
-};
-
-template <typename R, typename C, typename... Args>
-struct CallableSignatureParameters<R (C::*)(Args...)> {
-    static constexpr bool known = true;
-    using type = std::tuple<Args...>;
-};
-
-template <typename R, typename... Args>
-struct CallableSignatureParameters<R (*)(Args...) noexcept> {
-    static constexpr bool known = true;
-    using type = std::tuple<Args...>;
-};
-
-template <typename R, typename... Args>
-struct CallableSignatureParameters<R (*)(Args...)> {
-    static constexpr bool known = true;
-    using type = std::tuple<Args...>;
-};
-
-template <typename F>
-struct CallableParameters : CallableSignatureParameters<F> {};
-
-template <typename F>
-    requires requires { &F::operator(); }
-struct CallableParameters<F> : CallableSignatureParameters<decltype(&F::operator())> {};
-
 // Per-position parameter rule (REQ-FN-032): when the callback's parameter types
 // are statically known, each parameter must accept its corresponding source
 // element through a safe implicit conversion. Narrowing conversions and

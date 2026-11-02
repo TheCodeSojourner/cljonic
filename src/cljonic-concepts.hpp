@@ -8,6 +8,7 @@
 #include <optional>
 #include <ranges>
 #include <span>
+#include <tuple>
 #include <type_traits>
 #include <utility>
 #include <variant>
@@ -76,6 +77,62 @@ inline constexpr bool dependent_false = false;
 
 template <typename T>
 inline constexpr bool is_cljonic_map_entry_v = false;
+
+// Static parameter-type extraction for the callables the higher-order free
+// functions can inspect: a function pointer, or a class type with one
+// non-template operator(). A generic callable or a templated operator() is not
+// inspectable and reports known=false.
+template <typename P>
+struct CallableSignatureParameters {
+    static constexpr bool known = false;
+    using type = std::tuple<>;
+};
+
+template <typename R, typename C, typename... Args>
+struct CallableSignatureParameters<R (C::*)(Args...) const noexcept> {
+    static constexpr bool known = true;
+    using type = std::tuple<Args...>;
+};
+
+template <typename R, typename C, typename... Args>
+struct CallableSignatureParameters<R (C::*)(Args...) const> {
+    static constexpr bool known = true;
+    using type = std::tuple<Args...>;
+};
+
+template <typename R, typename C, typename... Args>
+struct CallableSignatureParameters<R (C::*)(Args...) noexcept> {
+    static constexpr bool known = true;
+    using type = std::tuple<Args...>;
+};
+
+template <typename R, typename C, typename... Args>
+struct CallableSignatureParameters<R (C::*)(Args...)> {
+    static constexpr bool known = true;
+    using type = std::tuple<Args...>;
+};
+
+template <typename R, typename... Args>
+struct CallableSignatureParameters<R (*)(Args...) noexcept> {
+    static constexpr bool known = true;
+    using type = std::tuple<Args...>;
+};
+
+template <typename R, typename... Args>
+struct CallableSignatureParameters<R (*)(Args...)> {
+    static constexpr bool known = true;
+    using type = std::tuple<Args...>;
+};
+
+template <typename F>
+struct CallableParameters : CallableSignatureParameters<F> {};
+
+template <typename F>
+    requires requires { &F::operator(); }
+struct CallableParameters<F> : CallableSignatureParameters<decltype(&F::operator())> {};
+
+template <typename F>
+using CallableParameterTypes = CallableParameters<std::decay_t<F>>::type;
 
 template <typename T>
 concept CharacterType =
