@@ -1034,6 +1034,28 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | preserve(every_source_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
   | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-032)
 
+λ S2_reduce_function_contract(x). reduce(f, source) ∨ reduce(f, initial, source) → admit(CljonicSource(source) ∧ reducing_function(f) ∧ accumulator_contract(x))(x)
+  | reducing_function(f) → require(copy_constructible(f) ∧ nothrow_invocation(f, accumulator, element) ∧ result_type(f) = accumulator_type(x))
+  | accumulator_contract(x) → require(NothrowCollectionElement(accumulator_type(x)))
+  | accumulator_type(x) ≡ inspectable_signature(f) → first_declared_parameter_type(f)
+    ∧ ¬inspectable_signature(f) → initial_value_type(x) ∧ arity(x) = 3
+  | ¬inspectable_signature(f) ∧ arity(x) = 2 → reject_at_compile_time(with targeted_diagnostic_requiring_explicit_initial_value)
+  | consumed_argument_position(x) → require(SafeImplicitConversion(declared_parameter_type, argument_type))
+    ∧ narrowing_conversion(x) → reject_at_compile_time(x)
+    ∧ domain_crossing(Boolean ∨ character ∨ enumeration ∨ pointer ∨ user_defined)(x) → reject_at_compile_time(x)
+  | ¬inspectable_signature(f) ∧ arity(x) = 3 → admit_on(nothrow_invocability(accumulator, element))
+  | arity(x) = 3 → require(SafeImplicitConversion(accumulator_type(x), initial_value_type(x)))
+  | observed_count(source) ≡ count(source) saturated_at(CollectionMaximumElementCount)
+    ∧ unbounded_producer(source) → observed_count(source) = observable_traversal_cap
+  | arity(x) = 2 ∧ observed_count(source) ≥ 1 → require(SafeImplicitConversion(accumulator_type(x), source_element_type)) ∧ seed(accumulator, first_element_in_traversal_order) ∧ fold(left_to_right, f, remaining_elements)
+  | arity(x) = 2 ∧ observed_count(source) = 0 → return(DefaultElement(accumulator_type(x)))
+  | arity(x) = 3 → seed(accumulator, initial) ∧ fold(left_to_right, f, every_observed_element)
+  | Map_source(x) ∨ Set_source(x) → traversal_order_semantically_unordered(x)
+  | standard_library_range ∨ container ∨ non_cljonic_source ∨ throwing_function ∨ unstorable_accumulator → reject_at_compile_time_with(targeted_diagnostic_naming(reduce ∧ supported_domains) ∧ REQ-DIAG-009)
+  | preserve(every_source_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
+  | always_terminates(x) ∧ ¬∃ early_termination_wrapper(x)
+  | classify_as(CompleteResult) ∧ trace_to(REQ-FN-034)
+
 λ S2_disj_function_contract(x). disj(set, values...) → admit(CljonicSet(set) ∧ ∀ value: SafeImplicitConversion(value, Set::value_type))
   | arity(values) = 0 → return(unchanged_copy(set))
   | arity(values) > 0 → fold(left_to_right, Set::disj, set, values)
