@@ -367,6 +367,11 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     → retain(CanPredicatePrefix ∨ HasPredicatePrefix ∨ ValidPredicatePrefix)
   | api_surface_status(x) → enforce(LifecycleClassification)
 
+λ S2_modular_header_taxonomy(x). collection_type_header(x) → name(cljonic-collection-<name>.hpp)
+  | producer_type_header(x) → name(cljonic-producer-<name>.hpp)
+  | standalone_FreeFunction_header(x) → name(cljonic-<operation>.hpp) ∧ ¬suffix(-function)
+  | include_build_test_and_documentation_references(x) → follow(canonical_header_name(x))
+
 λ S2_api_lifecycle_gate(x). public_function(x) → classify_as(RequirementsBacked ∨ CandidateStatus ∨ DeferredStatus ∨ ExcludedStatus)
   | classify_as(RequirementsBacked) → requires(approved_behavioral_contracts)
   | classify_as(CandidateStatus ∨ DeferredStatus ∨ ExcludedStatus) → not_supported_behavior(x)
@@ -1375,6 +1380,10 @@ concept SequenceableProducer =
   | AmalgamatedHeader(x) → usable_with(one_public_include(x))
   | production_sources(x) → remain_header_only(x)
   | generated_distribution(x) → preserve(source_of_truth_in_modular_headers(x))
+
+λ S1_modular_header_names(x). Collection_type_header(x) → file(cljonic-collection-<name>.hpp)
+  | Producer_type_header(x) → file(cljonic-producer-<name>.hpp)
+  | standalone_FreeFunction_header(x) → file(cljonic-<operation>.hpp) ∧ ¬suffix(-function)
 
 λ S1_ci_cd(x). ci_cd(x) ≡ local_makefile_target_workflow
   | remote_ci_pipeline(x) ≡ not_required_for_current_scope
