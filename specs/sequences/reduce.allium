@@ -1,0 +1,190 @@
+-- allium: 3
+
+-- Reduction free function (Clojure `reduce` equivalent, REQ-FN-034).
+-- `reduce` folds one cljonic source into a single accumulator value. It admits
+-- two arities: `reduce(f, source)` where the first element converts safely to
+-- and seeds the accumulator, and `reduce(f, initial, source)` where the initial
+-- value seeds it. The reducing
+-- function is invoked without throwing as `(accumulator, element)` and returns
+-- exactly the accumulator type as a value (not a reference); the accumulator satisfies the nothrow element
+-- storage contract.
+-- The accumulator type is the reducing function's first declared parameter type
+-- when its parameter types are statically inspectable, and the initial value's
+-- type otherwise. Because the no-initial form has no other source for the
+-- accumulator type, it requires an inspectable signature; a generic lambda or a
+-- templated operator() is admitted only in the explicit-initial form.
+-- The runtime element count is `count(source)` saturated at
+-- CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE, so an unbounded producer folds
+-- over its configured observable traversal cap and the operation always
+-- terminates without an early-termination wrapper. Over an empty no-initial
+-- source the result is the accumulator type's default value.
+-- Each consumed argument position accepts its argument only through a safe
+-- implicit conversion: an identical type or a value-preserving arithmetic
+-- conversion. Narrowing conversions (for example long to int) and crossings
+-- into or out of the Boolean, character, enumeration, pointer, and user-defined
+-- domains are rejected at compile time. Map and Set traversal order is
+-- semantically unordered. Standard-library ranges, containers, and other
+-- non-cljonic sources, throwing functions, and unstorable accumulators are
+-- rejected at compile time with targeted diagnostics. The operation is
+-- constexpr, non-throwing, non-allocating, non-mutating, and preserves every
+-- source value.
+
+entity ReduceFunction {
+    canonical_reduction_operation: Boolean
+    reducing_function_first_argument_role: Boolean
+    source_is_cljonic_domain_only: Boolean
+    provides_no_initial_and_explicit_initial_forms: Boolean
+    accumulator_type_is_first_parameter_when_inspectable: Boolean
+    accumulator_type_is_initial_value_when_uninspectable: Boolean
+    no_initial_form_requires_inspectable_signature: Boolean
+    explicit_initial_form_admits_uninspectable_function: Boolean
+    reducing_function_copy_constructible: Boolean
+    reducing_function_invoked_nothrow_as_accumulator_and_element: Boolean
+    reducing_function_result_type_is_accumulator: Boolean
+    accumulator_satisfies_nothrow_element_contract: Boolean
+    no_initial_form_seed_converts_safely_to_accumulator: Boolean
+    explicit_initial_form_does_not_require_element_to_convert_to_accumulator: Boolean
+    no_initial_form_seeds_from_first_element: Boolean
+    no_initial_form_folds_remaining_left_to_right: Boolean
+    empty_no_initial_source_yields_default_value: Boolean
+    explicit_initial_form_seeds_from_initial_value: Boolean
+    explicit_initial_form_folds_every_observed_element: Boolean
+    initial_value_converts_safely_to_accumulator: Boolean
+    consumed_argument_positions_use_safe_implicit_conversion: Boolean
+    narrowing_and_domain_crossing_conversions_rejected_at_compile_time: Boolean
+    observed_count_saturated_at_collection_maximum: Boolean
+    unbounded_producer_folds_over_observation_cap: Boolean
+    map_set_traversal_order_semantically_unordered: Boolean
+    standard_range_container_and_non_cljonic_sources_rejected_at_compile_time: Boolean
+    throwing_function_or_unstorable_accumulator_rejected_at_compile_time: Boolean
+    result_is_accumulator_value: Boolean
+    every_source_value_preserved: Boolean
+    constexpr_noexcept_nonmutating_nonallocating: Boolean
+    always_terminates_without_early_termination_wrapper: Boolean
+
+    invariant CanonicalReductionOperation {
+        this.canonical_reduction_operation = true
+    }
+
+    invariant ReducingFunctionFirstArgumentRole {
+        this.reducing_function_first_argument_role = true
+    }
+
+    invariant SourceIsCljonicDomainOnly {
+        this.source_is_cljonic_domain_only = true
+    }
+
+    invariant ProvidesNoInitialAndExplicitInitialForms {
+        this.provides_no_initial_and_explicit_initial_forms = true
+    }
+
+    invariant AccumulatorTypeIsFirstParameterWhenInspectable {
+        this.accumulator_type_is_first_parameter_when_inspectable = true
+    }
+
+    invariant AccumulatorTypeIsInitialValueWhenUninspectable {
+        this.accumulator_type_is_initial_value_when_uninspectable = true
+    }
+
+    invariant NoInitialFormRequiresInspectableSignature {
+        this.no_initial_form_requires_inspectable_signature = true
+    }
+
+    invariant ExplicitInitialFormAdmitsUninspectableFunction {
+        this.explicit_initial_form_admits_uninspectable_function = true
+    }
+
+    invariant ReducingFunctionCopyConstructible {
+        this.reducing_function_copy_constructible = true
+    }
+
+    invariant ReducingFunctionInvokedNothrowAsAccumulatorAndElement {
+        this.reducing_function_invoked_nothrow_as_accumulator_and_element = true
+    }
+
+    invariant ReducingFunctionResultTypeIsAccumulator {
+        this.reducing_function_result_type_is_accumulator = true
+    }
+
+    invariant AccumulatorSatisfiesNothrowElementContract {
+        this.accumulator_satisfies_nothrow_element_contract = true
+    }
+
+    invariant NoInitialFormSeedConvertsSafelyToAccumulator {
+        this.no_initial_form_seed_converts_safely_to_accumulator = true
+    }
+
+    invariant NoInitialFormSeedsFromFirstElement {
+        this.no_initial_form_seeds_from_first_element = true
+    }
+
+    invariant NoInitialFormFoldsRemainingLeftToRight {
+        this.no_initial_form_folds_remaining_left_to_right = true
+    }
+
+    invariant EmptyNoInitialSourceYieldsDefaultValue {
+        this.empty_no_initial_source_yields_default_value = true
+    }
+
+    invariant ExplicitInitialFormDoesNotRequireElementToConvertToAccumulator {
+        this.explicit_initial_form_does_not_require_element_to_convert_to_accumulator = true
+    }
+
+    invariant ExplicitInitialFormSeedsFromInitialValue {
+        this.explicit_initial_form_seeds_from_initial_value = true
+    }
+
+    invariant ExplicitInitialFormFoldsEveryObservedElement {
+        this.explicit_initial_form_folds_every_observed_element = true
+    }
+
+    invariant InitialValueConvertsSafelyToAccumulator {
+        this.initial_value_converts_safely_to_accumulator = true
+    }
+
+    invariant ConsumedArgumentPositionsUseSafeImplicitConversion {
+        this.consumed_argument_positions_use_safe_implicit_conversion = true
+    }
+
+    invariant NarrowingAndDomainCrossingConversionsRejectedAtCompileTime {
+        this.narrowing_and_domain_crossing_conversions_rejected_at_compile_time = true
+    }
+
+    invariant ObservedCountSaturatedAtCollectionMaximum {
+        this.observed_count_saturated_at_collection_maximum = true
+    }
+
+    invariant UnboundedProducerFoldsOverObservationCap {
+        this.unbounded_producer_folds_over_observation_cap = true
+    }
+
+    invariant MapSetTraversalOrderSemanticallyUnordered {
+        this.map_set_traversal_order_semantically_unordered = true
+    }
+
+    invariant StandardRangeContainerAndNonCljonicSourcesRejectedAtCompileTime {
+        this.standard_range_container_and_non_cljonic_sources_rejected_at_compile_time = true
+    }
+
+    invariant ThrowingFunctionOrUnstorableAccumulatorRejectedAtCompileTime {
+        this.throwing_function_or_unstorable_accumulator_rejected_at_compile_time = true
+    }
+
+    invariant ResultIsAccumulatorValue {
+        this.result_is_accumulator_value = true
+    }
+
+    invariant EverySourceValuePreserved {
+        this.every_source_value_preserved = true
+    }
+
+    invariant ConstexprNoexceptNonmutatingNonallocating {
+        this.constexpr_noexcept_nonmutating_nonallocating = true
+    }
+
+    invariant AlwaysTerminatesWithoutEarlyTerminationWrapper {
+        this.always_terminates_without_early_termination_wrapper = true
+    }
+}
+
+actor ReduceFunctionOperator { identified_by: ReduceFunction }
