@@ -34,10 +34,29 @@ This module records higher-order sequence transformation requirements and specif
   rationale: transducers and destination-independent processing sit outside the bounded, materialization-first model of the library
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
 
+λ REQ-FN-034(x).
+  ∀ `reduce`: accepts a reducing function followed by one cljonic source (the no-initial form) or by an initial value and one cljonic source (the explicit-initial form)
+  ∧ ∀ source: admitted exactly when it is a cljonic source (a Vector, Map, Set, Queue, or String collection, or a Range, Repeat, Cycle, Iterate, or Repeatedly producer) ∧ ∀ standard-library range ∨ container ∨ non-cljonic source: rejected at compile time
+  ∧ ∀ accumulator type: the reducing function's first declared parameter type when its parameter types are statically inspectable ∧ the initial value's type when they are not
+  ∧ ∀ reducing function: copy-constructible ∧ invoked without throwing as `(accumulator, element)` with the accumulator first and the current source element second ∧ its result type is exactly the accumulator type
+  ∧ ∀ accumulator: satisfies the nothrow element storage contract
+  ∧ ∀ no-initial form `reduce(f, source)`: requires a statically inspectable function signature ∧ ∀ function whose parameter types cannot be inspected (a generic lambda ∨ a templated `operator()`): rejected at compile time in this form ∧ admitted only in the explicit-initial form
+  ∧ ∀ no-initial form with at least one observed element: the first element in traversal order converts safely to and seeds the accumulator, and the remaining elements are folded left to right
+  ∧ ∀ no-initial form over an empty source: the result is the accumulator type's default value
+  ∧ ∀ explicit-initial form `reduce(f, initial, source)`: the initial value seeds the accumulator ∧ the initial value converts safely to the accumulator type ∧ each source element is passed to the callback's second parameter under the safe-conversion rule, without requiring the source element type to convert to the accumulator type ∧ ∀ empty source: the observed elements are folded left to right over the initial value
+  ∧ ∀ initial value: converts safely to the accumulator type ∧ ∀ unsafe initial conversion: rejected at compile time
+  ∧ ∀ consumed argument position: the declared parameter type accepts its argument through a safe implicit conversion ∧ ∀ narrowing conversion (for example `long` to `int`) ∧ ∀ crossing into ∨ out of the Boolean, character, enumeration, pointer, or user-defined domains: rejected at compile time
+  ∧ ∀ function whose parameters are not statically inspectable: the per-position safe-conversion rule cannot be evaluated ∧ such a function is admitted in the explicit-initial form only when its accumulator/element correspondence is nothrow-invocable, and the inspectable-parameter rule applies whenever the parameter types are statically known
+  ∧ ∀ runtime element count: `count(source)` saturated at `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE` ∧ an unbounded producer is therefore folded over its configured observable traversal cap and `reduce` terminates
+  ∧ ∀ Map ∨ Set source: traversal order is semantically unordered ∧ the folded result carries no order-dependent guarantee beyond the reducing function's own associativity and commutativity
+  ∧ ∀ `reduce` operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ preserves every source value ∧ compile-time domain gating with targeted rejection diagnostics naming `reduce` and its supported domains
+  rationale: the human approved activating the `reduce` free function on 2026-11-02 in Clojure's two-arity shape (no initial value, and explicit initial value) over the cljonic source domain, with the accumulator type derived from the reducing function's first parameter (or the initial value when the function's parameters cannot be inspected), a left-to-right fold that always traverses the saturated observable count, the accumulator type's default value for an empty no-initial source, inspectable signatures required wherever no initial value can supply the accumulator type, and the library's safe implicit-conversion policy for every consumed argument position
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-02, rationale_source: origin_artifact}
+
 ## Collection-Shaping and Traversal Family
 
 λ REQ-SEQ-022(x).
-  ∀ context: the first-pass collection-shaping and traversal family includes bounded operations corresponding to `take`, `drop`, `take_while`, `drop_while`, `take_last`, `drop_last`, `take_nth`, `nth`, `nthnext`, `nthrest`, `butlast`, `map_indexed`, `rseq`, `second`, `ffirst`, `fnext`, `nfirst`, `nnext`, `some`, `is_every`, `not_any`, `not_every`, `distinct`, `dedupe`, `frequencies`, `reductions`, `split_at`, `split_with`, `mapcat`, `interleave`, `interpose`, `partition`, `partition_all`, `partition_by`, `partitionv`, `partitionv_all`, `group_by`, `flatten`, `tree_seq`, `keep`, `keep_indexed`, `remove`, `replace`, `mapv`, `filterv`, `subvec`, `find`, `reduce_kv`, `sort`, and `sort_by`
+  ∀ context: the first-pass collection-shaping and traversal family includes bounded operations corresponding to `take`, `drop`, `take_while`, `drop_while`, `take_last`, `drop_last`, `take_nth`, `nth`, `nthnext`, `nthrest`, `butlast`, `map_indexed`, `rseq`, `second`, `ffirst`, `fnext`, `nfirst`, `nnext`, `some`, `is_every`, `not_any`, `not_every`, `distinct`, `dedupe`, `frequencies`, `reductions`, `split_at`, `split_with`, `mapcat`, `interleave`, `interpose`, `partition`, `partition_all`, `partition_by`, `partitionv`, `partitionv_all`, `group_by`, `flatten`, `tree_seq`, `keep`, `keep_indexed`, `remove`, `replace`, `mapv`, `filterv`, `subvec`, `find`, `reduce`, `reduce_kv`, `sort`, and `sort_by`
   ∧ ∀ listed_operation: an individually named downstream behavioral specification exists before it is treated as implementation-ready
   ∧ ∀ specification: defines the operation's public arity and argument roles, callback contract where applicable, termination rule, equality and ordering capabilities, nested-result representation, producer behavior, result capacity derivation, typed-absence behavior, failure/preflight behavior, and complete-versus-bounded-result classification
   ∧ ∀ operation_level_contract: ¬∃ inference only from this inventory
@@ -52,4 +71,4 @@ This module records higher-order sequence transformation requirements and specif
 ## Traceability and Related Requirements
 
 - **Downstream Artifact**: Free-function templates for sequence shaping, slicing, filtering, mapping, grouping, and ordering.
-- **Governed REQs**: `REQ-SEQ-022`, `REQ-FN-032` (binding), `REQ-FN-033` (deferred).
+- **Governed REQs**: `REQ-SEQ-022`, `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding).
