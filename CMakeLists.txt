@@ -7,7 +7,7 @@ project(cljonic LANGUAGES CXX)
 include(CTest)
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
-set(CLJONIC_VECTOR_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/src/cljonic-vector.hpp" CACHE FILEPATH "Path to the production vector header used by integration tests.")
+set(CLJONIC_VECTOR_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/src/cljonic-collection-vector.hpp" CACHE FILEPATH "Path to the production vector header used by integration tests.")
 
 if(BUILD_TESTING)
     include(FetchContent)

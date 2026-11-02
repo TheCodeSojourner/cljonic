@@ -33,25 +33,25 @@ FALLBACK_MARKER = "dependent_false"
 REGISTRY: dict[str, str] = {
     # Free-function and source-constructor fallbacks already in place.
     "cljonic-equal.hpp": "fallback",
-    "cljonic-map-function.hpp": "fallback",
-    "cljonic-reduce-function.hpp": "fallback",
+    "cljonic-map.hpp": "fallback",
+    "cljonic-reduce.hpp": "fallback",
     "cljonic-not-equal.hpp": "fallback",
     "cljonic-assoc.hpp": "fallback",
     "cljonic-can-assoc.hpp": "fallback",
     "cljonic-character-is-valid.hpp": "fallback",
-    "cljonic-repeat.hpp": "fallback",
-    "cljonic-cycle.hpp": "fallback",
-    "cljonic-iterate.hpp": "fallback",
-    "cljonic-repeatedly.hpp": "fallback",
-    "cljonic-map.hpp": "fallback",
-    "cljonic-queue.hpp": "fallback",
-    "cljonic-set.hpp": "fallback",
-    "cljonic-string.hpp": "fallback",
-    "cljonic-vector.hpp": "fallback",
+    "cljonic-producer-repeat.hpp": "fallback",
+    "cljonic-producer-cycle.hpp": "fallback",
+    "cljonic-producer-iterate.hpp": "fallback",
+    "cljonic-producer-repeatedly.hpp": "fallback",
+    "cljonic-collection-map.hpp": "fallback",
+    "cljonic-collection-queue.hpp": "fallback",
+    "cljonic-collection-set.hpp": "fallback",
+    "cljonic-collection-string.hpp": "fallback",
+    "cljonic-collection-vector.hpp": "fallback",
     # Class-template deduction diagnostic (REQ-DIAG-012): the element domain
     # stays a constraint, and out-of-domain deduction is redirected to an
     # internal diagnostic specialization carrying one targeted static_assert.
-    "cljonic-range.hpp": "fallback",
+    "cljonic-producer-range.hpp": "fallback",
     # Subject to REQ-DIAG-009; fallback not yet added (application backlog).
     "cljonic-can-conj.hpp": "fallback",
     "cljonic-conj.hpp": "fallback",
@@ -70,8 +70,8 @@ REGISTRY: dict[str, str] = {
     "cljonic-pop.hpp": "fallback",
     "cljonic-rest.hpp": "fallback",
     # Documented exclusions.
-    "cljonic-map-entry.hpp": "excluded",   # aggregate-like; domain is type-argument gated
-    "cljonic-variant.hpp": "excluded",     # free-function API deferred (Slice B)
+    "cljonic-collection-map-entry.hpp": "excluded",   # aggregate-like; domain is type-argument gated
+    "cljonic-collection-variant.hpp": "excluded",     # free-function API deferred (Slice B)
     "cljonic-next.hpp": "fallback",
     "cljonic-not-empty.hpp": "fallback",
     "cljonic-seq.hpp": "fallback",

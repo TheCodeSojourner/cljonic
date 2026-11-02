@@ -17,7 +17,7 @@ COVERAGE_THRESHOLD ?= 100
 BROWSER ?= brave-browser
 COVERAGE_FILE ?=
 LINT_FILE ?=
-UPSERT_COVERAGE_FILE ?= cljonic-vector.hpp
+UPSERT_COVERAGE_FILE ?= cljonic-collection-vector.hpp
 UPSERT_FAST_FILE ?= src/$(UPSERT_COVERAGE_FILE)
 UPSERT_FAST_COMPLEXITY_PATH ?= $(UPSERT_FAST_FILE)
 _COVERAGE_SRC = $(if $(COVERAGE_FILE),$(CURDIR)/src/$(COVERAGE_FILE),$(CURDIR)/src/*)
@@ -146,6 +146,7 @@ $(BUILD_DIR)/CMakeCache.txt: CMakeLists.txt
 	@$(CMAKE) -S . -B $(BUILD_DIR) > /dev/null
 
 coverage:
+	@if [ -d "$(COVERAGE_BUILD_DIR)" ]; then find "$(COVERAGE_BUILD_DIR)" -name '*.gcda' -delete; fi
 	$(CMAKE) -S . -B $(COVERAGE_BUILD_DIR) -DCLJONIC_COVERAGE=ON
 	$(CMAKE) --build $(COVERAGE_BUILD_DIR) --parallel $(BUILD_JOBS)
 	lcov --zerocounters --directory $(COVERAGE_BUILD_DIR)
@@ -161,9 +162,9 @@ coverage:
 	     --fail-under-lines $(COVERAGE_THRESHOLD)
 
 coverage-cli:
+	@if [ -d "$(COVERAGE_BUILD_DIR)" ]; then find "$(COVERAGE_BUILD_DIR)" -name '*.gcda' -delete; fi
 	@$(CMAKE) -S . -B $(COVERAGE_BUILD_DIR) -DCLJONIC_COVERAGE=ON > /dev/null
 	@$(CMAKE) --build $(COVERAGE_BUILD_DIR) --parallel $(BUILD_JOBS) > /dev/null
-	@find $(COVERAGE_BUILD_DIR) -name '*.gcda' -delete
 	@lcov --zerocounters --directory $(COVERAGE_BUILD_DIR) > /dev/null 2>&1
 	@$(CTEST) --test-dir $(COVERAGE_BUILD_DIR) --output-on-failure \
 	     > $(COVERAGE_BUILD_DIR)/.ctest-out.tmp 2>&1 || \
