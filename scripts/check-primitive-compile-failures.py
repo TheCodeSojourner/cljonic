@@ -9,6 +9,46 @@ import re
 import subprocess
 
 PRIMITIVES = {
+    "take": {
+        "diagnostic_anchor": "cljonic::take:",
+        "diagnostic_cases": {
+            "scalar-source": ("(void)cljonic::take(2, 42);", "exactly one cljonic source"),
+            "map-entry-source": ("(void)cljonic::take(2, cljonic::map_entry(1, 2));", "exactly one cljonic source"),
+            "external-range": ("int values[]{1, 2}; (void)cljonic::take(2, values);", "exactly one cljonic source"),
+            "standard-array": ("(void)cljonic::take(2, std::array<int, 2>{1, 2});", "exactly one cljonic source"),
+            "standard-view": ("(void)cljonic::take(2, std::ranges::iota_view{0, 3});", "exactly one cljonic source"),
+            "bool-count": ("(void)cljonic::take(true, cljonic::vector(1, 2));", "non-boolean, non-character integer"),
+            "char-count": ("(void)cljonic::take('a', cljonic::vector(1, 2));", "non-boolean, non-character integer"),
+            "signed-char-count": ("(void)cljonic::take(static_cast<signed char>(2), cljonic::vector(1, 2));", "non-boolean, non-character integer"),
+            "unsigned-char-count": ("(void)cljonic::take(static_cast<unsigned char>(2), cljonic::vector(1, 2));", "non-boolean, non-character integer"),
+            "wide-char-count": ("(void)cljonic::take(L'a', cljonic::vector(1, 2));", "non-boolean, non-character integer"),
+            "utf8-char-count": ("(void)cljonic::take(u8'a', cljonic::vector(1, 2));", "non-boolean, non-character integer"),
+            "utf16-char-count": ("(void)cljonic::take(u'a', cljonic::vector(1, 2));", "non-boolean, non-character integer"),
+            "utf32-char-count": ("(void)cljonic::take(U'a', cljonic::vector(1, 2));", "non-boolean, non-character integer"),
+            "float-count": ("(void)cljonic::take(1.5, cljonic::vector(1, 2));", "non-boolean, non-character integer"),
+            "enum-count": ("enum Count { two = 2 }; (void)cljonic::take(two, cljonic::vector(1, 2));", "non-boolean, non-character integer"),
+            "converted-count": ("struct Count { operator int() const noexcept { return 2; } }; (void)cljonic::take(Count{}, cljonic::vector(1, 2));", "non-boolean, non-character integer"),
+            "missing-source": ("(void)cljonic::take(2);", "exactly two arguments"),
+            "missing-count": ("(void)cljonic::take();", "exactly two arguments"),
+            "extra-source": ("(void)cljonic::take(2, cljonic::vector(1), cljonic::vector(2));", "exactly two arguments"),
+            "swapped-arguments": ("(void)cljonic::take(cljonic::vector(1, 2), 2);", "non-boolean, non-character integer"),
+        },
+        "pass_cases": {
+            "vector": "(void)cljonic::take(2, cljonic::vector(1, 2));",
+            "map": "(void)cljonic::take(1, cljonic::hash_map(1, 2));",
+            "set": "(void)cljonic::take(1, cljonic::hash_set(1, 2));",
+            "queue": "(void)cljonic::take(1, cljonic::queue(1, 2));",
+            "string": '(void)cljonic::take(1, cljonic::string<4>("ab"));',
+            "range": "(void)cljonic::take(1, cljonic::range(0, 3));",
+            "repeat": "(void)cljonic::take(1, cljonic::repeat(3, 7));",
+            "cycle": "(void)cljonic::take(1, cljonic::cycle(cljonic::vector(1, 2)));",
+            "iterate": "(void)cljonic::take(1, cljonic::iterate([](int value) noexcept { return value + 1; }, 0));",
+            "repeatedly": "(void)cljonic::take(1, cljonic::repeatedly(3, []() noexcept { return 7; }));",
+            "negative-count": "(void)cljonic::take(-2, cljonic::vector(1, 2));",
+            "unsigned-count": "(void)cljonic::take(std::size_t{2}, cljonic::vector(1, 2));",
+            "zero-capacity": "(void)cljonic::take(1, cljonic::Vector<int, 0>{});",
+        },
+    },
     "get": {
         "diagnostic_anchor": "cljonic::get:",
         "diagnostic_cases": {

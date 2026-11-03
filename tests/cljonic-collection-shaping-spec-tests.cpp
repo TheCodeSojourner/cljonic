@@ -46,17 +46,7 @@ TEST_CASE("Collection shaping shared policy contract", "[collection-shaping][seq
     CHECK(transducers_and_hidden_lazy_sequences_are_unsupported);
 }
 
-TEST_CASE("Take and drop contract", "[collection-shaping][sequences]") {
-    TRACE_ID("entity-fields.Take");
-    TRACE_ID("invariant.Take.MinimumArityIsTwo");
-    TRACE_ID("invariant.Take.MaximumArityIsTwo");
-    TRACE_ID("invariant.Take.InputsArePreserved");
-    TRACE_ID("invariant.Take.ReturnsBoundedPrefix");
-    TRACE_ID("invariant.Take.TerminationIsBounded");
-    TRACE_ID("invariant.Take.ResultIsExplicitBoundedProducer");
-    TRACE_ID("invariant.Take.MaterializationUsesCallerDestinationCapacity");
-    TRACE_ID("invariant.Take.CapacityIsMinimumOfCountAndSourceBound");
-    TRACE_ID("invariant.Take.FailurePolicyIsTyped");
+TEST_CASE("Drop contract", "[collection-shaping][sequences]") {
     TRACE_ID("entity-fields.Drop");
     TRACE_ID("invariant.Drop.MinimumArityIsTwo");
     TRACE_ID("invariant.Drop.MaximumArityIsTwo");
@@ -68,13 +58,9 @@ TEST_CASE("Take and drop contract", "[collection-shaping][sequences]") {
     TRACE_ID("invariant.Drop.CapacityIsPreservedWhenSourceBoundIsSafe");
     TRACE_ID("invariant.Drop.FailurePolicyIsTyped");
 
-    constexpr int take_minimum_arity = 2;
-    constexpr int take_maximum_arity = 2;
     constexpr int drop_minimum_arity = 2;
     constexpr int drop_maximum_arity = 2;
 
-    CHECK(take_minimum_arity == 2);
-    CHECK(take_maximum_arity == 2);
     CHECK(drop_minimum_arity == 2);
     CHECK(drop_maximum_arity == 2);
     CHECK(true);
