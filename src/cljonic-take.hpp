@@ -10,23 +10,6 @@
 
 namespace cljonic {
 
-namespace concepts_detail {
-
-template <typename Count, typename Source>
-concept TakeArguments = ProducerCount<Count> && concepts::CljonicSource<Source> &&
-                        concepts::NothrowCollectionElement<std::ranges::range_value_t<const Source>>;
-
-template <typename Source>
-inline constexpr std::size_t TakeResultCapacity = [] constexpr {
-    if constexpr (concepts::CljonicCollection<Source>) {
-        return std::min<std::size_t>(Source::capacity(), CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
-    } else {
-        return CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
-    }
-}();
-
-} // namespace concepts_detail
-
 /** \anchor Take
  * The \b take free function returns the first requested elements of one cljonic source as a bounded owning \ref Vector
  * "Vector". Use \c take(count, source) with a \ref Vector "Vector", \ref Map "Map", \ref Set "Set", \ref Queue
@@ -72,10 +55,10 @@ inline constexpr std::size_t TakeResultCapacity = [] constexpr {
  ~~~~~
  */
 template <typename Count, typename Source>
-    requires concepts_detail::TakeArguments<Count, Source>
+    requires concepts_detail::CountedSourceArguments<Count, Source>
 [[nodiscard]] constexpr auto take(Count count, const Source& source) noexcept
-    -> Vector<std::ranges::range_value_t<const Source>, concepts_detail::TakeResultCapacity<Source>> {
-    constexpr auto capacity = concepts_detail::TakeResultCapacity<Source>;
+    -> Vector<std::ranges::range_value_t<const Source>, concepts_detail::SourceResultCapacity<Source>> {
+    constexpr auto capacity = concepts_detail::SourceResultCapacity<Source>;
     const auto observed_count = std::min({concepts_detail::normalize_producer_count(count), source.count(), capacity});
     Vector<std::ranges::range_value_t<const Source>, capacity> result{};
     if (observed_count == 0) {
@@ -94,7 +77,7 @@ template <typename Count, typename Source>
 }
 
 template <typename Count, typename Source>
-    requires(!concepts_detail::TakeArguments<Count, Source>)
+    requires(!concepts_detail::CountedSourceArguments<Count, Source>)
 constexpr auto take([[maybe_unused]] Count count, [[maybe_unused]] const Source& source) noexcept -> void {
     static_assert(concepts_detail::dependent_false<Count, Source>,
                   "cljonic::take: expected a non-boolean, non-character integer count whose nonnegative range fits "

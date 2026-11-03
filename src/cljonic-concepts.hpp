@@ -13,6 +13,8 @@
 #include <utility>
 #include <variant>
 
+#include <cljonic-core-collection-maximum-element-count.hpp>
+
 /** \page implicit-conversions Safe implicit conversions
  * Use the type an operation asks for whenever possible. For a collection, check its element, key, or value type; for a
  * producer, check its documented value and count types. These rules apply when creating values, looking them up,
@@ -690,6 +692,22 @@ template <ProducerCount Count>
 [[nodiscard]] constexpr auto normalize_producer_count(Count count) noexcept -> std::size_t {
     return count <= 0 ? std::size_t{0} : static_cast<std::size_t>(count);
 }
+
+template <typename Count, typename Source>
+concept CountedSourceArguments = ProducerCount<Count> && concepts::CljonicSource<Source> &&
+                                 concepts::NothrowCollectionElement<std::ranges::range_value_t<const Source>>;
+
+template <typename Source>
+inline constexpr std::size_t SourceResultCapacity = [] constexpr {
+    if constexpr (concepts::CljonicCollection<Source>) {
+        constexpr auto capacity = Source::capacity();
+        return capacity < CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE
+                   ? capacity
+                   : CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
+    } else {
+        return CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
+    }
+}();
 
 template <typename Dest>
 concept CountPreflightDestination =

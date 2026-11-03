@@ -98,7 +98,7 @@
  * - can_add, \ref CanAssoc "can_assoc", \ref CanConj "can_conj", can_multiply, can_subtract,
  *   \ref CharacterIsValid "character_is_valid", comp, compare, complement, \ref Conj "conj", constantly,
  *   \ref Contains "contains", \ref Count "count", \ref Cycle "cycle"
- * - dec, dedupe, deref, \ref Disj "disj", \ref Dissoc "dissoc", distinct, div, double, drop, drop_last, drop_while
+ * - dec, dedupe, deref, \ref Disj "disj", \ref Dissoc "dissoc", distinct, div, double, \ref Drop "drop", drop_last, drop_while
  * - emplace, \ref Empty "empty", \ref Equal "equal", every_pred
  * - ffirst, \ref FilterFunction "filter", \ref FiltervFunction "filterv", find, \ref First "first",
  *   \ref FitsInto "fits_into", fits_print, flatten, float, fnext, fnil, frequencies
@@ -182,6 +182,7 @@
 #include <cljonic-count.hpp>
 #include <cljonic-disj.hpp>
 #include <cljonic-dissoc.hpp>
+#include <cljonic-drop.hpp>
 #include <cljonic-empty.hpp>
 #include <cljonic-equal.hpp>
 #include <cljonic-filter.hpp>
