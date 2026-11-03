@@ -2,11 +2,11 @@
 
 ## Purpose and Scope
 
-This module records higher-order sequence transformation requirements and specifies the collection-shaping/traversal inventory. The free-function API `comp` is explicitly deferred; this does not defer the `cljonic::Map` collection type or its existing operations. The `map`, `reduce`, and `filter` free functions are binding under `REQ-FN-032`, `REQ-FN-034`, and `REQ-FN-035`; `filterv` remains in the first-pass inventory and requires its own behavioral specification.
+This module records higher-order sequence transformation requirements and specifies the collection-shaping/traversal inventory. The free-function API `comp` is explicitly deferred; this does not defer the `cljonic::Map` collection type or its existing operations. The `map`, `reduce`, `filter`, and `filterv` free functions are binding under `REQ-FN-032`, `REQ-FN-034`, `REQ-FN-035`, and `REQ-FN-036`; `filterv` is an alias of `filter`.
 
 ## Deferred Higher-Order Free Functions (Non-binding)
 
-> **Deferred future work — non-binding.** The public free function `comp` is not part of the current supported API. Its requirement below records intended future behavior only; the function is not implementation-ready until its lifecycle is approved and its behavioral specification, tests, and implementation are propagated. This deferral does not apply to `cljonic::Map` or existing Map operations, or to the multi-source `map` and `filter` free functions, which are binding under `REQ-FN-032` and `REQ-FN-035`.
+> **Deferred future work — non-binding.** The public free function `comp` is not part of the current supported API. Its requirement below records intended future behavior only; the function is not implementation-ready until its lifecycle is approved and its behavioral specification, tests, and implementation are propagated. This deferral does not apply to `cljonic::Map` or existing Map operations, or to the multi-source `map`, `filter`, and `filterv` free functions, which are binding under `REQ-FN-032`, `REQ-FN-035`, and `REQ-FN-036`.
 
 ### Function Composition (`comp`) & Multi-Source `map`
 
@@ -65,8 +65,16 @@ This module records higher-order sequence transformation requirements and specif
   ∧ ∀ predicate whose parameter types are not statically inspectable (a generic lambda ∨ templated `operator()`): admitted only when nothrow-invocable with a const source element and its result type is exactly `bool`
   ∧ ∀ Map ∨ Set source: traversal order is semantically unordered ∧ result order has no semantic significance
   ∧ ∀ `filter` operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ preserves every source value ∧ compile-time domain gating with targeted rejection diagnostics naming `filter` and its supported domains
-  rationale: the human approved activating `filter` on 2026-11-02 for all cljonic collections and producers, returning a bounded owning Vector with source-derived capacity, an exact-bool nothrow predicate following map's safe parameter-conversion rule, and a fitting-prefix traversal that stops when the result reaches capacity
+  rationale: the human approved activating `filter` on 2026-11-02 for all cljonic collections and producers, returning a bounded owning Vector with source-derived capacity, an exact-bool nothrow predicate following map's safe parameter-conversion rule, and traversal through source exhaustion; the result capacity equals the source's observable-count bound, so every observed element fits
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-02, rationale_source: origin_artifact}
+
+λ REQ-FN-036(x).
+  ∀ `filterv(predicate, source)`: a public alias of `filter(predicate, source)` ∧ accepts exactly the same predicate and one cljonic source under `REQ-FN-035`
+  ∧ ∀ admitted call: returns exactly the same bounded owning Vector type, capacity, and logical values as `filter(predicate, source)`
+  ∧ ∀ behavior: predicate evaluation, traversal, ordering, empty-source behavior, source preservation, constexpr, non-throwing, non-allocating, and non-mutating guarantees are identical to `filter` under `REQ-FN-035`
+  ∧ ∀ rejected call: the same invalid domains and predicate forms as `filter` are rejected at compile time with a targeted diagnostic naming `filterv` and its supported domains
+  rationale: the human approved `filterv` as a simple alias of `filter` on 2026-11-03; in cljonic, `filter` already returns an owning Vector, so both names expose the same operation and result contract
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-03, rationale_source: origin_artifact}
 
 ## Collection-Shaping and Traversal Family
 
@@ -86,4 +94,4 @@ This module records higher-order sequence transformation requirements and specif
 ## Traceability and Related Requirements
 
 - **Downstream Artifact**: Free-function templates for sequence shaping, slicing, filtering, mapping, grouping, and ordering.
-- **Governed REQs**: `REQ-SEQ-022`, `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding), `REQ-FN-035` (binding).
+- **Governed REQs**: `REQ-SEQ-022`, `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding), `REQ-FN-035` (binding), `REQ-FN-036` (binding alias).
