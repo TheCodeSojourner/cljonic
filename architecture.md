@@ -17,8 +17,8 @@
   | module4_active_slice(x) → Range(x) ∧ Repeat(x) ∧ Cycle(x) ∧ Iterate(x) ∧ Repeatedly(x) ∧ into(x) ∧ fits_into(x)
   | sequence_conversion(x) → seq(x) ∈ current_collection_api(x) under REQ-SEQ-010
   | stored_collection_building_blocks(x) → govern(higher_order_algorithms(x))
-  | active_higher_order_algorithms(x) ≡ map ∧ reduce ∧ filter
-  | future_expansion(transformations_except(map ∧ reduce ∧ filter) ∨ numeric_algorithms ∨ callable_adapters ∨ set_algebra
+  | active_higher_order_algorithms(x) ≡ map ∧ reduce ∧ filter ∧ filterv
+  | future_expansion(transformations_except(map ∧ reduce ∧ filter ∧ filterv) ∨ numeric_algorithms ∨ callable_adapters ∨ set_algebra
       ∨ relational_models ∨ regexes ∨ formatting ∨ KeywordEnumNameMapping ∨ Atom)
     → describe(approved_future_expansion) ∧ remain_inactive_until(module_propagated(x))
 
@@ -972,7 +972,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ nfirst ∧ nnext ∧ some ∧ is_every ∧ not_any ∧ not_every ∧ distinct ∧ dedupe ∧ frequencies
     ∧ reductions ∧ split_at ∧ split_with ∧ mapcat ∧ interleave ∧ interpose ∧ partition ∧ partition_all
     ∧ partition_by ∧ partitionv ∧ partitionv_all ∧ group_by ∧ flatten ∧ tree_seq ∧ keep ∧ keep_indexed
-    ∧ remove ∧ replace ∧ mapv ∧ filterv ∧ subvec ∧ find ∧ reduce_kv ∧ sort ∧ sort_by
+    ∧ remove ∧ replace ∧ mapv ∧ subvec ∧ find ∧ reduce_kv ∧ sort ∧ sort_by
   | deferred_collection_shaping_traversal_family(x) → remain_outside(current_collection_api(x))
   | deferred_collection_shaping_traversal_family(x) → require(individually_named_behavioral_specification(x))
   | deferred_collection_shaping_traversal_family(x) → require(preserves_input_values(x)
@@ -1059,6 +1059,14 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | standard_library_range ∨ container ∨ non_cljonic_source ∨ throwing_predicate ∨ result_type(predicate) ≠ bool → reject_at_compile_time_with(targeted_diagnostic_naming(filter ∧ supported_domains) ∧ REQ-DIAG-009)
   | preserve(input_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
   | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-035)
+
+λ S2_filterv_alias_contract(x). filterv(predicate, source) ≡ filter(predicate, source)
+  | require(identical_arity ∧ identical_argument_roles ∧ identical_cljonic_source_and_predicate_admission)
+  | return(exactly_same_result_type ∧ capacity ∧ logical_values ∧ traversal ∧ ordering ∧ empty_source_behavior)
+  | preserve(identical_input ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating)
+  | reject(the_same_unsupported_domains_and_predicate_forms)
+    with(targeted_diagnostic_naming(filterv ∧ supported_domains) ∧ REQ-DIAG-009)
+  | classify_as(RequirementsBackedAlias) ∧ trace_to(REQ-FN-036 ∧ REQ-FN-035)
 
 λ S2_reduce_function_contract(x). reduce(f, source) ∨ reduce(f, initial, source) → admit(CljonicSource(source) ∧ reducing_function(f) ∧ accumulator_contract(x))(x)
   | reducing_function(f) → require(copy_constructible(f) ∧ nothrow_invocation(f, accumulator, element) ∧ result_type(f) = accumulator_type(x))
