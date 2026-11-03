@@ -2,6 +2,8 @@
 -- lifecycle: deferred
 
 -- First-pass behavioral contract shared by the REQ-SEQ-022 operation family.
+-- take_while and drop_while now have separate approved producer contracts in
+-- take-while.allium and drop-while.allium. Neither is published yet.
 entity CollectionShapingTraversalPolicy {
     preserves_input_values: Boolean
     callbacks_are_pure_and_non_allocating: Boolean
@@ -66,58 +68,6 @@ entity CollectionShapingTraversalPolicy {
 }
 
 -- Each operation is individually named for REQ-SEQ-022 traceability.
-entity TakeWhile {
-    minimum_arity: Integer
-    maximum_arity: Integer
-    callback_argument_position: Integer
-    source_argument_position: Integer
-    callback_is_pure_and_non_allocating: Boolean
-    stops_at_first_predicate_failure_or_source_end: Boolean
-    returns_bounded_prefix_result: Boolean
-    result_is_explicit_bounded_producer: Boolean
-    materialization_uses_caller_destination_capacity: Boolean
-    failure_policy_is_typed: Boolean
-    preserves_input: Boolean
-
-    invariant MinimumArityIsTwo { this.minimum_arity = 2 }
-    invariant MaximumArityIsTwo { this.maximum_arity = 2 }
-    invariant CallbackIsFirstArgument { this.callback_argument_position = 1 }
-    invariant SourceIsSecondArgument { this.source_argument_position = 2 }
-    invariant CallbackIsPureAndNonAllocating { this.callback_is_pure_and_non_allocating = true }
-    invariant TerminationIsDeclared { this.stops_at_first_predicate_failure_or_source_end = true }
-    invariant ReturnsBoundedPrefix { this.returns_bounded_prefix_result = true }
-    invariant ResultIsExplicitBoundedProducer { this.result_is_explicit_bounded_producer = true }
-    invariant MaterializationUsesCallerDestinationCapacity { this.materialization_uses_caller_destination_capacity = true }
-    invariant FailurePolicyIsTyped { this.failure_policy_is_typed = true }
-    invariant InputIsPreserved { this.preserves_input = true }
-}
-
-entity DropWhile {
-    minimum_arity: Integer
-    maximum_arity: Integer
-    callback_argument_position: Integer
-    source_argument_position: Integer
-    callback_is_pure_and_non_allocating: Boolean
-    skips_through_first_predicate_failure: Boolean
-    returns_remaining_bounded_result: Boolean
-    result_is_bounded_owning_collection: Boolean
-    result_capacity_is_source_capacity_bound: Boolean
-    failure_policy_is_typed: Boolean
-    preserves_input: Boolean
-
-    invariant MinimumArityIsTwo { this.minimum_arity = 2 }
-    invariant MaximumArityIsTwo { this.maximum_arity = 2 }
-    invariant CallbackIsFirstArgument { this.callback_argument_position = 1 }
-    invariant SourceIsSecondArgument { this.source_argument_position = 2 }
-    invariant CallbackIsPureAndNonAllocating { this.callback_is_pure_and_non_allocating = true }
-    invariant TerminationIsDeclared { this.skips_through_first_predicate_failure = true }
-    invariant ReturnsRemainingResult { this.returns_remaining_bounded_result = true }
-    invariant ResultIsBoundedOwningCollection { this.result_is_bounded_owning_collection = true }
-    invariant ResultCapacityIsSourceCapacityBound { this.result_capacity_is_source_capacity_bound = true }
-    invariant FailurePolicyIsTyped { this.failure_policy_is_typed = true }
-    invariant InputIsPreserved { this.preserves_input = true }
-}
-
 entity TakeLast {
     minimum_arity: Integer
     maximum_arity: Integer
@@ -1262,8 +1212,6 @@ entity TreeSeq {
 
 actor CollectionShapingTraversalPolicyOperator { identified_by: CollectionShapingTraversalPolicy }
 actor TakeOperator { identified_by: Take }
-actor TakeWhileOperator { identified_by: TakeWhile }
-actor DropWhileOperator { identified_by: DropWhile }
 actor TakeLastOperator { identified_by: TakeLast }
 actor DropLastOperator { identified_by: DropLast }
 actor TakeNthOperator { identified_by: TakeNth }

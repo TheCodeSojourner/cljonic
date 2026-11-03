@@ -1,5 +1,11 @@
 -- allium: 3
 
+-- REQ-FN-041 includes finite TakeWhile/DropWhile source results. Their exact
+-- counts require independent bounded traversal, so Vector/Queue/String
+-- preflight may now invoke predicate/source callbacks through count. Map/Set
+-- preflight retains insertion-sensitive traversal. Predictions require
+-- equivalent values across independent traversals; existing types are unchanged.
+
 entity ProducerMaterialization {
     into_requires_explicit_bounded_destination: Boolean
     into_requires_supported_collection_destination: Boolean

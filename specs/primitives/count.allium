@@ -1,5 +1,11 @@
 -- allium: 3
 
+-- REQ-FN-041 extends the producer domain to TakeWhile and DropWhile.
+-- Their finite count is exact by fresh bounded traversal, may invoke predicate
+-- and source callbacks, and has no cache. Referential transparency is subject
+-- to the source's existing authorized external-effect contract; old types keep
+-- their existing count behavior.
+
 entity Count {
     supports_count_free_function: Boolean
     supports_sequenceable_collection_domain: Boolean

@@ -1,0 +1,117 @@
+-- allium: 3
+
+-- REQ-FN-039 / REQ-FN-041 / REQ-SEQ-022.
+-- Active after explicit take_while implementation approval and independent
+-- verification. Paired contract approval alone did not authorize implementation.
+--
+-- take_while(predicate, source) owns source and predicate copies, with no
+-- construction-time evaluation or materialized cache. Each traversal yields
+-- the initial true prefix of the original source window, at most the configured
+-- observation cap and any smaller source window, checking actual exhaustion.
+-- The first false value is produced and tested but excluded; no later value is
+-- produced. All-true traversal stops at the window endpoint without over-advance.
+-- With [1, 2, 4, 1] and predicate <3, output is [1, 2], with three predicate
+-- calls during a complete traversal. An always-false predicate yields empty.
+--
+-- count performs a separate full adapter traversal: it is exact, not an upper
+-- bound, and may repeat predicate/source callbacks before later consumption.
+-- Adapter begin/iteration must not first call this expensive count to establish
+-- a budget. Nested adapters preserve deferred evaluation and actual endpoints.
+-- is_empty retains count == 0. Fit/count predictions assume subsequent
+-- independent traversals yield the same values. Authorized source effects
+-- through references/static storage remain shared, with no additional effects
+-- authorized here. Captured predicate state is copied afresh per traversal.
+
+entity TakeWhile {
+    predicate_first_source_second_exact_two_arity: Boolean
+    source_is_closed_cljonic_domain_including_adapters: Boolean
+    external_ranges_arrays_containers_and_map_entry_source_rejected: Boolean
+    source_element_satisfies_nothrow_storage: Boolean
+    result_is_explicit_owning_producer: Boolean
+    result_element_type_is_source_element_type: Boolean
+    source_and_predicate_owned_copies_are_nothrow: Boolean
+    construction_evaluates_neither_predicate_nor_source: Boolean
+    no_borrowed_source_or_materialized_cache: Boolean
+    no_result_capacity_parameter_or_transducer_arity: Boolean
+    original_source_window_is_capped_and_checks_actual_endpoint: Boolean
+    respects_smaller_source_window_without_count_prepass: Boolean
+    initial_true_prefix_is_yielded: Boolean
+    predicate_evaluated_once_per_examined_element: Boolean
+    first_false_value_examined_but_excluded: Boolean
+    no_source_advance_after_failure_or_past_window: Boolean
+    all_true_window_is_yielded_completely: Boolean
+    early_consumer_stop_does_not_trigger_more_evaluation: Boolean
+    empty_traversal_and_zero_cap_invoke_no_callbacks: Boolean
+    result_is_finite_even_over_unbounded_source: Boolean
+    no_claim_of_underlying_unbounded_completion: Boolean
+    count_is_exact_by_fresh_bounded_traversal: Boolean
+    count_may_repeat_predicate_and_source_callbacks: Boolean
+    is_empty_retains_exact_count_zero_semantics: Boolean
+    predicate_should_be_pure_and_must_not_allocate: Boolean
+    predicate_nothrow_const_element_invocation_returns_exact_bool: Boolean
+    inspectable_parameter_conversions_are_safe: Boolean
+    generic_predicate_uses_nothrow_exact_bool_fallback: Boolean
+    fresh_predicate_state_per_traversal_no_shared_cache: Boolean
+    preserves_owned_state_and_existing_authorized_external_effect_scope: Boolean
+    prediction_requires_equivalent_independent_traversals: Boolean
+    capturing_predicates_need_not_be_default_constructible_or_assignable: Boolean
+    producer_storage_is_conditional_on_existing_nothrow_capabilities: Boolean
+    no_added_element_equality_or_ordering_requirement: Boolean
+    map_entries_string_characters_and_queue_fifo_preserved: Boolean
+    map_set_membership_and_order_depend_on_unordered_traversal: Boolean
+    source_consumers_admit_adapter_without_changing_old_types: Boolean
+    finite_preflight_retains_exact_count_or_insertion_semantics: Boolean
+    logical_equality_uses_existing_sequential_element_rules: Boolean
+    parameter_equality_and_map_key_set_element_admission_unavailable: Boolean
+    tail_apis_and_dependent_cycle_tails_rejected: Boolean
+    first_api_rejects_producer: Boolean
+    invalid_calls_have_targeted_operation_diagnostic: Boolean
+    constexpr_noexcept_no_heap_no_rtti_nonmutating: Boolean
+
+    invariant PredicateFirstSourceSecondExactTwoArity { this.predicate_first_source_second_exact_two_arity = true }
+    invariant SourceIsClosedCljonicDomainIncludingAdapters { this.source_is_closed_cljonic_domain_including_adapters = true }
+    invariant ExternalSourcesAndMapEntryRejected { this.external_ranges_arrays_containers_and_map_entry_source_rejected = true }
+    invariant SourceElementSatisfiesNothrowStorage { this.source_element_satisfies_nothrow_storage = true }
+    invariant ResultIsExplicitOwningProducer { this.result_is_explicit_owning_producer = true }
+    invariant ResultElementTypeIsSourceElementType { this.result_element_type_is_source_element_type = true }
+    invariant OwnedCopiesAreNothrow { this.source_and_predicate_owned_copies_are_nothrow = true }
+    invariant ConstructionEvaluatesNeitherPredicateNorSource { this.construction_evaluates_neither_predicate_nor_source = true }
+    invariant NoBorrowedSourceOrMaterializedCache { this.no_borrowed_source_or_materialized_cache = true }
+    invariant NoCapacityParameterOrTransducerArity { this.no_result_capacity_parameter_or_transducer_arity = true }
+    invariant OriginalWindowCappedWithActualEndpoint { this.original_source_window_is_capped_and_checks_actual_endpoint = true }
+    invariant SmallerSourceWindowWithoutCountPrepass { this.respects_smaller_source_window_without_count_prepass = true }
+    invariant InitialTruePrefixIsYielded { this.initial_true_prefix_is_yielded = true }
+    invariant PredicateOncePerExaminedElement { this.predicate_evaluated_once_per_examined_element = true }
+    invariant FirstFalseValueExaminedButExcluded { this.first_false_value_examined_but_excluded = true }
+    invariant NoAdvanceAfterFailureOrPastWindow { this.no_source_advance_after_failure_or_past_window = true }
+    invariant AllTrueWindowYieldedCompletely { this.all_true_window_is_yielded_completely = true }
+    invariant EarlyConsumerStopTriggersNoMoreEvaluation { this.early_consumer_stop_does_not_trigger_more_evaluation = true }
+    invariant EmptyTraversalAndZeroCapInvokeNoCallbacks { this.empty_traversal_and_zero_cap_invoke_no_callbacks = true }
+    invariant FiniteResultEvenOverUnboundedSource { this.result_is_finite_even_over_unbounded_source = true }
+    invariant NoClaimOfUnderlyingUnboundedCompletion { this.no_claim_of_underlying_unbounded_completion = true }
+    invariant ExactCountByFreshBoundedTraversal { this.count_is_exact_by_fresh_bounded_traversal = true }
+    invariant CountMayRepeatCallbacks { this.count_may_repeat_predicate_and_source_callbacks = true }
+    invariant IsEmptyRetainsExactCountZeroSemantics { this.is_empty_retains_exact_count_zero_semantics = true }
+    invariant PredicatePurityAndNoAllocation { this.predicate_should_be_pure_and_must_not_allocate = true }
+    invariant PredicateNothrowConstElementExactBool { this.predicate_nothrow_const_element_invocation_returns_exact_bool = true }
+    invariant InspectableParameterConversionsAreSafe { this.inspectable_parameter_conversions_are_safe = true }
+    invariant GenericPredicateNothrowExactBoolFallback { this.generic_predicate_uses_nothrow_exact_bool_fallback = true }
+    invariant FreshPredicateStateWithoutCache { this.fresh_predicate_state_per_traversal_no_shared_cache = true }
+    invariant PreservesStateAndAuthorizedEffectScope { this.preserves_owned_state_and_existing_authorized_external_effect_scope = true }
+    invariant PredictionRequiresEquivalentTraversals { this.prediction_requires_equivalent_independent_traversals = true }
+    invariant CapturingPredicatesDoNotRequireDefaultOrAssignment { this.capturing_predicates_need_not_be_default_constructible_or_assignable = true }
+    invariant ConditionalNothrowProducerStorage { this.producer_storage_is_conditional_on_existing_nothrow_capabilities = true }
+    invariant NoAddedElementEqualityOrOrdering { this.no_added_element_equality_or_ordering_requirement = true }
+    invariant MapEntriesCharactersAndFifoPreserved { this.map_entries_string_characters_and_queue_fifo_preserved = true }
+    invariant MapSetMembershipDependsOnUnorderedTraversal { this.map_set_membership_and_order_depend_on_unordered_traversal = true }
+    invariant AdapterSourceConsumerAdmission { this.source_consumers_admit_adapter_without_changing_old_types = true }
+    invariant FinitePreflightUsesExistingSemantics { this.finite_preflight_retains_exact_count_or_insertion_semantics = true }
+    invariant LogicalEqualityUsesSequentialElementRules { this.logical_equality_uses_existing_sequential_element_rules = true }
+    invariant ParameterEqualityAndKeyElementAdmissionUnavailable { this.parameter_equality_and_map_key_set_element_admission_unavailable = true }
+    invariant TailApisAndDependentCycleTailsRejected { this.tail_apis_and_dependent_cycle_tails_rejected = true }
+    invariant FirstApiRejectsProducer { this.first_api_rejects_producer = true }
+    invariant TargetedOperationDiagnostics { this.invalid_calls_have_targeted_operation_diagnostic = true }
+    invariant ConstexprNoexceptNoHeapNoRttiNonmutating { this.constexpr_noexcept_no_heap_no_rtti_nonmutating = true }
+}
+
+actor TakeWhileOperator { identified_by: TakeWhile }

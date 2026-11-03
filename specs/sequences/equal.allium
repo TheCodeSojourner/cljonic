@@ -1,5 +1,10 @@
 -- allium: 3
 
+-- REQ-FN-041 extends the sequential observation family to TakeWhile and
+-- DropWhile, without admitting their stored callable parameters to parameter
+-- equality or Map-key/Set-element storage. Exact count may run independently
+-- before element comparison; existing authorized source effects remain shared.
+
 -- General value equality free function (Clojure `=` equivalent, REQ-FN-002G).
 -- Concretizes REQ-FN-002E over the supported stable-equality domain. The ten
 -- cljonic collection/producer categories follow the equality matrix; scalar

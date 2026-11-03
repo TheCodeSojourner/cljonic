@@ -1,4 +1,7 @@
 -- allium: 3
+-- REQ-FN-041 extends producer input admission to TakeWhile and DropWhile.
+-- Their finite counts are exact but computing them is an independent traversal;
+-- count and materialization may repeat callbacks and do not share a cache.
 -- REQ-SEQ-010: seq converts a supported collection or supported producer into an
 -- owning, value-semantic, independently valid bounded Vector of its logical
 -- traversal elements in traversal order.

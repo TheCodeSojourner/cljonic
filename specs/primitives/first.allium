@@ -1,5 +1,9 @@
 -- allium: 3
 
+-- REQ-FN-041 preserves first's collection-or-MapEntry domain.
+-- All producers are rejected with a targeted diagnostic; materialize a
+-- producer into a supported collection before using first.
+
 entity First {
     supports_first_free_function: Boolean
     returns_first_logical_element: Boolean

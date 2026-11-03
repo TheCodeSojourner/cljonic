@@ -1,5 +1,9 @@
 -- allium: 3
 
+-- REQ-FN-041 includes TakeWhile and DropWhile and retains count(value) == 0.
+-- Their exact count may traverse and invoke predicate/source callbacks; this
+-- is not a callback-free emptiness promise for these adapters.
+
 entity IsEmpty {
     supports_is_empty_free_function: Boolean
     is_empty_derived_from_zero_count: Boolean
