@@ -166,4 +166,61 @@ constexpr auto filter([[maybe_unused]] const F& predicate, [[maybe_unused]] cons
                   "implicit conversion; standard-library ranges and containers are not supported.");
 }
 
+/** \anchor FiltervFunction
+ * The \b filterv free function is an alias for \ref FilterFunction "filter". It accepts the same predicate and cljonic
+ * source, has the same admission rules, and returns exactly the same bounded owning \ref Vector "Vector" type and
+ * logical values.
+ *
+~~~~~{.cpp}
+#include <concepts>
+
+#include "cljonic.hpp"
+using namespace cljonic;
+
+int main() {
+  constexpr auto is_even = [](int value) noexcept { return value % 2 == 0; };
+  constexpr auto values = vector(1, 2, 3, 4);
+  constexpr auto filtered = filterv(is_even, values);
+  static_assert(equal(filtered, filter(is_even, values)));
+
+  const auto base = 1;
+  const auto runtime_values = vector(base, base + 1, base + 2, base + 3);
+  const auto alias_result = filterv(is_even, runtime_values);
+  const auto filter_result = filter(is_even, runtime_values);
+  return equal(alias_result, filter_result) &&
+                 equal(runtime_values,
+                       vector(base, base + 1, base + 2, base + 3))
+             ? 0
+             : 1;
+}
+~~~~~
+ */
+template <typename F, typename Source>
+    requires concepts_detail::FilterCallable<F, Source>
+[[nodiscard]] constexpr auto filterv(const F& predicate, const Source& source) noexcept
+    -> Vector<std::ranges::range_value_t<const Source>, concepts_detail::FilterResultCapacity<Source>> {
+    return filter(predicate, source);
+}
+
+template <typename F, typename... Sources>
+    requires(sizeof...(Sources) != 1)
+constexpr auto filterv([[maybe_unused]] const F& predicate, [[maybe_unused]] const Sources&... sources) noexcept
+    -> void {
+    static_assert(concepts_detail::dependent_false<F, Sources...>,
+                  "cljonic::filterv: expected a copy-constructible predicate and exactly one cljonic "
+                  "source. The source must be a Vector, Map, Set, Queue, or String collection, or a Range, Repeat, "
+                  "Cycle, Iterate, or Repeatedly producer.");
+}
+
+template <typename F, typename Source>
+    requires(!concepts_detail::FilterCallable<F, Source>)
+constexpr auto filterv([[maybe_unused]] const F& predicate, [[maybe_unused]] const Source& source) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<F, Source>,
+                  "cljonic::filterv: expected a copy-constructible predicate and one cljonic source. "
+                  "The source must be a Vector, Map, Set, Queue, or String collection, or a Range, Repeat, Cycle, "
+                  "Iterate, or Repeatedly producer. The predicate must be non-throwing on a const source element "
+                  "and return exactly bool. An inspectable parameter must accept the source element through a safe "
+                  "implicit conversion; standard-library ranges and containers are not supported.");
+}
+
 } // namespace cljonic
