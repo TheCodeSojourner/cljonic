@@ -1,5 +1,39 @@
 ## Current Session State
 
+- last_session_id: cab5f489-f975-4e17-ad99-12c735f791f3
+- current_timestamp: 2026-11-03T12:11:46-07:00
+- session_complete: true
+- recover: Select another remaining REQ-SEQ-022 operation only on human direction; take and drop are complete. Drop is implemented and verified under REQ-FN-038. Tests/probes/diagnostics, product contracts/implementation, the agenda, and rendered docs are committed (00e4afc9, 2eee138f, 14e72978, 8f00031c). Fini commits the remaining Mementum state only.
+- Task:
+  1. Encoded REQ-FN-038 and index, Drop vocabulary, S2 drop architecture, and dedicated specs/sequences/drop.allium; removed Drop's contradictory deferred entity/actor.
+  2. Propagated the approved contract to src/cljonic-drop.hpp, umbrella/cheatsheet, exact behavioral tests (replacing the old Drop placeholder), primitive compile-fail registration, runtime no-heap probes, amalgamation, and authoritative obligation snapshot.
+  3. Extracted take's count/source admission and capacity derivation into shared concepts_detail helpers, preserving take behavior. Split drop's result guard from its traversal to satisfy the existing CCN <= 4 gate.
+  4. Updated the agenda and lifecycle wording to mark drop active. Product changes, agenda, and subsequently regenerated rendered docs are now committed.
+  5. `/gybis-fini`: reconciled the handoff with the committed work and finalized session state.
+- Questions:
+  1. No unresolved drop contract or evidence gaps.
+- Decisions:
+  1. Human approved one operation, drop, rather than a speculative multi-operation implementation batch.
+  2. Human approved count-first drop over all cljonic sources with take-style owning Vector capacity independent of runtime count. Nonpositive counts drop nothing; oversized counts return typed empty.
+  3. Dropping consumes the original bounded observation window, not a fresh producer window. Requests covering its count bound skip traversal and callbacks; otherwise skipped and retained values follow existing iterator callback timing.
+  4. The reusable boundary is count/source admission and capacity derivation, not identical traversal: take stops at a requested prefix, while drop visits the original window and retains its suffix. Endpoint checks remain mandatory even when source.count() is nonzero.
+- Validation:
+  1. make requirements-structure vocabulary-structure passed.
+  2. Allium 3.5.3: checks for drop and the narrowed collection-shaping spec passed with no diagnostics/findings; sequence-set analysis passed with no diagnostics/findings.
+  3. Exact drop traces: 32 obligations / 32 traces; authoritative traceability and snapshot sync passed.
+  4. Final focused drop/take CTest: 12/12 passed across modular/single-header builds. The full coverage-suite run passed 318/318 tests, with drop at 100.0% lines and shared concepts/take at 100.0% measured lines.
+  5. Scoped primitive compile-fail checks passed for drop and take (13 admitted / 20 rejected per operation per header variant). Source/symbol no-heap scans and both probe binaries passed.
+  6. All 47 freshly extracted docs examples compiled; drop's example linked with C++23 warnings-as-errors and executed successfully. Scoped clang-tidy for changed headers, drop tests, and its probe passed.
+  7. VALIDATION_JOBS=2 make upsert-gate-fast BUILD_JOBS=2 UPSERT_COVERAGE_FILE=cljonic-drop.hpp passed.
+  8. Custom cap checks: modular drop at cap 0, and modular/single-header at caps 1 and 3 passed compile-time and runtime checks. The umbrella/single-header with global cap 0 is blocked by pre-existing character_is_valid instantiation of String<1>; no unrelated fix made.
+  9. Final lifecycle structure checks, authoritative traceability, drop Allium check, sequence-set analysis, and git diff --check passed after implementation.
+- Next:
+  1. Select additional REQ-SEQ-022 operations only on human direction; take and drop and their product/docs commits are complete.
+  2. No further drop implementation or docs regeneration remains. The final human-owned make git run was not observed in this chat; do not infer additional validation beyond the recorded evidence.
+  3. The pre-existing obsolete Filterv traces in the deferred collection-shaping placeholder tests remain a separate housekeeping item.
+
+## Previous Session State
+
 - last_session_id: 96c08ecd-95d7-47a4-ba7b-36a8fd9eac4b
 - current_timestamp: 2026-11-03T11:34:21-07:00
 - session_complete: true
