@@ -1,0 +1,41 @@
+-- allium: 3
+
+-- Filtering free-function alias (filterv, REQ-FN-036).
+-- FiltervFunction is an exact behavioral alias of FilterFunction: it accepts
+-- the same predicate and cljonic source, returns the same bounded owning
+-- Vector with the same type, capacity, and logical values, and inherits the
+-- same traversal, ordering, empty-source, preservation, and resource contract.
+-- The detailed predicate and source admission rules are specified by
+-- specs/sequences/filter.allium.
+
+entity FiltervFunction {
+    canonical_alias_of_filter: Boolean
+    minimum_arity: Integer
+    maximum_arity: Integer
+    predicate_argument_position: Integer
+    source_argument_position: Integer
+    same_source_and_predicate_admission_as_filter: Boolean
+    same_result_type_capacity_and_logical_values_as_filter: Boolean
+    same_traversal_order_empty_behavior_and_input_preservation_as_filter: Boolean
+    same_constexpr_noexcept_nonallocating_nonmutating_contract_as_filter: Boolean
+    same_rejection_rules_as_filter: Boolean
+    rejected_calls_name_filterv: Boolean
+
+    invariant CanonicalAliasOfFilter { this.canonical_alias_of_filter = true }
+    invariant MinimumArityIsTwo { this.minimum_arity = 2 }
+    invariant MaximumArityIsTwo { this.maximum_arity = 2 }
+    invariant PredicateIsFirstArgument { this.predicate_argument_position = 1 }
+    invariant SourceIsSecondArgument { this.source_argument_position = 2 }
+    invariant SameSourceAndPredicateAdmissionAsFilter { this.same_source_and_predicate_admission_as_filter = true }
+    invariant SameResultTypeCapacityAndLogicalValuesAsFilter { this.same_result_type_capacity_and_logical_values_as_filter = true }
+    invariant SameTraversalOrderEmptyBehaviorAndInputPreservationAsFilter {
+        this.same_traversal_order_empty_behavior_and_input_preservation_as_filter = true
+    }
+    invariant SameConstexprNoexceptNonallocatingNonmutatingContractAsFilter {
+        this.same_constexpr_noexcept_nonallocating_nonmutating_contract_as_filter = true
+    }
+    invariant SameRejectionRulesAsFilter { this.same_rejection_rules_as_filter = true }
+    invariant RejectedCallsNameFilterv { this.rejected_calls_name_filterv = true }
+}
+
+actor FiltervFunctionOperator { identified_by: FiltervFunction }

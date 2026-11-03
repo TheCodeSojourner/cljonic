@@ -348,34 +348,6 @@ entity Mapv {
     invariant InputIsPreserved { this.preserves_input = true }
 }
 
-entity Filterv {
-    minimum_arity: Integer
-    maximum_arity: Integer
-    predicate_argument_position: Integer
-    source_argument_position: Integer
-    predicate_is_pure_and_non_allocating: Boolean
-    returns_bounded_filtered_result: Boolean
-    preserves_source_order: Boolean
-    result_is_bounded_owning_collection: Boolean
-    result_capacity_is_source_capacity_bound: Boolean
-    result_element_type_is_source_element_type: Boolean
-    failure_policy_is_typed: Boolean
-    preserves_input: Boolean
-
-    invariant MinimumArityIsTwo { this.minimum_arity = 2 }
-    invariant MaximumArityIsTwo { this.maximum_arity = 2 }
-    invariant PredicateIsFirstArgument { this.predicate_argument_position = 1 }
-    invariant SourceIsSecondArgument { this.source_argument_position = 2 }
-    invariant PredicateIsPureAndNonAllocating { this.predicate_is_pure_and_non_allocating = true }
-    invariant ReturnsBoundedFilteredResult { this.returns_bounded_filtered_result = true }
-    invariant SourceOrderIsPreserved { this.preserves_source_order = true }
-    invariant ResultIsBoundedOwningCollection { this.result_is_bounded_owning_collection = true }
-    invariant ResultCapacityIsSourceCapacityBound { this.result_capacity_is_source_capacity_bound = true }
-    invariant ResultElementTypeIsSourceElementType { this.result_element_type_is_source_element_type = true }
-    invariant FailurePolicyIsTyped { this.failure_policy_is_typed = true }
-    invariant InputIsPreserved { this.preserves_input = true }
-}
-
 entity Subvec {
     minimum_arity: Integer
     maximum_arity: Integer
@@ -1377,7 +1349,6 @@ actor KeepIndexedOperator { identified_by: KeepIndexed }
 actor RemoveOperator { identified_by: Remove }
 actor ReplaceOperator { identified_by: Replace }
 actor MapvOperator { identified_by: Mapv }
-actor FiltervOperator { identified_by: Filterv }
 actor SubvecOperator { identified_by: Subvec }
 actor FindOperator { identified_by: Find }
 actor ReduceKvOperator { identified_by: ReduceKv }
