@@ -37,12 +37,14 @@ var searchData=
   ['cljonic_2dpeek_2ehpp_34',['cljonic-peek.hpp',['../cljonic-peek_8hpp.html',1,'']]],
   ['cljonic_2dpop_2ehpp_35',['cljonic-pop.hpp',['../cljonic-pop_8hpp.html',1,'']]],
   ['cljonic_2dproducer_2dcycle_2ehpp_36',['cljonic-producer-cycle.hpp',['../cljonic-producer-cycle_8hpp.html',1,'']]],
-  ['cljonic_2dproducer_2diterate_2ehpp_37',['cljonic-producer-iterate.hpp',['../cljonic-producer-iterate_8hpp.html',1,'']]],
-  ['cljonic_2dproducer_2drange_2ehpp_38',['cljonic-producer-range.hpp',['../cljonic-producer-range_8hpp.html',1,'']]],
-  ['cljonic_2dproducer_2drepeat_2ehpp_39',['cljonic-producer-repeat.hpp',['../cljonic-producer-repeat_8hpp.html',1,'']]],
-  ['cljonic_2dproducer_2drepeatedly_2ehpp_40',['cljonic-producer-repeatedly.hpp',['../cljonic-producer-repeatedly_8hpp.html',1,'']]],
-  ['cljonic_2dreduce_2ehpp_41',['cljonic-reduce.hpp',['../cljonic-reduce_8hpp.html',1,'']]],
-  ['cljonic_2drest_2ehpp_42',['cljonic-rest.hpp',['../cljonic-rest_8hpp.html',1,'']]],
-  ['cljonic_2dseq_2ehpp_43',['cljonic-seq.hpp',['../cljonic-seq_8hpp.html',1,'']]],
-  ['cljonic_2dtake_2ehpp_44',['cljonic-take.hpp',['../cljonic-take_8hpp.html',1,'']]]
+  ['cljonic_2dproducer_2ddrop_2dwhile_2ehpp_37',['cljonic-producer-drop-while.hpp',['../cljonic-producer-drop-while_8hpp.html',1,'']]],
+  ['cljonic_2dproducer_2diterate_2ehpp_38',['cljonic-producer-iterate.hpp',['../cljonic-producer-iterate_8hpp.html',1,'']]],
+  ['cljonic_2dproducer_2drange_2ehpp_39',['cljonic-producer-range.hpp',['../cljonic-producer-range_8hpp.html',1,'']]],
+  ['cljonic_2dproducer_2drepeat_2ehpp_40',['cljonic-producer-repeat.hpp',['../cljonic-producer-repeat_8hpp.html',1,'']]],
+  ['cljonic_2dproducer_2drepeatedly_2ehpp_41',['cljonic-producer-repeatedly.hpp',['../cljonic-producer-repeatedly_8hpp.html',1,'']]],
+  ['cljonic_2dproducer_2dtake_2dwhile_2ehpp_42',['cljonic-producer-take-while.hpp',['../cljonic-producer-take-while_8hpp.html',1,'']]],
+  ['cljonic_2dreduce_2ehpp_43',['cljonic-reduce.hpp',['../cljonic-reduce_8hpp.html',1,'']]],
+  ['cljonic_2drest_2ehpp_44',['cljonic-rest.hpp',['../cljonic-rest_8hpp.html',1,'']]],
+  ['cljonic_2dseq_2ehpp_45',['cljonic-seq.hpp',['../cljonic-seq_8hpp.html',1,'']]],
+  ['cljonic_2dtake_2ehpp_46',['cljonic-take.hpp',['../cljonic-take_8hpp.html',1,'']]]
 ];

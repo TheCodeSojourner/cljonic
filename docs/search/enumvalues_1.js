@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['iterate_0',['iterate',['../namespacecljonic_1_1concepts__detail.html#ae7b205beabb5ee36d468e0b1ca49b74ca82ffa73b3288478a77f5d5b1008914d4',1,'cljonic::concepts_detail']]]
+  ['drop_5fwhile_0',['drop_while',['../namespacecljonic_1_1concepts__detail.html#ae7b205beabb5ee36d468e0b1ca49b74ca755893c56b632da513112d3865ee5237',1,'cljonic::concepts_detail']]]
 ];
