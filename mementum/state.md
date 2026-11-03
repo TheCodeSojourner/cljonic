@@ -1,5 +1,32 @@
 ## Current Session State
 
+- last_session_id: 011ce9e4-5b13-4e77-82e8-4da4b659fbd5
+- current_timestamp: 2026-11-03T09:14:11-07:00
+- session_complete: true
+- recover: 1. The `filter` free function is implemented and fully validated across all layers (REQ-FN-035, vocabulary, architecture S2, `specs/sequences/filter.allium`, modular/single-header API, spec tests, compile-fail harness, no-heap probe, cheatsheet, amalgamation, obligation snapshot); the fini step commits `mementum/` only, so all product changes remain uncommitted and require the human's `make git` before human-guided commits.
+  2. Human decisions encoded this session: all cljonic collections/producers admitted, bounded owning Vector with source-bound capacity, exact-`bool` predicate, safe parameter conversions for inspectable callables, generic callables kept, traversal ends at source exhaustion with no separate result-full termination, purity stated as "should be a pure function (no side effects)", and Doxygen examples use plain runtime values rather than `volatile`.
+- Task:
+  1. `/cljonic-api-complete filter` — COMPLETE. `filterv` remains deferred and unchanged.
+- Questions:
+  1. None open.
+- Decisions:
+  1. Human approved all cljonic collections/producers, bounded owning Vector result, fitting-prefix/stop-when-full behavior, exact `bool`, map-style safe parameter rules, caller-obligation predicate purity, and the S2 architecture contract.
+- Validation:
+  1. `make test`: 306/306 tests passed.
+  2. `make upsert-gate-fast`: passed, including requirements/vocabulary structure, lint, complexity, diagnostics, traceability, and both no-heap binaries.
+  3. `make filter-compile-fail`: passed for modular and single-header builds.
+  4. `make docs-examples`: all 44 examples compiled, linked, and ran; filter example included.
+  5. Allium check/analyse and exact trace check: passed (30 obligations/traces); `git diff --check` passed (excluding the human-generated `docs/` HTML).
+  6. `make coverage-cli`: 100.0% project-wide and 100.0% for `cljonic-filter.hpp`. The first run reported 99.9% because the result-full `break` was unreachable: with result capacity equal to the source's observable-count bound, `result.count() == capacity` can only hold once `index == observed_count`, so the loop condition ended first. Fix: removed the dead `break`/`filter_should_stop`; `filter_should_advance` then reduced to `index + 1 < observed_count` and was inlined, so the loop advances only while another observed element remains.
+  7. Human observation 2026-11-03: "stops when the source is exhausted or the result is full" is incoherent because the result cannot be full without the source being exhausted simultaneously. Contract simplified across requirements, vocabulary, architecture, spec, header doc, and tests: capacity equals the source bound so every observed element fits, traversal ends at source exhaustion, and no separate result-full termination exists. Renamed the spec invariant to `TraversalEndsWhenSourceExhausted` (snapshot refreshed).
+  8. Human wording decision 2026-11-03: state purity plainly as "The predicate should be a pure function (i.e., with no side effects)", matching the repo's SHOULD ≡ preferred normative mapping, instead of the "caller obligation that cannot be checked" framing. Applied to the Doxygen prose, requirements, vocabulary, architecture (`preferred(pure_function_with_no_side_effects(predicate))`), and spec comment; spec field renamed `predicate_should_be_pure` / `PredicateShouldBePure` (snapshot refreshed).
+- Next:
+  1. Human-owned final `make git` and product commits (all filter product changes are uncommitted); `mementum/` is committed by fini. Rendered HTML regeneration remains deferred and `docs/` currently predates the sample wording edits.
+  2. Human decision 2026-11-03: Doxygen example programs use plain runtime values, not `volatile` (`volatile` stays scoped to spec tests and no-heap probes, where it defeats constant folding for coverage). The filter sample now uses `const auto base = 1;`.
+  3. Remaining deferred: rendered `docs/` regeneration (human-owned; trailing whitespace inside generated HTML makes a repo-wide `git diff --check` fail, so scope that check with `git diff --check -- . ':(exclude)docs'`).
+
+## Current Session State
+
 - last_session_id: 00a58e8c-70e2-4dc5-80ac-7f93553a78bf
 - current_timestamp: 2026-11-02T15:50:21-07:00
 - session_complete: true
