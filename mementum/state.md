@@ -1,9 +1,9 @@
 ## Current Session State
 
-- last_session_id: e61a280f-19d7-493e-a7cc-d08281192d3d
-- current_timestamp: 2026-11-03T15:08:53-07:00
-- session_complete: true
-- recover: Select further API work only on human direction; take_while/drop_while implementation and documentation are complete and committed. Preserve first's collection-or-MapEntry boundary: no producers are admitted. Product commits include 1fd49f29, e7f0a9ef, e0b92bd7, 1fe12f29, and 716df1df; only the finalized session handoff remains to be committed by /gybis-fini. The committed agenda's uncommitted/publication wording is stale; no product implementation or rendered-doc regeneration remains.
+- last_session_id: 0259f953 (agenda reconciliation session)
+- current_timestamp: 2026-11-03T15:21-07:00
+- session_complete: false
+- recover: Select further API work only on human direction; take_while/drop_while implementation and documentation are complete and committed. Preserve first's collection-or-MapEntry boundary: no producers are admitted. Product commits include 1fd49f29, e7f0a9ef, e0b92bd7, 1fe12f29, and 716df1df; only the finalized session handoff remains to be committed by /gybis-fini. The next-agenda stale wording was reconciled and committed (0259f953); no product implementation or rendered-doc regeneration remains.
 - Task:
   1. Human selected a small paired contract batch and retained explicit implementation approval and verification per operation.
   2. Resolved ownership, predicate admission, boundedness, source domain, boundary timing, count semantics, conditional storage, and consumer/tail scope through structured approval rounds.
@@ -52,7 +52,7 @@
 
 - last_session_id: cab5f489-f975-4e17-ad99-12c735f791f3
 - current_timestamp: 2026-11-03T12:23:25-07:00
-- session_complete: true
+- session_complete: false
 - recover: Select further API work only on human direction; take, drop, and responsive documentation are complete and committed. Responsive styles, README, regenerated docs, and working state are in e7319380; the stale agenda correction is in 99ad86bb. No responsive-doc implementation or regeneration remains. Fini commits only this finalized Mementum handoff.
 - Task:
   1. Encoded REQ-FN-038 and index, Drop vocabulary, S2 drop architecture, and dedicated specs/sequences/drop.allium; removed Drop's contradictory deferred entity/actor.
@@ -91,7 +91,7 @@
 
 - last_session_id: 96c08ecd-95d7-47a4-ba7b-36a8fd9eac4b
 - current_timestamp: 2026-11-03T11:34:21-07:00
-- session_complete: true
+- session_complete: false
 - recover: No take implementation work remains. Select the next remaining REQ-SEQ-022 operation only on human direction. `/cljonic-api-complete take` is COMPLETE under REQ-FN-037; product changes, the refreshed agenda, and generated docs are now committed (17dd678b, 0022d6f1, 1b8a0709). Focused tests, exact traceability, targeted rejections, runtime no-heap probes, source-example compilation/link/execution, and make upsert-gate-fast passed. Fini commits Mementum only.
 - Task:
   1. Updated the agenda baseline and removed obsolete approval/pending-product notes.
@@ -119,7 +119,7 @@
 
 - last_session_id: 153d4491-2472-4b18-bf8d-45f5e3702d4f
 - current_timestamp: 2026-11-03T10:48:47-07:00
-- session_complete: true
+- session_complete: false
 - recover: `filterv` is now a binding alias of `filter` under REQ-FN-036, with identical admission, result type/capacity/values, traversal, ordering, empty behavior, preservation, and resource guarantees; cljonic `filter` already returns an owning Vector.
 - Task:
   1. `/cljonic-api-complete filterv` — COMPLETE. Added the active alias contract/spec, forwarding API and targeted diagnostics, tests/probes, and documentation entry/example. Removed the contradictory deferred Filterv sketch and its obsolete architecture deferral.
@@ -143,7 +143,7 @@
 
 - last_session_id: 011ce9e4-5b13-4e77-82e8-4da4b659fbd5
 - current_timestamp: 2026-11-03T09:14:11-07:00
-- session_complete: true
+- session_complete: false
 - recover: 1. The `filter` free function is implemented and fully validated across all layers (REQ-FN-035, vocabulary, architecture S2, `specs/sequences/filter.allium`, modular/single-header API, spec tests, compile-fail harness, no-heap probe, cheatsheet, amalgamation, obligation snapshot); the fini step commits `mementum/` only, so all product changes remain uncommitted and require the human's `make git` before human-guided commits.
   2. Human decisions encoded this session: all cljonic collections/producers admitted, bounded owning Vector with source-bound capacity, exact-`bool` predicate, safe parameter conversions for inspectable callables, generic callables kept, traversal ends at source exhaustion with no separate result-full termination, purity stated as "should be a pure function (no side effects)", and Doxygen examples use plain runtime values rather than `volatile`.
 - Task:
@@ -170,7 +170,7 @@
 
 - last_session_id: 00a58e8c-70e2-4dc5-80ac-7f93553a78bf
 - current_timestamp: 2026-11-02T15:50:21-07:00
-- session_complete: true
+- session_complete: false
 - recover: 1. The collection/producer header taxonomy and map/reduce operation header renames are complete; the user's `make git` run regenerated the Doxygen HTML, and the coverage-noise fix is committed with the product changes.
   2. The coverage targets now delete stale `.gcda` profiles before configure/build so build-time test discovery does not emit `libgcov` checksum warnings.
 - Task:
@@ -191,7 +191,7 @@
 
 - last_session_id: 2eed547b-7bf5-4c46-bd32-1bf8b4f19c15
 - current_timestamp: 2026-11-02T10:53:16-07:00
-- session_complete: true
+- session_complete: false
 - recover: 1. The reduce feature and generated HTML were committed by the user in the recent `REQ-FN-034` implementation/test/spec/vocabulary/architecture commits and `26b3b1f Update docs`; only this state-file update remains uncommitted. 2. A coworker's coverage run initially reported 99.9% because the no-initial empty-source default return lacked runtime coverage; a runtime assertion fixed it, and isolated `coverage-cli` reached 100.0% without modifying existing `build-coverage/`. 3. Preserve the current Doxygen example's user-defined `Summary` accumulator; a proposal to implement `map` using `reduce` was reviewed and declined because it would be implementation-oriented and demonstrate only unary mapping.
 
 Task:
@@ -214,7 +214,7 @@ Next:
 
 - last_session_id: c2284362-2ae1-4c30-82cb-94c0ba4846f6
 - current_timestamp: 2026-11-01T14:18:20-07:00
-- session_complete: true
+- session_complete: false
 - recover: 1. One product change is uncommitted and user-owned: the `Governed REQs` footer in `requirements/requirements-module-2.md` now also declares `REQ-CAP-012A` and `REQ-CAP-014` (both clauses present; the footer was mechanically stale). Commit it via the normal human commit flow (`make git`). 2. Three `requirements/` clauses (`REQ-CAP-014`, `REQ-NUM-018`, `REQ-NUM-019`) still carry `rationale_source: AI_inferred` without `rationale_approved_by: human`; only `/gybis-req-tend` can regularize that. 3. Thru-family work remains deferred by human instruction. 4. Architecture convention: embedded code snippets in `architecture.md` must mirror the shipped concept definitions.
 
 Task:
@@ -243,7 +243,7 @@ Next:
 
 - last_session_id: cd2557ba-31f0-4f16-b376-a4958740a6b7
 - current_timestamp: 2026-10-31T16:27:18-06:00
-- session_complete: true
+- session_complete: false
 - recover: 1. The human must re-run `make git`; it previously aborted at `map-compile-fail` because that harness ended with `raise SystemExit(main)` (missing call), so it printed a function repr and exited 1. Fixed and re-verified through the gate path; the product changes from this session are still uncommitted. 2. Three `requirements/` clauses (`REQ-CAP-014`, `REQ-NUM-018`, `REQ-NUM-019`) still carry `rationale_source: AI_inferred` without `rationale_approved_by: human`; only `/gybis-req-tend` can regularize that. 3. Thru-family work remains deferred by human instruction. 4. Architecture convention: embedded code snippets in `architecture.md` must mirror the shipped concept definitions.
 
 Task:
@@ -288,7 +288,7 @@ Carry-forward (unaddressed, remember for later):
 
 - last_session_id: 7c617293-129a-4244-99fa-9a7b1ece3333
 - current_timestamp: 2026-10-31T14:42:51-06:00
-- session_complete: true
+- session_complete: false
 - recover: 1. Run `/cljonic-full-converge-auto` again only after new artifact changes; this session's full-repository convergence run left no unresolved divergences in its scope. 2. Three `requirements/` clauses (`REQ-CAP-014`, `REQ-NUM-018`, `REQ-NUM-019`) still carry `rationale_source: AI_inferred` without an explicit `rationale_approved_by: human` marker; resolving that needs human approval via `/gybis-req-tend` (a maintenance-run cannot grant it). 3. Thru-family work remains deferred by human instruction until the human says otherwise. 4. Architecture convention: embedded code snippets in architecture.md must mirror the shipped concept definitions (a drift there was the only arch-weed finding this session).
 
 Task:
@@ -315,7 +315,7 @@ Next:
 
 - last_session_id: 01180c83-75cc-478f-8530-6fa2a2cc2fee
 - current_timestamp: 2026-10-31T14:21:41-06:00
-- session_complete: true
+- session_complete: false
 - recover: 1. Read `mementum/knowledge/value-equality-domain.md` before touching equality: it now records the detectability policy, the aggregate boundary, and the nominal walker-coverage gate. 2. All thru-family work is deferred by human instruction (2026-10-31) until the human says otherwise; `clojure-thread-family-for-cpp.md` is tracked and remains the handoff artifact. 3. Every library-owned composite must declare `concepts_detail::walker_coverage<Self>` in its own header; forgetting it is a rejection at first equality use, not silence. 4. Nothing is uncommitted at session close except this state file.
 
 Task:
@@ -362,7 +362,7 @@ Next:
 
 - last_session_id: 40e6de98-b462-43cb-a792-52be2c3e5039
 - current_timestamp: 2026-10-30T18:19:07-06:00
-- session_complete: true
+- session_complete: false
 - recover: 1. Start the thru-family durable-artifact cycle from `clojure-thread-family-for-cpp.md`: settle the scope decision (does the family belong in cljonic?) first, then elicit `cond_thru` predicate/endomorphism, `as_thru` alias-or-distinct, `some_thru` first-slice inclusion, and the minimum C++ standard. `cljonic::Maybe` must be specified before `some_thru`.
 
 Task:
@@ -400,7 +400,7 @@ Next:
 
 - last_session_id: 0463c359-9c49-4a7a-a61e-134d04d0a756
 - current_timestamp: 2026-10-30T16:32:13-06:00
-- session_complete: true
+- session_complete: false
 - recover: 1. Human owns `make git` (now quiet by default; `GIT_QUIET=0 make git` for verbose output) and the final commits; the seq worktree changes are uncommitted. Do not rerun full/strict gates without direction.
 
 Task:
@@ -437,7 +437,7 @@ Next:
 
 - last_session_id: 1b274643-e426-4f20-bd67-145c302eedcd
 - current_timestamp: 2026-10-29T16:10:24-06:00
-- session_complete: true
+- session_complete: false
 - recover: 1
 
 Task:
@@ -467,7 +467,7 @@ Next:
 
 - last_session_id: 4ad782c9-c0e9-4df8-b967-a4643082eee8
 - current_timestamp: 2026-10-28T15:44:15-06:00
-- session_complete: true
+- session_complete: false
 - recover: Await human direction on the next API slice; rest now exactly forwards to next for all next-supported inputs.
 
 Task:
@@ -497,7 +497,7 @@ Next:
 
 - last_session_id: 48de26f6-b107-48a1-97f3-d92ad7fccb6b
 - current_timestamp: 2026-10-28T12:36:00-06:00
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Advanced `next(Range)` through the approved requirements, vocabulary, architecture, and Allium specification layers. The exact semantics approved: zero-step Range remains unbounded and unchanged with its observation cap; empty nonzero-step Range remains unchanged; singleton nonzero-step Range becomes empty at its exclusive endpoint without computing `start + step`; multi-element nonzero-step Range advances start by one step, retaining endpoint and step.
@@ -525,7 +525,7 @@ Next:
 
 - last_session_id: 48de26f6-b107-48a1-97f3-d92ad7fccb6b
 - current_timestamp: 2026-10-28T11:58:00-06:00
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Completed the approved Repeat slice of Phase B for `next`: `next(Repeat)` returns the same owning `Repeat<T>`, finite counts decrement with saturation at zero, and unbounded Repeat stays unbounded with its observation cap unchanged. The tail construction does not materialize results or invoke callbacks.
@@ -559,7 +559,7 @@ Next:
 
 - last_session_id: 73bae1ac-555b-4c43-b171-4f8f6318f19b
 - current_timestamp: 2026-10-28T11:30:00-06:00
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Phase A of the `next`/`rest` redesign: for Vector, Map, Set, Queue, and String, `next(c)` and `rest(c)` now return the same collection kind with capacity `C::capacity() == 0 ? 0 : C::capacity() - 1` (an empty or singleton input returns an empty value of the result type). The change is propagated through requirements (REQ-FN-002A2, REQ-SEQ-002B, REQ-SEQ-009), vocabulary, architecture (`gybis-arch-check` PASS), Allium specs (renamed invariants), tests, no-heap probes, source, Doxygen, traceability snapshot, and generated `cljonic.hpp`. The user committed the work (5d0fa15, 89a66b5, 1ddc22b).
@@ -587,7 +587,7 @@ Next:
 
 - last_session_id: dfed050a-8880-482f-b296-9a5bc60f9b3e
 - current_timestamp: 2026-10-28T07:58:47-06:00
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Continued the targeted `/cljonic-api-converge has_next` workflow and completed evidence reconciliation for the API.
@@ -623,7 +623,7 @@ Next:
 
 - last_session_id: 12dee854-9b78-4c34-bdec-971763c328db
 - current_timestamp: 2026-10-27T15:46:40-06:00
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Human invoked `/cljonic-api-complete rest`, followed by targeted `/cljonic-api-converge rest`. Promoted `rest` as a public collection-only operation; `seq` and the broader shaping family remain deferred.
@@ -655,7 +655,7 @@ Next:
 - last_session_id: a42b610a-d30f-4eaa-bbb2-17b306ed0b1f
 - current_timestamp: 2026-10-27T13:19:38-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Invoked `/gybis-fini` after investigating the naming policy uncertainty for `REQ-COLL-020AA`, `REQ-FN-002A1`, and `REQ-FN-002A2`.
@@ -687,7 +687,7 @@ Next:
 - last_session_id: 58b80c63-7c29-4977-8df2-376f47d4ff53
 - current_timestamp: 2026-10-27T12:55:40-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Human invoked `/gybis-init`, then `/cljonic-full-converge-auto`. Layer checks and most adjacent comparisons had been performed in the previous context; architecture-only propagation added identity-preserving references for producer-step concepts, checked normalization, and predicate prefixes.
@@ -727,7 +727,7 @@ Next:
 - last_session_id: 97fd521c-75dd-4640-94e5-b4f66d77fe3b
 - current_timestamp: 2026-10-27T11:12:25-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Human invoked `/cljonic-api-complete repeatedly` to allow a non-const callback and clarified the desired traversal semantics: each traversal copies the producer's stored callback; value-held mutable state restarts from that stored copy, while reference-captured or static state remains shared. Construction does not invoke the callback.
@@ -761,7 +761,7 @@ Next:
 - last_session_id: 5cc51d07-6d47-4491-9f4c-1f00b3e5bc62
 - current_timestamp: 2026-10-26T16:25:00-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Human invoked `/gybis-init`; oriented on mementum/state.md (api-complete verification session, committed as `a3b5fb5`). Working tree was clean; open question inherited: human direction on the deferred rest/seq promotion.
@@ -796,7 +796,7 @@ Next:
 - last_session_id: 04539134-ae9c-4caa-a929-6e76c8e838c6
 - current_timestamp: 2026-10-23T19:06:00-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Human invoked `/gybis-init`; oriented on mementum/state.md (string/029B-029C retirement session, committed as `baa69e1`). Working tree was clean; no open questions inherited.
@@ -830,7 +830,7 @@ Next:
 - last_session_id: 33d1407c-4901-473f-b274-127de449b3ee
 - current_timestamp: 2026-10-23T16:33:00-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Human invoked `/gybis-init`; oriented on mementum/state.md (string-factory session, committed as `111d3f5`).
@@ -871,7 +871,7 @@ Next:
 - last_session_id: 667d4a3f-d70e-4032-939d-b575436dc259- last_session_id: ccf16ca0-dd5c-4f58-8e6b-6d0da841152e
 - current_timestamp: 2026-10-23T14:12:00-06:00
 - recover: 0
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Human invoked `/cljonic-api-complete queue` to promote the deferred `queue` factory (REQ-FN-029B naming) to the active API.
@@ -913,7 +913,7 @@ Next:
 - last_session_id: 667d4a3f-d70e-4032-939d-b575436dc259
 - current_timestamp: 2026-10-23T15:53:00-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Human invoked `/cljonic-api-complete string`, the last deferred factory. Approved contract (REQ-FN-029H): `string("Hi")` deduces capacity from the literal content length → `String<2>`; `string<Capacity>("Hi")` → `String<Capacity>` with compile-time rejection when content exceeds capacity; `string<Capacity>()` → empty, including zero; untyped `string()` rejected; `string<Capacity>(string_view_or_char_range)` imports text sources under the existing String source-construction contracts; no variadic individual-character form.
@@ -965,7 +965,7 @@ Next:
 - last_session_id: 55edf2eb-b05c-43fd-83f2-350edf3b91e8
 - current_timestamp: 2026-10-23T12:48:59-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Human invoked `/cljonic-api-complete hash_set`; approved the `REQ-FN-029F` contract (deduced `hash_set(e, ...)`, `hash_set<T>(...)`, `hash_set<T, Capacity>(...)` incl. empty/zero capacity; runtime dedup with deduced capacity equal to argument count; constant-evaluated duplicates rejected by the inherited Set rule; no separate factory diagnostic for duplicates).
@@ -1011,7 +1011,7 @@ Next:
 - last_session_id: 02abaed6-ec8d-4b5d-a6f6-f6b07bfa25f3
 - current_timestamp: 2026-10-23T11:41:00-06:00
 - recover: 0
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Human asked for the `cljonic-map-entry.hpp` Doxygen example to lead with the idiomatic `map_entry` factory instead of `MapEntry{...}` brace construction, then extended the directive to all `src/*` Doxygen examples and descriptions.
@@ -1089,7 +1089,7 @@ Next:
 - last_session_id: 11d7dee5-51d1-4deb-adf8-ce2724a8ca39
 - current_timestamp: 2026-10-22T15:06:44-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Human approved removing materialization/`into`/`fits_into` advice from collection and producer Doxygen descriptions and collection source-construction diagnostic messages, starting at requirements and propagating through vocabulary, architecture, specifications, tests, and code.
@@ -1126,7 +1126,7 @@ Next:
 - last_session_id: 6759219f-01a1-4c72-9656-99d80ed38c5a
 - current_timestamp: 2026-10-22T13:45:24-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Completed targeted Doxygen prose improvements for Map and Vector in their owning headers. Reorganized descriptions by topic, preserving constructor and factory semantics. Fixed Doxygen's false symbol warning in `HashMapFactoryPairArguments` by moving the tuple expression into a consteval helper; the concept's behavior is unchanged.
@@ -1164,7 +1164,7 @@ Next:
 - last_session_id: 34e9a55d-aba9-4c23-98b5-c15a95e261ea
 - current_timestamp: 2026-10-22T09:31:07-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Discussed extending `next` to producers, then postponed that work. Human requested `next-producers.md` as a restart prompt. It records producer-owned next/tail implementation as the recommended direction, Repeat as the first slice, and unresolved observation-cap and callback-timing policies; none are approved producer-tail requirements.
@@ -1206,7 +1206,7 @@ Next:
 - last_session_id: dd30114d-ca34-4e0e-bc85-c0802f4e0775
 - current_timestamp: 2026-10-21T15:48:18-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Completed `/cljonic-api-complete next` and the targeted `/cljonic-api-converge next` for `src/cljonic-next.hpp`. `next` returns an owning bounded Vector containing every element after the first in the input's logical traversal order, with capacity equal to the source. It supports Vector, Map, Set, Queue, and String; preserves the input; leaves Map/Set order semantically unspecified; and preserves Queue FIFO order.
@@ -1238,7 +1238,7 @@ Next:
 - last_session_id: 043c5198-6f1a-467f-b094-6e4e1a23cbac
 - current_timestamp: 2026-10-21T13:01:55-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Human requested idiomatic CTAD construction for the Peek Queue example, then explicitly requested a careful review of all Doxygen example programs for CTAD and auto usage.
@@ -1271,7 +1271,7 @@ Next:
 - last_session_id: 68649dc3-151f-46c7-a46e-56793bc7618a
 - current_timestamp: 2026-10-21T12:43:57-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Completed `/cljonic-api-converge peek` after the earlier API work added `Vector::peek()` and `Vector::pop()` while retaining the free functions. The final contract covers Vector-last and Queue-front peek, defaults on empty inputs, and immutable Vector stack behavior. Requirements, vocabulary, architecture, specs, tests, probes, implementation, diagnostics, and source documentation were reconciled with no unresolved target divergence.
@@ -1300,7 +1300,7 @@ Next:
 - last_session_id: 2cdd299e-adfe-4b44-830c-3b82bde24159
 - current_timestamp: 2026-10-21T10:33:10-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Executed explicit `/cljonic-api-complete not_equal` and targeted `/cljonic-api-converge not_equal` for src/cljonic-not-equal.hpp using the supplied workflow contexts.
@@ -1344,7 +1344,7 @@ Next:
 - last_session_id: 04ad004a-565b-41a9-afad-8ebcedb1520c
 - current_timestamp: 2026-10-20T15:58:52-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Explicitly invoked `/cljonic-api-complete not_empty free function api`: completed promotion using the supplied skill context because the skill-loader registry does not expose this local skill.
@@ -1391,7 +1391,7 @@ Next:
 - last_session_id: 7092586c-04c1-4ba8-b404-da7429024ad2
 - current_timestamp: 2026-10-20T15:24:27-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 0. Latest explicit request: `/cljonic-full-converge-auto`. Bounded whole-repository pass completed with status BLOCKED, not converged: safe repairs and final fast integration passed, but exhaustive assertion-level API evidence reconciliation and required CMake test execution remain unavailable/incomplete.
@@ -1449,7 +1449,7 @@ Next:
 - last_session_id: 2e5ab232-5209-4661-9bec-e787171a3c09
 - current_timestamp: 2026-10-20T14:03:12-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Hardened the API completion and convergence skills after repeated omissions of actual no-heap probe upserts and contract-consistent Doxygen example programs during `get` and `into` work.
@@ -1497,7 +1497,7 @@ Next:
 - last_session_id: 60b5320b-738a-46d6-8662-71da33cc7a70
 - current_timestamp: 2026-10-20T13:34:54-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Completed the `into` free-function diagnostic fallback and converged requirements, vocabulary, architecture, materialization spec, tests, implementation, amalgamation, and Doxygen.
@@ -1548,7 +1548,7 @@ Next:
 - last_session_id: 95183a5c-30cd-4d0e-bc2a-f75f090364cf
 - current_timestamp: 2026-10-20T11:41:49-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Completed and converged the `get` free-function API: concept-based admission, targeted rejection diagnostics, requirements/spec/test/architecture alignment, updated diagnostic coverage, amalgamated header, and Doxygen. The user clarified the S1 wording to say the current free-function API is concept-constrained and there is no distinct future category.
@@ -1594,7 +1594,7 @@ Next:
 - last_session_id: 5c7aa993-8ade-441e-83e1-9201d89193be
 - current_timestamp: 2026-10-19T14:27:17-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Initialized gybis context, then completed `fits_into`: rejection-diagnostic fallback, compile-fail coverage, registry reclassification, lifecycle repair, user-facing Doxygen prose, and a complete runnable example; regenerated `cljonic.hpp`, `docs/`, and validated modular plus single-header builds.
@@ -1641,7 +1641,7 @@ Next:
 - last_session_id: 2e788022-e104-4a77-85f9-3fc41f17b4ec
 - current_timestamp: 2026-10-19T13:26:27-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Initialized gybis context, then completed the `first` free-function API end to end: binding `REQ-FN-002A1`, active `specs/primitives/first.allium`, all five collections plus `MapEntry`, targeted rejection diagnostic, traced tests (20 obligations), no-heap probe, registries, requirements/vocabulary/architecture updates, `cljonic.hpp`, docs, and traceability snapshot.
@@ -1685,7 +1685,7 @@ Next:
 - last_session_id: 1679bdce-23ff-4dc7-a7f5-5d0d291ed7d6
 - current_timestamp: 2026-10-19T11:22:00-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Initialized gybis, then ran two full repository sweeps (four layer checks plus four adjacent-layer weed passes) and repaired the divergences they surfaced: canonicalized `cljonic_collection`/`cljonic_producer` to `CljonicCollection`/`CljonicProducer`, canonicalized `keyword_enum_mapping`/`state_reference` to `KeywordEnumNameMapping`/`Atom`, completed `future_expansion` with the approved-but-inactive domains, recorded human approval for `REQ-DIAG-012`'s AI-inferred rationale, and declared the topical numbering convention in the requirements index.
@@ -1724,7 +1724,7 @@ Next:
 - last_session_id: 7f60904a-77f3-4e7d-878d-a36a58c1bcdd
 - current_timestamp: 2026-10-17T13:49:16-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Arranged the `\mainpage` Core_Cheatsheet free-function index so each bullet holds one initial letter: split the `a`/`c` mixed first bullet of Sequence traversal, split Control (`d`/`i`/`u`/`w`), and merged the duplicate `i` bullets in Sequence traversal.
@@ -1763,7 +1763,7 @@ Next:
 - last_session_id: 4453d16a-1f48-4d20-b648-30a7d6951ac1
 - current_timestamp: 2026-10-17T12:35:00-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Clarified the collection/producer Doxygen prose across five collections and six producers. The constructor argument is now called a "constructor parameter", paired with "constructor source"; materialization points only at `into` (the `fits_into` preflight moved to `into`'s own page); "Updates return a modified copy..." and "bounded" (for `Range`) were removed.
@@ -1802,7 +1802,7 @@ Next:
 - last_session_id: 0a300781-343e-48ec-b0b4-afcac104d6a2
 - current_timestamp: 2026-10-16T12:23:00-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Removed the redundant public `parameters_equal` producer-comparison free function across every durability layer, in order: REQ-FN-014B (requirements), `ProducerParameterEquality` + the `equal` examples (vocabulary), `S2_producer_parameter_equality` (architecture), the producer specifications (deleted `specs/producers/parameters-equal.allium`; dropped `provides_named_parameters_equal_operation` from range/repeat/cycle/materialization), tests (deleted the dedicated spec test and no-heap probe; converted call sites to `operator==`; migrated three orphaned `ProducerParameterEquality` obligations into the concepts and range tests), and code (removed the three `src/` overloads plus the cheatsheet API-index entry).
@@ -1838,7 +1838,7 @@ Next:
 - last_session_id: 22001e9d-5b1c-43ec-91d7-4269932bedb5
 - current_timestamp: 2026-10-16T08:03:17-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Landed repository-wide diagnostic message labels (`REQ-DIAG-011`) and relabelled the 24 collection messages that the rule exposed.
@@ -1874,7 +1874,7 @@ Next:
 - last_session_id: 107959fa-e31e-417e-9e8e-341c7e6c0b7e
 - current_timestamp: 2026-10-15T15:57:15-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Fixed misleading links in the generated `\mainpage` cheatsheet: the `Set Functions` and `String Functions` headings linked `Set` and `String` to the `cljonic::Set` and `cljonic::String` collection classes, although those sections list the planned `clojure.set` and `clojure.string` library functions.
@@ -1904,7 +1904,7 @@ Next:
 - last_session_id: dd3dbede-e31b-4c78-b743-952b104a5c1d
 - current_timestamp: 2026-10-15T15:46:18-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Completed scope-limited integrity reviews and reconciliation of requirements/vocabulary, vocabulary/architecture, and architecture/specifications, preserving individually approved decisions and lifecycle distinctions.
@@ -1944,7 +1944,7 @@ Next:
 - last_session_id: dd3dbede-e31b-4c78-b743-952b104a5c1d
 - current_timestamp: 2026-10-15T12:44:52-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Implemented the approved repository-wide safe implicit conversion policy through requirements, vocabulary, architecture, Allium specs, tests, implementation, and documentation, in that required order.
@@ -1978,7 +1978,7 @@ Next:
 - last_session_id: 7f1b1c1b-eeba-4520-b1b1-e9781ed361db
 - current_timestamp: 2026-10-15T11:41:05-06:00
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Excluded `bool` and all character types from Vector/String index admission, propagating the rule through architecture, requirements, Allium specs, member APIs, free-function wrappers, diagnostics, tests, and the generated single header.
@@ -2005,7 +2005,7 @@ Next:
 - last_session_id: 29f0fdd8-b7af-4a13-83ac-c0763aaf12f5
 - current_timestamp: 2026-10-12
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Added valid-character range guidance to `character_is_valid` rejection diagnostics; verified compile-fail checks and 196 tests. The commit was undone at the user's request, leaving the diagnostic edits and regenerated header staged; an unrelated Doxygen reflow in `src/cljonic-assoc.hpp` is also staged.
@@ -2031,7 +2031,7 @@ Next:
 - last_session_id: 21ccfdf6-dad9-4252-ac6f-f4314a68b031
 - current_timestamp: 2026-10-10
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Removed the redundant overload-specific `CharacterIsValidCString` Doxygen block and moved its one-character C-string example (`character_is_valid("x")`) into the existing `CharacterIsValid` example.
@@ -2054,7 +2054,7 @@ Next:
 - last_session_id: 32ed0885-6e86-488d-9f66-9a31aae0e465
 - current_timestamp: 2026-10-10
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Added a one-character C-string form of the `character_is_valid` free function: `template <std::size_t N> character_is_valid(const char (&)[N])` accepts a `char` array of static extent two (e.g. `"x"`), returns true only when the second byte is the null terminator and the single character is a valid String character, and rejects any other static extent (`""`, `"AB"`) with a targeted `static_assert`. A dedicated `concepts_detail::CharacterStringInput` concept excludes `char` arrays from the rejection fallback; the fallback message now reads "integer character code or a one-character c-string".
@@ -2080,7 +2080,7 @@ Next:
 - last_session_id: 2024cf06-e8ec-49d3-88a4-ef6e33a44119
 - current_timestamp: 2026-10-10
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Added zero-value and cumulative variadic free-function preflights: `can_conj(collection)` returns true; multi-value `can_conj` and multi-pair `can_assoc` evaluate left-to-right against the state produced by prior successful additions/associations. Each returns false if any cumulative step fails, without changing its source.
@@ -2106,7 +2106,7 @@ Next:
 - last_session_id: 47bb79f0-803a-4d17-889c-7285ad272274
 - current_timestamp: 2026-10-10
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. `conj` arity expansion — COMPLETE, uncommitted: Clojure's zero-value and variadic arities were added alongside the existing one-value form. `conj(collection)` returns an unchanged copy (mirroring the `disj` zero-value contract); `conj(collection, value₁, value₂, …)` folds two or more values left to right (mirroring the `assoc` variadic precedent), each value admitted under the same collection-specific domain, with a value that cannot be added at full capacity a per-value no-op that does not stop the remaining values. The one-value arity is unchanged. Updated `REQ-FN-002Y` (plus a cross-reference in `REQ-FN-002T`), architecture `S2_conj_contract`, `specs/primitives/conj.allium` (8 new invariants), `tests/cljonic-conj-spec-tests.cpp`, `src/cljonic-conj.hpp` (two overloads plus three diagnostic fallbacks), the conj compile-fail harness, vocabulary, the traceability snapshot, and `docs/`.
@@ -2132,7 +2132,7 @@ Next:
 - last_session_id: 4e9fa21d-7e6f-436c-851f-33ddaa4fa887
 - current_timestamp: 2026-10-09
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. `can_assoc` 3-argument migration — COMPLETE, uncommitted: per the human-approved proposal, `can_assoc` now exists only as `(collection, key, value)` — no unary form remains. Requirements (`REQ-COLL-020L`, `REQ-COLL-020P`, `REQ-COLL-020R`, `REQ-FN-002W`, `REQ-CAP-004`), architecture S2 + concept snippet, Allium specs (`can-assoc`, `map`, `vector`, `string`, `concepts`), the `AssociativeCollection` concept, the three collection members, the free function (now with separate key/value diagnostic fallbacks), `into`, tests (incl. concepts-spec mocks, map spec tests, no-heap probe), the compile-fail harness, vocabulary, and docs were all updated.
@@ -2161,7 +2161,7 @@ Next:
 - last_session_id: 490cd960-459c-403e-8f85-8cda06ac078d
 - current_timestamp: 2026-10-09
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Doxygen documentation attachment defect — COMPLETE: moved the documentation blocks in `cljonic-can-conj.hpp`, `cljonic-conj.hpp`, `cljonic-contains.hpp`, `cljonic-disj.hpp`, and `cljonic-dissoc.hpp` from before `namespace concepts_detail` to immediately before each public function declaration. Non-comment code is unchanged.
@@ -2190,7 +2190,7 @@ Next:
 - last_session_id: 342393f9-f748-44fd-9c38-89b0caa7f380
 - current_timestamp: 2026-10-08
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. `/cljonic-api-converge dissoc` — COMPLETE: converged `dissoc` to Clojure-style zero, one, and multiple key arities. Zero keys return an unchanged copy; keys remove left-to-right, with absent/repeated keys as no-ops. Key conversion follows `Map::dissoc` behavior. Updated requirements, vocabulary, architecture, Allium, implementation, tests, diagnostics, traceability snapshot, generated header, and Doxygen pages.
@@ -2219,7 +2219,7 @@ Next:
 - last_session_id: 2a875c04-6cbd-44c8-959a-39f564cf0a67
 - current_timestamp: 2026-10-07
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. `contains` API slice — COMPLETE: public free function supports only Map/Set/Vector/String; Map/Set require exact declared `lookup_type`, Vector/String accept integral indexes, and Range remains member-only. Added named admission predicates and targeted rejection fallbacks; updated requirements, architecture, Allium specs, tests, no-heap probes, diagnostics harness, vocabulary, generated single header, and Doxygen.
@@ -2259,7 +2259,7 @@ Next:
 - last_session_id: 3c954978-ca21-404b-883a-f448a326ca07
 - current_timestamp: 2026-10-07
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. `/gybis-req-weed` scoped to requirements/vocabulary — COMPLETE for the agreed terms: added `Conjable` capability semantics/participation and `Indexed` constant-time wording; aligned `REQ-COLL-020B`, `REQ-CAP-007`, and lifecycle/traceability clauses. User confirmed `Range` is a producer and is not indexable; its `contains` only reports bounded-observation availability.
@@ -2297,7 +2297,7 @@ Next:
 - last_session_id: c00ababf-8631-4341-8c21-1a93bac20f08
 - current_timestamp: 2026-10-07
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. `assoc` documentation — COMPLETE (commit `c638851`): clarified Map replacement and Vector/String index association, including append-at-count when capacity remains; kept String's character policy explicit. `make docs` completed in the following docs update (`55b5ca3`).
@@ -2326,7 +2326,7 @@ Next:
 - last_session_id: 9dcc52fd-d6ee-4681-afbf-3a14dc27f23a
 - current_timestamp: 2026-10-06
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. gybis-init orientation — COMPLETE: oriented on `state.md` (HEAD 056b68f, worktree clean) and the three newest memories; confirmed Slice B still awaits selection.
@@ -2377,7 +2377,7 @@ Carry-forward (unaddressed, remember for later):
 - last_session_id: 213539b2-dab2-499f-b589-3b4dbe9f441b
 - current_timestamp: 2026-10-06
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. gybis-init orientation — COMPLETE: oriented on state.md at HEAD 8140794 (worktree clean); no pending mementum deltas.
@@ -2437,7 +2437,7 @@ Carry-forward (unaddressed, remember for later):
 - last_session_id: d90d74df-0016-4a33-97c7-2d10d8b11659
 - current_timestamp: 2026-10-06
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. gybis-init orientation — COMPLETE: oriented on state.md at HEAD 96b992b (worktree clean); identified that commit 96b992b had stored the three memory candidates proposed by the prior session (layer-naming decoupling, file-rename prose refs, fallback-callability SFINAE).
@@ -2483,7 +2483,7 @@ Carry-forward (unaddressed, remember for later):
 - last_session_id: 8f825781-f11a-4e95-a563-511c58990e7d
 - current_timestamp: 2026-10-06
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. gybis-init orientation — COMPLETE: oriented on state.md; no mementum changes since the last session; took on the open file `src/cljonic-variant.hpp`.
@@ -2556,7 +2556,7 @@ Carry-forward (unaddressed, remember for later):
 - last_session_id: a840a25b-2c2a-4ff5-b3f4-3e62debf0b74
 - current_timestamp: 2026-10-05
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Doc-comment terminology correction (`into` vs `fits_into` vs source ctor) — COMPLETE (commit 4f4f746): rewrote the Vector/Map/Queue/Set top doc comments and internal `(REQ-FN-027A)` comments so materialization is `into` (source domain = `concepts::CljonicSource`, cljonic collections/producers only), `fits_into` is the non-throwing completeness *preflight* predicate, and external C++ ranges/views use the direct source/interop *constructor*. Fixed the wrong "use `into` to materialize a range, view, or producer".
@@ -2597,7 +2597,7 @@ Carry-forward (unaddressed, remember for later):
 - last_session_id: baa5e0a4-57f6-40d4-9d5f-c4a72d93962b
 - current_timestamp: 2026-10-03
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. gybis-init orientation — COMPLETE: oriented on state.md, recent memories, and the value-equality-domain / cljonic-next-agenda / collection-source-interoperability knowledge pages.
@@ -2659,7 +2659,7 @@ Carry-forward (unaddressed, remember for later):
 - last_session_id: c1ef7071-fad8-4316-ae67-95a4f24685e7
 - current_timestamp: 2026-10-03
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. gybis-init orientation — COMPLETE: oriented on state.md, recent memories, and the value-equality-domain / cljonic-next-agenda / artifact-boundary-discipline knowledge pages.
@@ -2706,7 +2706,7 @@ Carry-forward (unaddressed, remember for later):
 - last_session_id: 171c64d2-e025-4eb9-9ee1-732dd7840fa5
 - current_timestamp: 2026-10-02
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Nothrow/throwing equality contract — COMPLETE: added `concepts::NothrowEqualityComparable` (StableEqualityComparable ∧ `concepts_detail::nothrow_equality_v`) and excluded pointers/unscoped enums from `equal`'s fallthrough domain (`is_arithmetic_v || is_scoped_enum_v`); added recursive `contains_standard_range` rejection. Applied across REQ-FN-002G, vocabulary, architecture, specs, tests, and code.
@@ -2738,7 +2738,7 @@ Next:
 - last_session_id: fd3522cd-6d0a-4782-ae03-2be453291d76
 - current_timestamp: 2026-10-02
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Equality constraint refactor — COMPLETE: added five private family concepts and `EqualPairAdmissible` in `src/cljonic-equal.hpp`; binary overloads and shared unary/binary/variadic gates use the named concepts. Updated `src/cljonic-not-equal.hpp` unary/binary gates to use `EqualPairAdmissible`. No runtime equality semantics changed.
@@ -2770,7 +2770,7 @@ Next:
 - last_session_id: 55f47254-5bfa-42c5-be15-e3b9289e0a3a
 - current_timestamp: 2026-10-01
 - recover: 1
-- session_complete: true
+- session_complete: false
 
 Task:
 1. Requirements description under the revised gybis-req-describe contract — CANCELED per human direction (2026-10-01): do not restore or carry forward the requested root-level `requirements-description.md`.
