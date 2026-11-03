@@ -111,3 +111,62 @@ TEST_CASE("Filter matches source values in traversal order", "[filter]") {
     REQUIRE(cljonic::filter(filter_is_even, cljonic::repeat(3, second)).count() == 3);
     REQUIRE(cljonic::filter(filter_is_even, cljonic::repeatedly(3, filter_repeatedly_two)).count() == 3);
 }
+
+TEST_CASE("Filterv is an alias of filter", "[filterv]") {
+    TRACE_ID("entity-fields.FiltervFunction");
+    TRACE_ID("invariant.FiltervFunction.CanonicalAliasOfFilter");
+    TRACE_ID("invariant.FiltervFunction.MinimumArityIsTwo");
+    TRACE_ID("invariant.FiltervFunction.MaximumArityIsTwo");
+    TRACE_ID("invariant.FiltervFunction.PredicateIsFirstArgument");
+    TRACE_ID("invariant.FiltervFunction.SourceIsSecondArgument");
+    TRACE_ID("invariant.FiltervFunction.SameSourceAndPredicateAdmissionAsFilter");
+    TRACE_ID("invariant.FiltervFunction.SameResultTypeCapacityAndLogicalValuesAsFilter");
+    TRACE_ID("invariant.FiltervFunction.SameTraversalOrderEmptyBehaviorAndInputPreservationAsFilter");
+    TRACE_ID("invariant.FiltervFunction.SameConstexprNoexceptNonallocatingNonmutatingContractAsFilter");
+    TRACE_ID("invariant.FiltervFunction.SameRejectionRulesAsFilter");
+    TRACE_ID("invariant.FiltervFunction.RejectedCallsNameFilterv");
+
+    using Source = cljonic::Vector<int, 4>;
+    using FilterResult = decltype(cljonic::filter(filter_is_even, Source{}));
+    STATIC_REQUIRE(std::same_as<decltype(cljonic::filterv(filter_is_even, Source{})), FilterResult>);
+    STATIC_REQUIRE(noexcept(cljonic::filterv(filter_is_even, Source{})));
+    STATIC_REQUIRE(cljonic::equal(cljonic::filterv(filter_is_even, cljonic::vector(1, 2, 3, 4)),
+                                  cljonic::filter(filter_is_even, cljonic::vector(1, 2, 3, 4))));
+    STATIC_REQUIRE(cljonic::count(cljonic::filterv(filter_is_even, cljonic::Vector<int, 0>{})) == 0);
+    STATIC_REQUIRE(cljonic::filterv(filter_takes_long, cljonic::vector(1, 2, 3)).count() == 3);
+    STATIC_REQUIRE(
+        cljonic::filterv([](const auto& value) noexcept { return value > 1; }, cljonic::vector(1, 2, 3)).count() == 2);
+    STATIC_REQUIRE(cljonic::equal(cljonic::filterv(filter_is_even, cljonic::queue(1, 2, 3, 4)), cljonic::vector(2, 4)));
+    STATIC_REQUIRE(cljonic::filterv(filter_entry_value_is_even, cljonic::hash_map(1, 2, 2, 3, 3, 4)).count() == 2);
+    STATIC_REQUIRE(cljonic::filterv(filter_is_even, cljonic::hash_set(1, 2, 3, 4)).count() == 2);
+    STATIC_REQUIRE(
+        cljonic::equal(cljonic::filterv([](char value) noexcept { return value == 'b'; }, cljonic::string<4>("abc")),
+                       cljonic::vector('b')));
+    STATIC_REQUIRE(
+        cljonic::equal(cljonic::filterv(filter_is_even, cljonic::Range<int>{1, 5, 1}), cljonic::vector(2, 4)));
+    STATIC_REQUIRE(cljonic::equal(cljonic::filterv(filter_is_even, cljonic::repeat(3, 2)), cljonic::vector(2, 2, 2)));
+    STATIC_REQUIRE(cljonic::filterv(filter_is_even, cljonic::cycle(cljonic::vector(1, 2))).count() == 500);
+    STATIC_REQUIRE(cljonic::filterv(filter_is_even, cljonic::iterate(filter_increment, 0)).count() == 500);
+    STATIC_REQUIRE(cljonic::equal(cljonic::filterv(filter_is_even, cljonic::repeatedly(3, filter_repeatedly_two)),
+                                  cljonic::vector(2, 2, 2)));
+
+    volatile int first_raw = 1;
+    volatile int second_raw = 2;
+    volatile int third_raw = 3;
+    volatile int fourth_raw = 4;
+    const auto first = first_raw;
+    const auto second = second_raw;
+    const auto third = third_raw;
+    const auto fourth = fourth_raw;
+    const auto source = cljonic::vector(first, second, third, fourth);
+    const auto alias_result = cljonic::filterv(filter_is_even, source);
+    const auto filter_result = cljonic::filter(filter_is_even, source);
+    REQUIRE(cljonic::equal(alias_result, filter_result));
+    REQUIRE(cljonic::equal(source, cljonic::vector(first, second, third, fourth)));
+    REQUIRE(alias_result.capacity() == filter_result.capacity());
+    REQUIRE(cljonic::filterv(filter_entry_value_is_even, cljonic::hash_map(first, second, third, fourth)).count() == 2);
+    REQUIRE(cljonic::filterv(filter_is_even, cljonic::hash_set(first, second, third, fourth)).count() == 2);
+    REQUIRE(cljonic::filterv(filter_is_even, cljonic::Range<int>{first, fourth + 1, 1}).count() == 2);
+    REQUIRE(cljonic::filterv(filter_is_even, cljonic::repeat(3, second)).count() == 3);
+    REQUIRE(cljonic::filterv(filter_is_even, cljonic::repeatedly(3, filter_repeatedly_two)).count() == 3);
+}
