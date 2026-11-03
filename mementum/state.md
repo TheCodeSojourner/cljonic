@@ -1,15 +1,16 @@
 ## Current Session State
 
 - last_session_id: cab5f489-f975-4e17-ad99-12c735f791f3
-- current_timestamp: 2026-11-03T12:11:46-07:00
-- session_complete: true
-- recover: Select another remaining REQ-SEQ-022 operation only on human direction; take and drop are complete. Drop is implemented and verified under REQ-FN-038. Tests/probes/diagnostics, product contracts/implementation, the agenda, and rendered docs are committed (00e4afc9, 2eee138f, 14e72978, 8f00031c). Fini commits the remaining Mementum state only.
+- current_timestamp: 2026-11-03T12:16:42-07:00
+- session_complete: false
+- recover: Responsive Doxygen layout is implemented and browser-verified; review and commit the stylesheet, README, generated docs stylesheet, and state changes. Take and drop are complete and committed. Select further API work only on human direction.
 - Task:
   1. Encoded REQ-FN-038 and index, Drop vocabulary, S2 drop architecture, and dedicated specs/sequences/drop.allium; removed Drop's contradictory deferred entity/actor.
   2. Propagated the approved contract to src/cljonic-drop.hpp, umbrella/cheatsheet, exact behavioral tests (replacing the old Drop placeholder), primitive compile-fail registration, runtime no-heap probes, amalgamation, and authoritative obligation snapshot.
   3. Extracted take's count/source admission and capacity derivation into shared concepts_detail helpers, preserving take behavior. Split drop's result guard from its traversal to satisfy the existing CCN <= 4 gate.
   4. Updated the agenda and lifecycle wording to mark drop active. Product changes, agenda, and subsequently regenerated rendered docs are now committed.
   5. `/gybis-fini`: reconciled the handoff with the committed work and finalized session state.
+  6. Follow-up: corrected stale agenda wording, then addressed mobile/tablet HTML overflow in doc/doxygen-extra.css. Existing viewport metadata was already present; fixed intrinsically wide member tables, fixed-layout member containers, summary links, and inline-code wrapping. Wide code/tables scroll locally; desktop styles above 1024 CSS pixels remain unchanged. Updated README and regenerated docs.
 - Questions:
   1. No unresolved drop contract or evidence gaps.
 - Decisions:
@@ -27,8 +28,9 @@
   7. VALIDATION_JOBS=2 make upsert-gate-fast BUILD_JOBS=2 UPSERT_COVERAGE_FILE=cljonic-drop.hpp passed.
   8. Custom cap checks: modular drop at cap 0, and modular/single-header at caps 1 and 3 passed compile-time and runtime checks. The umbrella/single-header with global cap 0 is blocked by pre-existing character_is_valid instantiation of String<1>; no unrelated fix made.
   9. Final lifecycle structure checks, authoritative traceability, drop Allium check, sequence-set analysis, and git diff --check passed after implementation.
+  10. Responsive docs: make docs passed. Browser measurements across six page types and five viewport settings (actual CSS widths 256, 300, 614, 1024, 1536) passed all 30 checks: document scrollWidth <= clientWidth + 1. No C++ behavior changes.
 - Next:
-  1. Select additional REQ-SEQ-022 operations only on human direction; take and drop and their product/docs commits are complete.
+  1. Review and commit responsive documentation changes; generated HTML has been refreshed. Select additional REQ-SEQ-022 operations only on human direction.
   2. No further drop implementation or docs regeneration remains. The final human-owned make git run was not observed in this chat; do not infer additional validation beyond the recorded evidence.
   3. The pre-existing obsolete Filterv traces in the deferred collection-shaping placeholder tests remain a separate housekeeping item.
 

@@ -2,3 +2,68 @@ span.tt {
 	font-variant-ligatures: none;
 	font-feature-settings: "liga" 0, "clig" 0, "calt" 0;
 }
+
+@media screen and (max-width: 1024px) {
+	#titlearea table {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	#projectlogo {
+		width: 64px;
+	}
+
+	#projectlogo img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	#projectalign,
+	.header,
+	.contents {
+		overflow-wrap: anywhere;
+	}
+
+	.contents span.tt {
+		white-space: pre-wrap;
+	}
+
+	.header .summary {
+		float: none;
+		width: auto;
+		text-align: left;
+	}
+
+	.header .summary a {
+		white-space: normal;
+	}
+
+	.contents img,
+	.contents svg {
+		max-width: 100%;
+		height: auto;
+	}
+
+	.contents table,
+	.contents .memproto {
+		box-sizing: border-box;
+		display: block;
+		max-width: 100%;
+		overflow-x: auto;
+	}
+
+	.contents .memitem {
+		table-layout: fixed;
+		max-width: 100%;
+	}
+
+	.contents .fragment {
+		box-sizing: border-box;
+		max-width: 100%;
+		overflow-wrap: normal;
+	}
+
+	.contents .fragment span.tt {
+		white-space: pre;
+	}
+}
