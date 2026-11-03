@@ -2,11 +2,11 @@
 
 ## Purpose and Scope
 
-This module records higher-order sequence transformation requirements and specifies the collection-shaping/traversal inventory. The free-function API `comp` is explicitly deferred; this does not defer the `cljonic::Map` collection type or its existing operations.
+This module records higher-order sequence transformation requirements and specifies the collection-shaping/traversal inventory. The free-function API `comp` is explicitly deferred; this does not defer the `cljonic::Map` collection type or its existing operations. The `map`, `reduce`, and `filter` free functions are binding under `REQ-FN-032`, `REQ-FN-034`, and `REQ-FN-035`; `filterv` remains in the first-pass inventory and requires its own behavioral specification.
 
 ## Deferred Higher-Order Free Functions (Non-binding)
 
-> **Deferred future work — non-binding.** The public free function `comp` is not part of the current supported API. Its requirement below records intended future behavior only; the function is not implementation-ready until its lifecycle is approved and its behavioral specification, tests, and implementation are propagated. This deferral does not apply to `cljonic::Map` or existing Map operations, and does not apply to the multi-source `map` free function, which is binding under `REQ-FN-032`.
+> **Deferred future work — non-binding.** The public free function `comp` is not part of the current supported API. Its requirement below records intended future behavior only; the function is not implementation-ready until its lifecycle is approved and its behavioral specification, tests, and implementation are propagated. This deferral does not apply to `cljonic::Map` or existing Map operations, or to the multi-source `map` and `filter` free functions, which are binding under `REQ-FN-032` and `REQ-FN-035`.
 
 ### Function Composition (`comp`) & Multi-Source `map`
 
@@ -53,10 +53,25 @@ This module records higher-order sequence transformation requirements and specif
   rationale: the human approved activating the `reduce` free function on 2026-11-02 in Clojure's two-arity shape (no initial value, and explicit initial value) over the cljonic source domain, with the accumulator type derived from the reducing function's first parameter (or the initial value when the function's parameters cannot be inspected), a left-to-right fold that always traverses the saturated observable count, the accumulator type's default value for an empty no-initial source, inspectable signatures required wherever no initial value can supply the accumulator type, and the library's safe implicit-conversion policy for every consumed argument position
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-02, rationale_source: origin_artifact}
 
+λ REQ-FN-035(x).
+  ∀ `filter`: accepts a predicate followed by exactly one cljonic source
+  ∧ ∀ source: admitted exactly when it is a cljonic source (a Vector, Map, Set, Queue, or String collection, or a Range, Repeat, Cycle, Iterate, or Repeatedly producer) ∧ ∀ standard-library range ∨ container ∨ non-cljonic source: rejected at compile time
+  ∧ ∀ result: bounded owning Vector whose element type is the source element type and whose capacity is the source's observable-count bound (collection declared capacity ∨ producer configured observation cap), saturated at `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE`
+  ∧ ∀ runtime traversal: visits the source's observed elements in traversal order, evaluates the predicate once per visited element, and appends each matching element ∧ the result capacity equals the source's observable-count bound, so every observed element fits ∧ traversal therefore ends when the source is exhausted ∧ ¬∃ separate result-full termination condition
+  ∧ ∀ zero-capacity result: returns empty without invoking the predicate
+  ∧ ∀ source element type: satisfies the nothrow element storage contract
+  ∧ ∀ predicate: should be a pure function with no side effects ∧ copy-constructible ∧ invoked without throwing on a const source element ∧ returns exactly `bool`
+  ∧ ∀ predicate parameter type that is statically inspectable: accepts the source element only through a safe implicit conversion (an identical type ∨ a value-preserving arithmetic conversion) ∧ ∀ narrowing conversion ∨ crossing into or out of the Boolean, character, enumeration, pointer, or user-defined domains: rejected at compile time
+  ∧ ∀ predicate whose parameter types are not statically inspectable (a generic lambda ∨ templated `operator()`): admitted only when nothrow-invocable with a const source element and its result type is exactly `bool`
+  ∧ ∀ Map ∨ Set source: traversal order is semantically unordered ∧ result order has no semantic significance
+  ∧ ∀ `filter` operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ preserves every source value ∧ compile-time domain gating with targeted rejection diagnostics naming `filter` and its supported domains
+  rationale: the human approved activating `filter` on 2026-11-02 for all cljonic collections and producers, returning a bounded owning Vector with source-derived capacity, an exact-bool nothrow predicate following map's safe parameter-conversion rule, and a fitting-prefix traversal that stops when the result reaches capacity
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-02, rationale_source: origin_artifact}
+
 ## Collection-Shaping and Traversal Family
 
 λ REQ-SEQ-022(x).
-  ∀ context: the first-pass collection-shaping and traversal family includes bounded operations corresponding to `take`, `drop`, `take_while`, `drop_while`, `take_last`, `drop_last`, `take_nth`, `nth`, `nthnext`, `nthrest`, `butlast`, `map_indexed`, `rseq`, `second`, `ffirst`, `fnext`, `nfirst`, `nnext`, `some`, `is_every`, `not_any`, `not_every`, `distinct`, `dedupe`, `frequencies`, `reductions`, `split_at`, `split_with`, `mapcat`, `interleave`, `interpose`, `partition`, `partition_all`, `partition_by`, `partitionv`, `partitionv_all`, `group_by`, `flatten`, `tree_seq`, `keep`, `keep_indexed`, `remove`, `replace`, `mapv`, `filterv`, `subvec`, `find`, `reduce`, `reduce_kv`, `sort`, and `sort_by`
+  ∀ context: the first-pass collection-shaping and traversal family includes bounded operations corresponding to `take`, `drop`, `take_while`, `drop_while`, `take_last`, `drop_last`, `take_nth`, `nth`, `nthnext`, `nthrest`, `butlast`, `map_indexed`, `rseq`, `second`, `ffirst`, `fnext`, `nfirst`, `nnext`, `some`, `is_every`, `not_any`, `not_every`, `distinct`, `dedupe`, `frequencies`, `reductions`, `split_at`, `split_with`, `mapcat`, `interleave`, `interpose`, `partition`, `partition_all`, `partition_by`, `partitionv`, `partitionv_all`, `group_by`, `flatten`, `tree_seq`, `keep`, `keep_indexed`, `remove`, `replace`, `mapv`, `filter`, `filterv`, `subvec`, `find`, `reduce`, `reduce_kv`, `sort`, and `sort_by`
   ∧ ∀ listed_operation: an individually named downstream behavioral specification exists before it is treated as implementation-ready
   ∧ ∀ specification: defines the operation's public arity and argument roles, callback contract where applicable, termination rule, equality and ordering capabilities, nested-result representation, producer behavior, result capacity derivation, typed-absence behavior, failure/preflight behavior, and complete-versus-bounded-result classification
   ∧ ∀ operation_level_contract: ¬∃ inference only from this inventory
@@ -71,4 +86,4 @@ This module records higher-order sequence transformation requirements and specif
 ## Traceability and Related Requirements
 
 - **Downstream Artifact**: Free-function templates for sequence shaping, slicing, filtering, mapping, grouping, and ordering.
-- **Governed REQs**: `REQ-SEQ-022`, `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding).
+- **Governed REQs**: `REQ-SEQ-022`, `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding), `REQ-FN-035` (binding).
