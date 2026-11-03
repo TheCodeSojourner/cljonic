@@ -1,5 +1,55 @@
 ## Current Session State
 
+- last_session_id: e61a280f-19d7-493e-a7cc-d08281192d3d
+- current_timestamp: 2026-11-03T15:08:53-07:00
+- session_complete: true
+- recover: Select further API work only on human direction; take_while/drop_while implementation and documentation are complete and committed. Preserve first's collection-or-MapEntry boundary: no producers are admitted. Product commits include 1fd49f29, e7f0a9ef, e0b92bd7, 1fe12f29, and 716df1df; only the finalized session handoff remains to be committed by /gybis-fini. The committed agenda's uncommitted/publication wording is stale; no product implementation or rendered-doc regeneration remains.
+- Task:
+  1. Human selected a small paired contract batch and retained explicit implementation approval and verification per operation.
+  2. Resolved ownership, predicate admission, boundedness, source domain, boundary timing, count semantics, conditional storage, and consumer/tail scope through structured approval rounds.
+  3. Added separate binding REQ-FN-039 (take_while), REQ-FN-040 (drop_while), and shared REQ-FN-041 integration in Module 5; updated its index and governed-designator footer.
+  4. Added TakeWhile/DropWhile vocabulary and S2 architecture contracts, explicitly outside the implemented/public surface pending separate approval.
+  5. Added specs/sequences/take-while.allium and drop-while.allium; removed their superseded deferred entities/actors from collection-shaping.allium. Added directly related consumer-spec clarification comments.
+  6. Following explicit per-operation approval, propagated dedicated behavioral tests, public factories, shared bounded iterator implementation, traits, consumer integration, targeted diagnostics, no-heap probes, and runnable documentation. Added filter endpoint guarding to safely consume empty or shorter adapter traversals. Initial first support was subsequently removed on explicit human approval to restore its uniform collection-or-MapEntry boundary.
+  7. Independently verified take_while before implementing drop_while, then separately verified drop_while and rechecked the shared implementation. Removed superseded predicate placeholder tests and refreshed the authoritative obligation snapshot.
+  8. Updated lifecycle documentation and this handoff to match verified implementation. Product and rendered-documentation changes were subsequently committed through the user's workflow; /gybis-fini finalizes only durable session memory.
+- Questions:
+  1. No unresolved contract choice remains for this slice.
+  2. No unresolved implementation choice remains; optional spec-code alignment review or a separately selected API slice is next.
+- Decisions:
+  1. Both factories take (predicate, source), own copies without callback evaluation at construction, and return producers rather than materialized collections.
+  2. Each result is explicitly finite over its original capped source traversal, respecting smaller source windows and actual exhaustion. Skipping does not replenish the cap. Adapter traversal must not perform a preliminary exact-count pass merely to determine its budget.
+  3. take_while yields the initial true prefix, examines/excludes the first false value, and stops without later advancement. drop_while retains the first false value and remaining original window, with no predicate calls after that failure.
+  4. count is exact by fresh bounded traversal; its predicate/source evaluations may repeat before later consumption. is_empty stays count == 0. No cross-traversal cache; predictions require equivalent values across independent traversals.
+  5. Predicates follow filter admission with non-throwing owned copies; fresh predicate state per traversal. Stored value-held state is preserved; existing authorized referenced/static effects remain shared.
+  6. Admit all cljonic sources, including nested adapters and traversal-dependent Map/Set membership. Capturing predicates need not be default-constructible or assignable for factory admission; collection-element storage remains conditional on existing nothrow storage capabilities.
+  7. Integrate traversal/source consumers, exact count/is_empty, seq, sequential observation equality, into/fits_into, and source-consuming algorithms. On 2026-11-03 the human explicitly approved removing first support from both adapters: first accepts collections and MapEntry values, never producers. Its implementation and diagnostic are restored exactly to the pre-session version. Do not grant producer parameter equality or Map-key/Set-element admission. next/rest/has_next and dependent Cycle tails remain unsupported until a separate tail contract.
+  8. Initial approval was contract-only. Human subsequently explicitly approved each implementation individually, take_while first and then drop_while, with separate verification. Product changes were later committed through the user's workflow; the final /gybis-fini invocation authorizes the memory commit.
+  9. Public function descriptions focus on calling and using the function, not storage mechanics or design tradeoffs. Predicate outcomes are described explicitly as true/false rather than "matching"; source admission uses "any cljonic collection or producer" rather than enumerated producer examples. Removed generic consumption/tail guidance from the per-function prose.
+  10. All current producers support the count free function. Removing first support does not change counting: predicate-adapter count traverses independently and later consumption can invoke callbacks again.
+- Validation:
+  1. make requirements-structure passed: 356 unique clauses.
+  2. make vocabulary-structure passed: 208 terms. Corrected Related links to canonical FiniteObservation after the first check rejected the nonexistent BoundedObservation term.
+  3. Allium 3.5.3: allium check specs and allium analyse specs passed across 57 files with zero diagnostics/findings. Dedicated new specs and the narrowed deferred spec also passed individual checks.
+  4. Revised specs add an explicit FirstApiRejectsProducer invariant to each adapter: 45 take_while obligations and 48 drop_while obligations.
+  5. Final exact checks: 45/45 take_while and 48/48 drop_while obligations have dedicated behavioral traces. Modular tests pass 89 take_while assertions and 87 drop_while assertions, each across three cases; combined adapter/first tests pass 227 assertions across seven cases in both header variants.
+  6. Per-operation primitive diagnostic/admission checks passed, including throwing-copy predicates. Adapter and dependent Cycle next/rest/has_next rejection checks passed. Producer compile probes verify cap 0 using isolated modular headers and caps 1/3 in both variants, including callback counts and no budget replenishment. The pre-existing full-header zero-cap String<1> limitation is unchanged.
+  7. Final full modular/single-header CTest run passed all 328 tests; sanitizer-cli passed. Runtime no-heap source/symbol checks and both probe binaries passed.
+  8. Affected-header line coverage is 100% (98/98 lines across both adapter headers, filter, and first). Initial standard capture failed on GCC 16 test-lambda metadata. Follow-up fixed both coverage targets to capture only absolute-project-root src headers, retaining full test execution and the unchanged 100% threshold, without ignoring errors or counter normalization. Standard make coverage-cli now passes at 100% (996/996 lines); narrowed predicate-header coverage also passes. CLI lcov failures print diagnostics, verified by an intentionally unattainable 101% threshold. Function coverage is not 100%.
+  9. Repository upsert-gate-fast passed requirements/vocabulary structures, audit-script self-tests, formatting/lint, complexity, diagnostics, strict traceability, and no-heap gates. All 49 documentation examples compiled; both new producer examples executed successfully.
+  10. Follow-up publication gate exposed stale first diagnostic expectations after its supported-domain message expanded. Updated both rejection expectations and added constexpr TakeWhile/DropWhile first admission probes. Focused first checks and the full make primitive-compile-fail suite now pass in both header variants; git diff --check also passes. The complete make git publication gate was not rerun.
+  11. After the coverage follow-up, edited Makefile/README pass diff whitespace checks. Full-worktree diff checking reports two trailing-whitespace lines in independently generated docs/namespacecljonic.html; those generated changes were left untouched. No staging or commits were performed.
+  12. Uniform first boundary is propagated through REQ-FN-041, vocabulary, architecture, dedicated specs, README, implementation, no-heap probes, examples, tests, diagnostics, and generated header/snapshot. Focused first compile probes reject all seven current producer families and accept materialized collections. Repository fast gate and all 49 example compilations pass; both revised producer examples execute successfully. Subsequent full coverage-cli passes at 100%.
+  13. After removing producer first support, the full primitive diagnostic suite, all 328 CTest cases, sanitizer-cli, full Allium check/analyse, and make docs pass. Source/contract diff whitespace checks pass. The assistant performed no staging or commits; requirements files were found staged independently at the final check and left untouched.
+  14. Fini inspection finds product/documentation commits 1fd49f29, e7f0a9ef, e0b92bd7, 1fe12f29, and 716df1df. Only mementum/state.md is modified, and the index is empty. No additional full publication-gate execution is claimed beyond the validations recorded above.
+- Next:
+  1. Select further API work only on human direction; the paired producers and documentation are complete and committed. Optional /gybis-spec-weed can review spec-code alignment without reopening completed implementation approval.
+  2. Source documentation, rendered documentation, and generated cljonic.hpp are current after the uniform first-boundary update. The committed next-agenda's "uncommitted" and publication-approval wording is stale; use this handoff as the current status and reconcile that wording in a future authorized agenda update.
+  3. Select further REQ-SEQ-022 API work only on human direction. Adapter tails and dependent Cycle tails require their own approved contract before implementation.
+  4. take, drop, and responsive documentation remain complete. Do not repeat completed implementation approval or verification work for this pair.
+
+## Previous Session State
+
 - last_session_id: cab5f489-f975-4e17-ad99-12c735f791f3
 - current_timestamp: 2026-11-03T12:23:25-07:00
 - session_complete: true
