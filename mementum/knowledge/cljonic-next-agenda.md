@@ -14,7 +14,7 @@ The `filterv` alias work is complete and committed. The `first`, `next`, `not_em
 
 `take(count, source)` is active and verified under `REQ-FN-037`: it returns an owning Vector prefix with source-bound capacity over all cljonic collections and producers, using Repeat count admission and normalization.
 
-`drop(count, source)` is active and verified under `REQ-FN-038`. It returns a take-style owning Vector suffix within the original bounded observation window; skipping does not replenish the producer observation budget. Requests covering the window count bound return empty without traversal or callbacks. All 32 obligations have exact test traces; modular/single-header tests, 100% drop/shared-helper coverage, targeted diagnostics, runtime no-heap probes, docs-example compilation/execution, and the repository fast gate passed. Product changes are uncommitted; rendered docs regeneration remains human-owned.
+`drop(count, source)` is active and verified under `REQ-FN-038`. It returns a take-style owning Vector suffix within the original bounded observation window; skipping does not replenish the producer observation budget. Requests covering the window count bound return empty without traversal or callbacks. All 32 obligations have exact test traces; modular/single-header tests, 100% drop/shared-helper coverage, targeted diagnostics, runtime no-heap probes, docs-example compilation/execution, and the repository fast gate passed. Product changes and regenerated rendered docs are committed; no further drop implementation or docs regeneration remains.
 
 ## Approval gate
 
