@@ -42,5 +42,6 @@ var searchData=
   ['cljonic_2dproducer_2drepeatedly_2ehpp_39',['cljonic-producer-repeatedly.hpp',['../cljonic-producer-repeatedly_8hpp.html',1,'']]],
   ['cljonic_2dreduce_2ehpp_40',['cljonic-reduce.hpp',['../cljonic-reduce_8hpp.html',1,'']]],
   ['cljonic_2drest_2ehpp_41',['cljonic-rest.hpp',['../cljonic-rest_8hpp.html',1,'']]],
-  ['cljonic_2dseq_2ehpp_42',['cljonic-seq.hpp',['../cljonic-seq_8hpp.html',1,'']]]
+  ['cljonic_2dseq_2ehpp_42',['cljonic-seq.hpp',['../cljonic-seq_8hpp.html',1,'']]],
+  ['cljonic_2dtake_2ehpp_43',['cljonic-take.hpp',['../cljonic-take_8hpp.html',1,'']]]
 ];

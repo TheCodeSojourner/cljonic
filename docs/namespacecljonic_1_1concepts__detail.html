@@ -349,6 +349,7 @@ Concepts</h2></td></tr>
 <tr class="memitem:StringFactoryCapacityArguments" id="r_StringFactoryCapacityArguments"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_string_factory_capacity_arguments.html">StringFactoryCapacityArguments</a></td></tr>
 <tr class="memitem:StringFactoryDeducedArguments" id="r_StringFactoryDeducedArguments"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_string_factory_deduced_arguments.html">StringFactoryDeducedArguments</a></td></tr>
 <tr class="memitem:StringFactoryTextSource" id="r_StringFactoryTextSource"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_string_factory_text_source.html">StringFactoryTextSource</a></td></tr>
+<tr class="memitem:TakeArguments" id="r_TakeArguments"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_take_arguments.html">TakeArguments</a></td></tr>
 <tr class="memitem:ValidCycleSource" id="r_ValidCycleSource"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_valid_cycle_source.html">ValidCycleSource</a></td></tr>
 <tr class="memitem:ValidRepeatedlyStep" id="r_ValidRepeatedlyStep"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_valid_repeatedly_step.html">ValidRepeatedlyStep</a></td></tr>
 <tr class="memitem:VariantClassArgument" id="r_VariantClassArgument"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_variant_class_argument.html">VariantClassArgument</a></td></tr>
@@ -587,6 +588,8 @@ Variables</h2></td></tr>
 <tr class="memitem:ab3f077c21cea0bd15d5eb26942575617" id="r_ab3f077c21cea0bd15d5eb26942575617"><td class="memItemLeft">constexpr std::size_t&#160;</td><td class="memItemRight"><a class="el" href="#ab3f077c21cea0bd15d5eb26942575617">ReduceRequiredParameterCount</a> = 2U</td></tr>
 <tr class="memitem:ab88696ee448750e90271f862b46ea934" id="r_ab88696ee448750e90271f862b46ea934"><td class="memTemplParams" colspan="2">template&lt;typename F, typename Source&gt; </td></tr>
 <tr class="memitem:ab88696ee448750e90271f862b46ea934 template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#ab88696ee448750e90271f862b46ea934">reduce_parameters_safe_v</a></td></tr>
+<tr class="memitem:a2374bbc477fc7db7a3c4fe0c345269c8" id="r_a2374bbc477fc7db7a3c4fe0c345269c8"><td class="memTemplParams" colspan="2">template&lt;typename Source&gt; </td></tr>
+<tr class="memitem:a2374bbc477fc7db7a3c4fe0c345269c8 template"><td class="memItemLeft">constexpr std::size_t&#160;</td><td class="memItemRight"><a class="el" href="#a2374bbc477fc7db7a3c4fe0c345269c8">TakeResultCapacity</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="anchor" id="Seq"></a> The <b>seq</b> free function returns the logical traversal elements of a <span class="tt"><a class="el" href="classcljonic_1_1_vector.html">Vector</a></span>, <span class="tt"><a class="el" href="classcljonic_1_1_map.html">Map</a></span>, <span class="tt"><a class="el" href="classcljonic_1_1_set.html">Set</a></span>, <span class="tt"><a class="el" href="classcljonic_1_1_queue.html">Queue</a></span>, or <span class="tt"><a class="el" href="classcljonic_1_1_string.html">String</a></span> value, or of a supported <a class="el" href="classcljonic_1_1_range.html#Range" title="Range">Range</a>, <a class="el" href="classcljonic_1_1_repeat.html#Repeat" title="Repeat">Repeat</a>, <a class="el" href="classcljonic_1_1_cycle.html#Cycle" title="Cycle">Cycle</a>, <a class="el" href="classcljonic_1_1_iterate.html#Iterate" title="Iterate">Iterate</a>, or <a class="el" href="classcljonic_1_1_repeatedly.html#Repeatedly" title="Repeatedly">Repeatedly</a> producer, as an owning, value-semantic <a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vector</a> in traversal order.</p>
@@ -3351,6 +3354,40 @@ template&lt;typename Source&gt; </div>
 <div class="line">std::same_as&lt;std::remove_cv_t&lt;std::remove_extent_t&lt;std::remove_cvref_t&lt;Source&gt;&gt;&gt;, <span class="keywordtype">char</span>&gt;</div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="cljonic-collection-string_8hpp_source.html#l00419">419</a> of file <a class="el" href="cljonic-collection-string_8hpp_source.html">cljonic-collection-string.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a2374bbc477fc7db7a3c4fe0c345269c8" name="a2374bbc477fc7db7a3c4fe0c345269c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2374bbc477fc7db7a3c4fe0c345269c8">&#9670;&#160;</a></span>TakeResultCapacity</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Source&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t cljonic::concepts_detail::TakeResultCapacity</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel constexpr">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">                                                = [] <span class="keyword">constexpr</span> {</div>
+<div class="line">    <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<a class="code hl_concept" href="conceptcljonic_1_1concepts_1_1_cljonic_collection.html">concepts::CljonicCollection&lt;Source&gt;</a>) {</div>
+<div class="line">        <span class="keywordflow">return</span> std::min&lt;std::size_t&gt;(Source::capacity(), <a class="code hl_variable" href="namespacecljonic.html#a41fa65c16edb0a95aa942c48307777d6">CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</a>);</div>
+<div class="line">    } <span class="keywordflow">else</span> {</div>
+<div class="line">        <span class="keywordflow">return</span> <a class="code hl_variable" href="namespacecljonic.html#a41fa65c16edb0a95aa942c48307777d6">CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</a>;</div>
+<div class="line">    }</div>
+<div class="line">}()</div>
+<div class="ttc" id="aconceptcljonic_1_1concepts_1_1_cljonic_collection_html"><div class="ttname"><a href="conceptcljonic_1_1concepts_1_1_cljonic_collection.html">cljonic::concepts::CljonicCollection</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00502">cljonic-concepts.hpp:502</a></div></div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="cljonic-take_8hpp_source.html#l00020">20</a> of file <a class="el" href="cljonic-take_8hpp_source.html">cljonic-take.hpp</a>.</p>
 
 </div>
 </div>
