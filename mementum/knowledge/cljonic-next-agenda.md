@@ -19,7 +19,7 @@ The `filterv` alias work is complete and committed. The `first`, `next`, `not_em
 ## Approval gate
 
 1. Keep implementation changes subordinate to approved requirements and architecture; do not use existing code or tests to silently redefine behavioral truth.
-2. `take_while` and `drop_while` contracts were approved together; implementation was then explicitly approved individually, take_while first and drop_while second. Each operation is implemented and independently verified. Contract approval did not substitute for implementation approval; no staging or commit is authorized.
+2. `take_while` and `drop_while` contracts were approved together; implementation was then explicitly approved individually, take_while first and drop_while second. Each operation is implemented, independently verified, and committed (1fd49f29, e7f0a9ef, e0b92bd7, 1fe12f29, 716df1df). Contract approval did not substitute for implementation approval.
 
 ## Approved predicate-producer contracts (2026-11-03)
 
@@ -35,8 +35,8 @@ The `filterv` alias work is complete and committed. The `first`, `next`, `not_em
 
 ## Next work after implementation
 
-1. Review the uncommitted pair; /gybis-spec-weed is the propagation handoff for checking spec-code alignment. Do not repeat completed operation-level implementation approval.
-2. Source documentation, rendered HTML, and cljonic.hpp are current after the uniform first-boundary update. Full primitive diagnostics, all 328 CTest cases, sanitizers, full coverage, Allium checks/analysis, and docs regeneration passed; staging and commits still require authorization.
+1. /gybis-spec-weed is the propagation handoff for checking spec-code alignment. Do not repeat completed operation-level implementation approval.
+2. Source documentation, rendered HTML, and cljonic.hpp are current after the uniform first-boundary update. Full primitive diagnostics, all 328 CTest cases, sanitizers, full coverage, Allium checks/analysis, and docs regeneration passed; the product and documentation changes are committed through the user's workflow.
 3. Select further API work only on human direction. `next`/`rest`/`has_next` support for predicate producers and dependent Cycle tails needs a separate approved tail contract.
 4. `take`, `drop`, and responsive documentation are complete. Other `REQ-SEQ-022` operations remain unapproved until their individual contracts exist.
 
