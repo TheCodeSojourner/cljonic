@@ -1,15 +1,30 @@
 ## Current Session State
 
 - last_session_id: 96c08ecd-95d7-47a4-ba7b-36a8fd9eac4b
-- current_timestamp: 2026-11-03T10:59:43-07:00
-- session_complete: false
-- recover: The human confirms the final filterv documentation review, docs-examples rerun, and make git are complete; product changes are committed. Refreshed the next-work agenda and deferred-api promotion checklist, which incorrectly retained completed APIs.
+- current_timestamp: 2026-11-03T11:34:21-07:00
+- session_complete: true
+- recover: No take implementation work remains. Select the next remaining REQ-SEQ-022 operation only on human direction. `/cljonic-api-complete take` is COMPLETE under REQ-FN-037; product changes, the refreshed agenda, and generated docs are now committed (17dd678b, 0022d6f1, 1b8a0709). Focused tests, exact traceability, targeted rejections, runtime no-heap probes, source-example compilation/link/execution, and make upsert-gate-fast passed. Fini commits Mementum only.
 - Task:
   1. Updated the agenda baseline and removed obsolete approval/pending-product notes.
   2. Corrected the checklist: first, next, not_empty, and seq are all active and complete. The initial refresh incorrectly retained seq as deferred; corrected after checking binding requirements, the active spec, umbrella inclusion, and the 2026-10-30 activation record.
+  3. Activated take under REQ-FN-037 across requirements/index, vocabulary, S2 architecture, dedicated active spec, ordinary tests, runtime no-heap probe registration, public header/cheatsheet, primitive compile-fail harness, amalgamation, and obligation snapshot. Removed only Take's obsolete deferred sketch and placeholder test traces; Drop remains deferred. Updated the agenda so take is no longer suggested as pending.
+  4. `/gybis-fini`: reconciled the handoff with the committed product/docs changes and finalized session state.
+- Questions:
+  1. No unresolved take contract or evidence gaps.
+- Decisions:
+  1. Human approved runtime count-first take, owning Vector result with collection declared capacity or producer observation-cap capacity, all cljonic sources, nonpositive counts empty, and oversized counts bounded by observable traversal.
+  2. Count bounds cannot replace iterator endpoint checks: Cycle over an empty source reports a nonzero observation cap but has an empty traversal. The initial take implementation dereferenced its end iterator; the empty-Cycle regression test caught the crash. Fixed by checking traversal exhaustion as well as the request/count/capacity limit, without changing Cycle.
+- Validation:
+  1. Requirements/vocabulary structure, Allium take check and sequence analysis, take exact traces (28 obligations / 28 traces), authoritative traceability after snapshot refresh, header guards and diagnostic registration/labels: passed.
+  2. Focused CTest: 8/8 passed across modular and single-header builds (three take cases plus remaining Drop placeholder per build).
+  3. Primitive compile-fail harness scoped to take: 13 admitted and 20 targeted rejection cases passed per header configuration.
+  4. Docs examples: 46 freshly extracted programs compiled; the take program was separately linked with C++23 warnings-as-errors and ran with exit 0.
+  5. The deferred collection-shaping coverage check passes, but exact matching detects 13 pre-existing obsolete Filterv traces. They are unrelated to take and were left untouched.
+  6. make upsert-gate-fast: passed, including requirements/vocabulary structure, script audits, lint, complexity, diagnostics, authoritative traceability, source/symbol no-heap scans, and successful execution of modular and single-header no-heap binaries.
+  7. The final take source example matches the freshly extracted translation unit after gate formatting. git diff --check passed. The first fast-gate invocation failed because command-line VALIDATION_JOBS=2 propagated through MAKEFLAGS into a script self-test expecting an overridden environment value of 3; the gate passed with an environment-based budget instead: VALIDATION_JOBS=2 make upsert-gate-fast BUILD_JOBS=2.
 - Next:
-  1. The refreshed Mementum references are uncommitted.
-  2. Select a human-approved next operation contract from the remaining REQ-SEQ-022 inventory; take is a suggestion, not an approved task.
+  1. Select the next remaining REQ-SEQ-022 operation only on human direction; take and its product/docs commits are complete.
+  2. The 13 pre-existing obsolete Filterv traces remain a separate housekeeping item, not a take blocker.
 
 ## Previous Session State
 
