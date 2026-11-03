@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['safeimplicitconversion_0',['SafeImplicitConversion',['../conceptcljonic_1_1concepts_1_1_safe_implicit_conversion.html',1,'cljonic::concepts']]],
-  ['safelycomparablepair_1',['SafelyComparablePair',['../conceptcljonic_1_1concepts__detail_1_1_safely_comparable_pair.html',1,'cljonic::concepts_detail']]],
-  ['sequenceablecollection_2',['SequenceableCollection',['../conceptcljonic_1_1concepts_1_1_sequenceable_collection.html',1,'cljonic::concepts']]],
-  ['sequenceableproducer_3',['SequenceableProducer',['../conceptcljonic_1_1concepts_1_1_sequenceable_producer.html',1,'cljonic::concepts']]],
-  ['stableequalitycomparable_4',['StableEqualityComparable',['../conceptcljonic_1_1concepts_1_1_stable_equality_comparable.html',1,'cljonic::concepts']]],
-  ['stringfactoryarguments_5',['StringFactoryArguments',['../conceptcljonic_1_1concepts__detail_1_1_string_factory_arguments.html',1,'cljonic::concepts_detail']]],
-  ['stringfactorycapacityarguments_6',['StringFactoryCapacityArguments',['../conceptcljonic_1_1concepts__detail_1_1_string_factory_capacity_arguments.html',1,'cljonic::concepts_detail']]],
-  ['stringfactorydeducedarguments_7',['StringFactoryDeducedArguments',['../conceptcljonic_1_1concepts__detail_1_1_string_factory_deduced_arguments.html',1,'cljonic::concepts_detail']]],
-  ['stringfactorytextsource_8',['StringFactoryTextSource',['../conceptcljonic_1_1concepts__detail_1_1_string_factory_text_source.html',1,'cljonic::concepts_detail']]]
+  ['rangeclassargument_0',['RangeClassArgument',['../conceptcljonic_1_1concepts__detail_1_1_range_class_argument.html',1,'cljonic::concepts_detail']]],
+  ['rangeelement_1',['RangeElement',['../conceptcljonic_1_1concepts_1_1_range_element.html',1,'cljonic::concepts']]],
+  ['rangefactoryarguments_2',['RangeFactoryArguments',['../conceptcljonic_1_1concepts__detail_1_1_range_factory_arguments.html',1,'cljonic::concepts_detail']]],
+  ['rangefactoryhaselementtype_3',['RangeFactoryHasElementType',['../conceptcljonic_1_1concepts__detail_1_1_range_factory_has_element_type.html',1,'cljonic::concepts_detail']]],
+  ['reducecallable_4',['ReduceCallable',['../conceptcljonic_1_1concepts__detail_1_1_reduce_callable.html',1,'cljonic::concepts_detail']]],
+  ['reducecallablewithinitial_5',['ReduceCallableWithInitial',['../conceptcljonic_1_1concepts__detail_1_1_reduce_callable_with_initial.html',1,'cljonic::concepts_detail']]],
+  ['repeatclassargument_6',['RepeatClassArgument',['../conceptcljonic_1_1concepts__detail_1_1_repeat_class_argument.html',1,'cljonic::concepts_detail']]],
+  ['repeatedlyclassargument_7',['RepeatedlyClassArgument',['../conceptcljonic_1_1concepts__detail_1_1_repeatedly_class_argument.html',1,'cljonic::concepts_detail']]],
+  ['repeatedlystep_8',['RepeatedlyStep',['../conceptcljonic_1_1concepts_1_1_repeatedly_step.html',1,'cljonic::concepts']]]
 ];
