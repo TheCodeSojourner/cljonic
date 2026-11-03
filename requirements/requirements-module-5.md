@@ -4,6 +4,8 @@
 
 This module records higher-order sequence transformation requirements and specifies the collection-shaping/traversal inventory. The free-function API `comp` is explicitly deferred; this does not defer the `cljonic::Map` collection type or its existing operations. The `map`, `reduce`, `filter`, `filterv`, `take`, and `drop` free functions are binding under `REQ-FN-032`, `REQ-FN-034`, `REQ-FN-035`, `REQ-FN-036`, `REQ-FN-037`, and `REQ-FN-038`; `filterv` is an alias of `filter`.
 
+The `take_while` and `drop_while` producers are active under binding `REQ-FN-039` and `REQ-FN-040`, with shared integration under `REQ-FN-041`. Each implementation was explicitly approved and independently verified; paired contract approval did not substitute for operation-level approval or verification.
+
 ## Deferred Higher-Order Free Functions (Non-binding)
 
 > **Deferred future work — non-binding.** The public free function `comp` is not part of the current supported API. Its requirement below records intended future behavior only; the function is not implementation-ready until its lifecycle is approved and its behavioral specification, tests, and implementation are propagated. This deferral does not apply to `cljonic::Map` or existing Map operations, or to the multi-source `map`, `filter`, and `filterv` free functions, which are binding under `REQ-FN-032`, `REQ-FN-035`, and `REQ-FN-036`.
@@ -110,6 +112,55 @@ This module records higher-order sequence transformation requirements and specif
   rationale: the human approved the `drop(count, source)` contract on 2026-11-03 with a take-style owning Vector and runtime-independent source-bound capacity, original-window producer observation, and no traversal when the requested drop covers the observation-window count bound; this approved contract precedes public API publication, tests, and implementation
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-03, rationale_source: origin_artifact}
 
+λ REQ-FN-039(x).
+  ∀ `take_while(predicate, source)`: accepts exactly one predicate followed by one cljonic source ∧ returns an explicit owning `TakeWhile` producer with the source's element type, rather than a materialized collection
+  ∧ ∀ source: a cljonic collection or producer admitted under `REQ-FN-041`, including nested `TakeWhile` and `DropWhile` sources ∧ external C++ ranges, containers, arrays, and a `MapEntry` value used as the source: rejected at compile time
+  ∧ ∀ construction: owns independent copies of source and predicate ∧ invokes neither the predicate nor source producer callbacks ∧ ¬∃ borrowed source lifetime, materialized result cache, result-capacity template parameter, or transducer-only arity
+  ∧ ∀ observation window: the original source traversal limited to at most `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE` source elements and actual iterator exhaustion ∧ respects any smaller source traversal window ∧ determining a traversal budget does not require a preliminary exact-count traversal
+  ∧ ∀ traversal: yields only the initial consecutive elements for which the predicate returns `true` ∧ evaluates the predicate exactly once per examined element ∧ evaluates but does not yield the first false element ∧ stops at that failure, source exhaustion, or the observation bound
+  ∧ ∀ first false element: its production and predicate evaluation MAY occur to establish the boundary ∧ no subsequent source value is produced or examined ∧ no advance beyond the final source element of the observation window
+  ∧ ∀ consumer that stops early: no further source advancement or predicate invocation occurs independently of an explicit subsequent observation
+  ∧ ∀ empty source traversal ∨ zero observation cap: yields no elements and invokes neither predicate nor source producer callbacks
+  ∧ ∀ result: `is_finite()` returns `true` for the explicitly bounded adapter result, including when the underlying source is unbounded ∧ ¬∃ claim of observing the underlying unbounded source completely
+  ∧ ∀ `count(result)`: performs a fresh bounded traversal and returns the exact number of yielded elements ∧ invokes the predicate and source callbacks according to that traversal ∧ preserves the stored source and predicate ∧ shares no cache with subsequent traversal
+  ∧ ∀ predicate, ownership, storage, ordering, consumer admission, and rejected calls: follows `REQ-FN-041`
+  ∧ ∀ operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ no RTTI ∧ preserves input values under their existing authorized external-effect contracts
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-03, compound_by_design: true}
+
+λ REQ-FN-040(x).
+  ∀ `drop_while(predicate, source)`: accepts exactly one predicate followed by one cljonic source ∧ returns an explicit owning `DropWhile` producer with the source's element type, rather than a materialized collection
+  ∧ ∀ source: a cljonic collection or producer admitted under `REQ-FN-041`, including nested `TakeWhile` and `DropWhile` sources ∧ external C++ ranges, containers, arrays, and a `MapEntry` value used as the source: rejected at compile time
+  ∧ ∀ construction: owns independent copies of source and predicate ∧ invokes neither the predicate nor source producer callbacks ∧ ¬∃ borrowed source lifetime, materialized result cache, result-capacity template parameter, or transducer-only arity
+  ∧ ∀ observation window: the original source traversal limited to at most `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE` source elements and actual iterator exhaustion ∧ respects any smaller source traversal window ∧ determining a traversal budget does not require a preliminary exact-count traversal
+  ∧ ∀ traversal: skips only the initial consecutive elements for which the predicate returns `true` ∧ evaluates the predicate exactly once per examined prefix element, including the first false element ∧ retains the first false element and all subsequent elements of the original observation window
+  ∧ ∀ traversal after the first predicate failure: invokes no further predicate calls ∧ subsequent matching elements remain in the result ∧ obtaining the first yielded value MAY require examining the entire matching prefix
+  ∧ ∀ skipped elements: consume the original source observation budget ∧ ¬∃ replenishment of that budget or restart of the source after the skipped prefix ∧ no advance beyond the final source element of the observation window
+  ∧ ∀ consumer that stops early: no further source advancement or predicate invocation occurs independently of an explicit subsequent observation
+  ∧ ∀ all-true observation window ∨ empty source traversal ∨ zero observation cap: yields no elements ∧ empty traversal and zero cap invoke neither predicate nor source producer callbacks
+  ∧ ∀ result: `is_finite()` returns `true` for the explicitly bounded adapter result, including when the underlying source is unbounded ∧ ¬∃ claim of observing the underlying unbounded source completely
+  ∧ ∀ `count(result)`: performs a fresh bounded traversal and returns the exact number of yielded elements ∧ invokes the predicate only through the first false element and source callbacks according to that traversal ∧ preserves the stored source and predicate ∧ shares no cache with subsequent traversal
+  ∧ ∀ predicate, ownership, storage, ordering, consumer admission, and rejected calls: follows `REQ-FN-041`
+  ∧ ∀ operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ no RTTI ∧ preserves input values under their existing authorized external-effect contracts
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-03, compound_by_design: true}
+
+λ REQ-FN-041(x).
+  ∀ `TakeWhile` ∨ `DropWhile`: admitted to the closed cljonic producer/source domain ∧ extends the source admission of `map`, `reduce`, `filter`, `filterv`, `take`, `drop`, `cycle`, `seq`, `into`, and `fits_into`, and the sequenceable domain of `count` and `is_empty`, without changing previously supported types' behavior
+  ∧ ∀ nested adapters: admitted as sources without requiring their producer type to be default-constructible or copy-assignable merely for traversal ∧ source element types still satisfy `NothrowCollectionElement`
+  ∧ ∀ owned source and predicate: copy-constructible without throwing ∧ captures that prevent predicate default construction or assignment do not by themselves reject a factory call
+  ∧ ∀ predicate: follows the `filter` admission contract in `REQ-FN-035` (should be pure, must not allocate, nothrow-invocable on const source elements, exact `bool` result, safe inspectable parameter conversions, and generic-callable nothrow invocation fallback)
+  ∧ ∀ traversal, including exact counting: uses fresh predicate state copied from the stored predicate and the source's existing traversal-copy semantics ∧ no cross-traversal cache ∧ callback state owned by value remains unchanged in the producer ∧ effects through references or static storage remain shared only as permitted by the underlying callback/source contract
+  ∧ ∀ exact-count query followed by traversal or preflight followed by materialization: evaluations MAY repeat ∧ count/fit predictions apply when the independent traversals yield the same values ∧ ¬∃ promise of agreement when authorized external callback state changes those values
+  ∧ ∀ producer default construction, assignment, or storage as a collection element: conditional on the corresponding existing nothrow storage capabilities ∧ ¬∃ relaxation of `NothrowCollectionElement`
+  ∧ ∀ Map source: yields `MapEntry` values ∧ String yields characters ∧ Queue preserves FIFO order ∧ Map and Set prefix/suffix membership and result order depend on semantically unordered traversal
+  ∧ ∀ producer creation and traversal: no additional element equality or ordering capability ∧ producer parameter equality and Map-key/Set-element admission remain unavailable because an owned component is callable
+  ∧ ∀ `equal` ∨ `not_equal`: admits adapter observations in the sequential equality family subject to the existing element-comparison capability and safe-conversion rules, independently of producer parameter equality
+  ∧ ∀ `is_empty`: retains `count(value) == 0` semantics ∧ `fits_into` retains finite-source exact-count preflight for Vector, Queue, and String and insertion-sensitive preflight for Map and Set ∧ these observations MAY now invoke the adapter predicate and source callbacks without changing existing types' contracts
+  ∧ ∀ `next`, `rest`, and `has_next` applied to these adapters or a Cycle whose tail would require these adapters' tail support: unsupported in this slice ∧ rejected with targeted compile-time diagnostics until a separate tail-navigation contract is approved
+  ∧ ∀ `first`: accepts only sequenceable cljonic collections and MapEntry values ∧ rejects all producers, including `TakeWhile` and `DropWhile`, with a targeted compile-time diagnostic ∧ materialize a producer into a supported collection before calling `first`
+  ∧ ∀ invalid source, predicate, or arity: rejected at compile time with a targeted diagnostic naming the operation and its supported source/predicate domain
+  ∧ ∀ lifecycle: contracts are binding but implementation approval and verification remain explicit and separate for `take_while` and `drop_while` ∧ no publication or implementation claim follows from contract approval
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-03, compound_by_design: true}
+
 λ REQ-SEQ-022(x).
   ∀ context: the first-pass collection-shaping and traversal family includes bounded operations corresponding to `take`, `drop`, `take_while`, `drop_while`, `take_last`, `drop_last`, `take_nth`, `nth`, `nthnext`, `nthrest`, `butlast`, `map_indexed`, `rseq`, `second`, `ffirst`, `fnext`, `nfirst`, `nnext`, `some`, `is_every`, `not_any`, `not_every`, `distinct`, `dedupe`, `frequencies`, `reductions`, `split_at`, `split_with`, `mapcat`, `interleave`, `interpose`, `partition`, `partition_all`, `partition_by`, `partitionv`, `partitionv_all`, `group_by`, `flatten`, `tree_seq`, `keep`, `keep_indexed`, `remove`, `replace`, `mapv`, `filter`, `filterv`, `subvec`, `find`, `reduce`, `reduce_kv`, `sort`, and `sort_by`
   ∧ ∀ listed_operation: an individually named downstream behavioral specification exists before it is treated as implementation-ready
@@ -126,4 +177,4 @@ This module records higher-order sequence transformation requirements and specif
 ## Traceability and Related Requirements
 
 - **Downstream Artifact**: Free-function templates for sequence shaping, slicing, filtering, mapping, grouping, and ordering.
-- **Governed REQs**: `REQ-SEQ-022`, `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding), `REQ-FN-035` (binding), `REQ-FN-036` (binding alias), `REQ-FN-037` (binding), `REQ-FN-038` (binding).
+- **Governed REQs**: `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding), `REQ-FN-035` (binding), `REQ-FN-036` (binding alias), `REQ-FN-037` (binding), `REQ-FN-038` (binding), `REQ-FN-039` (binding, active), `REQ-FN-040` (binding, active), `REQ-FN-041` (binding integration contract), `REQ-SEQ-022`.
