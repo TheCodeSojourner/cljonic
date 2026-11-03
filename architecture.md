@@ -17,7 +17,8 @@
   | module4_active_slice(x) → Range(x) ∧ Repeat(x) ∧ Cycle(x) ∧ Iterate(x) ∧ Repeatedly(x) ∧ into(x) ∧ fits_into(x)
   | sequence_conversion(x) → seq(x) ∈ current_collection_api(x) under REQ-SEQ-010
   | stored_collection_building_blocks(x) → govern(higher_order_algorithms(x))
-  | future_expansion(transformations ∨ numeric_algorithms ∨ callable_adapters ∨ set_algebra
+  | active_higher_order_algorithms(x) ≡ map ∧ reduce ∧ filter
+  | future_expansion(transformations_except(map ∧ reduce ∧ filter) ∨ numeric_algorithms ∨ callable_adapters ∨ set_algebra
       ∨ relational_models ∨ regexes ∨ formatting ∨ KeywordEnumNameMapping ∨ Atom)
     → describe(approved_future_expansion) ∧ remain_inactive_until(module_propagated(x))
 
@@ -1039,6 +1040,26 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | preserve(every_source_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
   | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-032)
 
+λ S2_filter_function_contract(x). filter(predicate, source) → admit(CljonicSource(source) ∧ filter_predicate(predicate, source_element_type))(x)
+  | filter_predicate(predicate, element) → require(copy_constructible(predicate) ∧ nothrow_invocable(predicate, const_element) ∧ result_type(predicate) = bool)
+    ∧ preferred(pure_function_with_no_side_effects(predicate))
+  | inspectable_parameter(predicate) → require(SafeImplicitConversion(declared_parameter_type, source_element_type))
+    ∧ narrowing_conversion(x) ∨ domain_crossing(Boolean ∨ character ∨ enumeration ∨ pointer ∨ user_defined)(x) → reject_at_compile_time(x)
+  | uninspectable_predicate(generic_lambda ∨ templated_operator_call) → admit_on(nothrow_invocability(const_element) ∧ result_type = bool)
+  | source_element_type(x) → require(NothrowCollectionElement(source_element_type))
+  | source_capacity_bound(source) ≡ CljonicCollection(source) → source.declared_capacity
+    ∧ CljonicProducer(source) → configured_observable_traversal_cap
+    ∧ capacity_bound_saturated_at(CollectionMaximumElementCount)
+  | result(x) → Vector<source_element_type, source_capacity_bound(source)>
+  | traversal(x) → evaluate_once_per_visited_element(predicate, source_element)
+    ∧ append_when(predicate_result = true) ∧ terminate(when_source_exhausted)
+    ∧ capacity_equals_source_bound → admit_every_observed_element ∧ ¬∃(separate_result_full_termination)
+    ∧ zero_capacity(source) → return(empty_result_without_predicate_invocation)
+  | Map_source(x) ∨ Set_source(x) → traversal_order_semantically_unordered(x)
+  | standard_library_range ∨ container ∨ non_cljonic_source ∨ throwing_predicate ∨ result_type(predicate) ≠ bool → reject_at_compile_time_with(targeted_diagnostic_naming(filter ∧ supported_domains) ∧ REQ-DIAG-009)
+  | preserve(input_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
+  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-035)
+
 λ S2_reduce_function_contract(x). reduce(f, source) ∨ reduce(f, initial, source) → admit(CljonicSource(source) ∧ reducing_function(f) ∧ accumulator_contract(x))(x)
   | reducing_function(f) → require(copy_constructible(f) ∧ nothrow_invocation(f, accumulator, element) ∧ result_type(f) = accumulator_type(x))
   | accumulator_contract(x) → require(NothrowCollectionElement(accumulator_type(x)))
@@ -1538,6 +1559,6 @@ concept SequenceableProducer =
   | module6_numeric_authority(x) ≡ requirements/requirements-module-6.md → govern(checked_arithmetic ∧ callables)
   | module7_extended_domain_authority(x) ≡ requirements/requirements-module-7.md → govern(relations ∧ set_algebra ∧ regex ∧ Atom ∧ formatting ∧ KeywordEnumNameMapping)
 
-λ current_implementation_boundary(x). active_surface(x) ≡ Vector ∧ MapEntry ∧ Map ∧ Set ∧ Queue ∧ String ∧ Variant ∧ Range ∧ Repeat ∧ Cycle ∧ Iterate ∧ Repeatedly ∧ primitive_free_functions ∧ vector_factory ∧ hash_map_factory ∧ map_entry_factory ∧ set_factory ∧ queue_factory ∧ string_factory ∧ variant_factory ∧ into ∧ fits_into
+λ current_implementation_boundary(x). active_surface(x) ≡ Vector ∧ MapEntry ∧ Map ∧ Set ∧ Queue ∧ String ∧ Variant ∧ Range ∧ Repeat ∧ Cycle ∧ Iterate ∧ Repeatedly ∧ primitive_free_functions ∧ map ∧ reduce ∧ filter ∧ vector_factory ∧ hash_map_factory ∧ map_entry_factory ∧ set_factory ∧ queue_factory ∧ string_factory ∧ variant_factory ∧ into ∧ fits_into
   | approved_but_unimplemented(algorithms ∨ regexes) → remain_outside(active_surface(x))
   | approved_but_unimplemented(x) → require(specification_and_implementation_propagated(x)) before(active_surface_inclusion(x))
