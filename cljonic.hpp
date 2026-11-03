@@ -89,10 +89,12 @@
  * ## Producer Types
  *
  * - \ref Cycle "Cycle"
+ * - \ref DropWhile "DropWhile"
  * - \ref Iterate "Iterate"
  * - \ref Range "Range"
  * - \ref Repeat "Repeat"
  * - \ref Repeatedly "Repeatedly"
+ * - \ref TakeWhile "TakeWhile"
  *
  * ## Variant Type
  *
@@ -109,7 +111,7 @@
  * - can_add, \ref CanAssoc "can_assoc", \ref CanConj "can_conj", can_multiply, can_subtract,
  *   \ref CharacterIsValid "character_is_valid", comp, compare, complement, \ref Conj "conj", constantly,
  *   \ref Contains "contains", \ref Count "count", \ref Cycle "cycle"
- * - dec, dedupe, deref, \ref Disj "disj", \ref Dissoc "dissoc", distinct, div, double, \ref Drop "drop", drop_last, drop_while
+ * - dec, dedupe, deref, \ref Disj "disj", \ref Dissoc "dissoc", distinct, div, double, \ref Drop "drop", drop_last, \ref DropWhile "drop_while"
  * - emplace, \ref Empty "empty", \ref Equal "equal", every_pred
  * - ffirst, \ref FilterFunction "filter", \ref FiltervFunction "filterv", find, \ref First "first",
  *   \ref FitsInto "fits_into", fits_print, flatten, float, fnext, fnil, frequencies
@@ -130,7 +132,7 @@
  * replace, replicate, reset, reset_vals, \ref Rest "rest", rseq
  * - second, select_keys, \ref Seq "seq", some, some_fn, sort, sort_by, split_at, split_with, str, \ref StringFactory "string",
  *   sub, subvec, swap, swap_vals
- * - \ref Take "take", take_last, take_nth, take_while, to_byte, to_char, to_double, to_float, to_int, to_long, to_num, to_short,
+ * - \ref Take "take", take_last, take_nth, \ref TakeWhile "take_while", to_byte, to_char, to_double, to_float, to_int, to_long, to_num, to_short,
  *   tree_seq
  * - unsigned_bit_shift_right, update, update_in, update_keys, update_vals
  * - vals, vec, \ref VariantFactory "variant", variant_alternative, variant_size, \ref cljonic::vector "vector", visit
@@ -464,7 +466,7 @@ inline constexpr bool static_extent_fits_v =
 
 // A closed-world tag distinguishing producer families, parallel to collection_kind
 // but for the separate producer nominal domain (CljonicSource ≡ collection ∨ producer).
-enum class producer_kind { none, range, repeat, cycle, iterate, repeatedly };
+enum class producer_kind { none, range, repeat, cycle, iterate, repeatedly, take_while, drop_while };
 
 // The unspecialized form rejects types by default. Each supported producer
 // specializes this trait with its nominal identity and producer kind.
@@ -5964,7 +5966,8 @@ template <typename F, typename Source>
     const auto observed_count = std::min<std::size_t>(static_cast<std::size_t>(source.count()), capacity);
     Vector<Element, capacity> result{};
     auto iterator = source.begin();
-    for (std::size_t index = 0U; index < observed_count; ++index) {
+    const auto end = source.end();
+    for (std::size_t index = 0U; index < observed_count && iterator != end; ++index) {
         const Element element = *iterator;
         concepts_detail::filter_append_if_matching(predicate, element, result);
         // Advance only while another observed element remains, so a producer's
@@ -9050,6 +9053,339 @@ constexpr auto pop([[maybe_unused]] const C& collection) noexcept -> void {
 
 } // namespace cljonic
 // End cljonic-pop.hpp
+// Begin cljonic-producer-drop-while.hpp
+#pragma once
+
+// Begin cljonic-producer-take-while.hpp
+#pragma once
+
+
+#include <functional>
+#include <optional>
+#include <ranges>
+#include <utility>
+
+namespace cljonic::concepts_detail {
+
+template <typename Predicate, typename Source>
+concept PredicateProducerArguments =
+    FilterCallable<Predicate, Source> && std::is_nothrow_copy_constructible_v<Predicate> &&
+    std::is_nothrow_copy_constructible_v<Source>;
+
+template <typename Predicate, typename Source, bool DropPrefix>
+    requires PredicateProducerArguments<Predicate, Source>
+class PredicateProducer {
+  public:
+    using value_type = std::ranges::range_value_t<const Source>;
+
+    class const_iterator {
+      public:
+        using value_type = PredicateProducer::value_type;
+        using difference_type = std::ptrdiff_t;
+
+        constexpr const_iterator() noexcept = default;
+
+        constexpr const_iterator(const Source& source, const Predicate& predicate) noexcept {
+            if constexpr (CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE != 0U) {
+                predicate_.emplace(predicate);
+                current_ = std::ranges::begin(source);
+                end_ = std::ranges::end(source);
+                remaining_ = CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
+                establish_boundary();
+            }
+        }
+
+        constexpr const_iterator(const const_iterator&) noexcept = default;
+
+        constexpr auto operator=(const const_iterator& other) noexcept -> const_iterator& {
+            if (this != &other) {
+                predicate_.reset();
+                if (other.predicate_) {
+                    predicate_.emplace(*other.predicate_);
+                }
+                current_ = other.current_;
+                end_ = other.end_;
+                remaining_ = other.remaining_;
+            }
+            return *this;
+        }
+
+        [[nodiscard]] constexpr auto operator*() const noexcept -> decltype(auto) {
+            return *current_;
+        }
+
+        constexpr auto operator++() noexcept -> const_iterator& {
+            advance_source();
+            if constexpr (!DropPrefix) {
+                establish_boundary();
+            }
+            return *this;
+        }
+
+        constexpr auto operator++(int) noexcept -> const_iterator {
+            auto previous = *this;
+            ++(*this);
+            return previous;
+        }
+
+        [[nodiscard]] friend constexpr auto operator==(const const_iterator& iterator,
+                                                       [[maybe_unused]] std::default_sentinel_t sentinel) noexcept
+            -> bool {
+            return iterator.remaining_ == 0U;
+        }
+
+      private:
+        constexpr void advance_source() noexcept {
+            if (remaining_ == 0U) {
+                return;
+            }
+            --remaining_;
+            if (remaining_ != 0U) {
+                ++current_;
+                check_endpoint();
+            }
+        }
+
+        constexpr void check_endpoint() noexcept {
+            if (current_ == end_) {
+                remaining_ = 0U;
+            }
+        }
+
+        constexpr void establish_boundary() noexcept {
+            check_endpoint();
+            if constexpr (DropPrefix) {
+                skip_prefix();
+            } else {
+                check_prefix();
+            }
+        }
+
+        constexpr void check_prefix() noexcept {
+            if (remaining_ != 0U && !std::invoke(std::as_const(*predicate_), *current_)) {
+                remaining_ = 0U;
+            }
+        }
+
+        constexpr void skip_prefix() noexcept {
+            while (remaining_ != 0U && std::invoke(std::as_const(*predicate_), *current_)) {
+                advance_source();
+            }
+        }
+
+        std::optional<Predicate> predicate_{};
+        std::ranges::iterator_t<const Source> current_{};
+        std::ranges::sentinel_t<const Source> end_{};
+        std::size_t remaining_{0U};
+    };
+
+    constexpr PredicateProducer() noexcept
+        requires std::is_nothrow_default_constructible_v<Source> && std::is_nothrow_default_constructible_v<Predicate>
+        : source_{}, predicate_{} {
+    }
+
+    constexpr PredicateProducer(const Predicate& predicate, const Source& source) noexcept
+        : source_(source), predicate_(predicate) {
+    }
+
+    [[nodiscard]] constexpr auto begin() const noexcept -> const_iterator {
+        return const_iterator{source_, predicate_};
+    }
+
+    [[nodiscard]] constexpr auto end() const noexcept -> std::default_sentinel_t {
+        return {};
+    }
+
+    [[nodiscard]] constexpr auto count() const noexcept -> std::size_t {
+        std::size_t result = 0U;
+        for ([[maybe_unused]] const auto& element : *this) {
+            ++result;
+        }
+        return result;
+    }
+
+    [[nodiscard]] constexpr auto is_finite() const noexcept -> bool {
+        return true;
+    }
+
+  private:
+    Source source_;
+    Predicate predicate_;
+};
+
+template <typename Predicate, typename Source, bool DropPrefix>
+struct producer_traits<PredicateProducer<Predicate, Source, DropPrefix>> {
+    static constexpr bool is_cljonic_producer = true;
+    static constexpr producer_kind kind = DropPrefix ? producer_kind::drop_while : producer_kind::take_while;
+};
+
+template <typename Predicate, typename Source, bool DropPrefix>
+struct contains_callable<PredicateProducer<Predicate, Source, DropPrefix>> : std::true_type {};
+
+template <typename Predicate, typename Source, bool DropPrefix>
+struct contains_floating_point<PredicateProducer<Predicate, Source, DropPrefix>> : contains_floating_point<Source> {};
+
+template <typename Predicate, typename Source, bool DropPrefix>
+struct contains_standard_range<PredicateProducer<Predicate, Source, DropPrefix>> : contains_standard_range<Source> {};
+
+template <typename Predicate, typename Source, bool DropPrefix>
+struct walker_coverage<PredicateProducer<Predicate, Source, DropPrefix>> {
+    static constexpr bool declared = true;
+};
+
+} // namespace cljonic::concepts_detail
+
+namespace cljonic {
+
+/** \anchor TakeWhile
+ * \c take_while(predicate, source) returns a producer yielding consecutive values from the start of \c source while \c
+ * predicate returns \c true. The first value for which the predicate returns \c false and all later values are
+ * excluded. An empty source or a predicate that returns \c false for the first value gives an empty result.
+ *
+ * Pass any cljonic collection or producer as the source. The predicate must return \c bool, accept a const source
+ * element without throwing, and must not allocate. Declare lambdas \c noexcept and avoid side effects, as with \ref
+ * FilterFunction "filter". Source and predicate must be copyable without throwing; captured lambdas are supported.
+ *
+ * The result keeps its own copies of the inputs and leaves them unchanged. Creating it does not evaluate values;
+ * evaluation happens when you traverse it or call an observation such as \ref Count "count". Each traversal starts
+ * again, so counting and then consuming can run callbacks twice. If a source callback depends on changing external
+ * data, the two traversals may give different results.
+ *
+ * Even an unbounded source is inspected only up to the configured collection maximum. Map and Set have no guaranteed
+ * traversal order, so use an ordered source when a particular prefix matters. External C++ ranges and individual
+ * MapEntry values are not accepted as sources.
+ *
+~~~~~{.cpp}
+#include "cljonic.hpp"
+using namespace cljonic;
+
+int main() {
+  constexpr auto below_three = [](int n) noexcept { return n < 3; };
+  constexpr auto prefix = take_while(below_three, vector(1, 2, 4, 1));
+  static_assert(count(prefix) == 2);
+  static_assert(equal(prefix, vector(1, 2)));
+  static_assert(count(take_while(below_three, queue(1, 2, 4))) == 2);
+  static_assert(count(take_while([](char c) noexcept { return c < 'c'; },
+                                 string("abcd"))) == 2);
+  static_assert(count(take_while([](auto) noexcept { return true; },
+                                 hash_map(1, 2))) == 1);
+  static_assert(count(take_while([](int) noexcept { return true; },
+                                 hash_set(1, 2))) == 2);
+  static_assert(count(take_while(below_three, repeat(2, 1))) == 2);
+  static_assert(count(take_while(below_three, cycle(vector(1, 4)))) == 1);
+  static_assert(
+      count(take_while(below_three,
+                       iterate([](int n) noexcept { return n + 1; }, 1))) == 2);
+  static_assert(count(take_while(below_three, repeatedly(2, []() noexcept {
+                                   return 1;
+                                 }))) == 2);
+  static_assert(count(take_while(below_three, prefix)) == 2);
+  const auto limit = 3;
+  const auto runtime =
+      take_while([limit](int n) noexcept { return n < limit; }, range(1, 5));
+  return equal(runtime, vector(1, 2)) ? 0 : 1;
+}
+~~~~~
+ */
+template <typename Predicate, typename Source>
+using TakeWhile = concepts_detail::PredicateProducer<Predicate, Source, false>;
+
+template <typename Predicate, typename Source>
+    requires concepts_detail::PredicateProducerArguments<std::decay_t<Predicate>, Source>
+[[nodiscard]] constexpr auto take_while(const Predicate& predicate, const Source& source) noexcept
+    -> TakeWhile<std::decay_t<Predicate>, Source> {
+    return {predicate, source};
+}
+
+template <typename... Args>
+constexpr auto take_while([[maybe_unused]] const Args&... args) noexcept -> concepts_detail::RejectedProducerFactory {
+    static_assert(concepts_detail::dependent_false<Args...>,
+                  "cljonic::take_while: expected a predicate and one cljonic source, both copyable without throwing. "
+                  "The predicate must return exactly bool without throwing on a const source element, with safe "
+                  "inspectable parameter conversions. External C++ ranges and MapEntry sources are not supported.");
+    return {};
+}
+
+} // namespace cljonic
+// End cljonic-producer-take-while.hpp
+
+namespace cljonic {
+
+/** \anchor DropWhile
+ * \c drop_while(predicate, source) returns a producer that skips values from the start of \c source while \c predicate
+ * returns \c true. It keeps the first value for which the predicate returns \c false and every value after it, without
+ * calling the predicate again. An empty source or a predicate that returns \c true for every inspected value gives an
+ * empty result.
+ *
+ * Pass any cljonic collection or producer as the source. The predicate must return \c bool, accept a const source
+ * element without throwing, and must not allocate. Declare lambdas \c noexcept and avoid side effects, as with \ref
+ * FilterFunction "filter". Source and predicate must be copyable without throwing; captured lambdas are supported.
+ *
+ * The result keeps its own copies of the inputs and leaves them unchanged. Creating it does not evaluate values;
+ * accessing its first value may scan all initial values for which the predicate returns \c true. Each traversal starts
+ * again, so \ref Count "count" followed by consumption can run callbacks twice. If a source callback depends on
+ * changing external data, the two traversals may give different results.
+ *
+ * Even an unbounded source is inspected only up to the configured collection maximum. Skipped values count toward that
+ * limit: with a limit of 100 and three skipped values, at most 97 values remain. Map and Set have no guaranteed
+ * traversal order, so use an ordered source when a particular suffix matters. External C++ ranges and individual
+ * MapEntry values are not accepted as sources.
+ *
+~~~~~{.cpp}
+#include "cljonic.hpp"
+using namespace cljonic;
+
+int main() {
+  constexpr auto below_three = [](int n) noexcept { return n < 3; };
+  constexpr auto suffix = drop_while(below_three, vector(1, 2, 4, 1));
+  static_assert(count(suffix) == 2);
+  static_assert(equal(suffix, vector(4, 1)));
+  static_assert(count(drop_while(below_three, queue(1, 2, 4))) == 1);
+  static_assert(count(drop_while([](char c) noexcept { return c < 'c'; },
+                                 string("abcd"))) == 2);
+  static_assert(count(drop_while([](auto) noexcept { return false; },
+                                 hash_map(1, 2))) == 1);
+  static_assert(count(drop_while([](int) noexcept { return false; },
+                                 hash_set(1, 2))) == 2);
+  static_assert(count(drop_while(below_three, repeat(2, 1))) == 0);
+  static_assert(
+      equal(take(1, drop_while(below_three, cycle(vector(1, 4)))), vector(4)));
+  static_assert(equal(
+      take(1, drop_while(below_three,
+                         iterate([](int n) noexcept { return n + 1; }, 1))),
+      vector(3)));
+  static_assert(count(drop_while(below_three, repeatedly(2, []() noexcept {
+                                   return 1;
+                                 }))) == 0);
+  static_assert(count(drop_while(below_three, suffix)) == 2);
+  const auto limit = 3;
+  const auto runtime =
+      drop_while([limit](int n) noexcept { return n < limit; }, range(1, 5));
+  return equal(runtime, vector(3, 4)) ? 0 : 1;
+}
+~~~~~
+ */
+template <typename Predicate, typename Source>
+using DropWhile = concepts_detail::PredicateProducer<Predicate, Source, true>;
+
+template <typename Predicate, typename Source>
+    requires concepts_detail::PredicateProducerArguments<std::decay_t<Predicate>, Source>
+[[nodiscard]] constexpr auto drop_while(const Predicate& predicate, const Source& source) noexcept
+    -> DropWhile<std::decay_t<Predicate>, Source> {
+    return {predicate, source};
+}
+
+template <typename... Args>
+constexpr auto drop_while([[maybe_unused]] const Args&... args) noexcept -> concepts_detail::RejectedProducerFactory {
+    static_assert(concepts_detail::dependent_false<Args...>,
+                  "cljonic::drop_while: expected a predicate and one cljonic source, both copyable without throwing. "
+                  "The predicate must return exactly bool without throwing on a const source element, with safe "
+                  "inspectable parameter conversions. External C++ ranges and MapEntry sources are not supported.");
+    return {};
+}
+
+} // namespace cljonic
+// End cljonic-producer-drop-while.hpp
 // Begin cljonic-reduce.hpp
 #pragma once
 

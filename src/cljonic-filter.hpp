@@ -133,7 +133,8 @@ template <typename F, typename Source>
     const auto observed_count = std::min<std::size_t>(static_cast<std::size_t>(source.count()), capacity);
     Vector<Element, capacity> result{};
     auto iterator = source.begin();
-    for (std::size_t index = 0U; index < observed_count; ++index) {
+    const auto end = source.end();
+    for (std::size_t index = 0U; index < observed_count && iterator != end; ++index) {
         const Element element = *iterator;
         concepts_detail::filter_append_if_matching(predicate, element, result);
         // Advance only while another observed element remains, so a producer's

@@ -78,10 +78,12 @@
  * ## Producer Types
  *
  * - \ref Cycle "Cycle"
+ * - \ref DropWhile "DropWhile"
  * - \ref Iterate "Iterate"
  * - \ref Range "Range"
  * - \ref Repeat "Repeat"
  * - \ref Repeatedly "Repeatedly"
+ * - \ref TakeWhile "TakeWhile"
  *
  * ## Variant Type
  *
@@ -98,7 +100,7 @@
  * - can_add, \ref CanAssoc "can_assoc", \ref CanConj "can_conj", can_multiply, can_subtract,
  *   \ref CharacterIsValid "character_is_valid", comp, compare, complement, \ref Conj "conj", constantly,
  *   \ref Contains "contains", \ref Count "count", \ref Cycle "cycle"
- * - dec, dedupe, deref, \ref Disj "disj", \ref Dissoc "dissoc", distinct, div, double, \ref Drop "drop", drop_last, drop_while
+ * - dec, dedupe, deref, \ref Disj "disj", \ref Dissoc "dissoc", distinct, div, double, \ref Drop "drop", drop_last, \ref DropWhile "drop_while"
  * - emplace, \ref Empty "empty", \ref Equal "equal", every_pred
  * - ffirst, \ref FilterFunction "filter", \ref FiltervFunction "filterv", find, \ref First "first",
  *   \ref FitsInto "fits_into", fits_print, flatten, float, fnext, fnil, frequencies
@@ -119,7 +121,7 @@
  * replace, replicate, reset, reset_vals, \ref Rest "rest", rseq
  * - second, select_keys, \ref Seq "seq", some, some_fn, sort, sort_by, split_at, split_with, str, \ref StringFactory "string",
  *   sub, subvec, swap, swap_vals
- * - \ref Take "take", take_last, take_nth, take_while, to_byte, to_char, to_double, to_float, to_int, to_long, to_num, to_short,
+ * - \ref Take "take", take_last, take_nth, \ref TakeWhile "take_while", to_byte, to_char, to_double, to_float, to_int, to_long, to_num, to_short,
  *   tree_seq
  * - unsigned_bit_shift_right, update, update_in, update_keys, update_vals
  * - vals, vec, \ref VariantFactory "variant", variant_alternative, variant_size, \ref cljonic::vector "vector", visit
@@ -199,10 +201,12 @@
 #include <cljonic-peek.hpp>
 #include <cljonic-pop.hpp>
 #include <cljonic-producer-cycle.hpp>
+#include <cljonic-producer-drop-while.hpp>
 #include <cljonic-producer-iterate.hpp>
 #include <cljonic-producer-range.hpp>
 #include <cljonic-producer-repeat.hpp>
 #include <cljonic-producer-repeatedly.hpp>
+#include <cljonic-producer-take-while.hpp>
 #include <cljonic-reduce.hpp>
 #include <cljonic-rest.hpp>
 #include <cljonic-seq.hpp>
