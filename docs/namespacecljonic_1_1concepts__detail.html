@@ -303,6 +303,7 @@ Concepts</h2></td></tr>
 <tr class="memitem:ContainsIndexedCollection" id="r_ContainsIndexedCollection"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_contains_indexed_collection.html">ContainsIndexedCollection</a></td></tr>
 <tr class="memitem:ContainsLookupCollection" id="r_ContainsLookupCollection"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_contains_lookup_collection.html">ContainsLookupCollection</a></td></tr>
 <tr class="memitem:ContainsSupportedCollection" id="r_ContainsSupportedCollection"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_contains_supported_collection.html">ContainsSupportedCollection</a></td></tr>
+<tr class="memitem:CountedSourceArguments" id="r_CountedSourceArguments"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_counted_source_arguments.html">CountedSourceArguments</a></td></tr>
 <tr class="memitem:CountPreflightDestination" id="r_CountPreflightDestination"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_count_preflight_destination.html">CountPreflightDestination</a></td></tr>
 <tr class="memitem:CycleClassArgument" id="r_CycleClassArgument"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_cycle_class_argument.html">CycleClassArgument</a></td></tr>
 <tr class="memitem:DisjAdmissible" id="r_DisjAdmissible"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_disj_admissible.html">DisjAdmissible</a></td></tr>
@@ -349,7 +350,6 @@ Concepts</h2></td></tr>
 <tr class="memitem:StringFactoryCapacityArguments" id="r_StringFactoryCapacityArguments"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_string_factory_capacity_arguments.html">StringFactoryCapacityArguments</a></td></tr>
 <tr class="memitem:StringFactoryDeducedArguments" id="r_StringFactoryDeducedArguments"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_string_factory_deduced_arguments.html">StringFactoryDeducedArguments</a></td></tr>
 <tr class="memitem:StringFactoryTextSource" id="r_StringFactoryTextSource"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_string_factory_text_source.html">StringFactoryTextSource</a></td></tr>
-<tr class="memitem:TakeArguments" id="r_TakeArguments"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_take_arguments.html">TakeArguments</a></td></tr>
 <tr class="memitem:ValidCycleSource" id="r_ValidCycleSource"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_valid_cycle_source.html">ValidCycleSource</a></td></tr>
 <tr class="memitem:ValidRepeatedlyStep" id="r_ValidRepeatedlyStep"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_valid_repeatedly_step.html">ValidRepeatedlyStep</a></td></tr>
 <tr class="memitem:VariantClassArgument" id="r_VariantClassArgument"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_variant_class_argument.html">VariantClassArgument</a></td></tr>
@@ -475,6 +475,8 @@ Functions</h2></td></tr>
 <tr class="memitem:a039a85f3c6de2bd4f9718600b07ae8b4 template"><td class="memItemLeft">constexpr void&#160;</td><td class="memItemRight"><a class="el" href="#a039a85f3c6de2bd4f9718600b07ae8b4">fold_dissoc_keys_into</a> (C &amp;result) noexcept</td></tr>
 <tr class="memitem:a36db1cb962823291250b17046365c1a9" id="r_a36db1cb962823291250b17046365c1a9"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K, typename... Rest&gt; </td></tr>
 <tr class="memitem:a36db1cb962823291250b17046365c1a9 template"><td class="memItemLeft">constexpr void&#160;</td><td class="memItemRight"><a class="el" href="#a36db1cb962823291250b17046365c1a9">fold_dissoc_keys_into</a> (C &amp;result, const K &amp;key, const Rest &amp;... rest) noexcept</td></tr>
+<tr class="memitem:ace0e30486247690ae5e2f84b10840d2b" id="r_ace0e30486247690ae5e2f84b10840d2b"><td class="memTemplParams" colspan="2">template&lt;typename Source, typename Result&gt; </td></tr>
+<tr class="memitem:ace0e30486247690ae5e2f84b10840d2b template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#ace0e30486247690ae5e2f84b10840d2b">copy_drop_suffix</a> (const Source &amp;source, std::size_t observed_count, Result &amp;result, std::size_t skipped_count) noexcept -&gt; void</td></tr>
 <tr class="memitem:aa5211efa94af71b323cf0a5e407e0564" id="r_aa5211efa94af71b323cf0a5e407e0564"><td class="memTemplParams" colspan="2">template&lt;typename Lhs, typename Rhs&gt; </td></tr>
 <tr class="memitem:aa5211efa94af71b323cf0a5e407e0564 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#aa5211efa94af71b323cf0a5e407e0564">equal_prefix_walk</a> (const Lhs &amp;lhs, const Rhs &amp;rhs) noexcept -&gt; bool</td></tr>
 <tr class="memitem:abc5e9e8467b9efde3114c86bd6c88f42" id="r_abc5e9e8467b9efde3114c86bd6c88f42"><td class="memTemplParams" colspan="2">template&lt;typename Source&gt; </td></tr>
@@ -566,6 +568,8 @@ Variables</h2></td></tr>
 <tr class="memitem:abc2e283f4597b845ddc449fd8ad2e763 template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#abc2e283f4597b845ddc449fd8ad2e763">walker_coverage_declared_v</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1walker__coverage.html">walker_coverage</a>&lt;std::remove_cvref_t&lt;T&gt;&gt;::declared</td></tr>
 <tr class="memitem:a6c8771eeec10f3494eeef251f0cfe83a" id="r_a6c8771eeec10f3494eeef251f0cfe83a"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
 <tr class="memitem:a6c8771eeec10f3494eeef251f0cfe83a template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#a6c8771eeec10f3494eeef251f0cfe83a">walker_coverage_ok_v</a> = !<a class="el" href="#a0a63495fe961d6af01e7246e4e59dc21">is_cljonic_composite_v</a>&lt;T&gt; || <a class="el" href="#abc2e283f4597b845ddc449fd8ad2e763">walker_coverage_declared_v</a>&lt;T&gt;</td></tr>
+<tr class="memitem:a5ac05bfee040e39ad5518f71860d60bc" id="r_a5ac05bfee040e39ad5518f71860d60bc"><td class="memTemplParams" colspan="2">template&lt;typename Source&gt; </td></tr>
+<tr class="memitem:a5ac05bfee040e39ad5518f71860d60bc template"><td class="memItemLeft">constexpr std::size_t&#160;</td><td class="memItemRight"><a class="el" href="#a5ac05bfee040e39ad5518f71860d60bc">SourceResultCapacity</a></td></tr>
 <tr class="memitem:a0e5ef1ed76de5a2bd3b484a006305a74" id="r_a0e5ef1ed76de5a2bd3b484a006305a74"><td class="memTemplParams" colspan="2">template&lt;typename C, typename... Values&gt; </td></tr>
 <tr class="memitem:a0e5ef1ed76de5a2bd3b484a006305a74 template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#a0e5ef1ed76de5a2bd3b484a006305a74">all_conj_values_admissible_v</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1all__conj__values__admissible.html">all_conj_values_admissible</a>&lt;C, Values...&gt;::value</td></tr>
 <tr class="memitem:a62dcbd5e44e518bd16ca2489a0ab8c22" id="r_a62dcbd5e44e518bd16ca2489a0ab8c22"><td class="memTemplParams" colspan="2">template&lt;typename C, typename... Keys&gt; </td></tr>
@@ -588,8 +592,6 @@ Variables</h2></td></tr>
 <tr class="memitem:ab3f077c21cea0bd15d5eb26942575617" id="r_ab3f077c21cea0bd15d5eb26942575617"><td class="memItemLeft">constexpr std::size_t&#160;</td><td class="memItemRight"><a class="el" href="#ab3f077c21cea0bd15d5eb26942575617">ReduceRequiredParameterCount</a> = 2U</td></tr>
 <tr class="memitem:ab88696ee448750e90271f862b46ea934" id="r_ab88696ee448750e90271f862b46ea934"><td class="memTemplParams" colspan="2">template&lt;typename F, typename Source&gt; </td></tr>
 <tr class="memitem:ab88696ee448750e90271f862b46ea934 template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="#ab88696ee448750e90271f862b46ea934">reduce_parameters_safe_v</a></td></tr>
-<tr class="memitem:a2374bbc477fc7db7a3c4fe0c345269c8" id="r_a2374bbc477fc7db7a3c4fe0c345269c8"><td class="memTemplParams" colspan="2">template&lt;typename Source&gt; </td></tr>
-<tr class="memitem:a2374bbc477fc7db7a3c4fe0c345269c8 template"><td class="memItemLeft">constexpr std::size_t&#160;</td><td class="memItemRight"><a class="el" href="#a2374bbc477fc7db7a3c4fe0c345269c8">TakeResultCapacity</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="anchor" id="Seq"></a> The <b>seq</b> free function returns the logical traversal elements of a <span class="tt"><a class="el" href="classcljonic_1_1_vector.html">Vector</a></span>, <span class="tt"><a class="el" href="classcljonic_1_1_map.html">Map</a></span>, <span class="tt"><a class="el" href="classcljonic_1_1_set.html">Set</a></span>, <span class="tt"><a class="el" href="classcljonic_1_1_queue.html">Queue</a></span>, or <span class="tt"><a class="el" href="classcljonic_1_1_string.html">String</a></span> value, or of a supported <a class="el" href="classcljonic_1_1_range.html#Range" title="Range">Range</a>, <a class="el" href="classcljonic_1_1_repeat.html#Repeat" title="Repeat">Repeat</a>, <a class="el" href="classcljonic_1_1_cycle.html#Cycle" title="Cycle">Cycle</a>, <a class="el" href="classcljonic_1_1_iterate.html#Iterate" title="Iterate">Iterate</a>, or <a class="el" href="classcljonic_1_1_repeatedly.html#Repeatedly" title="Repeatedly">Repeatedly</a> producer, as an owning, value-semantic <a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vector</a> in traversal order.</p>
@@ -645,7 +647,7 @@ Variables</h2></td></tr>
 <div class="line">             : 1;</div>
 <div class="line">}</div>
 <div class="ttc" id="aclasscljonic_1_1_range_html"><div class="ttname"><a href="classcljonic_1_1_range.html">cljonic::Range</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-range_8hpp_source.html#l00098">cljonic-producer-range.hpp:98</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a2e9b3e27bfcfd4e694144ca6f355b122a6ba8844da718b4a65f60dbfd0d92d6ef"><div class="ttname"><a href="#a2e9b3e27bfcfd4e694144ca6f355b122a6ba8844da718b4a65f60dbfd0d92d6ef">cljonic::concepts_detail::collection_kind::vector</a></div><div class="ttdeci">@ vector</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00069">cljonic-concepts.hpp:69</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a2e9b3e27bfcfd4e694144ca6f355b122a6ba8844da718b4a65f60dbfd0d92d6ef"><div class="ttname"><a href="#a2e9b3e27bfcfd4e694144ca6f355b122a6ba8844da718b4a65f60dbfd0d92d6ef">cljonic::concepts_detail::collection_kind::vector</a></div><div class="ttdeci">@ vector</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00071">cljonic-concepts.hpp:71</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-assoc_8hpp_source.html#l00006">cljonic-assoc.hpp:6</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a0276d2cc4a963af9ddbc2ad7aa6ac4f0"><div class="ttname"><a href="namespacecljonic.html#a0276d2cc4a963af9ddbc2ad7aa6ac4f0">cljonic::map_entry</a></div><div class="ttdeci">constexpr auto map_entry(Args &amp;&amp;... args) noexcept -&gt; MapEntry&lt; concepts_detail::map_entry_factory_key_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, concepts_detail::map_entry_factory_value_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-map-entry_8hpp_source.html#l00174">cljonic-collection-map-entry.hpp:174</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a11e270768e9485445f2885cdecb1c4eb"><div class="ttname"><a href="namespacecljonic.html#a11e270768e9485445f2885cdecb1c4eb">cljonic::vector</a></div><div class="ttdeci">constexpr auto vector(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Vector&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-vector_8hpp_source.html#l00400">cljonic-collection-vector.hpp:400</a></div></div>
@@ -672,7 +674,7 @@ template&lt;typename F&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00135">135</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00137">137</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -979,7 +981,7 @@ template&lt;typename RequestedElementType, typename... Args&gt; </div>
 <tr><td class="fieldname"><a id="a2e9b3e27bfcfd4e694144ca6f355b122ab45cffe084dd3d20d928bee85e7b0f21" name="a2e9b3e27bfcfd4e694144ca6f355b122ab45cffe084dd3d20d928bee85e7b0f21"></a>string&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00069">69</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00071">71</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -1042,7 +1044,7 @@ template&lt;typename RequestedElementType, typename... Args&gt; </div>
 <tr><td class="fieldname"><a id="ae7b205beabb5ee36d468e0b1ca49b74ca806d8370a72f4ed8a7a60da812dac8b2" name="ae7b205beabb5ee36d468e0b1ca49b74ca806d8370a72f4ed8a7a60da812dac8b2"></a>repeatedly&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00265">265</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00267">267</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -1272,6 +1274,49 @@ template&lt;typename C, typename V, typename... Rest&gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="cljonic-can-conj_8hpp_source.html#l00023">23</a> of file <a class="el" href="cljonic-can-conj_8hpp_source.html">cljonic-can-conj.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ace0e30486247690ae5e2f84b10840d2b" name="ace0e30486247690ae5e2f84b10840d2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace0e30486247690ae5e2f84b10840d2b">&#9670;&#160;</a></span>copy_drop_suffix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Source, typename Result&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::concepts_detail::copy_drop_suffix </td>
+          <td>(</td>
+          <td class="paramtype">const Source &amp;</td>          <td class="paramname"><span class="paramname"><em>source</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t</td>          <td class="paramname"><span class="paramname"><em>observed_count</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Result &amp;</td>          <td class="paramname"><span class="paramname"><em>result</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t</td>          <td class="paramname"><span class="paramname"><em>skipped_count</em></span>&#160;) -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-drop_8hpp_source.html#l00015">15</a> of file <a class="el" href="cljonic-drop_8hpp_source.html">cljonic-drop.hpp</a>.</p>
 
 </div>
 </div>
@@ -1755,7 +1800,7 @@ template&lt;typename Dest, typename Value&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00699">699</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00717">717</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -2014,7 +2059,7 @@ template&lt;ProducerCount Count&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00690">690</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00692">692</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -2327,7 +2372,7 @@ template&lt;IntegerIndexType IndexType&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00217">217</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00219">219</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -2542,7 +2587,7 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00238">238</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00240">240</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -2568,7 +2613,7 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00322">322</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00324">324</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -2594,7 +2639,7 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00316">316</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00318">318</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -2620,7 +2665,7 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00352">352</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00354">354</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -2710,7 +2755,7 @@ template&lt;typename...&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00076">76</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00078">78</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -2756,13 +2801,13 @@ template&lt;typename T&gt; </div>
 <div class="line">        <span class="keywordflow">return</span> <a class="code hl_enumvalue" href="#ac021cea1f07aaa9ffdaf2830762bea39a334c4a4c42fdb79d7ebc3e73b517e6f8">equality_family::none</a>;</div>
 <div class="line">    }</div>
 <div class="line">}()</div>
-<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a2e9b3e27bfcfd4e694144ca6f355b122a1d78dc8ed51214e518b5114fe24490ae"><div class="ttname"><a href="#a2e9b3e27bfcfd4e694144ca6f355b122a1d78dc8ed51214e518b5114fe24490ae">cljonic::concepts_detail::collection_kind::map</a></div><div class="ttdeci">@ map</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00069">cljonic-concepts.hpp:69</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a2e9b3e27bfcfd4e694144ca6f355b122aa9d1cbf71942327e98b40cf5ef38a960"><div class="ttname"><a href="#a2e9b3e27bfcfd4e694144ca6f355b122aa9d1cbf71942327e98b40cf5ef38a960">cljonic::concepts_detail::collection_kind::queue</a></div><div class="ttdeci">@ queue</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00069">cljonic-concepts.hpp:69</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a2e9b3e27bfcfd4e694144ca6f355b122ab45cffe084dd3d20d928bee85e7b0f21"><div class="ttname"><a href="#a2e9b3e27bfcfd4e694144ca6f355b122ab45cffe084dd3d20d928bee85e7b0f21">cljonic::concepts_detail::collection_kind::string</a></div><div class="ttdeci">@ string</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00069">cljonic-concepts.hpp:69</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a2e9b3e27bfcfd4e694144ca6f355b122acdaeeeba9b4a4c5ebf042c0215a7bb0e"><div class="ttname"><a href="#a2e9b3e27bfcfd4e694144ca6f355b122acdaeeeba9b4a4c5ebf042c0215a7bb0e">cljonic::concepts_detail::collection_kind::set</a></div><div class="ttdeci">@ set</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00069">cljonic-concepts.hpp:69</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a73f7ff005d9e039617b5e5cebc565db1"><div class="ttname"><a href="#a73f7ff005d9e039617b5e5cebc565db1">cljonic::concepts_detail::is_cljonic_collection_v</a></div><div class="ttdeci">constexpr bool is_cljonic_collection_v</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00235">cljonic-concepts.hpp:235</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a7f57e54306cbb24bed58228def93466f"><div class="ttname"><a href="#a7f57e54306cbb24bed58228def93466f">cljonic::concepts_detail::is_cljonic_producer_v</a></div><div class="ttdeci">constexpr bool is_cljonic_producer_v</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00276">cljonic-concepts.hpp:276</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_aa28e715182329ded226fe9e4779dd265"><div class="ttname"><a href="#aa28e715182329ded226fe9e4779dd265">cljonic::concepts_detail::collection_kind_of_v</a></div><div class="ttdeci">constexpr collection_kind collection_kind_of_v</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00238">cljonic-concepts.hpp:238</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a2e9b3e27bfcfd4e694144ca6f355b122a1d78dc8ed51214e518b5114fe24490ae"><div class="ttname"><a href="#a2e9b3e27bfcfd4e694144ca6f355b122a1d78dc8ed51214e518b5114fe24490ae">cljonic::concepts_detail::collection_kind::map</a></div><div class="ttdeci">@ map</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00071">cljonic-concepts.hpp:71</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a2e9b3e27bfcfd4e694144ca6f355b122aa9d1cbf71942327e98b40cf5ef38a960"><div class="ttname"><a href="#a2e9b3e27bfcfd4e694144ca6f355b122aa9d1cbf71942327e98b40cf5ef38a960">cljonic::concepts_detail::collection_kind::queue</a></div><div class="ttdeci">@ queue</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00071">cljonic-concepts.hpp:71</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a2e9b3e27bfcfd4e694144ca6f355b122ab45cffe084dd3d20d928bee85e7b0f21"><div class="ttname"><a href="#a2e9b3e27bfcfd4e694144ca6f355b122ab45cffe084dd3d20d928bee85e7b0f21">cljonic::concepts_detail::collection_kind::string</a></div><div class="ttdeci">@ string</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00071">cljonic-concepts.hpp:71</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a2e9b3e27bfcfd4e694144ca6f355b122acdaeeeba9b4a4c5ebf042c0215a7bb0e"><div class="ttname"><a href="#a2e9b3e27bfcfd4e694144ca6f355b122acdaeeeba9b4a4c5ebf042c0215a7bb0e">cljonic::concepts_detail::collection_kind::set</a></div><div class="ttdeci">@ set</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00071">cljonic-concepts.hpp:71</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a73f7ff005d9e039617b5e5cebc565db1"><div class="ttname"><a href="#a73f7ff005d9e039617b5e5cebc565db1">cljonic::concepts_detail::is_cljonic_collection_v</a></div><div class="ttdeci">constexpr bool is_cljonic_collection_v</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00237">cljonic-concepts.hpp:237</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a7f57e54306cbb24bed58228def93466f"><div class="ttname"><a href="#a7f57e54306cbb24bed58228def93466f">cljonic::concepts_detail::is_cljonic_producer_v</a></div><div class="ttdeci">constexpr bool is_cljonic_producer_v</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00278">cljonic-concepts.hpp:278</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_aa28e715182329ded226fe9e4779dd265"><div class="ttname"><a href="#aa28e715182329ded226fe9e4779dd265">cljonic::concepts_detail::collection_kind_of_v</a></div><div class="ttdeci">constexpr collection_kind collection_kind_of_v</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00240">cljonic-concepts.hpp:240</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_ac021cea1f07aaa9ffdaf2830762bea39"><div class="ttname"><a href="#ac021cea1f07aaa9ffdaf2830762bea39">cljonic::concepts_detail::equality_family</a></div><div class="ttdeci">equality_family</div><div class="ttdef"><b>Definition</b> <a href="cljonic-equal_8hpp_source.html#l00009">cljonic-equal.hpp:9</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_ac021cea1f07aaa9ffdaf2830762bea39a1d78dc8ed51214e518b5114fe24490ae"><div class="ttname"><a href="#ac021cea1f07aaa9ffdaf2830762bea39a1d78dc8ed51214e518b5114fe24490ae">cljonic::concepts_detail::equality_family::map</a></div><div class="ttdeci">@ map</div><div class="ttdef"><b>Definition</b> <a href="cljonic-equal_8hpp_source.html#l00009">cljonic-equal.hpp:9</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_ac021cea1f07aaa9ffdaf2830762bea39a334c4a4c42fdb79d7ebc3e73b517e6f8"><div class="ttname"><a href="#ac021cea1f07aaa9ffdaf2830762bea39a334c4a4c42fdb79d7ebc3e73b517e6f8">cljonic::concepts_detail::equality_family::none</a></div><div class="ttdeci">@ none</div><div class="ttdef"><b>Definition</b> <a href="cljonic-equal_8hpp_source.html#l00009">cljonic-equal.hpp:9</a></div></div>
@@ -2802,7 +2847,7 @@ template&lt;typename F, typename Source&gt; </div>
 <div class="line">        <span class="keywordflow">return</span> <a class="code hl_struct" href="structcljonic_1_1concepts__detail_1_1_filter_parameters_safe.html">FilterParametersSafe&lt;CallableParameterTypes&lt;F&gt;</a>, Source&gt;::value;</div>
 <div class="line">    }</div>
 <div class="line">}()</div>
-<div class="ttc" id="astructcljonic_1_1concepts__detail_1_1_callable_parameters_html"><div class="ttname"><a href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">cljonic::concepts_detail::CallableParameters</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00128">cljonic-concepts.hpp:128</a></div></div>
+<div class="ttc" id="astructcljonic_1_1concepts__detail_1_1_callable_parameters_html"><div class="ttname"><a href="structcljonic_1_1concepts__detail_1_1_callable_parameters.html">cljonic::concepts_detail::CallableParameters</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00130">cljonic-concepts.hpp:130</a></div></div>
 <div class="ttc" id="astructcljonic_1_1concepts__detail_1_1_filter_parameters_safe_html"><div class="ttname"><a href="structcljonic_1_1concepts__detail_1_1_filter_parameters_safe.html">cljonic::concepts_detail::FilterParametersSafe</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-filter_8hpp_source.html#l00018">cljonic-filter.hpp:18</a></div></div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="cljonic-filter_8hpp_source.html#l00028">28</a> of file <a class="el" href="cljonic-filter_8hpp_source.html">cljonic-filter.hpp</a>.</p>
@@ -2870,10 +2915,10 @@ template&lt;typename T&gt; </div>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"> (std::is_class_v&lt;T&gt; &amp;&amp; !<a class="code hl_variable" href="#a765be20452e6c299fabd87a0818a78a9">is_std_variant_v&lt;T&gt;</a> &amp;&amp; <a class="code hl_concept" href="conceptcljonic_1_1concepts_1_1_nothrow_equality_comparable.html">concepts::NothrowEqualityComparable&lt;T&gt;</a>))</div>
-<div class="ttc" id="aconceptcljonic_1_1concepts_1_1_nothrow_equality_comparable_html"><div class="ttname"><a href="conceptcljonic_1_1concepts_1_1_nothrow_equality_comparable.html">cljonic::concepts::NothrowEqualityComparable</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00445">cljonic-concepts.hpp:445</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a3889b714b08533483ca70718c5f1d55c"><div class="ttname"><a href="#a3889b714b08533483ca70718c5f1d55c">cljonic::concepts_detail::is_cljonic_map_entry_v</a></div><div class="ttdeci">constexpr bool is_cljonic_map_entry_v</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00079">cljonic-concepts.hpp:79</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a765be20452e6c299fabd87a0818a78a9"><div class="ttname"><a href="#a765be20452e6c299fabd87a0818a78a9">cljonic::concepts_detail::is_std_variant_v</a></div><div class="ttdeci">constexpr bool is_std_variant_v</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00303">cljonic-concepts.hpp:303</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a7ee8f3a9044769c0e47cdc29d0df68f6"><div class="ttname"><a href="#a7ee8f3a9044769c0e47cdc29d0df68f6">cljonic::concepts_detail::is_cljonic_variant_v</a></div><div class="ttdeci">constexpr bool is_cljonic_variant_v</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00291">cljonic-concepts.hpp:291</a></div></div>
+<div class="ttc" id="aconceptcljonic_1_1concepts_1_1_nothrow_equality_comparable_html"><div class="ttname"><a href="conceptcljonic_1_1concepts_1_1_nothrow_equality_comparable.html">cljonic::concepts::NothrowEqualityComparable</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00447">cljonic-concepts.hpp:447</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a3889b714b08533483ca70718c5f1d55c"><div class="ttname"><a href="#a3889b714b08533483ca70718c5f1d55c">cljonic::concepts_detail::is_cljonic_map_entry_v</a></div><div class="ttdeci">constexpr bool is_cljonic_map_entry_v</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00081">cljonic-concepts.hpp:81</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a765be20452e6c299fabd87a0818a78a9"><div class="ttname"><a href="#a765be20452e6c299fabd87a0818a78a9">cljonic::concepts_detail::is_std_variant_v</a></div><div class="ttdeci">constexpr bool is_std_variant_v</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00305">cljonic-concepts.hpp:305</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a7ee8f3a9044769c0e47cdc29d0df68f6"><div class="ttname"><a href="#a7ee8f3a9044769c0e47cdc29d0df68f6">cljonic::concepts_detail::is_cljonic_variant_v</a></div><div class="ttdeci">constexpr bool is_cljonic_variant_v</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00293">cljonic-concepts.hpp:293</a></div></div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00019">19</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
 
@@ -2901,7 +2946,7 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00235">235</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00237">237</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -2929,7 +2974,7 @@ template&lt;typename T&gt; </div>
 <b>Initial value:</b><div class="fragment"><div class="line">                                         =</div>
 <div class="line"><a class="code hl_variable" href="#a73f7ff005d9e039617b5e5cebc565db1">is_cljonic_collection_v&lt;T&gt;</a> || <a class="code hl_variable" href="#a7f57e54306cbb24bed58228def93466f">is_cljonic_producer_v&lt;T&gt;</a> || <a class="code hl_variable" href="#a3889b714b08533483ca70718c5f1d55c">is_cljonic_map_entry_v&lt;T&gt;</a> || <a class="code hl_variable" href="#a7ee8f3a9044769c0e47cdc29d0df68f6">is_cljonic_variant_v&lt;T&gt;</a></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00372">372</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00374">374</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -2955,7 +3000,7 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00079">79</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00081">81</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -3007,7 +3052,7 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00276">276</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00278">278</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -3033,7 +3078,7 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00291">291</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00293">293</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -3059,7 +3104,7 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00303">303</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00305">305</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -3157,7 +3202,7 @@ template&lt;typename T&gt; </div>
 <div class="line">    { left == right } <span class="keyword">noexcept</span> -&gt; std::convertible_to&lt;bool&gt;;</div>
 <div class="line">}</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00338">338</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00340">340</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -3183,7 +3228,7 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00279">279</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00281">281</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -3245,6 +3290,43 @@ template&lt;typename F, typename Source&gt; </div>
 
 </div>
 </div>
+<a id="a5ac05bfee040e39ad5518f71860d60bc" name="a5ac05bfee040e39ad5518f71860d60bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ac05bfee040e39ad5518f71860d60bc">&#9670;&#160;</a></span>SourceResultCapacity</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Source&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t cljonic::concepts_detail::SourceResultCapacity</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel constexpr">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">                                                  = [] <span class="keyword">constexpr</span> {</div>
+<div class="line">    <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<a class="code hl_concept" href="conceptcljonic_1_1concepts_1_1_cljonic_collection.html">concepts::CljonicCollection&lt;Source&gt;</a>) {</div>
+<div class="line">        <span class="keyword">constexpr</span> <span class="keyword">auto</span> capacity = Source::capacity();</div>
+<div class="line">        <span class="keywordflow">return</span> capacity &lt; <a class="code hl_variable" href="namespacecljonic.html#a41fa65c16edb0a95aa942c48307777d6">CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</a></div>
+<div class="line">                   ? capacity</div>
+<div class="line">                   : <a class="code hl_variable" href="namespacecljonic.html#a41fa65c16edb0a95aa942c48307777d6">CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</a>;</div>
+<div class="line">    } <span class="keywordflow">else</span> {</div>
+<div class="line">        <span class="keywordflow">return</span> <a class="code hl_variable" href="namespacecljonic.html#a41fa65c16edb0a95aa942c48307777d6">CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</a>;</div>
+<div class="line">    }</div>
+<div class="line">}()</div>
+<div class="ttc" id="aconceptcljonic_1_1concepts_1_1_cljonic_collection_html"><div class="ttname"><a href="conceptcljonic_1_1concepts_1_1_cljonic_collection.html">cljonic::concepts::CljonicCollection</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00504">cljonic-concepts.hpp:504</a></div></div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00701">701</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+
+</div>
+</div>
 <a id="ac4bb744bda73962104f419d622a023f0" name="ac4bb744bda73962104f419d622a023f0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac4bb744bda73962104f419d622a023f0">&#9670;&#160;</a></span>static_extent_fits_v</h2>
 
@@ -3268,9 +3350,9 @@ template&lt;typename T, std::size_t CapacityValue&gt; </div>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">                                       =</div>
 <div class="line"><a class="code hl_variable" href="#a29e1da7a418720132814cc4045837614">static_extent_v&lt;T&gt;</a> == std::dynamic_extent || <a class="code hl_variable" href="#a29e1da7a418720132814cc4045837614">static_extent_v&lt;T&gt;</a> &lt;= CapacityValue</div>
-<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a29e1da7a418720132814cc4045837614"><div class="ttname"><a href="#a29e1da7a418720132814cc4045837614">cljonic::concepts_detail::static_extent_v</a></div><div class="ttdeci">constexpr std::size_t static_extent_v</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00255">cljonic-concepts.hpp:255</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a29e1da7a418720132814cc4045837614"><div class="ttname"><a href="#a29e1da7a418720132814cc4045837614">cljonic::concepts_detail::static_extent_v</a></div><div class="ttdeci">constexpr std::size_t static_extent_v</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00257">cljonic-concepts.hpp:257</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00260">260</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00262">262</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -3296,7 +3378,7 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00255">255</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00257">257</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -3357,40 +3439,6 @@ template&lt;typename Source&gt; </div>
 
 </div>
 </div>
-<a id="a2374bbc477fc7db7a3c4fe0c345269c8" name="a2374bbc477fc7db7a3c4fe0c345269c8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2374bbc477fc7db7a3c4fe0c345269c8">&#9670;&#160;</a></span>TakeResultCapacity</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Source&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::size_t cljonic::concepts_detail::TakeResultCapacity</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel constexpr">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">                                                = [] <span class="keyword">constexpr</span> {</div>
-<div class="line">    <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<a class="code hl_concept" href="conceptcljonic_1_1concepts_1_1_cljonic_collection.html">concepts::CljonicCollection&lt;Source&gt;</a>) {</div>
-<div class="line">        <span class="keywordflow">return</span> std::min&lt;std::size_t&gt;(Source::capacity(), <a class="code hl_variable" href="namespacecljonic.html#a41fa65c16edb0a95aa942c48307777d6">CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</a>);</div>
-<div class="line">    } <span class="keywordflow">else</span> {</div>
-<div class="line">        <span class="keywordflow">return</span> <a class="code hl_variable" href="namespacecljonic.html#a41fa65c16edb0a95aa942c48307777d6">CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</a>;</div>
-<div class="line">    }</div>
-<div class="line">}()</div>
-<div class="ttc" id="aconceptcljonic_1_1concepts_1_1_cljonic_collection_html"><div class="ttname"><a href="conceptcljonic_1_1concepts_1_1_cljonic_collection.html">cljonic::concepts::CljonicCollection</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00502">cljonic-concepts.hpp:502</a></div></div>
-</div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-take_8hpp_source.html#l00020">20</a> of file <a class="el" href="cljonic-take_8hpp_source.html">cljonic-take.hpp</a>.</p>
-
-</div>
-</div>
 <a id="a55c9cfb7b06cc54d0d765d496ee41a1b" name="a55c9cfb7b06cc54d0d765d496ee41a1b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a55c9cfb7b06cc54d0d765d496ee41a1b">&#9670;&#160;</a></span>value_preserving_arithmetic</h2>
 
@@ -3413,7 +3461,7 @@ template&lt;typename To, typename From&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00143">143</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00145">145</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -3453,9 +3501,9 @@ template&lt;typename To, typename From&gt; </div>
 <div class="line">  (!std::numeric_limits&lt;From&gt;::has_quiet_NaN || std::numeric_limits&lt;To&gt;::has_quiet_NaN) &amp;&amp;</div>
 <div class="line">  (!std::numeric_limits&lt;From&gt;::has_signaling_NaN || std::numeric_limits&lt;To&gt;::has_signaling_NaN) &amp;&amp;</div>
 <div class="line">  std::numeric_limits&lt;To&gt;::has_denorm &gt;= std::numeric_limits&lt;From&gt;::has_denorm))</div>
-<div class="ttc" id="aconceptcljonic_1_1concepts__detail_1_1_character_type_html"><div class="ttname"><a href="conceptcljonic_1_1concepts__detail_1_1_character_type.html">cljonic::concepts_detail::CharacterType</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00138">cljonic-concepts.hpp:138</a></div></div>
+<div class="ttc" id="aconceptcljonic_1_1concepts__detail_1_1_character_type_html"><div class="ttname"><a href="conceptcljonic_1_1concepts__detail_1_1_character_type.html">cljonic::concepts_detail::CharacterType</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00140">cljonic-concepts.hpp:140</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00147">147</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00149">149</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -3497,7 +3545,7 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00376">376</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00378">378</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>
@@ -3523,7 +3571,7 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00381">381</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00383">383</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 
 </div>
 </div>

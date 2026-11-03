@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.18.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cljonic: cljonic::concepts_detail::TakeArguments Concept Reference</title>
+<title>cljonic: cljonic::concepts_detail::CountedSourceArguments Concept Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="codefolding.js"></script>
@@ -95,27 +95,27 @@ document.addEventListener('DOMContentLoaded', codefold.init);
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a href="namespacecljonic.html">cljonic</a></li><li class="navelem"><a href="namespacecljonic_1_1concepts__detail.html">concepts_detail</a></li><li class="navelem"><a href="conceptcljonic_1_1concepts__detail_1_1_take_arguments.html">TakeArguments</a></li>  </ul>
+<li class="navelem"><a href="namespacecljonic.html">cljonic</a></li><li class="navelem"><a href="namespacecljonic_1_1concepts__detail.html">concepts_detail</a></li><li class="navelem"><a href="conceptcljonic_1_1concepts__detail_1_1_counted_source_arguments.html">CountedSourceArguments</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
 <div class="header">
-  <div class="headertitle"><div class="title">cljonic::concepts_detail::TakeArguments Concept Reference</div></div>
+  <div class="headertitle"><div class="title">cljonic::concepts_detail::CountedSourceArguments Concept Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="cljonic-take_8hpp_source.html">cljonic-take.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>&gt;</code></p>
 <h2 id="header-conceptdef" class="groupheader">Concept definition</h2>
 <div class="fragment"><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Count, <span class="keyword">typename</span> Source&gt;</div>
-<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="conceptcljonic_1_1concepts__detail_1_1_take_arguments.html">TakeArguments</a> = <a class="code hl_concept" href="conceptcljonic_1_1concepts__detail_1_1_producer_count.html">ProducerCount&lt;Count&gt;</a> &amp;&amp; <a class="code hl_concept" href="conceptcljonic_1_1concepts_1_1_cljonic_source.html">concepts::CljonicSource&lt;Source&gt;</a> &amp;&amp;</div>
-<div class="line">                        <a class="code hl_concept" href="conceptcljonic_1_1concepts_1_1_nothrow_collection_element.html">concepts::NothrowCollectionElement&lt;std::ranges::range_value_t&lt;const Source&gt;</a>&gt;</div>
-<div class="ttc" id="aconceptcljonic_1_1concepts_1_1_cljonic_source_html"><div class="ttname"><a href="conceptcljonic_1_1concepts_1_1_cljonic_source.html">cljonic::concepts::CljonicSource</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00551">cljonic-concepts.hpp:551</a></div></div>
-<div class="ttc" id="aconceptcljonic_1_1concepts_1_1_nothrow_collection_element_html"><div class="ttname"><a href="conceptcljonic_1_1concepts_1_1_nothrow_collection_element.html">cljonic::concepts::NothrowCollectionElement</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00397">cljonic-concepts.hpp:397</a></div></div>
-<div class="ttc" id="aconceptcljonic_1_1concepts__detail_1_1_producer_count_html"><div class="ttname"><a href="conceptcljonic_1_1concepts__detail_1_1_producer_count.html">cljonic::concepts_detail::ProducerCount</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00685">cljonic-concepts.hpp:685</a></div></div>
-<div class="ttc" id="aconceptcljonic_1_1concepts__detail_1_1_take_arguments_html"><div class="ttname"><a href="conceptcljonic_1_1concepts__detail_1_1_take_arguments.html">cljonic::concepts_detail::TakeArguments</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-take_8hpp_source.html#l00016">cljonic-take.hpp:16</a></div></div>
+<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="conceptcljonic_1_1concepts__detail_1_1_counted_source_arguments.html">CountedSourceArguments</a> = <a class="code hl_concept" href="conceptcljonic_1_1concepts__detail_1_1_producer_count.html">ProducerCount&lt;Count&gt;</a> &amp;&amp; <a class="code hl_concept" href="conceptcljonic_1_1concepts_1_1_cljonic_source.html">concepts::CljonicSource&lt;Source&gt;</a> &amp;&amp;</div>
+<div class="line">                                 <a class="code hl_concept" href="conceptcljonic_1_1concepts_1_1_nothrow_collection_element.html">concepts::NothrowCollectionElement&lt;std::ranges::range_value_t&lt;const Source&gt;</a>&gt;</div>
+<div class="ttc" id="aconceptcljonic_1_1concepts_1_1_cljonic_source_html"><div class="ttname"><a href="conceptcljonic_1_1concepts_1_1_cljonic_source.html">cljonic::concepts::CljonicSource</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00553">cljonic-concepts.hpp:553</a></div></div>
+<div class="ttc" id="aconceptcljonic_1_1concepts_1_1_nothrow_collection_element_html"><div class="ttname"><a href="conceptcljonic_1_1concepts_1_1_nothrow_collection_element.html">cljonic::concepts::NothrowCollectionElement</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00399">cljonic-concepts.hpp:399</a></div></div>
+<div class="ttc" id="aconceptcljonic_1_1concepts__detail_1_1_counted_source_arguments_html"><div class="ttname"><a href="conceptcljonic_1_1concepts__detail_1_1_counted_source_arguments.html">cljonic::concepts_detail::CountedSourceArguments</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00697">cljonic-concepts.hpp:697</a></div></div>
+<div class="ttc" id="aconceptcljonic_1_1concepts__detail_1_1_producer_count_html"><div class="ttname"><a href="conceptcljonic_1_1concepts__detail_1_1_producer_count.html">cljonic::concepts_detail::ProducerCount</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00687">cljonic-concepts.hpp:687</a></div></div>
 </div><!-- fragment --><a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="cljonic-take_8hpp_source.html#l00016">16</a> of file <a class="el" href="cljonic-take_8hpp_source.html">cljonic-take.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-concepts_8hpp_source.html#l00697">697</a> of file <a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>.</p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

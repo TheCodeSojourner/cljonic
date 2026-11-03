@@ -29,6 +29,7 @@ var searchData=
   ['containslookupcollection_26',['ContainsLookupCollection',['../conceptcljonic_1_1concepts__detail_1_1_contains_lookup_collection.html',1,'cljonic::concepts_detail']]],
   ['containssupportedcollection_27',['ContainsSupportedCollection',['../conceptcljonic_1_1concepts__detail_1_1_contains_supported_collection.html',1,'cljonic::concepts_detail']]],
   ['copyableelement_28',['CopyableElement',['../conceptcljonic_1_1concepts_1_1_copyable_element.html',1,'cljonic::concepts']]],
-  ['countpreflightdestination_29',['CountPreflightDestination',['../conceptcljonic_1_1concepts__detail_1_1_count_preflight_destination.html',1,'cljonic::concepts_detail']]],
-  ['cycleclassargument_30',['CycleClassArgument',['../conceptcljonic_1_1concepts__detail_1_1_cycle_class_argument.html',1,'cljonic::concepts_detail']]]
+  ['countedsourcearguments_29',['CountedSourceArguments',['../conceptcljonic_1_1concepts__detail_1_1_counted_source_arguments.html',1,'cljonic::concepts_detail']]],
+  ['countpreflightdestination_30',['CountPreflightDestination',['../conceptcljonic_1_1concepts__detail_1_1_count_preflight_destination.html',1,'cljonic::concepts_detail']]],
+  ['cycleclassargument_31',['CycleClassArgument',['../conceptcljonic_1_1concepts__detail_1_1_cycle_class_argument.html',1,'cljonic::concepts_detail']]]
 ];

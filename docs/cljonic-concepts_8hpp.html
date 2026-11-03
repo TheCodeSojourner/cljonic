@@ -123,6 +123,7 @@ document.addEventListener('DOMContentLoaded', codefold.init);
 <code>#include &lt;type_traits&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
 <code>#include &lt;variant&gt;</code><br />
+<code>#include &lt;<a class="el" href="cljonic-core-collection-maximum-element-count_8hpp_source.html">cljonic-core-collection-maximum-element-count.hpp</a>&gt;</code><br />
 </div>
 <p><a href="cljonic-concepts_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -207,6 +208,7 @@ Concepts</h2></td></tr>
 <tr class="memitem:cljonic_3A_3Aconcepts_3A_3AIndexedProducer" id="r_cljonic_3A_3Aconcepts_3A_3AIndexedProducer"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts_1_1_indexed_producer.html">cljonic::concepts::IndexedProducer</a></td></tr>
 <tr class="memitem:cljonic_3A_3Aconcepts_3A_3ARangeElement" id="r_cljonic_3A_3Aconcepts_3A_3ARangeElement"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts_1_1_range_element.html">cljonic::concepts::RangeElement</a></td></tr>
 <tr class="memitem:cljonic_3A_3Aconcepts_5Fdetail_3A_3AProducerCount" id="r_cljonic_3A_3Aconcepts_5Fdetail_3A_3AProducerCount"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_producer_count.html">cljonic::concepts_detail::ProducerCount</a></td></tr>
+<tr class="memitem:cljonic_3A_3Aconcepts_5Fdetail_3A_3ACountedSourceArguments" id="r_cljonic_3A_3Aconcepts_5Fdetail_3A_3ACountedSourceArguments"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_counted_source_arguments.html">cljonic::concepts_detail::CountedSourceArguments</a></td></tr>
 <tr class="memitem:cljonic_3A_3Aconcepts_5Fdetail_3A_3ACountPreflightDestination" id="r_cljonic_3A_3Aconcepts_5Fdetail_3A_3ACountPreflightDestination"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_count_preflight_destination.html">cljonic::concepts_detail::CountPreflightDestination</a></td></tr>
 <tr class="memitem:cljonic_3A_3Aconcepts_5Fdetail_3A_3AMaterializableSource" id="r_cljonic_3A_3Aconcepts_5Fdetail_3A_3AMaterializableSource"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_materializable_source.html">cljonic::concepts_detail::MaterializableSource</a></td></tr>
 <tr class="memitem:cljonic_3A_3Aconcepts_5Fdetail_3A_3AValidRepeatedlyStep" id="r_cljonic_3A_3Aconcepts_5Fdetail_3A_3AValidRepeatedlyStep"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_valid_repeatedly_step.html">cljonic::concepts_detail::ValidRepeatedlyStep</a></td></tr>
@@ -289,6 +291,8 @@ Variables</h2></td></tr>
 <tr class="memitem:abc2e283f4597b845ddc449fd8ad2e763 template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html#abc2e283f4597b845ddc449fd8ad2e763">cljonic::concepts_detail::walker_coverage_declared_v</a> = <a class="el" href="structcljonic_1_1concepts__detail_1_1walker__coverage.html">walker_coverage</a>&lt;std::remove_cvref_t&lt;T&gt;&gt;::declared</td></tr>
 <tr class="memitem:a6c8771eeec10f3494eeef251f0cfe83a" id="r_a6c8771eeec10f3494eeef251f0cfe83a"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
 <tr class="memitem:a6c8771eeec10f3494eeef251f0cfe83a template"><td class="memItemLeft">constexpr bool&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html#a6c8771eeec10f3494eeef251f0cfe83a">cljonic::concepts_detail::walker_coverage_ok_v</a> = !<a class="el" href="namespacecljonic_1_1concepts__detail.html#a0a63495fe961d6af01e7246e4e59dc21">is_cljonic_composite_v</a>&lt;T&gt; || <a class="el" href="namespacecljonic_1_1concepts__detail.html#abc2e283f4597b845ddc449fd8ad2e763">walker_coverage_declared_v</a>&lt;T&gt;</td></tr>
+<tr class="memitem:a5ac05bfee040e39ad5518f71860d60bc" id="r_a5ac05bfee040e39ad5518f71860d60bc"><td class="memTemplParams" colspan="2">template&lt;typename Source&gt; </td></tr>
+<tr class="memitem:a5ac05bfee040e39ad5518f71860d60bc template"><td class="memItemLeft">constexpr std::size_t&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html#a5ac05bfee040e39ad5518f71860d60bc">cljonic::concepts_detail::SourceResultCapacity</a></td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

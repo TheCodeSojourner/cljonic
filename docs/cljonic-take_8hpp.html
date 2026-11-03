@@ -102,9 +102,7 @@ document.addEventListener('DOMContentLoaded', codefold.init);
 <div class="header">
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#concepts">Concepts</a> &#124;
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">cljonic-take.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -120,28 +118,18 @@ document.addEventListener('DOMContentLoaded', codefold.init);
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:cljonic" id="r_cljonic"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html">cljonic</a></td></tr>
-<tr class="memitem:cljonic_3A_3Aconcepts_5Fdetail" id="r_cljonic_3A_3Aconcepts_5Fdetail"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html">cljonic::concepts_detail</a></td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-concepts" class="groupheader"><a id="concepts" name="concepts"></a>
-Concepts</h2></td></tr>
-<tr class="memitem:cljonic_3A_3Aconcepts_5Fdetail_3A_3ATakeArguments" id="r_cljonic_3A_3Aconcepts_5Fdetail_3A_3ATakeArguments"><td class="memItemLeft">concept &#160;</td><td class="memItemRight"><a class="el" href="conceptcljonic_1_1concepts__detail_1_1_take_arguments.html">cljonic::concepts_detail::TakeArguments</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a1356267e78c0226004674ee205409e04" id="r_a1356267e78c0226004674ee205409e04"><td class="memTemplParams" colspan="2">template&lt;typename Count, typename Source&gt; <br />
-requires concepts_detail::TakeArguments&lt;Count, Source&gt;</td></tr>
-<tr class="memitem:a1356267e78c0226004674ee205409e04 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a1356267e78c0226004674ee205409e04">cljonic::take</a> (Count count, const Source &amp;source) noexcept -&gt; <a class="el" href="classcljonic_1_1_vector.html">Vector</a>&lt; std::ranges::range_value_t&lt; const Source &gt;, <a class="el" href="namespacecljonic_1_1concepts__detail.html#a2374bbc477fc7db7a3c4fe0c345269c8">concepts_detail::TakeResultCapacity</a>&lt; Source &gt; &gt;</td></tr>
-<tr class="memitem:a3f62d6755e52f3dd532a26daef1ba240" id="r_a3f62d6755e52f3dd532a26daef1ba240"><td class="memTemplParams" colspan="2">template&lt;typename Count, typename Source&gt; <br />
-requires (!concepts_detail::TakeArguments&lt;Count, Source&gt;)</td></tr>
-<tr class="memitem:a3f62d6755e52f3dd532a26daef1ba240 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a3f62d6755e52f3dd532a26daef1ba240">cljonic::take</a> (Count count, const Source &amp;source) noexcept -&gt; void</td></tr>
+<tr class="memitem:a667eff86af60296d34dc4faf5f7624ea" id="r_a667eff86af60296d34dc4faf5f7624ea"><td class="memTemplParams" colspan="2">template&lt;typename Count, typename Source&gt; <br />
+requires concepts_detail::CountedSourceArguments&lt;Count, Source&gt;</td></tr>
+<tr class="memitem:a667eff86af60296d34dc4faf5f7624ea template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a667eff86af60296d34dc4faf5f7624ea">cljonic::take</a> (Count count, const Source &amp;source) noexcept -&gt; <a class="el" href="classcljonic_1_1_vector.html">Vector</a>&lt; std::ranges::range_value_t&lt; const Source &gt;, <a class="el" href="namespacecljonic_1_1concepts__detail.html#a5ac05bfee040e39ad5518f71860d60bc">concepts_detail::SourceResultCapacity</a>&lt; Source &gt; &gt;</td></tr>
+<tr class="memitem:ab1b6bdaebba7bd03d308f8378f74a039" id="r_ab1b6bdaebba7bd03d308f8378f74a039"><td class="memTemplParams" colspan="2">template&lt;typename Count, typename Source&gt; <br />
+requires (!concepts_detail::CountedSourceArguments&lt;Count, Source&gt;)</td></tr>
+<tr class="memitem:ab1b6bdaebba7bd03d308f8378f74a039 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#ab1b6bdaebba7bd03d308f8378f74a039">cljonic::take</a> (Count count, const Source &amp;source) noexcept -&gt; void</td></tr>
 <tr class="memitem:a367e405d62ffb0577a7f7852b8b54d34" id="r_a367e405d62ffb0577a7f7852b8b54d34"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; <br />
 requires (sizeof...(Args) != 2)</td></tr>
 <tr class="memitem:a367e405d62ffb0577a7f7852b8b54d34 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a367e405d62ffb0577a7f7852b8b54d34">cljonic::take</a> (const Args &amp;... args) noexcept -&gt; void</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a2374bbc477fc7db7a3c4fe0c345269c8" id="r_a2374bbc477fc7db7a3c4fe0c345269c8"><td class="memTemplParams" colspan="2">template&lt;typename Source&gt; </td></tr>
-<tr class="memitem:a2374bbc477fc7db7a3c4fe0c345269c8 template"><td class="memItemLeft">constexpr std::size_t&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html#a2374bbc477fc7db7a3c4fe0c345269c8">cljonic::concepts_detail::TakeResultCapacity</a></td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->
