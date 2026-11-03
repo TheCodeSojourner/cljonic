@@ -527,6 +527,15 @@ requires (sizeof...(Sources) != 1)</td></tr>
 <tr class="memitem:a79b02136e94d688c37cc976f522ecbeb" id="r_a79b02136e94d688c37cc976f522ecbeb"><td class="memTemplParams" colspan="2">template&lt;typename F, typename Source&gt; <br />
 requires (!concepts_detail::FilterCallable&lt;F, Source&gt;)</td></tr>
 <tr class="memitem:a79b02136e94d688c37cc976f522ecbeb template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a79b02136e94d688c37cc976f522ecbeb">filter</a> (const F &amp;predicate, const Source &amp;source) noexcept -&gt; void</td></tr>
+<tr class="memitem:ac91e7e07951ea240c4f2653b23c53d3b" id="r_ac91e7e07951ea240c4f2653b23c53d3b"><td class="memTemplParams" colspan="2">template&lt;typename F, typename Source&gt; <br />
+requires concepts_detail::FilterCallable&lt;F, Source&gt;</td></tr>
+<tr class="memitem:ac91e7e07951ea240c4f2653b23c53d3b template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#ac91e7e07951ea240c4f2653b23c53d3b">filterv</a> (const F &amp;predicate, const Source &amp;source) noexcept -&gt; <a class="el" href="classcljonic_1_1_vector.html">Vector</a>&lt; std::ranges::range_value_t&lt; const Source &gt;, <a class="el" href="namespacecljonic_1_1concepts__detail.html#a293d84675713b03092a43107d8725f3b">concepts_detail::FilterResultCapacity</a>&lt; Source &gt; &gt;</td></tr>
+<tr class="memitem:a08febe6ddc4257c80f60498be359cfdd" id="r_a08febe6ddc4257c80f60498be359cfdd"><td class="memTemplParams" colspan="2">template&lt;typename F, typename... Sources&gt; <br />
+requires (sizeof...(Sources) != 1)</td></tr>
+<tr class="memitem:a08febe6ddc4257c80f60498be359cfdd template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a08febe6ddc4257c80f60498be359cfdd">filterv</a> (const F &amp;predicate, const Sources &amp;... sources) noexcept -&gt; void</td></tr>
+<tr class="memitem:a9a8db2902779af56bbd3c6654b7df96f" id="r_a9a8db2902779af56bbd3c6654b7df96f"><td class="memTemplParams" colspan="2">template&lt;typename F, typename Source&gt; <br />
+requires (!concepts_detail::FilterCallable&lt;F, Source&gt;)</td></tr>
+<tr class="memitem:a9a8db2902779af56bbd3c6654b7df96f template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a9a8db2902779af56bbd3c6654b7df96f">filterv</a> (const F &amp;predicate, const Source &amp;source) noexcept -&gt; void</td></tr>
 <tr class="memitem:af6ac025d9f9bb2d29bcf7442c05b17e0" id="r_af6ac025d9f9bb2d29bcf7442c05b17e0"><td class="memTemplParams" colspan="2">template&lt;typename KeyType, typename ValueType&gt; </td></tr>
 <tr class="memitem:af6ac025d9f9bb2d29bcf7442c05b17e0 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#af6ac025d9f9bb2d29bcf7442c05b17e0">first</a> (const <a class="el" href="structcljonic_1_1_map_entry.html">MapEntry</a>&lt; KeyType, ValueType &gt; &amp;entry) noexcept -&gt; KeyType</td></tr>
 <tr class="memitem:a34f5b11e5dab358770c2607de62bc9e6" id="r_a34f5b11e5dab358770c2607de62bc9e6"><td class="memTemplParams" colspan="2">template&lt;concepts::SequenceableCollection C&gt; </td></tr>
@@ -3519,6 +3528,131 @@ requires (sizeof...(Sources) != 1)</div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="cljonic-filter_8hpp_source.html#l00150">150</a> of file <a class="el" href="cljonic-filter_8hpp_source.html">cljonic-filter.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ac91e7e07951ea240c4f2653b23c53d3b" name="ac91e7e07951ea240c4f2653b23c53d3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac91e7e07951ea240c4f2653b23c53d3b">&#9670;&#160;</a></span>filterv() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F, typename Source&gt; <br />
+requires concepts_detail::FilterCallable&lt;F, Source&gt;</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::filterv </td>
+          <td>(</td>
+          <td class="paramtype">const F &amp;</td>          <td class="paramname"><span class="paramname"><em>predicate</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Source &amp;</td>          <td class="paramname"><span class="paramname"><em>source</em></span>&#160;) -&gt; <a class="el" href="classcljonic_1_1_vector.html">Vector</a>&lt; std::ranges::range_value_t&lt; const Source &gt;, <a class="el" href="namespacecljonic_1_1concepts__detail.html#a293d84675713b03092a43107d8725f3b">concepts_detail::FilterResultCapacity</a>&lt; Source &gt; &gt;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="anchor" id="FiltervFunction"></a> The <b>filterv</b> free function is an alias for <a class="el" href="#FilterFunction" title="FilterFunction">filter</a>. It accepts the same predicate and cljonic source, has the same admission rules, and returns exactly the same bounded owning <a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vector</a> type and logical values.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;concepts&gt;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> is_even = [](<span class="keywordtype">int</span> value) <span class="keyword">noexcept</span> { <span class="keywordflow">return</span> value % 2 == 0; };</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> values = <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(1, 2, 3, 4);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> filtered = <a class="code hl_function" href="#ac91e7e07951ea240c4f2653b23c53d3b">filterv</a>(is_even, values);</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(filtered, <a class="code hl_function" href="#a42eb35a084e4229d6723a24de64eed0d">filter</a>(is_even, values)));</div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> base = 1;</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_values = <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(base, base + 1, base + 2, base + 3);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> alias_result = <a class="code hl_function" href="#ac91e7e07951ea240c4f2653b23c53d3b">filterv</a>(is_even, runtime_values);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> filter_result = <a class="code hl_function" href="#a42eb35a084e4229d6723a24de64eed0d">filter</a>(is_even, runtime_values);</div>
+<div class="line">  <span class="keywordflow">return</span> <a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(alias_result, filter_result) &amp;&amp;</div>
+<div class="line">                 <a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(runtime_values,</div>
+<div class="line">                       <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(base, base + 1, base + 2, base + 3))</div>
+<div class="line">             ? 0</div>
+<div class="line">             : 1;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacecljonic_html_ac91e7e07951ea240c4f2653b23c53d3b"><div class="ttname"><a href="#ac91e7e07951ea240c4f2653b23c53d3b">cljonic::filterv</a></div><div class="ttdeci">constexpr auto filterv(const F &amp;predicate, const Source &amp;source) noexcept -&gt; Vector&lt; std::ranges::range_value_t&lt; const Source &gt;, concepts_detail::FilterResultCapacity&lt; Source &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-filter_8hpp_source.html#l00200">cljonic-filter.hpp:200</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-filter_8hpp_source.html#l00200">200</a> of file <a class="el" href="cljonic-filter_8hpp_source.html">cljonic-filter.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a9a8db2902779af56bbd3c6654b7df96f" name="a9a8db2902779af56bbd3c6654b7df96f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a8db2902779af56bbd3c6654b7df96f">&#9670;&#160;</a></span>filterv() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F, typename Source&gt; <br />
+requires (!concepts_detail::FilterCallable&lt;F, Source&gt;)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::filterv </td>
+          <td>(</td>
+          <td class="paramtype">const F &amp;</td>          <td class="paramname"><span class="paramname"><em>predicate</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Source &amp;</td>          <td class="paramname"><span class="paramname"><em>source</em></span>&#160;) -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-filter_8hpp_source.html#l00217">217</a> of file <a class="el" href="cljonic-filter_8hpp_source.html">cljonic-filter.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a08febe6ddc4257c80f60498be359cfdd" name="a08febe6ddc4257c80f60498be359cfdd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08febe6ddc4257c80f60498be359cfdd">&#9670;&#160;</a></span>filterv() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F, typename... Sources&gt; <br />
+requires (sizeof...(Sources) != 1)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::filterv </td>
+          <td>(</td>
+          <td class="paramtype">const F &amp;</td>          <td class="paramname"><span class="paramname"><em>predicate</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Sources &amp;...</td>          <td class="paramname"><span class="paramname"><em>sources</em></span>&#160;) -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-filter_8hpp_source.html#l00207">207</a> of file <a class="el" href="cljonic-filter_8hpp_source.html">cljonic-filter.hpp</a>.</p>
 
 </div>
 </div>

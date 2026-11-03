@@ -151,6 +151,15 @@ requires (sizeof...(Sources) != 1)</td></tr>
 <tr class="memitem:a79b02136e94d688c37cc976f522ecbeb" id="r_a79b02136e94d688c37cc976f522ecbeb"><td class="memTemplParams" colspan="2">template&lt;typename F, typename Source&gt; <br />
 requires (!concepts_detail::FilterCallable&lt;F, Source&gt;)</td></tr>
 <tr class="memitem:a79b02136e94d688c37cc976f522ecbeb template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a79b02136e94d688c37cc976f522ecbeb">cljonic::filter</a> (const F &amp;predicate, const Source &amp;source) noexcept -&gt; void</td></tr>
+<tr class="memitem:ac91e7e07951ea240c4f2653b23c53d3b" id="r_ac91e7e07951ea240c4f2653b23c53d3b"><td class="memTemplParams" colspan="2">template&lt;typename F, typename Source&gt; <br />
+requires concepts_detail::FilterCallable&lt;F, Source&gt;</td></tr>
+<tr class="memitem:ac91e7e07951ea240c4f2653b23c53d3b template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#ac91e7e07951ea240c4f2653b23c53d3b">cljonic::filterv</a> (const F &amp;predicate, const Source &amp;source) noexcept -&gt; <a class="el" href="classcljonic_1_1_vector.html">Vector</a>&lt; std::ranges::range_value_t&lt; const Source &gt;, <a class="el" href="namespacecljonic_1_1concepts__detail.html#a293d84675713b03092a43107d8725f3b">concepts_detail::FilterResultCapacity</a>&lt; Source &gt; &gt;</td></tr>
+<tr class="memitem:a08febe6ddc4257c80f60498be359cfdd" id="r_a08febe6ddc4257c80f60498be359cfdd"><td class="memTemplParams" colspan="2">template&lt;typename F, typename... Sources&gt; <br />
+requires (sizeof...(Sources) != 1)</td></tr>
+<tr class="memitem:a08febe6ddc4257c80f60498be359cfdd template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a08febe6ddc4257c80f60498be359cfdd">cljonic::filterv</a> (const F &amp;predicate, const Sources &amp;... sources) noexcept -&gt; void</td></tr>
+<tr class="memitem:a9a8db2902779af56bbd3c6654b7df96f" id="r_a9a8db2902779af56bbd3c6654b7df96f"><td class="memTemplParams" colspan="2">template&lt;typename F, typename Source&gt; <br />
+requires (!concepts_detail::FilterCallable&lt;F, Source&gt;)</td></tr>
+<tr class="memitem:a9a8db2902779af56bbd3c6654b7df96f template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a9a8db2902779af56bbd3c6654b7df96f">cljonic::filterv</a> (const F &amp;predicate, const Source &amp;source) noexcept -&gt; void</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
