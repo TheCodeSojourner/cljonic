@@ -1158,7 +1158,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | Map_source ∨ Set_source → prefix_suffix_membership_and_order_depend_on(semantically_unordered_traversal)
   | invalid_source ∨ predicate ∨ arity → targeted_compile_time_diagnostic_naming(operation ∧ supported_domains)
   | preserve(no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
-  | classify_as(RequirementsBackedContractNotYetPublished) ∧ trace_to(REQ-FN-041)
+  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-041)
 
 λ S2_take_while_producer_contract(x). take_while(predicate, source) → S2_predicate_producer_contract(TakeWhile)(x)
   | examine(each_source_value_once) ∧ yield(initial_consecutive_true_prefix)
