@@ -967,7 +967,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ unsupported_input(seq) → reject_at_compile_time_with(targeted_diagnostic_naming(seq ∧ supported_domains) ∧ REQ-DIAG-009)
     ∧ preserve(input ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
     ∧ classify_as(RequirementsBacked) ∧ trace_to(REQ-SEQ-010 ∧ REQ-SEQ-011 ∧ REQ-SEQ-013 ∧ REQ-SEQ-014 ∧ REQ-COLL-020F ∧ REQ-COLL-020S)
-  | deferred_collection_shaping_traversal_family(x) ≡ take ∧ drop ∧ take_while ∧ drop_while ∧ take_last ∧ drop_last
+  | deferred_collection_shaping_traversal_family(x) ≡ drop ∧ take_while ∧ drop_while ∧ take_last ∧ drop_last
     ∧ take_nth ∧ nth ∧ nthnext ∧ nthrest ∧ butlast ∧ map_indexed ∧ rseq ∧ second ∧ ffirst ∧ fnext
     ∧ nfirst ∧ nnext ∧ some ∧ is_every ∧ not_any ∧ not_every ∧ distinct ∧ dedupe ∧ frequencies
     ∧ reductions ∧ split_at ∧ split_with ∧ mapcat ∧ interleave ∧ interpose ∧ partition ∧ partition_all
@@ -1067,6 +1067,29 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | reject(the_same_unsupported_domains_and_predicate_forms)
     with(targeted_diagnostic_naming(filterv ∧ supported_domains) ∧ REQ-DIAG-009)
   | classify_as(RequirementsBackedAlias) ∧ trace_to(REQ-FN-036 ∧ REQ-FN-035)
+
+λ S2_take_function_contract(x). take(count, source) → admit(CljonicSource(source) ∧ valid_take_count(count))(x)
+  | valid_take_count(count) ≡ signed_or_unsigned_integer_except(Boolean ∨ character)
+    ∧ nonnegative_type_range_fits(std::size_t) ∧ normalize_before_unsigned_conversion(count ≤ 0 ? 0 : count)
+  | source_element_type(x) → require(NothrowCollectionElement(source_element_type))
+  | source_bound(source) ≡ CljonicCollection(source) → declared_capacity(source)
+    ∧ CljonicProducer(source) → configured_observable_traversal_cap
+    ∧ saturate_at(CollectionMaximumElementCount)
+  | return(Vector<source_element_type, source_bound(source)> of first(min(normalized_count, observable_traversal_length(source), source_bound(source))) traversal_elements)
+    ∧ runtime_count_does_not_change(result_type ∧ capacity) ∧ oversized_request → return(all_observable_elements)
+    ∧ count(source)_is_upper_bound ∧ require(iterator_endpoint_check)
+  | traversal(x) → ¬advance_past(last_returned_element)
+    ∧ nonpositive_count ∨ zero_capacity → return(typed_empty_Vector_without_beginning_traversal)
+    ∧ empty_source_including_Cycle → return(typed_empty_Vector_without_callback_invocation)
+    ∧ Iterate → invoke(step only_between_returned_elements)
+    ∧ Repeatedly → invoke(step exactly_once_per_returned_element)
+    ∧ preserve(value_held_callback_state) ∧ referenced_or_static_callback_state_remains_shared
+  | Map_source → yield(MapEntry_values) ∧ String_source → yield(characters) ∧ Queue_source → preserve(FIFO_order)
+  | Map_source ∨ Set_source → preserve(semantically_unordered_traversal)
+  | result(x) → independently_owning_bounded_prefix ∧ ¬∃(nested_result ∨ absence_sentinel ∨ status_wrapper ∨ preflight)
+  | invalid_count ∨ unsupported_source ∨ wrong_arity → reject_at_compile_time_with(targeted_diagnostic_naming(take ∧ count_and_source_domains) ∧ REQ-DIAG-009)
+  | preserve(input_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
+  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-037 ∧ REQ-SEQ-022)
 
 λ S2_reduce_function_contract(x). reduce(f, source) ∨ reduce(f, initial, source) → admit(CljonicSource(source) ∧ reducing_function(f) ∧ accumulator_contract(x))(x)
   | reducing_function(f) → require(copy_constructible(f) ∧ nothrow_invocation(f, accumulator, element) ∧ result_type(f) = accumulator_type(x))
