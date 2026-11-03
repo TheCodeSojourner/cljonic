@@ -1,0 +1,82 @@
+-- allium: 3
+
+-- Filtering free function (filter, REQ-FN-035).
+-- `filter` accepts one predicate and one cljonic source. It returns a bounded
+-- owning Vector of matching source elements, with capacity derived from the
+-- source's observable-count bound. Collections contribute declared capacity;
+-- producers contribute the configured observation cap, saturated at the
+-- collection maximum. The predicate should be a pure function (i.e., with no side
+-- effects) returning exactly bool; it must be copy-constructible and
+-- nothrow-invocable on each const source element. Statically
+-- inspectable predicate parameters follow the safe implicit-conversion rules;
+-- generic callables are admitted on nothrow invocability and exact bool result.
+-- Traversal visits the source's observed elements in traversal order and appends
+-- matching values. Because the result capacity equals the source's
+-- observable-count bound, every observed element fits, so traversal ends when
+-- the source is exhausted and there is no separate result-full termination.
+-- Map and Set traversal order is semantically unordered. The operation is
+-- constexpr, non-throwing, non-allocating, non-mutating, and preserves its input.
+
+entity FilterFunction {
+    canonical_filtering_operation: Boolean
+    predicate_is_first_argument: Boolean
+    source_is_second_argument: Boolean
+    accepts_exactly_one_cljonic_source: Boolean
+    source_is_closed_cljonic_domain: Boolean
+    standard_ranges_and_non_cljonic_sources_rejected: Boolean
+    source_element_satisfies_nothrow_storage: Boolean
+    result_is_bounded_owning_vector: Boolean
+    result_element_type_is_source_element_type: Boolean
+    result_capacity_is_source_observable_count_bound: Boolean
+    collection_capacity_bound_is_declared_capacity: Boolean
+    producer_capacity_bound_is_observation_cap: Boolean
+    capacity_bound_is_saturated_at_collection_maximum: Boolean
+    visits_elements_in_traversal_order: Boolean
+    predicate_evaluated_once_per_visited_element: Boolean
+    matching_elements_are_appended: Boolean
+    traversal_ends_when_source_exhausted: Boolean
+    zero_capacity_skips_predicate: Boolean
+    predicate_should_be_pure: Boolean
+    predicate_is_copy_constructible: Boolean
+    predicate_is_nothrow_invocable_on_const_element: Boolean
+    predicate_result_is_exact_bool: Boolean
+    inspectable_parameter_uses_safe_implicit_conversion: Boolean
+    unsafe_parameter_conversions_rejected_at_compile_time: Boolean
+    uninspectable_callable_requires_nothrow_exact_bool_invocation: Boolean
+    map_and_set_order_is_semantically_unordered: Boolean
+    input_is_preserved: Boolean
+    constexpr_noexcept_nonallocating_nonmutating: Boolean
+    rejected_calls_have_targeted_filter_diagnostic: Boolean
+
+    invariant CanonicalFilteringOperation { this.canonical_filtering_operation = true }
+    invariant PredicateIsFirstArgument { this.predicate_is_first_argument = true }
+    invariant SourceIsSecondArgument { this.source_is_second_argument = true }
+    invariant AcceptsExactlyOneCljonicSource { this.accepts_exactly_one_cljonic_source = true }
+    invariant SourceIsClosedCljonicDomain { this.source_is_closed_cljonic_domain = true }
+    invariant StandardRangesAndNonCljonicSourcesRejected { this.standard_ranges_and_non_cljonic_sources_rejected = true }
+    invariant SourceElementSatisfiesNothrowStorage { this.source_element_satisfies_nothrow_storage = true }
+    invariant ResultIsBoundedOwningVector { this.result_is_bounded_owning_vector = true }
+    invariant ResultElementTypeIsSourceElementType { this.result_element_type_is_source_element_type = true }
+    invariant ResultCapacityIsSourceObservableCountBound { this.result_capacity_is_source_observable_count_bound = true }
+    invariant CollectionCapacityBoundIsDeclaredCapacity { this.collection_capacity_bound_is_declared_capacity = true }
+    invariant ProducerCapacityBoundIsObservationCap { this.producer_capacity_bound_is_observation_cap = true }
+    invariant CapacityBoundIsSaturatedAtCollectionMaximum { this.capacity_bound_is_saturated_at_collection_maximum = true }
+    invariant VisitsElementsInTraversalOrder { this.visits_elements_in_traversal_order = true }
+    invariant PredicateEvaluatedOncePerVisitedElement { this.predicate_evaluated_once_per_visited_element = true }
+    invariant MatchingElementsAreAppended { this.matching_elements_are_appended = true }
+    invariant TraversalEndsWhenSourceExhausted { this.traversal_ends_when_source_exhausted = true }
+    invariant ZeroCapacitySkipsPredicate { this.zero_capacity_skips_predicate = true }
+    invariant PredicateShouldBePure { this.predicate_should_be_pure = true }
+    invariant PredicateIsCopyConstructible { this.predicate_is_copy_constructible = true }
+    invariant PredicateIsNothrowInvocableOnConstElement { this.predicate_is_nothrow_invocable_on_const_element = true }
+    invariant PredicateResultIsExactBool { this.predicate_result_is_exact_bool = true }
+    invariant InspectableParameterUsesSafeImplicitConversion { this.inspectable_parameter_uses_safe_implicit_conversion = true }
+    invariant UnsafeParameterConversionsRejectedAtCompileTime { this.unsafe_parameter_conversions_rejected_at_compile_time = true }
+    invariant UninspectableCallableRequiresNothrowExactBoolInvocation { this.uninspectable_callable_requires_nothrow_exact_bool_invocation = true }
+    invariant MapAndSetOrderIsSemanticallyUnordered { this.map_and_set_order_is_semantically_unordered = true }
+    invariant InputIsPreserved { this.input_is_preserved = true }
+    invariant ConstexprNoexceptNonallocatingNonmutating { this.constexpr_noexcept_nonallocating_nonmutating = true }
+    invariant RejectedCallsHaveTargetedFilterDiagnostic { this.rejected_calls_have_targeted_filter_diagnostic = true }
+}
+
+actor FilterFunctionOperator { identified_by: FilterFunction }
