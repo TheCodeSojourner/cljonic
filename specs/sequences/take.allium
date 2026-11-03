@@ -1,0 +1,69 @@
+-- allium: 3
+
+-- REQ-FN-037 / REQ-SEQ-022: take(count, source) materializes the requested
+-- observable prefix into an owning Vector. The runtime count does not
+-- determine compile-time capacity. Count normalization follows counted Repeat.
+-- Producer callback timing follows existing traversal, without advancing past
+-- the requested prefix. Nonpositive requests and zero capacity do not start
+-- traversal; empty sources invoke no callbacks. Count is an upper bound, so
+-- traversal exhaustion must also be checked (notably for empty Cycle).
+
+entity Take {
+    minimum_arity: Integer
+    maximum_arity: Integer
+    count_is_first_and_source_is_second: Boolean
+    all_cljonic_collections_and_producers_admitted: Boolean
+    count_uses_repeat_integer_admission: Boolean
+    nonpositive_count_normalizes_before_unsigned_conversion: Boolean
+    result_is_independently_owning_vector_of_source_elements: Boolean
+    collection_result_capacity_is_declared_capacity: Boolean
+    producer_result_capacity_is_observation_cap: Boolean
+    capacity_is_saturated_at_collection_maximum: Boolean
+    runtime_count_does_not_change_result_type_or_capacity: Boolean
+    result_count_is_minimum_of_request_traversal_length_and_capacity: Boolean
+    result_contains_prefix_in_traversal_order: Boolean
+    oversized_request_returns_observable_source_without_failure: Boolean
+    nonpositive_request_or_zero_capacity_does_not_begin_traversal: Boolean
+    empty_source_including_cycle_returns_typed_empty_without_callbacks: Boolean
+    no_advance_past_last_returned_element: Boolean
+    iterate_steps_only_between_returned_elements: Boolean
+    repeatedly_callback_once_per_returned_element: Boolean
+    source_and_value_held_callback_state_preserved: Boolean
+    referenced_callback_state_remains_shared: Boolean
+    map_set_order_semantically_unordered: Boolean
+    queue_fifo_string_characters_and_map_entries_preserved: Boolean
+    nothrow_storage_without_additional_comparison_gate: Boolean
+    no_nested_result_absence_sentinel_status_or_preflight: Boolean
+    invalid_counts_sources_and_arities_have_targeted_diagnostics: Boolean
+    constexpr_noexcept_no_heap_no_rtti_nonmutating: Boolean
+
+    invariant MinimumArityIsTwo { this.minimum_arity = 2 }
+    invariant MaximumArityIsTwo { this.maximum_arity = 2 }
+    invariant CountIsFirstAndSourceIsSecond { this.count_is_first_and_source_is_second = true }
+    invariant AllCljonicCollectionsAndProducersAdmitted { this.all_cljonic_collections_and_producers_admitted = true }
+    invariant CountUsesRepeatIntegerAdmission { this.count_uses_repeat_integer_admission = true }
+    invariant NonpositiveCountNormalizesBeforeUnsignedConversion { this.nonpositive_count_normalizes_before_unsigned_conversion = true }
+    invariant ResultIsIndependentlyOwningVectorOfSourceElements { this.result_is_independently_owning_vector_of_source_elements = true }
+    invariant CollectionResultCapacityIsDeclaredCapacity { this.collection_result_capacity_is_declared_capacity = true }
+    invariant ProducerResultCapacityIsObservationCap { this.producer_result_capacity_is_observation_cap = true }
+    invariant CapacityIsSaturatedAtCollectionMaximum { this.capacity_is_saturated_at_collection_maximum = true }
+    invariant RuntimeCountDoesNotChangeResultTypeOrCapacity { this.runtime_count_does_not_change_result_type_or_capacity = true }
+    invariant ResultCountIsMinimumOfRequestTraversalLengthAndCapacity { this.result_count_is_minimum_of_request_traversal_length_and_capacity = true }
+    invariant ResultContainsPrefixInTraversalOrder { this.result_contains_prefix_in_traversal_order = true }
+    invariant OversizedRequestReturnsObservableSourceWithoutFailure { this.oversized_request_returns_observable_source_without_failure = true }
+    invariant NonpositiveRequestOrZeroCapacityDoesNotBeginTraversal { this.nonpositive_request_or_zero_capacity_does_not_begin_traversal = true }
+    invariant EmptySourceIncludingCycleReturnsTypedEmptyWithoutCallbacks { this.empty_source_including_cycle_returns_typed_empty_without_callbacks = true }
+    invariant NoAdvancePastLastReturnedElement { this.no_advance_past_last_returned_element = true }
+    invariant IterateStepsOnlyBetweenReturnedElements { this.iterate_steps_only_between_returned_elements = true }
+    invariant RepeatedlyCallbackOncePerReturnedElement { this.repeatedly_callback_once_per_returned_element = true }
+    invariant SourceAndValueHeldCallbackStatePreserved { this.source_and_value_held_callback_state_preserved = true }
+    invariant ReferencedCallbackStateRemainsShared { this.referenced_callback_state_remains_shared = true }
+    invariant MapSetOrderSemanticallyUnordered { this.map_set_order_semantically_unordered = true }
+    invariant QueueFifoStringCharactersAndMapEntriesPreserved { this.queue_fifo_string_characters_and_map_entries_preserved = true }
+    invariant NothrowStorageWithoutAdditionalComparisonGate { this.nothrow_storage_without_additional_comparison_gate = true }
+    invariant NoNestedResultAbsenceSentinelStatusOrPreflight { this.no_nested_result_absence_sentinel_status_or_preflight = true }
+    invariant InvalidCountsSourcesAndAritiesHaveTargetedDiagnostics { this.invalid_counts_sources_and_arities_have_targeted_diagnostics = true }
+    invariant ConstexprNoexceptNoHeapNoRttiNonmutating { this.constexpr_noexcept_no_heap_no_rtti_nonmutating = true }
+}
+
+actor TakeOperator { identified_by: Take }

@@ -66,28 +66,6 @@ entity CollectionShapingTraversalPolicy {
 }
 
 -- Each operation is individually named for REQ-SEQ-022 traceability.
-entity Take {
-    minimum_arity: Integer
-    maximum_arity: Integer
-    preserves_inputs: Boolean
-    returns_bounded_prefix_result: Boolean
-    terminates_at_requested_count_or_source_end: Boolean
-    result_is_explicit_bounded_producer: Boolean
-    materialization_uses_caller_destination_capacity: Boolean
-    capacity_is_minimum_of_count_and_source_bound: Boolean
-    failure_policy_is_typed: Boolean
-
-    invariant MinimumArityIsTwo { this.minimum_arity = 2 }
-    invariant MaximumArityIsTwo { this.maximum_arity = 2 }
-    invariant InputsArePreserved { this.preserves_inputs = true }
-    invariant ReturnsBoundedPrefix { this.returns_bounded_prefix_result = true }
-    invariant TerminationIsBounded { this.terminates_at_requested_count_or_source_end = true }
-    invariant ResultIsExplicitBoundedProducer { this.result_is_explicit_bounded_producer = true }
-    invariant MaterializationUsesCallerDestinationCapacity { this.materialization_uses_caller_destination_capacity = true }
-    invariant CapacityIsMinimumOfCountAndSourceBound { this.capacity_is_minimum_of_count_and_source_bound = true }
-    invariant FailurePolicyIsTyped { this.failure_policy_is_typed = true }
-}
-
 entity Drop {
     minimum_arity: Integer
     maximum_arity: Integer
