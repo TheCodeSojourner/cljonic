@@ -46,44 +46,6 @@ TEST_CASE("Collection shaping shared policy contract", "[collection-shaping][seq
     CHECK(transducers_and_hidden_lazy_sequences_are_unsupported);
 }
 
-TEST_CASE("Predicate traversal contract", "[collection-shaping][sequences]") {
-    TRACE_ID("entity-fields.TakeWhile");
-    TRACE_ID("invariant.TakeWhile.MinimumArityIsTwo");
-    TRACE_ID("invariant.TakeWhile.MaximumArityIsTwo");
-    TRACE_ID("invariant.TakeWhile.CallbackIsFirstArgument");
-    TRACE_ID("invariant.TakeWhile.SourceIsSecondArgument");
-    TRACE_ID("invariant.TakeWhile.CallbackIsPureAndNonAllocating");
-    TRACE_ID("invariant.TakeWhile.TerminationIsDeclared");
-    TRACE_ID("invariant.TakeWhile.ReturnsBoundedPrefix");
-    TRACE_ID("invariant.TakeWhile.InputIsPreserved");
-    TRACE_ID("invariant.TakeWhile.ResultIsExplicitBoundedProducer");
-    TRACE_ID("invariant.TakeWhile.MaterializationUsesCallerDestinationCapacity");
-    TRACE_ID("invariant.TakeWhile.FailurePolicyIsTyped");
-    TRACE_ID("entity-fields.DropWhile");
-    TRACE_ID("invariant.DropWhile.MinimumArityIsTwo");
-    TRACE_ID("invariant.DropWhile.MaximumArityIsTwo");
-    TRACE_ID("invariant.DropWhile.CallbackIsFirstArgument");
-    TRACE_ID("invariant.DropWhile.SourceIsSecondArgument");
-    TRACE_ID("invariant.DropWhile.CallbackIsPureAndNonAllocating");
-    TRACE_ID("invariant.DropWhile.TerminationIsDeclared");
-    TRACE_ID("invariant.DropWhile.ReturnsRemainingResult");
-    TRACE_ID("invariant.DropWhile.ResultIsBoundedOwningCollection");
-    TRACE_ID("invariant.DropWhile.ResultCapacityIsSourceCapacityBound");
-    TRACE_ID("invariant.DropWhile.FailurePolicyIsTyped");
-    TRACE_ID("invariant.DropWhile.InputIsPreserved");
-
-    constexpr int take_while_callback_argument = 1;
-    constexpr int take_while_source_argument = 2;
-    constexpr int drop_while_callback_argument = 1;
-    constexpr int drop_while_source_argument = 2;
-
-    CHECK(take_while_callback_argument == 1);
-    CHECK(take_while_source_argument == 2);
-    CHECK(drop_while_callback_argument == 1);
-    CHECK(drop_while_source_argument == 2);
-    CHECK(true);
-}
-
 TEST_CASE("Collection shaping transformation contracts", "[collection-shaping][sequences]") {
     TRACE_ID("entity-fields.TakeLast");
     TRACE_ID("invariant.TakeLast.MinimumArityIsTwo");

@@ -9,6 +9,30 @@ import re
 import subprocess
 
 PRIMITIVES = {
+    "take_while": {
+        "diagnostic_anchor": "cljonic::take_while:",
+        "diagnostic_cases": {
+            "scalar": ("(void)cljonic::take_while([](int) noexcept { return true; }, 42);", "one cljonic source"),
+            "array": ("(void)cljonic::take_while([](int) noexcept { return true; }, std::array<int, 2>{});", "one cljonic source"),
+            "map-entry": ("(void)cljonic::take_while([](auto) noexcept { return true; }, cljonic::map_entry(1, 2));", "one cljonic source"),
+            "throwing": ("(void)cljonic::take_while([](int) { return true; }, cljonic::vector(1));", "without throwing"),
+            "throwing-copy": (
+                "struct Predicate { Predicate() = default; Predicate(const Predicate&) noexcept(false) {} "
+                "bool operator()(int) const noexcept { return true; } }; "
+                "(void)cljonic::take_while(Predicate{}, cljonic::vector(1));",
+                "without throwing",
+            ),
+            "not-bool": ("(void)cljonic::take_while([](int n) noexcept { return n; }, cljonic::vector(1));", "exactly bool"),
+            "narrowing": ("(void)cljonic::take_while([](short) noexcept { return true; }, cljonic::vector(1L));", "safe"),
+            "missing": ("(void)cljonic::take_while();", "a predicate and one cljonic source"),
+            "extra": ("(void)cljonic::take_while([](int) noexcept { return true; }, cljonic::vector(1), cljonic::vector(2));", "one cljonic source"),
+        },
+        "pass_cases": {
+            "vector": "(void)cljonic::take_while([](int) noexcept { return true; }, cljonic::vector(1, 2));",
+            "captured": "(void)cljonic::take_while([limit = 3](int n) noexcept { return n < limit; }, cljonic::range(0, 4));",
+            "nested": "const auto p = cljonic::take_while([](int n) noexcept { return n < 3; }, cljonic::repeat(2)); (void)cljonic::take_while([](auto) noexcept { return true; }, p);",
+        },
+    },
     "drop": {
         "diagnostic_anchor": "cljonic::drop:",
         "diagnostic_cases": {
@@ -399,6 +423,30 @@ PRIMITIVES = {
                 "(void)cljonic::first(cljonic::Range<int>{0, 5});",
                 "expected a Vector, Map, Set, Queue, String, or MapEntry value",
             ),
+            "take-while": (
+                "(void)cljonic::first(cljonic::take_while([](int) noexcept { return true; }, cljonic::vector(1)));",
+                "expected a Vector, Map, Set, Queue, String, or MapEntry value",
+            ),
+            "drop-while": (
+                "(void)cljonic::first(cljonic::drop_while([](int) noexcept { return false; }, cljonic::vector(1)));",
+                "expected a Vector, Map, Set, Queue, String, or MapEntry value",
+            ),
+            "cycle": (
+                "(void)cljonic::first(cljonic::cycle(cljonic::vector(1)));",
+                "expected a Vector, Map, Set, Queue, String, or MapEntry value",
+            ),
+            "iterate": (
+                "(void)cljonic::first(cljonic::iterate([](int n) noexcept { return n + 1; }, 1));",
+                "expected a Vector, Map, Set, Queue, String, or MapEntry value",
+            ),
+            "repeat": (
+                "(void)cljonic::first(cljonic::repeat(1));",
+                "expected a Vector, Map, Set, Queue, String, or MapEntry value",
+            ),
+            "repeatedly": (
+                "(void)cljonic::first(cljonic::repeatedly([]() noexcept { return 1; }));",
+                "expected a Vector, Map, Set, Queue, String, or MapEntry value",
+            ),
         },
         "pass_cases": {
             "vector": "(void)cljonic::first(cljonic::Vector<int, 4>{10, 20});",
@@ -407,6 +455,10 @@ PRIMITIVES = {
             "queue": "(void)cljonic::first(cljonic::Queue<int, 4>{5, 6});",
             "string": "(void)cljonic::first(cljonic::String<4>{\"AB\"});",
             "map-entry": "(void)cljonic::first(cljonic::MapEntry<int, int>{1, 100});",
+            "materialized-producer": (
+                "static_assert(cljonic::first(cljonic::into(cljonic::vector<int, 1>(), "
+                "cljonic::take_while([](int) noexcept { return true; }, cljonic::vector(1, 4)))) == 1);"
+            ),
         },
     },
     "next": {
@@ -587,6 +639,30 @@ PRIMITIVES = {
         },
     },
 }
+
+PRIMITIVES["drop_while"] = {
+    "diagnostic_anchor": "cljonic::drop_while:",
+    "diagnostic_cases": {
+        name: (body.replace("take_while", "drop_while"), message)
+        for name, (body, message) in PRIMITIVES["take_while"]["diagnostic_cases"].items()
+    },
+    "pass_cases": {
+        name: body.replace("take_while", "drop_while")
+        for name, body in PRIMITIVES["take_while"]["pass_cases"].items()
+    },
+}
+
+for adapter in ("take_while", "drop_while"):
+    for tail in ("next", "rest", "has_next"):
+        statement = f"const auto p = cljonic::{adapter}([](int) noexcept {{ return true; }}, cljonic::vector(1));"
+        PRIMITIVES[tail]["diagnostic_cases"][f"{adapter}-unsupported-tail"] = (
+            statement + f" (void)cljonic::{tail}(p);",
+            f"cljonic::{tail}:",
+        )
+        PRIMITIVES[tail]["diagnostic_cases"][f"{adapter}-cycle-unsupported-tail"] = (
+            statement + f" (void)cljonic::{tail}(cljonic::cycle(p));",
+            f"cljonic::{tail}:",
+        )
 
 for operation in ("into", "fits_into"):
     materialization = PRIMITIVES[operation]

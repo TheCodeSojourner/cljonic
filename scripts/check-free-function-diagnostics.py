@@ -46,6 +46,8 @@ REGISTRY: dict[str, str] = {
     "cljonic-producer-cycle.hpp": "fallback",
     "cljonic-producer-iterate.hpp": "fallback",
     "cljonic-producer-repeatedly.hpp": "fallback",
+    "cljonic-producer-take-while.hpp": "fallback",
+    "cljonic-producer-drop-while.hpp": "fallback",
     "cljonic-collection-map.hpp": "fallback",
     "cljonic-collection-queue.hpp": "fallback",
     "cljonic-collection-set.hpp": "fallback",

@@ -77,6 +77,30 @@ static_assert([] {
 """,
 }
 
+PREDICATE_CAP_CASE = """\
+static_assert([] {
+    constexpr auto cap = cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
+    int produced = 0;
+    int tested = 0;
+    const auto source = cljonic::repeatedly([&produced]() noexcept { return ++produced; });
+    const auto prefix = cljonic::take_while([&tested](int) noexcept { ++tested; return true; }, source);
+    if (produced != 0 || tested != 0 || prefix.count() != cap ||
+        produced != static_cast<int>(cap) || tested != static_cast<int>(cap)) {
+        return false;
+    }
+    produced = 0;
+    tested = 0;
+    const auto suffix = cljonic::drop_while([&tested](int n) noexcept { ++tested; return n < 2; }, source);
+    if (produced != 0 || tested != 0 || suffix.count() != (cap == 0 ? 0 : cap - 1) ||
+        produced != static_cast<int>(cap) || tested != static_cast<int>(cap < 2 ? cap : 2)) {
+        return false;
+    }
+    const auto short_source = cljonic::repeatedly(2, []() noexcept { return 1; });
+    return cljonic::take_while([](int) noexcept { return true; }, short_source).count() == (cap < 2 ? cap : 2) &&
+           cljonic::drop_while([](int) noexcept { return true; }, short_source).count() == 0;
+}());
+"""
+
 PREAMBLE = """\
 namespace {
 struct NonStorable {
@@ -176,6 +200,19 @@ def main() -> int:
             zero_cap_compiler, os.path.join(root, "src"), "cljonic-next.hpp", body, expect_success=True
         ):
             failures.append(f"modular/{name}: zero-cap behavior failed to compile")
+
+    for cap in (0, 1, 3):
+        cap_compiler = [*compiler, f"-DCLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT={cap}"]
+        cap_configurations = configurations if cap != 0 else (
+            ("modular", os.path.join(root, "src"), "cljonic-producer-drop-while.hpp"),
+        )
+        for configuration, include_dir, header in cap_configurations:
+            if not compile_case(
+                cap_compiler, include_dir, header, PREDICATE_CAP_CASE,
+                preamble='#include "cljonic-producer-repeatedly.hpp"' if configuration == "modular" else "",
+                expect_success=True,
+            ):
+                failures.append(f"{configuration}/predicate-cap-{cap}: bounded traversal contract failed")
 
     if failures:
         print("producer-compile-fail:failures:")
