@@ -2,11 +2,11 @@
 
 ## Current Scope
 
-λ current_scope(x). implemented_value_domain(x) ≡ Vector ∧ MapEntry ∧ Map ∧ Set ∧ Queue ∧ String ∧ Variant ∧ Range ∧ Repeat ∧ Cycle ∧ Iterate ∧ Repeatedly
+λ current_scope(x). implemented_value_domain(x) ≡ Vector ∧ MapEntry ∧ Map ∧ Set ∧ Queue ∧ String ∧ Variant ∧ Range ∧ Repeat ∧ Cycle ∧ Iterate ∧ Repeatedly ∧ TakeWhile ∧ DropWhile
   ∧ direct_construction(x) ∧ member_observation(x)
   ∧ vector_factory(x) ∧ hash_map_factory(x) ∧ map_entry_factory(x) ∧ set_factory(x)
   ∧ queue_factory(x) ∧ string_factory(x) ∧ variant_factory(x)
-  ∧ producer_factories(range ∧ repeat ∧ cycle ∧ iterate ∧ repeatedly)(x)
+  ∧ producer_factories(range ∧ repeat ∧ cycle ∧ iterate ∧ repeatedly ∧ take_while ∧ drop_while)(x)
   ∧ primitive_free_functions(x) ∧ producer_materialization(into ∧ preflight(fits_into))(x)
   | collection_callable_lookup(x) → Vector ∨ Map ∨ Set ∨ String
   | module3(x) → concrete_array_backed_bounded_types(x)
@@ -17,8 +17,8 @@
   | module4_active_slice(x) → Range(x) ∧ Repeat(x) ∧ Cycle(x) ∧ Iterate(x) ∧ Repeatedly(x) ∧ into(x) ∧ fits_into(x)
   | sequence_conversion(x) → seq(x) ∈ current_collection_api(x) under REQ-SEQ-010
   | stored_collection_building_blocks(x) → govern(higher_order_algorithms(x))
-  | active_higher_order_algorithms(x) ≡ map ∧ reduce ∧ filter ∧ filterv
-  | future_expansion(transformations_except(map ∧ reduce ∧ filter ∧ filterv) ∨ numeric_algorithms ∨ callable_adapters ∨ set_algebra
+  | active_higher_order_algorithms(x) ≡ map ∧ reduce ∧ filter ∧ filterv ∧ take_while ∧ drop_while
+  | future_expansion(transformations_except(map ∧ reduce ∧ filter ∧ filterv ∧ take_while ∧ drop_while) ∨ numeric_algorithms ∨ callable_adapters ∨ set_algebra
       ∨ relational_models ∨ regexes ∨ formatting ∨ KeywordEnumNameMapping ∨ Atom)
     → describe(approved_future_expansion) ∧ remain_inactive_until(module_propagated(x))
 
@@ -27,6 +27,12 @@
   | ProducerConcept_layer(x) → admit(CljonicProducer)
   | CapabilityConcept_layer(x) → express(indexed ∨ lookup ∨ associative ∨ conjable semantic_capability)
   | model_active(x) → true_for(current_value_surface(x))
+
+λ approved_predicate_producer_scope(x). contract_approved(TakeWhile ∧ DropWhile)(x)
+  | requirements_binding(REQ-FN-039 ∧ REQ-FN-040 ∧ REQ-FN-041)
+  | separate_human_implementation_approval_and_verification_per_operation = satisfied
+  | include_in(implemented_value_domain ∧ current_public_producer_surface)
+  | ¬include_in(current_public_collection_surface) ∧ preserve(conditional_collection_element_storage)
 
 ## S5 - Identity
 
@@ -967,7 +973,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ unsupported_input(seq) → reject_at_compile_time_with(targeted_diagnostic_naming(seq ∧ supported_domains) ∧ REQ-DIAG-009)
     ∧ preserve(input ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
     ∧ classify_as(RequirementsBacked) ∧ trace_to(REQ-SEQ-010 ∧ REQ-SEQ-011 ∧ REQ-SEQ-013 ∧ REQ-SEQ-014 ∧ REQ-COLL-020F ∧ REQ-COLL-020S)
-  | deferred_collection_shaping_traversal_family(x) ≡ take_while ∧ drop_while ∧ take_last ∧ drop_last
+  | deferred_collection_shaping_traversal_family(x) ≡ take_last ∧ drop_last
     ∧ take_nth ∧ nth ∧ nthnext ∧ nthrest ∧ butlast ∧ map_indexed ∧ rseq ∧ second ∧ ffirst ∧ fnext
     ∧ nfirst ∧ nnext ∧ some ∧ is_every ∧ not_any ∧ not_every ∧ distinct ∧ dedupe ∧ frequencies
     ∧ reductions ∧ split_at ∧ split_with ∧ mapcat ∧ interleave ∧ interpose ∧ partition ∧ partition_all
@@ -995,6 +1001,8 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     except(finite_Range(x) → return(min(complete_cardinality(x), CollectionMaximumElementCount)))
   | UnboundedProducer(x) → return(CollectionMaximumElementCount)
     ∧ ¬claim(complete_cardinality(x))
+  | TakeWhile(value) ∨ DropWhile(value) → compute(exact_yielded_count_by_fresh_bounded_traversal)
+    ∧ permit(predicate_and_source_callback_evaluation) ∧ ¬cache_or_mutate(stored_parameters)
   | count_operation(x) → constexpr ∧ noexcept ∧ non_mutating ∧ non_allocating
 
 λ S2_is_empty_function_contract(x). is_empty(value) → admit(SequenceableCollection ∨ SequenceableProducer)(x)
@@ -1114,6 +1122,61 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | invalid_count ∨ unsupported_source ∨ wrong_arity → reject_at_compile_time_with(targeted_diagnostic_naming(drop ∧ count_and_source_domains) ∧ REQ-DIAG-009)
   | preserve(input_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
   | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-038 ∧ REQ-SEQ-022)
+
+λ S2_predicate_producer_contract(x). TakeWhile(x) ∨ DropWhile(x)
+  | factory(predicate, source) → require(CljonicSource(source) ∧ NothrowCollectionElement(source_element_type)
+    ∧ nothrow_copy_constructible(source) ∧ nothrow_copy_constructible(predicate))
+  | predicate_admission(x) ≡ filter_predicate(predicate, source_element_type) from S2_filter_function_contract
+    with(exact_bool_result ∧ safe_inspectable_parameter_conversions ∧ generic_nothrow_invocation_fallback)
+  | construction(x) → own(source ∧ predicate) ∧ ¬evaluate(predicate ∨ source_callbacks)
+    ∧ ¬∃(borrowed_source_storage ∨ materialized_result_cache ∨ result_capacity_template_parameter ∨ transducer_only_arity)
+  | traversal(x) → copy(stored_predicate) ∧ use(source_existing_traversal_state_copy_semantics)
+    ∧ preserve(stored_value_held_state) ∧ authorized_referenced_or_static_effects_remain_shared
+  | observation_window(x) ≡ original_source_traversal_limited_by(CollectionMaximumElementCount ∧ actual_source_endpoint)
+    ∧ respect(smaller_source_window) ∧ ¬require(preliminary_exact_count_pass_for_adapter_traversal)
+    ∧ ¬advance_beyond(final_window_value) ∧ ¬replenish(window_after_skip)
+  | empty_source_traversal ∨ zero_observation_cap → ¬invoke(predicate ∨ source_callbacks)
+  | consumer_stops_early → ¬perform(further_traversal_without_explicit_observation)
+  | result(x) → explicit_finite_producer_of(source_element_type) ∧ is_finite(x) = true
+    ∧ ¬claim(complete_underlying_unbounded_source)
+  | count(x) → exact_cardinality_by_independent_bounded_traversal ∧ ¬cache
+    ∧ permit(repeated_predicate_and_source_callbacks_when_count_precedes_consumption)
+  | default_construction ∨ assignment ∨ collection_element_storage → conditional_on(existing_nothrow_storage_capabilities)
+    ∧ captured_predicate_without_default_or_assignment → ¬reject(factory_on_that_basis)
+  | producer_parameter_equality ∨ Map_key_or_Set_element_admission → reject(callable_owned_component)
+  | equal ∨ not_equal → compare(bounded_logical_observations_in_sequential_equality_family)
+    under(existing_element_comparison_and_safe_conversion_rules)
+  | source_consumers(map ∧ reduce ∧ filter ∧ filterv ∧ take ∧ drop ∧ cycle ∧ seq ∧ into ∧ fits_into)
+    → admit(TakeWhile ∧ DropWhile) ∧ preserve(existing_type_behavior)
+  | count ∧ is_empty → admit(TakeWhile ∧ DropWhile) ∧ preserve(is_empty(value) = (count(value) == 0))
+  | first → reject(all_producers) ∧ preserve(SequenceableCollection_or_MapEntry_domain)
+  | fits_into → retain(finite_exact_count_preflight_for_Vector_Queue_String ∧ insertion_sensitive_preflight_for_Map_Set)
+    ∧ prediction_requires(equivalent_values_across_independent_traversals)
+  | next ∨ rest ∨ has_next → reject(adapter ∨ Cycle_requiring_adapter_tail)
+    until(separate_approved_tail_contract)
+  | Map_source → yield(MapEntry) ∧ String_source → yield(characters) ∧ Queue_source → preserve(FIFO_order)
+  | Map_source ∨ Set_source → prefix_suffix_membership_and_order_depend_on(semantically_unordered_traversal)
+  | invalid_source ∨ predicate ∨ arity → targeted_compile_time_diagnostic_naming(operation ∧ supported_domains)
+  | preserve(no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
+  | classify_as(RequirementsBackedContractNotYetPublished) ∧ trace_to(REQ-FN-041)
+
+λ S2_take_while_producer_contract(x). take_while(predicate, source) → S2_predicate_producer_contract(TakeWhile)(x)
+  | examine(each_source_value_once) ∧ yield(initial_consecutive_true_prefix)
+  | first_predicate_failure → examine_but_exclude(failing_value) ∧ stop_without_further_source_advance
+  | all_true_window → yield(entire_window) ∧ stop_at(window_endpoint)
+  | count(x) → count(yielded_prefix_by_fresh_traversal_including_first_false_boundary_probe)
+  | require(separate_take_while_implementation_approval_and_verification)
+  | trace_to(REQ-FN-039 ∧ REQ-FN-041 ∧ REQ-SEQ-022)
+
+λ S2_drop_while_producer_contract(x). drop_while(predicate, source) → S2_predicate_producer_contract(DropWhile)(x)
+  | examine(initial_prefix_until_first_false) ∧ skip(initial_consecutive_true_prefix)
+  | first_predicate_failure → retain(failing_value) ∧ yield(remaining_original_window)
+    ∧ ¬invoke(predicate_after_first_failure)
+  | all_true_window → yield(empty_traversal)
+  | first_result_access → permit(scanning_entire_matching_prefix)
+  | count(x) → count(yielded_suffix_by_fresh_traversal_without_retesting_suffix_values)
+  | require(separate_drop_while_implementation_approval_and_verification)
+  | trace_to(REQ-FN-040 ∧ REQ-FN-041 ∧ REQ-SEQ-022)
 
 λ S2_reduce_function_contract(x). reduce(f, source) ∨ reduce(f, initial, source) → admit(CljonicSource(source) ∧ reducing_function(f) ∧ accumulator_contract(x))(x)
   | reducing_function(f) → require(copy_constructible(f) ∧ nothrow_invocation(f, accumulator, element) ∧ result_type(f) = accumulator_type(x))
