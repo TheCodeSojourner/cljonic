@@ -100,7 +100,8 @@
  *   \ref Contains "contains", \ref Count "count", \ref Cycle "cycle"
  * - dec, dedupe, deref, \ref Disj "disj", \ref Dissoc "dissoc", distinct, div, double, drop, drop_last, drop_while
  * - emplace, \ref Empty "empty", \ref Equal "equal", every_pred
- * - ffirst, find, \ref First "first", \ref FitsInto "fits_into", fits_print, flatten, float, fnext, fnil, frequencies
+ * - ffirst, \ref FilterFunction "filter", find, \ref First "first", \ref FitsInto "fits_into", fits_print, flatten, float, fnext, fnil,
+ *   frequencies
  * - \ref Get "get", get_if, get_in, group_by
  * - \ref HasNext "has_next", has_some, \ref HashMapFactory "hash_map", \ref HashSetFactory "hash_set", holds
  * - identity, inc, index, int, interleave, interpose, \ref Into "into", \ref IsEmpty "is_empty", is_even, is_every,
@@ -183,6 +184,7 @@
 #include <cljonic-dissoc.hpp>
 #include <cljonic-empty.hpp>
 #include <cljonic-equal.hpp>
+#include <cljonic-filter.hpp>
 #include <cljonic-first.hpp>
 #include <cljonic-fits-into.hpp>
 #include <cljonic-get.hpp>
