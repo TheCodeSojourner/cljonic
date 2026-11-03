@@ -38,7 +38,7 @@ MUST ≡ ∀/¬ (required by constraint) | SHOULD ≡ ∧ preferred | MAY ≡ �
 
 5. **[requirements-module-5.md](requirements-module-5.md)** — *Higher-Order Algorithms & Traversal*
    - **Purpose**: Records future higher-order transformation requirements and the bounded collection-shaping/traversal family.
-   - **Scope**: The free-function API for right-to-left composition (`comp`) is deferred and non-binding (`REQ-FN-033`); this does not defer the `cljonic::Map` type. The multi-source `map` free function is binding under `REQ-FN-032`, `filter` is binding under `REQ-FN-035`, and `filterv` is its binding alias under `REQ-FN-036`. The collection-shaping/traversal family is separately inventoried by `REQ-SEQ-022`; each operation requires its own downstream behavioral specification before implementation.
+   - **Scope**: The free-function API for right-to-left composition (`comp`) is deferred and non-binding (`REQ-FN-033`); this does not defer the `cljonic::Map` type. The multi-source `map` free function is binding under `REQ-FN-032`, `filter` is binding under `REQ-FN-035`, `filterv` is its binding alias under `REQ-FN-036`, and `take` is binding under `REQ-FN-037`. The collection-shaping/traversal family is separately inventoried by `REQ-SEQ-022`; each operation requires its own downstream behavioral specification before implementation.
 
 6. **[requirements-module-6.md](requirements-module-6.md)** — *Numeric & Callable Convenience*
    - **Purpose**: Adds scalar arithmetic, bitwise math, conversion/parsing controls, and functional closure builders.
