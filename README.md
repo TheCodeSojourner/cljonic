@@ -162,6 +162,40 @@ traverse independently without shared caching; the prediction applies only if
 the later traversal produces the same values. Callback effects through references
 or static storage can remain observable between calls.
 
+### Predicate-bounded producers
+
+`take_while(predicate, source)` yields the initial matching prefix.
+`drop_while(predicate, source)` skips that prefix, retaining the first nonmatching
+value and everything after it. Both return owning, finite producers, not Vectors.
+They copy their source and predicate without evaluating either at construction.
+
+- Any cljonic collection or producer can be a source, including nested adapters.
+  External C++ ranges and MapEntry-as-source are excluded.
+- Each traversal has an original capped source window, respects actual exhaustion,
+  and starts with fresh predicate state. Skipping never replenishes the budget.
+- Predicates follow `filter` admission: non-throwing, exact Boolean results on const
+  source elements, with safe parameter conversions. Owned copies must not throw;
+  predicates must be pure and non-allocating.
+- `count` traverses independently for exact cardinality, and `is_empty` uses it.
+  There is no cached result.
+  Authorized referenced/static source effects remain shared, so count/fit predictions
+  require equivalent values across independent traversals.
+- Map/Set prefix and suffix membership depends on their unordered traversal.
+  Captured predicates are supported; collection-element storage is conditional.
+  Parameter equality and `next`/`rest`/`has_next`, including dependent Cycle tails,
+  are not supported.
+
+```cpp
+constexpr auto below_three = [](int n) noexcept { return n < 3; };
+constexpr auto source = cljonic::vector(1, 2, 4, 1);
+static_assert(cljonic::equal(cljonic::take_while(below_three, source), cljonic::vector(1, 2)));
+static_assert(cljonic::equal(cljonic::drop_while(below_three, source), cljonic::vector(4, 1)));
+```
+
+Use `into` with an explicit destination to materialize either result.
+`first` accepts collections and MapEntry values, not producers; materialize the
+result into a supported collection before calling it.
+
 ### concepts
 
 **cljonic** uses **concepts** to specify template requirements, improving code readability and providing better compiler diagnostics.
@@ -275,6 +309,12 @@ changes. Assuming all tests pass, executing `make cljonic` will generate the **c
 | `make upsert-gate-strict`                        | upsert-gate plus strict spec-to-code traceability and no-heap verification                                                   |
 
 Coverage targets reuse their build directory and downloaded dependencies, while resetting coverage counters before each test run. The first configuration still needs network access to fetch Catch2 unless `FETCHCONTENT_SOURCE_DIR_CATCH2` is configured with an existing checkout.
+
+Both targets run the full test suite but capture only production headers under
+the project's `src/` directory. This keeps test/dependency coverage and GCC
+test-lambda metadata conflicts out of the production report. `COVERAGE_FILE`
+narrows the CLI report after capture; the 100% line threshold remains unchanged.
+CLI coverage failures print the failing lcov command's diagnostics.
 
 `make all` does not clean first. For a full rebuild without downloading dependencies again, run `make clean` followed by `make all`. Use `make distclean` only when intentionally discarding build configuration and dependency caches; subsequent configuration may need network access to fetch the pinned Catch2 version.
 

@@ -154,6 +154,7 @@ coverage:
 	lcov --zerocounters --directory $(COVERAGE_BUILD_DIR)
 	$(CTEST) --test-dir $(COVERAGE_BUILD_DIR) --output-on-failure
 	lcov --capture --directory $(COVERAGE_BUILD_DIR) \
+	     --include '$(CURDIR)/src/*' \
 	     --output-file $(COVERAGE_BUILD_DIR)/coverage.info
 	lcov --extract $(COVERAGE_BUILD_DIR)/coverage.info '$(CURDIR)/src/*' \
 	     --output-file $(COVERAGE_BUILD_DIR)/coverage-src.info
@@ -167,18 +168,26 @@ coverage-cli:
 	@if [ -d "$(COVERAGE_BUILD_DIR)" ]; then find "$(COVERAGE_BUILD_DIR)" -name '*.gcda' -delete; fi
 	@$(CMAKE) -S . -B $(COVERAGE_BUILD_DIR) -DCLJONIC_COVERAGE=ON > /dev/null
 	@$(CMAKE) --build $(COVERAGE_BUILD_DIR) --parallel $(BUILD_JOBS) > /dev/null
-	@lcov --zerocounters --directory $(COVERAGE_BUILD_DIR) > /dev/null 2>&1
+	@lcov --zerocounters --directory $(COVERAGE_BUILD_DIR) \
+	     > $(COVERAGE_BUILD_DIR)/.lcov-out.tmp 2>&1 || \
+	     (cat $(COVERAGE_BUILD_DIR)/.lcov-out.tmp; exit 1)
 	@$(CTEST) --test-dir $(COVERAGE_BUILD_DIR) --output-on-failure \
 	     > $(COVERAGE_BUILD_DIR)/.ctest-out.tmp 2>&1 || \
 	     (cat $(COVERAGE_BUILD_DIR)/.ctest-out.tmp; exit 1)
 	@lcov --capture --directory $(COVERAGE_BUILD_DIR) \
-	     --output-file $(COVERAGE_BUILD_DIR)/coverage.info > /dev/null 2>&1
+	     --include '$(CURDIR)/src/*' \
+	     --output-file $(COVERAGE_BUILD_DIR)/coverage.info \
+	     > $(COVERAGE_BUILD_DIR)/.lcov-out.tmp 2>&1 || \
+	     (cat $(COVERAGE_BUILD_DIR)/.lcov-out.tmp; exit 1)
 	@lcov --extract $(COVERAGE_BUILD_DIR)/coverage.info '$(_COVERAGE_SRC)' \
-	     --output-file $(COVERAGE_BUILD_DIR)/coverage-src.info > /dev/null 2>&1
-	@lcov --summary $(COVERAGE_BUILD_DIR)/coverage-src.info 2>&1 | \
-	     awk '/lines\.\.\./{printf "coverage:lines=%s\n", $$2}'
+	     --output-file $(COVERAGE_BUILD_DIR)/coverage-src.info \
+	     > $(COVERAGE_BUILD_DIR)/.lcov-out.tmp 2>&1 || \
+	     (cat $(COVERAGE_BUILD_DIR)/.lcov-out.tmp; exit 1)
 	@lcov --summary $(COVERAGE_BUILD_DIR)/coverage-src.info \
-	     --fail-under-lines $(COVERAGE_THRESHOLD) > /dev/null 2>&1
+	     --fail-under-lines $(COVERAGE_THRESHOLD) \
+	     > $(COVERAGE_BUILD_DIR)/.lcov-out.tmp 2>&1 || \
+	     (cat $(COVERAGE_BUILD_DIR)/.lcov-out.tmp; exit 1)
+	@awk '/lines\.\.\./{printf "coverage:lines=%s\n", $$2}' $(COVERAGE_BUILD_DIR)/.lcov-out.tmp
 
 sanitizer:
 	$(CMAKE) -S . -B $(SANITIZER_BUILD_DIR) -DCLJONIC_SANITIZERS=asan-ubsan
