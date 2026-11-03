@@ -1,0 +1,77 @@
+-- allium: 3
+
+-- REQ-FN-038 / REQ-SEQ-022: drop(count, source) returns an owning Vector suffix.
+-- Drop removes a prefix from the original bounded observation window.
+-- Skipping does not replenish the producer observation budget.
+-- When the requested drop covers the window count bound, return empty
+-- without starting traversal. Otherwise visit skipped and retained values
+-- according to existing iterator callback timing, stopping at the original
+-- window bound or actual endpoint, including empty Cycle traversal.
+
+entity Drop {
+    minimum_arity: Integer
+    maximum_arity: Integer
+    count_is_first_and_source_is_second: Boolean
+    all_cljonic_collections_and_producers_admitted: Boolean
+    count_uses_repeat_integer_admission: Boolean
+    nonpositive_count_normalizes_before_unsigned_conversion: Boolean
+    result_is_independently_owning_vector_of_source_elements: Boolean
+    collection_result_capacity_is_declared_capacity: Boolean
+    producer_result_capacity_is_observation_cap: Boolean
+    capacity_is_saturated_at_collection_maximum: Boolean
+    runtime_count_does_not_change_result_type_or_capacity: Boolean
+    original_window_is_bounded_by_source_count_capacity_and_endpoint: Boolean
+    dropping_does_not_start_fresh_producer_observation_window: Boolean
+    result_is_original_window_suffix_after_requested_prefix: Boolean
+    result_count_subtraction_does_not_underflow: Boolean
+    nonpositive_count_retains_entire_original_window: Boolean
+    count_covering_window_bound_or_zero_capacity_skips_traversal: Boolean
+    empty_source_including_cycle_returns_typed_empty_without_callbacks: Boolean
+    skipped_and_retained_values_use_one_original_window_traversal: Boolean
+    no_advance_past_final_required_value_or_actual_endpoint: Boolean
+    repeatedly_callback_once_per_visited_value_including_skipped: Boolean
+    iterate_steps_only_between_visited_values: Boolean
+    source_and_value_held_callback_state_preserved: Boolean
+    referenced_or_static_callback_state_remains_shared: Boolean
+    map_set_order_semantically_unordered: Boolean
+    queue_fifo_string_characters_and_map_entries_preserved: Boolean
+    nothrow_storage_without_additional_comparison_gate: Boolean
+    suffix_is_complete_within_original_bounded_window: Boolean
+    no_nested_result_absence_sentinel_status_or_preflight: Boolean
+    invalid_counts_sources_and_arities_have_targeted_diagnostics: Boolean
+    constexpr_noexcept_no_heap_no_rtti_nonmutating: Boolean
+
+    invariant MinimumArityIsTwo { this.minimum_arity = 2 }
+    invariant MaximumArityIsTwo { this.maximum_arity = 2 }
+    invariant CountIsFirstAndSourceIsSecond { this.count_is_first_and_source_is_second = true }
+    invariant AllCljonicCollectionsAndProducersAdmitted { this.all_cljonic_collections_and_producers_admitted = true }
+    invariant CountUsesRepeatIntegerAdmission { this.count_uses_repeat_integer_admission = true }
+    invariant NonpositiveCountNormalizesBeforeUnsignedConversion { this.nonpositive_count_normalizes_before_unsigned_conversion = true }
+    invariant ResultIsIndependentlyOwningVectorOfSourceElements { this.result_is_independently_owning_vector_of_source_elements = true }
+    invariant CollectionResultCapacityIsDeclaredCapacity { this.collection_result_capacity_is_declared_capacity = true }
+    invariant ProducerResultCapacityIsObservationCap { this.producer_result_capacity_is_observation_cap = true }
+    invariant CapacityIsSaturatedAtCollectionMaximum { this.capacity_is_saturated_at_collection_maximum = true }
+    invariant RuntimeCountDoesNotChangeResultTypeOrCapacity { this.runtime_count_does_not_change_result_type_or_capacity = true }
+    invariant OriginalWindowIsBoundedBySourceCountCapacityAndEndpoint { this.original_window_is_bounded_by_source_count_capacity_and_endpoint = true }
+    invariant DroppingDoesNotStartFreshProducerObservationWindow { this.dropping_does_not_start_fresh_producer_observation_window = true }
+    invariant ResultIsOriginalWindowSuffixAfterRequestedPrefix { this.result_is_original_window_suffix_after_requested_prefix = true }
+    invariant ResultCountSubtractionDoesNotUnderflow { this.result_count_subtraction_does_not_underflow = true }
+    invariant NonpositiveCountRetainsEntireOriginalWindow { this.nonpositive_count_retains_entire_original_window = true }
+    invariant CountCoveringWindowBoundOrZeroCapacitySkipsTraversal { this.count_covering_window_bound_or_zero_capacity_skips_traversal = true }
+    invariant EmptySourceIncludingCycleReturnsTypedEmptyWithoutCallbacks { this.empty_source_including_cycle_returns_typed_empty_without_callbacks = true }
+    invariant SkippedAndRetainedValuesUseOneOriginalWindowTraversal { this.skipped_and_retained_values_use_one_original_window_traversal = true }
+    invariant NoAdvancePastFinalRequiredValueOrActualEndpoint { this.no_advance_past_final_required_value_or_actual_endpoint = true }
+    invariant RepeatedlyCallbackOncePerVisitedValueIncludingSkipped { this.repeatedly_callback_once_per_visited_value_including_skipped = true }
+    invariant IterateStepsOnlyBetweenVisitedValues { this.iterate_steps_only_between_visited_values = true }
+    invariant SourceAndValueHeldCallbackStatePreserved { this.source_and_value_held_callback_state_preserved = true }
+    invariant ReferencedOrStaticCallbackStateRemainsShared { this.referenced_or_static_callback_state_remains_shared = true }
+    invariant MapSetOrderSemanticallyUnordered { this.map_set_order_semantically_unordered = true }
+    invariant QueueFifoStringCharactersAndMapEntriesPreserved { this.queue_fifo_string_characters_and_map_entries_preserved = true }
+    invariant NothrowStorageWithoutAdditionalComparisonGate { this.nothrow_storage_without_additional_comparison_gate = true }
+    invariant SuffixIsCompleteWithinOriginalBoundedWindow { this.suffix_is_complete_within_original_bounded_window = true }
+    invariant NoNestedResultAbsenceSentinelStatusOrPreflight { this.no_nested_result_absence_sentinel_status_or_preflight = true }
+    invariant InvalidCountsSourcesAndAritiesHaveTargetedDiagnostics { this.invalid_counts_sources_and_arities_have_targeted_diagnostics = true }
+    invariant ConstexprNoexceptNoHeapNoRttiNonmutating { this.constexpr_noexcept_no_heap_no_rtti_nonmutating = true }
+}
+
+actor DropOperator { identified_by: Drop }

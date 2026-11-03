@@ -66,28 +66,6 @@ entity CollectionShapingTraversalPolicy {
 }
 
 -- Each operation is individually named for REQ-SEQ-022 traceability.
-entity Drop {
-    minimum_arity: Integer
-    maximum_arity: Integer
-    preserves_inputs: Boolean
-    returns_complete_result: Boolean
-    terminates_after_requested_count_or_source_end: Boolean
-    result_is_bounded_owning_collection: Boolean
-    result_capacity_is_source_capacity_bound: Boolean
-    capacity_is_preserved_when_source_bound_is_safe: Boolean
-    failure_policy_is_typed: Boolean
-
-    invariant MinimumArityIsTwo { this.minimum_arity = 2 }
-    invariant MaximumArityIsTwo { this.maximum_arity = 2 }
-    invariant InputsArePreserved { this.preserves_inputs = true }
-    invariant ReturnsCompleteResult { this.returns_complete_result = true }
-    invariant TerminationIsBounded { this.terminates_after_requested_count_or_source_end = true }
-    invariant ResultIsBoundedOwningCollection { this.result_is_bounded_owning_collection = true }
-    invariant ResultCapacityIsSourceCapacityBound { this.result_capacity_is_source_capacity_bound = true }
-    invariant CapacityIsPreservedWhenSourceBoundIsSafe { this.capacity_is_preserved_when_source_bound_is_safe = true }
-    invariant FailurePolicyIsTyped { this.failure_policy_is_typed = true }
-}
-
 entity TakeWhile {
     minimum_arity: Integer
     maximum_arity: Integer
@@ -1284,7 +1262,6 @@ entity TreeSeq {
 
 actor CollectionShapingTraversalPolicyOperator { identified_by: CollectionShapingTraversalPolicy }
 actor TakeOperator { identified_by: Take }
-actor DropOperator { identified_by: Drop }
 actor TakeWhileOperator { identified_by: TakeWhile }
 actor DropWhileOperator { identified_by: DropWhile }
 actor TakeLastOperator { identified_by: TakeLast }
