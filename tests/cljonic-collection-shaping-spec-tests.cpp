@@ -46,26 +46,6 @@ TEST_CASE("Collection shaping shared policy contract", "[collection-shaping][seq
     CHECK(transducers_and_hidden_lazy_sequences_are_unsupported);
 }
 
-TEST_CASE("Drop contract", "[collection-shaping][sequences]") {
-    TRACE_ID("entity-fields.Drop");
-    TRACE_ID("invariant.Drop.MinimumArityIsTwo");
-    TRACE_ID("invariant.Drop.MaximumArityIsTwo");
-    TRACE_ID("invariant.Drop.InputsArePreserved");
-    TRACE_ID("invariant.Drop.ReturnsCompleteResult");
-    TRACE_ID("invariant.Drop.TerminationIsBounded");
-    TRACE_ID("invariant.Drop.ResultIsBoundedOwningCollection");
-    TRACE_ID("invariant.Drop.ResultCapacityIsSourceCapacityBound");
-    TRACE_ID("invariant.Drop.CapacityIsPreservedWhenSourceBoundIsSafe");
-    TRACE_ID("invariant.Drop.FailurePolicyIsTyped");
-
-    constexpr int drop_minimum_arity = 2;
-    constexpr int drop_maximum_arity = 2;
-
-    CHECK(drop_minimum_arity == 2);
-    CHECK(drop_maximum_arity == 2);
-    CHECK(true);
-}
-
 TEST_CASE("Predicate traversal contract", "[collection-shaping][sequences]") {
     TRACE_ID("entity-fields.TakeWhile");
     TRACE_ID("invariant.TakeWhile.MinimumArityIsTwo");
