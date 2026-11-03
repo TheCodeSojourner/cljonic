@@ -2,25 +2,24 @@
 type: Reference
 title: cljonic Next Discussion Agenda
 status: open
-description: Current approval-gated agenda for propagating repaired requirements into specifications, architecture, tests, and implementation.
+description: Current agenda for defining operation-level collection-shaping behavior before propagating it into architecture, tests, and implementation.
 tags: [roadmap, requirements, specifications, architecture, collections, verification]
 related: [collection-api-surface-discipline.md, architecture-integrity-curation.md]
 depends-on: []
 ---
 
-## Current baseline (2026-09-03)
+## Current baseline (2026-11-03)
 
-The requirements and Module 7 architecture governed-requirements reference were repaired and validated. The requirements-only inventory contains 233 defined designators with no duplicate or undefined exact references. The worktree currently contains downstream implementation and test changes; treat those as pending work until the repaired requirements and architecture are approved.
+The `filterv` alias work is complete and committed. The `first`, `next`, `not_empty`, and `seq` free functions are also active and verified; they are not deferred promotion candidates. `seq` was fully activated on 2026-10-30 under binding `REQ-SEQ-010`, `REQ-SEQ-011`, `REQ-SEQ-013`, and `REQ-SEQ-014`.
 
 ## Approval gate
 
-1. Validate and approve the repaired requirements and architecture reference.
-2. Keep implementation changes subordinate to the approved requirements and architecture; do not use existing code or tests to silently redefine behavioral truth.
+1. Keep implementation changes subordinate to approved requirements and architecture; do not use existing code or tests to silently redefine behavioral truth.
 
 ## Next work after approval
 
-1. Reconcile the operation-level behavioral specifications required by `REQ-SEQ-022`.
-2. Start with the collection-shaping and traversal inventory, naming each operation contract individually before implementation readiness is claimed.
+1. Reconcile the operation-level behavioral specifications required by `REQ-SEQ-022`; the shared `collection-shaping.allium` remains deferred and does not make its listed operations implementation-ready.
+2. Start with one operation contract, such as `take`, and name its behavior before implementation readiness is claimed.
 3. Propagate approved contracts into architecture, focused tests, traceability, and implementation in that order.
 4. Re-run the relevant vocabulary, architecture, specification, traceability, build, no-heap, and coverage gates after each coherent increment.
 

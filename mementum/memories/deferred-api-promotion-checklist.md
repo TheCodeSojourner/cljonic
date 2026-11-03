@@ -30,4 +30,4 @@ at gates. Verified by promoting `empty` on 2026-10-17.
    set, add the architecture contract rule, restate the term as active; refresh
    the obligation snapshot and regenerate `cljonic.hpp` and `docs/`.
 
-Remaining deferred headers: `first`, `next`, `seq`, `not_empty`.
+All four previously listed headers are active and complete: `first`, `next`, and `not_empty` were verified on 2026-10-23; `seq` was fully activated and validated on 2026-10-30 (see [session history](../state.md)). None remains deferred.
