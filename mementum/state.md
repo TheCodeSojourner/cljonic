@@ -1,5 +1,29 @@
 ## Current Session State
 
+- last_session_id: 153d4491-2472-4b18-bf8d-45f5e3702d4f
+- current_timestamp: 2026-11-03T10:48:47-07:00
+- session_complete: true
+- recover: `filterv` is now a binding alias of `filter` under REQ-FN-036, with identical admission, result type/capacity/values, traversal, ordering, empty behavior, preservation, and resource guarantees; cljonic `filter` already returns an owning Vector.
+- Task:
+  1. `/cljonic-api-complete filterv` — COMPLETE. Added the active alias contract/spec, forwarding API and targeted diagnostics, tests/probes, and documentation entry/example. Removed the contradictory deferred Filterv sketch and its obsolete architecture deferral.
+  2. Follow-up documentation refinements — COMPLETE. Removed unnecessary implementation-facing wording from the filterv prose/contracts and removed the redundant return-type equality assertion from its Doxygen example; regenerated `cljonic.hpp`.
+- Decisions:
+  1. Human decision 2026-11-03: `filterv` is simply an alias for the existing `filter` API.
+  2. Human feedback: omit unnecessary implementation-facing commentary and redundant compile-time type assertions from user-facing documentation.
+- Validation:
+  1. `make requirements-structure vocabulary-structure core-cheatsheet-format`: passed.
+  2. Allium check for `filterv`, sequence analysis, filter/filterv trace-ID checks, snapshot refresh, and `make traceability-spec-to-code`: passed.
+  3. Focused CTest for filter and filterv: 4/4 passed across modular and single-header builds.
+  4. `make filter-compile-fail`: passed with filterv admission and targeted rejection checks.
+  5. `make no-heap`: source/symbol scans passed and both modular/single-header probes executed successfully.
+  6. `make docs-examples`: all 45 examples compiled, linked, and ran, including filterv.
+  7. `make upsert-gate-fast` and scoped `git diff --check -- . ':(exclude)docs'`: passed.
+  8. After follow-up prose/example edits: `make cljonic`, Doxygen sample formatting/idempotence, requirements/vocabulary structure, Allium `filterv` check, and scoped diff check passed. The redundant type assertion was removed after the earlier 45-example run, so docs examples have not been rerun since that deletion.
+- Next:
+  1. Run the human-owned `make git` before product commits. Existing modified generated `docs/` files were left untouched; review them before regeneration because rendered HTML may not reflect the final prose.
+
+## Current Session State
+
 - last_session_id: 011ce9e4-5b13-4e77-82e8-4da4b659fbd5
 - current_timestamp: 2026-11-03T09:14:11-07:00
 - session_complete: true
