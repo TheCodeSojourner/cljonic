@@ -2,7 +2,7 @@
 
 ## Purpose and Scope
 
-This module records higher-order sequence transformation requirements and specifies the collection-shaping/traversal inventory. The free-function API `comp` is explicitly deferred; this does not defer the `cljonic::Map` collection type or its existing operations. The `map`, `reduce`, `filter`, `filterv`, and `take` free functions are binding under `REQ-FN-032`, `REQ-FN-034`, `REQ-FN-035`, `REQ-FN-036`, and `REQ-FN-037`; `filterv` is an alias of `filter`.
+This module records higher-order sequence transformation requirements and specifies the collection-shaping/traversal inventory. The free-function API `comp` is explicitly deferred; this does not defer the `cljonic::Map` collection type or its existing operations. The `map`, `reduce`, `filter`, `filterv`, `take`, and `drop` free functions are binding under `REQ-FN-032`, `REQ-FN-034`, `REQ-FN-035`, `REQ-FN-036`, `REQ-FN-037`, and `REQ-FN-038`; `filterv` is an alias of `filter`.
 
 ## Deferred Higher-Order Free Functions (Non-binding)
 
@@ -93,6 +93,23 @@ This module records higher-order sequence transformation requirements and specif
   rationale: the human approved activating `take(count, source)` on 2026-11-03 for all cljonic collections and producers, returning an owning Vector with source-bound capacity, reusing Repeat count admission and nonpositive normalization, and bounding oversized requests by the observable source count
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-03, rationale_source: origin_artifact}
 
+λ REQ-FN-038(x).
+  ∀ `drop(count, source)`: accepts a count followed by exactly one cljonic source (a Vector, Map, Set, Queue, or String collection, or a Range, Repeat, Cycle, Iterate, or Repeatedly producer)
+  ∧ ∀ count: signed or unsigned integer type other than Boolean or character types, whose nonnegative type range fits `std::size_t` ∧ nonpositive counts normalize to zero before unsigned conversion ∧ positive counts are preserved without wrapping or truncation, as for counted Repeat
+  ∧ ∀ result: bounded owning Vector with the source element type and compile-time capacity equal to the source's declared collection capacity or producer configured observation cap, saturated at `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE` ∧ runtime count does not change the result type or capacity
+  ∧ ∀ observation window: the original source traversal bounded by `min(source.count(), result capacity)` and actual iterator exhaustion ∧ dropping consumes this window rather than beginning a fresh producer observation window
+  ∧ ∀ result elements: the suffix remaining after removing the first normalized count elements from that original observation window, in source traversal order ∧ result count is `max(original observable traversal length - normalized count, 0)`, computed without unsigned underflow ∧ nonpositive counts return all elements of the original window
+  ∧ ∀ normalized count at least the observation-window count bound ∨ zero capacity: return an empty typed Vector without beginning traversal or invoking producer callbacks ∧ actual empty traversal, including Cycle over an empty source despite its nonzero count bound: returns empty without callbacks
+  ∧ ∀ nonempty-result traversal: visits the skipped prefix and retained suffix in one traversal of the original window ∧ never advances beyond the final required value or actual endpoint ∧ source count is an upper bound and does not replace checking traversal exhaustion
+  ∧ ∀ producer: skipped and retained values follow existing iterator callback timing ∧ Repeatedly invokes its callback once per visited value, including skipped values ∧ Iterate invokes its step only between visited values ∧ callback state stored by value is preserved in the source, while referenced or static state remains shared
+  ∧ ∀ Map ∨ Set source: traversal order is semantically unordered ∧ Queue preserves FIFO order ∧ String yields characters ∧ Map yields value-semantic MapEntry elements
+  ∧ ∀ source element: satisfies the nothrow element storage contract ∧ no additional equality or ordering capability is required
+  ∧ ∀ result: independently owning suffix of the original bounded observation window, complete within that window but not a fresh observation of an unbounded producer ∧ no nested result, absence sentinel, status wrapper, preflight predicate, or transducer-only arity
+  ∧ ∀ MapEntry input ∨ external C++ range ∨ non-cljonic source ∨ invalid count type ∨ wrong arity: rejected at compile time with a targeted diagnostic naming `drop` and its supported count/source domains
+  ∧ ∀ operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ preserves the source value ∧ no RTTI
+  rationale: the human approved the `drop(count, source)` contract on 2026-11-03 with a take-style owning Vector and runtime-independent source-bound capacity, original-window producer observation, and no traversal when the requested drop covers the observation-window count bound; this approved contract precedes public API publication, tests, and implementation
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-03, rationale_source: origin_artifact}
+
 λ REQ-SEQ-022(x).
   ∀ context: the first-pass collection-shaping and traversal family includes bounded operations corresponding to `take`, `drop`, `take_while`, `drop_while`, `take_last`, `drop_last`, `take_nth`, `nth`, `nthnext`, `nthrest`, `butlast`, `map_indexed`, `rseq`, `second`, `ffirst`, `fnext`, `nfirst`, `nnext`, `some`, `is_every`, `not_any`, `not_every`, `distinct`, `dedupe`, `frequencies`, `reductions`, `split_at`, `split_with`, `mapcat`, `interleave`, `interpose`, `partition`, `partition_all`, `partition_by`, `partitionv`, `partitionv_all`, `group_by`, `flatten`, `tree_seq`, `keep`, `keep_indexed`, `remove`, `replace`, `mapv`, `filter`, `filterv`, `subvec`, `find`, `reduce`, `reduce_kv`, `sort`, and `sort_by`
   ∧ ∀ listed_operation: an individually named downstream behavioral specification exists before it is treated as implementation-ready
@@ -109,4 +126,4 @@ This module records higher-order sequence transformation requirements and specif
 ## Traceability and Related Requirements
 
 - **Downstream Artifact**: Free-function templates for sequence shaping, slicing, filtering, mapping, grouping, and ordering.
-- **Governed REQs**: `REQ-SEQ-022`, `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding), `REQ-FN-035` (binding), `REQ-FN-036` (binding alias), `REQ-FN-037` (binding).
+- **Governed REQs**: `REQ-SEQ-022`, `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding), `REQ-FN-035` (binding), `REQ-FN-036` (binding alias), `REQ-FN-037` (binding), `REQ-FN-038` (binding).
