@@ -1,9 +1,9 @@
 ## Current Session State
 
 - last_session_id: cab5f489-f975-4e17-ad99-12c735f791f3
-- current_timestamp: 2026-11-03T12:16:42-07:00
-- session_complete: false
-- recover: Responsive Doxygen layout is implemented and browser-verified; review and commit the stylesheet, README, generated docs stylesheet, and state changes. Take and drop are complete and committed. Select further API work only on human direction.
+- current_timestamp: 2026-11-03T12:23:25-07:00
+- session_complete: true
+- recover: Select further API work only on human direction; take, drop, and responsive documentation are complete and committed. Responsive styles, README, regenerated docs, and working state are in e7319380; the stale agenda correction is in 99ad86bb. No responsive-doc implementation or regeneration remains. Fini commits only this finalized Mementum handoff.
 - Task:
   1. Encoded REQ-FN-038 and index, Drop vocabulary, S2 drop architecture, and dedicated specs/sequences/drop.allium; removed Drop's contradictory deferred entity/actor.
   2. Propagated the approved contract to src/cljonic-drop.hpp, umbrella/cheatsheet, exact behavioral tests (replacing the old Drop placeholder), primitive compile-fail registration, runtime no-heap probes, amalgamation, and authoritative obligation snapshot.
@@ -11,13 +11,15 @@
   4. Updated the agenda and lifecycle wording to mark drop active. Product changes, agenda, and subsequently regenerated rendered docs are now committed.
   5. `/gybis-fini`: reconciled the handoff with the committed work and finalized session state.
   6. Follow-up: corrected stale agenda wording, then addressed mobile/tablet HTML overflow in doc/doxygen-extra.css. Existing viewport metadata was already present; fixed intrinsically wide member tables, fixed-layout member containers, summary links, and inline-code wrapping. Wide code/tables scroll locally; desktop styles above 1024 CSS pixels remain unchanged. Updated README and regenerated docs.
+  7. Finalized the responsive-doc handoff after verifying its product commit and the agenda correction; no pending product changes.
 - Questions:
-  1. No unresolved drop contract or evidence gaps.
+  1. No unresolved drop contract or responsive-documentation questions.
 - Decisions:
   1. Human approved one operation, drop, rather than a speculative multi-operation implementation batch.
   2. Human approved count-first drop over all cljonic sources with take-style owning Vector capacity independent of runtime count. Nonpositive counts drop nothing; oversized counts return typed empty.
   3. Dropping consumes the original bounded observation window, not a fresh producer window. Requests covering its count bound skip traversal and callbacks; otherwise skipped and retained values follow existing iterator callback timing.
   4. The reusable boundary is count/source admission and capacity derivation, not identical traversal: take stops at a requested prefix, while drop visits the original window and retains its suffix. Endpoint checks remain mandatory even when source.count() is nonzero.
+  5. Responsive documentation uses the existing HTML_EXTRA_STYLESHEET source, not manual generated-HTML edits. At widths <= 1024 CSS pixels, prose and inline code wrap; wide tables, signatures, and code scroll locally. Fixed table layout on member containers prevents intrinsic signature widths from widening the document; summary links must also wrap.
 - Validation:
   1. make requirements-structure vocabulary-structure passed.
   2. Allium 3.5.3: checks for drop and the narrowed collection-shaping spec passed with no diagnostics/findings; sequence-set analysis passed with no diagnostics/findings.
@@ -29,8 +31,9 @@
   8. Custom cap checks: modular drop at cap 0, and modular/single-header at caps 1 and 3 passed compile-time and runtime checks. The umbrella/single-header with global cap 0 is blocked by pre-existing character_is_valid instantiation of String<1>; no unrelated fix made.
   9. Final lifecycle structure checks, authoritative traceability, drop Allium check, sequence-set analysis, and git diff --check passed after implementation.
   10. Responsive docs: make docs passed. Browser measurements across six page types and five viewport settings (actual CSS widths 256, 300, 614, 1024, 1536) passed all 30 checks: document scrollWidth <= clientWidth + 1. No C++ behavior changes.
+  11. Source/generated extra stylesheets matched byte-for-byte, and git diff --check passed. The only change in generated doxygen.css was its generation timestamp. Responsive docs and agenda changes are committed; the worktree was clean before this fini update.
 - Next:
-  1. Review and commit responsive documentation changes; generated HTML has been refreshed. Select additional REQ-SEQ-022 operations only on human direction.
+  1. Select additional REQ-SEQ-022 operations only on human direction; take, drop, responsive documentation, and their product/docs commits are complete.
   2. No further drop implementation or docs regeneration remains. The final human-owned make git run was not observed in this chat; do not infer additional validation beyond the recorded evidence.
   3. The pre-existing obsolete Filterv traces in the deferred collection-shaping placeholder tests remain a separate housekeeping item.
 
