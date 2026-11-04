@@ -193,8 +193,13 @@ static_assert(cljonic::equal(cljonic::drop_while(below_three, source), cljonic::
 ```
 
 Use `into` with an explicit destination to materialize either result.
-`first` accepts collections and MapEntry values, not producers; materialize the
-result into a supported collection before calling it.
+`first` accepts collections, all cljonic producers, and MapEntry values. Producer
+access returns an owning copy of the first observable element, or its default
+value when empty. It does not count or materialize the sequence first; `drop_while`
+may examine its bounded matching prefix. Each call starts a fresh traversal and
+may repeat callbacks. A zero observation limit starts no traversal or callbacks.
+Producer results that are MapEntry values remain whole entries; `first` applied
+directly to a MapEntry still returns its key.
 
 ### concepts
 

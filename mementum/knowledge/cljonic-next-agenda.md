@@ -8,7 +8,17 @@ related: [collection-api-surface-discipline.md, architecture-integrity-curation.
 depends-on: []
 ---
 
-## Current baseline (2026-11-03)
+## Current baseline (2026-11-04)
+
+`first` now admits all seven cljonic producer families, including nested predicate
+adapters and Cycles over them, under `REQ-FN-002A1`. The human approved the contract
+and then explicitly invoked `/cljonic-api-complete` for implementation. Results
+are owning element copies; empty or zero-cap observations yield DefaultElement.
+First access does no exact-count prepass or advancement after finding the result;
+DropWhile may scan its original bounded matching prefix. Cycle begin no longer
+counts its source before traversal. Existing collection and MapEntry semantics,
+callback-state rules, and tail API admission are preserved. Source documentation
+is updated; rendered HTML remains deferred to the human-owned final gate.
 
 The `filterv` alias work is complete and committed. The `first`, `next`, `not_empty`, and `seq` free functions are also active and verified; they are not deferred promotion candidates. `seq` was fully activated on 2026-10-30 under binding `REQ-SEQ-010`, `REQ-SEQ-011`, `REQ-SEQ-013`, and `REQ-SEQ-014`.
 
@@ -28,15 +38,15 @@ The `filterv` alias work is complete and committed. The `first`, `next`, `not_em
 - Both own source/predicate copies without construction-time evaluation or a materialized cache. Original-window traversal is capped and endpoint-checked; skipping never replenishes the budget. All cljonic sources, including nested adapters and traversal-dependent Map/Set results, are admitted.
 - `count` is exact by independent bounded traversal, not a cheap upper bound. It may repeat predicate/source callbacks before later consumption; `is_empty` remains `count == 0`. Fit/count predictions require equivalent values across independent traversals.
 - Shared `REQ-FN-041` specifies no-throw ownership, filter-style predicate admission, conditional producer storage, consumer integration, and unavailable parameter equality. `next`/`rest`/`has_next` and Cycle tails dependent on these adapters remain unsupported pending a separately approved tail contract.
-- Human subsequently approved a uniform `first` boundary: collections and MapEntry values only, never producers. Adapter first support was removed across contracts and downstream artifacts; the first implementation and diagnostic match the pre-session version. Materialize a producer before applying first.
+- The 2026-11-03 collection-only `first` decision was superseded on 2026-11-04 by the producer-first contract and explicit implementation approval described above.
 - Requirements, vocabulary, architecture, dedicated specs, implementations, and behavioral tests are current. Old deferred sketches and superseded predicate placeholder tests were removed; the authoritative obligation snapshot is synchronized and strict traceability passes.
-- Revised `take_while`: 45/45 obligations, 89 modular assertions in three cases. Revised `drop_while`: 48/48 obligations, 87 modular assertions in three cases. Combined adapter/first tests pass 227 assertions in seven cases per header variant. First diagnostic probes reject all seven producer families and accept materialized collections; unsupported adapter/dependent Cycle tails remain exercised as compile failures.
+- Predicate adapters retain 45 take_while and 48 drop_while obligations, with first-admission obligations replacing the superseded rejection obligations. First diagnostics now admit all seven producer families and reject external inputs; unsupported adapter/dependent Cycle tails remain unchanged.
 - Runtime no-heap checks, caps 0/1/3 probes (zero cap uses isolated modular headers), final full 328-test suite, sanitizers, 100% affected-header line coverage, repository fast gate, and all 49 example compilations passed. Both new examples also executed. Follow-up fixed standard coverage capture to include only absolute-project-root src headers, avoiding GCC test-lambda metadata conflicts without ignoring errors or weakening the threshold. Full make coverage-cli now passes at 100% (996/996 lines), and narrowed predicate-header coverage passes.
 
 ## Next work after implementation
 
 1. /gybis-spec-weed is the propagation handoff for checking spec-code alignment. Do not repeat completed operation-level implementation approval.
-2. Source documentation, rendered HTML, and cljonic.hpp are current after the uniform first-boundary update. Full primitive diagnostics, all 328 CTest cases, sanitizers, full coverage, Allium checks/analysis, and docs regeneration passed; the product and documentation changes are committed through the user's workflow.
+2. The 2026-11-03 product baseline was committed and verified. The 2026-11-04 producer-first work is not committed; source documentation and cljonic.hpp are updated, and rendered HTML is deferred. Do not treat historical full-suite/coverage results as verification of this extension.
 3. Select further API work only on human direction. `next`/`rest`/`has_next` support for predicate producers and dependent Cycle tails needs a separate approved tail contract.
 4. `take`, `drop`, and responsive documentation are complete. Other `REQ-SEQ-022` operations remain unapproved until their individual contracts exist.
 
