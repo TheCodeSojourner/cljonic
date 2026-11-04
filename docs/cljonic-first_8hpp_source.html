@@ -110,39 +110,56 @@ document.addEventListener('DOMContentLoaded', codefold.init);
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a> {</div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span></div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> KeyType, <span class="keyword">typename</span> ValueType&gt;</div>
-<div class="foldopen" id="foldopen00054" data-start="{" data-end="}">
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="namespacecljonic.html#af6ac025d9f9bb2d29bcf7442c05b17e0">   54</a></span>[[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic.html#af6ac025d9f9bb2d29bcf7442c05b17e0">first</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structcljonic_1_1_map_entry.html">MapEntry&lt;KeyType, ValueType&gt;</a>&amp; entry) <span class="keyword">noexcept</span> -&gt; KeyType {</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordflow">return</span> entry.key;</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>}</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> KeyType, <span class="keyword">typename</span> ValueType&gt;</div>
+<div class="foldopen" id="foldopen00059" data-start="{" data-end="}">
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="namespacecljonic.html#af6ac025d9f9bb2d29bcf7442c05b17e0">   59</a></span>[[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic.html#af6ac025d9f9bb2d29bcf7442c05b17e0">first</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structcljonic_1_1_map_entry.html">MapEntry&lt;KeyType, ValueType&gt;</a>&amp; entry) <span class="keyword">noexcept</span> -&gt; KeyType {</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keywordflow">return</span> entry.key;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>}</div>
 </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span></div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="keyword">template</span> &lt;concepts::SequenceableCollection C&gt;</div>
-<div class="foldopen" id="foldopen00060" data-start="{" data-end="}">
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="namespacecljonic.html#a34f5b11e5dab358770c2607de62bc9e6">   60</a></span>[[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic.html#af6ac025d9f9bb2d29bcf7442c05b17e0">first</a>(<span class="keyword">const</span> C&amp; collection) <span class="keyword">noexcept</span> -&gt; C::value_type {</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <span class="keywordflow">if</span> (collection.count() == 0U) {</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>        <span class="keywordflow">return</span> <span class="keyword">typename</span> C::value_type{};</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    }</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="keywordflow">return</span> *collection.begin();</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>}</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="keyword">template</span> &lt;concepts::SequenceableCollection C&gt;</div>
+<div class="foldopen" id="foldopen00065" data-start="{" data-end="}">
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="namespacecljonic.html#a34f5b11e5dab358770c2607de62bc9e6">   65</a></span>[[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic.html#af6ac025d9f9bb2d29bcf7442c05b17e0">first</a>(<span class="keyword">const</span> C&amp; collection) <span class="keyword">noexcept</span> -&gt; C::value_type {</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keywordflow">if</span> (collection.count() == 0U) {</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>        <span class="keywordflow">return</span> <span class="keyword">typename</span> C::value_type{};</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    }</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keywordflow">return</span> *collection.begin();</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>}</div>
 </div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> C&gt;</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="keyword">requires</span>(!concepts::SequenceableCollection&lt;C&gt; &amp;&amp; !<a class="code hl_variable" href="namespacecljonic_1_1concepts__detail.html#a3889b714b08533483ca70718c5f1d55c">concepts_detail::is_cljonic_map_entry_v&lt;C&gt;</a>)</div>
-<div class="foldopen" id="foldopen00069" data-start="{" data-end="}">
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="namespacecljonic.html#aea1402192879c7e0589a239d437f51ce">   69</a></span><span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic.html#af6ac025d9f9bb2d29bcf7442c05b17e0">first</a>([[maybe_unused]] <span class="keyword">const</span> C&amp; value) <span class="keyword">noexcept</span> -&gt; <span class="keywordtype">void</span> {</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keyword">static_assert</span>(<a class="code hl_variable" href="namespacecljonic_1_1concepts__detail.html#ab8fd50010c5a1e2e4f202ac1d645d757">concepts_detail::dependent_false&lt;C&gt;</a>,</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>                  <span class="stringliteral">&quot;cljonic::first: expected a Vector, Map, Set, Queue, String, or MapEntry value.&quot;</span>);</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>}</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="keyword">template</span> &lt;concepts::CljonicProducer P&gt;</div>
+<div class="foldopen" id="foldopen00074" data-start="{" data-end="}">
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="namespacecljonic.html#adfec8c5b7de5cf0f5746ffe7354f6aec">   74</a></span>[[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic.html#af6ac025d9f9bb2d29bcf7442c05b17e0">first</a>(<span class="keyword">const</span> P&amp; producer) <span class="keyword">noexcept</span> -&gt; P::value_type {</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<a class="code hl_variable" href="namespacecljonic.html#a41fa65c16edb0a95aa942c48307777d6">CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</a> == 0U) {</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        <span class="keywordflow">return</span> <span class="keyword">typename</span> P::value_type{};</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>        <span class="keyword">const</span> <span class="keyword">auto</span> current = std::ranges::begin(producer);</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>        <span class="keywordflow">if</span> (current == std::ranges::end(producer)) {</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>            <span class="keywordflow">return</span> <span class="keyword">typename</span> P::value_type{};</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        }</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>        <span class="keywordflow">return</span> *current;</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    }</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>}</div>
 </div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>} <span class="comment">// namespace cljonic</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> C&gt;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    <span class="keyword">requires</span>(!concepts::SequenceableCollection&lt;C&gt; &amp;&amp; !concepts::CljonicProducer&lt;C&gt; &amp;&amp;</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>             !<a class="code hl_variable" href="namespacecljonic_1_1concepts__detail.html#a3889b714b08533483ca70718c5f1d55c">concepts_detail::is_cljonic_map_entry_v&lt;C&gt;</a>)</div>
+<div class="foldopen" id="foldopen00089" data-start="{" data-end="}">
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="namespacecljonic.html#a6016d6faeb101d217347f63f8c915237">   89</a></span><span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic.html#af6ac025d9f9bb2d29bcf7442c05b17e0">first</a>([[maybe_unused]] <span class="keyword">const</span> C&amp; value) <span class="keyword">noexcept</span> -&gt; <span class="keywordtype">void</span> {</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keyword">static_assert</span>(<a class="code hl_variable" href="namespacecljonic_1_1concepts__detail.html#ab8fd50010c5a1e2e4f202ac1d645d757">concepts_detail::dependent_false&lt;C&gt;</a>,</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>                  <span class="stringliteral">&quot;cljonic::first: expected a cljonic collection, producer, or MapEntry value.&quot;</span>);</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>}</div>
+</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>} <span class="comment">// namespace cljonic</span></div>
 <div class="ttc" id="acljonic-collection-map_8hpp_html"><div class="ttname"><a href="cljonic-collection-map_8hpp.html">cljonic-collection-map.hpp</a></div></div>
 <div class="ttc" id="acljonic-concepts_8hpp_html"><div class="ttname"><a href="cljonic-concepts_8hpp.html">cljonic-concepts.hpp</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a3889b714b08533483ca70718c5f1d55c"><div class="ttname"><a href="namespacecljonic_1_1concepts__detail.html#a3889b714b08533483ca70718c5f1d55c">cljonic::concepts_detail::is_cljonic_map_entry_v</a></div><div class="ttdeci">constexpr bool is_cljonic_map_entry_v</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00081">cljonic-concepts.hpp:81</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_ab8fd50010c5a1e2e4f202ac1d645d757"><div class="ttname"><a href="namespacecljonic_1_1concepts__detail.html#ab8fd50010c5a1e2e4f202ac1d645d757">cljonic::concepts_detail::dependent_false</a></div><div class="ttdeci">constexpr bool dependent_false</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00078">cljonic-concepts.hpp:78</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-assoc_8hpp_source.html#l00006">cljonic-assoc.hpp:6</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_af6ac025d9f9bb2d29bcf7442c05b17e0"><div class="ttname"><a href="namespacecljonic.html#af6ac025d9f9bb2d29bcf7442c05b17e0">cljonic::first</a></div><div class="ttdeci">constexpr auto first(const MapEntry&lt; KeyType, ValueType &gt; &amp;entry) noexcept -&gt; KeyType</div><div class="ttdef"><b>Definition</b> <a href="#l00054">cljonic-first.hpp:54</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a41fa65c16edb0a95aa942c48307777d6"><div class="ttname"><a href="namespacecljonic.html#a41fa65c16edb0a95aa942c48307777d6">cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</a></div><div class="ttdeci">constexpr std::size_t CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-collection-maximum-element-count_8hpp_source.html#l00016">cljonic-core-collection-maximum-element-count.hpp:16</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_af6ac025d9f9bb2d29bcf7442c05b17e0"><div class="ttname"><a href="namespacecljonic.html#af6ac025d9f9bb2d29bcf7442c05b17e0">cljonic::first</a></div><div class="ttdeci">constexpr auto first(const MapEntry&lt; KeyType, ValueType &gt; &amp;entry) noexcept -&gt; KeyType</div><div class="ttdef"><b>Definition</b> <a href="#l00059">cljonic-first.hpp:59</a></div></div>
 <div class="ttc" id="astructcljonic_1_1_map_entry_html"><div class="ttname"><a href="structcljonic_1_1_map_entry.html">cljonic::MapEntry</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-map-entry_8hpp_source.html#l00055">cljonic-collection-map-entry.hpp:55</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

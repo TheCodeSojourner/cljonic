@@ -121,9 +121,11 @@ Functions</h2></td></tr>
 <tr class="memitem:af6ac025d9f9bb2d29bcf7442c05b17e0 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#af6ac025d9f9bb2d29bcf7442c05b17e0">cljonic::first</a> (const <a class="el" href="structcljonic_1_1_map_entry.html">MapEntry</a>&lt; KeyType, ValueType &gt; &amp;entry) noexcept -&gt; KeyType</td></tr>
 <tr class="memitem:a34f5b11e5dab358770c2607de62bc9e6" id="r_a34f5b11e5dab358770c2607de62bc9e6"><td class="memTemplParams" colspan="2">template&lt;concepts::SequenceableCollection C&gt; </td></tr>
 <tr class="memitem:a34f5b11e5dab358770c2607de62bc9e6 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a34f5b11e5dab358770c2607de62bc9e6">cljonic::first</a> (const C &amp;collection) noexcept -&gt; C::value_type</td></tr>
-<tr class="memitem:aea1402192879c7e0589a239d437f51ce" id="r_aea1402192879c7e0589a239d437f51ce"><td class="memTemplParams" colspan="2">template&lt;typename C&gt; <br />
-requires (!concepts::SequenceableCollection&lt;C&gt; &amp;&amp; !<a class="el" href="namespacecljonic_1_1concepts__detail.html#a3889b714b08533483ca70718c5f1d55c">concepts_detail::is_cljonic_map_entry_v</a>&lt;C&gt;)</td></tr>
-<tr class="memitem:aea1402192879c7e0589a239d437f51ce template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#aea1402192879c7e0589a239d437f51ce">cljonic::first</a> (const C &amp;value) noexcept -&gt; void</td></tr>
+<tr class="memitem:adfec8c5b7de5cf0f5746ffe7354f6aec" id="r_adfec8c5b7de5cf0f5746ffe7354f6aec"><td class="memTemplParams" colspan="2">template&lt;concepts::CljonicProducer P&gt; </td></tr>
+<tr class="memitem:adfec8c5b7de5cf0f5746ffe7354f6aec template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#adfec8c5b7de5cf0f5746ffe7354f6aec">cljonic::first</a> (const P &amp;producer) noexcept -&gt; P::value_type</td></tr>
+<tr class="memitem:a6016d6faeb101d217347f63f8c915237" id="r_a6016d6faeb101d217347f63f8c915237"><td class="memTemplParams" colspan="2">template&lt;typename C&gt; <br />
+requires (!concepts::SequenceableCollection&lt;C&gt; &amp;&amp; !concepts::CljonicProducer&lt;C&gt; &amp;&amp; !<a class="el" href="namespacecljonic_1_1concepts__detail.html#a3889b714b08533483ca70718c5f1d55c">concepts_detail::is_cljonic_map_entry_v</a>&lt;C&gt;)</td></tr>
+<tr class="memitem:a6016d6faeb101d217347f63f8c915237 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a6016d6faeb101d217347f63f8c915237">cljonic::first</a> (const C &amp;value) noexcept -&gt; void</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

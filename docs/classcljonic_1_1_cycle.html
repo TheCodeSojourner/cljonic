@@ -186,7 +186,7 @@ class cljonic::Cycle&lt; Source &gt;</div><p><a class="anchor" id="Cycle"></a> A
 <div class="ttc" id="aclasscljonic_1_1_range_html"><div class="ttname"><a href="classcljonic_1_1_range.html">cljonic::Range</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-range_8hpp_source.html#l00098">cljonic-producer-range.hpp:98</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-assoc_8hpp_source.html#l00006">cljonic-assoc.hpp:6</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a11e270768e9485445f2885cdecb1c4eb"><div class="ttname"><a href="namespacecljonic.html#a11e270768e9485445f2885cdecb1c4eb">cljonic::vector</a></div><div class="ttdeci">constexpr auto vector(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Vector&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-vector_8hpp_source.html#l00400">cljonic-collection-vector.hpp:400</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_a63b0a319ce6349c3b49b17b3ab5db240"><div class="ttname"><a href="namespacecljonic.html#a63b0a319ce6349c3b49b17b3ab5db240">cljonic::cycle</a></div><div class="ttdeci">constexpr auto cycle(const Source &amp;source) noexcept -&gt; Cycle&lt; Source &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-cycle_8hpp_source.html#l00243">cljonic-producer-cycle.hpp:243</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a63b0a319ce6349c3b49b17b3ab5db240"><div class="ttname"><a href="namespacecljonic.html#a63b0a319ce6349c3b49b17b3ab5db240">cljonic::cycle</a></div><div class="ttdeci">constexpr auto cycle(const Source &amp;source) noexcept -&gt; Cycle&lt; Source &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-cycle_8hpp_source.html#l00245">cljonic-producer-cycle.hpp:245</a></div></div>
 </div><!-- fragment --> 
 <p class="definition">Definition at line <a class="el" href="cljonic-producer-cycle_8hpp_source.html#l00081">81</a> of file <a class="el" href="cljonic-producer-cycle_8hpp_source.html">cljonic-producer-cycle.hpp</a>.</p>
 </div><a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">Member Typedef Documentation</h2>
@@ -433,7 +433,7 @@ template&lt;concepts_detail::CycleClassArgument Source&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-cycle_8hpp_source.html#l00174">174</a> of file <a class="el" href="cljonic-producer-cycle_8hpp_source.html">cljonic-producer-cycle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-cycle_8hpp_source.html#l00176">176</a> of file <a class="el" href="cljonic-producer-cycle_8hpp_source.html">cljonic-producer-cycle.hpp</a>.</p>
 
 </div>
 </div>
@@ -524,7 +524,7 @@ template&lt;concepts_detail::CycleClassArgument Source&gt; </div>
 <p>Producer parameter equality (REQ-FN-014B): compares only the stored owned source, count, finite-form, and starting-offset parameters, never the produced sequence.</p>
 <p>It is the only producer parameter-equality surface; the <span class="tt"><a class="el" href="namespacecljonic.html#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a></span> free function instead compares bounded logical observations of the produced sequences. The owned source compares by its own stable equality, so <span class="tt">cycle(vector(1, 2, 3)) == cycle(vector(1, 2, 3))</span> is true while <span class="tt">cycle(vector(1, 2, 3)) == cycle(vector(1, 2, 4))</span> is false. O(1), no traversal, no allocation. </p>
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-cycle_8hpp_source.html#l00188">188</a> of file <a class="el" href="cljonic-producer-cycle_8hpp_source.html">cljonic-producer-cycle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-cycle_8hpp_source.html#l00190">190</a> of file <a class="el" href="cljonic-producer-cycle_8hpp_source.html">cljonic-producer-cycle.hpp</a>.</p>
 
 </div>
 </div>
