@@ -26,7 +26,9 @@ within the original window; finite adapter-source Cycle tails eagerly count
 bounded output and rotate a compact scalar offset over the complete owned source.
 Nested compositions are supported. Callback replay follows existing effect rules;
 idiomatic callbacks should be pure. No large rotation metadata or materialization
-is used. `has_next` remains collection-only.
+is used. `has_next` accepts the same producer domain as `next` and reports whether
+the resulting producer tail has an observable first element; callback timing follows
+`next` plus that first-element observation.
 
 The `filterv` alias work is complete and committed. The `first`, `next`, `not_empty`, and `seq` free functions are also active and verified; they are not deferred promotion candidates. `seq` was fully activated on 2026-10-30 under binding `REQ-SEQ-010`, `REQ-SEQ-011`, `REQ-SEQ-013`, and `REQ-SEQ-014`.
 
@@ -45,18 +47,19 @@ The `filterv` alias work is complete and committed. The `first`, `next`, `not_em
 - `drop_while(predicate, source)` skips only the initial true prefix as an owning finite `DropWhile` producer (`REQ-FN-040`), retains the first false value and remaining original window, and never retests the predicate after that first failure.
 - Both own source/predicate copies without construction-time evaluation or a materialized cache. Original-window traversal is capped and endpoint-checked; skipping never replenishes the budget. All cljonic sources, including nested adapters and traversal-dependent Map/Set results, are admitted.
 - `count` is exact by independent bounded traversal, not a cheap upper bound. It may repeat predicate/source callbacks before later consumption; `is_empty` remains `count == 0`. Fit/count predictions require equivalent values across independent traversals.
-- Shared `REQ-FN-041` specifies no-throw ownership, filter-style predicate admission, conditional producer storage, consumer integration, and unavailable parameter equality. The approved and implemented `REQ-FN-002A4`/`REQ-FN-002A6` extension admits next/rest and dependent Cycle tails; has_next remains collection-only.
+- Shared `REQ-FN-041` specifies no-throw ownership, filter-style predicate admission, conditional producer storage, consumer integration, and unavailable parameter equality. The approved and implemented `REQ-FN-002A4`/`REQ-FN-002A6` extension admits next/rest and dependent Cycle tails; `has_next` now follows the complete `next` producer domain.
 - The 2026-11-03 collection-only `first` decision was superseded on 2026-11-04 by the producer-first contract and explicit implementation approval described above.
 - Requirements, vocabulary, architecture, dedicated specs, implementations, and behavioral tests are current. Old deferred sketches and superseded predicate placeholder tests were removed; the authoritative obligation snapshot is synchronized and strict traceability passes.
-- Adapter specs now include tail admission, deferred output-skip/window semantics, and unchanged has_next rejection. Next/Rest/Cycle specs and executable traces include compact eager Cycle rotation, callback timing, nesting, empty boundaries, cap saturation, and unchanged first observation behavior.
+- Adapter specs now include tail admission, deferred output-skip/window semantics, and producer-tail `has_next` behavior. Next/Rest/Cycle specs and executable traces include compact eager Cycle rotation, callback timing, nesting, empty boundaries, cap saturation, and unchanged first observation behavior.
 - Runtime no-heap checks, caps 0/1/3 probes (zero cap uses isolated modular headers), final full 328-test suite, sanitizers, 100% affected-header line coverage, repository fast gate, and all 49 example compilations passed. Both new examples also executed. Follow-up fixed standard coverage capture to include only absolute-project-root src headers, avoiding GCC test-lambda metadata conflicts without ignoring errors or weakening the threshold. Full make coverage-cli now passes at 100% (996/996 lines), and narrowed predicate-header coverage passes.
 
 ## Next work after implementation
 
 1. /gybis-spec-weed is the propagation handoff for checking spec-code alignment. Do not repeat completed operation-level implementation approval.
 2. Producer-first work and the next/rest extension, including rendered HTML, are committed by the human (d0f3941c, c7dd924f, c9c1afbc, 1358b59c, 8b262072, 08562cd7, b16cc9ba, and 5a7a314a). No implementation or rendered-documentation final gate remains.
-3. Select further API work only on human direction. Producer has_next and adapter parameter equality remain outside the approved tail extension.
-4. `take`, `drop`, and responsive documentation are complete. Other `REQ-SEQ-022` operations remain unapproved until their individual contracts exist.
+3. Producer `has_next` now admits the full `next` domain and returns true exactly when the producer tail has an observable element. The implementation and evidence are complete; the source-level example is current, while rendered HTML remains deferred for the human-owned final gate. The change is uncommitted; the human owns `make git` and commits.
+4. Select further API work only on human direction. Adapter parameter equality remains outside this extension.
+5. `take`, `drop`, and responsive documentation are complete. Other `REQ-SEQ-022` operations remain unapproved until their individual contracts exist.
 
 ## Deferred until their contracts exist
 
