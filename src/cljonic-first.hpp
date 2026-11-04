@@ -6,13 +6,17 @@
 namespace cljonic {
 
 /** \anchor First
- * The \b first free function returns the first logical element of a `Vector`, `Map`, `Set`, `Queue`, or `String`
- * value, or the key of a \ref MapEntryFactory "map_entry" value.
+ * The \b first free function returns the first logical element of a `Vector`, `Map`, `Set`, `Queue`, or `String` value
+ * or any cljonic producer, or the key of a \ref MapEntryFactory "map_entry" value.
  *
  * `Vector` and `String` yield the element at index zero, `Queue` yields its front element, `Map` yields one
  * value-semantic \ref MapEntryFactory "map_entry" value, and `Set` yields one stored element. `Map` and `Set`
- * traversal order is not semantically significant. An empty collection yields its \ref DefaultElement "default
- * element".
+ * traversal order is not semantically significant. An empty collection or producer observation yields its element
+ * type's \ref DefaultElement "default value". A producer yielding map entries returns a whole entry, not its key.
+ *
+ * Producer access evaluates only what is needed to find the first value, without counting or materializing the
+ * sequence first. A `drop_while` producer may examine its entire bounded matching prefix. Each call starts a fresh
+ * traversal; source and predicate callbacks may run again. A zero observation limit invokes no callbacks.
  *
  * \b Examples
  ~~~~~{.cpp}
@@ -22,29 +26,30 @@ namespace cljonic {
  int main() {
    // Compile-time demonstration.
    constexpr auto v_const = vector(10, 20, 30);
-   constexpr auto m_const = hash_map(1, 100);
-   constexpr auto s_const = hash_set(7);
-   constexpr auto q_const = queue(5, 6);
-   constexpr auto text_const = string("AB");
    constexpr auto e_const = map_entry(1, 100);
+   constexpr auto numbers = range(7, 10);
+   constexpr auto suffix =
+       drop_while([](int n) noexcept { return n < 3; }, vector(1, 2, 4));
+   constexpr auto empty = repeat(0, 7);
    static_assert(first(v_const) == 10);
-   static_assert(first(m_const) == map_entry(1, 100));
-   static_assert(first(s_const) == 7);
-   static_assert(first(q_const) == 5);
-   static_assert(first(text_const) == 'A');
    static_assert(first(e_const) == 1);
+   static_assert(first(numbers) == 7);
+   static_assert(first(suffix) == 4);
+   static_assert(first(cycle(suffix)) == 4);
+   static_assert(first(empty) == 0);
+   static_assert(count(v_const) == 3);
 
    // Runtime demonstration.
-   auto v_runtime = vector(100, 200);
-   auto m_runtime = hash_map(2, 200);
-   auto s_runtime = hash_set(8);
-   auto q_runtime = queue(9, 10);
-   auto text_runtime = string("CD");
-   auto e_runtime = map_entry(3, 300);
+   const auto value = 100;
+   const auto values = vector(value, 200);
+   int calls = 0;
+   const auto generated = repeatedly([&calls, value]() noexcept {
+     ++calls;
+     return value;
+   });
 
-   return (first(v_runtime) == 100 && first(m_runtime) == map_entry(2, 200) &&
-           first(s_runtime) == 8 && first(q_runtime) == 9 &&
-           first(text_runtime) == 'C' && first(e_runtime) == 3)
+   return (first(values) == value && count(values) == 2 &&
+           first(generated) == value && calls == 1 && first(empty) == 0)
               ? 0
               : 1;
  }
@@ -64,11 +69,26 @@ template <concepts::SequenceableCollection C>
     return *collection.begin();
 }
 
+/** Returns the first observable producer element, or its default value when empty. */
+template <concepts::CljonicProducer P>
+[[nodiscard]] constexpr auto first(const P& producer) noexcept -> P::value_type {
+    if constexpr (CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE == 0U) {
+        return typename P::value_type{};
+    } else {
+        const auto current = std::ranges::begin(producer);
+        if (current == std::ranges::end(producer)) {
+            return typename P::value_type{};
+        }
+        return *current;
+    }
+}
+
 template <typename C>
-    requires(!concepts::SequenceableCollection<C> && !concepts_detail::is_cljonic_map_entry_v<C>)
+    requires(!concepts::SequenceableCollection<C> && !concepts::CljonicProducer<C> &&
+             !concepts_detail::is_cljonic_map_entry_v<C>)
 constexpr auto first([[maybe_unused]] const C& value) noexcept -> void {
     static_assert(concepts_detail::dependent_false<C>,
-                  "cljonic::first: expected a Vector, Map, Set, Queue, String, or MapEntry value.");
+                  "cljonic::first: expected a cljonic collection, producer, or MapEntry value.");
 }
 
 } // namespace cljonic

@@ -160,11 +160,13 @@ class Cycle {
     }
 
     [[nodiscard]] constexpr auto begin() const noexcept -> const_iterator {
-        const auto source_count = source_.count();
+        if constexpr (CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE == 0U) {
+            return {};
+        }
         const auto source_begin = std::ranges::begin(source_);
         const auto source_end = std::ranges::end(source_);
         const auto source_is_finite = source_finiteness();
-        if (source_count == 0U || source_begin == source_end) {
+        if (source_begin == source_end) {
             return const_iterator{&source_, source_begin, source_end, 0U, source_is_finite};
         }
         const auto current = source_is_finite ? source_begin_at_offset(source_begin) : source_begin;
