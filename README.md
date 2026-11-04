@@ -182,7 +182,9 @@ They copy their source and predicate without evaluating either at construction.
   require equivalent values across independent traversals.
 - Map/Set prefix and suffix membership depends on their unordered traversal.
   Captured predicates are supported; collection-element storage is conditional.
-  Parameter equality remains unavailable, and `has_next` remains collection-only.
+  Parameter equality remains unavailable. `has_next` accepts the same producer
+  domain as `next` and checks whether the producer tail has an observable element;
+  this may traverse callback-backed producers under their existing callback rules.
 - `next` and `rest` return the exact same adapter type, owning the original source
   and predicate with a compact output-skip offset. Creating a tail invokes no
   callbacks; observing it replays the original adapter and skips output elements
