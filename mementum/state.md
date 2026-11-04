@@ -1,36 +1,37 @@
 ## Current Session State
 
-- last_session_id: b6849a9e-0ae0-4908-968f-d18eb856ee81
-- current_timestamp: 2026-11-04T15:42:37-07:00
+- last_session_id: 3b50c4df-a8df-4ed6-a558-02930ec1c607
+- current_timestamp: 2026-11-04T16:38:48-07:00
 - session_complete: true
-- recover: Await human direction on further API work; adapter/dependent Cycle next/rest is complete and human-committed, including rendered docs. The human committed requirements through docs as d0f3941c, c7dd924f, c9c1afbc, 1358b59c, 8b262072, 08562cd7, b16cc9ba, and 5a7a314a. Only this memory handoff remained dirty at fini; do not repeat implementation or implementation approval.
+- recover: Await human direction on further API work; adapter parameter equality remains deferred. The has_next producer extension, coverage repair, and rendered docs are complete and human-committed; do not repeat implementation or approvals. Coverage passes at 100.0% and the final fast gate passed. The next agenda still calls has_next uncommitted and rendered HTML deferred; current git history supersedes those statements.
 - Task:
-  1. Approved and propagated adapter/dependent Cycle tail contracts through requirements, vocabulary, architecture, and five Allium specs before separately authorized implementation.
-  2. Implemented deferred adapter output skips and compact eager Cycle rotation, including nested composition, cap/endpoint safety, tests, diagnostics, runtime no-heap probes, generated header, and synchronized traceability (1,795 obligations).
-  3. Reworked next documentation to describe user-visible sequences rather than bookkeeping. Clarified that each resulting Cycle traversal retains the configured maximum element limit, not a limit decremented by next.
-  4. Generalized callback replay documentation to all callback-backed producers, including Iterate and Repeatedly; explicitly described Repeatedly's permitted stateful/side-effectful exception and fresh value-held callback copy per traversal.
-  5. Clarified in conversation that next(collection) returns the same collection kind with capacity reduced by one (zero stays zero), while next(producer) returns the exact same producer type. There is no separate public Next producer type.
+  1. The human previously approved and committed producer and adapter/dependent Cycle `next`/`rest` behavior.
+  2. Extended `has_next` across every producer domain admitted by `next`; producer calls inspect the first observable element of the `next` result, while collection calls retain the count-based preflight without constructing a tail.
+  3. Updated requirements, vocabulary, architecture, Allium specs, tests, diagnostics, no-heap probes, README, and the next agenda for the new contract.
+  4. Regenerated `cljonic.hpp` and the traceability snapshot. The human subsequently committed the requirements through implementation and agenda changes (7ba5c1cd through bcd5d50f), followed by rendered docs in d871606c.
+  5. Repaired the reported coverage-cli failure without changing implementation: added runtime empty finite Repeat and unbounded Repeat assertions. The missing line was the unbounded Repeat tail return in src/cljonic-next.hpp; exercising only the empty finite case did not cover it.
 - Decisions:
-  1. Direct adapter tails preserve the exact producer type and owned source/predicate, with compact saturating output-skip metadata. Creation is deferred and callback-free; observation replays the original adapter and skips output elements without replenishing its original bounded window. Nested adapters, smaller windows, endpoints, empty/exhausted boundaries, captures, and zero cap retain existing admission/effect rules. DropWhile never restarts prefix removal on the suffix.
-  2. Finite adapter-source Cycle tails eagerly determine bounded output length during next/rest, permitting callbacks, and normalize a compact ordinary offset before advancing modulo length. Retain the complete source and unbounded Cycle policy; nested unbounded Cycles recursively tail their source. Empty observations stay empty; zero cap does not evaluate. This supersedes the earlier deferred Cycle-rotation proposal.
-  3. Large runtime counters, remainder tables, cap-proportional metadata, allocation, and materialization are unacceptable. The rejected exact LCM representation would have needed 184 bytes at the default cap; do not implement it.
-  4. Idiomatic callbacks should be pure; replay ordinarily adds runtime cost, not state-management problems. Authorized impure exceptions preserve existing state/effect contracts without snapshot guarantees. This is committed separately in memories/idiomatic-callbacks-should-be-pure.md (81661906).
-  5. has_next stays collection-only. Existing first only-needed observation must not acquire an exact-count prepass; Cycle length work belongs to tail construction.
+  1. For collections, `has_next` returns `count(collection) > 1` without constructing `next(collection)`. For producers, it calls `next(producer)` then checks `tail.begin() != tail.end()`; this checks only for the first observable tail element, subject to `next`'s producer-specific callback and traversal behavior.
+  2. Callback-backed producer preflight can invoke callbacks through `next` and first-element observation. In particular, Repeatedly may invoke the callback once to advance the tail and once to observe its first value; owned producer state remains preserved and externally referenced effects follow existing contracts.
+  3. Producer admission is exactly the `next` producer domain, including Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, and supported nested Cycles. An empty producer tail, empty Cycle source, or zero-cap observation reports false.
+  4. Existing `next` decisions remain: direct adapter tails defer output skips with compact saturating metadata; finite adapter-source Cycle tails eagerly count bounded output and normalize a compact scalar offset; avoid large counters, remainder tables, allocation, or materialization.
+  5. Idiomatic callbacks should be pure; replay ordinarily adds runtime cost. Authorized impure exceptions preserve existing state/effect contracts without snapshot guarantees.
+  6. Coverage must exercise the actual missed branch at runtime. Use volatile-derived plain values in tests when necessary to prevent constexpr folding; this reinforces the existing constexpr-calls-defeat-gcov-coverage memory rather than establishing a separate convention.
 - Validation:
-  1. make requirements-structure passed: 356 clauses, all unique. make vocabulary-structure passed: 208 terms.
-  2. allium check specs and allium analyse specs passed for all 57 specs with empty diagnostics/findings.
-  3. Modular and generated-header affected tests passed: 2,852 assertions in 26 cases per variant, normally and under ASan/UBSan. Additional endpoint checks prevent traversal beyond actual exhaustion if authorized external effects change a Cycle source's output length; restart also detects a newly empty source.
-  4. make primitive-compile-fail and make producer-compile-fail passed, including captured adapter/nested Cycle tail admission, preserved has_next rejection, and cap 0/1/3 constexpr checks. Zero cap still uses isolated modular headers because of the pre-existing full-header String<1> constraint.
-  5. BUILD_JOBS=2 VALIDATION_JOBS=2 make upsert-gate-fast passed: format/lint, complexity, diagnostics, traceability, structural/tool self-tests, and both executed no-heap harnesses. The obligation snapshot is synchronized.
-  6. BUILD_JOBS=2 VALIDATION_JOBS=2 make coverage-cli passed: 348 regression cases and 100.0% source line coverage (1,018/1,018). The final Cycle begin simplification meets complexity limits while retaining actual-endpoint safety.
-  7. All 49 Doxygen examples compiled; next, rest, take_while, drop_while, and first examples linked and executed with exceptions and RTTI disabled. Source examples use ordinary runtime values, not volatile.
-  8. Subsequent prose-only edits to next were followed by generated-header regeneration and whitespace checks, not another example execution or full test run. The human subsequently committed all product and rendered-documentation changes; the assistant did not rerun human-owned gates or inspect their execution evidence.
+  1. `make requirements-structure` passed (356 unique clauses); `make vocabulary-structure` passed (208 terms); `allium check specs` and `allium analyse specs` passed with no diagnostics or findings.
+  2. Focused modular Catch2 has_next tests passed: 101 assertions in 1 test case.
+  3. `make primitive-compile-fail` passed, including invalid domains and compile-pass coverage for producer categories and adapters.
+  4. `BUILD_JOBS=2 VALIDATION_JOBS=2 make no-heap` passed, including executed modular and single-header probes.
+  5. `make docs-examples` compiled all 49 examples in a fresh temporary build directory; the extracted has_next example linked and ran successfully under C++23 with exceptions and RTTI disabled.
+  6. `make traceability-spec-to-code-update-snapshot`, focused has_next/next trace checks, and `make traceability-spec-to-code` passed.
+  7. `BUILD_JOBS=2 VALIDATION_JOBS=2 make upsert-gate-fast` passed, including format/lint, complexity, diagnostics, traceability, structural checks, and both no-heap harnesses.
+  8. The reported coverage failure had all 346 test cases passing but only 1,027/1,028 source lines covered. After the unbounded Repeat assertion, `BUILD_JOBS=2 VALIDATION_JOBS=2 make coverage-cli` passed at 100.0%; `make upsert-gate-fast` then passed again on the final test changes.
 - Questions:
-  1. No unresolved tail-contract decision. Producer has_next and adapter parameter equality remain outside this extension.
+  1. No unresolved has_next contract decisions.
 - Next:
-  1. Await human direction on further API work; adapter/dependent Cycle next/rest is complete and human-committed, including rendered docs.
-  2. Do not silently extend has_next or adapter parameter equality. The committed agenda's statements that this extension is uncommitted and rendered HTML remains deferred are now stale; the human's subsequent commits listed above supersede them.
-  3. Preserve one-size_t adapter metadata and the existing scalar Cycle offset; no large counter or remainder table. Do not treat checks before the final prose-only edits as a rerun of those edits.
+  1. Await human direction on further API work; adapter parameter equality remains deferred.
+  2. The agenda's has_next uncommitted/deferred-HTML statements are stale after the human commits; use the current history and this state when resuming. This fini updates only state.md.
+  3. Product changes and `make git` remain human-owned. The explicitly invoked `/gybis-fini` authorizes its separate mementum-only closeout commit; no product files are to be staged by the assistant.
 
 ## Previous Session State (Completed producer first)
 
