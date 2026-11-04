@@ -1,14 +1,38 @@
 -- allium: 3
 
--- REQ-FN-041 preserves first's collection-or-MapEntry domain.
--- All producers are rejected with a targeted diagnostic; materialize a
--- producer into a supported collection before using first.
+-- REQ-FN-002A1 / REQ-FN-041. Existing collection and MapEntry support is active.
+-- The producer extension was approved on 2026-11-04 and implemented after
+-- explicit /cljonic-api-complete invocation, with independent verification.
+-- Producer results are owning element copies, including whole MapEntry values.
+-- Empty observations return DefaultElement; zero cap starts no traversal.
+-- Evaluation stops at the first result or proven absence, without exact-count
+-- prepasses, including inside nested Cycles. DropWhile may scan its original
+-- bounded matching prefix. Each call uses existing fresh traversal-state rules;
+-- referenced/static effects remain authorized only by the source contract.
 
 entity First {
     supports_first_free_function: Boolean
     returns_first_logical_element: Boolean
     supports_sequenceable_collection_domain: Boolean
     supports_map_entry_domain: Boolean
+    supports_all_seven_cljonic_producer_families: Boolean
+    supports_nested_adapters_and_cycles_over_them: Boolean
+    producer_result_is_owning_copy_of_original_element_type: Boolean
+    producer_map_entry_result_is_whole_entry: Boolean
+    producer_admission_adds_no_equality_ordering_default_or_assignment_requirement: Boolean
+    empty_producer_observation_yields_default_element: Boolean
+    zero_producer_cap_yields_default_without_traversal_or_callbacks: Boolean
+    producer_observation_respects_original_window_and_actual_endpoint: Boolean
+    skipped_values_do_not_replenish_observation_budget: Boolean
+    producer_first_access_has_no_exact_count_prepass_or_materialization: Boolean
+    no_advance_after_first_element_is_found: Boolean
+    nonempty_iterate_returns_initial_without_step: Boolean
+    nonempty_repeatedly_invokes_callback_once: Boolean
+    take_while_tests_only_first_source_candidate_if_present: Boolean
+    drop_while_scans_only_through_first_false_or_window_end: Boolean
+    cycle_preserves_logical_start_and_restart_policy_without_count_prepass: Boolean
+    repeated_calls_use_fresh_traversal_without_cache: Boolean
+    preserves_stored_state_and_only_existing_authorized_external_effects: Boolean
     vector_and_string_use_index_zero: Boolean
     queue_uses_front_element: Boolean
     map_returns_value_semantic_entry: Boolean
@@ -21,7 +45,7 @@ entity First {
     no_rtti: Boolean
     no_exceptions: Boolean
     single_threaded_execution_model: Boolean
-    referential_transparency: Boolean
+    referential_transparency_by_default_unless_source_authorizes_effects: Boolean
     rejects_unsupported_domain_with_targeted_diagnostic: Boolean
     diagnostic_names_supported_domains: Boolean
 
@@ -39,6 +63,78 @@ entity First {
 
     invariant SupportsMapEntryDomain {
         this.supports_map_entry_domain = true
+    }
+
+    invariant SupportsAllCljonicProducerFamilies {
+        this.supports_all_seven_cljonic_producer_families = true
+    }
+
+    invariant SupportsNestedAdaptersAndCycles {
+        this.supports_nested_adapters_and_cycles_over_them = true
+    }
+
+    invariant ProducerResultIsOwningElementCopy {
+        this.producer_result_is_owning_copy_of_original_element_type = true
+    }
+
+    invariant ProducerMapEntryResultIsWholeEntry {
+        this.producer_map_entry_result_is_whole_entry = true
+    }
+
+    invariant ProducerAdmissionAddsNoUnrelatedCapabilities {
+        this.producer_admission_adds_no_equality_ordering_default_or_assignment_requirement = true
+    }
+
+    invariant EmptyProducerObservationYieldsDefaultElement {
+        this.empty_producer_observation_yields_default_element = true
+    }
+
+    invariant ZeroProducerCapStartsNoTraversalOrCallbacks {
+        this.zero_producer_cap_yields_default_without_traversal_or_callbacks = true
+    }
+
+    invariant ProducerObservationRespectsOriginalWindowAndEndpoint {
+        this.producer_observation_respects_original_window_and_actual_endpoint = true
+    }
+
+    invariant SkipsDoNotReplenishObservationBudget {
+        this.skipped_values_do_not_replenish_observation_budget = true
+    }
+
+    invariant ProducerFirstAccessHasNoCountPrepassOrMaterialization {
+        this.producer_first_access_has_no_exact_count_prepass_or_materialization = true
+    }
+
+    invariant NoAdvanceAfterFirstElementFound {
+        this.no_advance_after_first_element_is_found = true
+    }
+
+    invariant IterateReturnsInitialWithoutStep {
+        this.nonempty_iterate_returns_initial_without_step = true
+    }
+
+    invariant RepeatedlyInvokesCallbackOnce {
+        this.nonempty_repeatedly_invokes_callback_once = true
+    }
+
+    invariant TakeWhileTestsOnlyFirstSourceCandidate {
+        this.take_while_tests_only_first_source_candidate_if_present = true
+    }
+
+    invariant DropWhileScansThroughFirstFalseOrWindowEnd {
+        this.drop_while_scans_only_through_first_false_or_window_end = true
+    }
+
+    invariant CyclePreservesLogicalStartWithoutCountPrepass {
+        this.cycle_preserves_logical_start_and_restart_policy_without_count_prepass = true
+    }
+
+    invariant RepeatedCallsUseFreshTraversalWithoutCache {
+        this.repeated_calls_use_fresh_traversal_without_cache = true
+    }
+
+    invariant PreservesStateAndAuthorizedEffectScope {
+        this.preserves_stored_state_and_only_existing_authorized_external_effects = true
     }
 
     invariant VectorAndStringUseIndexZero {
@@ -89,8 +185,8 @@ entity First {
         this.single_threaded_execution_model = true
     }
 
-    invariant ReferentialTransparency {
-        this.referential_transparency = true
+    invariant ReferentialTransparencyByDefaultUnlessSourceAuthorizesEffects {
+        this.referential_transparency_by_default_unless_source_authorizes_effects = true
     }
 
     invariant RejectsUnsupportedDomainWithTargetedDiagnostic {

@@ -21,6 +21,8 @@
 -- independent traversals yield the same values. Authorized source effects
 -- through references/static storage remain shared, with no additional effects
 -- authorized here. Captured predicate state is copied afresh per traversal.
+-- REQ-FN-002A1 now admits first observations without a count prepass.
+-- This extension is active after separate implementation approval and verification.
 
 entity TakeWhile {
     predicate_first_source_second_exact_two_arity: Boolean
@@ -64,7 +66,7 @@ entity TakeWhile {
     logical_equality_uses_existing_sequential_element_rules: Boolean
     parameter_equality_and_map_key_set_element_admission_unavailable: Boolean
     tail_apis_and_dependent_cycle_tails_rejected: Boolean
-    first_api_rejects_producer: Boolean
+    first_api_observes_only_first_candidate_under_req_fn_002a1: Boolean
     invalid_calls_have_targeted_operation_diagnostic: Boolean
     constexpr_noexcept_no_heap_no_rtti_nonmutating: Boolean
 
@@ -109,7 +111,7 @@ entity TakeWhile {
     invariant LogicalEqualityUsesSequentialElementRules { this.logical_equality_uses_existing_sequential_element_rules = true }
     invariant ParameterEqualityAndKeyElementAdmissionUnavailable { this.parameter_equality_and_map_key_set_element_admission_unavailable = true }
     invariant TailApisAndDependentCycleTailsRejected { this.tail_apis_and_dependent_cycle_tails_rejected = true }
-    invariant FirstApiRejectsProducer { this.first_api_rejects_producer = true }
+    invariant FirstApiObservesOnlyFirstCandidate { this.first_api_observes_only_first_candidate_under_req_fn_002a1 = true }
     invariant TargetedOperationDiagnostics { this.invalid_calls_have_targeted_operation_diagnostic = true }
     invariant ConstexprNoexceptNoHeapNoRttiNonmutating { this.constexpr_noexcept_no_heap_no_rtti_nonmutating = true }
 }

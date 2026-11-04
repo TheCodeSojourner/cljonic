@@ -1,5 +1,10 @@
 -- allium: 3
 
+-- REQ-FN-002A1 approves first observations over all admitted sources, including
+-- nested Cycles and predicate adapters, without preliminary exact counting.
+-- The extension is active after separate implementation approval and verification;
+-- existing next/rest/has_next admission is not expanded.
+
 entity Cycle {
     supports_header_only_distribution: Boolean
     no_heap_allocation: Boolean
@@ -27,6 +32,8 @@ entity Cycle {
     finite_source_restarts_after_complete_pass: Boolean
     unbounded_source_preserves_observable_prefix: Boolean
     empty_source_produces_empty_observation: Boolean
+    first_observation_preserves_logical_start_without_source_count_prepass: Boolean
+    first_observation_over_nested_adapters_uses_only_needed_evaluation: Boolean
     next_preserves_cycle_type_and_observation_policy: Boolean
     finite_nonempty_next_advances_starting_offset_modulo_observed_source_count: Boolean
     empty_finite_next_preserves_empty_observation: Boolean
@@ -47,6 +54,14 @@ entity Cycle {
 
     invariant HeaderOnlyDistribution {
         this.supports_header_only_distribution = true
+    }
+
+    invariant FirstObservationPreservesLogicalStartWithoutCountPrepass {
+        this.first_observation_preserves_logical_start_without_source_count_prepass = true
+    }
+
+    invariant FirstObservationOverNestedAdaptersUsesOnlyNeededEvaluation {
+        this.first_observation_over_nested_adapters_uses_only_needed_evaluation = true
     }
 
     invariant NoHeapAllocation {

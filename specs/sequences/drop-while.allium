@@ -22,6 +22,9 @@
 -- across independent traversals. Stored value-held state is preserved; existing
 -- authorized referenced/static source effects remain shared without widening
 -- the effect scope. Each traversal starts with a fresh stored-predicate copy.
+-- REQ-FN-002A1 now admits first observations scanning only through the first
+-- false value or original window end, without a count prepass. This extension
+-- is active after separate implementation approval and verification.
 
 entity DropWhile {
     predicate_first_source_second_exact_two_arity: Boolean
@@ -68,7 +71,7 @@ entity DropWhile {
     logical_equality_uses_existing_sequential_element_rules: Boolean
     parameter_equality_and_map_key_set_element_admission_unavailable: Boolean
     tail_apis_and_dependent_cycle_tails_rejected: Boolean
-    first_api_rejects_producer: Boolean
+    first_api_scans_only_through_first_false_or_window_end_under_req_fn_002a1: Boolean
     invalid_calls_have_targeted_operation_diagnostic: Boolean
     constexpr_noexcept_no_heap_no_rtti_nonmutating: Boolean
 
@@ -116,7 +119,7 @@ entity DropWhile {
     invariant LogicalEqualityUsesSequentialElementRules { this.logical_equality_uses_existing_sequential_element_rules = true }
     invariant ParameterEqualityAndKeyElementAdmissionUnavailable { this.parameter_equality_and_map_key_set_element_admission_unavailable = true }
     invariant TailApisAndDependentCycleTailsRejected { this.tail_apis_and_dependent_cycle_tails_rejected = true }
-    invariant FirstApiRejectsProducer { this.first_api_rejects_producer = true }
+    invariant FirstApiScansThroughFirstFalseOrWindowEnd { this.first_api_scans_only_through_first_false_or_window_end_under_req_fn_002a1 = true }
     invariant TargetedOperationDiagnostics { this.invalid_calls_have_targeted_operation_diagnostic = true }
     invariant ConstexprNoexceptNoHeapNoRttiNonmutating { this.constexpr_noexcept_no_heap_no_rtti_nonmutating = true }
 }
