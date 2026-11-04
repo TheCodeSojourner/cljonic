@@ -916,7 +916,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ preserve(input(collection) ∧ logical_traversal_order(collection) ∧ no_heap ∧ noexcept ∧ constexpr)
     ∧ map_entry_representation(Map) ∧ semantically_unordered(Map ∨ Set) ∧ preserve_FIFO_order(Queue)
     ∧ unsupported_input(next) → reject_at_compile_time_with(targeted_diagnostic_naming(next ∧ supported_domains) ∧ REQ-DIAG-009)
-  | next(producer) → require(producer ∈ {Repeat, Range, Cycle, Iterate, Repeatedly})
+  | next(producer) → require(producer ∈ {Repeat, Range, Cycle, Iterate, Repeatedly, TakeWhile, DropWhile})
     ∧ return(owning_producer_value_of_same_producer_kind(producer) containing every logical element after the first of the producer's logical result)
     ∧ finite_counted_Repeat(producer) → return(finite_Repeat of same value with_count(max(count(producer) - 1, 0)))
     ∧ unbounded_Repeat(producer) → return(unbounded_Repeat of same value with unchanged observation policy)
@@ -927,7 +927,8 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ multi_element_nonzero_step_Range(producer) → return(Range(start = original_start + original_step ∧ end = original_end ∧ step = original_step))
     ∧ Cycle_with_nonempty_finite_source(producer) → advance(starting_offset by one modulo source_count_observation)
       ∧ finite_Range_source → use(saturated_source_count) ∧ ¬invoke(source_callbacks)
-    ∧ Cycle_with_empty_finite_source(producer) → preserve(empty_observation) ∧ ¬invoke(source_callbacks)
+    ∧ Cycle_with_empty_finite_source(producer) → preserve(empty_observation)
+      ∧ existing_non_adapter_source → preserve(existing_callback_timing)
     ∧ Cycle_with_unbounded_source(producer) → replace(owned_source with next(owned_source)) ∧ reset(starting_offset)
       ∧ follow(callback_timing_of_next(owned_source))
     ∧ nonempty_Iterate(producer) → invoke(step exactly once) ∧ use(step_result as returned_initial_value) ∧ preserve(observation_cap)
@@ -940,7 +941,8 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ value_held_Repeatedly_state → advance(only_returned_producer) ∧ preserve(input_producer)
     ∧ referenced_or_static_Repeatedly_state → effects_occur_when(next_is_called) ∧ remain_shared
     ∧ repeated_next(producer) → ¬exhaust(logically_unbounded_producer)
-    ∧ next(Cycle_with_finite_source) → ¬invoke(source_callbacks) ∧ preserve(source_value)
+    ∧ next(Cycle_with_finite_source) → preserve(source_value)
+      ∧ existing_non_adapter_source → preserve(existing_callback_timing)
     ∧ ∀ result: independently_owning ∧ self_contained ∧ value_semantic ∧ ¬implicit_materialization
     ∧ preserve(input_producer_value ∧ logical_generation_order(producer) ∧ no_heap ∧ noexcept ∧ constexpr)
     ∧ coherent_with(count ∧ is_finite ∧ is_empty ∧ into ∧ fits_into)(producer_tail_result)
@@ -953,12 +955,43 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ equivalent_to(nonempty(logical_tail(collection))) ∧ ¬construct(next_result(collection))
     ∧ preserve(input(collection) ∧ no_heap ∧ noexcept ∧ constexpr)
     ∧ unsupported_input(has_next) → reject_at_compile_time_with(targeted_diagnostic_naming(has_next ∧ supported_domains) ∧ REQ-DIAG-009)
+  | approved_adapter_tail_extension(x) → next(TakeWhile ∨ DropWhile) ∧ rest_delegates_to_next
+    ∧ return(exact_input_producer_type_owning_source_predicate_and_compact_output_skip_offset)
+    ∧ creation → ¬traverse ∧ ¬count ∧ ¬invoke_callbacks
+    ∧ repeated_tail_creation → saturate(offset_at_observation_cap_without_overflow)
+    ∧ observation → fresh_original_adapter_traversal_then_omit_output_elements
+    ∧ preserve(original_capped_window ∧ smaller_source_windows ∧ nested_boundaries ∧ actual_endpoint)
+    ∧ ¬replenish(budget_after_source_skip_or_output_omission)
+    ∧ DropWhile → ¬reapply_prefix_predicate_to_retained_suffix
+    ∧ TakeWhile → ¬resume_beyond_original_false_boundary
+    ∧ empty_or_exhausted → finite_empty_observation
+    ∧ captured_predicates → ¬require(default_construction ∨ assignment_merely_for_tail)
+    ∧ ¬introduce(public_wrapper ∨ materialization ∨ borrowed_iterator_storage ∨ cap_proportional_metadata)
+    ∧ idiomatic_callbacks_should_be_pure ∧ replay_cost_is_primarily_runtime
+    ∧ preserve(existing_authorized_impure_source_effect_scope ∧ stored_value_held_state) ∧ ¬snapshot_guarantee
+    ∧ zero_cap → ¬traverse ∧ ¬invoke_callbacks
+    ∧ classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-002A4 ∧ REQ-FN-041)
+  | approved_adapter_dependent_Cycle_tail_extension(x) → recursively_admit(adapter_sources_and_nested_Cycles)
+    ∧ finite_adapter_source → eagerly_determine(exact_bounded_source_output_length_during_next)
+    ∧ permit(source_and_predicate_callbacks_under_existing_effect_rules)
+    ∧ nonempty → normalize(compact_ordinary_offset_modulo_length_before_overflow_safe_increment)
+    ∧ retain(complete_owned_source ∧ exact_Cycle_type ∧ unbounded_observation_policy)
+    ∧ ¬replace(finite_source_with_its_shortened_tail)
+    ∧ empty → preserve(empty_observation) ∧ zero_cap → ¬traverse ∧ ¬invoke_callbacks
+    ∧ unbounded_source_including_nested_Cycle → next(owned_source) ∧ reset(offset)
+    ∧ ¬introduce(large_counters ∨ remainder_tables ∨ cap_proportional_metadata ∨ allocation ∨ materialization)
+    ∧ predictions_require(equivalent_outputs_across_count_and_observation) ∧ ¬snapshot_guarantee
+    ∧ observation → preserve(only_needed_evaluation_without_count_prepass) under(S2_first_function_contract)
+    ∧ preserve(existing_non_adapter_Cycle_behavior ∧ has_next_collection_only_domain)
+    ∧ classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-002A6 ∧ REQ-FN-013G)
+  | approved_tail_extensions → separate_explicit_implementation_approval_and_verification = satisfied
   | rest(value) → require(next(value) is supported)
     ∧ return(exactly_next(value))
     ∧ preserve(value ∧ next_result_type ∧ tail_contents ∧ producer_observation_policy ∧ callback_timing_and_effects)
     ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating
     ∧ unsupported_input(rest) → reject_at_compile_time_with(targeted_diagnostic_naming(rest ∧ supported_domains) ∧ REQ-DIAG-009)
-    ∧ classify_as(RequirementsBacked) ∧ trace_to(REQ-SEQ-001 ∧ REQ-SEQ-002 ∧ REQ-SEQ-002A ∧ REQ-SEQ-002B ∧ REQ-SEQ-003 ∧ REQ-SEQ-004 ∧ REQ-SEQ-005 ∧ REQ-SEQ-006 ∧ REQ-SEQ-007 ∧ REQ-SEQ-008 ∧ REQ-SEQ-009 ∧ REQ-SEQ-012 ∧ REQ-FN-002A4 ∧ REQ-FN-002A5 ∧ REQ-FN-002A6 ∧ REQ-FN-002A7)
+    ∧ classify_as(RequirementsBacked)
+    ∧ trace_to(REQ-SEQ-001 ∧ REQ-SEQ-002 ∧ REQ-SEQ-002A ∧ REQ-SEQ-002B ∧ REQ-SEQ-003 ∧ REQ-SEQ-004 ∧ REQ-SEQ-005 ∧ REQ-SEQ-006 ∧ REQ-SEQ-007 ∧ REQ-SEQ-008 ∧ REQ-SEQ-009 ∧ REQ-SEQ-012 ∧ REQ-FN-002A4 ∧ REQ-FN-002A5 ∧ REQ-FN-002A6 ∧ REQ-FN-002A7)
   | seq(value) → require(value ∈ {Vector, Map, Set, Queue, String} ∨ producer ∈ {Repeat, Range, Cycle, Iterate, Repeatedly})
     ∧ return(owning_bounded_Vector(value) of logical_traversal_elements(value) in_traversal_order)
     ∧ Vector_input(x) → return(by_value_copy(x) with_same_element_type ∧ capacity)
@@ -1175,8 +1208,9 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ producer_extension_explicitly_approved_and_independently_verified
   | fits_into → retain(finite_exact_count_preflight_for_Vector_Queue_String ∧ insertion_sensitive_preflight_for_Map_Set)
     ∧ prediction_requires(equivalent_values_across_independent_traversals)
-  | next ∨ rest ∨ has_next → reject(adapter ∨ Cycle_requiring_adapter_tail)
-    until(separate_approved_tail_contract)
+  | next ∨ rest → approved_adapter_tail_extension ∨ approved_adapter_dependent_Cycle_tail_extension
+    ∧ separate_explicit_implementation_approval_and_verification = satisfied
+  | has_next → retain(collection_only_domain) ∧ reject(all_producers)
   | Map_source → yield(MapEntry) ∧ String_source → yield(characters) ∧ Queue_source → preserve(FIFO_order)
   | Map_source ∨ Set_source → prefix_suffix_membership_and_order_depend_on(semantically_unordered_traversal)
   | invalid_source ∨ predicate ∨ arity → targeted_compile_time_diagnostic_naming(operation ∧ supported_domains)
