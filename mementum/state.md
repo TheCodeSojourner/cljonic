@@ -1,5 +1,43 @@
 ## Current Session State
 
+- last_session_id: b6849a9e-0ae0-4908-968f-d18eb856ee81
+- current_timestamp: 2026-11-04T14:25-07:00
+- session_complete: true
+- recover: The human committed producer-first contracts, tests, implementation, source/agenda changes, and rendered docs (dcbdf81a through f7d4bd94). Only this session handoff is pending its memory commit. Await human direction; producer has_next and predicate-adapter/dependent Cycle tails remain separately undecided. The mementum next-agenda page still incorrectly says producer-first work is uncommitted and rendered HTML is deferred; current git history supersedes those statements.
+- Task:
+  1. Reviewed current first implementation, contracts, adapter traversal, and producer callback timing.
+  2. Updated REQ-FN-002A1 and REQ-FN-041, the requirements index, S2 first/adapter contracts, First vocabulary, and First/TakeWhile/DropWhile/Cycle specs after explicit approval.
+  3. Added a nominal producer overload returning an owning element copy with a zero-cap guard and actual iterator endpoint check. Removed Cycle begin's source exact-count prepass and guarded its zero count before source traversal.
+  4. Added traced first/adapter/Cycle assertions, runtime no-heap cases, first diagnostic admission/rejection checks, and caps 0/1/3 compile-time checks. Updated the runnable source example, README, agenda, generated header, and obligation snapshot.
+  5. Following human review, clarified that the drop_while result is a producer and removed `volatile` from the first Doxygen example; plain runtime values are the agreed example style. The human subsequently committed the product changes and generated docs.
+- Decisions:
+  1. Preserve existing collection and MapEntry behavior. Producer first returns an owning copy of its element type; a yielded MapEntry stays whole, while first(MapEntry) still returns its key.
+  2. Empty producer observations return DefaultElement. At observation cap zero, return DefaultElement without starting traversal or invoking callbacks.
+  3. Evaluate only what is needed to find the first observable element or establish absence: no exact-count prepass, materialization, or advancement afterward. Respect original capped windows, smaller source windows, and actual endpoints; skipping never replenishes the budget.
+  4. Iterate returns its initial value without a step call; nonempty Repeatedly invokes its callback once. TakeWhile tests only its first source candidate; DropWhile may scan its entire bounded matching prefix through the first false value or window end.
+  5. Cycle, including nested/adapter sources, follows the same evaluation rule and preserves its current logical starting position and restart policy. Its begin() no longer calls source_.count(); actual iterator exhaustion is authoritative.
+  6. Each first call starts fresh traversal under existing source/callback-state rules. Stored value-held state is preserved; authorized referenced/static effects may occur or repeat. No new tail API admission.
+  7. Doxygen examples use plain runtime values, not `volatile`; tests and no-heap probes may use volatile-derived values to prevent constant folding. The first example now follows this decision.
+- Validation:
+  1. Requirements structure passed (356 unique clauses), vocabulary structure passed (208 terms), and diff whitespace check passed.
+  2. Final Allium check and analyse passed all 57 specs. Focused traces pass for First (38/38), TakeWhile (45/45), DropWhile (48/48), and Cycle with the shared producer-storage test file. Authoritative traceability passes after synchronizing the snapshot.
+  3. Focused first and affected traversal/consumer tests pass 1,022 assertions across 27 cases in each header variant, both normally and under the existing ASan/UBSan profile.
+  4. First primitive admission/rejection diagnostics and producer checks pass, including caps 0/1/3. Zero cap uses isolated modular headers because the existing full core requires String<1>; caps 1/3 cover both variants.
+  5. make no-heap passed source scans, both symbol scans, and both executed modular/single-header harnesses. The dedicated first probe now directly exercises all producer families, nested adapters/Cycles, empty defaults, whole MapEntry results, owning copies, stored-state preservation, and exact callback counts.
+  6. Source formatting was idempotent. make docs-examples compiled all 49 examples, including first; the extracted first program linked with the repository C++23 compiler and ran. Those example checks predate the later prose and plain-value changes; these were formatted and whitespace-checked, but the example was not recompiled by the assistant after them. The human generated and committed rendered docs in f7d4bd94.
+  7. make upsert-gate-fast passed structure/tool self-tests, formatting/lint, complexity, diagnostics, authoritative traceability (1,754 obligations), and both runtime no-heap variants. Initial CLI VALIDATION_JOBS=2 conflicted with the tooling self-test's explicit environment-budget check; retrying with environment-based limits passed without code changes. The assistant did not run make git.
+  8. Coverage follow-up: the human's coverage-cli run exposed 1007/1009 covered lines. Changed Cycle's zero-cap guard to if constexpr and added runtime owning-result Vector append assertions. make coverage-cli then passed at 100.0% with its full CTest execution; producer caps 0/1/3 and the fast gate (including both runtime no-heap variants) passed again. Earlier sanitizer results precede this equivalent guard/test adjustment. The later source documentation edits postdate these checks.
+  9. Product and rendered-documentation commits were made by the human: dcbdf81a, 69fa9a29, 34785b04, 03797164, 9d210368, e9f3fc6b, 2378611c, and f7d4bd94. Source and generated cljonic.hpp contain the clarified producer wording and plain example value.
+- Questions:
+  1. No unresolved first behavior decision. The assistant's example compile/run evidence predates the final documentation-only edits.
+  2. Producer has_next and predicate-adapter/dependent Cycle tail support remain outside this slice.
+- Next:
+  1. Await human direction on any further API work; do not silently extend producer has_next or adapter/dependent Cycle tails.
+  2. Treat the committed next-agenda page's claims that producer-first changes are uncommitted and rendered HTML is deferred as stale; actual product/doc commits are listed above. Correct the knowledge page only when the human approves its update.
+  3. Before relying on the final edited Doxygen example's runtime evidence, rerun its extraction, compile, link, and execution if requested.
+
+## Previous Session State (2026-11-03)
+
 - last_session_id: e62bc0b0-b950-44f8-9d6a-00717433e581
 - current_timestamp: 2026-11-03T16:03-07:00
 - session_complete: true
