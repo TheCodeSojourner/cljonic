@@ -470,9 +470,21 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ map_entry_value: `first` returns its key
   ∧ ∀ composition: `first(first(map))` returns the key
   ∧ ∀ empty_sequenceable_collection: `first` returns the input's `DefaultElement`
+  ∧ ∀ cljonic_producer: `first` admits `Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`, `TakeWhile`, and `DropWhile`, including nested adapters and Cycles over admitted sources, and returns an owning copy of the first element in the producer's observable logical traversal
+  ∧ ∀ producer element type: preserves that type ∧ a yielded `MapEntry` is returned whole rather than projected to its key ∧ ¬∃ additional element equality, ordering, or producer default-construction or assignment requirement
+  ∧ ∀ empty producer observation: returns the element type's `DefaultElement`, including when the bounded adapter window yields no element or a Cycle's source traversal is empty
+  ∧ ∀ producer at observation cap zero: returns `DefaultElement` without starting source traversal or invoking source or predicate callbacks
+  ∧ ∀ producer observation: respects the original capped source window, any smaller source window, and actual traversal exhaustion ∧ skipping never replenishes that budget
+  ∧ ∀ producer first access: evaluates only what is needed to establish and copy the first observable element or determine its absence ∧ ¬∃ preliminary exact-count traversal, materialization, or advancement after the first element is found
+  ∧ ∀ nonempty `Iterate` observation: returns the initial value without invoking the step ∧ ∀ nonempty `Repeatedly` observation: invokes its stored callback through the existing fresh traversal state exactly once
+  ∧ ∀ `TakeWhile` first access: evaluates its predicate only on the first candidate from its source, when one exists, and returns that value exactly when the predicate is true
+  ∧ ∀ `DropWhile` first access: MAY scan the entire matching prefix within the original observation window ∧ retains the first false value ∧ invokes no predicate or source advancement after that value is found
+  ∧ ∀ `Cycle` first access, including nested Cycles and predicate-adapter sources: follows the same only-needed evaluation rule without a source exact-count prepass ∧ respects the Cycle's current logical starting position and existing restart policy ∧ ¬∃ new tail-navigation admission
+  ∧ ∀ repeated `first` calls: starts a fresh traversal under the source's existing traversal-copy rules ∧ ¬∃ cross-call cache ∧ preserves stored value-held state ∧ effects through references or static storage remain shared only as permitted by the underlying callback/source contract
   ∧ ∀ `first`: preserves the input ∧ `constexpr` ∧ `noexcept` ∧ non-mutating ∧ non-allocating
-  ∧ ∀ unsupported_input: fails compilation with one targeted diagnostic naming `first`
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
+  ∧ ∀ unsupported_input, including external ranges, containers, arrays, and scalars: fails compilation with one targeted diagnostic naming `first` and its supported collection, producer, and MapEntry domains
+  ∧ ∀ lifecycle: existing collection and MapEntry behavior remains active and unchanged ∧ producer support is active after explicit implementation approval through `/cljonic-api-complete first` and independent verification
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-04, compound_by_design: true}
 
 ### Sequence Tail Access (Binding)
 
