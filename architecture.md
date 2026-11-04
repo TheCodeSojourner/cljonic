@@ -953,8 +953,12 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ collection ∈ {Vector, Map, Set, Queue, String})
     ∧ return(count(collection) > 1)
     ∧ equivalent_to(nonempty(logical_tail(collection))) ∧ ¬construct(next_result(collection))
-    ∧ preserve(input(collection) ∧ no_heap ∧ noexcept ∧ constexpr)
-    ∧ unsupported_input(has_next) → reject_at_compile_time_with(targeted_diagnostic_naming(has_next ∧ supported_domains) ∧ REQ-DIAG-009)
+  | has_next(producer) → require(producer_admitted_by_next)
+    ∧ return(nonempty(first_observable_element(next(producer))))
+    ∧ construct(next_result(producer)) ∧ do_not_count_entire_result
+    ∧ callback_invocations_follow(next ∧ first_element_observation)(producer)
+  | has_next → preserve(input_value_state ∧ no_heap ∧ noexcept ∧ constexpr)
+    ∧ unsupported_input → reject_at_compile_time_with(targeted_diagnostic_naming(has_next ∧ supported_collection_and_producer_domains) ∧ REQ-DIAG-009)
   | approved_adapter_tail_extension(x) → next(TakeWhile ∨ DropWhile) ∧ rest_delegates_to_next
     ∧ return(exact_input_producer_type_owning_source_predicate_and_compact_output_skip_offset)
     ∧ creation → ¬traverse ∧ ¬count ∧ ¬invoke_callbacks
@@ -982,7 +986,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ ¬introduce(large_counters ∨ remainder_tables ∨ cap_proportional_metadata ∨ allocation ∨ materialization)
     ∧ predictions_require(equivalent_outputs_across_count_and_observation) ∧ ¬snapshot_guarantee
     ∧ observation → preserve(only_needed_evaluation_without_count_prepass) under(S2_first_function_contract)
-    ∧ preserve(existing_non_adapter_Cycle_behavior ∧ has_next_collection_only_domain)
+    ∧ preserve(existing_non_adapter_Cycle_behavior ∧ has_next_next_supported_producer_domain)
     ∧ classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-002A6 ∧ REQ-FN-013G)
   | approved_tail_extensions → separate_explicit_implementation_approval_and_verification = satisfied
   | rest(value) → require(next(value) is supported)
@@ -1210,7 +1214,9 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ prediction_requires(equivalent_values_across_independent_traversals)
   | next ∨ rest → approved_adapter_tail_extension ∨ approved_adapter_dependent_Cycle_tail_extension
     ∧ separate_explicit_implementation_approval_and_verification = satisfied
-  | has_next → retain(collection_only_domain) ∧ reject(all_producers)
+  | has_next → admit(all_supported_collections ∧ all_producers_admitted_by_next)
+    ∧ collection_result(count(collection) > 1) ∧ producer_result(nonempty(first_observable_element(next(producer))))
+    ∧ producer_callbacks_follow(next ∧ first_element_observation)
   | Map_source → yield(MapEntry) ∧ String_source → yield(characters) ∧ Queue_source → preserve(FIFO_order)
   | Map_source ∨ Set_source → prefix_suffix_membership_and_order_depend_on(semantically_unordered_traversal)
   | invalid_source ∨ predicate ∨ arity → targeted_compile_time_diagnostic_naming(operation ∧ supported_domains)
