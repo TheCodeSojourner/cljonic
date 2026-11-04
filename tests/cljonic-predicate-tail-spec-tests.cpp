@@ -207,16 +207,6 @@ TEST_CASE("Adapter Cycle tails safely respect changing external traversal endpoi
     REQUIRE(iterator == no_offset.end());
 }
 
-TEST_CASE("Predicate tail support does not expand has_next", "[next][rest][has-next]") {
-    TRACE_ID("invariant.Next.HasNextRemainsCollectionOnly");
-    TRACE_ID("invariant.Rest.HasNextDomainUnchanged");
-    TRACE_ID("invariant.TakeWhile.HasNextStillRejected");
-    TRACE_ID("invariant.DropWhile.HasNextStillRejected");
-    constexpr auto adapter = cljonic::take_while([](int) noexcept { return true; }, cljonic::vector(1, 2));
-    STATIC_REQUIRE(!cljonic::concepts_detail::NextSequenceableCollection<decltype(adapter)>);
-    STATIC_REQUIRE(!cljonic::concepts_detail::NextSequenceableCollection<decltype(cljonic::cycle(adapter))>);
-}
-
 TEST_CASE("Empty predicate tail boundaries invoke no callbacks", "[next][rest][cycle]") {
     // The producer cap probes exercise the same paths with caps 0, 1, and 3.
     TRACE_ID("invariant.Next.ZeroCapTailsDoNotEvaluate");

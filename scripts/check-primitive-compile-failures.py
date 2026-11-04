@@ -278,19 +278,15 @@ PRIMITIVES = {
         "diagnostic_cases": {
             "unsupported-scalar": (
                 "(void)cljonic::has_next(42);",
-                "expected a Vector, Map, Set, Queue, or String value",
+                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, or supported Cycle value",
             ),
             "unsupported-map-entry": (
                 "(void)cljonic::has_next(cljonic::MapEntry<int, int>{1, 2});",
-                "expected a Vector, Map, Set, Queue, or String value",
-            ),
-            "unsupported-producer": (
-                "(void)cljonic::has_next(cljonic::Range<int>{0, 5});",
-                "expected a Vector, Map, Set, Queue, or String value",
+                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, or supported Cycle value",
             ),
             "unsupported-external-range": (
                 "int values[]{1, 2}; (void)cljonic::has_next(values);",
-                "expected a Vector, Map, Set, Queue, or String value",
+                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, or supported Cycle value",
             ),
         },
         "pass_cases": {
@@ -301,6 +297,13 @@ PRIMITIVES = {
             "string": "(void)cljonic::has_next(cljonic::String<4>{\"AB\"});",
             "empty-vector": "(void)cljonic::has_next(cljonic::Vector<int, 4>{});",
             "zero-capacity-vector": "(void)cljonic::has_next(cljonic::Vector<int, 0>{});",
+            "range": "(void)cljonic::has_next(cljonic::Range<int>{0, 5});",
+            "repeat": "(void)cljonic::has_next(cljonic::repeat(3, 7));",
+            "cycle": "(void)cljonic::has_next(cljonic::cycle(cljonic::Vector<int, 3>{1, 2, 3}));",
+            "iterate": "(void)cljonic::has_next(cljonic::iterate([](int value) noexcept { return value + 1; }, 0));",
+            "repeatedly": "(void)cljonic::has_next(cljonic::repeatedly(3, []() noexcept { return 7; }));",
+            "take-while": "(void)cljonic::has_next(cljonic::take_while([](int value) noexcept { return value < 3; }, cljonic::Vector<int, 3>{1, 2, 3}));",
+            "drop-while": "(void)cljonic::has_next(cljonic::drop_while([](int value) noexcept { return value < 3; }, cljonic::Vector<int, 3>{1, 2, 3}));",
         },
     },
     "is_empty": {
@@ -645,16 +648,11 @@ PRIMITIVES["drop_while"] = {
 }
 
 for adapter in ("take_while", "drop_while"):
-    for tail in ("has_next",):
-        statement = f"const auto p = cljonic::{adapter}([](int) noexcept {{ return true; }}, cljonic::vector(1));"
-        PRIMITIVES[tail]["diagnostic_cases"][f"{adapter}-unsupported-tail"] = (
-            statement + f" (void)cljonic::{tail}(p);",
-            f"cljonic::{tail}:",
-        )
-        PRIMITIVES[tail]["diagnostic_cases"][f"{adapter}-cycle-unsupported-tail"] = (
-            statement + f" (void)cljonic::{tail}(cljonic::cycle(p));",
-            f"cljonic::{tail}:",
-        )
+    statement = f"const auto p = cljonic::{adapter}([](int) noexcept {{ return true; }}, cljonic::vector(1));"
+    PRIMITIVES["has_next"]["pass_cases"][f"{adapter}-producer"] = statement + " (void)cljonic::has_next(p);"
+    PRIMITIVES["has_next"]["pass_cases"][f"{adapter}-cycle-producer"] = (
+        statement + " (void)cljonic::has_next(cljonic::cycle(p));"
+    )
     for tail in ("next", "rest"):
         PRIMITIVES[tail]["pass_cases"][f"{adapter}-tail"] = (
             f"const auto p = cljonic::{adapter}([limit = 3](int n) noexcept {{ return n < limit; }}, "
