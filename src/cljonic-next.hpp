@@ -11,6 +11,7 @@
 #include <cljonic-producer-range.hpp>
 #include <cljonic-producer-repeat.hpp>
 #include <cljonic-producer-repeatedly.hpp>
+#include <cljonic-producer-take-while.hpp>
 
 #include <cstddef>
 #include <functional>
@@ -41,13 +42,16 @@ struct NextProducerDomain<Iterate<T, Step>> : std::true_type {};
 template <typename T, typename Step>
 struct NextProducerDomain<Repeatedly<T, Step>> : std::true_type {};
 
+template <typename Predicate, typename Source, bool DropPrefix>
+struct NextProducerDomain<PredicateProducer<Predicate, Source, DropPrefix>> : std::true_type {};
+
 template <typename Source>
 struct NextProducerDomain<Cycle<Source>>
     : std::bool_constant<NextSequenceableCollection<Source> || NextProducerDomain<Source>::value> {};
 
 template <typename P>
-concept NextSequenceableProducer =
-    concepts::SequenceableProducer<P> && concepts::NothrowConstInputRange<P> && NextProducerDomain<P>::value;
+concept NextSequenceableProducer = concepts::SequenceableProducer<P> && concepts::NothrowConstInputRange<P> &&
+                                   NextProducerDomain<std::remove_cvref_t<P>>::value;
 
 template <typename T>
 concept NextSequenceable = NextSequenceableCollection<T> || NextSequenceableProducer<T>;
@@ -96,12 +100,23 @@ struct CycleNextAccess {
         if (source_count == 0U) {
             return producer;
         }
-        const auto next_offset = producer.starting_offset_ == source_count - 1U ? 0U : producer.starting_offset_ + 1U;
+        const auto offset = producer.starting_offset_ % source_count;
+        const auto next_offset = offset == source_count - 1U ? 0U : offset + 1U;
         return P{producer.source_, next_offset};
     }
 
     template <concepts::CljonicCycle P>
     [[nodiscard]] static constexpr auto tail(const P& producer) noexcept -> P;
+};
+
+struct PredicateProducerNextAccess {
+    template <typename Predicate, typename Source, bool DropPrefix>
+    [[nodiscard]] static constexpr auto tail(const PredicateProducer<Predicate, Source, DropPrefix>& producer) noexcept
+        -> PredicateProducer<Predicate, Source, DropPrefix> {
+        const auto offset = producer.output_skip_;
+        const auto next_offset = offset == CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE ? offset : offset + 1U;
+        return {producer.predicate_, producer.source_, next_offset};
+    }
 };
 
 struct IterateNextAccess {
@@ -156,6 +171,13 @@ template <concepts::CljonicCycle P>
     return CycleNextAccess::tail(producer);
 }
 
+template <typename Predicate, typename Source, bool DropPrefix>
+[[nodiscard]] constexpr auto
+next_producer_tail(const PredicateProducer<Predicate, Source, DropPrefix>& producer) noexcept
+    -> PredicateProducer<Predicate, Source, DropPrefix> {
+    return PredicateProducerNextAccess::tail(producer);
+}
+
 template <typename C>
 struct NextResult;
 
@@ -205,9 +227,19 @@ struct NextResult<String<N>> {
  * finite Range is unchanged, and a singleton finite Range becomes empty at its endpoint without adding the step.
  * Otherwise, the start advances by one step.
  *
- * For a \ref Cycle "Cycle" with a finite source, the starting position advances by one modulo the source's observed
- * count; an empty finite source remains empty. For a Cycle with an unbounded source, `next` tails its owned source and
- * resets the starting position, preserving the observation cap and following the source's callback behavior.
+ * For a \ref Cycle "Cycle", the result starts at the next value and keeps cycling through the whole source. For
+ * example, cycling `1, 2, 3` becomes `2, 3, 1, 2, 3, ...`, not `2, 3, 2, 3, ...`. An empty source stays empty. A Cycle
+ * over an unbounded producer continues from that producer's next value. Each traversal of the resulting Cycle can
+ * still yield up to \b CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE values; calling `next` does not reduce that
+ * limit. When cycling a \ref TakeWhile "TakeWhile" or \ref DropWhile "DropWhile" result, calling `next` first counts
+ * that result within its bounded window, so source and predicate callbacks may run during the call.
+ *
+ * For TakeWhile and DropWhile, `next` returns the same producer type with its first output value removed. For example,
+ * if `take_while` yields `1, 2`, its tail yields `2`; if `drop_while` yields `4, 1`, its tail yields `1`, without
+ * testing that retained value against the predicate again. Calling `next` itself does not run callbacks; they run when
+ * you observe the result. Skipping values does not extend the original source window or cross a TakeWhile stopping
+ * point. Repeated calls eventually give an empty result, which stays empty. These rules also apply to nested
+ * producers.
  *
  * For an \ref Iterate "Iterate", `next` invokes the step once and uses its result as the returned producer's initial
  * value while preserving the observation cap. A zero observation cap does not invoke the step.
@@ -216,6 +248,14 @@ struct NextResult<String<N>> {
  * the advanced step copy in the tail. A finite Repeatedly tail has one fewer element; an unbounded Repeatedly keeps
  * its observation cap. An empty Repeatedly does not invoke its step. Value-held mutable state advances in the returned
  * Repeatedly only, while effects through referenced or static state occur when `next` is called and remain shared.
+ *
+ * For all callback-backed producers, observing the same producer again may rerun callbacks rather than reuse earlier
+ * results. This includes Iterate and Repeatedly, as well as TakeWhile, DropWhile, and Cycles over them. Callbacks
+ * should idiomatically be pure; Repeatedly is an explicitly permitted exception that may use stateful callbacks or
+ * side effects. Each Iterate traversal starts from its stored initial value. Each Repeatedly traversal starts with a
+ * fresh copy of its stored callback, so mutable state held by value restarts, while referenced or static state remains
+ * shared. Where external side effects are permitted, they may repeat; changing external state can change later
+ * observations, including which values a Cycle repeats.
  *
  * Calling `next` does not materialize the remaining producer sequence into a collection.
  *
@@ -368,6 +408,9 @@ template <concepts_detail::NextSequenceableProducer P>
 
 template <concepts::CljonicCycle P>
 [[nodiscard]] constexpr auto concepts_detail::CycleNextAccess::tail(const P& producer) noexcept -> P {
+    if constexpr (CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE == 0U) {
+        return producer;
+    }
     if constexpr (concepts::CljonicCollection<typename P::source_type>) {
         return finite_tail(producer);
     } else {
@@ -383,8 +426,8 @@ template <typename C>
 constexpr auto next([[maybe_unused]] const C& value) noexcept -> void {
     static_assert(
         concepts_detail::dependent_false<C>,
-        "cljonic::next: expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, or supported "
-        "Cycle value.");
+        "cljonic::next: expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, TakeWhile, "
+        "DropWhile, or supported Cycle value.");
 }
 
 } // namespace cljonic

@@ -15,7 +15,8 @@ namespace cljonic {
  * `rest` follows logical traversal order rather than the collection-specific removal end.
  *
  * For producers, `rest` preserves all of `next`'s producer-specific tail behavior, including the eager callback timing
- * of \ref Iterate "Iterate" and \ref Repeatedly "Repeatedly".
+ * of \ref Iterate "Iterate" and \ref Repeatedly "Repeatedly", deferred callback-free \ref TakeWhile "TakeWhile" and
+ * \ref DropWhile "DropWhile" tail creation, and eager bounded length determination for finite adapter-source Cycles.
  *
  * \b Examples
  ~~~~~{.cpp}
@@ -76,8 +77,8 @@ template <typename C>
     requires(!concepts_detail::NextSequenceable<C>)
 constexpr auto rest([[maybe_unused]] const C& value) noexcept -> void {
     static_assert(concepts_detail::dependent_false<C>,
-                  "cljonic::rest: expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, or "
-                  "supported Cycle value.");
+                  "cljonic::rest: expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, "
+                  "TakeWhile, DropWhile, or supported Cycle value.");
 }
 
 } // namespace cljonic

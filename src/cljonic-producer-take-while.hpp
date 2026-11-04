@@ -9,6 +9,8 @@
 
 namespace cljonic::concepts_detail {
 
+struct PredicateProducerNextAccess;
+
 template <typename Predicate, typename Source>
 concept PredicateProducerArguments =
     FilterCallable<Predicate, Source> && std::is_nothrow_copy_constructible_v<Predicate> &&
@@ -17,6 +19,8 @@ concept PredicateProducerArguments =
 template <typename Predicate, typename Source, bool DropPrefix>
     requires PredicateProducerArguments<Predicate, Source>
 class PredicateProducer {
+    friend struct PredicateProducerNextAccess;
+
   public:
     using value_type = std::ranges::range_value_t<const Source>;
 
@@ -27,13 +31,17 @@ class PredicateProducer {
 
         constexpr const_iterator() noexcept = default;
 
-        constexpr const_iterator(const Source& source, const Predicate& predicate) noexcept {
+        constexpr const_iterator(const Source& source, const Predicate& predicate, std::size_t output_skip) noexcept {
             if constexpr (CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE != 0U) {
                 predicate_.emplace(predicate);
                 current_ = std::ranges::begin(source);
                 end_ = std::ranges::end(source);
                 remaining_ = CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
                 establish_boundary();
+                while (output_skip != 0U && remaining_ != 0U) {
+                    --output_skip;
+                    ++(*this);
+                }
             }
         }
 
@@ -131,7 +139,7 @@ class PredicateProducer {
     }
 
     [[nodiscard]] constexpr auto begin() const noexcept -> const_iterator {
-        return const_iterator{source_, predicate_};
+        return const_iterator{source_, predicate_, output_skip_};
     }
 
     [[nodiscard]] constexpr auto end() const noexcept -> std::default_sentinel_t {
@@ -151,8 +159,13 @@ class PredicateProducer {
     }
 
   private:
+    constexpr PredicateProducer(const Predicate& predicate, const Source& source, std::size_t output_skip) noexcept
+        : source_(source), predicate_(predicate), output_skip_(output_skip) {
+    }
+
     Source source_;
     Predicate predicate_;
+    std::size_t output_skip_{0U};
 };
 
 template <typename Predicate, typename Source, bool DropPrefix>
@@ -197,6 +210,10 @@ namespace cljonic {
  * traversal order, so use an ordered source when a particular prefix matters. External C++ ranges and individual
  * MapEntry values are not accepted as sources.
  *
+ * \ref Next "next" and \ref Rest "rest" preserve the producer type and defer omitting one output element, without
+ * evaluating callbacks at tail creation. Observation replays the original prefix within the same bounded window. A
+ * \ref Cycle "Cycle" over this producer also supports tails, determining its bounded source length eagerly.
+ *
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 using namespace cljonic;
@@ -206,6 +223,9 @@ int main() {
   constexpr auto prefix = take_while(below_three, vector(1, 2, 4, 1));
   static_assert(count(prefix) == 2);
   static_assert(equal(prefix, vector(1, 2)));
+  static_assert(equal(next(prefix), vector(2)));
+  static_assert(
+      equal(into(Vector<int, 4>{}, next(cycle(prefix))), vector(2, 1, 2, 1)));
   static_assert(count(take_while(below_three, queue(1, 2, 4))) == 2);
   static_assert(count(take_while([](char c) noexcept { return c < 'c'; },
                                  string("abcd"))) == 2);

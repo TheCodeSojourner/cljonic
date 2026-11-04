@@ -132,7 +132,7 @@ class Cycle {
         constexpr void advance_after_source_end() noexcept {
             current_ = std::ranges::begin(*source_);
             end_ = std::ranges::end(*source_);
-            remaining_ = restart_ ? remaining_ : 0U;
+            remaining_ = restart_ && current_ != end_ ? remaining_ : 0U;
         }
 
         const Source* source_{nullptr};
@@ -166,11 +166,8 @@ class Cycle {
         const auto source_begin = std::ranges::begin(source_);
         const auto source_end = std::ranges::end(source_);
         const auto source_is_finite = source_finiteness();
-        if (source_begin == source_end) {
-            return const_iterator{&source_, source_begin, source_end, 0U, source_is_finite};
-        }
-        const auto current = source_is_finite ? source_begin_at_offset(source_begin) : source_begin;
-        return const_iterator{&source_, current, source_end, count(), source_is_finite};
+        const auto current = source_is_finite ? source_begin_at_offset(source_begin, source_end) : source_begin;
+        return const_iterator{&source_, current, source_end, current == source_end ? 0U : count(), source_is_finite};
     }
 
     [[nodiscard]] constexpr auto end() const noexcept -> const_iterator {
@@ -195,8 +192,9 @@ class Cycle {
     }
 
   private:
-    [[nodiscard]] constexpr auto source_begin_at_offset(source_iterator current) const noexcept -> source_iterator {
-        for (auto offset = std::size_t{0U}; offset < starting_offset_; ++offset) {
+    [[nodiscard]] constexpr auto source_begin_at_offset(source_iterator current, source_sentinel end) const noexcept
+        -> source_iterator {
+        for (auto offset = std::size_t{0U}; offset < starting_offset_ && current != end; ++offset) {
             ++current;
         }
         return current;

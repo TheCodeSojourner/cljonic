@@ -24,6 +24,11 @@ namespace cljonic {
  * traversal order, so use an ordered source when a particular suffix matters. External C++ ranges and individual
  * MapEntry values are not accepted as sources.
  *
+ * \ref Next "next" and \ref Rest "rest" preserve the producer type and defer omitting one output element, without
+ * evaluating callbacks at tail creation. Observation replays the original prefix removal, then skips output; it never
+ * reapplies prefix removal to the retained suffix. A \ref Cycle "Cycle" over this producer also supports tails,
+ * determining its bounded source length eagerly.
+ *
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 using namespace cljonic;
@@ -33,6 +38,9 @@ int main() {
   constexpr auto suffix = drop_while(below_three, vector(1, 2, 4, 1));
   static_assert(count(suffix) == 2);
   static_assert(equal(suffix, vector(4, 1)));
+  static_assert(equal(rest(suffix), vector(1)));
+  static_assert(
+      equal(into(Vector<int, 4>{}, next(cycle(suffix))), vector(1, 4, 1, 4)));
   static_assert(count(drop_while(below_three, queue(1, 2, 4))) == 1);
   static_assert(count(drop_while([](char c) noexcept { return c < 'c'; },
                                  string("abcd"))) == 2);
