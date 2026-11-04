@@ -3,11 +3,16 @@
 entity HasNext {
     supports_has_next_free_function: Boolean
     supports_next_collection_domain: Boolean
+    supports_next_producer_domain: Boolean
     returns_boolean_preflight: Boolean
-    returns_true_when_logical_tail_nonempty: Boolean
+    returns_true_when_next_result_has_observable_element: Boolean
     returns_false_for_empty_or_singleton_collection: Boolean
-    observes_count_without_constructing_next_result: Boolean
-    preserves_input: Boolean
+    returns_false_when_producer_next_result_is_empty: Boolean
+    collection_preflight_observes_count_without_constructing_next_result: Boolean
+    producer_preflight_constructs_next_and_checks_first_observable_element: Boolean
+    producer_preflight_does_not_count_entire_result: Boolean
+    producer_callback_behavior_follows_next_and_first_observation: Boolean
+    preserves_input_value_owned_state: Boolean
     no_heap_allocation: Boolean
     no_rtti: Boolean
     no_exceptions: Boolean
@@ -23,24 +28,44 @@ entity HasNext {
         this.supports_next_collection_domain = true
     }
 
+    invariant SupportsNextProducerDomain {
+        this.supports_next_producer_domain = true
+    }
+
     invariant ReturnsBooleanPreflight {
         this.returns_boolean_preflight = true
     }
 
-    invariant ReturnsTrueWhenLogicalTailNonempty {
-        this.returns_true_when_logical_tail_nonempty = true
+    invariant ReturnsTrueWhenNextResultHasObservableElement {
+        this.returns_true_when_next_result_has_observable_element = true
     }
 
     invariant ReturnsFalseForEmptyOrSingletonCollection {
         this.returns_false_for_empty_or_singleton_collection = true
     }
 
-    invariant ObservesCountWithoutConstructingNextResult {
-        this.observes_count_without_constructing_next_result = true
+    invariant ReturnsFalseWhenProducerNextResultIsEmpty {
+        this.returns_false_when_producer_next_result_is_empty = true
     }
 
-    invariant PreservesInput {
-        this.preserves_input = true
+    invariant CollectionPreflightObservesCountWithoutConstructingNextResult {
+        this.collection_preflight_observes_count_without_constructing_next_result = true
+    }
+
+    invariant ProducerPreflightConstructsNextAndChecksFirstObservableElement {
+        this.producer_preflight_constructs_next_and_checks_first_observable_element = true
+    }
+
+    invariant ProducerPreflightDoesNotCountEntireResult {
+        this.producer_preflight_does_not_count_entire_result = true
+    }
+
+    invariant ProducerCallbackBehaviorFollowsNextAndFirstObservation {
+        this.producer_callback_behavior_follows_next_and_first_observation = true
+    }
+
+    invariant PreservesInputValueOwnedState {
+        this.preserves_input_value_owned_state = true
     }
 
     invariant NoHeapAllocation {

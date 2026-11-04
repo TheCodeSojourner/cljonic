@@ -5,8 +5,6 @@
 -- The extension is active after separate implementation approval and verification;
 -- REQ-FN-002A6/013G separately approve adapter-dependent next/rest tails below;
 -- this tail extension is active after explicit implementation approval and verification.
--- has_next remains collection-only.
-
 entity Cycle {
     supports_header_only_distribution: Boolean
     no_heap_allocation: Boolean

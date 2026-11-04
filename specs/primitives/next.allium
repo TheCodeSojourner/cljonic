@@ -49,7 +49,7 @@ entity Next {
     nested_cycles_follow_recursive_source_tail_callback_timing: Boolean
     tail_metadata_is_compact_without_large_counters_tables_or_cap_proportional_storage: Boolean
     cycle_length_counting_does_not_add_first_observation_count_prepass: Boolean
-    has_next_remains_collection_only: Boolean
+    has_next_domain_matches_next_producer_domain: Boolean
     iterate_tail_uses_advanced_value_as_initial: Boolean
     repeatedly_tail_discards_one_value_and_preserves_advanced_step_state: Boolean
     finite_repeatedly_tail_decrements_count: Boolean
@@ -265,7 +265,7 @@ entity Next {
     invariant NestedCycleCallbackTimingFollowsSourceTail { this.nested_cycles_follow_recursive_source_tail_callback_timing = true }
     invariant TailMetadataStaysCompact { this.tail_metadata_is_compact_without_large_counters_tables_or_cap_proportional_storage = true }
     invariant FirstObservationStillAvoidsCountPrepass { this.cycle_length_counting_does_not_add_first_observation_count_prepass = true }
-    invariant HasNextRemainsCollectionOnly { this.has_next_remains_collection_only = true }
+    invariant HasNextDomainMatchesNextProducerDomain { this.has_next_domain_matches_next_producer_domain = true }
 }
 
 actor NextOperator { identified_by: Next }

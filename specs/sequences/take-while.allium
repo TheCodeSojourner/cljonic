@@ -68,7 +68,6 @@ entity TakeWhile {
     next_rest_and_dependent_cycle_tails_admitted_under_req_fn_002a4_and_002a6: Boolean
     next_rest_defer_output_skips_without_callbacks_and_preserve_original_window: Boolean
     tail_never_resumes_past_first_false_and_empty_tails_stay_empty: Boolean
-    has_next_remains_rejected: Boolean
     first_api_observes_only_first_candidate_under_req_fn_002a1: Boolean
     invalid_calls_have_targeted_operation_diagnostic: Boolean
     constexpr_noexcept_no_heap_no_rtti_nonmutating: Boolean
@@ -117,7 +116,6 @@ entity TakeWhile {
     invariant TailAndDependentCycleAdmission { this.next_rest_and_dependent_cycle_tails_admitted_under_req_fn_002a4_and_002a6 = true }
     invariant DeferredOutputSkipsPreserveWindow { this.next_rest_defer_output_skips_without_callbacks_and_preserve_original_window = true }
     invariant TailPreservesFalseAndEmptyBoundaries { this.tail_never_resumes_past_first_false_and_empty_tails_stay_empty = true }
-    invariant HasNextStillRejected { this.has_next_remains_rejected = true }
     invariant FirstApiObservesOnlyFirstCandidate { this.first_api_observes_only_first_candidate_under_req_fn_002a1 = true }
     invariant TargetedOperationDiagnostics { this.invalid_calls_have_targeted_operation_diagnostic = true }
     invariant ConstexprNoexceptNoHeapNoRttiNonmutating { this.constexpr_noexcept_no_heap_no_rtti_nonmutating = true }

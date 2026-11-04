@@ -73,7 +73,6 @@ entity DropWhile {
     next_rest_and_dependent_cycle_tails_admitted_under_req_fn_002a4_and_002a6: Boolean
     next_rest_defer_output_skips_without_callbacks_and_preserve_original_window: Boolean
     tail_skips_outputs_after_original_prefix_removal_without_reapplying_predicate: Boolean
-    has_next_remains_rejected: Boolean
     first_api_scans_only_through_first_false_or_window_end_under_req_fn_002a1: Boolean
     invalid_calls_have_targeted_operation_diagnostic: Boolean
     constexpr_noexcept_no_heap_no_rtti_nonmutating: Boolean
@@ -125,7 +124,6 @@ entity DropWhile {
     invariant TailAndDependentCycleAdmission { this.next_rest_and_dependent_cycle_tails_admitted_under_req_fn_002a4_and_002a6 = true }
     invariant DeferredOutputSkipsPreserveWindow { this.next_rest_defer_output_skips_without_callbacks_and_preserve_original_window = true }
     invariant TailNeverRestartsPrefixRemoval { this.tail_skips_outputs_after_original_prefix_removal_without_reapplying_predicate = true }
-    invariant HasNextStillRejected { this.has_next_remains_rejected = true }
     invariant FirstApiScansThroughFirstFalseOrWindowEnd { this.first_api_scans_only_through_first_false_or_window_end_under_req_fn_002a1 = true }
     invariant TargetedOperationDiagnostics { this.invalid_calls_have_targeted_operation_diagnostic = true }
     invariant ConstexprNoexceptNoHeapNoRttiNonmutating { this.constexpr_noexcept_no_heap_no_rtti_nonmutating = true }
