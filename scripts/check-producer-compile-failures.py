@@ -96,8 +96,26 @@ static_assert([] {
         return false;
     }
     const auto short_source = cljonic::repeatedly(2, []() noexcept { return 1; });
-    return cljonic::take_while([](int) noexcept { return true; }, short_source).count() == (cap < 2 ? cap : 2) &&
-           cljonic::drop_while([](int) noexcept { return true; }, short_source).count() == 0;
+    if (cljonic::take_while([](int) noexcept { return true; }, short_source).count() != (cap < 2 ? cap : 2) ||
+        cljonic::drop_while([](int) noexcept { return true; }, short_source).count() != 0) {
+        return false;
+    }
+    produced = 0;
+    tested = 0;
+    const auto nested = cljonic::cycle(cljonic::cycle(prefix));
+    if (cljonic::first(nested) != (cap == 0 ? 0 : 1) ||
+        produced != (cap == 0 ? 0 : 1) || tested != (cap == 0 ? 0 : 1)) {
+        return false;
+    }
+    produced = 0;
+    tested = 0;
+    if (cljonic::first(suffix) != (cap < 2 ? 0 : 2) ||
+        produced != static_cast<int>(cap < 2 ? cap : 2) || tested != produced) {
+        return false;
+    }
+    produced = 0;
+    const auto iterative = cljonic::iterate([&produced](int n) noexcept { ++produced; return n + 1; }, 7);
+    return cljonic::first(iterative) == (cap == 0 ? 0 : 7) && produced == 0;
 }());
 """
 
@@ -209,7 +227,12 @@ def main() -> int:
         for configuration, include_dir, header in cap_configurations:
             if not compile_case(
                 cap_compiler, include_dir, header, PREDICATE_CAP_CASE,
-                preamble='#include "cljonic-producer-repeatedly.hpp"' if configuration == "modular" else "",
+                preamble=(
+                    '#include "cljonic-producer-repeatedly.hpp"\n'
+                    '#include "cljonic-producer-iterate.hpp"\n'
+                    '#include "cljonic-producer-cycle.hpp"\n'
+                    '#include "cljonic-first.hpp"'
+                ) if configuration == "modular" else "",
                 expect_success=True,
             ):
                 failures.append(f"{configuration}/predicate-cap-{cap}: bounded traversal contract failed")

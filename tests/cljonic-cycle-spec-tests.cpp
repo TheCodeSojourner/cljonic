@@ -4,6 +4,23 @@
 
 #define TRACE_ID(id_literal) INFO("trace-id: " id_literal)
 
+TEST_CASE("Cycle first access does not pre-count nested adapter sources", "[cycle][first]") {
+    TRACE_ID("invariant.Cycle.FirstObservationPreservesLogicalStartWithoutCountPrepass");
+    TRACE_ID("invariant.Cycle.FirstObservationOverNestedAdaptersUsesOnlyNeededEvaluation");
+    int produced = 0;
+    int tested = 0;
+    const auto source = cljonic::cycle(cljonic::cycle(cljonic::drop_while(
+        [&tested](int n) noexcept {
+            ++tested;
+            return n < 3;
+        },
+        cljonic::repeatedly([&produced]() noexcept { return ++produced; }))));
+    REQUIRE(cljonic::first(source) == 3);
+    REQUIRE(produced == 3);
+    REQUIRE(tested == 3);
+    STATIC_REQUIRE(cljonic::first(cljonic::next(cljonic::cycle(cljonic::vector(1, 2)))) == 2);
+}
+
 TEST_CASE("Cycle repeats a bounded source value sequence and materializes bounded prefixes", "[cycle]") {
     using cljonic::cycle;
     using cljonic::fits_into;

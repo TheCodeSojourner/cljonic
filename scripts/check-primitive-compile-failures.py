@@ -417,38 +417,30 @@ PRIMITIVES = {
         "diagnostic_cases": {
             "unsupported-scalar": (
                 "(void)cljonic::first(42);",
-                "expected a Vector, Map, Set, Queue, String, or MapEntry value",
+                "expected a cljonic collection, producer, or MapEntry value",
             ),
-            "unsupported-producer": (
-                "(void)cljonic::first(cljonic::Range<int>{0, 5});",
-                "expected a Vector, Map, Set, Queue, String, or MapEntry value",
+            "external-array": (
+                "int values[]{1, 2}; (void)cljonic::first(values);",
+                "expected a cljonic collection, producer, or MapEntry value",
             ),
-            "take-while": (
-                "(void)cljonic::first(cljonic::take_while([](int) noexcept { return true; }, cljonic::vector(1)));",
-                "expected a Vector, Map, Set, Queue, String, or MapEntry value",
+            "standard-array": (
+                "(void)cljonic::first(std::array<int, 2>{});",
+                "expected a cljonic collection, producer, or MapEntry value",
             ),
-            "drop-while": (
-                "(void)cljonic::first(cljonic::drop_while([](int) noexcept { return false; }, cljonic::vector(1)));",
-                "expected a Vector, Map, Set, Queue, String, or MapEntry value",
-            ),
-            "cycle": (
-                "(void)cljonic::first(cljonic::cycle(cljonic::vector(1)));",
-                "expected a Vector, Map, Set, Queue, String, or MapEntry value",
-            ),
-            "iterate": (
-                "(void)cljonic::first(cljonic::iterate([](int n) noexcept { return n + 1; }, 1));",
-                "expected a Vector, Map, Set, Queue, String, or MapEntry value",
-            ),
-            "repeat": (
-                "(void)cljonic::first(cljonic::repeat(1));",
-                "expected a Vector, Map, Set, Queue, String, or MapEntry value",
-            ),
-            "repeatedly": (
-                "(void)cljonic::first(cljonic::repeatedly([]() noexcept { return 1; }));",
-                "expected a Vector, Map, Set, Queue, String, or MapEntry value",
+            "standard-view": (
+                "(void)cljonic::first(std::ranges::iota_view{0, 3});",
+                "expected a cljonic collection, producer, or MapEntry value",
             ),
         },
         "pass_cases": {
+            "range": "static_assert(cljonic::first(cljonic::range(7, 9)) == 7);",
+            "repeat": "static_assert(cljonic::first(cljonic::repeat(7)) == 7);",
+            "cycle": "static_assert(cljonic::first(cljonic::cycle(cljonic::vector(7))) == 7);",
+            "iterate": "static_assert(cljonic::first(cljonic::iterate([](int n) noexcept { return n + 1; }, 7)) == 7);",
+            "repeatedly": "static_assert(cljonic::first(cljonic::repeatedly([]() noexcept { return 7; })) == 7);",
+            "take-while": "static_assert(cljonic::first(cljonic::take_while([](int) noexcept { return true; }, cljonic::vector(7))) == 7);",
+            "drop-while": "static_assert(cljonic::first(cljonic::drop_while([](int) noexcept { return false; }, cljonic::vector(7))) == 7);",
+            "cycle-adapter": "static_assert(cljonic::first(cljonic::cycle(cljonic::take_while([](int) noexcept { return true; }, cljonic::vector(7)))) == 7);",
             "vector": "(void)cljonic::first(cljonic::Vector<int, 4>{10, 20});",
             "map": "(void)cljonic::first(cljonic::Map<int, int, 4>{cljonic::MapEntry<int, int>{1, 100}});",
             "set": "(void)cljonic::first(cljonic::Set<int, 4>{7});",

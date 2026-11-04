@@ -171,13 +171,13 @@ TEST_CASE("TakeWhile integrates callbacks storage and source consumers", "[take-
     TRACE_ID("invariant.TakeWhile.LogicalEqualityUsesSequentialElementRules");
     TRACE_ID("invariant.TakeWhile.ParameterEqualityAndKeyElementAdmissionUnavailable");
     TRACE_ID("invariant.TakeWhile.TailApisAndDependentCycleTailsRejected");
-    TRACE_ID("invariant.TakeWhile.FirstApiRejectsProducer");
+    TRACE_ID("invariant.TakeWhile.FirstApiObservesOnlyFirstCandidate");
     TRACE_ID("invariant.TakeWhile.ExternalSourcesAndMapEntryRejected");
     TRACE_ID("invariant.TakeWhile.TargetedOperationDiagnostics");
 
     constexpr auto predicate = [](int n) noexcept { return n < 3; };
     constexpr auto prefix = cljonic::take_while(predicate, cljonic::vector(1, 2, 4));
-    STATIC_REQUIRE(std::is_void_v<decltype(cljonic::first(prefix))>);
+    STATIC_REQUIRE(cljonic::first(prefix) == 1);
     STATIC_REQUIRE(cljonic::concepts::NothrowCollectionElement<std::remove_cv_t<decltype(prefix)>>);
     STATIC_REQUIRE(!cljonic::concepts::StableEqualityComparable<decltype(prefix)>);
     STATIC_REQUIRE(!cljonic::concepts_detail::NextSequenceableProducer<decltype(prefix)>);

@@ -88,7 +88,7 @@ TEST_CASE("First free function operations", "[first]") {
     TRACE_ID("invariant.First.SingleThreadedExecutionModel");
     STATIC_REQUIRE(first(MapEntry<int, int>{4, 400}) == 4);
 
-    TRACE_ID("invariant.First.ReferentialTransparency");
+    TRACE_ID("invariant.First.ReferentialTransparencyByDefaultUnlessSourceAuthorizesEffects");
     STATIC_REQUIRE(first(Vector<int, 4>{10, 20}) == first(Vector<int, 4>{10, 20}));
 
     TRACE_ID("invariant.First.RejectsUnsupportedDomainWithTargetedDiagnostic");
@@ -140,4 +140,184 @@ TEST_CASE("First free function operations", "[first]") {
     REQUIRE(first(eq) == 0);
     auto etext = String<4>{};
     REQUIRE(first(etext) == '\0');
+}
+
+TEST_CASE("First observes every producer family by owning element value", "[first]") {
+    using namespace cljonic;
+    TRACE_ID("invariant.First.SupportsAllCljonicProducerFamilies");
+    TRACE_ID("invariant.First.SupportsNestedAdaptersAndCycles");
+    TRACE_ID("invariant.First.ProducerResultIsOwningElementCopy");
+    TRACE_ID("invariant.First.ProducerMapEntryResultIsWholeEntry");
+    TRACE_ID("invariant.First.ProducerAdmissionAddsNoUnrelatedCapabilities");
+    TRACE_ID("invariant.First.EmptyProducerObservationYieldsDefaultElement");
+
+    constexpr auto below_three = [](int n) noexcept { return n < 3; };
+    STATIC_REQUIRE(first(range(7, 10)) == 7);
+    STATIC_REQUIRE(first(repeat(9)) == 9);
+    STATIC_REQUIRE(first(cycle(vector(4, 5))) == 4);
+    STATIC_REQUIRE(first(iterate([](int n) noexcept { return n + 1; }, 8)) == 8);
+    STATIC_REQUIRE(first(repeatedly([]() noexcept { return 6; })) == 6);
+    STATIC_REQUIRE(first(take_while(below_three, vector(1, 2, 4))) == 1);
+    STATIC_REQUIRE(first(drop_while(below_three, vector(1, 2, 4))) == 4);
+    STATIC_REQUIRE(first(take_while(below_three, drop_while(below_three, vector(1, 4)))) == 0);
+    STATIC_REQUIRE(first(cycle(cycle(drop_while(below_three, vector(1, 4))))) == 4);
+    STATIC_REQUIRE(first(next(cycle(vector(4, 5)))) == 5);
+    STATIC_REQUIRE(first(next(next(cycle(vector(4, 5))))) == 4);
+    STATIC_REQUIRE(first(range(2, 2)) == 0);
+    STATIC_REQUIRE(first(repeat(0, 7)) == 0);
+    STATIC_REQUIRE(first(repeatedly(0, []() noexcept { return 7; })) == 0);
+    STATIC_REQUIRE(first(cycle(vector<int>())) == 0);
+    STATIC_REQUIRE(first(take_while(below_three, vector(4))) == 0);
+    STATIC_REQUIRE(first(drop_while(below_three, vector(1, 2))) == 0);
+    STATIC_REQUIRE(first(cycle(cycle(take_while(below_three, vector(4))))) == 0);
+    STATIC_REQUIRE(std::same_as<decltype(first(repeat(map_entry(2, 20)))), MapEntry<int, int>>);
+    STATIC_REQUIRE(first(repeat(map_entry(2, 20))) == map_entry(2, 20));
+    STATIC_REQUIRE(first(take_while([](auto) noexcept { return true; }, hash_map(2, 20))) == map_entry(2, 20));
+    STATIC_REQUIRE(first(take_while([](char) noexcept { return true; }, string("AB"))) == 'A');
+    STATIC_REQUIRE(first(drop_while([](int n) noexcept { return n < 5; }, queue(3, 5, 6))) == 5);
+    STATIC_REQUIRE(first(take_while([](int) noexcept { return true; }, hash_set(7))) == 7);
+    STATIC_REQUIRE(first(repeat(vector(1, 2)))(0) == 1);
+    struct Element {
+        int value = 42;
+    };
+    STATIC_REQUIRE(first(repeat(Element{7})).value == 7);
+    STATIC_REQUIRE(first(repeat(0, Element{7})).value == 42);
+    STATIC_REQUIRE(std::same_as<decltype(first(repeat(7L))), long>);
+
+    volatile int raw = 7;
+    const int value = raw;
+    const auto captured = [limit = value](int n) noexcept { return n < limit; };
+    const auto adapter = take_while(captured, vector(value - 1, value));
+    STATIC_REQUIRE(!std::is_default_constructible_v<std::remove_cv_t<decltype(adapter)>>);
+    STATIC_REQUIRE(!std::is_copy_assignable_v<std::remove_cv_t<decltype(adapter)>>);
+    REQUIRE(first(adapter) == value - 1);
+    REQUIRE(first(cycle(adapter)) == value - 1);
+    const auto source = repeat(vector(value, value + 1));
+    auto result = first(source);
+    result = assoc(result, 0, 99);
+    REQUIRE(first(source)(0) == value);
+    REQUIRE(result(0) == 99);
+    const auto reserved = repeat(vector<int, 2>(value));
+    const auto appended = assoc(first(reserved), 1, value + 1);
+    REQUIRE(count(appended) == 2);
+    REQUIRE(appended(1) == value + 1);
+    REQUIRE(count(first(reserved)) == 1);
+    REQUIRE(first(repeat(value)) == value);
+    REQUIRE(first(range(value, value + 2)) == value);
+}
+
+TEST_CASE("First performs only needed producer evaluation with fresh traversal", "[first]") {
+    using namespace cljonic;
+    TRACE_ID("invariant.First.ProducerObservationRespectsOriginalWindowAndEndpoint");
+    TRACE_ID("invariant.First.SkipsDoNotReplenishObservationBudget");
+    TRACE_ID("invariant.First.ProducerFirstAccessHasNoCountPrepassOrMaterialization");
+    TRACE_ID("invariant.First.NoAdvanceAfterFirstElementFound");
+    TRACE_ID("invariant.First.IterateReturnsInitialWithoutStep");
+    TRACE_ID("invariant.First.RepeatedlyInvokesCallbackOnce");
+    TRACE_ID("invariant.First.TakeWhileTestsOnlyFirstSourceCandidate");
+    TRACE_ID("invariant.First.DropWhileScansThroughFirstFalseOrWindowEnd");
+    TRACE_ID("invariant.First.CyclePreservesLogicalStartWithoutCountPrepass");
+    TRACE_ID("invariant.First.RepeatedCallsUseFreshTraversalWithoutCache");
+    TRACE_ID("invariant.First.PreservesStateAndAuthorizedEffectScope");
+    TRACE_ID("invariant.First.ZeroProducerCapStartsNoTraversalOrCallbacks");
+
+    int produced = 0;
+    int tested = 0;
+    const auto generator = repeatedly([&produced]() noexcept { return ++produced; });
+    REQUIRE(first(generator) == 1);
+    REQUIRE(produced == 1);
+    REQUIRE(first(generator) == 2);
+    REQUIRE(produced == 2);
+    const auto iterative = iterate(
+        [&produced](int n) noexcept {
+            ++produced;
+            return n + 1;
+        },
+        9);
+    REQUIRE(first(iterative) == 9);
+    REQUIRE(produced == 2);
+    const auto prefix = take_while(
+        [&tested](int) noexcept {
+            ++tested;
+            return true;
+        },
+        generator);
+    REQUIRE(first(prefix) == 3);
+    REQUIRE(produced == 3);
+    REQUIRE(tested == 1);
+    const auto suffix = drop_while(
+        [&tested](int n) noexcept {
+            ++tested;
+            return n < 6;
+        },
+        generator);
+    REQUIRE(first(suffix) == 6);
+    REQUIRE(produced == 6);
+    REQUIRE(tested == 4);
+    const auto nested = cycle(cycle(take_while(
+        [&tested](int) noexcept {
+            ++tested;
+            return true;
+        },
+        generator)));
+    REQUIRE(first(nested) == 7);
+    REQUIRE(produced == 7);
+    REQUIRE(tested == 5);
+    REQUIRE(first(nested) == 8);
+    REQUIRE(produced == 8);
+    REQUIRE(tested == 6);
+
+    const auto finite = repeatedly(2, [&produced]() noexcept { return ++produced; });
+    const auto exhausted = drop_while(
+        [&tested](int) noexcept {
+            ++tested;
+            return true;
+        },
+        finite);
+    REQUIRE(first(exhausted) == 0);
+    REQUIRE(produced == 10);
+    REQUIRE(tested == 8);
+    REQUIRE(first(cycle(exhausted)) == 0);
+    REQUIRE(produced == 12);
+    REQUIRE(tested == 10);
+    const auto empty = repeatedly(0, [&produced]() noexcept { return ++produced; });
+    REQUIRE(first(cycle(empty)) == 0);
+    REQUIRE(produced == 12);
+    REQUIRE(first(take_while(
+                [&tested](int) noexcept {
+                    ++tested;
+                    return true;
+                },
+                empty)) == 0);
+    REQUIRE(tested == 10);
+    const auto rejected = take_while(
+        [&tested](int) noexcept {
+            ++tested;
+            return false;
+        },
+        generator);
+    REQUIRE(first(rejected) == 0);
+    REQUIRE(produced == 13);
+    REQUIRE(tested == 11);
+    const auto stopped = take_while(
+        [&tested](int n) noexcept {
+            ++tested;
+            return n < 15;
+        },
+        generator);
+    const auto bounded = drop_while([](int) noexcept { return true; }, stopped);
+    REQUIRE(first(bounded) == 0);
+    REQUIRE(produced == 15);
+    REQUIRE(tested == 13);
+
+    struct ValueState {
+        mutable int current = 40;
+        auto operator()() const noexcept -> int {
+            return ++current;
+        }
+    };
+    const auto owned = repeatedly(ValueState{});
+    REQUIRE(first(owned) == 41);
+    REQUIRE(first(owned) == 41);
+    REQUIRE(noexcept(first(owned)));
 }
