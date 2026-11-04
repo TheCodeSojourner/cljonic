@@ -6,6 +6,33 @@
 
 namespace cljonic::no_heap::probes {
 
+namespace {
+[[nodiscard]] auto predicate_tail_probe() noexcept -> bool {
+    volatile int raw = 1;
+    const int value = raw;
+    int calls = 0;
+    const auto source = vector(value, value + 1, value + 3, value);
+    const auto predicate = [&calls, limit = value + 2](int n) noexcept {
+        ++calls;
+        return n < limit;
+    };
+    const auto prefix = take_while(predicate, source);
+    const auto suffix = drop_while(predicate, source);
+    const auto prefix_tail = next(prefix);
+    const auto suffix_tail = rest(suffix);
+    if (calls != 0 || first(prefix_tail) != value + 1 || calls != 2 || first(suffix_tail) != value || calls != 5) {
+        return false;
+    }
+    calls = 0;
+    const auto rotated = next(cycle(cycle(prefix)));
+    if (calls != 3 || first(rotated) != value + 1 || calls != 5) {
+        return false;
+    }
+    return equal(into(Vector<int, 4>{}, rotated), vector(value + 1, value, value + 1, value)) &&
+           count(next(prefix_tail)) == 0 && first(next(cycle(suffix))) == value;
+}
+} // namespace
+
 [[nodiscard]] auto next_probe() noexcept -> bool {
     volatile int first_raw = 11;
     volatile int second_raw = 22;
@@ -99,7 +126,7 @@ namespace cljonic::no_heap::probes {
            next(Queue<int, 3>{first}).count() == 0U && next(String<3>{std::array{first_char}}).count() == 0U &&
            next(Vector<int, 0>{}).count() == 0U && next(Vector<int, 4>{}).count() == 0U &&
            next(Map<int, int, 4>{}).count() == 0U && next(Set<int, 4>{}).count() == 0U &&
-           next(Queue<int, 4>{}).count() == 0U && next(String<4>{}).count() == 0U;
+           next(Queue<int, 4>{}).count() == 0U && next(String<4>{}).count() == 0U && predicate_tail_probe();
 }
 
 } // namespace cljonic::no_heap::probes

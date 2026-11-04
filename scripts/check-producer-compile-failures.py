@@ -119,6 +119,43 @@ static_assert([] {
 }());
 """
 
+PREDICATE_TAIL_CAP_CASE = """\
+static_assert([] {
+    constexpr auto cap = cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
+    int calls = 0;
+    const auto source = cljonic::repeatedly([&calls, n = 0]() mutable noexcept { ++calls; return ++n; });
+    const auto prefix = cljonic::take_while([](int) noexcept { return true; }, source);
+    const auto tail = cljonic::rest(prefix);
+    const auto suffix = cljonic::drop_while([](int n) noexcept { return n < 2; }, source);
+    const auto suffix_tail = cljonic::next(suffix);
+    if (calls != 0 || tail.count() != (cap == 0 ? 0 : cap - 1) || calls != static_cast<int>(cap)) {
+        return false;
+    }
+    calls = 0;
+    if (suffix_tail.count() != (cap < 2 ? 0 : cap - 2) || calls != static_cast<int>(cap)) {
+        return false;
+    }
+    calls = 0;
+    const auto cycle_tail = cljonic::rest(cljonic::cycle(cljonic::cycle(prefix)));
+    if (calls != static_cast<int>(cap)) {
+        return false;
+    }
+    calls = 0;
+    if (cljonic::first(cycle_tail) != (cap == 0 ? 0 : cap == 1 ? 1 : 2) ||
+        calls != (cap == 0 ? 0 : cap == 1 ? 1 : 2)) {
+        return false;
+    }
+    auto skipped = cljonic::take_while([](int) noexcept { return true; }, cljonic::repeat(7));
+    for (unsigned n = 0; n < cap + 3; ++n) {
+        if (skipped.count() != (n < cap ? cap - n : 0)) {
+            return false;
+        }
+        skipped = cljonic::next(skipped);
+    }
+    return true;
+}());
+"""
+
 PREAMBLE = """\
 namespace {
 struct NonStorable {
@@ -226,11 +263,12 @@ def main() -> int:
         )
         for configuration, include_dir, header in cap_configurations:
             if not compile_case(
-                cap_compiler, include_dir, header, PREDICATE_CAP_CASE,
+                cap_compiler, include_dir, header, PREDICATE_CAP_CASE + PREDICATE_TAIL_CAP_CASE,
                 preamble=(
                     '#include "cljonic-producer-repeatedly.hpp"\n'
                     '#include "cljonic-producer-iterate.hpp"\n'
                     '#include "cljonic-producer-cycle.hpp"\n'
+                    '#include "cljonic-rest.hpp"\n'
                     '#include "cljonic-first.hpp"'
                 ) if configuration == "modular" else "",
                 expect_success=True,

@@ -170,7 +170,6 @@ TEST_CASE("TakeWhile integrates callbacks storage and source consumers", "[take-
     TRACE_ID("invariant.TakeWhile.FinitePreflightUsesExistingSemantics");
     TRACE_ID("invariant.TakeWhile.LogicalEqualityUsesSequentialElementRules");
     TRACE_ID("invariant.TakeWhile.ParameterEqualityAndKeyElementAdmissionUnavailable");
-    TRACE_ID("invariant.TakeWhile.TailApisAndDependentCycleTailsRejected");
     TRACE_ID("invariant.TakeWhile.FirstApiObservesOnlyFirstCandidate");
     TRACE_ID("invariant.TakeWhile.ExternalSourcesAndMapEntryRejected");
     TRACE_ID("invariant.TakeWhile.TargetedOperationDiagnostics");
@@ -180,8 +179,8 @@ TEST_CASE("TakeWhile integrates callbacks storage and source consumers", "[take-
     STATIC_REQUIRE(cljonic::first(prefix) == 1);
     STATIC_REQUIRE(cljonic::concepts::NothrowCollectionElement<std::remove_cv_t<decltype(prefix)>>);
     STATIC_REQUIRE(!cljonic::concepts::StableEqualityComparable<decltype(prefix)>);
-    STATIC_REQUIRE(!cljonic::concepts_detail::NextSequenceableProducer<decltype(prefix)>);
-    STATIC_REQUIRE(!cljonic::concepts_detail::NextSequenceableProducer<decltype(cljonic::cycle(prefix))>);
+    STATIC_REQUIRE(cljonic::concepts_detail::NextSequenceableProducer<decltype(prefix)>);
+    STATIC_REQUIRE(cljonic::concepts_detail::NextSequenceableProducer<decltype(cljonic::cycle(prefix))>);
     STATIC_REQUIRE(cljonic::vector(prefix).count() == 1);
     STATIC_REQUIRE(cljonic::take_while(predicate, prefix).count() == 2);
     STATIC_REQUIRE(cljonic::take_while([](long n) noexcept { return n < 3; }, cljonic::vector(short{1})).count() == 1);

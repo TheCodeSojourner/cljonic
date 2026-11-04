@@ -435,7 +435,7 @@ TEST_CASE("Next returns the logical tail of Cycle producers", "[next]") {
     TRACE_ID("invariant.Cycle.UnboundedNextAdvancesOwnedSourceAndResetsStartingOffset");
     TRACE_ID("invariant.Cycle.NextSourceMustSupportNextOrBeCollection");
     TRACE_ID("invariant.Cycle.NextDoesNotMaterializeResults");
-    TRACE_ID("invariant.Cycle.NextCallbackInvocationFollowsOwnedSourceNext");
+    TRACE_ID("invariant.Cycle.UnboundedNextCallbackInvocationFollowsOwnedSourceNext");
     TRACE_ID("invariant.Next.NoHeapAllocation");
     TRACE_ID("invariant.Next.NoRtti");
     TRACE_ID("invariant.Next.NoExceptions");
@@ -537,7 +537,7 @@ TEST_CASE("Next eagerly advances callback-backed producers once", "[next]") {
     TRACE_ID("entity-fields.Next");
     TRACE_ID("invariant.Next.ProducerTailDomainIncludesIterate");
     TRACE_ID("invariant.Next.ProducerTailDomainIncludesRepeatedly");
-    TRACE_ID("invariant.Next.CallbackProducerTailInvokesOneCallbackWhenNonempty");
+    TRACE_ID("invariant.Next.IterateOrRepeatedlyTailInvokesOneCallbackWhenNonempty");
     TRACE_ID("invariant.Next.IterateTailUsesAdvancedValueAsInitial");
     TRACE_ID("invariant.Next.RepeatedlyTailDiscardsOneValueAndPreservesAdvancedStepState");
     TRACE_ID("invariant.Next.FiniteRepeatedlyTailDecrementsCount");
@@ -602,7 +602,7 @@ TEST_CASE("Next eagerly advances callback-backed producers once", "[next]") {
     REQUIRE_FALSE(cljonic::fits_into(Vector<int, 2>{}, unbounded_effectful_tail));
 
     TRACE_ID("entity-fields.Cycle");
-    TRACE_ID("invariant.Cycle.NextCallbackInvocationFollowsOwnedSourceNext");
+    TRACE_ID("invariant.Cycle.UnboundedNextCallbackInvocationFollowsOwnedSourceNext");
     auto cycle_callback_calls = 0;
     const auto effectful_cycle =
         cycle(repeatedly([&cycle_callback_calls]() noexcept { return ++cycle_callback_calls; }));

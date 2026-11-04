@@ -163,7 +163,6 @@ TEST_CASE("DropWhile integrates nested producers storage and consumers", "[drop-
     TRACE_ID("invariant.DropWhile.FinitePreflightUsesExistingSemantics");
     TRACE_ID("invariant.DropWhile.LogicalEqualityUsesSequentialElementRules");
     TRACE_ID("invariant.DropWhile.ParameterEqualityAndKeyElementAdmissionUnavailable");
-    TRACE_ID("invariant.DropWhile.TailApisAndDependentCycleTailsRejected");
     TRACE_ID("invariant.DropWhile.FirstApiScansThroughFirstFalseOrWindowEnd");
     TRACE_ID("invariant.DropWhile.ExternalSourcesAndMapEntryRejected");
     TRACE_ID("invariant.DropWhile.TargetedOperationDiagnostics");
@@ -173,8 +172,8 @@ TEST_CASE("DropWhile integrates nested producers storage and consumers", "[drop-
     STATIC_REQUIRE(cljonic::first(suffix) == 4);
     STATIC_REQUIRE(cljonic::concepts::NothrowCollectionElement<std::remove_cv_t<decltype(suffix)>>);
     STATIC_REQUIRE(!cljonic::concepts::StableEqualityComparable<decltype(suffix)>);
-    STATIC_REQUIRE(!cljonic::concepts_detail::NextSequenceableProducer<decltype(suffix)>);
-    STATIC_REQUIRE(!cljonic::concepts_detail::NextSequenceableProducer<decltype(cljonic::cycle(suffix))>);
+    STATIC_REQUIRE(cljonic::concepts_detail::NextSequenceableProducer<decltype(suffix)>);
+    STATIC_REQUIRE(cljonic::concepts_detail::NextSequenceableProducer<decltype(cljonic::cycle(suffix))>);
     STATIC_REQUIRE(cljonic::vector(suffix).count() == 1);
     STATIC_REQUIRE(cljonic::drop_while(predicate, suffix).count() == 2);
     STATIC_REQUIRE(cljonic::take_while([](int n) noexcept { return n > 2; }, suffix).count() == 1);

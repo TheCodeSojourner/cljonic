@@ -216,15 +216,15 @@ PRIMITIVES = {
         "diagnostic_cases": {
             "unsupported-scalar": (
                 "(void)cljonic::rest(42);",
-                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, or supported Cycle value",
+                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, or supported Cycle value",
             ),
             "unsupported-map-entry": (
                 "(void)cljonic::rest(cljonic::MapEntry<int, int>{1, 2});",
-                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, or supported Cycle value",
+                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, or supported Cycle value",
             ),
             "unsupported-external-range": (
                 "int values[]{1, 2}; (void)cljonic::rest(values);",
-                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, or supported Cycle value",
+                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, or supported Cycle value",
             ),
         },
         "pass_cases": {
@@ -458,17 +458,17 @@ PRIMITIVES = {
         "diagnostic_cases": {
             "unsupported-scalar": (
                 "(void)cljonic::next(42);",
-                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, or supported Cycle "
+                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, or supported Cycle "
                 "value",
             ),
             "unsupported-map-entry": (
                 "(void)cljonic::next(cljonic::MapEntry<int, int>{1, 100});",
-                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, or supported Cycle "
+                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, or supported Cycle "
                 "value",
             ),
             "unsupported-external-range": (
                 "int values[]{1, 2}; (void)cljonic::next(values);",
-                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, or supported Cycle "
+                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, or supported Cycle "
                 "value",
             ),
         },
@@ -645,7 +645,7 @@ PRIMITIVES["drop_while"] = {
 }
 
 for adapter in ("take_while", "drop_while"):
-    for tail in ("next", "rest", "has_next"):
+    for tail in ("has_next",):
         statement = f"const auto p = cljonic::{adapter}([](int) noexcept {{ return true; }}, cljonic::vector(1));"
         PRIMITIVES[tail]["diagnostic_cases"][f"{adapter}-unsupported-tail"] = (
             statement + f" (void)cljonic::{tail}(p);",
@@ -654,6 +654,13 @@ for adapter in ("take_while", "drop_while"):
         PRIMITIVES[tail]["diagnostic_cases"][f"{adapter}-cycle-unsupported-tail"] = (
             statement + f" (void)cljonic::{tail}(cljonic::cycle(p));",
             f"cljonic::{tail}:",
+        )
+    for tail in ("next", "rest"):
+        PRIMITIVES[tail]["pass_cases"][f"{adapter}-tail"] = (
+            f"const auto p = cljonic::{adapter}([limit = 3](int n) noexcept {{ return n < limit; }}, "
+            "cljonic::vector(1, 2, 4, 1));"
+            f" static_assert(std::same_as<decltype(cljonic::{tail}(p)), std::remove_cv_t<decltype(p)>>);"
+            f" (void)cljonic::{tail}(cljonic::cycle(cljonic::cycle(p)));"
         )
 
 for operation in ("into", "fits_into"):
