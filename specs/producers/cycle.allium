@@ -3,7 +3,9 @@
 -- REQ-FN-002A1 approves first observations over all admitted sources, including
 -- nested Cycles and predicate adapters, without preliminary exact counting.
 -- The extension is active after separate implementation approval and verification;
--- existing next/rest/has_next admission is not expanded.
+-- REQ-FN-002A6/013G separately approve adapter-dependent next/rest tails below;
+-- this tail extension is active after explicit implementation approval and verification.
+-- has_next remains collection-only.
 
 entity Cycle {
     supports_header_only_distribution: Boolean
@@ -40,7 +42,19 @@ entity Cycle {
     unbounded_next_advances_owned_source_and_resets_starting_offset: Boolean
     next_source_must_support_next_or_be_collection: Boolean
     next_does_not_materialize_results: Boolean
-    next_callback_invocation_follows_owned_source_next: Boolean
+    unbounded_next_callback_invocation_follows_owned_source_next: Boolean
+    next_rest_admit_finite_adapters_and_nested_dependent_cycles: Boolean
+    finite_adapter_tail_eagerly_determines_exact_bounded_source_length: Boolean
+    finite_adapter_length_traversal_permits_source_and_predicate_callbacks: Boolean
+    finite_adapter_tail_normalizes_compact_offset_before_overflow_safe_advance: Boolean
+    finite_adapter_tail_retains_complete_owned_source_and_full_period: Boolean
+    empty_adapter_source_tail_preserves_empty_observation: Boolean
+    zero_cap_tail_does_not_traverse_or_invoke_callbacks: Boolean
+    nested_unbounded_cycles_recursively_tail_source_and_reset_offset: Boolean
+    rotation_uses_no_large_counter_remainder_table_or_cap_proportional_metadata: Boolean
+    length_and_observation_replay_preserve_owned_state_and_existing_effect_scope: Boolean
+    stable_rotation_predictions_require_equivalent_traversals_without_snapshot_guarantee: Boolean
+    tail_length_determination_does_not_add_first_observation_count_prepass: Boolean
     materializes_at_most_destination_capacity: Boolean
     does_not_fit_into_destination: Boolean
     operator_equals_uses_producer_parameter_equality: Boolean
@@ -188,9 +202,22 @@ entity Cycle {
         this.next_does_not_materialize_results = true
     }
 
-    invariant NextCallbackInvocationFollowsOwnedSourceNext {
-        this.next_callback_invocation_follows_owned_source_next = true
+    invariant UnboundedNextCallbackInvocationFollowsOwnedSourceNext {
+        this.unbounded_next_callback_invocation_follows_owned_source_next = true
     }
+
+    invariant AdapterAndNestedCycleTailAdmission { this.next_rest_admit_finite_adapters_and_nested_dependent_cycles = true }
+    invariant AdapterTailEagerlyDeterminesBoundedLength { this.finite_adapter_tail_eagerly_determines_exact_bounded_source_length = true }
+    invariant AdapterLengthCountingMayInvokeCallbacks { this.finite_adapter_length_traversal_permits_source_and_predicate_callbacks = true }
+    invariant AdapterOffsetNormalizedBeforeSafeAdvance { this.finite_adapter_tail_normalizes_compact_offset_before_overflow_safe_advance = true }
+    invariant AdapterCycleRetainsCompleteSourcePeriod { this.finite_adapter_tail_retains_complete_owned_source_and_full_period = true }
+    invariant EmptyAdapterTailRemainsEmpty { this.empty_adapter_source_tail_preserves_empty_observation = true }
+    invariant ZeroCapTailDoesNotEvaluate { this.zero_cap_tail_does_not_traverse_or_invoke_callbacks = true }
+    invariant NestedCyclesRecursivelyTailSource { this.nested_unbounded_cycles_recursively_tail_source_and_reset_offset = true }
+    invariant RotationMetadataStaysCompact { this.rotation_uses_no_large_counter_remainder_table_or_cap_proportional_metadata = true }
+    invariant ReplayPreservesOwnedStateAndAuthorizedEffects { this.length_and_observation_replay_preserve_owned_state_and_existing_effect_scope = true }
+    invariant RotationPredictionsRequireEquivalentTraversals { this.stable_rotation_predictions_require_equivalent_traversals_without_snapshot_guarantee = true }
+    invariant FirstObservationStillAvoidsCountPrepass { this.tail_length_determination_does_not_add_first_observation_count_prepass = true }
 
     -- Bounds new elements/keys, not consumed source values; duplicates/updates remain capped by traversal count.
     invariant MaterializesAtMostDestinationCapacity {

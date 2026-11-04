@@ -10,9 +10,11 @@
 -- owned source and reset the offset. Source must itself support next unless
 -- it is a collection.
 -- REQ-FN-002A7 and REQ-FN-013H: next(producer) supports Iterate and Repeatedly.
--- Callback-backed producers eagerly advance once when nonempty; Iterate uses
+-- Iterate and Repeatedly eagerly advance once when nonempty; Iterate uses
 -- the advanced value as its new initial value, while Repeatedly discards one
 -- generated value and retains the advanced callback state in the tail.
+-- REQ-FN-002A4/002A6: adapter and dependent Cycle tails below are approved
+-- active after separate explicit implementation approval and verification.
 
 entity Next {
     supports_next_free_function: Boolean
@@ -28,7 +30,26 @@ entity Next {
     repeated_next_never_exhausts_unbounded_producer: Boolean
     producer_tail_result_is_self_contained_and_owning: Boolean
     producer_tail_does_not_materialize_producer_results: Boolean
-    callback_producer_tail_invokes_one_callback_when_nonempty: Boolean
+    iterate_or_repeatedly_tail_invokes_one_callback_when_nonempty: Boolean
+    tail_domain_includes_take_while_drop_while_and_dependent_cycles: Boolean
+    nested_adapter_tail_preserves_exact_type_and_owns_source_predicate: Boolean
+    adapter_tail_creation_defers_traversal_count_and_callbacks: Boolean
+    adapter_observation_replays_original_adapter_then_skips_outputs_not_source_elements: Boolean
+    adapter_tail_preserves_original_window_smaller_windows_and_actual_endpoint: Boolean
+    adapter_output_skips_do_not_replenish_source_budget: Boolean
+    adapter_offset_saturates_at_cap_without_overflow_and_empty_tails_stay_empty: Boolean
+    take_while_tail_never_resumes_after_original_false_boundary: Boolean
+    drop_while_tail_never_reapplies_prefix_removal_to_retained_suffix: Boolean
+    adapter_tail_requires_no_default_predicate_assignment_or_added_element_comparison: Boolean
+    replay_preserves_owned_state_and_authorized_external_effects_without_snapshot: Boolean
+    zero_cap_adapter_and_dependent_cycle_tails_invoke_no_callbacks_or_traversal: Boolean
+    finite_adapter_cycle_tail_eagerly_counts_bounded_source_with_permitted_callbacks: Boolean
+    finite_adapter_cycle_tail_normalizes_offset_before_overflow_safe_modulo_advance: Boolean
+    finite_adapter_cycle_retains_complete_source_not_shortened_source_tail: Boolean
+    nested_cycles_follow_recursive_source_tail_callback_timing: Boolean
+    tail_metadata_is_compact_without_large_counters_tables_or_cap_proportional_storage: Boolean
+    cycle_length_counting_does_not_add_first_observation_count_prepass: Boolean
+    has_next_remains_collection_only: Boolean
     iterate_tail_uses_advanced_value_as_initial: Boolean
     repeatedly_tail_discards_one_value_and_preserves_advanced_step_state: Boolean
     finite_repeatedly_tail_decrements_count: Boolean
@@ -158,8 +179,8 @@ entity Next {
         this.producer_tail_does_not_materialize_producer_results = true
     }
 
-    invariant CallbackProducerTailInvokesOneCallbackWhenNonempty {
-        this.callback_producer_tail_invokes_one_callback_when_nonempty = true
+    invariant IterateOrRepeatedlyTailInvokesOneCallbackWhenNonempty {
+        this.iterate_or_repeatedly_tail_invokes_one_callback_when_nonempty = true
     }
 
     invariant IterateTailUsesAdvancedValueAsInitial {
@@ -225,6 +246,26 @@ entity Next {
     invariant DiagnosticNamesSupportedDomains {
         this.diagnostic_names_supported_domains = true
     }
+
+    invariant AdapterAndDependentCycleTailDomain { this.tail_domain_includes_take_while_drop_while_and_dependent_cycles = true }
+    invariant NestedAdapterExactOwningType { this.nested_adapter_tail_preserves_exact_type_and_owns_source_predicate = true }
+    invariant AdapterTailCreationDefersEvaluation { this.adapter_tail_creation_defers_traversal_count_and_callbacks = true }
+    invariant AdapterSkipsOutputsAfterOriginalTraversal { this.adapter_observation_replays_original_adapter_then_skips_outputs_not_source_elements = true }
+    invariant AdapterPreservesOriginalWindowsAndEndpoint { this.adapter_tail_preserves_original_window_smaller_windows_and_actual_endpoint = true }
+    invariant AdapterSkipsNeverReplenishBudget { this.adapter_output_skips_do_not_replenish_source_budget = true }
+    invariant AdapterOffsetSaturatesAndEmptyStaysEmpty { this.adapter_offset_saturates_at_cap_without_overflow_and_empty_tails_stay_empty = true }
+    invariant TakeWhileTailNeverResumesAfterFalse { this.take_while_tail_never_resumes_after_original_false_boundary = true }
+    invariant DropWhileTailDoesNotRestartPrefixRemoval { this.drop_while_tail_never_reapplies_prefix_removal_to_retained_suffix = true }
+    invariant AdapterTailPreservesPredicateAndElementAdmission { this.adapter_tail_requires_no_default_predicate_assignment_or_added_element_comparison = true }
+    invariant ReplayPreservesStateAndEffectScopeWithoutSnapshot { this.replay_preserves_owned_state_and_authorized_external_effects_without_snapshot = true }
+    invariant ZeroCapTailsDoNotEvaluate { this.zero_cap_adapter_and_dependent_cycle_tails_invoke_no_callbacks_or_traversal = true }
+    invariant AdapterCycleTailEagerlyCountsBoundedSource { this.finite_adapter_cycle_tail_eagerly_counts_bounded_source_with_permitted_callbacks = true }
+    invariant AdapterCycleNormalizesBeforeAdvancing { this.finite_adapter_cycle_tail_normalizes_offset_before_overflow_safe_modulo_advance = true }
+    invariant AdapterCycleRetainsCompleteSource { this.finite_adapter_cycle_retains_complete_source_not_shortened_source_tail = true }
+    invariant NestedCycleCallbackTimingFollowsSourceTail { this.nested_cycles_follow_recursive_source_tail_callback_timing = true }
+    invariant TailMetadataStaysCompact { this.tail_metadata_is_compact_without_large_counters_tables_or_cap_proportional_storage = true }
+    invariant FirstObservationStillAvoidsCountPrepass { this.cycle_length_counting_does_not_add_first_observation_count_prepass = true }
+    invariant HasNextRemainsCollectionOnly { this.has_next_remains_collection_only = true }
 }
 
 actor NextOperator { identified_by: Next }
