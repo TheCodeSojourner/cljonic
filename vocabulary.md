@@ -515,11 +515,11 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### HasNext
-- **Definition:** The collection-only preflight predicate for `next(collection)`. It returns true exactly when a supported `Vector`, `Map`, `Set`, `Queue`, or `String` contains more than one logical element, so its logical tail is nonempty; it returns false for empty and singleton collections. It observes the count without constructing the `next` result and does not indicate whether an input type is supported. Unsupported values are rejected at compile time. The operation preserves its input, is `constexpr`, non-allocating, non-throwing, and part of the current public API.
+- **Definition:** The preflight predicate for the logical tail produced by `next`. For a supported `Vector`, `Map`, `Set`, `Queue`, or `String`, it returns true exactly when the collection contains more than one logical element, without constructing the `next` result. For any producer admitted by `next`, it returns true exactly when the `next` producer has at least one observable element under its configured observation policy; this constructs the tail and checks for its first element without counting the whole result. That producer preflight follows `next` and first-element callback behavior, so callback-backed sources may be traversed and authorized effects may occur. Unsupported values are rejected at compile time. The operation preserves input value-owned state, is `constexpr`, non-allocating, non-throwing, and part of the current public API.
 - **Deprecated Synonyms:** None
 - **Related:** Next, Rest, Count, SequenceableCollection, LogicalTraversalOrder, PreflightPredicate, HasPredicatePrefix, StatePredicate, RejectionDiagnostic
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
-- **Examples:** `has_next(vector(1, 2))` is true; `has_next(queue(1))` and `has_next(vector<int, 0>())` are false.
+- **Examples:** `has_next(vector(1, 2))` and `has_next(repeat(2, 7))` are true; `has_next(queue(1))`, `has_next(repeat(1, 7))`, and `has_next(vector<int, 0>())` are false; a nonempty `Cycle` remains observable after `next`.
 
 
 ### HasPredicatePrefix
@@ -527,7 +527,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Deprecated Synonyms:** `has_` predicate, presence predicate prefix
 - **Related:** CapabilityPredicate, Associative
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
-- **Examples:** `has_next` reports whether a collection has a logical element after its first without constructing the tail; a `has_` lookup predicate may report key presence without performing a default-returning lookup.
+- **Examples:** For collections, `has_next` checks for an element after the first without constructing the tail; for supported producers, it checks whether `next` has an observable first element. A `has_` lookup predicate may report key presence without performing a default-returning lookup.
 
 
 ### ValidPredicatePrefix
