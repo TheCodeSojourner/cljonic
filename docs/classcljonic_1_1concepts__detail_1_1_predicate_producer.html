@@ -104,6 +104,7 @@ document.addEventListener('DOMContentLoaded', codefold.init);
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classcljonic_1_1concepts__detail_1_1_predicate_producer-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">cljonic::concepts_detail::PredicateProducer&lt; Predicate, Source, DropPrefix &gt; Class Template Reference</div></div>
 </div><!--header-->
@@ -127,12 +128,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3a39914889e82abf113f50450883c2f6" id="r_a3a39914889e82abf113f50450883c2f6"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a3a39914889e82abf113f50450883c2f6">end</a> () const noexcept -&gt; std::default_sentinel_t</td></tr>
 <tr class="memitem:a9db55dda8b9d4b959b586cf0101483e9" id="r_a9db55dda8b9d4b959b586cf0101483e9"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a9db55dda8b9d4b959b586cf0101483e9">count</a> () const noexcept -&gt; std::size_t</td></tr>
 <tr class="memitem:a4c5eb3d403098edbff39bfcce8668dcb" id="r_a4c5eb3d403098edbff39bfcce8668dcb"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a4c5eb3d403098edbff39bfcce8668dcb">is_finite</a> () const noexcept -&gt; bool</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-friends" class="groupheader"><a id="friends" name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:afb3474777fe20b289c19004785335d81" id="r_afb3474777fe20b289c19004785335d81"><td class="memItemLeft">struct&#160;</td><td class="memItemRight"><a class="el" href="#afb3474777fe20b289c19004785335d81">PredicateProducerNextAccess</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename Predicate, typename Source, bool DropPrefix&gt;<br />
 requires PredicateProducerArguments&lt;Predicate, Source&gt;<br />
 class cljonic::concepts_detail::PredicateProducer&lt; Predicate, Source, DropPrefix &gt;</div>
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00019">19</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00021">21</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
 </div><a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">Member Typedef Documentation</h2>
 <a id="afb7660613e771a453c17aaf4b706bc4d" name="afb7660613e771a453c17aaf4b706bc4d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afb7660613e771a453c17aaf4b706bc4d">&#9670;&#160;</a></span>value_type</h2>
@@ -148,7 +153,7 @@ template&lt;typename Predicate, typename Source, bool DropPrefix&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00021">21</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00025">25</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
 
 </div>
 </div>
@@ -178,7 +183,7 @@ template&lt;typename Predicate, typename Source, bool DropPrefix&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00124">124</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00132">132</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
 
 </div>
 </div>
@@ -211,7 +216,7 @@ template&lt;typename Predicate, typename Source, bool DropPrefix&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00129">129</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00137">137</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
 
 </div>
 </div>
@@ -241,7 +246,7 @@ template&lt;typename Predicate, typename Source, bool DropPrefix&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00133">133</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00141">141</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
 
 </div>
 </div>
@@ -270,7 +275,7 @@ template&lt;typename Predicate, typename Source, bool DropPrefix&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00141">141</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00149">149</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
 
 </div>
 </div>
@@ -299,7 +304,7 @@ template&lt;typename Predicate, typename Source, bool DropPrefix&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00137">137</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00145">145</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
 
 </div>
 </div>
@@ -328,7 +333,34 @@ template&lt;typename Predicate, typename Source, bool DropPrefix&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00149">149</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00157">157</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
+
+</div>
+</div>
+<a name="doc-related-members" id="doc-related-members"></a><h2 id="header-doc-related-members" class="groupheader">Friends And Related Symbol Documentation</h2>
+<a id="afb3474777fe20b289c19004785335d81" name="afb3474777fe20b289c19004785335d81"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb3474777fe20b289c19004785335d81">&#9670;&#160;</a></span>PredicateProducerNextAccess</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Predicate, typename Source, bool DropPrefix&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend struct PredicateProducerNextAccess</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00022">22</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
 
 </div>
 </div>

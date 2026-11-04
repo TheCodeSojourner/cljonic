@@ -143,6 +143,7 @@ var menudata={children:[
 {text:"Related Symbols",url:"functions_rela.html",children:[
 {text:"c",url:"functions_rela.html#index_c"},
 {text:"o",url:"functions_rela.html#index_o"},
+{text:"p",url:"functions_rela.html#index_p"},
 {text:"q",url:"functions_rela.html#index_q"}]}]}]},
 {text:"Files",url:"files.html",children:[
 {text:"File List",url:"files.html"},

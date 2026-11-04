@@ -781,6 +781,7 @@ template&lt;typename Predicate, typename Source&gt; </div>
 <p>Pass any cljonic collection or producer as the source. The predicate must return <code>bool</code>, accept a const source element without throwing, and must not allocate. Declare lambdas <code>noexcept</code> and avoid side effects, as with <a class="el" href="#FilterFunction" title="FilterFunction">filter</a>. Source and predicate must be copyable without throwing; captured lambdas are supported.</p>
 <p>The result keeps its own copies of the inputs and leaves them unchanged. Creating it does not evaluate values; accessing its first value may scan all initial values for which the predicate returns <code>true</code>. Each traversal starts again, so <a class="el" href="#Count" title="Count">count</a> followed by consumption can run callbacks twice. If a source callback depends on changing external data, the two traversals may give different results.</p>
 <p>Even an unbounded source is inspected only up to the configured collection maximum. Skipped values count toward that limit: with a limit of 100 and three skipped values, at most 97 values remain. <a class="el" href="classcljonic_1_1_map.html">Map</a> and <a class="el" href="classcljonic_1_1_set.html">Set</a> have no guaranteed traversal order, so use an ordered source when a particular suffix matters. External C++ ranges and individual <a class="el" href="structcljonic_1_1_map_entry.html">MapEntry</a> values are not accepted as sources.</p>
+<p><a class="el" href="#Next" title="Next">next</a> and <a class="el" href="#Rest" title="Rest">rest</a> preserve the producer type and defer omitting one output element, without evaluating callbacks at tail creation. Observation replays the original prefix removal, then skips output; it never reapplies prefix removal to the retained suffix. A <a class="el" href="classcljonic_1_1_cycle.html#Cycle" title="Cycle">Cycle</a> over this producer also supports tails, determining its bounded source length eagerly.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
 <div class="line"> </div>
@@ -789,6 +790,9 @@ template&lt;typename Predicate, typename Source&gt; </div>
 <div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> suffix = <a class="code hl_function" href="#a20d5276186b4863422c950c4699763cb">drop_while</a>(below_three, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(1, 2, 4, 1));</div>
 <div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#af5da07418b370bc5072eacf31957e0ee">count</a>(suffix) == 2);</div>
 <div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(suffix, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(4, 1)));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(<a class="code hl_function" href="#aec2b327c6d67186b55b47bf034c28b28">rest</a>(suffix), <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(1)));</div>
+<div class="line">  <span class="keyword">static_assert</span>(</div>
+<div class="line">      <a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(<a class="code hl_function" href="#a6b0a13c640d125d2b026b26ca253f292">into</a>(<a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;int, 4&gt;</a>{}, <a class="code hl_function" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a>(<a class="code hl_function" href="#a63b0a319ce6349c3b49b17b3ab5db240">cycle</a>(suffix))), <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(1, 4, 1, 4)));</div>
 <div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#af5da07418b370bc5072eacf31957e0ee">count</a>(<a class="code hl_function" href="#a20d5276186b4863422c950c4699763cb">drop_while</a>(below_three, <a class="code hl_function" href="#a2693300957a43d0bb2d4c29634a838f7">queue</a>(1, 2, 4))) == 1);</div>
 <div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#af5da07418b370bc5072eacf31957e0ee">count</a>(<a class="code hl_function" href="#a20d5276186b4863422c950c4699763cb">drop_while</a>([](<span class="keywordtype">char</span> c) <span class="keyword">noexcept</span> { <span class="keywordflow">return</span> c &lt; <span class="charliteral">&#39;c&#39;</span>; },</div>
 <div class="line">                                 <a class="code hl_function" href="#aac92eb77175a67beb451582c5786027e">string</a>(<span class="stringliteral">&quot;abcd&quot;</span>))) == 2);</div>
@@ -812,23 +816,27 @@ template&lt;typename Predicate, typename Source&gt; </div>
 <div class="line">      <a class="code hl_function" href="#a20d5276186b4863422c950c4699763cb">drop_while</a>([limit](<span class="keywordtype">int</span> n) <span class="keyword">noexcept</span> { <span class="keywordflow">return</span> n &lt; limit; }, <a class="code hl_function" href="#a25349a99ffccb2525333ab32f8ce31f6">range</a>(1, 5));</div>
 <div class="line">  <span class="keywordflow">return</span> <a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(runtime, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(3, 4)) ? 0 : 1;</div>
 <div class="line">}</div>
+<div class="ttc" id="aclasscljonic_1_1_vector_html"><div class="ttname"><a href="classcljonic_1_1_vector.html">cljonic::Vector</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-vector_8hpp_source.html#l00148">cljonic-collection-vector.hpp:148</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-assoc_8hpp_source.html#l00006">cljonic-assoc.hpp:6</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a11e270768e9485445f2885cdecb1c4eb"><div class="ttname"><a href="#a11e270768e9485445f2885cdecb1c4eb">cljonic::vector</a></div><div class="ttdeci">constexpr auto vector(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Vector&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-vector_8hpp_source.html#l00400">cljonic-collection-vector.hpp:400</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_a20d5276186b4863422c950c4699763cb"><div class="ttname"><a href="#a20d5276186b4863422c950c4699763cb">cljonic::drop_while</a></div><div class="ttdeci">constexpr auto drop_while(const Predicate &amp;predicate, const Source &amp;source) noexcept -&gt; DropWhile&lt; std::decay_t&lt; Predicate &gt;, Source &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-drop-while_8hpp_source.html#l00066">cljonic-producer-drop-while.hpp:66</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a20d5276186b4863422c950c4699763cb"><div class="ttname"><a href="#a20d5276186b4863422c950c4699763cb">cljonic::drop_while</a></div><div class="ttdeci">constexpr auto drop_while(const Predicate &amp;predicate, const Source &amp;source) noexcept -&gt; DropWhile&lt; std::decay_t&lt; Predicate &gt;, Source &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-drop-while_8hpp_source.html#l00074">cljonic-producer-drop-while.hpp:74</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a25349a99ffccb2525333ab32f8ce31f6"><div class="ttname"><a href="#a25349a99ffccb2525333ab32f8ce31f6">cljonic::range</a></div><div class="ttdeci">constexpr auto range(Args &amp;&amp;... args) noexcept -&gt; Range&lt; concepts_detail::range_factory_element_t&lt; RequestedElementType, Args... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-range_8hpp_source.html#l00358">cljonic-producer-range.hpp:358</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a2693300957a43d0bb2d4c29634a838f7"><div class="ttname"><a href="#a2693300957a43d0bb2d4c29634a838f7">cljonic::queue</a></div><div class="ttdeci">constexpr auto queue(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::queue_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Queue&lt; concepts_detail::queue_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-queue_8hpp_source.html#l00330">cljonic-collection-queue.hpp:330</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a2aa4197e029c665443f7f5d0ebcf61d8"><div class="ttname"><a href="#a2aa4197e029c665443f7f5d0ebcf61d8">cljonic::hash_map</a></div><div class="ttdeci">constexpr auto hash_map(Args &amp;&amp;... args) noexcept -&gt; Map&lt; concepts_detail::hash_map_factory_key_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, concepts_detail::hash_map_factory_value_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, sizeof...(Args)/2U &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-map_8hpp_source.html#l00440">cljonic-collection-map.hpp:440</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a3379aa2a8b5ffa4566662c4b4a1455c2"><div class="ttname"><a href="#a3379aa2a8b5ffa4566662c4b4a1455c2">cljonic::equal</a></div><div class="ttdeci">constexpr auto equal(const Lhs &amp;lhs, const Rhs &amp;rhs) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-equal_8hpp_source.html#l00345">cljonic-equal.hpp:345</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a63314a7947b7251553be23329779260a"><div class="ttname"><a href="#a63314a7947b7251553be23329779260a">cljonic::iterate</a></div><div class="ttdeci">constexpr auto iterate(Step &amp;&amp;step, T &amp;&amp;initial) noexcept -&gt; Iterate&lt; std::remove_cvref_t&lt; T &gt;, std::decay_t&lt; Step &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-iterate_8hpp_source.html#l00199">cljonic-producer-iterate.hpp:199</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_a63b0a319ce6349c3b49b17b3ab5db240"><div class="ttname"><a href="#a63b0a319ce6349c3b49b17b3ab5db240">cljonic::cycle</a></div><div class="ttdeci">constexpr auto cycle(const Source &amp;source) noexcept -&gt; Cycle&lt; Source &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-cycle_8hpp_source.html#l00245">cljonic-producer-cycle.hpp:245</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a63b0a319ce6349c3b49b17b3ab5db240"><div class="ttname"><a href="#a63b0a319ce6349c3b49b17b3ab5db240">cljonic::cycle</a></div><div class="ttdeci">constexpr auto cycle(const Source &amp;source) noexcept -&gt; Cycle&lt; Source &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-cycle_8hpp_source.html#l00243">cljonic-producer-cycle.hpp:243</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a667eff86af60296d34dc4faf5f7624ea"><div class="ttname"><a href="#a667eff86af60296d34dc4faf5f7624ea">cljonic::take</a></div><div class="ttdeci">constexpr auto take(Count count, const Source &amp;source) noexcept -&gt; Vector&lt; std::ranges::range_value_t&lt; const Source &gt;, concepts_detail::SourceResultCapacity&lt; Source &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-take_8hpp_source.html#l00059">cljonic-take.hpp:59</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a6b0a13c640d125d2b026b26ca253f292"><div class="ttname"><a href="#a6b0a13c640d125d2b026b26ca253f292">cljonic::into</a></div><div class="ttdeci">constexpr auto into(const Dest &amp;destination, const Source &amp;source) noexcept -&gt; Dest</div><div class="ttdef"><b>Definition</b> <a href="cljonic-into_8hpp_source.html#l00075">cljonic-into.hpp:75</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_aac92eb77175a67beb451582c5786027e"><div class="ttname"><a href="#aac92eb77175a67beb451582c5786027e">cljonic::string</a></div><div class="ttdeci">constexpr auto string(Literal &amp;&amp;literal) noexcept -&gt; String&lt; std::extent_v&lt; std::remove_cvref_t&lt; Literal &gt; &gt; - 1U &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-string_8hpp_source.html#l00432">cljonic-collection-string.hpp:432</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_ab920b6f72a40bc9c9d4b1c69662e149e"><div class="ttname"><a href="#ab920b6f72a40bc9c9d4b1c69662e149e">cljonic::hash_set</a></div><div class="ttdeci">constexpr auto hash_set(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::hash_set_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Set&lt; concepts_detail::hash_set_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-set_8hpp_source.html#l00429">cljonic-collection-set.hpp:429</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_accdefad78fa9bf05274fc5d2bbf48983"><div class="ttname"><a href="#accdefad78fa9bf05274fc5d2bbf48983">cljonic::next</a></div><div class="ttdeci">constexpr auto next(const C &amp;collection) noexcept -&gt; concepts_detail::NextResult&lt; C &gt;::type</div><div class="ttdef"><b>Definition</b> <a href="cljonic-next_8hpp_source.html#l00390">cljonic-next.hpp:390</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_ada46d509c8f0d0124e524878e323c208"><div class="ttname"><a href="#ada46d509c8f0d0124e524878e323c208">cljonic::repeatedly</a></div><div class="ttdeci">constexpr auto repeatedly(Step &amp;&amp;step) noexcept -&gt; Repeatedly&lt; T, std::decay_t&lt; Step &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-repeatedly_8hpp_source.html#l00271">cljonic-producer-repeatedly.hpp:271</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_aec2b327c6d67186b55b47bf034c28b28"><div class="ttname"><a href="#aec2b327c6d67186b55b47bf034c28b28">cljonic::rest</a></div><div class="ttdeci">constexpr auto rest(const C &amp;value) noexcept -&gt; decltype(next(value))</div><div class="ttdef"><b>Definition</b> <a href="cljonic-rest_8hpp_source.html#l00072">cljonic-rest.hpp:72</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_af31c4c3eb2e82ffcc9d64da7ea5ca8bc"><div class="ttname"><a href="#af31c4c3eb2e82ffcc9d64da7ea5ca8bc">cljonic::repeat</a></div><div class="ttdeci">constexpr auto repeat(T &amp;&amp;value) noexcept -&gt; Repeat&lt; std::remove_cvref_t&lt; T &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-repeat_8hpp_source.html#l00248">cljonic-producer-repeat.hpp:248</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_af5da07418b370bc5072eacf31957e0ee"><div class="ttname"><a href="#af5da07418b370bc5072eacf31957e0ee">cljonic::count</a></div><div class="ttdeci">constexpr auto count(const C &amp;collection) noexcept -&gt; std::size_t</div><div class="ttdef"><b>Definition</b> <a href="cljonic-count_8hpp_source.html#l00049">cljonic-count.hpp:49</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-drop-while_8hpp_source.html#l00062">62</a> of file <a class="el" href="cljonic-producer-drop-while_8hpp_source.html">cljonic-producer-drop-while.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-drop-while_8hpp_source.html#l00070">70</a> of file <a class="el" href="cljonic-producer-drop-while_8hpp_source.html">cljonic-producer-drop-while.hpp</a>.</p>
 
 </div>
 </div>
@@ -849,6 +857,7 @@ template&lt;typename Predicate, typename Source&gt; </div>
 <p>Pass any cljonic collection or producer as the source. The predicate must return <code>bool</code>, accept a const source element without throwing, and must not allocate. Declare lambdas <code>noexcept</code> and avoid side effects, as with <a class="el" href="#FilterFunction" title="FilterFunction">filter</a>. Source and predicate must be copyable without throwing; captured lambdas are supported.</p>
 <p>The result keeps its own copies of the inputs and leaves them unchanged. Creating it does not evaluate values; evaluation happens when you traverse it or call an observation such as <a class="el" href="#Count" title="Count">count</a>. Each traversal starts again, so counting and then consuming can run callbacks twice. If a source callback depends on changing external data, the two traversals may give different results.</p>
 <p>Even an unbounded source is inspected only up to the configured collection maximum. <a class="el" href="classcljonic_1_1_map.html">Map</a> and <a class="el" href="classcljonic_1_1_set.html">Set</a> have no guaranteed traversal order, so use an ordered source when a particular prefix matters. External C++ ranges and individual <a class="el" href="structcljonic_1_1_map_entry.html">MapEntry</a> values are not accepted as sources.</p>
+<p><a class="el" href="#Next" title="Next">next</a> and <a class="el" href="#Rest" title="Rest">rest</a> preserve the producer type and defer omitting one output element, without evaluating callbacks at tail creation. Observation replays the original prefix within the same bounded window. A <a class="el" href="classcljonic_1_1_cycle.html#Cycle" title="Cycle">Cycle</a> over this producer also supports tails, determining its bounded source length eagerly.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
 <div class="line"> </div>
@@ -857,6 +866,9 @@ template&lt;typename Predicate, typename Source&gt; </div>
 <div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> prefix = <a class="code hl_function" href="#ac1ce184265cec48f3a9deeafcc24a4e4">take_while</a>(below_three, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(1, 2, 4, 1));</div>
 <div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#af5da07418b370bc5072eacf31957e0ee">count</a>(prefix) == 2);</div>
 <div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(prefix, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(1, 2)));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(<a class="code hl_function" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a>(prefix), <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(2)));</div>
+<div class="line">  <span class="keyword">static_assert</span>(</div>
+<div class="line">      <a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(<a class="code hl_function" href="#a6b0a13c640d125d2b026b26ca253f292">into</a>(<a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;int, 4&gt;</a>{}, <a class="code hl_function" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a>(<a class="code hl_function" href="#a63b0a319ce6349c3b49b17b3ab5db240">cycle</a>(prefix))), <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(2, 1, 2, 1)));</div>
 <div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#af5da07418b370bc5072eacf31957e0ee">count</a>(<a class="code hl_function" href="#ac1ce184265cec48f3a9deeafcc24a4e4">take_while</a>(below_three, <a class="code hl_function" href="#a2693300957a43d0bb2d4c29634a838f7">queue</a>(1, 2, 4))) == 2);</div>
 <div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#af5da07418b370bc5072eacf31957e0ee">count</a>(<a class="code hl_function" href="#ac1ce184265cec48f3a9deeafcc24a4e4">take_while</a>([](<span class="keywordtype">char</span> c) <span class="keyword">noexcept</span> { <span class="keywordflow">return</span> c &lt; <span class="charliteral">&#39;c&#39;</span>; },</div>
 <div class="line">                                 <a class="code hl_function" href="#aac92eb77175a67beb451582c5786027e">string</a>(<span class="stringliteral">&quot;abcd&quot;</span>))) == 2);</div>
@@ -878,9 +890,9 @@ template&lt;typename Predicate, typename Source&gt; </div>
 <div class="line">      <a class="code hl_function" href="#ac1ce184265cec48f3a9deeafcc24a4e4">take_while</a>([limit](<span class="keywordtype">int</span> n) <span class="keyword">noexcept</span> { <span class="keywordflow">return</span> n &lt; limit; }, <a class="code hl_function" href="#a25349a99ffccb2525333ab32f8ce31f6">range</a>(1, 5));</div>
 <div class="line">  <span class="keywordflow">return</span> <a class="code hl_function" href="#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a>(runtime, <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(1, 2)) ? 0 : 1;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_html_ac1ce184265cec48f3a9deeafcc24a4e4"><div class="ttname"><a href="#ac1ce184265cec48f3a9deeafcc24a4e4">cljonic::take_while</a></div><div class="ttdeci">constexpr auto take_while(const Predicate &amp;predicate, const Source &amp;source) noexcept -&gt; TakeWhile&lt; std::decay_t&lt; Predicate &gt;, Source &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-take-while_8hpp_source.html#l00237">cljonic-producer-take-while.hpp:237</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_ac1ce184265cec48f3a9deeafcc24a4e4"><div class="ttname"><a href="#ac1ce184265cec48f3a9deeafcc24a4e4">cljonic::take_while</a></div><div class="ttdeci">constexpr auto take_while(const Predicate &amp;predicate, const Source &amp;source) noexcept -&gt; TakeWhile&lt; std::decay_t&lt; Predicate &gt;, Source &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-take-while_8hpp_source.html#l00257">cljonic-producer-take-while.hpp:257</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00233">233</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00253">253</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
 
 </div>
 </div>
@@ -2594,7 +2606,7 @@ requires concepts::NothrowCollectionElement&lt;std::ranges::range_value_t&lt;con
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-cycle_8hpp_source.html#l00245">245</a> of file <a class="el" href="cljonic-producer-cycle_8hpp_source.html">cljonic-producer-cycle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-cycle_8hpp_source.html#l00243">243</a> of file <a class="el" href="cljonic-producer-cycle_8hpp_source.html">cljonic-producer-cycle.hpp</a>.</p>
 
 </div>
 </div>
@@ -2624,7 +2636,7 @@ requires (!concepts_detail::ValidCycleSource&lt;Source&gt;)</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-cycle_8hpp_source.html#l00254">254</a> of file <a class="el" href="cljonic-producer-cycle_8hpp_source.html">cljonic-producer-cycle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-cycle_8hpp_source.html#l00252">252</a> of file <a class="el" href="cljonic-producer-cycle_8hpp_source.html">cljonic-producer-cycle.hpp</a>.</p>
 
 </div>
 </div>
@@ -3193,7 +3205,7 @@ template&lt;typename... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-drop-while_8hpp_source.html#l00072">72</a> of file <a class="el" href="cljonic-producer-drop-while_8hpp_source.html">cljonic-producer-drop-while.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-drop-while_8hpp_source.html#l00080">80</a> of file <a class="el" href="cljonic-producer-drop-while_8hpp_source.html">cljonic-producer-drop-while.hpp</a>.</p>
 
 </div>
 </div>
@@ -3227,7 +3239,7 @@ requires concepts_detail::PredicateProducerArguments&lt;std::decay_t&lt;Predicat
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-drop-while_8hpp_source.html#l00066">66</a> of file <a class="el" href="cljonic-producer-drop-while_8hpp_source.html">cljonic-producer-drop-while.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-drop-while_8hpp_source.html#l00074">74</a> of file <a class="el" href="cljonic-producer-drop-while_8hpp_source.html">cljonic-producer-drop-while.hpp</a>.</p>
 
 </div>
 </div>
@@ -5267,7 +5279,6 @@ requires concepts_detail::MaterializableSource&lt;Dest, Source&gt;</div>
 <div class="line">             ? 0</div>
 <div class="line">             : 1;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_html_a6b0a13c640d125d2b026b26ca253f292"><div class="ttname"><a href="#a6b0a13c640d125d2b026b26ca253f292">cljonic::into</a></div><div class="ttdeci">constexpr auto into(const Dest &amp;destination, const Source &amp;source) noexcept -&gt; Dest</div><div class="ttdef"><b>Definition</b> <a href="cljonic-into_8hpp_source.html#l00075">cljonic-into.hpp:75</a></div></div>
 </div><!-- fragment --> 
 <p class="definition">Definition at line <a class="el" href="cljonic-into_8hpp_source.html#l00075">75</a> of file <a class="el" href="cljonic-into_8hpp_source.html">cljonic-into.hpp</a>.</p>
 
@@ -5866,9 +5877,11 @@ template&lt;concepts_detail::NextSequenceableCollection C&gt; </div>
 <p>A map's elements remain value-semantic <a class="el" href="#MapEntryFactory" title="MapEntryFactory">map_entry</a> values. <a class="el" href="classcljonic_1_1_map.html">Map</a> and <a class="el" href="classcljonic_1_1_set.html">Set</a> traversal order is not semantically significant, while <a class="el" href="classcljonic_1_1_queue.html">Queue</a> retains FIFO order.</p>
 <p>For a finite counted <a class="el" href="classcljonic_1_1_repeat.html#Repeat" title="Repeat">Repeat</a>, the result is finite with the same repeated value and one fewer count, saturating at zero. For an unbounded <a class="el" href="classcljonic_1_1_repeat.html">Repeat</a>, the result remains unbounded with its observation policy unchanged.</p>
 <p>For a <a class="el" href="classcljonic_1_1_range.html#Range" title="Range">Range</a>, the result preserves its endpoint and step. A zero-step <a class="el" href="classcljonic_1_1_range.html">Range</a> remains unbounded, an empty finite <a class="el" href="classcljonic_1_1_range.html">Range</a> is unchanged, and a singleton finite <a class="el" href="classcljonic_1_1_range.html">Range</a> becomes empty at its endpoint without adding the step. Otherwise, the start advances by one step.</p>
-<p>For a <a class="el" href="classcljonic_1_1_cycle.html#Cycle" title="Cycle">Cycle</a> with a finite source, the starting position advances by one modulo the source's observed count; an empty finite source remains empty. For a <a class="el" href="classcljonic_1_1_cycle.html">Cycle</a> with an unbounded source, <span class="tt"><a class="el" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a></span> tails its owned source and resets the starting position, preserving the observation cap and following the source's callback behavior.</p>
+<p>For a <a class="el" href="classcljonic_1_1_cycle.html#Cycle" title="Cycle">Cycle</a>, the result starts at the next value and keeps cycling through the whole source. For example, cycling <span class="tt">1, 2, 3</span> becomes <span class="tt">2, 3, 1, 2, 3, ...</span>, not <span class="tt">2, 3, 2, 3, ...</span>. An empty source stays empty. A <a class="el" href="classcljonic_1_1_cycle.html">Cycle</a> over an unbounded producer continues from that producer's next value. Each traversal of the resulting <a class="el" href="classcljonic_1_1_cycle.html">Cycle</a> can still yield up to <b>CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</b> values; calling <span class="tt"><a class="el" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a></span> does not reduce that limit. When cycling a <a class="el" href="#TakeWhile" title="TakeWhile">TakeWhile</a> or <a class="el" href="#DropWhile" title="DropWhile">DropWhile</a> result, calling <span class="tt"><a class="el" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a></span> first counts that result within its bounded window, so source and predicate callbacks may run during the call.</p>
+<p>For <a class="el" href="#a60ac5886f6a74ae18a53f56fbe56b830">TakeWhile</a> and <a class="el" href="#a36fedbd16e3c70e4e958256862ddf57e">DropWhile</a>, <span class="tt"><a class="el" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a></span> returns the same producer type with its first output value removed. For example, if <span class="tt"><a class="el" href="#ac1ce184265cec48f3a9deeafcc24a4e4">take_while</a></span> yields <span class="tt">1, 2</span>, its tail yields <span class="tt">2</span>; if <span class="tt"><a class="el" href="#a20d5276186b4863422c950c4699763cb">drop_while</a></span> yields <span class="tt">4, 1</span>, its tail yields <span class="tt">1</span>, without testing that retained value against the predicate again. Calling <span class="tt"><a class="el" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a></span> itself does not run callbacks; they run when you observe the result. Skipping values does not extend the original source window or cross a <a class="el" href="#a60ac5886f6a74ae18a53f56fbe56b830">TakeWhile</a> stopping point. Repeated calls eventually give an empty result, which stays empty. These rules also apply to nested producers.</p>
 <p>For an <a class="el" href="classcljonic_1_1_iterate.html#Iterate" title="Iterate">Iterate</a>, <span class="tt"><a class="el" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a></span> invokes the step once and uses its result as the returned producer's initial value while preserving the observation cap. A zero observation cap does not invoke the step.</p>
 <p>For a <a class="el" href="classcljonic_1_1_repeatedly.html#Repeatedly" title="Repeatedly">Repeatedly</a>, <span class="tt"><a class="el" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a></span> invokes a copy of the step once, discards that produced value, and stores the advanced step copy in the tail. A finite <a class="el" href="classcljonic_1_1_repeatedly.html">Repeatedly</a> tail has one fewer element; an unbounded <a class="el" href="classcljonic_1_1_repeatedly.html">Repeatedly</a> keeps its observation cap. An empty <a class="el" href="classcljonic_1_1_repeatedly.html">Repeatedly</a> does not invoke its step. Value-held mutable state advances in the returned <a class="el" href="classcljonic_1_1_repeatedly.html">Repeatedly</a> only, while effects through referenced or static state occur when <span class="tt"><a class="el" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a></span> is called and remain shared.</p>
+<p>For all callback-backed producers, observing the same producer again may rerun callbacks rather than reuse earlier results. This includes <a class="el" href="classcljonic_1_1_iterate.html">Iterate</a> and <a class="el" href="classcljonic_1_1_repeatedly.html">Repeatedly</a>, as well as <a class="el" href="#a60ac5886f6a74ae18a53f56fbe56b830">TakeWhile</a>, <a class="el" href="#a36fedbd16e3c70e4e958256862ddf57e">DropWhile</a>, and Cycles over them. Callbacks should idiomatically be pure; <a class="el" href="classcljonic_1_1_repeatedly.html">Repeatedly</a> is an explicitly permitted exception that may use stateful callbacks or side effects. Each <a class="el" href="classcljonic_1_1_iterate.html">Iterate</a> traversal starts from its stored initial value. Each <a class="el" href="classcljonic_1_1_repeatedly.html">Repeatedly</a> traversal starts with a fresh copy of its stored callback, so mutable state held by value restarts, while referenced or static state remains shared. Where external side effects are permitted, they may repeat; changing external state can change later observations, including which values a <a class="el" href="classcljonic_1_1_cycle.html">Cycle</a> repeats.</p>
 <p>Calling <span class="tt"><a class="el" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a></span> does not materialize the remaining producer sequence into a collection.</p>
 <p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
@@ -5993,10 +6006,8 @@ template&lt;concepts_detail::NextSequenceableCollection C&gt; </div>
 <div class="line">             ? 0</div>
 <div class="line">             : 1;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclasscljonic_1_1_vector_html"><div class="ttname"><a href="classcljonic_1_1_vector.html">cljonic::Vector</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-vector_8hpp_source.html#l00148">cljonic-collection-vector.hpp:148</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_accdefad78fa9bf05274fc5d2bbf48983"><div class="ttname"><a href="#accdefad78fa9bf05274fc5d2bbf48983">cljonic::next</a></div><div class="ttdeci">constexpr auto next(const C &amp;collection) noexcept -&gt; concepts_detail::NextResult&lt; C &gt;::type</div><div class="ttdef"><b>Definition</b> <a href="cljonic-next_8hpp_source.html#l00350">cljonic-next.hpp:350</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-next_8hpp_source.html#l00350">350</a> of file <a class="el" href="cljonic-next_8hpp_source.html">cljonic-next.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-next_8hpp_source.html#l00390">390</a> of file <a class="el" href="cljonic-next_8hpp_source.html">cljonic-next.hpp</a>.</p>
 
 </div>
 </div>
@@ -6026,7 +6037,7 @@ requires (!concepts_detail::NextSequenceableCollection&lt;C&gt; &amp;&amp; !conc
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-next_8hpp_source.html#l00383">383</a> of file <a class="el" href="cljonic-next_8hpp_source.html">cljonic-next.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-next_8hpp_source.html#l00426">426</a> of file <a class="el" href="cljonic-next_8hpp_source.html">cljonic-next.hpp</a>.</p>
 
 </div>
 </div>
@@ -6055,7 +6066,7 @@ template&lt;concepts_detail::NextSequenceableProducer P&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-next_8hpp_source.html#l00365">365</a> of file <a class="el" href="cljonic-next_8hpp_source.html">cljonic-next.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-next_8hpp_source.html#l00405">405</a> of file <a class="el" href="cljonic-next_8hpp_source.html">cljonic-next.hpp</a>.</p>
 
 </div>
 </div>
@@ -7537,7 +7548,7 @@ template&lt;concepts_detail::NextSequenceable C&gt; </div>
 </div><div class="memdoc">
 <p><a class="anchor" id="Rest"></a> The <b>rest</b> free function is an alias for <a class="el" href="#Next" title="Next">next</a> over the same supported input domain. It returns exactly the result of <span class="tt">next(value)</span>, preserving its result type, logical tail, input, producer observation policy, and callback timing and effects.</p>
 <p>For collections, the result has the same collection kind with one less capacity (zero stays zero), and contains every logical element after the first. <a class="el" href="classcljonic_1_1_map.html">Map</a> elements remain value-semantic <a class="el" href="#MapEntryFactory" title="MapEntryFactory">map_entry</a> values. <a class="el" href="classcljonic_1_1_map.html">Map</a> and <a class="el" href="classcljonic_1_1_set.html">Set</a> traversal order is not semantically significant, while <a class="el" href="classcljonic_1_1_queue.html">Queue</a> retains FIFO order. Unlike <a class="el" href="#Pop" title="Pop">pop</a>, <span class="tt"><a class="el" href="#aec2b327c6d67186b55b47bf034c28b28">rest</a></span> follows logical traversal order rather than the collection-specific removal end.</p>
-<p>For producers, <span class="tt"><a class="el" href="#aec2b327c6d67186b55b47bf034c28b28">rest</a></span> preserves all of <span class="tt"><a class="el" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a></span>'s producer-specific tail behavior, including the eager callback timing of <a class="el" href="classcljonic_1_1_iterate.html#Iterate" title="Iterate">Iterate</a> and <a class="el" href="classcljonic_1_1_repeatedly.html#Repeatedly" title="Repeatedly">Repeatedly</a>.</p>
+<p>For producers, <span class="tt"><a class="el" href="#aec2b327c6d67186b55b47bf034c28b28">rest</a></span> preserves all of <span class="tt"><a class="el" href="#accdefad78fa9bf05274fc5d2bbf48983">next</a></span>'s producer-specific tail behavior, including the eager callback timing of <a class="el" href="classcljonic_1_1_iterate.html#Iterate" title="Iterate">Iterate</a> and <a class="el" href="classcljonic_1_1_repeatedly.html#Repeatedly" title="Repeatedly">Repeatedly</a>, deferred callback-free <a class="el" href="#TakeWhile" title="TakeWhile">TakeWhile</a> and <a class="el" href="#DropWhile" title="DropWhile">DropWhile</a> tail creation, and eager bounded length determination for finite adapter-source Cycles.</p>
 <p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
 <div class="line"> </div>
@@ -7584,9 +7595,8 @@ template&lt;concepts_detail::NextSequenceable C&gt; </div>
 <div class="line">             ? 0</div>
 <div class="line">             : 1;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_html_aec2b327c6d67186b55b47bf034c28b28"><div class="ttname"><a href="#aec2b327c6d67186b55b47bf034c28b28">cljonic::rest</a></div><div class="ttdeci">constexpr auto rest(const C &amp;value) noexcept -&gt; decltype(next(value))</div><div class="ttdef"><b>Definition</b> <a href="cljonic-rest_8hpp_source.html#l00071">cljonic-rest.hpp:71</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-rest_8hpp_source.html#l00071">71</a> of file <a class="el" href="cljonic-rest_8hpp_source.html">cljonic-rest.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-rest_8hpp_source.html#l00072">72</a> of file <a class="el" href="cljonic-rest_8hpp_source.html">cljonic-rest.hpp</a>.</p>
 
 </div>
 </div>
@@ -7616,7 +7626,7 @@ requires (!concepts_detail::NextSequenceable&lt;C&gt;)</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-rest_8hpp_source.html#l00077">77</a> of file <a class="el" href="cljonic-rest_8hpp_source.html">cljonic-rest.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-rest_8hpp_source.html#l00078">78</a> of file <a class="el" href="cljonic-rest_8hpp_source.html">cljonic-rest.hpp</a>.</p>
 
 </div>
 </div>
@@ -8168,7 +8178,7 @@ template&lt;typename... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00243">243</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00263">263</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
 
 </div>
 </div>
@@ -8202,7 +8212,7 @@ requires concepts_detail::PredicateProducerArguments&lt;std::decay_t&lt;Predicat
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00237">237</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-take-while_8hpp_source.html#l00257">257</a> of file <a class="el" href="cljonic-producer-take-while_8hpp_source.html">cljonic-producer-take-while.hpp</a>.</p>
 
 </div>
 </div>

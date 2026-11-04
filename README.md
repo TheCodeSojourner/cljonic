@@ -175,21 +175,34 @@ They copy their source and predicate without evaluating either at construction.
   and starts with fresh predicate state. Skipping never replenishes the budget.
 - Predicates follow `filter` admission: non-throwing, exact Boolean results on const
   source elements, with safe parameter conversions. Owned copies must not throw;
-  predicates must be pure and non-allocating.
+  predicates should be pure and must be non-allocating.
 - `count` traverses independently for exact cardinality, and `is_empty` uses it.
   There is no cached result.
   Authorized referenced/static source effects remain shared, so count/fit predictions
   require equivalent values across independent traversals.
 - Map/Set prefix and suffix membership depends on their unordered traversal.
   Captured predicates are supported; collection-element storage is conditional.
-  Parameter equality and `next`/`rest`/`has_next`, including dependent Cycle tails,
-  are not supported.
+  Parameter equality remains unavailable, and `has_next` remains collection-only.
+- `next` and `rest` return the exact same adapter type, owning the original source
+  and predicate with a compact output-skip offset. Creating a tail invokes no
+  callbacks; observing it replays the original adapter and skips output elements
+  without extending its source window. DropWhile does not restart prefix removal
+  on the retained suffix. Repeated tails saturate at empty without overflow.
+- Cycles over adapters (including nested Cycles) support tails too. A finite
+  adapter source is counted eagerly during `next`/`rest` to rotate a compact
+  offset modulo its bounded output length. The complete source is retained:
+  cycling `[1, 2]` tails to `[2, 1, 2, 1, ...]`, not repeated twos. This may replay
+  callbacks; first access still avoids an exact-count prepass. Pure callbacks are
+  idiomatic; authorized impure callbacks keep their existing effect rules, with
+  no snapshot guarantee. No heap storage or large rotation bookkeeping is used.
 
 ```cpp
 constexpr auto below_three = [](int n) noexcept { return n < 3; };
 constexpr auto source = cljonic::vector(1, 2, 4, 1);
 static_assert(cljonic::equal(cljonic::take_while(below_three, source), cljonic::vector(1, 2)));
 static_assert(cljonic::equal(cljonic::drop_while(below_three, source), cljonic::vector(4, 1)));
+static_assert(cljonic::equal(cljonic::next(cljonic::take_while(below_three, source)), cljonic::vector(2)));
+static_assert(cljonic::equal(cljonic::rest(cljonic::drop_while(below_three, source)), cljonic::vector(1)));
 ```
 
 Use `into` with an explicit destination to materialize either result.

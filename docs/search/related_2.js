@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['queue_0',['Queue',['../classcljonic_1_1_queue_1_1const__iterator.html#a47dfc6f2bc0d50a6e7c92eb00d97b064',1,'cljonic::Queue::const_iterator']]]
+  ['predicateproducernextaccess_0',['PredicateProducerNextAccess',['../classcljonic_1_1concepts__detail_1_1_predicate_producer.html#afb3474777fe20b289c19004785335d81',1,'cljonic::concepts_detail::PredicateProducer']]]
 ];
