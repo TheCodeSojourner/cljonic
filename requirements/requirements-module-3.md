@@ -514,15 +514,25 @@ The clauses in this section define the active `seq` contract. The human approved
 ### Producer Sequence Tail Access (Binding)
 
 λ REQ-FN-002A4(x).
-  ∀ `next(producer)`: require(`Repeat`)
+  ∀ `next(producer)`: admit `Repeat`, with the existing extensions in `REQ-FN-002A5`–`002A7`, and `TakeWhile` and `DropWhile` as specified below
   ∧ ∀ supported_producer `P`: return an owning producer value of the same producer kind as `P` with the same parameter and element types, containing every logical element after the first of `P`'s logical result under `P`'s documented generation order
   ∧ ∀ supported_producer `P` whose result is unbounded: the returned producer remains logically unbounded with its ordinary observation cap applied to the advanced producer, so repeated `next` never exhausts a logically unbounded producer
   ∧ ∀ result: independently owning ∧ self-contained ∧ value-semantic ∧ preserves the relative logical order of retained elements ∧ ¬∃ implicit materialization
   ∧ ∀ `next(producer)`: preserve the input ∧ `constexpr` ∧ `noexcept` ∧ non-mutating ∧ non-allocating ∧ ¬∃ RTTI
   ∧ ∀ callback invocation during `next`: governed by the producer-specific tail contract
   ∧ ∀ producer_tail_result: works coherently with `count`, `is_finite`, `is_empty`, `into`, and `fits_into` under their existing producer contracts
+  ∧ ∀ `TakeWhile` ∨ `DropWhile`, including nested adapters over any admitted cljonic source: `next` returns the exact same producer type, owning its source, predicate, and a compact deferred output-skip position ∧ no public tail wrapper
+  ∧ ∀ adapter `next` call: copies the owned values and increases the deferred number of output elements to omit without traversal, exact counting, or callback invocation ∧ the position saturates at the configured observation cap without overflow
+  ∧ ∀ adapter tail observation: starts a fresh traversal of the original adapter under its existing source/predicate traversal-state rules, then omits the recorded number of adapter output elements ∧ removes output elements rather than an equal number of underlying source elements
+  ∧ ∀ adapter tail: preserves the original capped source window, smaller source windows, actual endpoint, and nested adapter boundaries ∧ prefix skipping and output omission never replenish the window ∧ empty or exhausted tails remain empty ∧ the result remains finite
+  ∧ ∀ `DropWhile` tail: prefix removal is logically completed before output omission ∧ do not reapply the predicate to the retained suffix ∧ ∀ `TakeWhile` tail: never resume after its original first false boundary
+  ∧ ∀ repeated observations: MAY replay prefix/source work ∧ callbacks should idiomatically be pure, making replay primarily a runtime cost ∧ authorized impure callbacks retain their existing referenced/static effect scope and traversal-state rules ∧ no cache or snapshot guarantee across observations
+  ∧ ∀ adapter tail at zero observation cap: no traversal or callbacks, including during observation ∧ ∀ captured predicate: default construction or assignment is not required merely to take a tail
+  ∧ ∀ adapter tail: no materialization, borrowed iterator state, additional element equality/ordering requirement, or storage proportional to the configured cap
+  ∧ ∀ `rest`: delegates to `next` over the extended domain, preserving the exact result type and callback timing under `REQ-SEQ-002B` ∧ `has_next` remains collection-only
+  ∧ ∀ lifecycle: adapter and adapter-dependent Cycle tail support is active after separate explicit human implementation approval and verification
   ∧ ∀ unsupported_input: fails compilation with one targeted diagnostic naming `next`
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-28}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-04, compound_by_design: true}
 
 λ REQ-FN-002A5(x).
   ∀ `next(producer)`: extend the producer domain in `REQ-FN-002A4` to include `Range`
@@ -534,13 +544,20 @@ The clauses in this section define the active `seq` contract. The human approved
 λ REQ-FN-002A6(x).
   ∀ `next(producer)`: extend the producer domain in `REQ-FN-002A4` to include `Cycle` values whose source is a supported collection or a producer type with an admitted `next`
   ∧ ∀ supported `Cycle`: return an independently owning `Cycle` value of the same type, preserving its unbounded observation policy and containing every logical element after the first under the original Cycle's generation order
-  ∧ ∀ `Cycle` with a finite, nonempty source: advance its starting position by one modulo the source's observed count without materializing the source or invoking callbacks
+  ∧ ∀ `Cycle` with a finite, nonempty source: advance its starting position by one modulo the source's observed count without materializing the source
+  ∧ ∀ existing non-adapter finite-source Cycle tail: preserve its existing callback timing
+  ∧ ∀ newly admitted finite predicate-adapter source: eagerly determine the source's exact bounded output length during `next` and normalize the existing starting offset before advancing once modulo that length ∧ callback evaluation for this bounded traversal is permitted ∧ retain the complete owned source rather than cycling its shortened tail
   ∧ ∀ `Cycle` with an empty finite source: preserve its empty observation
   ∧ ∀ `Cycle` with an unbounded source: replace its owned source with `next(source)` and reset its starting position, preserving the configured observation cap
   ∧ ∀ `Cycle` with an unbounded source: callback timing and effects follow the `next(source)` contract
+  ∧ ∀ adapter-dependent Cycle, including nested Cycles: recursively admit the source's tail under these contracts ∧ preserve the exact Cycle type, unbounded observation policy, and full source period
+  ∧ ∀ zero observation cap: no source traversal or callbacks ∧ ∀ finite adapter source whose bounded traversal yields empty: preserve empty observation
+  ∧ ∀ rotation bookkeeping: compact ordinary bounded offset ∧ normalize before incrementing to prevent overflow ∧ no large counters, remainder tables, cap-proportional metadata, allocation, or materialization
+  ∧ ∀ length determination and subsequent observation: separate traversals MAY replay callbacks ∧ preserve stored value-held source/predicate state and existing authorized external effect scope ∧ stable rotation/content predictions require equivalent outputs across those traversals ∧ no snapshot guarantee for authorized impure sources
+  ∧ ∀ observation after tail creation: retain `REQ-FN-002A1` only-needed first access without a preliminary exact-count pass ∧ length determination is part of `next`, not a hidden first-access prepass
   ∧ ∀ result: preserve the input ∧ preserve logical generation order ∧ ¬∃ implicit materialization ∧ `constexpr` ∧ `noexcept` ∧ non-mutating ∧ non-allocating ∧ ¬∃ RTTI
   ∧ ∀ unsupported_input: fails compilation with one targeted diagnostic naming `next`
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-28}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-04, compound_by_design: true}
 
 λ REQ-FN-002A7(x).
   ∀ `next(producer)`: extend the producer domain in `REQ-FN-002A4` to include `Iterate` and `Repeatedly`, and admit them as `Cycle` sources when the source's own `next` is admitted

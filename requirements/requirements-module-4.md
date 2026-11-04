@@ -229,7 +229,8 @@ This module specifies sequence producer types (`Range`, `Repeat`, `Cycle`, `Iter
   ∧ ∀ result: independently owning ∧ self-contained ∧ preserves the input ∧ preserves logical generation order ∧ works coherently with `count`, `is_finite`, `is_empty`, `into`, and `fits_into`
   ∧ ∀ operation: `constexpr` ∧ `noexcept` ∧ non-allocating ∧ ¬∃ RTTI ∧ ¬∃ implicit materialization
   ∧ ∀ callback invocation when the Cycle source is unbounded: follows `next(source)` semantics
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-28}
+  ∧ ∀ finite predicate-adapter source and nested adapter-dependent Cycle: follows active `REQ-FN-002A6`, including eager bounded length determination, permitted callback replay, and compact overflow-safe offset normalization
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-04}
 
 λ REQ-FN-013H(x).
   ∀ `next` of an `Iterate` with a nonzero observation cap: invoke its step exactly once and use the step result as the returned `Iterate`'s initial value ∧ preserve the observation cap
