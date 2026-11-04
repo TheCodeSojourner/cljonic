@@ -282,7 +282,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
 
 λ REQ-COLL-020S(x).
-  ∀ context: the lifecycle classification is `requirements-backed` for `Indexed`, `Lookup`, `Associative`, and `Conjable`, and for `count`, `get`, `contains`, `conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`, `first`, `next`, and `has_next` over their supported collection inputs
+  ∀ context: the lifecycle classification is `requirements-backed` for `Indexed`, `Lookup`, `Associative`, and `Conjable`, and for `count`, `get`, `contains`, `conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`, `first`, `next`, and `has_next` over their supported collection and next-supported producer inputs
   ∧ ∀ `rest`: lifecycle classification is `requirements-backed` over every input admitted by `next` under `REQ-SEQ-001`–`009` and `REQ-SEQ-012`
   ∧ ∀ `seq`: `requirements-backed` over the input domain and semantics defined by `REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014` ∧ ∀ `Seqable`: remains a closed capability concept that no type outside the cljonic-owned collection family may declare (`REQ-CAP-014`)
   {source: stakeholder_decided, decided_by: original_spec_author}
@@ -506,10 +506,14 @@ The clauses in this section define the active `seq` contract. The human approved
   ∀ `has_next(collection)`: require(`Vector` ∨ `Map` ∨ `Set` ∨ `Queue` ∨ `String`)
   ∧ ∀ supported_collection: return true iff its logical element count is greater than one, meaning its logical tail contains at least one element
   ∧ ∀ empty_or_singleton_collection: return false
-  ∧ ∀ `has_next`: observe the count without constructing the `next` result ∧ preserve the input ∧ `constexpr` ∧ `noexcept` ∧ non-mutating ∧ non-allocating ∧ ¬∃ RTTI
+  ∧ ∀ `has_next(producer)`: require a producer admitted by `next` under `REQ-FN-002A4`–`REQ-FN-002A7` ∧ return true iff `next(producer)` has at least one observable element under its configured observation policy
+  ∧ ∀ producer preflight: construct the `next` producer result and determine whether its first observable element exists, without counting the entire result
+  ∧ ∀ producer preflight callback invocation: follow the producer-specific `next` and first-element observation rules ∧ callback-backed traversal and authorized effects may occur
+  ∧ ∀ `has_next(collection)`: observe the count without constructing the `next` result
+  ∧ ∀ `has_next`: preserve input value-owned state ∧ `constexpr` ∧ `noexcept` ∧ non-mutating ∧ non-allocating ∧ ¬∃ RTTI
   ∧ ∀ (`Map` ∧ `Set`): result does not depend on which element appears first in the unspecified traversal order
-  ∧ ∀ unsupported_input: fails compilation with one targeted diagnostic naming `has_next`
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-27}
+  ∧ ∀ unsupported_input: fails compilation with one targeted diagnostic naming `has_next` and its supported collection and producer domains
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-04, aligned_with: REQ-FN-002A4-002A7}
 
 ### Producer Sequence Tail Access (Binding)
 
@@ -529,7 +533,7 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ repeated observations: MAY replay prefix/source work ∧ callbacks should idiomatically be pure, making replay primarily a runtime cost ∧ authorized impure callbacks retain their existing referenced/static effect scope and traversal-state rules ∧ no cache or snapshot guarantee across observations
   ∧ ∀ adapter tail at zero observation cap: no traversal or callbacks, including during observation ∧ ∀ captured predicate: default construction or assignment is not required merely to take a tail
   ∧ ∀ adapter tail: no materialization, borrowed iterator state, additional element equality/ordering requirement, or storage proportional to the configured cap
-  ∧ ∀ `rest`: delegates to `next` over the extended domain, preserving the exact result type and callback timing under `REQ-SEQ-002B` ∧ `has_next` remains collection-only
+  ∧ ∀ `rest`: delegates to `next` over the extended domain, preserving the exact result type and callback timing under `REQ-SEQ-002B` ∧ `has_next` admits this producer domain under `REQ-FN-002A3`
   ∧ ∀ lifecycle: adapter and adapter-dependent Cycle tail support is active after separate explicit human implementation approval and verification
   ∧ ∀ unsupported_input: fails compilation with one targeted diagnostic naming `next`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-04, compound_by_design: true}
