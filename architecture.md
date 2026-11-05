@@ -1539,6 +1539,15 @@ concept SequenceableProducer =
   | nominal_concept(x) → keep(Cljonic_domain_prefix) because(names_closed_collection_domain(x))
   | structural_or_value_capability_concept(x) → ¬require(Cljonic_prefix) because(gated_on_nominal_identity(x) ∧ scope_carried_by(suffix ∨ comparative_name))
 
+λ clojure_library_names(x).
+  clojure.core → cljonic::core
+  | clojure.set → cljonic::lib_set
+  | clojure.string → cljonic::lib_string
+  | ∀ core_function(x) → declare_in(cljonic::core) ∧ ¬declare_in(cljonic::)
+  | ∀ core_collection_type(x) → retain_in(cljonic::)
+  | set_algebra_identifier(x) → prepend(set_, snake_case(x)) when(x ∈ {union, intersection, difference})
+  | set_relation_predicate(x) → preserve(is_subset ∨ is_superset)
+
 λ concept_naming(x). CollectionConcept_names(x) → identify_nominal_identity(x)
   | CapabilityConcept_names(x) → identify_semantic_capability(x)
   | public_concept_names(x) → capability_oriented(x) ∧ reject(vague_names)
