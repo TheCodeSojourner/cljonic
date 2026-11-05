@@ -72,8 +72,9 @@ concept VariantClassArgument =
  * A Variant is the supported composite value in the cljonic value domain. It holds exactly one of several alternatives
  * and has no empty or valueless state.
  *
- * Every alternative must have a default value and be copyable without throwing, so a Variant is a storable value: it
- * can be a map value, a vector element, or a queue element.
+ * Every alternative must satisfy the non-throwing collection-storage requirements. A Variant is therefore a storable
+ * value: it can be used wherever a collection accepts a storable value, such as a map value, vector element, or queue
+ * element. Its alternatives can also be storable cljonic collections and producers, including nested combinations.
  *
  * Two values compare equal only when they hold the same alternative and that alternative's values compare equal
  * (alternative-strict equality). Values holding different alternatives always compare unequal.
@@ -118,6 +119,10 @@ concept VariantClassArgument =
    [[maybe_unused]] constexpr auto as_set_element =
        hash_set(variant<int, long>(1));
    [[maybe_unused]] constexpr auto as_map_key = map_entry(as_int, 1);
+   [[maybe_unused]] constexpr auto as_collection_alternative =
+       variant<Vector<int, 2>, char>(vector(1, 2));
+   [[maybe_unused]] constexpr auto as_producer_alternative =
+       variant<Repeat<Vector<int, 2>>, char>(repeat(1, vector(1, 2)));
 
    const int runtime_value = 5;
    const auto runtime_variant = variant<int, long>(runtime_value);
