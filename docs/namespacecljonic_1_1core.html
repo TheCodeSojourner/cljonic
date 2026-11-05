@@ -704,7 +704,7 @@ requires concepts::AssociativeCollection&lt;C&gt; &amp;&amp; (!concepts_detail::
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-assoc_8hpp_source.html#l00137">137</a> of file <a class="el" href="cljonic-assoc_8hpp_source.html">cljonic-assoc.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-assoc_8hpp_source.html#l00147">147</a> of file <a class="el" href="cljonic-assoc_8hpp_source.html">cljonic-assoc.hpp</a>.</p>
 
 </div>
 </div>
@@ -743,7 +743,7 @@ requires concepts::CljonicCollection&lt;C&gt; &amp;&amp; (!concepts::Associative
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-assoc_8hpp_source.html#l00127">127</a> of file <a class="el" href="cljonic-assoc_8hpp_source.html">cljonic-assoc.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-assoc_8hpp_source.html#l00137">137</a> of file <a class="el" href="cljonic-assoc_8hpp_source.html">cljonic-assoc.hpp</a>.</p>
 
 </div>
 </div>
@@ -804,20 +804,32 @@ requires concepts::AssociativeCollection&lt;C&gt; &amp;&amp; requires(const C&am
 <div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> v_multi = <a class="code hl_function" href="#aa56bb1bbd8f7afd3d7381f4fcd59d1d0">assoc</a>(<a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector&lt;int, 4&gt;</a>(10, 20), 1, 200, 2, 300);</div>
 <div class="line">  <span class="keyword">static_assert</span>(v_multi(2) == 300);</div>
 <div class="line"> </div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> text_const = <a class="code hl_function" href="#aa56bb1bbd8f7afd3d7381f4fcd59d1d0">assoc</a>(<a class="code hl_function" href="#aa1f4778a4ed7763f106998406ac416c2">string&lt;4&gt;</a>(<span class="stringliteral">&quot;Hi&quot;</span>), 1, <span class="charliteral">&#39;!&#39;</span>);</div>
+<div class="line">  <span class="keyword">static_assert</span>(text_const(1) == <span class="charliteral">&#39;!&#39;</span>);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> text_append = <a class="code hl_function" href="#aa56bb1bbd8f7afd3d7381f4fcd59d1d0">assoc</a>(<a class="code hl_function" href="#aa1f4778a4ed7763f106998406ac416c2">string&lt;4&gt;</a>(<span class="stringliteral">&quot;Hi&quot;</span>), 2, <span class="charliteral">&#39;!&#39;</span>);</div>
+<div class="line">  <span class="keyword">static_assert</span>(text_append(2) == <span class="charliteral">&#39;!&#39;</span>);</div>
+<div class="line"> </div>
 <div class="line">  <span class="comment">// Runtime demonstration.</span></div>
 <div class="line">  <span class="keyword">auto</span> m_runtime = <a class="code hl_function" href="#af9739f91841611b6ccb0a56ed37f9645">hash_map&lt;int, int, 4&gt;</a>();</div>
 <div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> m1 = <a class="code hl_function" href="#aa56bb1bbd8f7afd3d7381f4fcd59d1d0">assoc</a>(m_runtime, 2, 200);</div>
+<div class="line">  <span class="keyword">auto</span> text_runtime = <a class="code hl_function" href="#aa1f4778a4ed7763f106998406ac416c2">string&lt;4&gt;</a>(<span class="stringliteral">&quot;A&quot;</span>);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> text1 = <a class="code hl_function" href="#aa56bb1bbd8f7afd3d7381f4fcd59d1d0">assoc</a>(text_runtime, 1, <span class="charliteral">&#39;B&#39;</span>);</div>
 <div class="line"> </div>
-<div class="line">  <span class="keywordflow">return</span> (<a class="code hl_function" href="#afbe0149a87d079c21fa08548f2ad735a">contains</a>(m1, 2) &amp;&amp; m1(2) == 200) ? 0 : 1;</div>
+<div class="line">  <span class="keywordflow">return</span> (<a class="code hl_function" href="#afbe0149a87d079c21fa08548f2ad735a">contains</a>(m1, 2) &amp;&amp; m1(2) == 200 &amp;&amp; text1(0) == <span class="charliteral">&#39;A&#39;</span> &amp;&amp;</div>
+<div class="line">          text1(1) == <span class="charliteral">&#39;B&#39;</span> &amp;&amp; <a class="code hl_function" href="#a664e4ba8bc8fbc1a64e75a0dd9cec633">count</a>(text_runtime) == 1 &amp;&amp; text_runtime(0) == <span class="charliteral">&#39;A&#39;</span>)</div>
+<div class="line">             ? 0</div>
+<div class="line">             : 1;</div>
 <div class="line">}</div>
 <div class="ttc" id="anamespacecljonic_1_1core_html"><div class="ttname"><a href="namespacecljonic_1_1core.html">cljonic::core</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-assoc_8hpp_source.html#l00006">cljonic-assoc.hpp:6</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1core_html_a640db1afe4f1644b0ecd12a1b88f2e6a"><div class="ttname"><a href="#a640db1afe4f1644b0ecd12a1b88f2e6a">cljonic::core::vector</a></div><div class="ttdeci">constexpr auto vector(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Vector&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-vector_8hpp_source.html#l00405">cljonic-collection-vector.hpp:405</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_aa56bb1bbd8f7afd3d7381f4fcd59d1d0"><div class="ttname"><a href="#aa56bb1bbd8f7afd3d7381f4fcd59d1d0">cljonic::core::assoc</a></div><div class="ttdeci">constexpr auto assoc(const C &amp;collection, const K &amp;key, const V &amp;value) noexcept(noexcept(collection.assoc(key, value))) -&gt; C</div><div class="ttdef"><b>Definition</b> <a href="cljonic-assoc_8hpp_source.html#l00056">cljonic-assoc.hpp:56</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a664e4ba8bc8fbc1a64e75a0dd9cec633"><div class="ttname"><a href="#a664e4ba8bc8fbc1a64e75a0dd9cec633">cljonic::core::count</a></div><div class="ttdeci">constexpr auto count(const C &amp;collection) noexcept -&gt; std::size_t</div><div class="ttdef"><b>Definition</b> <a href="cljonic-count_8hpp_source.html#l00050">cljonic-count.hpp:50</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_aa1f4778a4ed7763f106998406ac416c2"><div class="ttname"><a href="#aa1f4778a4ed7763f106998406ac416c2">cljonic::core::string</a></div><div class="ttdeci">constexpr auto string(Literal &amp;&amp;literal) noexcept -&gt; String&lt; std::extent_v&lt; std::remove_cvref_t&lt; Literal &gt; &gt; - 1U &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-string_8hpp_source.html#l00437">cljonic-collection-string.hpp:437</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_aa56bb1bbd8f7afd3d7381f4fcd59d1d0"><div class="ttname"><a href="#aa56bb1bbd8f7afd3d7381f4fcd59d1d0">cljonic::core::assoc</a></div><div class="ttdeci">constexpr auto assoc(const C &amp;collection, const K &amp;key, const V &amp;value) noexcept(noexcept(collection.assoc(key, value))) -&gt; C</div><div class="ttdef"><b>Definition</b> <a href="cljonic-assoc_8hpp_source.html#l00066">cljonic-assoc.hpp:66</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1core_html_af9739f91841611b6ccb0a56ed37f9645"><div class="ttname"><a href="#af9739f91841611b6ccb0a56ed37f9645">cljonic::core::hash_map</a></div><div class="ttdeci">constexpr auto hash_map(Args &amp;&amp;... args) noexcept -&gt; Map&lt; concepts_detail::hash_map_factory_key_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, concepts_detail::hash_map_factory_value_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, sizeof...(Args)/2U &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-map_8hpp_source.html#l00445">cljonic-collection-map.hpp:445</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1core_html_afbe0149a87d079c21fa08548f2ad735a"><div class="ttname"><a href="#afbe0149a87d079c21fa08548f2ad735a">cljonic::core::contains</a></div><div class="ttdeci">constexpr auto contains(const C &amp;collection, const K &amp;key) noexcept(noexcept(collection.contains(key))) -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-contains_8hpp_source.html#l00067">cljonic-contains.hpp:67</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-assoc_8hpp_source.html#l00006">cljonic-assoc.hpp:6</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-assoc_8hpp_source.html#l00056">56</a> of file <a class="el" href="cljonic-assoc_8hpp_source.html">cljonic-assoc.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-assoc_8hpp_source.html#l00066">66</a> of file <a class="el" href="cljonic-assoc_8hpp_source.html">cljonic-assoc.hpp</a>.</p>
 
 </div>
 </div>
@@ -861,7 +873,7 @@ requires concepts::CljonicCollection&lt;C&gt;</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-assoc_8hpp_source.html#l00148">148</a> of file <a class="el" href="cljonic-assoc_8hpp_source.html">cljonic-assoc.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-assoc_8hpp_source.html#l00158">158</a> of file <a class="el" href="cljonic-assoc_8hpp_source.html">cljonic-assoc.hpp</a>.</p>
 
 </div>
 </div>
@@ -915,7 +927,7 @@ requires concepts::CljonicCollection&lt;C&gt; &amp;&amp; (!<a class="el" href="n
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-assoc_8hpp_source.html#l00160">160</a> of file <a class="el" href="cljonic-assoc_8hpp_source.html">cljonic-assoc.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-assoc_8hpp_source.html#l00170">170</a> of file <a class="el" href="cljonic-assoc_8hpp_source.html">cljonic-assoc.hpp</a>.</p>
 
 </div>
 </div>
@@ -970,7 +982,7 @@ requires concepts::AssociativeCollection&lt;C&gt; &amp;&amp; <a class="el" href=
 </div><div class="memdoc">
 <p>Variadic <span class="tt"><a class="el" href="#aa56bb1bbd8f7afd3d7381f4fcd59d1d0">assoc</a></span>: applies two or more key-value pairs left to right. Each pair is admitted (or rejected at compile time) under the same collection-specific key/value domain as the single-pair form; a pair that cannot be applied at full capacity is a no-op and the remaining pairs still apply. </p>
 
-<p class="definition">Definition at line <a class="el" href="cljonic-assoc_8hpp_source.html#l00115">115</a> of file <a class="el" href="cljonic-assoc_8hpp_source.html">cljonic-assoc.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-assoc_8hpp_source.html#l00125">125</a> of file <a class="el" href="cljonic-assoc_8hpp_source.html">cljonic-assoc.hpp</a>.</p>
 
 </div>
 </div>
@@ -1441,7 +1453,6 @@ requires concepts::ConjableCollection&lt;C&gt;</div>
 <div class="ttc" id="anamespacecljonic_1_1core_html_a222b1d8ca6cab849b4c87b6b4b04f3e3"><div class="ttname"><a href="#a222b1d8ca6cab849b4c87b6b4b04f3e3">cljonic::core::queue</a></div><div class="ttdeci">constexpr auto queue(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::queue_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Queue&lt; concepts_detail::queue_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-queue_8hpp_source.html#l00335">cljonic-collection-queue.hpp:335</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1core_html_a411ea54ff367951c96228ba2fa8ddbf4"><div class="ttname"><a href="#a411ea54ff367951c96228ba2fa8ddbf4">cljonic::core::can_conj</a></div><div class="ttdeci">constexpr auto can_conj(const C &amp;collection) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-can-conj_8hpp_source.html#l00087">cljonic-can-conj.hpp:87</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1core_html_a9ad89b2da321b5072a628a8a836a1b7c"><div class="ttname"><a href="#a9ad89b2da321b5072a628a8a836a1b7c">cljonic::core::map_entry</a></div><div class="ttdeci">constexpr auto map_entry(Args &amp;&amp;... args) noexcept -&gt; MapEntry&lt; concepts_detail::map_entry_factory_key_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, concepts_detail::map_entry_factory_value_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-map-entry_8hpp_source.html#l00175">cljonic-collection-map-entry.hpp:175</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_aa1f4778a4ed7763f106998406ac416c2"><div class="ttname"><a href="#aa1f4778a4ed7763f106998406ac416c2">cljonic::core::string</a></div><div class="ttdeci">constexpr auto string(Literal &amp;&amp;literal) noexcept -&gt; String&lt; std::extent_v&lt; std::remove_cvref_t&lt; Literal &gt; &gt; - 1U &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-string_8hpp_source.html#l00437">cljonic-collection-string.hpp:437</a></div></div>
 </div><!-- fragment --> 
 <p class="definition">Definition at line <a class="el" href="cljonic-can-conj_8hpp_source.html#l00087">87</a> of file <a class="el" href="cljonic-can-conj_8hpp_source.html">cljonic-can-conj.hpp</a>.</p>
 
@@ -1706,7 +1717,7 @@ template&lt;std::size_t N&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-character-is-valid_8hpp_source.html#l00087">87</a> of file <a class="el" href="cljonic-character-is-valid_8hpp_source.html">cljonic-character-is-valid.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-character-is-valid_8hpp_source.html#l00092">92</a> of file <a class="el" href="cljonic-character-is-valid_8hpp_source.html">cljonic-character-is-valid.hpp</a>.</p>
 
 </div>
 </div>
@@ -1736,7 +1747,7 @@ requires (!concepts_detail::CharacterValidityInput&lt;T&gt; &amp;&amp; !concepts
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-character-is-valid_8hpp_source.html#l00099">99</a> of file <a class="el" href="cljonic-character-is-valid_8hpp_source.html">cljonic-character-is-valid.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-character-is-valid_8hpp_source.html#l00104">104</a> of file <a class="el" href="cljonic-character-is-valid_8hpp_source.html">cljonic-character-is-valid.hpp</a>.</p>
 
 </div>
 </div>
@@ -1779,11 +1790,16 @@ requires concepts_detail::CharacterValidityInput&lt;T&gt;</div>
 <div class="line">  <span class="keyword">static_assert</span>(!<a class="code hl_function" href="#a267651509f7df0eabeb536c3cc5664ac">character_is_valid</a>(300));</div>
 <div class="line">  <span class="keyword">static_assert</span>(!<a class="code hl_function" href="#a267651509f7df0eabeb536c3cc5664ac">character_is_valid</a>(<span class="charliteral">&#39;\0&#39;</span>));</div>
 <div class="line">  <span class="keyword">static_assert</span>(!<a class="code hl_function" href="#a267651509f7df0eabeb536c3cc5664ac">character_is_valid</a>(<span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(0x80)));</div>
-<div class="line">  <span class="keywordflow">return</span> 0;</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// Runtime demonstration.</span></div>
+<div class="line">  <span class="keywordtype">int</span> runtime_code = 65;</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_valid = <a class="code hl_function" href="#a267651509f7df0eabeb536c3cc5664ac">character_is_valid</a>(runtime_code);</div>
+<div class="line"> </div>
+<div class="line">  <span class="keywordflow">return</span> runtime_valid ? 0 : 1;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_a267651509f7df0eabeb536c3cc5664ac"><div class="ttname"><a href="#a267651509f7df0eabeb536c3cc5664ac">cljonic::core::character_is_valid</a></div><div class="ttdeci">constexpr auto character_is_valid(T value) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-character-is-valid_8hpp_source.html#l00079">cljonic-character-is-valid.hpp:79</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a267651509f7df0eabeb536c3cc5664ac"><div class="ttname"><a href="#a267651509f7df0eabeb536c3cc5664ac">cljonic::core::character_is_valid</a></div><div class="ttdeci">constexpr auto character_is_valid(T value) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-character-is-valid_8hpp_source.html#l00084">cljonic-character-is-valid.hpp:84</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-character-is-valid_8hpp_source.html#l00079">79</a> of file <a class="el" href="cljonic-character-is-valid_8hpp_source.html">cljonic-character-is-valid.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-character-is-valid_8hpp_source.html#l00084">84</a> of file <a class="el" href="cljonic-character-is-valid_8hpp_source.html">cljonic-character-is-valid.hpp</a>.</p>
 
 </div>
 </div>
@@ -2339,7 +2355,6 @@ requires concepts::SequenceableCollection&lt;C&gt; || concepts::SequenceableProd
 <div class="line">}</div>
 <div class="ttc" id="anamespacecljonic_1_1core_html_a10bb37017fb997694418fdc5cc328afe"><div class="ttname"><a href="#a10bb37017fb997694418fdc5cc328afe">cljonic::core::range</a></div><div class="ttdeci">constexpr auto range(Args &amp;&amp;... args) noexcept -&gt; Range&lt; concepts_detail::range_factory_element_t&lt; RequestedElementType, Args... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-range_8hpp_source.html#l00364">cljonic-producer-range.hpp:364</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1core_html_a4ebeaa5d9bef8520af2e09e8d5aada70"><div class="ttname"><a href="#a4ebeaa5d9bef8520af2e09e8d5aada70">cljonic::core::repeat</a></div><div class="ttdeci">constexpr auto repeat(T &amp;&amp;value) noexcept -&gt; Repeat&lt; std::remove_cvref_t&lt; T &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-repeat_8hpp_source.html#l00254">cljonic-producer-repeat.hpp:254</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_a664e4ba8bc8fbc1a64e75a0dd9cec633"><div class="ttname"><a href="#a664e4ba8bc8fbc1a64e75a0dd9cec633">cljonic::core::count</a></div><div class="ttdeci">constexpr auto count(const C &amp;collection) noexcept -&gt; std::size_t</div><div class="ttdef"><b>Definition</b> <a href="cljonic-count_8hpp_source.html#l00050">cljonic-count.hpp:50</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a41fa65c16edb0a95aa942c48307777d6"><div class="ttname"><a href="namespacecljonic.html#a41fa65c16edb0a95aa942c48307777d6">cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</a></div><div class="ttdeci">constexpr std::size_t CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-collection-maximum-element-count_8hpp_source.html#l00016">cljonic-core-collection-maximum-element-count.hpp:16</a></div></div>
 </div><!-- fragment --> 
 <p class="definition">Definition at line <a class="el" href="cljonic-count_8hpp_source.html#l00050">50</a> of file <a class="el" href="cljonic-count_8hpp_source.html">cljonic-count.hpp</a>.</p>
@@ -3366,7 +3381,7 @@ requires concepts_detail::EqualScalarPairAdmissible&lt;Lhs, Rhs&gt;</div>
 <div class="line">  <span class="keyword">auto</span> runtime_r = <a class="code hl_function" href="#a10bb37017fb997694418fdc5cc328afe">range</a>(1, 4, 1);</div>
 <div class="line">  <span class="keywordflow">return</span> <a class="code hl_function" href="#ab7b1359706179af076032e9dad458516">equal</a>(runtime_v, runtime_r) ? 0 : 1;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_a76feb30f68f310e69724d807f5ef0c57"><div class="ttname"><a href="#a76feb30f68f310e69724d807f5ef0c57">cljonic::core::variant</a></div><div class="ttdeci">constexpr auto variant() noexcept -&gt; Variant&lt; Alternatives... &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-variant_8hpp_source.html#l00197">cljonic-collection-variant.hpp:197</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a76feb30f68f310e69724d807f5ef0c57"><div class="ttname"><a href="#a76feb30f68f310e69724d807f5ef0c57">cljonic::core::variant</a></div><div class="ttdeci">constexpr auto variant() noexcept -&gt; Variant&lt; Alternatives... &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-variant_8hpp_source.html#l00199">cljonic-collection-variant.hpp:199</a></div></div>
 </div><!-- fragment --> 
 <p class="definition">Definition at line <a class="el" href="cljonic-equal_8hpp_source.html#l00346">346</a> of file <a class="el" href="cljonic-equal_8hpp_source.html">cljonic-equal.hpp</a>.</p>
 
@@ -7649,7 +7664,7 @@ template&lt;typename... Alternatives&gt; </div>
 </div><div class="memdoc">
 <p><a class="anchor" id="VariantFactory"></a>Constructs a <a class="el" href="classcljonic_1_1_variant.html#Variant" title="Variant">Variant</a> with its alternative types specified explicitly. The value form uses the same exact-alternative selection rule as direct construction; it does not infer or expand the alternative list. </p>
 
-<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00197">197</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00199">199</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
 
 </div>
 </div>
@@ -7679,7 +7694,7 @@ requires (<a class="el" href="namespacecljonic_1_1variant__detail.html#a9ccabbee
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00203">203</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00205">205</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
 
 </div>
 </div>
