@@ -1,27 +1,23 @@
 ## Current Session State
 
-- last_session_id: 31c5609c-fbde-47af-8099-14b85ad5cfb7
-- current_timestamp: 2026-11-05T15:18:41-07:00
+- last_session_id: 0bb0db7a-38cf-4093-af9d-761688b77254
+- current_timestamp: 2026-11-05T15:44:12-07:00
 - session_complete: true
-- recover: `/cljonic-full-converge-auto` and `make upsert-gate-fast` passed. Afterward, the human committed the convergence changes, refreshed generated HTML docs, and left the worktree clean; this `/gybis-fini` commit contains only `mementum/state.md`. The fast gate predates those commits; do not assume `make git` was run.
+- recover: Clarified the Variant Doxygen storage description and examples in `src/cljonic-collection-variant.hpp` and regenerated `cljonic.hpp`. `make docs-examples` and `make -j"$(nproc)" upsert-gate-fast` passed. The product edits remain uncommitted for human review; this `/gybis-fini` commit contains only `mementum/state.md`.
 - Task:
-  1. Ran `/gybis-init` and `/cljonic-full-converge-auto`; reconciled canonical terminology and active inventory across requirements, vocabulary, architecture, and specifications.
-  2. Corrected the stale collection-shaping deferred marker for active `take_while`/`drop_while`, and aligned architecture scope for active collection and predicate-producer APIs.
-  3. Reviewed actual no-heap probes and Doxygen examples for active APIs, including collection operations, traversal, comparison, and materialization. Added missing String replace/append runtime and input-preservation assertions for `assoc`, and improved runtime result checks in the `character_is_valid` and `Variant` examples.
-  4. Regenerated the single-header mirror `cljonic.hpp`. The human subsequently refreshed and committed generated HTML documentation.
+  1. Explained that Variant alternatives must meet non-throwing collection-storage requirements; a valid producer such as an `Iterate` with a stateful capturing step may fail the default-initialization requirement.
+  2. Updated the Variant documentation to say that alternatives may be storable cljonic collections and producers, including nested combinations, and added examples using a Vector alternative and a Repeat-of-Vector alternative.
+  3. Regenerated the single-header mirror `cljonic.hpp`.
 - Decisions:
-  1. Preserve requirement identifiers and normative meaning while canonicalizing terminology; do not resolve genuine semantic or stakeholder conflicts by inventing behavior.
-  2. Keep `take_while` and `drop_while` active under their separate specifications; only operations not already declared active remain deferred.
-  3. Keep `make git` and any product staging/commits for the human's final review workflow; do not infer that the full suite or `make git` ran from the fast gate.
-  4. The `assoc` evidence gap was identity-preserving and covered by both a runtime no-heap probe and a runnable Doxygen example.
+  1. Describe collection/producer alternatives as admissible when they satisfy Variant's storage requirements; do not imply that every producer automatically qualifies.
+  2. Leave product edits uncommitted for human review; the state checkpoint commit must not include them.
 - Validation:
-  1. Allium 3.5.3 check and analyse completed without diagnostics/findings; `make requirements-structure` passed with 356 unique clauses; `make vocabulary-structure` passed with 209 terms.
-  2. `make traceability-spec-to-code` passed.
-  3. `make docs-examples` compiled 50 examples; all 50 extracted programs linked and exited successfully.
-  4. `make no-heap` and `make no-heap-src` passed.
-  5. Required aggregate `make upsert-gate-fast` passed; final `git diff --check` passed.
+  1. `make docs-examples` passed; 50 examples compiled and ran.
+  2. `make -j"$(nproc)" upsert-gate-fast` passed, including traceability and no-heap gates.
+  3. A C++23 syntax-only check confirmed a stateful `Iterate` is a producer but does not satisfy `NothrowCollectionElement`.
+  4. `git diff --check` passed.
 - Questions: None.
-- Next: Await human direction. Convergence changes and regenerated HTML are committed; the human may run `make git` if not already done.
+- Next: Await human review/direction on the uncommitted Variant documentation changes; the human may run `make git` before committing product changes.
 
 ## Previous Session State (Core namespace migration)
 
