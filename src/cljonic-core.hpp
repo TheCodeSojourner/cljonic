@@ -107,8 +107,8 @@
  * - ffirst, \ref FilterFunction "filter", \ref FiltervFunction "filterv", find, \ref First "first",
  *   \ref FitsInto "fits_into", fits_print, flatten, fnext, fnil, frequencies
  * - \ref Get "get", get_if, get_in, greater, greater_equal, group_by
- * - \ref HasNext "has_next", has_re_find, has_re_matches, \ref HasRest "has_rest", has_some, \ref HashMapFactory "hash_map",
- *   \ref HashSetFactory "hash_set", holds
+ * - \ref HasFirst "has_first", \ref HasNext "has_next", has_re_find, has_re_matches, \ref HasRest "has_rest", has_some,
+ *   \ref HashMapFactory "hash_map", \ref HashSetFactory "hash_set", holds
  * - identity, inc, index, interleave, interpose, \ref Into "into", \ref IsEmpty "is_empty", is_even, is_every,
  *   is_negative, is_odd, is_positive, is_zero, \ref Iterate "iterate"
  * - juxt
@@ -193,6 +193,7 @@
 #include <cljonic-first.hpp>
 #include <cljonic-fits-into.hpp>
 #include <cljonic-get.hpp>
+#include <cljonic-has-first.hpp>
 #include <cljonic-has-next.hpp>
 #include <cljonic-has-rest.hpp>
 #include <cljonic-into.hpp>
