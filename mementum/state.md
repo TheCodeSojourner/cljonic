@@ -1,5 +1,32 @@
 ## Current Session State
 
+- last_session_id: 5e773510-fc19-4f9c-a021-718a849a013f
+- current_timestamp: 2026-11-05T10:37:52-07:00
+- session_complete: true
+- recover: Requirements and Doxygen Core Functions inventories are aligned per human decisions and committed (c6179aad, bbe429f5, 1684a254). No pending product changes remain. `re_quote_replacement` remains in String under current REQ-FN-022; await human direction if its ownership should change.
+- Task:
+  1. Compared the requirements-backed free-function inventory with the active Doxygen `\mainpage` Core Functions list.
+  2. Updated Module 5 and Module 7 requirements and the requirements index to require `comp` as deferred/non-binding, place parsing functions in `cljonic::string`, and place regex preflight predicates in `cljonic::core`.
+  3. Updated the mainpage inventory: added comparison operators; added regex functions and regex preflights to Core; replaced `double`, `float`, and `int` with `to_double`, `to_float`, and `to_int`; listed parsing functions in String.
+  4. Clarified that inventory presence alone does not establish implementation or supported behavior.
+  5. Regenerated the single-header mirror and Doxygen output.
+  6. Considered a coworker's suggestion to move `re_quote_replacement` to Core; retained it in String because current REQ-FN-022 groups it with string operations, and no authority change was approved.
+- Decisions:
+  1. Requirements are the source of truth. User approved the namespace and inventory changes on 2026-11-05.
+  2. Keep `comp` listed in Core while its requirement remains explicitly deferred and non-binding.
+  3. Keep the legacy `doc/mainpage-example.hpp` unchanged; Doxygen reads `src/` per `doc/Doxyfile`.
+  4. `re_quote_replacement` remains in the String inventory unless its requirement is changed.
+- Validation:
+  1. `make requirements-structure` passed with 356 unique clauses.
+  2. `make core-cheatsheet-format` passed.
+  3. `make docs` and `make cljonic` passed.
+  4. Rendered `docs/index.html` checks passed for required Core/String membership, excluded names, and namespace placement.
+  5. `git diff --check` passed.
+- Questions: None requiring resolution to close this session.
+- Next: Await further human direction on API work or whether to reconsider `re_quote_replacement`'s namespace.
+
+## Previous Session State (has_rest)
+
 - last_session_id: 3e0629ae-2ed2-49f2-a522-db1f1cf02178
 - current_timestamp: 2026-11-05T08:29:15-07:00
 - session_complete: true
