@@ -104,11 +104,11 @@ def run_self_test(source: str) -> list[str]:
         return ["negative regression did not reject nonalphabetical names"]
     if not validate_list_item(1, "hash_map, holds, index"):
         return ["negative regression did not reject mixed initial letters"]
-    if validate_list_item(1, r'has_next, has_rest, has_some, \ref HashMapFactory "hash_map", holds'):
+    if validate_list_item(1, r'has_first, has_next, has_rest, has_some, \ref HashMapFactory "hash_map", holds'):
         return ["positive regression rejected alphabetically ordered linked names"]
-    if validate_list_item(1, "has_next, has_rest, has_some, hash_map, hash_set, holds"):
+    if validate_list_item(1, "has_first, has_next, has_rest, has_some, hash_map, hash_set, holds"):
         return ["positive regression rejected ASCII ordering of the Core Functions h group"]
-    if not validate_list_item(1, "hash_map, has_next, has_rest, hash_set, has_some, holds"):
+    if not validate_list_item(1, "hash_map, has_first, has_next, has_rest, hash_set, has_some, holds"):
         return ["negative regression did not reject non-ASCII ordering of the Core Functions h group"]
     return []
 

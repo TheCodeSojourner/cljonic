@@ -306,6 +306,35 @@ PRIMITIVES = {
             "drop-while": "(void)cljonic::core::has_next(cljonic::core::drop_while([](int value) noexcept { return value < 3; }, cljonic::Vector<int, 3>{1, 2, 3}));",
         },
     },
+    "has_first": {
+        "diagnostic_anchor": "cljonic::has_first:",
+        "diagnostic_cases": {
+            "unsupported-scalar": (
+                "(void)cljonic::core::has_first(42);",
+                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, supported Cycle, or MapEntry value",
+            ),
+            "unsupported-external-range": (
+                "int values[]{1, 2}; (void)cljonic::core::has_first(values);",
+                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, supported Cycle, or MapEntry value",
+            ),
+        },
+        "pass_cases": {
+            "vector": "(void)cljonic::core::has_first(cljonic::Vector<int, 4>{1, 2});",
+            "empty-vector": "(void)cljonic::core::has_first(cljonic::Vector<int, 4>{});",
+            "map": "(void)cljonic::core::has_first(cljonic::Map<int, int, 4>{cljonic::MapEntry{1, 2}});",
+            "set": "(void)cljonic::core::has_first(cljonic::Set<int, 4>{1, 2});",
+            "queue": "(void)cljonic::core::has_first(cljonic::Queue<int, 4>{1, 2});",
+            "string": "(void)cljonic::core::has_first(cljonic::String<4>{\"AB\"});",
+            "map-entry": "(void)cljonic::core::has_first(cljonic::MapEntry<int, int>{1, 2});",
+            "range": "(void)cljonic::core::has_first(cljonic::Range<int>{0, 5});",
+            "repeat": "(void)cljonic::core::has_first(cljonic::core::repeat(3, 7));",
+            "cycle": "(void)cljonic::core::has_first(cljonic::core::cycle(cljonic::Vector<int, 3>{1, 2, 3}));",
+            "iterate": "(void)cljonic::core::has_first(cljonic::core::iterate([](int value) noexcept { return value + 1; }, 0));",
+            "repeatedly": "(void)cljonic::core::has_first(cljonic::core::repeatedly(3, []() noexcept { return 7; }));",
+            "take-while": "(void)cljonic::core::has_first(cljonic::core::take_while([](int value) noexcept { return value < 3; }, cljonic::Vector<int, 3>{1, 2, 3}));",
+            "drop-while": "(void)cljonic::core::has_first(cljonic::core::drop_while([](int value) noexcept { return value < 3; }, cljonic::Vector<int, 3>{1, 2, 3}));",
+        },
+    },
     "has_rest": {
         "diagnostic_anchor": "cljonic::has_rest:",
         "diagnostic_cases": {
