@@ -27,7 +27,7 @@ All C++ code follows the C++ Core Guidelines.
 
 - Types and concepts: PascalCase (concepts per `NL.17`).
 - Namespaces: lowercase_with_underscores (Clojure-analog `cljonic::core`,
-  `cljonic::set`, `cljonic::string`).
+  `cljonic::lib_set`, `cljonic::lib_string`).
 - Free and member functions: snake_case with Clojure parity (`count`,
   `is_empty`, `contains`).
 - Because cljonic users are developers, C++ concept identifiers are first-class
