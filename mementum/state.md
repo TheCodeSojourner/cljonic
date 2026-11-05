@@ -1,5 +1,23 @@
 ## Current Session State
 
+- last_session_id: c77e4348-9cef-4ccb-bb9c-b84d8f613489
+- current_timestamp: 2026-11-05T16:28:05-07:00
+- session_complete: true
+- recover: Corrected the README documentation link to the cljonic GitHub Pages site and removed an unnecessary docs-generation/layout paragraph. The README change was committed in `a82fa5be` (`Update docs`); worktree is clean.
+- Task:
+  1. Checked the Doxygen mainpage inventory after the user reported `has_first` missing. The source and generated index already included its linked Core Functions entry. `make docs` passed; only a generated CSS timestamp changed and was restored.
+  2. Replaced the incorrect README URL with `https://thecodesojourner.github.io/cljonic/` and removed the unneeded `make docs` and responsive layout description from the Detailed Documentation section.
+- Decisions:
+  1. Use the repository's configured GitHub Pages homepage, confirmed with `gh repo view`.
+  2. Keep the README concise; detailed build and layout notes do not belong in its documentation link section.
+- Validation:
+  1. `make docs` passed.
+  2. `git diff --check` passed; the generated CSS timestamp was restored so it was not included with the README change.
+- Questions: None.
+- Next: Await human direction. The README change is committed; worktree is clean.
+
+## Previous Session State (has_first API)
+
 - last_session_id: 61c32006-e8bb-4ee8-9297-de91fe0c34da
 - current_timestamp: 2026-11-05T16:19:00-07:00
 - session_complete: true
