@@ -1,0 +1,114 @@
+-- allium: 3
+-- REQ-FN-002A8 / REQ-FN-002A1.
+-- has_first reports whether first can produce a result without materializing
+-- or counting producer observations. MapEntry always has a first result: key.
+
+entity HasFirst {
+    supports_has_first_free_function: Boolean
+    supports_sequenceable_collection_domain: Boolean
+    supports_first_producer_domain: Boolean
+    supports_map_entry_domain: Boolean
+    returns_boolean_presence: Boolean
+    returns_false_for_empty_collection: Boolean
+    returns_true_for_nonempty_collection: Boolean
+    map_and_set_result_ignores_traversal_order: Boolean
+    producer_result_matches_first_observation_presence: Boolean
+    producer_observation_stops_when_presence_is_known: Boolean
+    producer_observation_does_not_count_or_materialize: Boolean
+    zero_producer_cap_returns_false_without_callbacks: Boolean
+    producer_callback_behavior_follows_first: Boolean
+    map_entry_result_is_true: Boolean
+    preserves_input_value_owned_state: Boolean
+    no_heap_allocation: Boolean
+    no_rtti: Boolean
+    no_exceptions: Boolean
+    constexpr_capable: Boolean
+    rejects_unsupported_domain_with_targeted_diagnostic: Boolean
+    diagnostic_names_supported_domains: Boolean
+
+    invariant HasFirstFreeFunctionSupported {
+        this.supports_has_first_free_function = true
+    }
+
+    invariant SupportsSequenceableCollectionDomain {
+        this.supports_sequenceable_collection_domain = true
+    }
+
+    invariant SupportsFirstProducerDomain {
+        this.supports_first_producer_domain = true
+    }
+
+    invariant SupportsMapEntryDomain {
+        this.supports_map_entry_domain = true
+    }
+
+    invariant ReturnsBooleanPresence {
+        this.returns_boolean_presence = true
+    }
+
+    invariant ReturnsFalseForEmptyCollection {
+        this.returns_false_for_empty_collection = true
+    }
+
+    invariant ReturnsTrueForNonemptyCollection {
+        this.returns_true_for_nonempty_collection = true
+    }
+
+    invariant MapAndSetResultIgnoresTraversalOrder {
+        this.map_and_set_result_ignores_traversal_order = true
+    }
+
+    invariant ProducerResultMatchesFirstObservationPresence {
+        this.producer_result_matches_first_observation_presence = true
+    }
+
+    invariant ProducerObservationStopsWhenPresenceIsKnown {
+        this.producer_observation_stops_when_presence_is_known = true
+    }
+
+    invariant ProducerObservationDoesNotCountOrMaterialize {
+        this.producer_observation_does_not_count_or_materialize = true
+    }
+
+    invariant ZeroProducerCapReturnsFalseWithoutCallbacks {
+        this.zero_producer_cap_returns_false_without_callbacks = true
+    }
+
+    invariant ProducerCallbackBehaviorFollowsFirst {
+        this.producer_callback_behavior_follows_first = true
+    }
+
+    invariant MapEntryResultIsTrue {
+        this.map_entry_result_is_true = true
+    }
+
+    invariant PreservesInputValueOwnedState {
+        this.preserves_input_value_owned_state = true
+    }
+
+    invariant NoHeapAllocation {
+        this.no_heap_allocation = true
+    }
+
+    invariant NoRtti {
+        this.no_rtti = true
+    }
+
+    invariant NoExceptions {
+        this.no_exceptions = true
+    }
+
+    invariant ConstexprCapable {
+        this.constexpr_capable = true
+    }
+
+    invariant RejectsUnsupportedDomainWithTargetedDiagnostic {
+        this.rejects_unsupported_domain_with_targeted_diagnostic = true
+    }
+
+    invariant DiagnosticNamesSupportedDomains {
+        this.diagnostic_names_supported_domains = true
+    }
+}
+
+actor HasFirstOperator { identified_by: HasFirst }
