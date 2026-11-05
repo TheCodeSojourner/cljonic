@@ -28,13 +28,14 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: origin_artifact}
 
 λ REQ-FN-033(x).
-  ∀ `comp`: accepts zero or more compatible element functions ∧ composes them into one callable value
+  ∀ core free-function API inventory: includes `comp` as a deferred, non-binding entry ∧ listing does not establish supported behavior
+  ∧ ∀ `comp`: accepts zero or more compatible element functions ∧ composes them into one callable value
   ∧ ∀ zero functions: produce an identity callable ∧ ∀ one function: produces an equivalent callable
   ∧ ∀ functions supplied as `comp(f, g, h, ...)`: compile-time checking verifies from right to left that each function accepts the return type of the function to its right ∧ the composed function has the rightmost function's input type and the leftmost function's return type
   ∧ ∀ resulting_callable: applies the functions from right to left, representing `f(g(h(value)))` for three functions
   ∧ ∀ incompatible parameter ∧ return types: rejected at compile time ∧ ∀ context: ¬∃ transducer composition ∨ destination-independent collection-processing semantics
   rationale: transducers and destination-independent processing sit outside the bounded, materialization-first model of the library
-  {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-05, rationale_source: origin_artifact}
 
 λ REQ-FN-034(x).
   ∀ `reduce`: accepts a reducing function followed by one cljonic source (the no-initial form) or by an initial value and one cljonic source (the explicit-initial form)

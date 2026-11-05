@@ -46,15 +46,17 @@ This module specifies specialized domain conveniences built on top of lower modu
 
 λ REQ-FN-002J(x).
   ∀ runtime text parsing: provides `can_parse_int` and `parse_int` for the supported fixed-width integer target, `can_parse_float` and `parse_float` for the supported floating-point target, and `can_parse_bool` and `parse_bool` for documented boolean spellings
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  ∧ ∀ these parsing functions: provided in `cljonic::string` ∧ ¬∃ provision in `cljonic::core`
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-05}
 
 λ REQ-FN-015(x).
   ∀ single-match regex function corresponding to (`re_find` ∨ `re_matches`): returns an owning `String` ∧ returns the empty `String` when no match exists
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-FN-016(x).
-  ∀ single-match regex function: provides corresponding non-throwing, non-allocating preflight predicates, such as `has_re_find` and `has_re_matches`, that determine whether a match exists
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  ∀ single-match regex function: provides corresponding non-throwing, non-allocating preflight predicates `has_re_find` and `has_re_matches` that determine whether a match exists
+  ∧ ∀ these preflight predicates: provided in `cljonic::core` ∧ ¬∃ provision in `cljonic::string`
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-05}
 
 λ REQ-FN-017(x).
   ∀ compile_time regex construction: uses the root `cljonic::Regex<N>` type with braced literal syntax such as `cljonic::Regex{"^[A-Z]+$"}`
