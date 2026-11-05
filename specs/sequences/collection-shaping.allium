@@ -2,8 +2,9 @@
 -- lifecycle: deferred
 
 -- First-pass behavioral contract shared by the REQ-SEQ-022 operation family.
--- take_while and drop_while now have separate approved producer contracts in
--- take-while.allium and drop-while.allium. Neither is published yet.
+-- take_while and drop_while are active under their separate producer contracts
+-- in take-while.allium and drop-while.allium. The remaining operations are
+-- deferred.
 entity CollectionShapingTraversalPolicy {
     preserves_input_values: Boolean
     callbacks_are_pure_and_non_allocating: Boolean
