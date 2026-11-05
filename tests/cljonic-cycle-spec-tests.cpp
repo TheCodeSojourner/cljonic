@@ -9,22 +9,19 @@ TEST_CASE("Cycle first access does not pre-count nested adapter sources", "[cycl
     TRACE_ID("invariant.Cycle.FirstObservationOverNestedAdaptersUsesOnlyNeededEvaluation");
     int produced = 0;
     int tested = 0;
-    const auto source = cljonic::cycle(cljonic::cycle(cljonic::drop_while(
+    const auto source = cljonic::core::cycle(cljonic::core::cycle(cljonic::core::drop_while(
         [&tested](int n) noexcept {
             ++tested;
             return n < 3;
         },
-        cljonic::repeatedly([&produced]() noexcept { return ++produced; }))));
-    REQUIRE(cljonic::first(source) == 3);
+        cljonic::core::repeatedly([&produced]() noexcept { return ++produced; }))));
+    REQUIRE(cljonic::core::first(source) == 3);
     REQUIRE(produced == 3);
     REQUIRE(tested == 3);
-    STATIC_REQUIRE(cljonic::first(cljonic::next(cljonic::cycle(cljonic::vector(1, 2)))) == 2);
+    STATIC_REQUIRE(cljonic::core::first(cljonic::core::next(cljonic::core::cycle(cljonic::core::vector(1, 2)))) == 2);
 }
 
 TEST_CASE("Cycle repeats a bounded source value sequence and materializes bounded prefixes", "[cycle]") {
-    using cljonic::cycle;
-    using cljonic::fits_into;
-    using cljonic::into;
     using cljonic::Range;
     using cljonic::Set;
     using cljonic::Vector;
@@ -36,6 +33,9 @@ TEST_CASE("Cycle repeats a bounded source value sequence and materializes bounde
     using cljonic::concepts::NothrowStableEqualityComparable;
     using cljonic::concepts::SequenceableProducer;
     using cljonic::concepts::StableEqualityComparable;
+    using cljonic::core::cycle;
+    using cljonic::core::fits_into;
+    using cljonic::core::into;
 
     TRACE_ID("entity-fields.Cycle");
     TRACE_ID("invariant.Cycle.HeaderOnlyDistribution");
@@ -131,7 +131,7 @@ TEST_CASE("Cycle repeats a bounded source value sequence and materializes bounde
     constexpr auto cycle_c = cycle(Vector<int, 3>{1, 2, 4});
     STATIC_REQUIRE(cycle_a == cycle_b);
     STATIC_REQUIRE(!(cycle_a == cycle_c));
-    STATIC_REQUIRE(cljonic::next(cycle_a) != cycle_a);
+    STATIC_REQUIRE(cljonic::core::next(cycle_a) != cycle_a);
     STATIC_REQUIRE(StableEqualityComparable<std::remove_cvref_t<decltype(cycle_a)>>);
     STATIC_REQUIRE(NothrowStableEqualityComparable<std::remove_cvref_t<decltype(cycle_a)>>);
 
@@ -194,11 +194,11 @@ TEST_CASE("Cycle propagates only the supplied source callback effects", "[cycle]
     TRACE_ID("invariant.Cycle.EffectsAreLimitedToSourceContractScope");
     TRACE_ID("invariant.Cycle.DoesNotAuthorizeAdditionalEffectsOrInputCollectionMutation");
     int calls = 0;
-    const auto source = cljonic::repeatedly(std::size_t{2}, [&calls]() noexcept { return ++calls; });
-    const auto cycled = cljonic::cycle(source);
+    const auto source = cljonic::core::repeatedly(std::size_t{2}, [&calls]() noexcept { return ++calls; });
+    const auto cycled = cljonic::core::cycle(source);
     const auto destination = cljonic::Vector<int, 4>{9};
     CHECK(calls == 0);
-    const auto result = cljonic::into(destination, cycled);
+    const auto result = cljonic::core::into(destination, cycled);
     // into advances the source once more before detecting a full destination.
     CHECK(calls == 4);
     CHECK(result(0) == 9);

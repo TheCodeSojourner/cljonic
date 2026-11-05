@@ -14,19 +14,21 @@ struct IntegerAdder {
 } // namespace
 
 TEST_CASE("map applies a transforming function over one or more cljonic sources", "[map][core]") {
-    using cljonic::cycle;
-    using cljonic::equal;
-    using cljonic::hash_map;
-    using cljonic::hash_set;
-    using cljonic::iterate;
-    using cljonic::map;
-    using cljonic::queue;
     using cljonic::Range;
-    using cljonic::repeat;
-    using cljonic::repeatedly;
-    using cljonic::string;
-    using cljonic::vector;
     using cljonic::Vector;
+    using cljonic::core::count;
+    using cljonic::core::cycle;
+    using cljonic::core::equal;
+    using cljonic::core::first;
+    using cljonic::core::hash_map;
+    using cljonic::core::hash_set;
+    using cljonic::core::iterate;
+    using cljonic::core::map;
+    using cljonic::core::queue;
+    using cljonic::core::repeat;
+    using cljonic::core::repeatedly;
+    using cljonic::core::string;
+    using cljonic::core::vector;
 
     TRACE_ID("entity-fields.MapFunction");
     TRACE_ID("invariant.MapFunction.CanonicalMultiSourceMappingOperation");

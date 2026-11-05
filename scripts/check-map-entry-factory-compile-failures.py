@@ -10,29 +10,29 @@ import subprocess
 from compile_probe import compile_probe
 
 FAILURE_CASES = {
-    "zero-arguments": "  (void)cljonic::map_entry();",
-    "one-argument": "  (void)cljonic::map_entry(1);",
-    "three-arguments": "  (void)cljonic::map_entry(1, 2, 3);",
-    "floating-point-key": "  (void)cljonic::map_entry(1.0, 2.0);",
-    "unsafe-explicit-conversion": "  (void)cljonic::map_entry<int, int>(1LL, 10);",
+    "zero-arguments": "  (void)cljonic::core::map_entry();",
+    "one-argument": "  (void)cljonic::core::map_entry(1);",
+    "three-arguments": "  (void)cljonic::core::map_entry(1, 2, 3);",
+    "floating-point-key": "  (void)cljonic::core::map_entry(1.0, 2.0);",
+    "unsafe-explicit-conversion": "  (void)cljonic::core::map_entry<int, int>(1LL, 10);",
 }
 
 PASS_CASES = {
     "deduced-key-and-value": (
-        "  constexpr auto value = cljonic::map_entry(1, 10L); "
+        "  constexpr auto value = cljonic::core::map_entry(1, 10L); "
         "static_assert(value.key == 1 && value.value == 10L);"
     ),
     "explicit-types": (
-        "  constexpr auto value = cljonic::map_entry<long, long>(short{1}, short{10}); "
+        "  constexpr auto value = cljonic::core::map_entry<long, long>(short{1}, short{10}); "
         "static_assert(value.key == 1L && value.value == 10L);"
     ),
     "constexpr-noexcept": (
-        "  static_assert(noexcept(cljonic::map_entry(1, 2))); "
-        "constexpr auto value = cljonic::map_entry(3, 4); "
+        "  static_assert(noexcept(cljonic::core::map_entry(1, 2))); "
+        "constexpr auto value = cljonic::core::map_entry(3, 4); "
         "static_assert(value == cljonic::MapEntry{3, 4});"
     ),
     "value-semantic-copy": (
-        "  const auto original = cljonic::map_entry(5, 6); "
+        "  const auto original = cljonic::core::map_entry(5, 6); "
         "const auto copy = original; "
         "static_assert(noexcept(original == copy)); "
         "return (original == copy && copy.key == 5 && copy.value == 6) ? 0 : 1;"

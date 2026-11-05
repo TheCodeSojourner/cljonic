@@ -9,32 +9,34 @@
 
 namespace {
 template <typename T>
-concept HasAdmittedSeq = requires(const T& value) { requires !std::same_as<decltype(cljonic::seq(value)), void>; };
+concept HasAdmittedSeq =
+    requires(const T& value) { requires !std::same_as<decltype(cljonic::core::seq(value)), void>; };
 } // namespace
 
 TEST_CASE("Seq free function operations", "[seq]") {
-    using cljonic::count;
     using cljonic::Cycle;
-    using cljonic::equal;
-    using cljonic::first;
-    using cljonic::hash_map;
-    using cljonic::hash_set;
     using cljonic::Iterate;
     using cljonic::Map;
-    using cljonic::map_entry;
     using cljonic::MapEntry;
-    using cljonic::queue;
     using cljonic::Queue;
     using cljonic::Range;
-    using cljonic::repeat;
     using cljonic::Repeat;
     using cljonic::Repeatedly;
-    using cljonic::seq;
     using cljonic::Set;
-    using cljonic::string;
     using cljonic::String;
-    using cljonic::vector;
     using cljonic::Vector;
+    using cljonic::core::count;
+    using cljonic::core::cycle;
+    using cljonic::core::equal;
+    using cljonic::core::first;
+    using cljonic::core::hash_map;
+    using cljonic::core::hash_set;
+    using cljonic::core::map_entry;
+    using cljonic::core::queue;
+    using cljonic::core::repeat;
+    using cljonic::core::seq;
+    using cljonic::core::string;
+    using cljonic::core::vector;
 
     TRACE_ID("entity-fields.Seq");
     STATIC_REQUIRE(cljonic::concepts::CljonicSource<Vector<int, 4>>);

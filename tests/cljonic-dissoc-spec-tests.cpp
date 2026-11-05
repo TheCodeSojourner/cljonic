@@ -9,9 +9,9 @@ struct DissocNotConvertible {};
 } // namespace
 
 TEST_CASE("Dissoc free function operations", "[dissoc]") {
-    using cljonic::assoc;
-    using cljonic::dissoc;
     using cljonic::Map;
+    using cljonic::core::assoc;
+    using cljonic::core::dissoc;
 
     TRACE_ID("entity-fields.Dissoc");
     TRACE_ID("invariant.Dissoc.DissocFreeFunctionSupported");

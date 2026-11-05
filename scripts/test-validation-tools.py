@@ -325,6 +325,33 @@ class ParallelCommandTests(unittest.TestCase):
         self.assertIn("compile-fail:ok groups=2", quiet_ok.stdout)
 
 
+class DocSampleStyleTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        path = Path(__file__).with_name("compile-doc-samples.py")
+        spec = importlib.util.spec_from_file_location("doc_sample_checks", path)
+        cls.module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.module)
+
+    def test_root_namespace_import_is_allowed_at_file_scope(self):
+        snippet = (
+            '#include "cljonic.hpp"\n'
+            "using namespace cljonic;\n"
+            "using namespace cljonic::core;\n"
+        )
+        self.assertIsNone(self.module.example_style_error("sample.hpp", 1, snippet))
+
+    def test_root_namespace_import_is_required(self):
+        snippet = '#include "cljonic.hpp"\nusing namespace cljonic::core;\n'
+        error = self.module.example_style_error("sample.hpp", 1, snippet)
+        self.assertIn("missing 'using namespace cljonic;'", error)
+
+    def test_root_namespace_import_must_be_outside_main(self):
+        snippet = '#include "cljonic.hpp"\nint main() {\n  using namespace cljonic;\n}\n'
+        error = self.module.example_style_error("sample.hpp", 1, snippet)
+        self.assertIn("must be at file scope", error)
+
+
 class CompileFailRegistryTests(unittest.TestCase):
     MAKEFILE = (
         ".PHONY: alpha-compile-fail beta-compile-fail\n"

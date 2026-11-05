@@ -25,89 +25,89 @@ import subprocess
 
 FAILURE_CASES = {
     # Floating-point rejection at any depth.
-    "Equal-float-scalar": "(void)cljonic::equal(1.0, 1.0);",
-    "Equal-float-collection": ("(void)cljonic::equal(cljonic::Vector<double, 2>{}, "
+    "Equal-float-scalar": "(void)cljonic::core::equal(1.0, 1.0);",
+    "Equal-float-collection": ("(void)cljonic::core::equal(cljonic::Vector<double, 2>{}, "
                                "cljonic::Vector<double, 2>{});"),
-    "Equal-float-map-value": ("(void)cljonic::equal(cljonic::Map<int, double, 2>{}, "
+    "Equal-float-map-value": ("(void)cljonic::core::equal(cljonic::Map<int, double, 2>{}, "
                               "cljonic::Map<int, double, 2>{});"),
-    "Equal-float-producer": ("(void)cljonic::equal(cljonic::Repeat<double>{}, "
+    "Equal-float-producer": ("(void)cljonic::core::equal(cljonic::Repeat<double>{}, "
                              "cljonic::Repeat<double>{});"),
-    "Equal-float-nested-variant": ("(void)cljonic::equal(std::variant<int, double>{1}, "
+    "Equal-float-nested-variant": ("(void)cljonic::core::equal(std::variant<int, double>{1}, "
                                    "std::variant<int, double>{1});"),
     # Cross-family pairs.
-    "Equal-map-vs-vector": "(void)cljonic::equal(cljonic::Map<int, int, 2>{}, cljonic::Vector<int, 2>{});",
-    "Equal-set-vs-vector": "(void)cljonic::equal(cljonic::Set<int, 2>{}, cljonic::Vector<int, 2>{});",
-    "Equal-string-vs-vector": "(void)cljonic::equal(cljonic::String<4>{}, cljonic::Vector<int, 2>{});",
-    "Equal-map-vs-set": "(void)cljonic::equal(cljonic::Map<int, int, 2>{}, cljonic::Set<int, 2>{});",
-    "Equal-string-vs-map": "(void)cljonic::equal(cljonic::String<4>{}, cljonic::Map<int, int, 2>{});",
-    "Equal-set-vs-cycle": ("(void)cljonic::equal(cljonic::Set<int, 2>{}, "
-                           "cljonic::cycle(cljonic::Vector<int, 2>{}));"),
+    "Equal-map-vs-vector": "(void)cljonic::core::equal(cljonic::Map<int, int, 2>{}, cljonic::Vector<int, 2>{});",
+    "Equal-set-vs-vector": "(void)cljonic::core::equal(cljonic::Set<int, 2>{}, cljonic::Vector<int, 2>{});",
+    "Equal-string-vs-vector": "(void)cljonic::core::equal(cljonic::String<4>{}, cljonic::Vector<int, 2>{});",
+    "Equal-map-vs-set": "(void)cljonic::core::equal(cljonic::Map<int, int, 2>{}, cljonic::Set<int, 2>{});",
+    "Equal-string-vs-map": "(void)cljonic::core::equal(cljonic::String<4>{}, cljonic::Map<int, int, 2>{});",
+    "Equal-set-vs-cycle": ("(void)cljonic::core::equal(cljonic::Set<int, 2>{}, "
+                           "cljonic::core::cycle(cljonic::Vector<int, 2>{}));"),
     # Mixed cljonic vs non-cljonic pairs.
-    "Equal-vector-vs-scalar": "(void)cljonic::equal(cljonic::Vector<int, 2>{1}, 1);",
-    "Equal-scalar-vs-map": "(void)cljonic::equal(1, cljonic::Map<int, int, 2>{});",
-    "Equal-string-vs-char-literal": "(void)cljonic::equal(cljonic::String<4>{\"a\"}, 'a');",
+    "Equal-vector-vs-scalar": "(void)cljonic::core::equal(cljonic::Vector<int, 2>{1}, 1);",
+    "Equal-scalar-vs-map": "(void)cljonic::core::equal(1, cljonic::Map<int, int, 2>{});",
+    "Equal-string-vs-char-literal": "(void)cljonic::core::equal(cljonic::String<4>{\"a\"}, 'a');",
     # Standard-library interop-surface types are outside the equality domain.
-    "Equal-std-vector": "(void)cljonic::equal(std::vector<int>{1}, std::vector<int>{1});",
-    "Equal-std-string": "(void)cljonic::equal(std::string{\"a\"}, std::string{\"a\"});",
-    "Equal-std-span": "(void)cljonic::equal(std::span<int>{}, std::span<int>{});",
-    "Equal-std-string-view": ("(void)cljonic::equal(std::string_view{\"a\"}, "
+    "Equal-std-vector": "(void)cljonic::core::equal(std::vector<int>{1}, std::vector<int>{1});",
+    "Equal-std-string": "(void)cljonic::core::equal(std::string{\"a\"}, std::string{\"a\"});",
+    "Equal-std-span": "(void)cljonic::core::equal(std::span<int>{}, std::span<int>{});",
+    "Equal-std-string-view": ("(void)cljonic::core::equal(std::string_view{\"a\"}, "
                               "std::string_view{\"a\"});"),
-    "Equal-std-map": "(void)cljonic::equal(std::map<int, int>{}, std::map<int, int>{});",
+    "Equal-std-map": "(void)cljonic::core::equal(std::map<int, int>{}, std::map<int, int>{});",
     # The standard-library variant is not a cljonic value type.
-    "Equal-std-variant": ("(void)cljonic::equal(std::variant<int, long>{1}, "
+    "Equal-std-variant": ("(void)cljonic::core::equal(std::variant<int, long>{1}, "
                           "std::variant<int, long>{1});"),
     # Standard-range components are rejected at any depth.
-    "Equal-nested-std-range-variant": ("(void)cljonic::equal(std::variant<int, std::vector<int>>{1}, "
+    "Equal-nested-std-range-variant": ("(void)cljonic::core::equal(std::variant<int, std::vector<int>>{1}, "
                                         "std::variant<int, std::vector<int>>{1});"),
-    "Equal-nested-std-range-collection": ("(void)cljonic::equal(cljonic::Vector<std::array<int, 2>, 2>{}, "
+    "Equal-nested-std-range-collection": ("(void)cljonic::core::equal(cljonic::Vector<std::array<int, 2>, 2>{}, "
                                           "cljonic::Vector<std::array<int, 2>, 2>{});"),
     # Unscoped enums and pointers are outside the fallthrough domain.
-    "Equal-unscoped-enum": ("(void)cljonic::equal(EqualUnscopedColor::EqualUnscopedRed, "
+    "Equal-unscoped-enum": ("(void)cljonic::core::equal(EqualUnscopedColor::EqualUnscopedRed, "
                             "EqualUnscopedColor::EqualUnscopedRed);"),
-    "Equal-pointer": "int x = 0; int y = 0; (void)cljonic::equal(&x, &y);",
+    "Equal-pointer": "int x = 0; int y = 0; (void)cljonic::core::equal(&x, &y);",
     # A throwing operator== is outside the non-throwing equality domain.
     "Equal-throwing-aggregate": ("ThrowingEqual a{}; ThrowingEqual b{}; "
-                                  "(void)cljonic::equal(a, b);"),
+                                  "(void)cljonic::core::equal(a, b);"),
     # Cross-type rules: value-preserving pairs are admitted (see PASS_CASES),
     # while sign-crossing, character, Boolean, and identity-sensitive pairs stay
     # rejected.
-    "Equal-scalar-sign-crossing": "(void)cljonic::equal(1, 1U);",
-    "Equal-scalar-sign-crossing-reverse": "(void)cljonic::equal(1U, 1);",
-    "Equal-scalar-character-crossing": "(void)cljonic::equal('a', 65);",
-    "Equal-scalar-boolean-crossing": "(void)cljonic::equal(true, 1);",
-    "Equal-map-key-cross-type": ("(void)cljonic::equal(cljonic::Map<int, int, 2>{}, "
+    "Equal-scalar-sign-crossing": "(void)cljonic::core::equal(1, 1U);",
+    "Equal-scalar-sign-crossing-reverse": "(void)cljonic::core::equal(1U, 1);",
+    "Equal-scalar-character-crossing": "(void)cljonic::core::equal('a', 65);",
+    "Equal-scalar-boolean-crossing": "(void)cljonic::core::equal(true, 1);",
+    "Equal-map-key-cross-type": ("(void)cljonic::core::equal(cljonic::Map<int, int, 2>{}, "
                                  "cljonic::Map<long, int, 2>{});"),
-    "Equal-set-element-cross-type": "(void)cljonic::equal(cljonic::Set<int, 2>{}, cljonic::Set<long, 2>{});",
+    "Equal-set-element-cross-type": "(void)cljonic::core::equal(cljonic::Set<int, 2>{}, cljonic::Set<long, 2>{});",
     # Parameterized standard-library wrappers stay outside the value domain,
     # however instantiated (a floating-point component must not be smuggled in).
-    "Equal-std-pair": ("(void)cljonic::equal(std::pair<int, int>{1, 2}, std::pair<int, int>{1, 2});"),
-    "Equal-std-pair-with-float": ("(void)cljonic::equal(std::pair<double, double>{1.0, 2.0}, "
+    "Equal-std-pair": ("(void)cljonic::core::equal(std::pair<int, int>{1, 2}, std::pair<int, int>{1, 2});"),
+    "Equal-std-pair-with-float": ("(void)cljonic::core::equal(std::pair<double, double>{1.0, 2.0}, "
                                   "std::pair<double, double>{1.0, 2.0});"),
-    "Equal-std-optional": "(void)cljonic::equal(std::optional<int>{1}, std::optional<int>{1});",
-    "Equal-std-optional-with-float": ("(void)cljonic::equal(std::optional<double>{1.0}, "
+    "Equal-std-optional": "(void)cljonic::core::equal(std::optional<int>{1}, std::optional<int>{1});",
+    "Equal-std-optional-with-float": ("(void)cljonic::core::equal(std::optional<double>{1.0}, "
                                       "std::optional<double>{1.0});"),
-    "Equal-std-tuple": "(void)cljonic::equal(std::tuple<int>{1}, std::tuple<int>{1});",
-    "Equal-sequential-element-character-crossing": ("(void)cljonic::equal(cljonic::Vector<int, 2>{1}, "
+    "Equal-std-tuple": "(void)cljonic::core::equal(std::tuple<int>{1}, std::tuple<int>{1});",
+    "Equal-sequential-element-character-crossing": ("(void)cljonic::core::equal(cljonic::Vector<int, 2>{1}, "
                                                     "cljonic::Vector<char, 2>{'1'});"),
     # Callables are outside the stable-equality domain.
-    "Equal-callable-bearing-producer": ("(void)cljonic::equal(cljonic::Iterate<int, int (*)(int)>{}, "
+    "Equal-callable-bearing-producer": ("(void)cljonic::core::equal(cljonic::Iterate<int, int (*)(int)>{}, "
                                         "cljonic::Iterate<int, int (*)(int)>{});"),
     # Unary arity: only domain-admitted operands, float and interop rejected.
-    "Equal-unary-float": "(void)cljonic::equal(1.0);",
-    "Equal-unary-std-vector": "(void)cljonic::equal(std::vector<int>{});",
-    "Equal-unary-std-string": "(void)cljonic::equal(std::string{});",
-    "Equal-unary-float-collection": "(void)cljonic::equal(cljonic::Vector<double, 2>{});",
-    "Equal-unary-float-map": "(void)cljonic::equal(cljonic::Map<int, double, 2>{});",
+    "Equal-unary-float": "(void)cljonic::core::equal(1.0);",
+    "Equal-unary-std-vector": "(void)cljonic::core::equal(std::vector<int>{});",
+    "Equal-unary-std-string": "(void)cljonic::core::equal(std::string{});",
+    "Equal-unary-float-collection": "(void)cljonic::core::equal(cljonic::Vector<double, 2>{});",
+    "Equal-unary-float-map": "(void)cljonic::core::equal(cljonic::Map<int, double, 2>{});",
     # Variadic arity: every adjacent pair must be individually admissible.
-    "Equal-variadic-mixed-scalar-collection": ("(void)cljonic::equal(1, cljonic::Vector<int, 2>{1}, 2);"),
-    "Equal-variadic-cross-family-position": ("(void)cljonic::equal(1, 2, cljonic::Vector<int, 2>{});"),
-    "Equal-variadic-cross-family-tail": ("(void)cljonic::equal(cljonic::Vector<int, 2>{1}, "
+    "Equal-variadic-mixed-scalar-collection": ("(void)cljonic::core::equal(1, cljonic::Vector<int, 2>{1}, 2);"),
+    "Equal-variadic-cross-family-position": ("(void)cljonic::core::equal(1, 2, cljonic::Vector<int, 2>{});"),
+    "Equal-variadic-cross-family-tail": ("(void)cljonic::core::equal(cljonic::Vector<int, 2>{1}, "
                                          "cljonic::Vector<int, 2>{1}, cljonic::Set<int, 2>{});"),
-    "Equal-variadic-float-adjacent": "(void)cljonic::equal(1, 1.0, 1);",
-    "Equal-variadic-element-character-crossing": ("(void)cljonic::equal(cljonic::Vector<int, 2>{1}, "
+    "Equal-variadic-float-adjacent": "(void)cljonic::core::equal(1, 1.0, 1);",
+    "Equal-variadic-element-character-crossing": ("(void)cljonic::core::equal(cljonic::Vector<int, 2>{1}, "
                                                   "cljonic::Vector<char, 2>{'1'}, cljonic::Vector<int, 2>{1});"),
-    "Equal-variadic-std-range-tail": ("(void)cljonic::equal(1, 1, std::vector<int>{1});"),
-    "Equal-variadic-mixed-family-chain": ("(void)cljonic::equal(cljonic::Map<int, int, 4>"
+    "Equal-variadic-std-range-tail": ("(void)cljonic::core::equal(1, 1, std::vector<int>{1});"),
+    "Equal-variadic-mixed-family-chain": ("(void)cljonic::core::equal(cljonic::Map<int, int, 4>"
                                           "{cljonic::MapEntry<int, int>{1, 10}}, "
                                           "cljonic::Map<int, int, 4>{cljonic::MapEntry<int, int>{1, 10}}, "
                                           "cljonic::Set<int, 4>{1, 2}, cljonic::Set<int, 8>{2, 1});"),
@@ -115,45 +115,45 @@ FAILURE_CASES = {
 
 PASS_CASES = {
     # Safe value-preserving conversions (REQ-FN-002G, human decision 2026-10-31).
-    "Equal-scalar-safe-widening": "(void)cljonic::equal(1, 1L);",
-    "Equal-scalar-safe-widening-reverse": "(void)cljonic::equal(1L, 1);",
-    "Equal-sequential-element-safe-widening": ("(void)cljonic::equal(cljonic::Vector<int, 2>{1}, "
+    "Equal-scalar-safe-widening": "(void)cljonic::core::equal(1, 1L);",
+    "Equal-scalar-safe-widening-reverse": "(void)cljonic::core::equal(1L, 1);",
+    "Equal-sequential-element-safe-widening": ("(void)cljonic::core::equal(cljonic::Vector<int, 2>{1}, "
                                                   "cljonic::Range<long>{1, 3, 1});"),
-    "Equal-variadic-element-safe-widening": ("(void)cljonic::equal(cljonic::Vector<int, 2>{1}, "
+    "Equal-variadic-element-safe-widening": ("(void)cljonic::core::equal(cljonic::Vector<int, 2>{1}, "
                                                "cljonic::Range<long>{1, 3, 1}, cljonic::Vector<int, 2>{1});"),
-    "Equal-scalar": "(void)cljonic::equal(1, 1);",
+    "Equal-scalar": "(void)cljonic::core::equal(1, 1);",
     "Equal-enum": ("enum class EqualColor { Red, Green }; "
-                   "(void)cljonic::equal(EqualColor::Red, EqualColor::Red);"),
-    "Equal-cljonic-variant": ("(void)cljonic::equal(cljonic::Variant<int, long>{1}, "
+                   "(void)cljonic::core::equal(EqualColor::Red, EqualColor::Red);"),
+    "Equal-cljonic-variant": ("(void)cljonic::core::equal(cljonic::Variant<int, long>{1}, "
                               "cljonic::Variant<int, long>{1});"),
-    "Equal-map-entry": ("(void)cljonic::equal(cljonic::MapEntry<int, int>{1, 2}, "
+    "Equal-map-entry": ("(void)cljonic::core::equal(cljonic::MapEntry<int, int>{1, 2}, "
                         "cljonic::MapEntry<int, int>{1, 2});"),
-    "Equal-vector-vs-range": ("(void)cljonic::equal(cljonic::Vector<int, 4>{1, 2, 3}, "
+    "Equal-vector-vs-range": ("(void)cljonic::core::equal(cljonic::Vector<int, 4>{1, 2, 3}, "
                               "cljonic::Range<int>{1, 4, 1});"),
-    "Equal-vector-vs-queue": ("(void)cljonic::equal(cljonic::Vector<int, 4>{1, 2, 3}, "
+    "Equal-vector-vs-queue": ("(void)cljonic::core::equal(cljonic::Vector<int, 4>{1, 2, 3}, "
                               "cljonic::Queue<int, 4>{1, 2, 3});"),
-    "Equal-vector-vs-repeat": ("(void)cljonic::equal(cljonic::Vector<int, 4>{1, 1, 1}, "
+    "Equal-vector-vs-repeat": ("(void)cljonic::core::equal(cljonic::Vector<int, 4>{1, 1, 1}, "
                                "cljonic::Repeat<int>{3U, 1});"),
-    "Equal-repeat-unbounded-pair": ("(void)cljonic::equal(cljonic::Repeat<int>{7}, "
+    "Equal-repeat-unbounded-pair": ("(void)cljonic::core::equal(cljonic::Repeat<int>{7}, "
                                     "cljonic::Repeat<int>{7});"),
-    "Equal-cycle-vs-vector-early-exit": ("(void)cljonic::equal(cljonic::cycle(cljonic::Vector<int, 2>{1, 2}), "
+    "Equal-cycle-vs-vector-early-exit": ("(void)cljonic::core::equal(cljonic::core::cycle(cljonic::Vector<int, 2>{1, 2}), "
                                          "cljonic::Vector<int, 4>{1, 2, 3});"),
-    "Equal-map-pair": ("(void)cljonic::equal(cljonic::Map<int, int, 4>{cljonic::MapEntry<int, int>{1, 10}}, "
+    "Equal-map-pair": ("(void)cljonic::core::equal(cljonic::Map<int, int, 4>{cljonic::MapEntry<int, int>{1, 10}}, "
                        "cljonic::Map<int, int, 8>{cljonic::MapEntry<int, int>{1, 10}});"),
-    "Equal-set-pair": ("(void)cljonic::equal(cljonic::Set<int, 4>{1, 2}, cljonic::Set<int, 8>{2, 1});"),
-    "Equal-string-pair": ("(void)cljonic::equal(cljonic::String<8>{\"abc\"}, cljonic::String<4>{\"abc\"});"),
-    "Equal-aggregate": ("EqualPixel a{1, 2}; EqualPixel b{1, 2}; (void)cljonic::equal(a, b);"),
-    "Equal-nested-producer-parameter-equality": ("(void)cljonic::equal(cljonic::Vector<cljonic::Repeat<int>, 2>"
+    "Equal-set-pair": ("(void)cljonic::core::equal(cljonic::Set<int, 4>{1, 2}, cljonic::Set<int, 8>{2, 1});"),
+    "Equal-string-pair": ("(void)cljonic::core::equal(cljonic::String<8>{\"abc\"}, cljonic::String<4>{\"abc\"});"),
+    "Equal-aggregate": ("EqualPixel a{1, 2}; EqualPixel b{1, 2}; (void)cljonic::core::equal(a, b);"),
+    "Equal-nested-producer-parameter-equality": ("(void)cljonic::core::equal(cljonic::Vector<cljonic::Repeat<int>, 2>"
                                                  "{cljonic::Repeat<int>{3U, 7}}, "
                                                  "cljonic::Vector<cljonic::Repeat<int>, 2>"
                                                  "{cljonic::Repeat<int>{3U, 7}});"),
-    "Equal-unary-scalar": "(void)cljonic::equal(1);",
-    "Equal-unary-collection": "(void)cljonic::equal(cljonic::Vector<int, 2>{});",
-    "Equal-unary-producer": "(void)cljonic::equal(cljonic::Repeat<int>{7});",
-    "Equal-variadic-scalar": "(void)cljonic::equal(1, 1, 1, 1);",
-    "Equal-variadic-sequential": ("(void)cljonic::equal(cljonic::Vector<int, 4>{1, 2, 3}, "
+    "Equal-unary-scalar": "(void)cljonic::core::equal(1);",
+    "Equal-unary-collection": "(void)cljonic::core::equal(cljonic::Vector<int, 2>{});",
+    "Equal-unary-producer": "(void)cljonic::core::equal(cljonic::Repeat<int>{7});",
+    "Equal-variadic-scalar": "(void)cljonic::core::equal(1, 1, 1, 1);",
+    "Equal-variadic-sequential": ("(void)cljonic::core::equal(cljonic::Vector<int, 4>{1, 2, 3}, "
                                  "cljonic::Range<int>{1, 4, 1}, cljonic::Queue<int, 4>{1, 2, 3});"),
-    "Equal-variadic-associative": ("(void)cljonic::equal("
+    "Equal-variadic-associative": ("(void)cljonic::core::equal("
                                   "cljonic::Map<int, int, 4>{cljonic::MapEntry<int, int>{1, 10}}, "
                                   "cljonic::Map<int, int, 8>{cljonic::MapEntry<int, int>{1, 10}}, "
                                   "cljonic::Map<int, int, 4>{cljonic::MapEntry<int, int>{1, 10}});"),
@@ -229,14 +229,14 @@ DIAGNOSTIC_TAXONOMY = (
 
 # name -> (probe body, case-specific required substrings)
 DIAGNOSTIC_CASES = {
-    "Equal-unary-diagnostic": ("(void)cljonic::equal(1.0);", ()),
+    "Equal-unary-diagnostic": ("(void)cljonic::core::equal(1.0);", ()),
     "Equal-binary-diagnostic": (
-        "(void)cljonic::equal(cljonic::Vector<int, 2>{1}, 1);",
+        "(void)cljonic::core::equal(cljonic::Vector<int, 2>{1}, 1);",
         ("two values from the same cljonic family",
          "Vector, Queue, and all producers (the sequential family)"),
     ),
     "Equal-variadic-diagnostic": (
-        "(void)cljonic::equal(1, cljonic::Vector<int, 2>{1}, 2);",
+        "(void)cljonic::core::equal(1, cljonic::Vector<int, 2>{1}, 2);",
         ("With three or more operands",
          "Vector, Queue, and all producers (the sequential family)"),
     ),

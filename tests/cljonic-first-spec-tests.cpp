@@ -8,18 +8,19 @@
 
 namespace {
 template <typename T>
-concept HasAdmittedFirst = requires(const T& value) { requires !std::same_as<decltype(cljonic::first(value)), void>; };
+concept HasAdmittedFirst =
+    requires(const T& value) { requires !std::same_as<decltype(cljonic::core::first(value)), void>; };
 } // namespace
 
 TEST_CASE("First free function operations", "[first]") {
-    using cljonic::count;
-    using cljonic::first;
     using cljonic::Map;
     using cljonic::MapEntry;
     using cljonic::Queue;
     using cljonic::Set;
     using cljonic::String;
     using cljonic::Vector;
+    using cljonic::core::count;
+    using cljonic::core::first;
 
     TRACE_ID("entity-fields.First");
     STATIC_REQUIRE(cljonic::concepts::SequenceableCollection<Vector<int, 4>>);
@@ -144,6 +145,7 @@ TEST_CASE("First free function operations", "[first]") {
 
 TEST_CASE("First observes every producer family by owning element value", "[first]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.First.SupportsAllCljonicProducerFamilies");
     TRACE_ID("invariant.First.SupportsNestedAdaptersAndCycles");
     TRACE_ID("invariant.First.ProducerResultIsOwningElementCopy");
@@ -208,6 +210,7 @@ TEST_CASE("First observes every producer family by owning element value", "[firs
 
 TEST_CASE("First performs only needed producer evaluation with fresh traversal", "[first]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.First.ProducerObservationRespectsOriginalWindowAndEndpoint");
     TRACE_ID("invariant.First.SkipsDoNotReplenishObservationBudget");
     TRACE_ID("invariant.First.ProducerFirstAccessHasNoCountPrepassOrMaterialization");

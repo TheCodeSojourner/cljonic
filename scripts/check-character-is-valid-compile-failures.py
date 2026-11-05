@@ -18,22 +18,22 @@ struct CharacterIsValidUnsupported {
 
 # Each case is (source body, expected message fragment).
 DIAGNOSTIC_CASES = {
-    "bool": ("(void)cljonic::character_is_valid(true);", "must be an integer character code"),
-    "floating-point": ("(void)cljonic::character_is_valid(65.0);", "must be an integer character code"),
+    "bool": ("(void)cljonic::core::character_is_valid(true);", "must be an integer character code"),
+    "floating-point": ("(void)cljonic::core::character_is_valid(65.0);", "must be an integer character code"),
     "enumeration": (
-        "enum class CharacterCode { value = 65 }; (void)cljonic::character_is_valid(CharacterCode::value);",
+        "enum class CharacterCode { value = 65 }; (void)cljonic::core::character_is_valid(CharacterCode::value);",
         "must be an integer character code",
     ),
     "user-defined-conversion": (
-        "(void)cljonic::character_is_valid(CharacterIsValidUnsupported{});",
+        "(void)cljonic::core::character_is_valid(CharacterIsValidUnsupported{});",
         "must be an integer character code",
     ),
     "non-array-c-string-pointer": (
-        'const char* character = "A"; (void)cljonic::character_is_valid(character);',
+        'const char* character = "A"; (void)cljonic::core::character_is_valid(character);',
         "must be an integer character code",
     ),
-    "empty-c-string": ('(void)cljonic::character_is_valid("");', "one-character c-string"),
-    "multi-character-c-string": ('(void)cljonic::character_is_valid("AB");', "one-character c-string"),
+    "empty-c-string": ('(void)cljonic::core::character_is_valid("");', "one-character c-string"),
+    "multi-character-c-string": ('(void)cljonic::core::character_is_valid("AB");', "one-character c-string"),
 }
 
 DIAGNOSTIC_ANCHOR = "cljonic::character_is_valid:"

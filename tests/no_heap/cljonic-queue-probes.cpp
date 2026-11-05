@@ -26,13 +26,13 @@ namespace cljonic::no_heap::probes {
     const auto factory_empty = queue<int>();
     const auto factory_zero = queue<int, 2>();
     const auto factory_enclosed = queue(literal);
-    return q1.count() == 1U && q1.peek() == 1 && cljonic::is_empty(q1.pop()) && literal.count() == 3U &&
+    return q1.count() == 1U && q1.peek() == 1 && cljonic::core::is_empty(q1.pop()) && literal.count() == 3U &&
            literal.peek() == 10 && imported.count() == 2U && imported.peek() == 3 && imported.begin()[1] == 4 &&
            static_imported.peek() == 8 && view_imported.begin()[1] == 9 && factory_deduced.count() == 3U &&
            factory_deduced.peek() == 1 && factory_deduced.pop().peek() == 2 && factory_typed.peek() == 4L &&
            factory_typed.count() == 2U && factory_capacity.count() == 1U && factory_capacity.capacity() == 4U &&
-           factory_capacity.peek() == 6 && cljonic::is_empty(factory_empty) && factory_empty.capacity() == 0U &&
-           cljonic::is_empty(factory_zero) && factory_zero.capacity() == 2U && factory_enclosed.count() == 1U &&
+           factory_capacity.peek() == 6 && cljonic::core::is_empty(factory_empty) && factory_empty.capacity() == 0U &&
+           cljonic::core::is_empty(factory_zero) && factory_zero.capacity() == 2U && factory_enclosed.count() == 1U &&
            factory_enclosed.peek() == literal;
 }
 

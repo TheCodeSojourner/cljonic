@@ -21,33 +21,33 @@ struct AssocNotConvertible {};
 # name -> (body, case-specific required message substrings)
 DIAGNOSTIC_CASES = {
     "Assoc-non-associative-collection": (
-        "(void)cljonic::assoc(cljonic::Set<int, 4>{}, 1, 1);",
+        "(void)cljonic::core::assoc(cljonic::Set<int, 4>{}, 1, 1);",
         ("must be a Map, a Vector, or a String", "is not supported"),
     ),
     "Assoc-inadmissible-pair": (
-        "(void)cljonic::assoc(cljonic::Vector<int, 4>{}, AssocNotConvertible{}, 1);",
+        "(void)cljonic::core::assoc(cljonic::Vector<int, 4>{}, AssocNotConvertible{}, 1);",
         ("both have a type this collection cannot associate",),
     ),
     "Assoc-key-without-value": (
-        "(void)cljonic::assoc(cljonic::Map<int, int, 4>{}, 1, 100, 2);",
+        "(void)cljonic::core::assoc(cljonic::Map<int, int, 4>{}, 1, 100, 2);",
         ("key with no following value", "two or more pairs"),
     ),
     "Assoc-odd-variadic-arity": (
-        "(void)cljonic::assoc(cljonic::Map<int, int, 4>{}, 1, 100, 2, 200, 3);",
+        "(void)cljonic::core::assoc(cljonic::Map<int, int, 4>{}, 1, 100, 2, 200, 3);",
         ("complete key/value pairs",),
     ),
     "Assoc-bad-variadic-pair": (
-        "(void)cljonic::assoc(cljonic::Map<int, int, 4>{}, 1, 100, 2, AssocNotConvertible{}, 3, 3);",
+        "(void)cljonic::core::assoc(cljonic::Map<int, int, 4>{}, 1, 100, 2, AssocNotConvertible{}, 3, 3);",
         ("complete key/value pairs", "has a type the collection cannot associate"),
     ),
 }
 
 PASS_CASES = {
-    "Assoc-single-pair": "(void)cljonic::assoc(cljonic::Map<int, int, 4>{}, 1, 100);",
-    "Assoc-variadic-map": "(void)cljonic::assoc(cljonic::Map<int, int, 4>{}, 1, 100, 2, 200);",
-    "Assoc-variadic-vector": "(void)cljonic::assoc(cljonic::Vector<int, 4>{10, 20}, 1, 200, 2, 300);",
-    "Assoc-variadic-string": "(void)cljonic::assoc(cljonic::String<8>{\"ab\"}, 2U, 'c', 3U, 'd');",
-    "Assoc-over-capacity-no-op": "(void)cljonic::assoc(cljonic::Map<int, int, 2>{}, 1, 100, 2, 200, 3, 300);",
+    "Assoc-single-pair": "(void)cljonic::core::assoc(cljonic::Map<int, int, 4>{}, 1, 100);",
+    "Assoc-variadic-map": "(void)cljonic::core::assoc(cljonic::Map<int, int, 4>{}, 1, 100, 2, 200);",
+    "Assoc-variadic-vector": "(void)cljonic::core::assoc(cljonic::Vector<int, 4>{10, 20}, 1, 200, 2, 300);",
+    "Assoc-variadic-string": "(void)cljonic::core::assoc(cljonic::String<8>{\"ab\"}, 2U, 'c', 3U, 'd');",
+    "Assoc-over-capacity-no-op": "(void)cljonic::core::assoc(cljonic::Map<int, int, 2>{}, 1, 100, 2, 200, 3, 300);",
 }
 
 DIAGNOSTIC_ANCHOR = "cljonic::assoc:"

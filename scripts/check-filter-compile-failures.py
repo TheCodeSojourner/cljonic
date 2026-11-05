@@ -8,41 +8,41 @@ import re
 import subprocess
 
 FAILURES = {
-    "std-vector": "(void)cljonic::filter(cljonic_filter_positive, std::vector<int>{1});",
-    "scalar-source": "(void)cljonic::filter(cljonic_filter_positive, 1);",
-    "throwing-predicate": "(void)cljonic::filter(cljonic_filter_throwing, cljonic::Vector<int, 2>{});",
-    "noncopyable-predicate": "(void)cljonic::filter(cljonic_filter_deleted_copy{}, cljonic::Vector<int, 2>{});",
-    "non-bool-result": "(void)cljonic::filter(cljonic_filter_int_result, cljonic::Vector<int, 2>{});",
-    "narrowing-parameter": "(void)cljonic::filter(cljonic_filter_short, cljonic::Vector<int, 2>{});",
-    "domain-crossing-parameter": "(void)cljonic::filter(cljonic_filter_char, cljonic::Vector<int, 2>{});",
-    "too-many-sources": "(void)cljonic::filter(cljonic_filter_positive, cljonic::Vector<int, 2>{}, cljonic::Vector<int, 2>{});",
+    "std-vector": "(void)cljonic::core::filter(cljonic_filter_positive, std::vector<int>{1});",
+    "scalar-source": "(void)cljonic::core::filter(cljonic_filter_positive, 1);",
+    "throwing-predicate": "(void)cljonic::core::filter(cljonic_filter_throwing, cljonic::Vector<int, 2>{});",
+    "noncopyable-predicate": "(void)cljonic::core::filter(cljonic_filter_deleted_copy{}, cljonic::Vector<int, 2>{});",
+    "non-bool-result": "(void)cljonic::core::filter(cljonic_filter_int_result, cljonic::Vector<int, 2>{});",
+    "narrowing-parameter": "(void)cljonic::core::filter(cljonic_filter_short, cljonic::Vector<int, 2>{});",
+    "domain-crossing-parameter": "(void)cljonic::core::filter(cljonic_filter_char, cljonic::Vector<int, 2>{});",
+    "too-many-sources": "(void)cljonic::core::filter(cljonic_filter_positive, cljonic::Vector<int, 2>{}, cljonic::Vector<int, 2>{});",
 }
 
 PASSES = {
-    "vector": "(void)cljonic::filter(cljonic_filter_positive, cljonic::Vector<int, 2>{});",
-    "safe-widening": "(void)cljonic::filter(cljonic_filter_long, cljonic::Vector<int, 2>{});",
-    "generic-lambda": "(void)cljonic::filter([](const auto& value) noexcept { return value > 0; }, cljonic::Vector<int, 2>{});",
-    "function-pointer": "(void)cljonic::filter(&cljonic_filter_function, cljonic::Vector<int, 2>{});",
-    "map-entry": "(void)cljonic::filter(cljonic_filter_entry, cljonic::Map<int, int, 2>{});",
-    "producer": "(void)cljonic::filter(cljonic_filter_positive, cljonic::Range<int>{1, 3, 1});",
+    "vector": "(void)cljonic::core::filter(cljonic_filter_positive, cljonic::Vector<int, 2>{});",
+    "safe-widening": "(void)cljonic::core::filter(cljonic_filter_long, cljonic::Vector<int, 2>{});",
+    "generic-lambda": "(void)cljonic::core::filter([](const auto& value) noexcept { return value > 0; }, cljonic::Vector<int, 2>{});",
+    "function-pointer": "(void)cljonic::core::filter(&cljonic_filter_function, cljonic::Vector<int, 2>{});",
+    "map-entry": "(void)cljonic::core::filter(cljonic_filter_entry, cljonic::Map<int, int, 2>{});",
+    "producer": "(void)cljonic::core::filter(cljonic_filter_positive, cljonic::Range<int>{1, 3, 1});",
 }
 
 FILTERV_FAILURES = {
-    "std-vector": "(void)cljonic::filterv(cljonic_filter_positive, std::vector<int>{1});",
-    "scalar-source": "(void)cljonic::filterv(cljonic_filter_positive, 1);",
-    "throwing-predicate": "(void)cljonic::filterv(cljonic_filter_throwing, cljonic::Vector<int, 2>{});",
-    "noncopyable-predicate": "(void)cljonic::filterv(cljonic_filter_deleted_copy{}, cljonic::Vector<int, 2>{});",
-    "non-bool-result": "(void)cljonic::filterv(cljonic_filter_int_result, cljonic::Vector<int, 2>{});",
-    "narrowing-parameter": "(void)cljonic::filterv(cljonic_filter_short, cljonic::Vector<int, 2>{});",
-    "domain-crossing-parameter": "(void)cljonic::filterv(cljonic_filter_char, cljonic::Vector<int, 2>{});",
-    "too-many-sources": "(void)cljonic::filterv(cljonic_filter_positive, cljonic::Vector<int, 2>{}, cljonic::Vector<int, 2>{});",
+    "std-vector": "(void)cljonic::core::filterv(cljonic_filter_positive, std::vector<int>{1});",
+    "scalar-source": "(void)cljonic::core::filterv(cljonic_filter_positive, 1);",
+    "throwing-predicate": "(void)cljonic::core::filterv(cljonic_filter_throwing, cljonic::Vector<int, 2>{});",
+    "noncopyable-predicate": "(void)cljonic::core::filterv(cljonic_filter_deleted_copy{}, cljonic::Vector<int, 2>{});",
+    "non-bool-result": "(void)cljonic::core::filterv(cljonic_filter_int_result, cljonic::Vector<int, 2>{});",
+    "narrowing-parameter": "(void)cljonic::core::filterv(cljonic_filter_short, cljonic::Vector<int, 2>{});",
+    "domain-crossing-parameter": "(void)cljonic::core::filterv(cljonic_filter_char, cljonic::Vector<int, 2>{});",
+    "too-many-sources": "(void)cljonic::core::filterv(cljonic_filter_positive, cljonic::Vector<int, 2>{}, cljonic::Vector<int, 2>{});",
 }
 
 FILTERV_PASSES = {
-    "vector": "(void)cljonic::filterv(cljonic_filter_positive, cljonic::Vector<int, 2>{});",
-    "safe-widening": "(void)cljonic::filterv(cljonic_filter_long, cljonic::Vector<int, 2>{});",
-    "generic-lambda": "(void)cljonic::filterv([](const auto& value) noexcept { return value > 0; }, cljonic::Vector<int, 2>{});",
-    "producer": "(void)cljonic::filterv(cljonic_filter_positive, cljonic::Range<int>{1, 3, 1});",
+    "vector": "(void)cljonic::core::filterv(cljonic_filter_positive, cljonic::Vector<int, 2>{});",
+    "safe-widening": "(void)cljonic::core::filterv(cljonic_filter_long, cljonic::Vector<int, 2>{});",
+    "generic-lambda": "(void)cljonic::core::filterv([](const auto& value) noexcept { return value > 0; }, cljonic::Vector<int, 2>{});",
+    "producer": "(void)cljonic::core::filterv(cljonic_filter_positive, cljonic::Range<int>{1, 3, 1});",
 }
 
 PREAMBLE = r"""

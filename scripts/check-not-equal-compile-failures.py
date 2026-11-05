@@ -20,64 +20,64 @@ import subprocess
 
 FAILURE_CASES = {
     # Floating-point rejection at any depth.
-    "NotEqual-float-scalar": "(void)cljonic::not_equal(1.0, 1.0);",
-    "NotEqual-float-collection": ("(void)cljonic::not_equal(cljonic::Vector<double, 2>{}, "
+    "NotEqual-float-scalar": "(void)cljonic::core::not_equal(1.0, 1.0);",
+    "NotEqual-float-collection": ("(void)cljonic::core::not_equal(cljonic::Vector<double, 2>{}, "
                                   "cljonic::Vector<double, 2>{});"),
-    "NotEqual-float-map-value": ("(void)cljonic::not_equal(cljonic::Map<int, double, 2>{}, "
+    "NotEqual-float-map-value": ("(void)cljonic::core::not_equal(cljonic::Map<int, double, 2>{}, "
                                  "cljonic::Map<int, double, 2>{});"),
-    "NotEqual-float-producer": ("(void)cljonic::not_equal(cljonic::Repeat<double>{}, "
+    "NotEqual-float-producer": ("(void)cljonic::core::not_equal(cljonic::Repeat<double>{}, "
                                 "cljonic::Repeat<double>{});"),
-    "NotEqual-float-nested-variant": ("(void)cljonic::not_equal(std::variant<int, double>{1}, "
+    "NotEqual-float-nested-variant": ("(void)cljonic::core::not_equal(std::variant<int, double>{1}, "
                                       "std::variant<int, double>{1});"),
     # Cross-family pairs.
-    "NotEqual-map-vs-vector": "(void)cljonic::not_equal(cljonic::Map<int, int, 2>{}, cljonic::Vector<int, 2>{});",
-    "NotEqual-set-vs-vector": "(void)cljonic::not_equal(cljonic::Set<int, 2>{}, cljonic::Vector<int, 2>{});",
-    "NotEqual-string-vs-vector": "(void)cljonic::not_equal(cljonic::String<4>{}, cljonic::Vector<int, 2>{});",
-    "NotEqual-map-vs-set": "(void)cljonic::not_equal(cljonic::Map<int, int, 2>{}, cljonic::Set<int, 2>{});",
-    "NotEqual-string-vs-map": "(void)cljonic::not_equal(cljonic::String<4>{}, cljonic::Map<int, int, 2>{});",
-    "NotEqual-set-vs-cycle": ("(void)cljonic::not_equal(cljonic::Set<int, 2>{}, "
-                              "cljonic::cycle(cljonic::Vector<int, 2>{}));"),
+    "NotEqual-map-vs-vector": "(void)cljonic::core::not_equal(cljonic::Map<int, int, 2>{}, cljonic::Vector<int, 2>{});",
+    "NotEqual-set-vs-vector": "(void)cljonic::core::not_equal(cljonic::Set<int, 2>{}, cljonic::Vector<int, 2>{});",
+    "NotEqual-string-vs-vector": "(void)cljonic::core::not_equal(cljonic::String<4>{}, cljonic::Vector<int, 2>{});",
+    "NotEqual-map-vs-set": "(void)cljonic::core::not_equal(cljonic::Map<int, int, 2>{}, cljonic::Set<int, 2>{});",
+    "NotEqual-string-vs-map": "(void)cljonic::core::not_equal(cljonic::String<4>{}, cljonic::Map<int, int, 2>{});",
+    "NotEqual-set-vs-cycle": ("(void)cljonic::core::not_equal(cljonic::Set<int, 2>{}, "
+                              "cljonic::core::cycle(cljonic::Vector<int, 2>{}));"),
     # Mixed cljonic vs non-cljonic pairs.
-    "NotEqual-vector-vs-scalar": "(void)cljonic::not_equal(cljonic::Vector<int, 2>{1}, 1);",
-    "NotEqual-scalar-vs-map": "(void)cljonic::not_equal(1, cljonic::Map<int, int, 2>{});",
-    "NotEqual-string-vs-char-literal": "(void)cljonic::not_equal(cljonic::String<4>{\"a\"}, 'a');",
+    "NotEqual-vector-vs-scalar": "(void)cljonic::core::not_equal(cljonic::Vector<int, 2>{1}, 1);",
+    "NotEqual-scalar-vs-map": "(void)cljonic::core::not_equal(1, cljonic::Map<int, int, 2>{});",
+    "NotEqual-string-vs-char-literal": "(void)cljonic::core::not_equal(cljonic::String<4>{\"a\"}, 'a');",
     # Standard-library interop-surface types are outside the equality domain.
-    "NotEqual-std-vector": "(void)cljonic::not_equal(std::vector<int>{1}, std::vector<int>{1});",
-    "NotEqual-std-string": "(void)cljonic::not_equal(std::string{\"a\"}, std::string{\"a\"});",
-    "NotEqual-std-span": "(void)cljonic::not_equal(std::span<int>{}, std::span<int>{});",
-    "NotEqual-std-string-view": ("(void)cljonic::not_equal(std::string_view{\"a\"}, "
+    "NotEqual-std-vector": "(void)cljonic::core::not_equal(std::vector<int>{1}, std::vector<int>{1});",
+    "NotEqual-std-string": "(void)cljonic::core::not_equal(std::string{\"a\"}, std::string{\"a\"});",
+    "NotEqual-std-span": "(void)cljonic::core::not_equal(std::span<int>{}, std::span<int>{});",
+    "NotEqual-std-string-view": ("(void)cljonic::core::not_equal(std::string_view{\"a\"}, "
                                  "std::string_view{\"a\"});"),
-    "NotEqual-std-map": "(void)cljonic::not_equal(std::map<int, int>{}, std::map<int, int>{});",
+    "NotEqual-std-map": "(void)cljonic::core::not_equal(std::map<int, int>{}, std::map<int, int>{});",
     # The standard-library variant is not a cljonic value type.
-    "NotEqual-std-variant": ("(void)cljonic::not_equal(std::variant<int, long>{1}, "
+    "NotEqual-std-variant": ("(void)cljonic::core::not_equal(std::variant<int, long>{1}, "
                              "std::variant<int, long>{1});"),
     # Cross-type rules: value-preserving pairs are admitted (see PASS_CASES),
     # while sign-crossing, character, Boolean, and identity-sensitive pairs stay
     # rejected.
-    "NotEqual-scalar-sign-crossing": "(void)cljonic::not_equal(1, 1U);",
-    "NotEqual-scalar-character-crossing": "(void)cljonic::not_equal('a', 65);",
-    "NotEqual-scalar-boolean-crossing": "(void)cljonic::not_equal(true, 1);",
-    "NotEqual-map-key-cross-type": ("(void)cljonic::not_equal(cljonic::Map<int, int, 2>{}, "
+    "NotEqual-scalar-sign-crossing": "(void)cljonic::core::not_equal(1, 1U);",
+    "NotEqual-scalar-character-crossing": "(void)cljonic::core::not_equal('a', 65);",
+    "NotEqual-scalar-boolean-crossing": "(void)cljonic::core::not_equal(true, 1);",
+    "NotEqual-map-key-cross-type": ("(void)cljonic::core::not_equal(cljonic::Map<int, int, 2>{}, "
                                     "cljonic::Map<long, int, 2>{});"),
     # Callables are outside the stable-equality domain.
-    "NotEqual-callable-bearing-producer": ("(void)cljonic::not_equal(cljonic::Iterate<int, int (*)(int)>{}, "
+    "NotEqual-callable-bearing-producer": ("(void)cljonic::core::not_equal(cljonic::Iterate<int, int (*)(int)>{}, "
                                            "cljonic::Iterate<int, int (*)(int)>{});"),
     # Unary arity: only domain-admitted operands, float and interop rejected.
-    "NotEqual-unary-float": "(void)cljonic::not_equal(1.0);",
-    "NotEqual-unary-std-vector": "(void)cljonic::not_equal(std::vector<int>{});",
-    "NotEqual-unary-std-string": "(void)cljonic::not_equal(std::string{});",
-    "NotEqual-unary-float-collection": "(void)cljonic::not_equal(cljonic::Vector<double, 2>{});",
-    "NotEqual-unary-float-map": "(void)cljonic::not_equal(cljonic::Map<int, double, 2>{});",
+    "NotEqual-unary-float": "(void)cljonic::core::not_equal(1.0);",
+    "NotEqual-unary-std-vector": "(void)cljonic::core::not_equal(std::vector<int>{});",
+    "NotEqual-unary-std-string": "(void)cljonic::core::not_equal(std::string{});",
+    "NotEqual-unary-float-collection": "(void)cljonic::core::not_equal(cljonic::Vector<double, 2>{});",
+    "NotEqual-unary-float-map": "(void)cljonic::core::not_equal(cljonic::Map<int, double, 2>{});",
     # Variadic arity: every adjacent pair must be individually admissible.
-    "NotEqual-variadic-mixed-scalar-collection": ("(void)cljonic::not_equal(1, cljonic::Vector<int, 2>{1}, 2);"),
-    "NotEqual-variadic-cross-family-position": ("(void)cljonic::not_equal(1, 2, cljonic::Vector<int, 2>{});"),
-    "NotEqual-variadic-cross-family-tail": ("(void)cljonic::not_equal(cljonic::Vector<int, 2>{1}, "
+    "NotEqual-variadic-mixed-scalar-collection": ("(void)cljonic::core::not_equal(1, cljonic::Vector<int, 2>{1}, 2);"),
+    "NotEqual-variadic-cross-family-position": ("(void)cljonic::core::not_equal(1, 2, cljonic::Vector<int, 2>{});"),
+    "NotEqual-variadic-cross-family-tail": ("(void)cljonic::core::not_equal(cljonic::Vector<int, 2>{1}, "
                                             "cljonic::Vector<int, 2>{1}, cljonic::Set<int, 2>{});"),
-    "NotEqual-variadic-float-adjacent": "(void)cljonic::not_equal(1, 1.0, 1);",
-    "NotEqual-variadic-element-character-crossing": ("(void)cljonic::not_equal(cljonic::Vector<int, 2>{1}, "
+    "NotEqual-variadic-float-adjacent": "(void)cljonic::core::not_equal(1, 1.0, 1);",
+    "NotEqual-variadic-element-character-crossing": ("(void)cljonic::core::not_equal(cljonic::Vector<int, 2>{1}, "
                                                      "cljonic::Vector<char, 2>{'1'}, cljonic::Vector<int, 2>{1});"),
-    "NotEqual-variadic-std-range-tail": ("(void)cljonic::not_equal(1, 1, std::vector<int>{1});"),
-    "NotEqual-variadic-mixed-family-chain": ("(void)cljonic::not_equal(cljonic::Map<int, int, 4>"
+    "NotEqual-variadic-std-range-tail": ("(void)cljonic::core::not_equal(1, 1, std::vector<int>{1});"),
+    "NotEqual-variadic-mixed-family-chain": ("(void)cljonic::core::not_equal(cljonic::Map<int, int, 4>"
                                              "{cljonic::MapEntry<int, int>{1, 10}}, "
                                              "cljonic::Map<int, int, 4>{cljonic::MapEntry<int, int>{1, 10}}, "
                                              "cljonic::Set<int, 4>{1, 2}, cljonic::Set<int, 8>{2, 1});"),
@@ -85,42 +85,42 @@ FAILURE_CASES = {
 
 PASS_CASES = {
     # Safe value-preserving conversions inherited from equal (2026-10-31).
-    "NotEqual-scalar-safe-widening": "(void)cljonic::not_equal(1, 1L);",
-    "NotEqual-sequential-element-safe-widening": ("(void)cljonic::not_equal(cljonic::Vector<int, 2>{1}, "
+    "NotEqual-scalar-safe-widening": "(void)cljonic::core::not_equal(1, 1L);",
+    "NotEqual-sequential-element-safe-widening": ("(void)cljonic::core::not_equal(cljonic::Vector<int, 2>{1}, "
                                                    "cljonic::Range<long>{1, 3, 1});"),
-    "NotEqual-scalar": "(void)cljonic::not_equal(1, 1);",
+    "NotEqual-scalar": "(void)cljonic::core::not_equal(1, 1);",
     "NotEqual-enum": ("enum class NotEqualColor { Red, Green }; "
-                      "(void)cljonic::not_equal(NotEqualColor::Red, NotEqualColor::Red);"),
-    "NotEqual-cljonic-variant": ("(void)cljonic::not_equal(cljonic::Variant<int, long>{1}, "
+                      "(void)cljonic::core::not_equal(NotEqualColor::Red, NotEqualColor::Red);"),
+    "NotEqual-cljonic-variant": ("(void)cljonic::core::not_equal(cljonic::Variant<int, long>{1}, "
                                  "cljonic::Variant<int, long>{1});"),
-    "NotEqual-map-entry": ("(void)cljonic::not_equal(cljonic::MapEntry<int, int>{1, 2}, "
+    "NotEqual-map-entry": ("(void)cljonic::core::not_equal(cljonic::MapEntry<int, int>{1, 2}, "
                            "cljonic::MapEntry<int, int>{1, 2});"),
-    "NotEqual-vector-vs-range": ("(void)cljonic::not_equal(cljonic::Vector<int, 4>{1, 2, 3}, "
+    "NotEqual-vector-vs-range": ("(void)cljonic::core::not_equal(cljonic::Vector<int, 4>{1, 2, 3}, "
                                  "cljonic::Range<int>{1, 4, 1});"),
-    "NotEqual-vector-vs-queue": ("(void)cljonic::not_equal(cljonic::Vector<int, 4>{1, 2, 3}, "
+    "NotEqual-vector-vs-queue": ("(void)cljonic::core::not_equal(cljonic::Vector<int, 4>{1, 2, 3}, "
                                  "cljonic::Queue<int, 4>{1, 2, 3});"),
-    "NotEqual-vector-vs-repeat": ("(void)cljonic::not_equal(cljonic::Vector<int, 4>{1, 1, 1}, "
+    "NotEqual-vector-vs-repeat": ("(void)cljonic::core::not_equal(cljonic::Vector<int, 4>{1, 1, 1}, "
                                   "cljonic::Repeat<int>{3U, 1});"),
-    "NotEqual-repeat-unbounded-pair": ("(void)cljonic::not_equal(cljonic::Repeat<int>{7}, "
+    "NotEqual-repeat-unbounded-pair": ("(void)cljonic::core::not_equal(cljonic::Repeat<int>{7}, "
                                        "cljonic::Repeat<int>{7});"),
-    "NotEqual-cycle-vs-vector-early-exit": ("(void)cljonic::not_equal(cljonic::cycle(cljonic::Vector<int, 2>{1, 2}), "
+    "NotEqual-cycle-vs-vector-early-exit": ("(void)cljonic::core::not_equal(cljonic::core::cycle(cljonic::Vector<int, 2>{1, 2}), "
                                             "cljonic::Vector<int, 4>{1, 2, 3});"),
-    "NotEqual-map-pair": ("(void)cljonic::not_equal(cljonic::Map<int, int, 4>{cljonic::MapEntry<int, int>{1, 10}}, "
+    "NotEqual-map-pair": ("(void)cljonic::core::not_equal(cljonic::Map<int, int, 4>{cljonic::MapEntry<int, int>{1, 10}}, "
                           "cljonic::Map<int, int, 8>{cljonic::MapEntry<int, int>{1, 10}});"),
-    "NotEqual-set-pair": ("(void)cljonic::not_equal(cljonic::Set<int, 4>{1, 2}, cljonic::Set<int, 8>{2, 1});"),
-    "NotEqual-string-pair": ("(void)cljonic::not_equal(cljonic::String<8>{\"abc\"}, cljonic::String<4>{\"abc\"});"),
-    "NotEqual-aggregate": ("NotEqualPixel a{1, 2}; NotEqualPixel b{1, 2}; (void)cljonic::not_equal(a, b);"),
-    "NotEqual-nested-producer-parameter-equality": ("(void)cljonic::not_equal(cljonic::Vector<cljonic::Repeat<int>, 2>"
+    "NotEqual-set-pair": ("(void)cljonic::core::not_equal(cljonic::Set<int, 4>{1, 2}, cljonic::Set<int, 8>{2, 1});"),
+    "NotEqual-string-pair": ("(void)cljonic::core::not_equal(cljonic::String<8>{\"abc\"}, cljonic::String<4>{\"abc\"});"),
+    "NotEqual-aggregate": ("NotEqualPixel a{1, 2}; NotEqualPixel b{1, 2}; (void)cljonic::core::not_equal(a, b);"),
+    "NotEqual-nested-producer-parameter-equality": ("(void)cljonic::core::not_equal(cljonic::Vector<cljonic::Repeat<int>, 2>"
                                                     "{cljonic::Repeat<int>{3U, 7}}, "
                                                     "cljonic::Vector<cljonic::Repeat<int>, 2>"
                                                     "{cljonic::Repeat<int>{3U, 7}});"),
-    "NotEqual-unary-scalar": "(void)cljonic::not_equal(1);",
-    "NotEqual-unary-collection": "(void)cljonic::not_equal(cljonic::Vector<int, 2>{});",
-    "NotEqual-unary-producer": "(void)cljonic::not_equal(cljonic::Repeat<int>{7});",
-    "NotEqual-variadic-scalar": "(void)cljonic::not_equal(1, 1, 1, 1);",
-    "NotEqual-variadic-sequential": ("(void)cljonic::not_equal(cljonic::Vector<int, 4>{1, 2, 3}, "
+    "NotEqual-unary-scalar": "(void)cljonic::core::not_equal(1);",
+    "NotEqual-unary-collection": "(void)cljonic::core::not_equal(cljonic::Vector<int, 2>{});",
+    "NotEqual-unary-producer": "(void)cljonic::core::not_equal(cljonic::Repeat<int>{7});",
+    "NotEqual-variadic-scalar": "(void)cljonic::core::not_equal(1, 1, 1, 1);",
+    "NotEqual-variadic-sequential": ("(void)cljonic::core::not_equal(cljonic::Vector<int, 4>{1, 2, 3}, "
                                      "cljonic::Range<int>{1, 4, 1}, cljonic::Queue<int, 4>{1, 2, 3});"),
-    "NotEqual-variadic-associative": ("(void)cljonic::not_equal("
+    "NotEqual-variadic-associative": ("(void)cljonic::core::not_equal("
                                       "cljonic::Map<int, int, 4>{cljonic::MapEntry<int, int>{1, 10}}, "
                                       "cljonic::Map<int, int, 8>{cljonic::MapEntry<int, int>{1, 10}}, "
                                       "cljonic::Map<int, int, 4>{cljonic::MapEntry<int, int>{1, 10}});"),
@@ -145,14 +145,14 @@ DIAGNOSTIC_TAXONOMY = (
 
 # name -> (probe body, case-specific required substrings)
 DIAGNOSTIC_CASES = {
-    "NotEqual-unary-diagnostic": ("(void)cljonic::not_equal(1.0);", ()),
+    "NotEqual-unary-diagnostic": ("(void)cljonic::core::not_equal(1.0);", ()),
     "NotEqual-binary-diagnostic": (
-        "(void)cljonic::not_equal(cljonic::Vector<int, 2>{1}, 1);",
+        "(void)cljonic::core::not_equal(cljonic::Vector<int, 2>{1}, 1);",
         ("two values from the same cljonic family",
          "Vector, Queue, and all producers (the sequential family)"),
     ),
     "NotEqual-variadic-diagnostic": (
-        "(void)cljonic::not_equal(1, cljonic::Vector<int, 2>{1}, 2);",
+        "(void)cljonic::core::not_equal(1, cljonic::Vector<int, 2>{1}, 2);",
         ("With three or more operands",
          "Vector, Queue, and all producers (the sequential family)"),
     ),

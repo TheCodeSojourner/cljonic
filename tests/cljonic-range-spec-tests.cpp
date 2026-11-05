@@ -8,6 +8,7 @@
 
 TEST_CASE("Range factories preserve constructor behavior", "[range][factory]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.Range.DeducedFactoryAcceptsOneTwoOrThreeSameTypeSignedIntegralArguments");
     TRACE_ID("invariant.Range.ExplicitFactoryAcceptsZeroThroughThreeSafelyConvertedArguments");
     TRACE_ID("invariant.Range.TypedEmptyFactoryHasZeroStartZeroEndAndUnitStep");
@@ -78,6 +79,7 @@ TEST_CASE("Range construction and bounded arithmetic behavior", "[range]") {
     using cljonic::concepts::NothrowStableEqualityComparable;
     using cljonic::concepts::SequenceableProducer;
     using cljonic::concepts::StableEqualityComparable;
+    using cljonic::core::into;
 
     TRACE_ID("entity-fields.Range");
     TRACE_ID("invariant.Range.HeaderOnlyDistribution");

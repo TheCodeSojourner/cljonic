@@ -13,13 +13,13 @@ concept ContainsMemberAcceptsIndex =
 } // namespace
 
 TEST_CASE("Contains free function operates on each supported lookup or indexed domain", "[contains]") {
-    using cljonic::assoc;
-    using cljonic::conj;
-    using cljonic::contains;
     using cljonic::Map;
     using cljonic::Set;
     using cljonic::String;
     using cljonic::Vector;
+    using cljonic::core::assoc;
+    using cljonic::core::conj;
+    using cljonic::core::contains;
 
     TRACE_ID("entity-fields.Contains");
     TRACE_ID("invariant.Contains.ContainsFreeFunctionSupported");

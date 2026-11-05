@@ -20,16 +20,16 @@ struct Pixel {
 } // namespace
 
 TEST_CASE("not_equal negates general value equality over the supported domain", "[not_equal][core]") {
-    using cljonic::equal;
     using cljonic::Map;
     using cljonic::MapEntry;
-    using cljonic::not_equal;
     using cljonic::Queue;
     using cljonic::Range;
     using cljonic::Repeat;
     using cljonic::Set;
     using cljonic::String;
     using cljonic::Vector;
+    using cljonic::core::equal;
+    using cljonic::core::not_equal;
 
     TRACE_ID("entity-fields.NotEqualFunction");
     TRACE_ID("invariant.NotEqualFunction.CanonicalNamedGeneralInequalityOperation");
@@ -52,7 +52,7 @@ TEST_CASE("not_equal negates general value equality over the supported domain", 
     // Safe value-preserving conversions are inherited from equal.
     STATIC_REQUIRE(not_equal(1, 2L));
     STATIC_REQUIRE(!not_equal(1, 1L));
-    STATIC_REQUIRE(not_equal(cljonic::vector(1, 2), cljonic::vector<long, 2>(1L, 3L)));
+    STATIC_REQUIRE(not_equal(cljonic::core::vector(1, 2), cljonic::core::vector<long, 2>(1L, 3L)));
     STATIC_REQUIRE(!not_equal(1, 1));
     STATIC_REQUIRE(not_equal('a', 'b'));
     STATIC_REQUIRE(!not_equal('a', 'a'));

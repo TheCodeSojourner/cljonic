@@ -16,15 +16,15 @@ struct TakeElement {
 
 template <typename Source>
 void check_take_prefix(const Source& source, int requested) {
-    const auto before = cljonic::seq(source);
-    const auto result = cljonic::take(requested, source);
+    const auto before = cljonic::core::seq(source);
+    const auto result = cljonic::core::take(requested, source);
     REQUIRE(result.count() == std::min<std::size_t>(requested, source.count()));
     auto iterator = source.begin();
     for (std::size_t index = 0; index < result.count(); ++index) {
         REQUIRE(result(index) == *iterator);
         ++iterator;
     }
-    REQUIRE(cljonic::equal(cljonic::seq(source), before));
+    REQUIRE(cljonic::core::equal(cljonic::core::seq(source), before));
 }
 } // namespace
 
@@ -44,28 +44,30 @@ TEST_CASE("Take preserves collection prefixes and source-bound result types", "[
     TRACE_ID("invariant.Take.NoNestedResultAbsenceSentinelStatusOrPreflight");
     TRACE_ID("invariant.Take.ConstexprNoexceptNoHeapNoRttiNonmutating");
 
-    constexpr auto values = cljonic::vector(1, 2, 3);
-    STATIC_REQUIRE(std::same_as<decltype(cljonic::take(2, values)), cljonic::Vector<int, 3>>);
-    STATIC_REQUIRE(std::same_as<decltype(cljonic::take(0, values)), decltype(cljonic::take(100, values))>);
-    STATIC_REQUIRE(noexcept(cljonic::take(2, values)));
-    STATIC_REQUIRE(cljonic::equal(cljonic::take(2, values), cljonic::vector(1, 2)));
-    STATIC_REQUIRE(cljonic::equal(cljonic::take(2, cljonic::queue(1, 2, 3)), cljonic::vector(1, 2)));
-    STATIC_REQUIRE(cljonic::equal(cljonic::take(2, cljonic::string<4>("abc")), cljonic::vector('a', 'b')));
-    STATIC_REQUIRE(std::same_as<decltype(cljonic::take(1, cljonic::hash_map(1, 2))),
+    constexpr auto values = cljonic::core::vector(1, 2, 3);
+    STATIC_REQUIRE(std::same_as<decltype(cljonic::core::take(2, values)), cljonic::Vector<int, 3>>);
+    STATIC_REQUIRE(std::same_as<decltype(cljonic::core::take(0, values)), decltype(cljonic::core::take(100, values))>);
+    STATIC_REQUIRE(noexcept(cljonic::core::take(2, values)));
+    STATIC_REQUIRE(cljonic::core::equal(cljonic::core::take(2, values), cljonic::core::vector(1, 2)));
+    STATIC_REQUIRE(
+        cljonic::core::equal(cljonic::core::take(2, cljonic::core::queue(1, 2, 3)), cljonic::core::vector(1, 2)));
+    STATIC_REQUIRE(
+        cljonic::core::equal(cljonic::core::take(2, cljonic::core::string<4>("abc")), cljonic::core::vector('a', 'b')));
+    STATIC_REQUIRE(std::same_as<decltype(cljonic::core::take(1, cljonic::core::hash_map(1, 2))),
                                 cljonic::Vector<cljonic::MapEntry<int, int>, 1>>);
-    STATIC_REQUIRE(cljonic::take(1, cljonic::vector(TakeElement{1}, TakeElement{2}))(0).value == 1);
+    STATIC_REQUIRE(cljonic::core::take(1, cljonic::core::vector(TakeElement{1}, TakeElement{2}))(0).value == 1);
 
     volatile int base_raw = 1;
     const auto base = base_raw;
-    check_take_prefix(cljonic::vector(base, base + 1, base + 2), 2);
-    check_take_prefix(cljonic::queue(base, base + 1, base + 2), 2);
-    check_take_prefix(cljonic::hash_map(base, base + 10, base + 1, base + 11, base + 2, base + 12), 2);
-    check_take_prefix(cljonic::hash_set(base, base + 1, base + 2), 2);
-    check_take_prefix(cljonic::string<4>("abc"), 2);
-    auto source = cljonic::vector(base, base + 1, base + 2);
-    const auto result = cljonic::take(2, source);
-    source = cljonic::vector(base + 10, base + 11, base + 12);
-    REQUIRE(cljonic::equal(result, cljonic::vector(base, base + 1)));
+    check_take_prefix(cljonic::core::vector(base, base + 1, base + 2), 2);
+    check_take_prefix(cljonic::core::queue(base, base + 1, base + 2), 2);
+    check_take_prefix(cljonic::core::hash_map(base, base + 10, base + 1, base + 11, base + 2, base + 12), 2);
+    check_take_prefix(cljonic::core::hash_set(base, base + 1, base + 2), 2);
+    check_take_prefix(cljonic::core::string<4>("abc"), 2);
+    auto source = cljonic::core::vector(base, base + 1, base + 2);
+    const auto result = cljonic::core::take(2, source);
+    source = cljonic::core::vector(base + 10, base + 11, base + 12);
+    REQUIRE(cljonic::core::equal(result, cljonic::core::vector(base, base + 1)));
 }
 
 TEST_CASE("Take normalizes counts and bounds requests by observable capacity", "[take]") {
@@ -77,31 +79,33 @@ TEST_CASE("Take normalizes counts and bounds requests by observable capacity", "
     TRACE_ID("invariant.Take.OversizedRequestReturnsObservableSourceWithoutFailure");
     TRACE_ID("invariant.Take.InvalidCountsSourcesAndAritiesHaveTargetedDiagnostics");
 
-    constexpr auto values = cljonic::vector(1, 2, 3);
-    STATIC_REQUIRE(cljonic::count(cljonic::take(short{2}, values)) == 2);
-    STATIC_REQUIRE(cljonic::count(cljonic::take(std::size_t{2}, values)) == 2);
-    STATIC_REQUIRE(cljonic::count(cljonic::take(std::numeric_limits<int>::min(), values)) == 0);
-    STATIC_REQUIRE(cljonic::equal(cljonic::take(std::numeric_limits<std::size_t>::max(), values), values));
-    STATIC_REQUIRE(cljonic::count(cljonic::take(1, cljonic::Vector<int, 0>{})) == 0);
-    STATIC_REQUIRE(std::same_as<decltype(cljonic::take(2, cljonic::repeat(3, 7))),
+    constexpr auto values = cljonic::core::vector(1, 2, 3);
+    STATIC_REQUIRE(cljonic::core::count(cljonic::core::take(short{2}, values)) == 2);
+    STATIC_REQUIRE(cljonic::core::count(cljonic::core::take(std::size_t{2}, values)) == 2);
+    STATIC_REQUIRE(cljonic::core::count(cljonic::core::take(std::numeric_limits<int>::min(), values)) == 0);
+    STATIC_REQUIRE(cljonic::core::equal(cljonic::core::take(std::numeric_limits<std::size_t>::max(), values), values));
+    STATIC_REQUIRE(cljonic::core::count(cljonic::core::take(1, cljonic::Vector<int, 0>{})) == 0);
+    STATIC_REQUIRE(std::same_as<decltype(cljonic::core::take(2, cljonic::core::repeat(3, 7))),
                                 cljonic::Vector<int, cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE>>);
 
     volatile int count_raw = 2;
     const auto requested = count_raw;
-    const auto source = cljonic::vector(requested, requested + 1, requested + 2);
-    REQUIRE(cljonic::equal(cljonic::take(requested, source), cljonic::vector(requested, requested + 1)));
-    REQUIRE(cljonic::take(0, source).count() == 0);
-    REQUIRE(cljonic::take(-requested, source).count() == 0);
-    REQUIRE(cljonic::take(requested, cljonic::Vector<int, 0>{}).count() == 0);
-    REQUIRE(cljonic::take(requested, cljonic::Vector<int, 4>{}).count() == 0);
-    REQUIRE(cljonic::equal(cljonic::take(requested + 10, source), source));
+    const auto source = cljonic::core::vector(requested, requested + 1, requested + 2);
+    REQUIRE(
+        cljonic::core::equal(cljonic::core::take(requested, source), cljonic::core::vector(requested, requested + 1)));
+    REQUIRE(cljonic::core::take(0, source).count() == 0);
+    REQUIRE(cljonic::core::take(-requested, source).count() == 0);
+    REQUIRE(cljonic::core::take(requested, cljonic::Vector<int, 0>{}).count() == 0);
+    REQUIRE(cljonic::core::take(requested, cljonic::Vector<int, 4>{}).count() == 0);
+    REQUIRE(cljonic::core::equal(cljonic::core::take(requested + 10, source), source));
     constexpr auto cap = cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
-    const auto bounded = cljonic::take(cap + 1, cljonic::repeat(cap + 10, requested));
+    const auto bounded = cljonic::core::take(cap + 1, cljonic::core::repeat(cap + 10, requested));
     REQUIRE(bounded.capacity() == cap);
     REQUIRE(bounded.count() == cap);
     REQUIRE(bounded(0) == requested);
     REQUIRE(bounded(cap - 1) == requested);
-    const auto unbounded = cljonic::take(std::numeric_limits<std::size_t>::max(), cljonic::repeat(requested));
+    const auto unbounded =
+        cljonic::core::take(std::numeric_limits<std::size_t>::max(), cljonic::core::repeat(requested));
     REQUIRE(unbounded.count() == cap);
     REQUIRE(unbounded(cap - 1) == requested);
 }
@@ -119,51 +123,57 @@ TEST_CASE("Take limits producer evaluation and preserves value-held callback sta
     volatile int count_raw = 3;
     const auto base = base_raw;
     const auto requested = count_raw;
-    REQUIRE(cljonic::equal(cljonic::take(requested, cljonic::range(base, base + 5)),
-                           cljonic::vector(base, base + 1, base + 2)));
-    REQUIRE(cljonic::equal(cljonic::take(requested, cljonic::repeat(2, base)), cljonic::vector(base, base)));
-    REQUIRE(cljonic::equal(cljonic::take(requested, cljonic::repeat(base)), cljonic::vector(base, base, base)));
-    REQUIRE(cljonic::equal(cljonic::take(requested, cljonic::cycle(cljonic::vector(base, base + 1))),
-                           cljonic::vector(base, base + 1, base)));
-    REQUIRE(cljonic::take(requested, cljonic::cycle(cljonic::Vector<int, 0>{})).count() == 0);
+    REQUIRE(cljonic::core::equal(cljonic::core::take(requested, cljonic::core::range(base, base + 5)),
+                                 cljonic::core::vector(base, base + 1, base + 2)));
+    REQUIRE(cljonic::core::equal(cljonic::core::take(requested, cljonic::core::repeat(2, base)),
+                                 cljonic::core::vector(base, base)));
+    REQUIRE(cljonic::core::equal(cljonic::core::take(requested, cljonic::core::repeat(base)),
+                                 cljonic::core::vector(base, base, base)));
+    REQUIRE(cljonic::core::equal(
+        cljonic::core::take(requested, cljonic::core::cycle(cljonic::core::vector(base, base + 1))),
+        cljonic::core::vector(base, base + 1, base)));
+    REQUIRE(cljonic::core::take(requested, cljonic::core::cycle(cljonic::Vector<int, 0>{})).count() == 0);
 
     int steps = 0;
-    const auto iterated = cljonic::iterate(
+    const auto iterated = cljonic::core::iterate(
         [&steps](int value) noexcept {
             ++steps;
             return value + 1;
         },
         base);
-    REQUIRE(cljonic::take(0, iterated).count() == 0);
-    REQUIRE(cljonic::take(-requested, iterated).count() == 0);
+    REQUIRE(cljonic::core::take(0, iterated).count() == 0);
+    REQUIRE(cljonic::core::take(-requested, iterated).count() == 0);
     REQUIRE(steps == 0);
-    REQUIRE(cljonic::take(1, iterated)(0) == base);
+    REQUIRE(cljonic::core::take(1, iterated)(0) == base);
     REQUIRE(steps == 0);
-    REQUIRE(cljonic::equal(cljonic::take(requested, iterated), cljonic::vector(base, base + 1, base + 2)));
+    REQUIRE(cljonic::core::equal(cljonic::core::take(requested, iterated),
+                                 cljonic::core::vector(base, base + 1, base + 2)));
     REQUIRE(steps == requested - 1);
 
     int calls = 0;
-    const auto produced = cljonic::repeatedly([&calls, base]() noexcept {
+    const auto produced = cljonic::core::repeatedly([&calls, base]() noexcept {
         ++calls;
         return base + calls;
     });
-    REQUIRE(cljonic::take(0, produced).count() == 0);
-    REQUIRE(cljonic::take(-requested, produced).count() == 0);
-    REQUIRE(cljonic::take(requested, cljonic::repeatedly(0,
-                                                         [&calls]() noexcept {
-                                                             ++calls;
-                                                             return 0;
-                                                         }))
+    REQUIRE(cljonic::core::take(0, produced).count() == 0);
+    REQUIRE(cljonic::core::take(-requested, produced).count() == 0);
+    REQUIRE(cljonic::core::take(requested, cljonic::core::repeatedly(0,
+                                                                     [&calls]() noexcept {
+                                                                         ++calls;
+                                                                         return 0;
+                                                                     }))
                 .count() == 0);
     REQUIRE(calls == 0);
-    REQUIRE(cljonic::equal(cljonic::take(requested, produced), cljonic::vector(base + 1, base + 2, base + 3)));
+    REQUIRE(cljonic::core::equal(cljonic::core::take(requested, produced),
+                                 cljonic::core::vector(base + 1, base + 2, base + 3)));
     REQUIRE(calls == requested);
-    REQUIRE(cljonic::take(1, produced)(0) == base + requested + 1);
+    REQUIRE(cljonic::core::take(1, produced)(0) == base + requested + 1);
     REQUIRE(calls == requested + 1);
-    const auto stateful = cljonic::repeatedly(5, [value = base]() mutable noexcept { return value++; });
-    const auto prefix = cljonic::take(requested, stateful);
-    REQUIRE(cljonic::equal(prefix, cljonic::vector(base, base + 1, base + 2)));
-    REQUIRE(cljonic::equal(prefix, cljonic::take(requested, stateful)));
-    REQUIRE(cljonic::count(stateful) == 5);
-    REQUIRE(cljonic::equal(cljonic::take(20, stateful), cljonic::vector(base, base + 1, base + 2, base + 3, base + 4)));
+    const auto stateful = cljonic::core::repeatedly(5, [value = base]() mutable noexcept { return value++; });
+    const auto prefix = cljonic::core::take(requested, stateful);
+    REQUIRE(cljonic::core::equal(prefix, cljonic::core::vector(base, base + 1, base + 2)));
+    REQUIRE(cljonic::core::equal(prefix, cljonic::core::take(requested, stateful)));
+    REQUIRE(cljonic::core::count(stateful) == 5);
+    REQUIRE(cljonic::core::equal(cljonic::core::take(20, stateful),
+                                 cljonic::core::vector(base, base + 1, base + 2, base + 3, base + 4)));
 }

@@ -20,38 +20,38 @@ struct CanAssocNotConvertible {};
 # name -> (body, case-specific required message substrings)
 DIAGNOSTIC_CASES = {
     "CanAssoc-non-associative-collection": (
-        "(void)cljonic::can_assoc(cljonic::Set<int, 4>{}, 1, 10);",
+        "(void)cljonic::core::can_assoc(cljonic::Set<int, 4>{}, 1, 10);",
         ("must be a Map, a Vector, or a String", "not supported"),
     ),
     "CanAssoc-inadmissible-key-vector": (
-        "(void)cljonic::can_assoc(cljonic::Vector<int, 4>{}, CanAssocNotConvertible{}, 0);",
+        "(void)cljonic::core::can_assoc(cljonic::Vector<int, 4>{}, CanAssocNotConvertible{}, 0);",
         ("this key has a type the collection cannot associate", "integer index"),
     ),
     "CanAssoc-inadmissible-key-map": (
-        "(void)cljonic::can_assoc(cljonic::Map<int, int, 4>{}, CanAssocNotConvertible{}, 0);",
+        "(void)cljonic::core::can_assoc(cljonic::Map<int, int, 4>{}, CanAssocNotConvertible{}, 0);",
         ("this key has a type the collection cannot associate", "Map takes a key"),
     ),
     "CanAssoc-inadmissible-value-vector": (
-        "(void)cljonic::can_assoc(cljonic::Vector<int, 4>{}, 0, CanAssocNotConvertible{});",
+        "(void)cljonic::core::can_assoc(cljonic::Vector<int, 4>{}, 0, CanAssocNotConvertible{});",
         ("this value has a type the collection cannot associate", "value must match"),
     ),
     "CanAssoc-odd-trailing-argument": (
-        "(void)cljonic::can_assoc(cljonic::Map<int, int, 4>{}, 1, 10, 2);",
+        "(void)cljonic::core::can_assoc(cljonic::Map<int, int, 4>{}, 1, 10, 2);",
         ("supply complete key/value pairs", "without a value"),
     ),
     "CanAssoc-inadmissible-variadic-value": (
-        "(void)cljonic::can_assoc(cljonic::Map<int, int, 4>{}, 1, 10, 2, CanAssocNotConvertible{});",
+        "(void)cljonic::core::can_assoc(cljonic::Map<int, int, 4>{}, 1, 10, 2, CanAssocNotConvertible{});",
         ("every key/value pair must use types", "declared key and value types"),
     ),
 }
 
 PASS_CASES = {
-    "CanAssoc-map": "(void)cljonic::can_assoc(cljonic::Map<int, int, 4>{}, 1, 10);",
+    "CanAssoc-map": "(void)cljonic::core::can_assoc(cljonic::Map<int, int, 4>{}, 1, 10);",
     "CanAssoc-map-variadic":
-        "(void)cljonic::can_assoc(cljonic::Map<int, int, 4>{}, 1, 10, 2, 20);",
-    "CanAssoc-vector": "(void)cljonic::can_assoc(cljonic::Vector<int, 4>{10, 20}, 0U, 5);",
-    "CanAssoc-vector-negative-index": "(void)cljonic::can_assoc(cljonic::Vector<int, 4>{10, 20}, -1, 5);",
-    "CanAssoc-string": "(void)cljonic::can_assoc(cljonic::String<8>{\"ab\"}, 2U, 'x');",
+        "(void)cljonic::core::can_assoc(cljonic::Map<int, int, 4>{}, 1, 10, 2, 20);",
+    "CanAssoc-vector": "(void)cljonic::core::can_assoc(cljonic::Vector<int, 4>{10, 20}, 0U, 5);",
+    "CanAssoc-vector-negative-index": "(void)cljonic::core::can_assoc(cljonic::Vector<int, 4>{10, 20}, -1, 5);",
+    "CanAssoc-string": "(void)cljonic::core::can_assoc(cljonic::String<8>{\"ab\"}, 2U, 'x');",
 }
 
 DIAGNOSTIC_ANCHOR = "cljonic::can_assoc:"

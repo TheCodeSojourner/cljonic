@@ -5,11 +5,11 @@
 #define TRACE_ID(id_literal) INFO("trace-id: " id_literal)
 
 TEST_CASE("Disj free function operations", "[disj]") {
-    using cljonic::contains;
-    using cljonic::disj;
-    using cljonic::equal;
-    using cljonic::is_empty;
     using cljonic::Set;
+    using cljonic::core::contains;
+    using cljonic::core::disj;
+    using cljonic::core::equal;
+    using cljonic::core::is_empty;
 
     TRACE_ID("entity-fields.Disj");
     TRACE_ID("invariant.Disj.DisjFreeFunctionSupported");

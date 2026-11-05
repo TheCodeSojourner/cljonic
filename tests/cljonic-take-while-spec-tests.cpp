@@ -39,42 +39,46 @@ TEST_CASE("TakeWhile owns finite source prefixes with exact counts", "[take-whil
     TRACE_ID("invariant.TakeWhile.NoAddedElementEqualityOrOrdering");
     TRACE_ID("invariant.TakeWhile.ConstexprNoexceptNoHeapNoRttiNonmutating");
 
-    constexpr auto prefix = cljonic::take_while(below_three, cljonic::vector(1, 2, 4, 1));
+    constexpr auto prefix = cljonic::core::take_while(below_three, cljonic::core::vector(1, 2, 4, 1));
     STATIC_REQUIRE(cljonic::concepts::CljonicSource<decltype(prefix)>);
     STATIC_REQUIRE(cljonic::concepts::SequenceableProducer<decltype(prefix)>);
     STATIC_REQUIRE(std::same_as<typename decltype(prefix)::value_type, int>);
     STATIC_REQUIRE(prefix.is_finite());
     STATIC_REQUIRE(prefix.count() == 2);
-    STATIC_REQUIRE(cljonic::equal(prefix, cljonic::vector(1, 2)));
-    STATIC_REQUIRE(!cljonic::is_empty(prefix));
-    STATIC_REQUIRE(cljonic::is_empty(cljonic::take_while(below_three, cljonic::vector(4, 1))));
+    STATIC_REQUIRE(cljonic::core::equal(prefix, cljonic::core::vector(1, 2)));
+    STATIC_REQUIRE(!cljonic::core::is_empty(prefix));
+    STATIC_REQUIRE(cljonic::core::is_empty(cljonic::core::take_while(below_three, cljonic::core::vector(4, 1))));
     STATIC_REQUIRE(*prefix.begin() == 1);
-    STATIC_REQUIRE(cljonic::first(cljonic::into(cljonic::vector<int, 1>(),
-                                                cljonic::take_while(below_three, cljonic::vector(4)))) == 0);
-    STATIC_REQUIRE(noexcept(cljonic::take_while(below_three, cljonic::vector(1))));
-    STATIC_REQUIRE(cljonic::equal(cljonic::take_while(below_three, cljonic::queue(1, 2, 4)), prefix));
     STATIC_REQUIRE(
-        cljonic::equal(cljonic::take_while([](char c) noexcept { return c < 'c'; }, cljonic::string<4>("abcd")),
-                       cljonic::vector('a', 'b')));
-    STATIC_REQUIRE(cljonic::take_while([](auto) noexcept { return true; }, cljonic::hash_map(1, 2)).count() == 1);
-    STATIC_REQUIRE(cljonic::take_while([](auto) noexcept { return true; }, cljonic::hash_set(1, 2)).count() == 2);
-    STATIC_REQUIRE(cljonic::take_while([](const UncomparedValue& v) noexcept { return v.value < 2; },
-                                       cljonic::vector(UncomparedValue{1}, UncomparedValue{2}))
+        cljonic::core::first(cljonic::core::into(
+            cljonic::core::vector<int, 1>(), cljonic::core::take_while(below_three, cljonic::core::vector(4)))) == 0);
+    STATIC_REQUIRE(noexcept(cljonic::core::take_while(below_three, cljonic::core::vector(1))));
+    STATIC_REQUIRE(cljonic::core::equal(cljonic::core::take_while(below_three, cljonic::core::queue(1, 2, 4)), prefix));
+    STATIC_REQUIRE(cljonic::core::equal(
+        cljonic::core::take_while([](char c) noexcept { return c < 'c'; }, cljonic::core::string<4>("abcd")),
+        cljonic::core::vector('a', 'b')));
+    STATIC_REQUIRE(
+        cljonic::core::take_while([](auto) noexcept { return true; }, cljonic::core::hash_map(1, 2)).count() == 1);
+    STATIC_REQUIRE(
+        cljonic::core::take_while([](auto) noexcept { return true; }, cljonic::core::hash_set(1, 2)).count() == 2);
+    STATIC_REQUIRE(cljonic::core::take_while([](const UncomparedValue& v) noexcept { return v.value < 2; },
+                                             cljonic::core::vector(UncomparedValue{1}, UncomparedValue{2}))
                        .count() == 1);
 
     volatile int initial_raw = 1;
     const auto initial = initial_raw;
-    auto source = cljonic::vector(initial, initial + 1, initial + 3);
-    const auto owned = cljonic::take_while(below_three, source);
-    source = cljonic::vector(9, 9, 9);
-    REQUIRE(cljonic::equal(owned, cljonic::vector(initial, initial + 1)));
-    REQUIRE(cljonic::take_while(below_three, cljonic::range(initial, 5)).count() == 2);
-    REQUIRE(cljonic::take_while(below_three, cljonic::repeat(3, initial)).count() == 3);
-    REQUIRE(cljonic::take_while(below_three, cljonic::repeat(initial)).count() ==
+    auto source = cljonic::core::vector(initial, initial + 1, initial + 3);
+    const auto owned = cljonic::core::take_while(below_three, source);
+    source = cljonic::core::vector(9, 9, 9);
+    REQUIRE(cljonic::core::equal(owned, cljonic::core::vector(initial, initial + 1)));
+    REQUIRE(cljonic::core::take_while(below_three, cljonic::core::range(initial, 5)).count() == 2);
+    REQUIRE(cljonic::core::take_while(below_three, cljonic::core::repeat(3, initial)).count() == 3);
+    REQUIRE(cljonic::core::take_while(below_three, cljonic::core::repeat(initial)).count() ==
             cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
-    REQUIRE(cljonic::take_while(below_three, cljonic::cycle(cljonic::vector(1, 4))).count() == 1);
-    REQUIRE(cljonic::take_while(below_three, cljonic::iterate([](int n) noexcept { return n + 1; }, initial)).count() ==
-            2);
+    REQUIRE(cljonic::core::take_while(below_three, cljonic::core::cycle(cljonic::core::vector(1, 4))).count() == 1);
+    REQUIRE(
+        cljonic::core::take_while(below_three, cljonic::core::iterate([](int n) noexcept { return n + 1; }, initial))
+            .count() == 2);
 }
 
 TEST_CASE("TakeWhile defers evaluation and preserves traversal boundaries", "[take-while]") {
@@ -93,11 +97,11 @@ TEST_CASE("TakeWhile defers evaluation and preserves traversal boundaries", "[ta
 
     int produced = 0;
     int tested = 0;
-    const auto source = cljonic::repeatedly(4, [value = 0, &produced]() mutable noexcept {
+    const auto source = cljonic::core::repeatedly(4, [value = 0, &produced]() mutable noexcept {
         ++produced;
         return ++value;
     });
-    const auto prefix = cljonic::take_while(
+    const auto prefix = cljonic::core::take_while(
         [&tested](int n) noexcept {
             ++tested;
             return n < 3;
@@ -108,8 +112,8 @@ TEST_CASE("TakeWhile defers evaluation and preserves traversal boundaries", "[ta
     REQUIRE(prefix.count() == 2);
     REQUIRE(produced == 3);
     REQUIRE(tested == 3);
-    const auto materialized = cljonic::into(cljonic::vector<int, 4>(), prefix);
-    REQUIRE(cljonic::equal(materialized, cljonic::vector(1, 2)));
+    const auto materialized = cljonic::core::into(cljonic::core::vector<int, 4>(), prefix);
+    REQUIRE(cljonic::core::equal(materialized, cljonic::core::vector(1, 2)));
     REQUIRE(produced == 6);
     REQUIRE(tested == 6);
     auto current = prefix.begin();
@@ -133,28 +137,29 @@ TEST_CASE("TakeWhile defers evaluation and preserves traversal boundaries", "[ta
     copied = empty;
     REQUIRE(copied == prefix.end());
 
-    const auto all =
-        cljonic::take_while([](int) noexcept { return true; }, cljonic::repeatedly(2, [&produced]() noexcept {
-                                ++produced;
-                                return 1;
-                            }));
+    const auto all = cljonic::core::take_while([](int) noexcept { return true; },
+                                               cljonic::core::repeatedly(2, [&produced]() noexcept {
+                                                   ++produced;
+                                                   return 1;
+                                               }));
     const auto before = produced;
     REQUIRE(all.count() == 2);
     REQUIRE(produced == before + 2);
-    const auto empty_cycle = cljonic::take_while(
+    const auto empty_cycle = cljonic::core::take_while(
         [&tested](int) noexcept {
             ++tested;
             return true;
         },
-        cljonic::cycle(cljonic::Vector<int, 0>{}));
+        cljonic::core::cycle(cljonic::Vector<int, 0>{}));
     const auto before_test = tested;
     REQUIRE(empty_cycle.count() == 0);
     REQUIRE(tested == before_test);
-    REQUIRE(cljonic::filter(below_three, empty_cycle).count() == 0);
-    const auto empty_source = cljonic::take_while(below_three, cljonic::repeatedly(0, [&produced]() noexcept {
-                                                      ++produced;
-                                                      return 1;
-                                                  }));
+    REQUIRE(cljonic::core::filter(below_three, empty_cycle).count() == 0);
+    const auto empty_source =
+        cljonic::core::take_while(below_three, cljonic::core::repeatedly(0, [&produced]() noexcept {
+                                      ++produced;
+                                      return 1;
+                                  }));
     REQUIRE(empty_source.count() == 0);
     REQUIRE(produced == before + 2);
 }
@@ -175,15 +180,16 @@ TEST_CASE("TakeWhile integrates callbacks storage and source consumers", "[take-
     TRACE_ID("invariant.TakeWhile.TargetedOperationDiagnostics");
 
     constexpr auto predicate = [](int n) noexcept { return n < 3; };
-    constexpr auto prefix = cljonic::take_while(predicate, cljonic::vector(1, 2, 4));
-    STATIC_REQUIRE(cljonic::first(prefix) == 1);
+    constexpr auto prefix = cljonic::core::take_while(predicate, cljonic::core::vector(1, 2, 4));
+    STATIC_REQUIRE(cljonic::core::first(prefix) == 1);
     STATIC_REQUIRE(cljonic::concepts::NothrowCollectionElement<std::remove_cv_t<decltype(prefix)>>);
     STATIC_REQUIRE(!cljonic::concepts::StableEqualityComparable<decltype(prefix)>);
     STATIC_REQUIRE(cljonic::concepts_detail::NextSequenceableProducer<decltype(prefix)>);
-    STATIC_REQUIRE(cljonic::concepts_detail::NextSequenceableProducer<decltype(cljonic::cycle(prefix))>);
-    STATIC_REQUIRE(cljonic::vector(prefix).count() == 1);
-    STATIC_REQUIRE(cljonic::take_while(predicate, prefix).count() == 2);
-    STATIC_REQUIRE(cljonic::take_while([](long n) noexcept { return n < 3; }, cljonic::vector(short{1})).count() == 1);
+    STATIC_REQUIRE(cljonic::concepts_detail::NextSequenceableProducer<decltype(cljonic::core::cycle(prefix))>);
+    STATIC_REQUIRE(cljonic::core::vector(prefix).count() == 1);
+    STATIC_REQUIRE(cljonic::core::take_while(predicate, prefix).count() == 2);
+    STATIC_REQUIRE(
+        cljonic::core::take_while([](long n) noexcept { return n < 3; }, cljonic::core::vector(short{1})).count() == 1);
     STATIC_REQUIRE(!cljonic::concepts_detail::PredicateProducerArguments<decltype(predicate), std::array<int, 2>>);
     STATIC_REQUIRE(
         !cljonic::concepts_detail::PredicateProducerArguments<decltype(predicate), cljonic::MapEntry<int, int>>);
@@ -194,23 +200,23 @@ TEST_CASE("TakeWhile integrates callbacks storage and source consumers", "[take-
     STATIC_REQUIRE(!cljonic::concepts_detail::PredicateProducerArguments<decltype([](short) noexcept { return true; }),
                                                                          cljonic::Vector<long, 2>>);
     const auto captured =
-        cljonic::take_while([limit = 3](int n) noexcept { return n < limit; }, cljonic::vector(1, 2, 4));
+        cljonic::core::take_while([limit = 3](int n) noexcept { return n < limit; }, cljonic::core::vector(1, 2, 4));
     STATIC_REQUIRE(!std::is_default_constructible_v<decltype(captured)>);
     STATIC_REQUIRE(!cljonic::concepts::NothrowCollectionElement<decltype(captured)>);
-    REQUIRE(cljonic::seq(captured).count() == 2);
-    REQUIRE(cljonic::map([](int n) noexcept { return n * 2; }, captured).count() == 2);
-    REQUIRE(cljonic::reduce([](int a, int b) noexcept { return a + b; }, 0, captured) == 3);
-    REQUIRE(cljonic::filterv(predicate, captured).count() == 2);
-    REQUIRE(cljonic::take(1, captured)(0) == 1);
-    REQUIRE(cljonic::drop(1, captured)(0) == 2);
-    REQUIRE(cljonic::cycle(captured).count() == cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
-    REQUIRE(cljonic::take(3, cljonic::cycle(captured)).count() == 3);
-    REQUIRE(cljonic::fits_into(cljonic::vector<int, 2>(), captured));
-    REQUIRE(!cljonic::fits_into(cljonic::vector<int, 1>(), captured));
-    REQUIRE(cljonic::fits_into(cljonic::queue<int, 2>(), captured));
-    REQUIRE(cljonic::fits_into(cljonic::hash_set<int, 2>(), captured));
-    REQUIRE(cljonic::equal(captured, cljonic::vector(1, 2)));
-    REQUIRE(cljonic::not_equal(captured, cljonic::vector(1, 3)));
+    REQUIRE(cljonic::core::seq(captured).count() == 2);
+    REQUIRE(cljonic::core::map([](int n) noexcept { return n * 2; }, captured).count() == 2);
+    REQUIRE(cljonic::core::reduce([](int a, int b) noexcept { return a + b; }, 0, captured) == 3);
+    REQUIRE(cljonic::core::filterv(predicate, captured).count() == 2);
+    REQUIRE(cljonic::core::take(1, captured)(0) == 1);
+    REQUIRE(cljonic::core::drop(1, captured)(0) == 2);
+    REQUIRE(cljonic::core::cycle(captured).count() == cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
+    REQUIRE(cljonic::core::take(3, cljonic::core::cycle(captured)).count() == 3);
+    REQUIRE(cljonic::core::fits_into(cljonic::core::vector<int, 2>(), captured));
+    REQUIRE(!cljonic::core::fits_into(cljonic::core::vector<int, 1>(), captured));
+    REQUIRE(cljonic::core::fits_into(cljonic::core::queue<int, 2>(), captured));
+    REQUIRE(cljonic::core::fits_into(cljonic::core::hash_set<int, 2>(), captured));
+    REQUIRE(cljonic::core::equal(captured, cljonic::core::vector(1, 2)));
+    REQUIRE(cljonic::core::not_equal(captured, cljonic::core::vector(1, 3)));
     auto defaulted = std::remove_cv_t<decltype(prefix)>{};
     REQUIRE(defaulted.count() == 0);
     defaulted = prefix;
@@ -221,18 +227,18 @@ TEST_CASE("TakeWhile integrates callbacks storage and source consumers", "[take-
             return ++tested < 3;
         }
     };
-    const auto stateful = cljonic::take_while(StatefulPredicate{}, cljonic::vector(1, 2, 3, 4));
+    const auto stateful = cljonic::core::take_while(StatefulPredicate{}, cljonic::core::vector(1, 2, 3, 4));
     REQUIRE(stateful.count() == 2);
     REQUIRE(stateful.count() == 2);
     STATIC_REQUIRE(cljonic::concepts_detail::contains_callable<std::remove_cv_t<decltype(stateful)>>::value);
-    const auto floating = cljonic::take_while([](auto) noexcept { return true; }, cljonic::vector(1.0F));
+    const auto floating = cljonic::core::take_while([](auto) noexcept { return true; }, cljonic::core::vector(1.0F));
     STATIC_REQUIRE(cljonic::concepts_detail::contains_floating_point<std::remove_cv_t<decltype(floating)>>::value);
     int value = 0;
     const auto changing =
-        cljonic::take_while(below_three, cljonic::repeatedly(4, [&value]() noexcept { return ++value; }));
+        cljonic::core::take_while(below_three, cljonic::core::repeatedly(4, [&value]() noexcept { return ++value; }));
     REQUIRE(changing.count() == 2);
     REQUIRE(changing.count() == 0);
-    REQUIRE(cljonic::filter(below_three, changing).count() == 0);
-    REQUIRE(cljonic::seq(changing).count() == 0);
-    REQUIRE(cljonic::map([](int n) noexcept { return n; }, changing).count() == 0);
+    REQUIRE(cljonic::core::filter(below_three, changing).count() == 0);
+    REQUIRE(cljonic::core::seq(changing).count() == 0);
+    REQUIRE(cljonic::core::map([](int n) noexcept { return n; }, changing).count() == 0);
 }

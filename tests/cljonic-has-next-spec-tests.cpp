@@ -10,26 +10,26 @@
 namespace {
 template <typename T>
 concept HasAdmittedHasNext =
-    requires(const T& value) { requires(!std::same_as<decltype(cljonic::has_next(value)), void>); };
+    requires(const T& value) { requires(!std::same_as<decltype(cljonic::core::has_next(value)), void>); };
 } // namespace
 
 TEST_CASE("has_next reports whether next has an observable result", "[has_next]") {
-    using cljonic::count;
-    using cljonic::cycle;
-    using cljonic::drop_while;
-    using cljonic::has_next;
-    using cljonic::iterate;
     using cljonic::Map;
     using cljonic::MapEntry;
-    using cljonic::next;
     using cljonic::Queue;
     using cljonic::Range;
-    using cljonic::repeat;
-    using cljonic::repeatedly;
     using cljonic::Set;
     using cljonic::String;
-    using cljonic::take_while;
     using cljonic::Vector;
+    using cljonic::core::count;
+    using cljonic::core::cycle;
+    using cljonic::core::drop_while;
+    using cljonic::core::has_next;
+    using cljonic::core::iterate;
+    using cljonic::core::next;
+    using cljonic::core::repeat;
+    using cljonic::core::repeatedly;
+    using cljonic::core::take_while;
 
     TRACE_ID("entity-fields.HasNext");
     TRACE_ID("invariant.HasNext.HasNextFreeFunctionSupported");
@@ -124,7 +124,7 @@ TEST_CASE("has_next reports whether next has an observable result", "[has_next]"
     STATIC_REQUIRE(count(text) == 2U);
     STATIC_REQUIRE(count(finite_repeat) == 3U);
     STATIC_REQUIRE(count(finite_repeatedly) == 3U);
-    STATIC_REQUIRE(cljonic::first(iterated) == 0);
+    STATIC_REQUIRE(cljonic::core::first(iterated) == 0);
 
     TRACE_ID("invariant.HasNext.NoHeapAllocation");
     TRACE_ID("invariant.HasNext.NoRtti");
@@ -195,7 +195,7 @@ TEST_CASE("has_next reports whether next has an observable result", "[has_next]"
     REQUIRE(has_next(runtime_unbounded_repeat));
     REQUIRE(has_next(runtime_adapter));
     REQUIRE(count(runtime_repeat) == 3U);
-    REQUIRE(cljonic::first(runtime_repeat) == first);
+    REQUIRE(cljonic::core::first(runtime_repeat) == first);
 
     auto callback_calls = 0;
     const auto callback_producer = repeatedly([&callback_calls]() noexcept { return ++callback_calls; });

@@ -10,23 +10,24 @@ namespace {
 template <typename C>
 constexpr auto preserves_owning_value(C input) noexcept -> bool {
     const auto original = input;
-    auto result = cljonic::not_empty(input);
-    static_assert(std::same_as<decltype(cljonic::not_empty(input)), C>);
-    static_assert(noexcept(cljonic::not_empty(input)));
-    if (!cljonic::equal(result, original) || !cljonic::equal(input, original)) {
+    auto result = cljonic::core::not_empty(input);
+    static_assert(std::same_as<decltype(cljonic::core::not_empty(input)), C>);
+    static_assert(noexcept(cljonic::core::not_empty(input)));
+    if (!cljonic::core::equal(result, original) || !cljonic::core::equal(input, original)) {
         return false;
     }
     input = C{};
-    if (!cljonic::equal(result, original)) {
+    if (!cljonic::core::equal(result, original)) {
         return false;
     }
     result = C{};
-    return cljonic::is_empty(result) && cljonic::equal(cljonic::not_empty(original), original);
+    return cljonic::core::is_empty(result) && cljonic::core::equal(cljonic::core::not_empty(original), original);
 }
 } // namespace
 
 TEST_CASE("NotEmpty preserves owning collection values", "[not_empty]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("entity-fields.NotEmpty");
     TRACE_ID("invariant.NotEmpty.SupportsSequenceableCollectionDomain");
     TRACE_ID("invariant.NotEmpty.ReturnsIndependentOwningCopyWhenNonempty");
@@ -74,6 +75,7 @@ TEST_CASE("NotEmpty preserves owning collection values", "[not_empty]") {
 
 TEST_CASE("NotEmpty handles empty zero-capacity and full collections", "[not_empty]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.NotEmpty.ReturnsEmptyOwningValueWhenEmpty");
     TRACE_ID("invariant.NotEmpty.SupportsZeroCapacityAndFullCollections");
 
@@ -117,6 +119,7 @@ TEST_CASE("NotEmpty handles empty zero-capacity and full collections", "[not_emp
 
 TEST_CASE("NotEmpty admission is collections only", "[not_empty]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.NotEmpty.RejectsUnsupportedDomainWithTargetedDiagnostic");
     STATIC_REQUIRE_FALSE(concepts::SequenceableCollection<int>);
     STATIC_REQUIRE_FALSE(concepts::SequenceableCollection<Range<int>>);

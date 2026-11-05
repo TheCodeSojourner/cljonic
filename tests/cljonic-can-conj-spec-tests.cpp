@@ -5,14 +5,14 @@
 #define TRACE_ID(id_literal) INFO("trace-id: " id_literal)
 
 TEST_CASE("CanConj free function operations", "[can_conj]") {
-    using cljonic::assoc;
-    using cljonic::can_conj;
-    using cljonic::conj;
     using cljonic::Map;
     using cljonic::MapEntry;
     using cljonic::Queue;
     using cljonic::Set;
     using cljonic::Vector;
+    using cljonic::core::assoc;
+    using cljonic::core::can_conj;
+    using cljonic::core::conj;
 
     TRACE_ID("entity-fields.CanConj");
     TRACE_ID("invariant.CanConj.CanConjPreflightSupported");

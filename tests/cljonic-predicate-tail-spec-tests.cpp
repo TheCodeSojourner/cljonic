@@ -10,6 +10,7 @@
 TEST_CASE("Predicate tails own exact types and omit outputs within original boundaries",
           "[next][rest][take-while][drop-while]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.Next.AdapterAndDependentCycleTailDomain");
     TRACE_ID("invariant.Next.NestedAdapterExactOwningType");
     TRACE_ID("invariant.Next.AdapterSkipsOutputsAfterOriginalTraversal");
@@ -68,6 +69,7 @@ TEST_CASE("Predicate tails own exact types and omit outputs within original boun
 TEST_CASE("Predicate tails defer callbacks and replay fresh owned traversal state",
           "[next][rest][take-while][drop-while]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.Next.AdapterTailCreationDefersEvaluation");
     TRACE_ID("invariant.Next.ReplayPreservesStateAndEffectScopeWithoutSnapshot");
     TRACE_ID("invariant.Rest.AdapterTailsMatchDeferredNext");
@@ -119,6 +121,7 @@ TEST_CASE("Predicate tails defer callbacks and replay fresh owned traversal stat
 
 TEST_CASE("Predicate tail offsets saturate without replenishing bounded observations", "[next][rest]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.Next.AdapterOffsetSaturatesAndEmptyStaysEmpty");
     TRACE_ID("invariant.Next.TailMetadataStaysCompact");
     constexpr auto yes = [](int) noexcept { return true; };
@@ -136,6 +139,7 @@ TEST_CASE("Predicate tail offsets saturate without replenishing bounded observat
 
 TEST_CASE("Adapter Cycle tails count eagerly and retain the whole source period", "[next][rest][cycle]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.Next.AdapterCycleTailEagerlyCountsBoundedSource");
     TRACE_ID("invariant.Next.AdapterCycleNormalizesBeforeAdvancing");
     TRACE_ID("invariant.Next.AdapterCycleRetainsCompleteSource");
@@ -186,6 +190,7 @@ TEST_CASE("Adapter Cycle tails count eagerly and retain the whole source period"
 
 TEST_CASE("Adapter Cycle tails safely respect changing external traversal endpoints", "[next][cycle]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.Cycle.RotationPredictionsRequireEquivalentTraversals");
     auto limit = 4;
     const auto source = cycle(take_while([&limit](int n) noexcept { return n < limit; }, vector(1, 2, 3)));
@@ -212,21 +217,21 @@ TEST_CASE("Empty predicate tail boundaries invoke no callbacks", "[next][rest][c
     TRACE_ID("invariant.Next.ZeroCapTailsDoNotEvaluate");
     TRACE_ID("invariant.Cycle.ZeroCapTailDoesNotEvaluate");
     auto calls = 0;
-    const auto empty = cljonic::repeatedly(0, [&calls]() noexcept { return ++calls; });
-    const auto prefix = cljonic::take_while(
+    const auto empty = cljonic::core::repeatedly(0, [&calls]() noexcept { return ++calls; });
+    const auto prefix = cljonic::core::take_while(
         [&calls](int) noexcept {
             ++calls;
             return true;
         },
         empty);
-    const auto suffix = cljonic::drop_while(
+    const auto suffix = cljonic::core::drop_while(
         [&calls](int) noexcept {
             ++calls;
             return true;
         },
         empty);
-    REQUIRE(cljonic::first(cljonic::next(prefix)) == 0);
-    REQUIRE(cljonic::first(cljonic::rest(suffix)) == 0);
-    REQUIRE(cljonic::first(cljonic::rest(cljonic::cycle(cljonic::cycle(prefix)))) == 0);
+    REQUIRE(cljonic::core::first(cljonic::core::next(prefix)) == 0);
+    REQUIRE(cljonic::core::first(cljonic::core::rest(suffix)) == 0);
+    REQUIRE(cljonic::core::first(cljonic::core::rest(cljonic::core::cycle(cljonic::core::cycle(prefix)))) == 0);
     REQUIRE(calls == 0);
 }

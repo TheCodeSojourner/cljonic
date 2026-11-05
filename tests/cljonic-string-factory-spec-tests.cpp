@@ -11,7 +11,7 @@
 
 TEST_CASE("string factory builds bounded strings from text sources", "[string][factory]") {
     using cljonic::String;
-    using cljonic::string;
+    using cljonic::core::string;
 
     TRACE_ID("entity-fields.StringFactory");
     TRACE_ID("invariant.StringFactory.SupportsDeducedLiteralFactory");

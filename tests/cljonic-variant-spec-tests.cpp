@@ -30,7 +30,7 @@ struct ThrowingCopy {
 };
 
 template <typename T>
-concept VariantFactoryAccepts = requires(T&& value) { cljonic::variant<int, long>(std::forward<T>(value)); };
+concept VariantFactoryAccepts = requires(T&& value) { cljonic::core::variant<int, long>(std::forward<T>(value)); };
 
 } // namespace
 
@@ -91,24 +91,24 @@ TEST_CASE("cljonic::variant constructs explicitly typed Variants", "[variant][fa
     TRACE_ID("invariant.VariantFactory.PreservesVariantConstructionSemantics");
     TRACE_ID("invariant.VariantFactory.ConstexprNoexceptNonallocating");
 
-    constexpr auto defaulted = cljonic::variant<int, long>();
+    constexpr auto defaulted = cljonic::core::variant<int, long>();
     STATIC_REQUIRE(std::same_as<std::remove_cv_t<decltype(defaulted)>, cljonic::Variant<int, long>>);
     STATIC_REQUIRE(defaulted.index() == 0U);
     STATIC_REQUIRE(defaulted.holds<int>());
 
-    constexpr auto as_int = cljonic::variant<int, long>(1);
-    constexpr auto as_long = cljonic::variant<int, long>(1L);
+    constexpr auto as_int = cljonic::core::variant<int, long>(1);
+    constexpr auto as_long = cljonic::core::variant<int, long>(1L);
     STATIC_REQUIRE(as_int.index() == 0U);
     STATIC_REQUIRE(as_int.holds<int>());
     STATIC_REQUIRE(as_long.index() == 1U);
     STATIC_REQUIRE(as_long.holds<long>());
-    STATIC_REQUIRE(noexcept(cljonic::variant<int, long>(1)));
+    STATIC_REQUIRE(noexcept(cljonic::core::variant<int, long>(1)));
     STATIC_REQUIRE(VariantFactoryAccepts<int>);
     STATIC_REQUIRE(VariantFactoryAccepts<long>);
     STATIC_REQUIRE_FALSE(VariantFactoryAccepts<short>);
 
     const auto runtime_value = 2L;
-    const auto runtime_variant = cljonic::variant<int, long>(runtime_value);
+    const auto runtime_variant = cljonic::core::variant<int, long>(runtime_value);
     CHECK(runtime_variant.holds<long>());
 }
 

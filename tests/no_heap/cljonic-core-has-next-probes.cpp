@@ -23,15 +23,15 @@ namespace cljonic::no_heap::probes {
     const auto range = Range{first, first + 3};
     const auto finite_repeat = repeat(3, first);
     const auto singleton_repeat = repeat(1, first);
-    const auto cycle = cljonic::cycle(Vector<int, 1>{first});
-    const auto empty_cycle = cljonic::cycle(Vector<int, 0>{});
+    const auto cycle = cljonic::core::cycle(Vector<int, 1>{first});
+    const auto empty_cycle = cljonic::core::cycle(Vector<int, 0>{});
     const auto iterated = iterate([](int value) noexcept { return value + 1; }, first);
     const auto finite_repeatedly = repeatedly(3, []() noexcept { return 7; });
     const auto taken = take_while([](int value) noexcept { return value < 43; }, Vector<int, 4>{first, second, 42});
     const auto dropped =
         drop_while([](int value) noexcept { return value < 43; }, Vector<int, 5>{first, second, 42, 43, 44});
-    const auto cycle_of_adapter =
-        cljonic::cycle(take_while([](int value) noexcept { return value < 43; }, Vector<int, 4>{first, second, 42}));
+    const auto cycle_of_adapter = cljonic::core::cycle(
+        take_while([](int value) noexcept { return value < 43; }, Vector<int, 4>{first, second, 42}));
 
     const bool multiple_elements =
         has_next(vector) && has_next(map) && has_next(set) && has_next(queue) && has_next(text);
@@ -58,7 +58,8 @@ namespace cljonic::no_heap::probes {
                                                        ? !has_next(callback_producer) && callback_calls == 0
                                                        : has_next(callback_producer) && callback_calls == 2;
     const bool producer_inputs_preserved = count(range) == 3U && count(finite_repeat) == 3U &&
-                                           cljonic::first(finite_repeat) == first && cljonic::first(iterated) == first;
+                                           cljonic::core::first(finite_repeat) == first &&
+                                           cljonic::core::first(iterated) == first;
     return multiple_elements && empty_and_singleton && inputs_preserved && agrees_with_count && producer_boundaries &&
            callbacks_follow_tail_observation && producer_inputs_preserved && !has_next(Vector<int, 0>{}) &&
            !has_next(Map<int, int, 0>{}) && !has_next(Set<int, 0>{}) && !has_next(Queue<int, 0>{}) &&

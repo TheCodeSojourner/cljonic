@@ -8,6 +8,7 @@
 
 TEST_CASE("Repeatedly normalizes signed counts without invoking empty callbacks", "[repeatedly]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.Repeatedly.SignedCountFactoryAndConstructorAreSupported");
     TRACE_ID("invariant.Repeatedly.NegativeCountProducesEmptyFiniteResult");
     TRACE_ID("invariant.Repeatedly.NonpositiveCountNeverInvokesCallback");
@@ -108,9 +109,6 @@ struct NonConstStep {
 };
 
 TEST_CASE("Repeatedly owns a copyable zero-argument step and exposes counted uncounted traversal", "[repeatedly]") {
-    using cljonic::fits_into;
-    using cljonic::into;
-    using cljonic::repeatedly;
     using cljonic::Vector;
     using cljonic::concepts::CljonicProducer;
     using cljonic::concepts::CljonicRepeatedly;
@@ -118,6 +116,9 @@ TEST_CASE("Repeatedly owns a copyable zero-argument step and exposes counted unc
     using cljonic::concepts::IndexedProducer;
     using cljonic::concepts::SequenceableProducer;
     using cljonic::concepts::StableEqualityComparable;
+    using cljonic::core::fits_into;
+    using cljonic::core::into;
+    using cljonic::core::repeatedly;
 
     TRACE_ID("entity-fields.Repeatedly");
     TRACE_ID("invariant.Repeatedly.HeaderOnlyDistribution");

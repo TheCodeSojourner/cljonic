@@ -10,10 +10,10 @@
 #define TRACE_ID(id_literal) INFO("trace-id: " id_literal)
 
 TEST_CASE("into and fits_into materialize a producer into a bounded destination", "[into][fits-into]") {
-    using cljonic::fits_into;
-    using cljonic::into;
     using cljonic::Range;
     using cljonic::Vector;
+    using cljonic::core::fits_into;
+    using cljonic::core::into;
 
     TRACE_ID("entity-fields.ProducerMaterialization");
     TRACE_ID("invariant.ProducerMaterialization.IntoRequiresExplicitBoundedDestination");
@@ -116,6 +116,7 @@ TEST_CASE("into and fits_into materialize a producer into a bounded destination"
 
 TEST_CASE("into materializes each collection source without changing its inputs", "[into]") {
     using namespace cljonic;
+    using namespace cljonic::core;
 
     TRACE_ID("invariant.ProducerMaterialization.MaterializationSourceDomainIsCljonicSource");
     TRACE_ID("invariant.ProducerMaterialization.IntoReturnsNewDestinationTypedCollection");
@@ -189,6 +190,7 @@ TEST_CASE("into materializes each collection source without changing its inputs"
 
 TEST_CASE("into handles empty sources and remaining destination capacity", "[into]") {
     using namespace cljonic;
+    using namespace cljonic::core;
 
     TRACE_ID("invariant.ProducerMaterialization.IntoVectorAndQueueAppendAfterDestinationContents");
     TRACE_ID("invariant.ProducerMaterialization.FiniteSourceMaterializesCompleteResultWhenItFits");
@@ -210,6 +212,7 @@ TEST_CASE("into handles empty sources and remaining destination capacity", "[int
 
 TEST_CASE("materialization admits only compatible collection destinations and cljonic sources", "[into][fits-into]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     using Entry = MapEntry<int, int>;
 
     TRACE_ID("invariant.ProducerMaterialization.MaterializationRejectsProducerDestinations");
@@ -237,6 +240,7 @@ TEST_CASE("materialization admits only compatible collection destinations and cl
 
 TEST_CASE("String materialization normalizes invalid runtime characters and continues", "[into][fits-into]") {
     using namespace cljonic;
+    using namespace cljonic::core;
 
     TRACE_ID("invariant.ProducerMaterialization.IntoStringNormalizesInvalidRuntimeCharactersAndContinues");
     TRACE_ID("invariant.ProducerMaterialization.IntoStringRejectsInvalidCharactersDuringConstantEvaluation");
@@ -265,6 +269,7 @@ TEST_CASE("String materialization normalizes invalid runtime characters and cont
 
 TEST_CASE("into and fits_into preserve queue FIFO order and remaining capacity", "[into][fits-into]") {
     using namespace cljonic;
+    using namespace cljonic::core;
 
     TRACE_ID("invariant.ProducerMaterialization.IntoVectorAndQueueAppendAfterDestinationContents");
     TRACE_ID("invariant.ProducerMaterialization.FiniteVectorAndQueuePreflightUsesSourceCount");
@@ -296,6 +301,7 @@ TEST_CASE("into and fits_into preserve queue FIFO order and remaining capacity",
 
 TEST_CASE("Set materialization deduplicates before measuring capacity", "[into][fits-into]") {
     using namespace cljonic;
+    using namespace cljonic::core;
 
     TRACE_ID("invariant.ProducerMaterialization.IntoSetInsertsDistinctValues");
     TRACE_ID("invariant.ProducerMaterialization.IntoSetAcceptsDuplicateValuesAsNoOpsWhenFull");
@@ -333,6 +339,7 @@ TEST_CASE("Set materialization deduplicates before measuring capacity", "[into][
 
 TEST_CASE("Map materialization replaces keys in source order without skipping capacity failures", "[into][fits-into]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     using Entry = MapEntry<int, int>;
 
     TRACE_ID("invariant.ProducerMaterialization.IntoMapReplacesMatchingKeysWithLastValue");
@@ -380,6 +387,7 @@ TEST_CASE("Map materialization replaces keys in source order without skipping ca
 TEST_CASE("value-sensitive preflight and materialization independently evaluate finite producers",
           "[into][fits-into]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     using Entry = MapEntry<int, int>;
 
     TRACE_ID("invariant.ProducerMaterialization.FiniteSetAndMapPreflightMayEvaluateCallbacks");
@@ -427,6 +435,7 @@ TEST_CASE("value-sensitive preflight and materialization independently evaluate 
 
 TEST_CASE("unbounded duplicate and replacement materialization stays traversal bounded", "[into][fits-into]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     using Entry = MapEntry<int, int>;
 
     TRACE_ID("invariant.ProducerMaterialization.UnboundedMaterializationNeverExceedsSourceTraversalCap");

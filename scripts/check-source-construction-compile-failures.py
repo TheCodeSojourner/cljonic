@@ -49,7 +49,7 @@ FAILURE_CASES = {
     "map-from-entry-vector": ("  cljonic::Map<int, int, 4> value{cljonic::Vector<cljonic::MapEntry<int, int>, 2>"
                               "{cljonic::MapEntry<int, int>{1, 2}}}; (void)value;",
                               "cljonic::Map:"),
-    "map-from-producer": ("  cljonic::Map<int, int, 4> value{cljonic::cycle("
+    "map-from-producer": ("  cljonic::Map<int, int, 4> value{cljonic::core::cycle("
                           "cljonic::Vector<cljonic::MapEntry<int, int>, 2>"
                           "{cljonic::MapEntry<int, int>{1, 2}})}; (void)value;",
                           "cljonic::Map:"),

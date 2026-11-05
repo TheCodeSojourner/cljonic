@@ -11,11 +11,12 @@ struct NotConvertible {};
 } // namespace
 
 TEST_CASE("Assoc free function operations", "[assoc]") {
-    using cljonic::assoc;
     using cljonic::Map;
     using cljonic::Set;
     using cljonic::String;
     using cljonic::Vector;
+    using cljonic::core::assoc;
+    using cljonic::core::count;
 
     TRACE_ID("entity-fields.Assoc");
     TRACE_ID("invariant.Assoc.AssocFreeFunctionSupported");

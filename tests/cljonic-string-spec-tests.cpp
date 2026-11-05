@@ -27,11 +27,11 @@ concept GetFreeFunctionAcceptsIndex = cljonic::concepts_detail::GetKeyAdmissible
 } // namespace
 
 TEST_CASE("String construction and indexed operations", "[string]") {
-    using cljonic::assoc;
-    using cljonic::can_conj;
-    using cljonic::conj;
-    using cljonic::get;
     using cljonic::String;
+    using cljonic::core::assoc;
+    using cljonic::core::can_conj;
+    using cljonic::core::conj;
+    using cljonic::core::get;
 
     TRACE_ID("entity-fields.String");
     TRACE_ID("invariant.String.CapacityIsNonNegative");
@@ -138,7 +138,7 @@ TEST_CASE("String construction and indexed operations", "[string]") {
     STATIC_REQUIRE_FALSE(cljonic::concepts_detail::AssocPairAdmissible<String<8>, bool, char>);
     STATIC_REQUIRE_FALSE(cljonic::concepts_detail::CanAssocKeyAdmissible<String<8>, char>);
     STATIC_REQUIRE_FALSE(cljonic::concepts_detail::CanAssocKeyAdmissible<String<8>, bool>);
-    STATIC_REQUIRE(cljonic::is_empty(s));
+    STATIC_REQUIRE(cljonic::core::is_empty(s));
     STATIC_REQUIRE(s.count() == 0U);
     STATIC_REQUIRE(s.capacity() == 8U);
     STATIC_REQUIRE(s(0) == '\0');           // out-of-bounds returns '\0'
@@ -146,7 +146,7 @@ TEST_CASE("String construction and indexed operations", "[string]") {
 
     // Literal construction deduces size from initializer
     constexpr String<8> s1{"Hello"}; // "Hello" = 5 chars + null terminator
-    STATIC_REQUIRE_FALSE(cljonic::is_empty(s1));
+    STATIC_REQUIRE_FALSE(cljonic::core::is_empty(s1));
     STATIC_REQUIRE(s1.count() == 5U); // logical size excludes null terminator
     STATIC_REQUIRE(s1(0) == 'H');
     STATIC_REQUIRE(s1(4) == 'o');
@@ -192,7 +192,7 @@ TEST_CASE("String construction and indexed operations", "[string]") {
 
     // Capacity zero: can only hold empty/null
     constexpr String<0> s_empty_cap{};
-    STATIC_REQUIRE(cljonic::is_empty(s_empty_cap));
+    STATIC_REQUIRE(cljonic::core::is_empty(s_empty_cap));
     STATIC_REQUIRE(s_empty_cap.count() == 0U);
     STATIC_REQUIRE(s_empty_cap(0) == '\0');
     STATIC_REQUIRE_FALSE(can_conj(s_empty_cap, 'A'));
@@ -215,14 +215,14 @@ TEST_CASE("String construction and indexed operations", "[string]") {
     volatile std::size_t idx0_raw = 0;
     std::size_t idx0 = idx0_raw;
     auto rs = String<8>{};
-    REQUIRE(cljonic::is_empty(rs));
+    REQUIRE(cljonic::core::is_empty(rs));
     REQUIRE(rs.count() == 0U);
     REQUIRE(rs.capacity() == 8U);
     REQUIRE(rs(idx0) == '\0');
     REQUIRE_FALSE(rs.contains(idx0));
 
     auto rs1 = String<8>{"AB"};
-    REQUIRE_FALSE(cljonic::is_empty(rs1));
+    REQUIRE_FALSE(cljonic::core::is_empty(rs1));
     REQUIRE(rs1.count() == 2U);
     REQUIRE(rs1(idx0) == 'A');
     REQUIRE(rs1(1) == 'B');

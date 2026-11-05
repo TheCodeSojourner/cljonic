@@ -19,75 +19,75 @@ import subprocess
 
 FAILURE_CASES = {
     # Sources outside the cljonic domain.
-    "Map-std-vector-source": ("(void)cljonic::map(cljonic_map_identity, std::vector<int>{1});"),
-    "Map-std-string-source": ("(void)cljonic::map(cljonic_map_identity, std::string{\"a\"});"),
-    "Map-std-span-source": ("(void)cljonic::map(cljonic_map_identity, std::span<int>{});"),
-    "Map-std-string-view-source": ("(void)cljonic::map(cljonic_map_identity, std::string_view{\"a\"});"),
-    "Map-std-map-source": ("(void)cljonic::map(cljonic_map_identity, std::map<int, int>{});"),
-    "Map-scalar-source": "(void)cljonic::map(cljonic_map_identity, 1);",
-    "Map-array-source": "int cljonic_map_array[3]{}; (void)cljonic::map(cljonic_map_identity, cljonic_map_array);",
+    "Map-std-vector-source": ("(void)cljonic::core::map(cljonic_map_identity, std::vector<int>{1});"),
+    "Map-std-string-source": ("(void)cljonic::core::map(cljonic_map_identity, std::string{\"a\"});"),
+    "Map-std-span-source": ("(void)cljonic::core::map(cljonic_map_identity, std::span<int>{});"),
+    "Map-std-string-view-source": ("(void)cljonic::core::map(cljonic_map_identity, std::string_view{\"a\"});"),
+    "Map-std-map-source": ("(void)cljonic::core::map(cljonic_map_identity, std::map<int, int>{});"),
+    "Map-scalar-source": "(void)cljonic::core::map(cljonic_map_identity, 1);",
+    "Map-array-source": "int cljonic_map_array[3]{}; (void)cljonic::core::map(cljonic_map_identity, cljonic_map_array);",
     # The zero-source arity is outside the admitted domain.
-    "Map-zero-sources": "(void)cljonic::map(cljonic_map_identity);",
+    "Map-zero-sources": "(void)cljonic::core::map(cljonic_map_identity);",
     # Callback contracts.
-    "Map-throwing-callback": ("(void)cljonic::map(cljonic_map_throwing, cljonic::Vector<int, 2>{});"),
-    "Map-non-storable-result": ("(void)cljonic::map(cljonic_map_string_result, cljonic::Vector<int, 2>{});"),
-    "Map-non-copyable-callback": ("(void)cljonic::map(cljonic_map_deleted_copy, cljonic::Vector<int, 2>{});"),
+    "Map-throwing-callback": ("(void)cljonic::core::map(cljonic_map_throwing, cljonic::Vector<int, 2>{});"),
+    "Map-non-storable-result": ("(void)cljonic::core::map(cljonic_map_string_result, cljonic::Vector<int, 2>{});"),
+    "Map-non-copyable-callback": ("(void)cljonic::core::map(cljonic_map_deleted_copy, cljonic::Vector<int, 2>{});"),
     # Mixed domain: a cljonic source followed by a standard-library source.
     "Map-mixed-source-domain": (
-        "(void)cljonic::map(cljonic_map_add, cljonic::Vector<int, 2>{}, std::vector<int>{1});"),
+        "(void)cljonic::core::map(cljonic_map_add, cljonic::Vector<int, 2>{}, std::vector<int>{1});"),
     # Safe parameter conversion: narrowing and domain-crossing conversions.
     "Map-narrowing-long-to-int": (
-        "(void)cljonic::map(cljonic_map_takes_int, cljonic::Vector<long, 2>{});"),
+        "(void)cljonic::core::map(cljonic_map_takes_int, cljonic::Vector<long, 2>{});"),
     "Map-narrowing-double-to-float": (
-        "(void)cljonic::map(cljonic_map_takes_float, cljonic::Vector<double, 2>{});"),
+        "(void)cljonic::core::map(cljonic_map_takes_float, cljonic::Vector<double, 2>{});"),
     "Map-narrowing-second-position": (
-        "(void)cljonic::map(cljonic_map_takes_int, cljonic::Vector<int, 2>{}, cljonic::Vector<long, 2>{});"),
+        "(void)cljonic::core::map(cljonic_map_takes_int, cljonic::Vector<int, 2>{}, cljonic::Vector<long, 2>{});"),
     "Map-domain-cross-int-to-char": (
-        "(void)cljonic::map(cljonic_map_takes_char, cljonic::Vector<int, 2>{});"),
+        "(void)cljonic::core::map(cljonic_map_takes_char, cljonic::Vector<int, 2>{});"),
     "Map-domain-cross-char-to-int": (
-        "(void)cljonic::map(cljonic_map_takes_int, cljonic::String<4>{});"),
+        "(void)cljonic::core::map(cljonic_map_takes_int, cljonic::String<4>{});"),
     "Map-too-few-parameters": (
-        "(void)cljonic::map(cljonic_map_takes_int, cljonic::Vector<int, 2>{}, cljonic::Vector<int, 2>{});"),
+        "(void)cljonic::core::map(cljonic_map_takes_int, cljonic::Vector<int, 2>{}, cljonic::Vector<int, 2>{});"),
 }
 
 PASS_CASES = {
-    "Map-unary-vector": "(void)cljonic::map(cljonic_map_identity, cljonic::Vector<int, 3>{});",
+    "Map-unary-vector": "(void)cljonic::core::map(cljonic_map_identity, cljonic::Vector<int, 3>{});",
     "Map-unary-scalar-callback": (
         "constexpr auto cljonic_map_inc = [](int value) noexcept { return value + 1; };"
-        "(void)cljonic::map(cljonic_map_inc, cljonic::vector(1, 2, 3));"),
-    "Map-unary-range": ("(void)cljonic::map(cljonic_map_identity, cljonic::Range<int>{1, 4, 1});"),
-    "Map-unary-repeat": "(void)cljonic::map(cljonic_map_identity, cljonic::Repeat<int>{3U, 1});",
+        "(void)cljonic::core::map(cljonic_map_inc, cljonic::core::vector(1, 2, 3));"),
+    "Map-unary-range": ("(void)cljonic::core::map(cljonic_map_identity, cljonic::Range<int>{1, 4, 1});"),
+    "Map-unary-repeat": "(void)cljonic::core::map(cljonic_map_identity, cljonic::Repeat<int>{3U, 1});",
     "Map-unary-cycle": (
-        "(void)cljonic::map(cljonic_map_identity, cljonic::cycle(cljonic::Vector<int, 2>{}));"),
+        "(void)cljonic::core::map(cljonic_map_identity, cljonic::core::cycle(cljonic::Vector<int, 2>{}));"),
     "Map-unary-iterate": (
-        "(void)cljonic::map(cljonic_map_identity, cljonic::iterate(cljonic_map_identity, 1));"),
+        "(void)cljonic::core::map(cljonic_map_identity, cljonic::core::iterate(cljonic_map_identity, 1));"),
     "Map-unary-repeatedly": (
-        "(void)cljonic::map(cljonic_map_identity, cljonic::repeatedly(2U, cljonic_map_zero));"),
+        "(void)cljonic::core::map(cljonic_map_identity, cljonic::core::repeatedly(2U, cljonic_map_zero));"),
     "Map-unary-map-collection": (
-        "(void)cljonic::map(cljonic_map_entry_value, "
+        "(void)cljonic::core::map(cljonic_map_entry_value, "
         "cljonic::Map<int, int, 2>{cljonic::MapEntry<int, int>{1, 10}});"),
-    "Map-unary-set-collection": "(void)cljonic::map(cljonic_map_identity, cljonic::Set<int, 2>{});",
-    "Map-unary-queue-collection": "(void)cljonic::map(cljonic_map_identity, cljonic::Queue<int, 2>{});",
-    "Map-unary-string-collection": "(void)cljonic::map(cljonic_map_identity_char, cljonic::String<4>{});",
+    "Map-unary-set-collection": "(void)cljonic::core::map(cljonic_map_identity, cljonic::Set<int, 2>{});",
+    "Map-unary-queue-collection": "(void)cljonic::core::map(cljonic_map_identity, cljonic::Queue<int, 2>{});",
+    "Map-unary-string-collection": "(void)cljonic::core::map(cljonic_map_identity_char, cljonic::String<4>{});",
     "Map-binary-two-sources": (
-        "(void)cljonic::map(cljonic_map_add, cljonic::Vector<int, 2>{}, cljonic::Queue<int, 2>{});"),
+        "(void)cljonic::core::map(cljonic_map_add, cljonic::Vector<int, 2>{}, cljonic::Queue<int, 2>{});"),
     "Map-ternary-three-sources": (
-        "(void)cljonic::map(cljonic_map_add3, cljonic::Vector<int, 2>{}, cljonic::Range<int>{1, 3, 1}, "
+        "(void)cljonic::core::map(cljonic_map_add3, cljonic::Vector<int, 2>{}, cljonic::Range<int>{1, 3, 1}, "
         "cljonic::Repeat<int>{2U, 7});"),
     "Map-converting-result": (
         "constexpr auto cljonic_map_to_long = [](int value) noexcept { return static_cast<long>(value); };"
-        "(void)cljonic::map(cljonic_map_to_long, cljonic::Vector<int, 2>{});"),
+        "(void)cljonic::core::map(cljonic_map_to_long, cljonic::Vector<int, 2>{});"),
     "Map-named-function-object": (
-        "(void)cljonic::map(cljonic_map_adder{}, cljonic::Vector<int, 2>{}, cljonic::Queue<int, 2>{});"),
+        "(void)cljonic::core::map(cljonic_map_adder{}, cljonic::Vector<int, 2>{}, cljonic::Queue<int, 2>{});"),
     # Value-preserving widening conversions are admitted.
     "Map-widening-int-to-long": (
-        "(void)cljonic::map(cljonic_map_takes_long, cljonic::Vector<int, 2>{});"),
+        "(void)cljonic::core::map(cljonic_map_takes_long, cljonic::Vector<int, 2>{});"),
     "Map-widening-int-to-double": (
-        "(void)cljonic::map(cljonic_map_takes_double, cljonic::Vector<int, 2>{});"),
-    "Map-exact-char-parameter": "(void)cljonic::map(cljonic_map_identity_char, cljonic::String<4>{});",
+        "(void)cljonic::core::map(cljonic_map_takes_double, cljonic::Vector<int, 2>{});"),
+    "Map-exact-char-parameter": "(void)cljonic::core::map(cljonic_map_identity_char, cljonic::String<4>{});",
     # Uninspectable callables fall back to nothrow invocability.
     "Map-generic-lambda-fallback": (
-        "(void)cljonic::map([](auto value) noexcept { return value; }, cljonic::Vector<long, 2>{});"),
+        "(void)cljonic::core::map([](auto value) noexcept { return value; }, cljonic::Vector<long, 2>{});"),
 }
 
 # Out-of-domain calls must report the targeted RejectionDiagnostic message
@@ -106,13 +106,13 @@ DIAGNOSTIC_CONVERSION_RULE = ("Each function parameter must accept the correspon
 # name -> (probe body, required substrings beyond the shared anchors)
 DIAGNOSTIC_CASES = {
     "Map-std-vector-diagnostic": (
-        "(void)cljonic::map(cljonic_map_identity, std::vector<int>{1});",
+        "(void)cljonic::core::map(cljonic_map_identity, std::vector<int>{1});",
         (DIAGNOSTIC_SOURCE_RULE,)),
     "Map-throwing-callback-diagnostic": (
-        "(void)cljonic::map(cljonic_map_throwing, cljonic::Vector<int, 2>{});",
+        "(void)cljonic::core::map(cljonic_map_throwing, cljonic::Vector<int, 2>{});",
         (DIAGNOSTIC_CALLBACK_RULE,)),
     "Map-zero-sources-diagnostic": (
-        "(void)cljonic::map(cljonic_map_identity);",
+        "(void)cljonic::core::map(cljonic_map_identity);",
         ("At least one source is required",)),
 }
 

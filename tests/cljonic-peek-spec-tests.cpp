@@ -7,12 +7,12 @@
 #define TRACE_ID(id_literal) INFO("trace-id: " id_literal)
 
 TEST_CASE("Peek free function operations", "[peek]") {
-    using cljonic::conj;
-    using cljonic::count;
-    using cljonic::empty;
-    using cljonic::peek;
     using cljonic::Queue;
     using cljonic::Vector;
+    using cljonic::core::conj;
+    using cljonic::core::count;
+    using cljonic::core::empty;
+    using cljonic::core::peek;
 
     TRACE_ID("entity-fields.Peek");
     TRACE_ID("invariant.Peek.PeekFreeFunctionSupported");

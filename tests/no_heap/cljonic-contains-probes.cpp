@@ -5,13 +5,13 @@
 namespace cljonic::no_heap::probes {
 
 [[nodiscard]] auto contains_probe() noexcept -> bool {
-    using cljonic::assoc;
-    using cljonic::conj;
-    using cljonic::contains;
     using cljonic::Map;
     using cljonic::Set;
     using cljonic::String;
     using cljonic::Vector;
+    using cljonic::core::assoc;
+    using cljonic::core::conj;
+    using cljonic::core::contains;
 
     const auto m = assoc(Map<int, int, 4>{}, 1, 100);
     const auto s = conj(Set<int, 4>{}, 5);

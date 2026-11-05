@@ -94,7 +94,7 @@ TEST_CASE("Interop views borrow their owner while semantic results own independe
     CHECK(view.size() == source.count());
     const auto result = [&source] {
         const auto local = source;
-        return cljonic::conj(local, 3);
+        return cljonic::core::conj(local, 3);
     }();
     CHECK(result.count() == 3U);
     CHECK(result(2) == 3);

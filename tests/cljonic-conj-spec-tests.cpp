@@ -5,14 +5,14 @@
 #define TRACE_ID(id_literal) INFO("trace-id: " id_literal)
 
 TEST_CASE("Conj free function operations", "[conj]") {
-    using cljonic::assoc;
-    using cljonic::conj;
     using cljonic::Map;
     using cljonic::MapEntry;
     using cljonic::Queue;
     using cljonic::Set;
     using cljonic::String;
     using cljonic::Vector;
+    using cljonic::core::assoc;
+    using cljonic::core::conj;
 
     TRACE_ID("entity-fields.Conj");
     TRACE_ID("invariant.Conj.ConjFreeFunctionSupported");
@@ -92,15 +92,15 @@ TEST_CASE("Conj free function operations", "[conj]") {
 }
 
 TEST_CASE("Conj zero-value and variadic arities", "[conj]") {
-    using cljonic::assoc;
-    using cljonic::conj;
     using cljonic::Map;
     using cljonic::MapEntry;
-    using cljonic::peek;
     using cljonic::Queue;
     using cljonic::Set;
     using cljonic::String;
     using cljonic::Vector;
+    using cljonic::core::assoc;
+    using cljonic::core::conj;
+    using cljonic::core::peek;
 
     TRACE_ID("invariant.Conj.SupportsZeroValueConj");
     TRACE_ID("invariant.Conj.ZeroValueConjReturnsUnchangedCopy");

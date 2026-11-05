@@ -826,6 +826,7 @@ TEST_CASE("Composite variant stable equality", "[concepts][value][composite]") {
 TEST_CASE("Producer parameter equality stable-recursion", "[concepts][value][producer][composite]") {
     using namespace cljonic::concepts;
     using namespace cljonic;
+    using namespace cljonic::core;
 
     TRACE_ID("invariant.StableEqualityComparable.RecursesIntoProducerParameters");
     TRACE_ID("invariant.StableEqualityComparable.RecursesOverComponents");
@@ -995,14 +996,14 @@ TEST_CASE("Producer effects stay within explicitly supplied callback state", "[c
     TRACE_ID("invariant.CljonicProducer.EffectsAreLimitedToGoverningContractScope");
     TRACE_ID("invariant.CljonicProducer.EffectsDoNotAuthorizeHiddenStateOrInputCollectionMutation");
 
-    constexpr auto pure = cljonic::repeat(std::size_t{2}, 7);
-    STATIC_REQUIRE(
-        cljonic::equal(cljonic::into(cljonic::Vector<int, 2>{}, pure), cljonic::into(cljonic::Vector<int, 2>{}, pure)));
+    constexpr auto pure = cljonic::core::repeat(std::size_t{2}, 7);
+    STATIC_REQUIRE(cljonic::core::equal(cljonic::core::into(cljonic::Vector<int, 2>{}, pure),
+                                        cljonic::core::into(cljonic::Vector<int, 2>{}, pure)));
     int calls = 0;
-    const auto effectful = cljonic::repeatedly(std::size_t{2}, [&calls]() noexcept { return ++calls; });
+    const auto effectful = cljonic::core::repeatedly(std::size_t{2}, [&calls]() noexcept { return ++calls; });
     const auto destination = cljonic::Vector<int, 3>{9};
     CHECK(calls == 0);
-    const auto result = cljonic::into(destination, effectful);
+    const auto result = cljonic::core::into(destination, effectful);
     CHECK(calls == 2);
     CHECK(result(1) == 1);
     CHECK(result(2) == 2);
@@ -1024,10 +1025,10 @@ TEST_CASE("Bounded values support constant initialization without hidden callbac
     static constinit const cljonic::String<2> string{"ab"};
     static constinit const cljonic::Variant<int, long> variant{1};
     static constinit const cljonic::Range<int> range{0, 2};
-    static constinit const auto repeated = cljonic::repeat(std::size_t{2}, 1);
-    static constinit const auto cycled = cljonic::cycle(cljonic::Vector<int, 2>{1, 2});
-    static constinit const auto iterated = cljonic::iterate([](int value) noexcept { return value + 1; }, 0);
-    static constinit const auto generated = cljonic::repeatedly(std::size_t{2}, []() noexcept { return 1; });
+    static constinit const auto repeated = cljonic::core::repeat(std::size_t{2}, 1);
+    static constinit const auto cycled = cljonic::core::cycle(cljonic::Vector<int, 2>{1, 2});
+    static constinit const auto iterated = cljonic::core::iterate([](int value) noexcept { return value + 1; }, 0);
+    static constinit const auto generated = cljonic::core::repeatedly(std::size_t{2}, []() noexcept { return 1; });
     constexpr auto automatic = cljonic::Vector<int, 2>{3, 4};
     STATIC_REQUIRE(automatic(1) == 4);
     CHECK(stored(0) == 1);
@@ -1035,16 +1036,16 @@ TEST_CASE("Bounded values support constant initialization without hidden callbac
     CHECK(set.contains(2));
     CHECK(queue.peek() == 1);
     CHECK(string(1) == 'b');
-    CHECK(cljonic::equal(variant, cljonic::Variant<int, long>{1}));
+    CHECK(cljonic::core::equal(variant, cljonic::Variant<int, long>{1}));
     CHECK(range.count() == 2U);
     CHECK(repeated.count() == 2U);
     CHECK(cycled.count() == cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
     CHECK(*iterated.begin() == 0);
     CHECK(*generated.begin() == 1);
     int calls = 0;
-    const auto source = cljonic::repeatedly(std::size_t{1}, [&calls]() noexcept { return ++calls; });
+    const auto source = cljonic::core::repeatedly(std::size_t{1}, [&calls]() noexcept { return ++calls; });
     CHECK(calls == 0);
-    const auto result = cljonic::into(cljonic::Vector<int, 1>{}, source);
+    const auto result = cljonic::core::into(cljonic::Vector<int, 1>{}, source);
     CHECK(calls == 1);
     CHECK(result(0) == 1);
 }

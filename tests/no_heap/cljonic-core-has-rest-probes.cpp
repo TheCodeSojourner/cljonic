@@ -16,14 +16,14 @@ namespace cljonic::no_heap::probes {
     const auto range = Range{first, first + 3};
     const auto repeated = repeat(3, first);
     const auto singleton = repeat(1, first);
-    const auto cycle = cljonic::cycle(Vector<int, 1>{first});
-    const auto empty_cycle = cljonic::cycle(Vector<int, 0>{});
+    const auto cycle = cljonic::core::cycle(Vector<int, 1>{first});
+    const auto empty_cycle = cljonic::core::cycle(Vector<int, 0>{});
     const auto iterated = iterate([](int value) noexcept { return value + 1; }, first);
     const auto generated = repeatedly(3, [] noexcept { return 7; });
     const auto taken = take_while([](int value) noexcept { return value < 43; }, Vector<int, 4>{first, second, 42});
     const auto dropped =
         drop_while([](int value) noexcept { return value < 43; }, Vector<int, 5>{first, second, 42, 43, 44});
-    const auto adapter_cycle = cljonic::cycle(taken);
+    const auto adapter_cycle = cljonic::core::cycle(taken);
 
     const bool collections = has_rest(vector) && has_rest(map) && has_rest(set) && has_rest(queue) && has_rest(text);
     const bool producer_boundaries =

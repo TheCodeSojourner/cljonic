@@ -14,10 +14,9 @@ from validation_jobs import default_jobs
 BLOCK_OPEN_RE = re.compile(r"^[ \t]*~~~~~\{\.cpp\}[ \t]*$", re.MULTILINE)
 BLOCK_CLOSE_RE = re.compile(r"^[ \t]*~~~~~[ \t]*$", re.MULTILINE)
 
-# Example-content rule: every doc C++ sample must bring cljonic names into scope
-# with `using namespace cljonic;` at file scope (after the #include, outside
-# main()). The extraction dedents a block, so an in-main occurrence is the only
-# indented one and the top-level occurrence is the only column-zero one.
+# Example-content rule: examples import the root API at file scope, outside
+# main(). The extracted block is dedented, so in-main occurrences remain
+# indented while the top-level occurrence starts in column zero.
 USING_TOP_LEVEL_RE = re.compile(r"(?m)^using namespace cljonic;[ \t]*$")
 USING_INDENTED_RE = re.compile(r"(?m)^[ \t]+using namespace cljonic;")
 

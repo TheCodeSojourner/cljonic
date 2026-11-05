@@ -22,57 +22,57 @@ struct collection_traits<ConjNonConjableCollection> {
 
 DIAGNOSTIC_CASES = {
     "non-conjable-cljonic-collection": (
-        "(void)cljonic::conj(ConjNonConjableCollection{}, 1);",
+        "(void)cljonic::core::conj(ConjNonConjableCollection{}, 1);",
         "must be a Vector, a Set, a Map, a Queue, or a String",
     ),
     "inadmissible-vector-value": (
-        "(void)cljonic::conj(cljonic::Vector<int, 4>{}, ConjNotConvertible{});",
+        "(void)cljonic::core::conj(cljonic::Vector<int, 4>{}, ConjNotConvertible{});",
         "cannot be added to the collection with conj",
     ),
     "inadmissible-set-value": (
-        "(void)cljonic::conj(cljonic::Set<int, 4>{}, ConjNotConvertible{});",
+        "(void)cljonic::core::conj(cljonic::Set<int, 4>{}, ConjNotConvertible{});",
         "cannot be added to the collection with conj",
     ),
     "inadmissible-map-value": (
-        "(void)cljonic::conj(cljonic::Map<int, int, 4>{}, 1);",
+        "(void)cljonic::core::conj(cljonic::Map<int, int, 4>{}, 1);",
         "A Map takes a MapEntry",
     ),
     "inadmissible-string-value": (
-        "(void)cljonic::conj(cljonic::String<4>{}, ConjNotConvertible{});",
+        "(void)cljonic::core::conj(cljonic::String<4>{}, ConjNotConvertible{});",
         "cannot be added to the collection with conj",
     ),
     "non-conjable-cljonic-collection-zero-value": (
-        "(void)cljonic::conj(ConjNonConjableCollection{});",
+        "(void)cljonic::core::conj(ConjNonConjableCollection{});",
         "must be a Vector, a Set, a Map, a Queue, or a String",
     ),
     "non-conjable-cljonic-collection-variadic": (
-        "(void)cljonic::conj(ConjNonConjableCollection{}, 1, 2);",
+        "(void)cljonic::core::conj(ConjNonConjableCollection{}, 1, 2);",
         "must be a Vector, a Set, a Map, a Queue, or a String",
     ),
     "inadmissible-variadic-vector-value": (
-        "(void)cljonic::conj(cljonic::Vector<int, 4>{}, 1, ConjNotConvertible{});",
+        "(void)cljonic::core::conj(cljonic::Vector<int, 4>{}, 1, ConjNotConvertible{});",
         "every value after the collection must be one this collection can add",
     ),
     "inadmissible-variadic-map-value": (
-        "(void)cljonic::conj(cljonic::Map<int, int, 4>{}, cljonic::MapEntry<int, int>{1, 2}, 3);",
+        "(void)cljonic::core::conj(cljonic::Map<int, int, 4>{}, cljonic::MapEntry<int, int>{1, 2}, 3);",
         "every value after the collection must be one this collection can add",
     ),
 }
 
 PASS_CASES = {
-    "vector": "(void)cljonic::conj(cljonic::Vector<int, 4>{}, 1);",
-    "set": "(void)cljonic::conj(cljonic::Set<int, 4>{}, 1);",
-    "map-entry": "(void)cljonic::conj(cljonic::Map<int, int, 4>{}, cljonic::MapEntry<int, int>{1, 2});",
-    "queue": "(void)cljonic::conj(cljonic::Queue<int, 4>{}, 1);",
-    "string": "(void)cljonic::conj(cljonic::String<4>{}, 'A');",
-    "zero-value-vector": "(void)cljonic::conj(cljonic::Vector<int, 4>{});",
-    "zero-value-map": "(void)cljonic::conj(cljonic::Map<int, int, 4>{});",
-    "variadic-vector": "(void)cljonic::conj(cljonic::Vector<int, 4>{}, 1, 2, 3);",
-    "variadic-set": "(void)cljonic::conj(cljonic::Set<int, 4>{}, 1, 2);",
-    "variadic-queue": "(void)cljonic::conj(cljonic::Queue<int, 4>{}, 1, 2);",
-    "variadic-string": "(void)cljonic::conj(cljonic::String<4>{}, 'A', 'B');",
+    "vector": "(void)cljonic::core::conj(cljonic::Vector<int, 4>{}, 1);",
+    "set": "(void)cljonic::core::conj(cljonic::Set<int, 4>{}, 1);",
+    "map-entry": "(void)cljonic::core::conj(cljonic::Map<int, int, 4>{}, cljonic::MapEntry<int, int>{1, 2});",
+    "queue": "(void)cljonic::core::conj(cljonic::Queue<int, 4>{}, 1);",
+    "string": "(void)cljonic::core::conj(cljonic::String<4>{}, 'A');",
+    "zero-value-vector": "(void)cljonic::core::conj(cljonic::Vector<int, 4>{});",
+    "zero-value-map": "(void)cljonic::core::conj(cljonic::Map<int, int, 4>{});",
+    "variadic-vector": "(void)cljonic::core::conj(cljonic::Vector<int, 4>{}, 1, 2, 3);",
+    "variadic-set": "(void)cljonic::core::conj(cljonic::Set<int, 4>{}, 1, 2);",
+    "variadic-queue": "(void)cljonic::core::conj(cljonic::Queue<int, 4>{}, 1, 2);",
+    "variadic-string": "(void)cljonic::core::conj(cljonic::String<4>{}, 'A', 'B');",
     "variadic-map-entry": (
-        "(void)cljonic::conj(cljonic::Map<int, int, 4>{}, cljonic::MapEntry<int, int>{1, 2}, "
+        "(void)cljonic::core::conj(cljonic::Map<int, int, 4>{}, cljonic::MapEntry<int, int>{1, 2}, "
         "cljonic::MapEntry<int, int>{3, 4});"
     ),
 }

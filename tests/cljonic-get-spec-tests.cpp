@@ -6,14 +6,14 @@
 #define TRACE_ID(id_literal) INFO("trace-id: " id_literal)
 
 TEST_CASE("Get free function operations", "[get]") {
-    using cljonic::assoc;
-    using cljonic::conj;
-    using cljonic::get;
     using cljonic::Map;
     using cljonic::Queue;
     using cljonic::Set;
     using cljonic::String;
     using cljonic::Vector;
+    using cljonic::core::assoc;
+    using cljonic::core::conj;
+    using cljonic::core::get;
 
     TRACE_ID("entity-fields.Get");
     TRACE_ID("invariant.Get.GetFreeFunctionSupported");

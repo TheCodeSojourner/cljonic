@@ -5,15 +5,15 @@
 #define TRACE_ID(id_literal) INFO("trace-id: " id_literal)
 
 TEST_CASE("Count free function operations", "[count]") {
-    using cljonic::assoc;
-    using cljonic::conj;
-    using cljonic::count;
     using cljonic::Map;
     using cljonic::Queue;
     using cljonic::Range;
     using cljonic::Repeat;
     using cljonic::Set;
     using cljonic::Vector;
+    using cljonic::core::assoc;
+    using cljonic::core::conj;
+    using cljonic::core::count;
 
     TRACE_ID("entity-fields.Count");
     TRACE_ID("invariant.Count.CountFreeFunctionSupported");
@@ -59,12 +59,12 @@ TEST_CASE("Count free function operations", "[count]") {
 }
 
 TEST_CASE("Count free function reports producer observations", "[count][producer]") {
-    using cljonic::count;
-    using cljonic::cycle;
-    using cljonic::iterate;
     using cljonic::Range;
     using cljonic::Repeat;
-    using cljonic::repeatedly;
+    using cljonic::core::count;
+    using cljonic::core::cycle;
+    using cljonic::core::iterate;
+    using cljonic::core::repeatedly;
 
     TRACE_ID("invariant.Count.FiniteProducerCountIsExact");
     TRACE_ID("invariant.Count.UnboundedProducerCountIsObservableCap");

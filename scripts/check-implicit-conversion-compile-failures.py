@@ -46,23 +46,23 @@ def rejection_cases() -> dict[str, str]:
             f"(void)cljonic::{operation}(cljonic::Map<int, int, 2>{{}}, IntConversion{{}});"
         )
     for collection in ("Vector<int, 2>", "Map<int, int, 2>", "Set<int, 2>", "String<2>"):
-        cases[f"{collection}-fallback"] = f"(void)cljonic::get(cljonic::{collection}{{}}, 0, 1.5);"
+        cases[f"{collection}-fallback"] = f"(void)cljonic::core::get(cljonic::{collection}{{}}, 0, 1.5);"
     for operation in ("into", "fits_into"):
         cases[f"materialization-{operation}"] = (
             f"(void)cljonic::{operation}(cljonic::Vector<short, 2>{{}}, cljonic::Range<int>{{0, 2}});"
         )
     for count in ("1.5", "true", "'a'", "IntConversion{}"):
-        cases[f"repeat-count-{count}"] = f"(void)cljonic::repeat({count}, 1);"
-        cases[f"repeatedly-count-{count}"] = f"(void)cljonic::repeatedly({count}, []() noexcept {{ return 1; }});"
+        cases[f"repeat-count-{count}"] = f"(void)cljonic::core::repeat({count}, 1);"
+        cases[f"repeatedly-count-{count}"] = f"(void)cljonic::core::repeatedly({count}, []() noexcept {{ return 1; }});"
         cases[f"Repeat-count-{count}"] = f"(void)cljonic::Repeat<int>({count}, 1);"
         cases[f"Repeat-deduced-count-{count}"] = f"(void)cljonic::Repeat{{{count}, 1}};"
         cases[f"Repeatedly-constructor-count-{count}"] = (
             f"const auto step = []() noexcept {{ return 1; }}; "
             f"(void)cljonic::Repeatedly<int, decltype(step)>{{step, {count}}};"
         )
-    cases["variadic-assoc"] = "(void)cljonic::assoc(cljonic::Map<int, int, 2>{}, 0, 1, 1.5, 2);"
-    cases["variadic-dissoc"] = "(void)cljonic::dissoc(cljonic::Map<int, int, 2>{}, 0, 1.5);"
-    cases["variadic-disj"] = "(void)cljonic::disj(cljonic::Set<int, 2>{}, 0, 1.5);"
+    cases["variadic-assoc"] = "(void)cljonic::core::assoc(cljonic::Map<int, int, 2>{}, 0, 1, 1.5, 2);"
+    cases["variadic-dissoc"] = "(void)cljonic::core::dissoc(cljonic::Map<int, int, 2>{}, 0, 1.5);"
+    cases["variadic-disj"] = "(void)cljonic::core::disj(cljonic::Set<int, 2>{}, 0, 1.5);"
     return cases
 
 
@@ -113,7 +113,7 @@ def main() -> int:
         ("modular", root / "src", "cljonic-core.hpp"),
         ("single-header", root, "cljonic.hpp"),
     ):
-        smoke = f'#include "{header}"\n{PREAMBLE}\nint main() {{ cljonic::Vector<long long, 2> v{{short{{1}}}}; return cljonic::get(v, 0) != 1; }}\n'
+        smoke = f'#include "{header}"\n{PREAMBLE}\nint main() {{ cljonic::Vector<long long, 2> v{{short{{1}}}}; return cljonic::core::get(v, 0) != 1; }}\n'
         baseline = subprocess.run(
             [*compiler, "-std=c++23", "-fsyntax-only", "-I", str(include_dir), "-x", "c++", "-"],
             input=smoke, text=True, capture_output=True, check=False,

@@ -5,11 +5,11 @@
 #define TRACE_ID(id_literal) INFO("trace-id: " id_literal)
 
 TEST_CASE("Pop free function operations", "[pop]") {
-    using cljonic::conj;
-    using cljonic::peek;
-    using cljonic::pop;
     using cljonic::Queue;
     using cljonic::Vector;
+    using cljonic::core::conj;
+    using cljonic::core::peek;
+    using cljonic::core::pop;
 
     TRACE_ID("entity-fields.Pop");
     TRACE_ID("invariant.Pop.PopFreeFunctionSupported");

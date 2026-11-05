@@ -37,13 +37,14 @@ namespace cljonic::no_heap::probes {
     static_assert(std::same_as<std::remove_cvref_t<decltype(factory_zero)>, Set<int, 0>>);
 
     return s1.count() == 1U && s1.contains(1) && s1(1) == 1 && literal.count() == 3U &&
-           cljonic::is_empty(zero_capacity) && !zero_capacity.can_conj(1) && cljonic::is_empty(zero_after_conj) &&
-           cljonic::is_empty(zero_after_disj) && imported.count() == 2U && imported.contains(4) &&
-           imported.contains(5) && static_imported.contains(8) && view_imported.contains(9) && factory.count() == 3U &&
-           factory.contains(factory_value) && factory.contains(factory_other) && factory.contains(9) &&
-           factory_typed.count() == 2U && factory_typed(8L) == 8L && factory_spare.count() == 2U &&
-           factory_spare.contains(factory_value) && factory_reserved_empty.count() == 0U &&
-           factory_zero.count() == 0U && factory_duplicate.count() == 1U && factory_duplicate(factory_value) == 8;
+           cljonic::core::is_empty(zero_capacity) && !zero_capacity.can_conj(1) &&
+           cljonic::core::is_empty(zero_after_conj) && cljonic::core::is_empty(zero_after_disj) &&
+           imported.count() == 2U && imported.contains(4) && imported.contains(5) && static_imported.contains(8) &&
+           view_imported.contains(9) && factory.count() == 3U && factory.contains(factory_value) &&
+           factory.contains(factory_other) && factory.contains(9) && factory_typed.count() == 2U &&
+           factory_typed(8L) == 8L && factory_spare.count() == 2U && factory_spare.contains(factory_value) &&
+           factory_reserved_empty.count() == 0U && factory_zero.count() == 0U && factory_duplicate.count() == 1U &&
+           factory_duplicate(factory_value) == 8;
 }
 
 } // namespace cljonic::no_heap::probes

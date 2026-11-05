@@ -13,23 +13,24 @@ concept HasDeferredEntryAccess = requires(const T& value) { last(value); } ||
                                  requires(const T& value) { key(value); } || requires(const T& value) { val(value); };
 
 template <typename T>
-concept HasFirstAccess = requires(const T& value) { first(value); };
+concept HasFirstAccess = requires(const T& value) { cljonic::core::first(value); };
 
 template <typename T>
 concept HasSequenceConversion =
-    requires(const T& value) { requires !std::same_as<decltype(cljonic::seq(value)), void>; };
+    requires(const T& value) { requires !std::same_as<decltype(cljonic::core::seq(value)), void>; };
 
 template <typename T>
 concept RequiresTwoElementValueDomain = requires(const T& value) {
     value.key;
     value.value;
-    { first(value) } -> std::same_as<typename T::key_type>;
+    { cljonic::core::first(value) } -> std::same_as<typename T::key_type>;
 };
 } // namespace
 
 TEST_CASE("MapEntry holds value-semantic key/value pair", "[map-entry]") {
-    using cljonic::count;
     using cljonic::MapEntry;
+    using cljonic::core::count;
+    using cljonic::core::first;
 
     TRACE_ID("entity-fields.MapEntry");
     TRACE_ID("invariant.MapEntry.KeyValueCountIsTwo");
@@ -73,8 +74,8 @@ TEST_CASE("MapEntry holds value-semantic key/value pair", "[map-entry]") {
 }
 
 TEST_CASE("map_entry factory builds one value-semantic key/value pair", "[map-entry][factory]") {
-    using cljonic::map_entry;
     using cljonic::MapEntry;
+    using cljonic::core::map_entry;
 
     TRACE_ID("entity-fields.MapEntryFactory");
     TRACE_ID("invariant.MapEntryFactory.SupportsDeducedKeyValueFactory");

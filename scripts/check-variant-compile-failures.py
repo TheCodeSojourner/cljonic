@@ -43,7 +43,7 @@ PASS_CASES = {
     "Range-set-element": "cljonic::Set<cljonic::Range<int>, 4>{cljonic::Range<int>{1, 5, 2}, cljonic::Range<int>{1, 5, 3}};",
     "Range-map-key": "cljonic::Map<cljonic::Range<int>, int, 4>{cljonic::MapEntry<cljonic::Range<int>, int>{cljonic::Range<int>{1, 5, 2}, 10}};",
     "Repeat-set-element": "cljonic::Set<cljonic::Repeat<int>, 4>{cljonic::Repeat<int>{3U, 7}, cljonic::Repeat<int>{2U, 8}};",
-    "Cycle-set-element": "cljonic::Set<cljonic::Cycle<cljonic::Vector<int, 4>>, 4>{cljonic::cycle(cljonic::Vector<int, 4>{1, 2, 3}), cljonic::cycle(cljonic::Vector<int, 4>{1, 2, 4})};",
+    "Cycle-set-element": "cljonic::Set<cljonic::Cycle<cljonic::Vector<int, 4>>, 4>{cljonic::core::cycle(cljonic::Vector<int, 4>{1, 2, 3}), cljonic::core::cycle(cljonic::Vector<int, 4>{1, 2, 4})};",
     "Variant-producer-key": "cljonic::Set<cljonic::Variant<int, cljonic::Range<int>>, 4>{};",
     "Vector-of-producers-equality": "cljonic::Vector<cljonic::Range<int>, 4> a{cljonic::Range<int>{1, 5, 2}, cljonic::Range<int>{2, 4}}; cljonic::Vector<cljonic::Range<int>, 4> b{cljonic::Range<int>{1, 5, 2}, cljonic::Range<int>{2, 4}}; (void)(a == b);",
 }

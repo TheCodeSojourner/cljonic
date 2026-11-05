@@ -10,57 +10,57 @@ import subprocess
 from compile_probe import compile_probe
 
 FAILURE_CASES = {
-    "untyped-empty": '  (void)cljonic::string();',
-    "variadic-characters": "  (void)cljonic::string('h', 'i');",
-    "non-literal-argument": "  (void)cljonic::string(1);",
+    "untyped-empty": '  (void)cljonic::core::string();',
+    "variadic-characters": "  (void)cljonic::core::string('h', 'i');",
+    "non-literal-argument": "  (void)cljonic::core::string(1);",
     "view-without-capacity": (
-        '  std::string_view view{"x"}; (void)cljonic::string(view);'
+        '  std::string_view view{"x"}; (void)cljonic::core::string(view);'
     ),
     "cljonic-collection-source": (
-        "  cljonic::Vector<int, 2> values{1, 2}; (void)cljonic::string<2>(values);"
+        "  cljonic::Vector<int, 2> values{1, 2}; (void)cljonic::core::string<2>(values);"
     ),
-    "explicit-capacity-over-maximum": "  (void)cljonic::string<3>();",
-    "oversized-literal": '  (void)cljonic::string("abc");',
-    "literal-too-long-for-capacity": '  (void)cljonic::string<1>("abc");',
+    "explicit-capacity-over-maximum": "  (void)cljonic::core::string<3>();",
+    "oversized-literal": '  (void)cljonic::core::string("abc");',
+    "literal-too-long-for-capacity": '  (void)cljonic::core::string<1>("abc");',
     "into-invalid-character-during-constant-evaluation": (
-        "  constexpr auto result = cljonic::into(cljonic::String<1>{}, "
+        "  constexpr auto result = cljonic::core::into(cljonic::String<1>{}, "
         "cljonic::Vector<char, 1>{static_cast<char>(0x80)});"
     ),
 }
 
 PASS_CASES = {
     "deduced-literal": (
-        "  constexpr auto value = cljonic::string(\"Hi\"); "
+        "  constexpr auto value = cljonic::core::string(\"Hi\"); "
         "static_assert(value.count() == 2U && value.capacity() == 2U && value(1) == 'i');"
     ),
     "explicit-capacity": (
-        "  constexpr auto value = cljonic::string<2>(\"Hi\"); "
+        "  constexpr auto value = cljonic::core::string<2>(\"Hi\"); "
         "static_assert(value.count() == 2U && value.capacity() == 2U && value(1) == 'i');"
     ),
     "explicit-capacity-partial": (
-        "  constexpr auto value = cljonic::string<2>(\"a\"); "
+        "  constexpr auto value = cljonic::core::string<2>(\"a\"); "
         "static_assert(value.count() == 1U && value.capacity() == 2U && value(0) == 'a');"
     ),
     "explicit-capacity-empty": (
-        "  constexpr auto value = cljonic::string<2>(); "
+        "  constexpr auto value = cljonic::core::string<2>(); "
         "static_assert(value.count() == 0U && value.capacity() == 2U);"
     ),
     "empty-zero-capacity": (
-        "  constexpr auto value = cljonic::string<0>(); "
+        "  constexpr auto value = cljonic::core::string<0>(); "
         "static_assert(value.count() == 0U && value.capacity() == 0U);"
     ),
     "deduced-empty-literal": (
-        "  constexpr auto value = cljonic::string(\"\"); "
+        "  constexpr auto value = cljonic::core::string(\"\"); "
         "static_assert(value.count() == 0U && value.capacity() == 0U);"
     ),
     "view-import": (
         '  constexpr std::string_view view{"ab"}; '
-        "  constexpr auto value = cljonic::string<2>(view); "
+        "  constexpr auto value = cljonic::core::string<2>(view); "
         "static_assert(value.view() == view);"
     ),
     "range-import": (
         "  static constexpr char source[] = {'a', 'b'}; "
-        "  constexpr auto value = cljonic::string<2>(std::span{source}); "
+        "  constexpr auto value = cljonic::core::string<2>(std::span{source}); "
         "static_assert(value.view() == \"ab\");"
     ),
 }

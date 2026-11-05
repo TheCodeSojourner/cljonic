@@ -14,7 +14,7 @@
 namespace {
 template <typename T>
 concept HasAdmittedHasRest =
-    requires(const T& value) { requires(!std::same_as<decltype(cljonic::has_rest(value)), void>); };
+    requires(const T& value) { requires(!std::same_as<decltype(cljonic::core::has_rest(value)), void>); };
 template <typename... T>
 concept AllHaveAdmittedHasRest = (HasAdmittedHasRest<T> && ...);
 template <typename... T>
@@ -22,8 +22,8 @@ concept NoneHaveAdmittedHasRest = (!HasAdmittedHasRest<T> && ...);
 } // namespace
 
 TEST_CASE("has_rest exactly forwards has_next across its domain", "[has_rest]") {
-    using cljonic::has_next;
-    using cljonic::has_rest;
+    using cljonic::core::has_next;
+    using cljonic::core::has_rest;
 
     TRACE_ID("entity-fields.HasRest");
     TRACE_ID("invariant.HasRest.HasRestFreeFunctionSupported");
@@ -44,13 +44,13 @@ TEST_CASE("has_rest exactly forwards has_next across its domain", "[has_rest]") 
     constexpr auto queue = cljonic::Queue<int, 4>{10, 20};
     constexpr auto text = cljonic::String<4>{"AB"};
     constexpr auto range = cljonic::Range{0, 4};
-    constexpr auto repeated = cljonic::repeat(3, 7);
-    constexpr auto iterated = cljonic::iterate([](int value) noexcept { return value + 1; }, 0);
-    constexpr auto generated = cljonic::repeatedly(3, [] noexcept { return 7; });
-    constexpr auto taken = cljonic::take_while([](int value) noexcept { return value < 3; }, values);
+    constexpr auto repeated = cljonic::core::repeat(3, 7);
+    constexpr auto iterated = cljonic::core::iterate([](int value) noexcept { return value + 1; }, 0);
+    constexpr auto generated = cljonic::core::repeatedly(3, [] noexcept { return 7; });
+    constexpr auto taken = cljonic::core::take_while([](int value) noexcept { return value < 3; }, values);
     constexpr auto dropped =
-        cljonic::drop_while([](int value) noexcept { return value < 2; }, cljonic::Vector<int, 4>{1, 2, 3});
-    constexpr auto cycled_adapter = cljonic::cycle(taken);
+        cljonic::core::drop_while([](int value) noexcept { return value < 2; }, cljonic::Vector<int, 4>{1, 2, 3});
+    constexpr auto cycled_adapter = cljonic::core::cycle(taken);
 
     STATIC_REQUIRE(
         AllHaveAdmittedHasRest<decltype(values), decltype(map), decltype(set), decltype(queue), decltype(text),
@@ -69,25 +69,25 @@ TEST_CASE("has_rest exactly forwards has_next across its domain", "[has_rest]") 
     const auto original_range = range;
     REQUIRE(has_rest(values) == has_next(values));
     REQUIRE(has_rest(range) == has_next(range));
-    REQUIRE(cljonic::equal(values, original_values));
+    REQUIRE(cljonic::core::equal(values, original_values));
     REQUIRE(range == original_range);
 }
 
 TEST_CASE("has_rest preserves callback timing from has_next", "[has_rest]") {
     TRACE_ID("invariant.HasRest.CallbackBehaviorMatchesHasNext");
     auto rest_calls = 0;
-    const auto rest_producer = cljonic::repeatedly([&rest_calls] noexcept { return ++rest_calls; });
+    const auto rest_producer = cljonic::core::repeatedly([&rest_calls] noexcept { return ++rest_calls; });
     auto next_calls = 0;
-    const auto next_producer = cljonic::repeatedly([&next_calls] noexcept { return ++next_calls; });
+    const auto next_producer = cljonic::core::repeatedly([&next_calls] noexcept { return ++next_calls; });
 
     if constexpr (cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE == 0U) {
-        REQUIRE_FALSE(cljonic::has_rest(rest_producer));
-        REQUIRE_FALSE(cljonic::has_next(next_producer));
+        REQUIRE_FALSE(cljonic::core::has_rest(rest_producer));
+        REQUIRE_FALSE(cljonic::core::has_next(next_producer));
         REQUIRE(rest_calls == 0);
         REQUIRE(next_calls == 0);
     } else {
-        REQUIRE(cljonic::has_rest(rest_producer));
-        REQUIRE(cljonic::has_next(next_producer));
+        REQUIRE(cljonic::core::has_rest(rest_producer));
+        REQUIRE(cljonic::core::has_next(next_producer));
         REQUIRE(rest_calls == 2);
         REQUIRE(next_calls == 2);
     }

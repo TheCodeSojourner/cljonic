@@ -28,9 +28,9 @@ struct GenerateStep {
 } // namespace
 
 TEST_CASE("RejectionDiagnostic targeted compile-time diagnostics", "[diagnostics]") {
-    using cljonic::equal;
-    using cljonic::get;
-    using cljonic::not_equal;
+    using cljonic::core::equal;
+    using cljonic::core::get;
+    using cljonic::core::not_equal;
 
     TRACE_ID("entity-fields.RejectionDiagnostic");
     TRACE_ID("invariant.RejectionDiagnostic.PrimaryAdmissionRemainsConceptBased");
@@ -76,26 +76,26 @@ TEST_CASE("RejectionDiagnostic targeted compile-time diagnostics", "[diagnostics
     // argument, so the rejected call expression is still well-formed and the
     // targeted static_assert fires at instantiation (proved by
     // scripts/check-producer-compile-failures.py).
-    STATIC_REQUIRE(requires { cljonic::cycle(42); });
-    STATIC_REQUIRE(requires { cljonic::repeatedly(42); });
-    STATIC_REQUIRE(requires { cljonic::repeatedly(3, 42); });
-    STATIC_REQUIRE(requires { cljonic::iterate(42, 1); });
-    STATIC_REQUIRE(requires { cljonic::repeat(NonStorable{}); });
-    STATIC_REQUIRE(requires { cljonic::repeat(3U, NonStorable{}); });
+    STATIC_REQUIRE(requires { cljonic::core::cycle(42); });
+    STATIC_REQUIRE(requires { cljonic::core::repeatedly(42); });
+    STATIC_REQUIRE(requires { cljonic::core::repeatedly(3, 42); });
+    STATIC_REQUIRE(requires { cljonic::core::iterate(42, 1); });
+    STATIC_REQUIRE(requires { cljonic::core::repeat(NonStorable{}); });
+    STATIC_REQUIRE(requires { cljonic::core::repeat(3U, NonStorable{}); });
 
     // AppliesToCollectionPrimitives: collection primitives expose diagnostic
     // fallbacks for rejected domains. The targeted compile-fail harness checks
     // get's collection/key/fallback cases and dissoc's Map and exact-key cases.
     STATIC_REQUIRE_FALSE(cljonic::concepts::AssociativeCollection<cljonic::Set<int, 4>>);
-    STATIC_REQUIRE(requires { cljonic::assoc(cljonic::Set<int, 4>{}, 1, 1); });
-    STATIC_REQUIRE(requires { cljonic::assoc(cljonic::Map<int, int, 4>{}, 1, 100, 2); });
+    STATIC_REQUIRE(requires { cljonic::core::assoc(cljonic::Set<int, 4>{}, 1, 1); });
+    STATIC_REQUIRE(requires { cljonic::core::assoc(cljonic::Map<int, int, 4>{}, 1, 100, 2); });
     STATIC_REQUIRE(requires { get(42, 0); });
     STATIC_REQUIRE(requires { get(cljonic::Vector<int, 4>{}, 0.5); });
     STATIC_REQUIRE(requires { get(cljonic::Vector<int, 4>{}, 0, 1.5); });
-    STATIC_REQUIRE(requires { cljonic::dissoc(cljonic::Set<int, 4>{}); });
-    STATIC_REQUIRE(requires { cljonic::dissoc(cljonic::Set<int, 4>{}, 1); });
-    STATIC_REQUIRE(requires { cljonic::dissoc(cljonic::Set<int, 4>{}, 1, 2); });
-    STATIC_REQUIRE(requires { cljonic::dissoc(cljonic::Map<int, int, 4>{}, 1, short{2}); });
+    STATIC_REQUIRE(requires { cljonic::core::dissoc(cljonic::Set<int, 4>{}); });
+    STATIC_REQUIRE(requires { cljonic::core::dissoc(cljonic::Set<int, 4>{}, 1); });
+    STATIC_REQUIRE(requires { cljonic::core::dissoc(cljonic::Set<int, 4>{}, 1, 2); });
+    STATIC_REQUIRE(requires { cljonic::core::dissoc(cljonic::Map<int, int, 4>{}, 1, short{2}); });
 }
 
 TEST_CASE("ClassTemplateDeductionDiagnostic redirects out-of-domain deduction", "[diagnostics]") {

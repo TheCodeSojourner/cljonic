@@ -11,19 +11,20 @@
 
 namespace {
 template <typename T>
-concept HasAdmittedNext = requires(const T& value) { requires(!std::same_as<decltype(cljonic::next(value)), void>); };
+concept HasAdmittedNext =
+    requires(const T& value) { requires(!std::same_as<decltype(cljonic::core::next(value)), void>); };
 } // namespace
 
 TEST_CASE("Next returns the logical tail as the same collection kind with reduced capacity", "[next]") {
-    using cljonic::count;
     using cljonic::Map;
     using cljonic::MapEntry;
-    using cljonic::next;
     using cljonic::Queue;
     using cljonic::Repeat;
     using cljonic::Set;
     using cljonic::String;
     using cljonic::Vector;
+    using cljonic::core::count;
+    using cljonic::core::next;
 
     TRACE_ID("entity-fields.Next");
     TRACE_ID("invariant.Next.NextFreeFunctionSupported");
@@ -219,13 +220,13 @@ TEST_CASE("Next returns the logical tail as the same collection kind with reduce
 }
 
 TEST_CASE("Next returns the logical tail of Repeat producers", "[next]") {
-    using cljonic::count;
-    using cljonic::fits_into;
-    using cljonic::into;
-    using cljonic::is_empty;
-    using cljonic::next;
     using cljonic::Repeat;
     using cljonic::Vector;
+    using cljonic::core::count;
+    using cljonic::core::fits_into;
+    using cljonic::core::into;
+    using cljonic::core::is_empty;
+    using cljonic::core::next;
 
     TRACE_ID("entity-fields.Next");
     TRACE_ID("invariant.Next.SupportsProducerTailDomain");
@@ -300,13 +301,13 @@ TEST_CASE("Next returns the logical tail of Repeat producers", "[next]") {
 }
 
 TEST_CASE("Next returns the logical tail of Range producers", "[next]") {
-    using cljonic::count;
-    using cljonic::fits_into;
-    using cljonic::into;
-    using cljonic::is_empty;
-    using cljonic::next;
     using cljonic::Range;
     using cljonic::Vector;
+    using cljonic::core::count;
+    using cljonic::core::fits_into;
+    using cljonic::core::into;
+    using cljonic::core::is_empty;
+    using cljonic::core::next;
 
     TRACE_ID("entity-fields.Next");
     TRACE_ID("invariant.Next.SupportsProducerTailDomain");
@@ -406,14 +407,14 @@ TEST_CASE("Next returns the logical tail of Range producers", "[next]") {
 }
 
 TEST_CASE("Next returns the logical tail of Cycle producers", "[next]") {
-    using cljonic::count;
-    using cljonic::cycle;
-    using cljonic::into;
-    using cljonic::is_empty;
-    using cljonic::iterate;
-    using cljonic::next;
     using cljonic::Range;
     using cljonic::Vector;
+    using cljonic::core::count;
+    using cljonic::core::cycle;
+    using cljonic::core::into;
+    using cljonic::core::is_empty;
+    using cljonic::core::iterate;
+    using cljonic::core::next;
 
     TRACE_ID("entity-fields.Next");
     TRACE_ID("invariant.Next.SupportsProducerTailDomain");
@@ -526,13 +527,13 @@ TEST_CASE("Next returns the logical tail of Cycle producers", "[next]") {
 }
 
 TEST_CASE("Next eagerly advances callback-backed producers once", "[next]") {
-    using cljonic::count;
-    using cljonic::cycle;
-    using cljonic::into;
-    using cljonic::iterate;
-    using cljonic::next;
-    using cljonic::repeatedly;
     using cljonic::Vector;
+    using cljonic::core::count;
+    using cljonic::core::cycle;
+    using cljonic::core::into;
+    using cljonic::core::iterate;
+    using cljonic::core::next;
+    using cljonic::core::repeatedly;
 
     TRACE_ID("entity-fields.Next");
     TRACE_ID("invariant.Next.ProducerTailDomainIncludesIterate");
@@ -599,7 +600,7 @@ TEST_CASE("Next eagerly advances callback-backed producers once", "[next]") {
     const auto unbounded_effectful_tail = next(unbounded_effectful);
     REQUIRE(callback_calls == 2);
     REQUIRE(count(unbounded_effectful_tail) == count(unbounded_effectful));
-    REQUIRE_FALSE(cljonic::fits_into(Vector<int, 2>{}, unbounded_effectful_tail));
+    REQUIRE_FALSE(cljonic::core::fits_into(Vector<int, 2>{}, unbounded_effectful_tail));
 
     TRACE_ID("entity-fields.Cycle");
     TRACE_ID("invariant.Cycle.UnboundedNextCallbackInvocationFollowsOwnedSourceNext");

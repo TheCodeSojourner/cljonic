@@ -9,7 +9,7 @@
 
 TEST_CASE("queue factory builds bounded FIFO queues from individual element arguments", "[queue][factory]") {
     using cljonic::Queue;
-    using cljonic::queue;
+    using cljonic::core::queue;
 
     TRACE_ID("entity-fields.QueueFactory");
     TRACE_ID("invariant.QueueFactory.SupportsDeducedElementFactory");

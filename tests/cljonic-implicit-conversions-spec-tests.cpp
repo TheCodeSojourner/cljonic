@@ -108,6 +108,7 @@ TEST_CASE("Implicit conversion admission preserves values and semantic domains",
 
 TEST_CASE("Same-type producer and Variant arguments preserve nonthrowing copy semantics", "[conversions]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.ImplicitConversions.ArgumentConstructionGateIsDistinctFromCollectionStorageAdmission");
     TRACE_ID("invariant.ImplicitConversions.ArgumentConstructionGateRequiresSafeConversionAndNothrowConstruction");
     TRACE_ID("invariant.ImplicitConversions.ConstructionChecksActualArgumentExpressionPreservingCvref");
@@ -137,6 +138,7 @@ TEST_CASE("Same-type producer and Variant arguments preserve nonthrowing copy se
 
 TEST_CASE("Safe conversions agree across construction lookup update and removal", "[conversions]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.ImplicitConversions.AllApiBoundariesShareAdmission");
     constexpr short key = 7;
     constexpr short value = 12;
@@ -177,6 +179,7 @@ TEST_CASE("Safe conversions agree across construction lookup update and removal"
 
 TEST_CASE("Range imports and materialization use safe actual element expressions", "[conversions]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.ImplicitConversions.RangesCheckActualReferenceAndNothrowTraversal");
     static constexpr short values[] = {1, 2};
     constexpr auto source = std::span{values};
@@ -201,6 +204,7 @@ TEST_CASE("Range imports and materialization use safe actual element expressions
 
 TEST_CASE("Counts and checked semantic exceptions retain explicit domains", "[conversions]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.ImplicitConversions.CountsAdmitSignedAndUnsignedNoncharacterIntegerTypes");
     TRACE_ID("invariant.ImplicitConversions.FiniteCountsExcludeBooleanAndCharacterTypes");
     TRACE_ID("invariant.ImplicitConversions.FiniteCountNonnegativeTypeRangeMustFitSizeT");

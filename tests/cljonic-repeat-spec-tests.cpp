@@ -7,6 +7,7 @@
 
 TEST_CASE("Existing Repeat factories match their constructors", "[repeat][factory]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.Repeat.ExistingFactoriesPreserveEquivalentConstructorResultTypeAndBehavior");
     STATIC_REQUIRE(std::same_as<decltype(repeat(7)), Repeat<int>>);
     STATIC_REQUIRE(std::same_as<decltype(repeat(3, 7L)), Repeat<long>>);
@@ -36,10 +37,7 @@ template <typename T>
 concept GetDomainAdmissible = cljonic::concepts_detail::GetKeyAdmissible<T, unsigned int>;
 
 TEST_CASE("Repeat owns a value and materializes finite and unbounded forms", "[repeat]") {
-    using cljonic::fits_into;
-    using cljonic::into;
     using cljonic::Repeat;
-    using cljonic::repeat;
     using cljonic::Set;
     using cljonic::Vector;
     using cljonic::concepts::CljonicCollection;
@@ -49,6 +47,9 @@ TEST_CASE("Repeat owns a value and materializes finite and unbounded forms", "[r
     using cljonic::concepts::NothrowStableEqualityComparable;
     using cljonic::concepts::SequenceableProducer;
     using cljonic::concepts::StableEqualityComparable;
+    using cljonic::core::fits_into;
+    using cljonic::core::into;
+    using cljonic::core::repeat;
 
     TRACE_ID("entity-fields.Repeat");
     TRACE_ID("invariant.Repeat.HeaderOnlyDistribution");
@@ -179,6 +180,7 @@ TEST_CASE("Repeat owns a value and materializes finite and unbounded forms", "[r
 
 TEST_CASE("Repeat normalizes signed counts without changing count-first semantics", "[repeat]") {
     using namespace cljonic;
+    using namespace cljonic::core;
     TRACE_ID("invariant.Repeat.SignedCountFactoryConstructorAndDeductionAreSupported");
     TRACE_ID("invariant.Repeat.NegativeCountProducesEmptyFiniteResult");
 
@@ -220,6 +222,7 @@ TEST_CASE("Repeat normalizes signed counts without changing count-first semantic
 
 TEST_CASE("Repeat counted factory and construction use count-first ordering", "[repeat]") {
     using namespace cljonic;
+    using namespace cljonic::core;
 
     TRACE_ID("invariant.Repeat.CountedFactoryUsesCountThenValue");
     TRACE_ID("invariant.Repeat.CountedConstructorUsesCountThenValue");

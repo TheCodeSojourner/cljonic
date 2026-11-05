@@ -24,8 +24,8 @@ static_assert(!cljonic::concepts_detail::CharacterStringInput<std::string_view>)
 } // namespace
 
 TEST_CASE("String character validity predicate", "[character_is_valid]") {
-    using cljonic::character_is_valid;
     using cljonic::String;
+    using cljonic::core::character_is_valid;
 
     TRACE_ID("entity-fields.CharacterIsValid");
     TRACE_ID("invariant.CharacterIsValid.CharacterIsValidFreeFunctionSupported");

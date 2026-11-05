@@ -8,13 +8,13 @@
 #define TRACE_ID(id_literal) INFO("trace-id: " id_literal)
 
 TEST_CASE("IsEmpty free function operations", "[is_empty]") {
-    using cljonic::conj;
-    using cljonic::count;
-    using cljonic::is_empty;
     using cljonic::Queue;
     using cljonic::Range;
     using cljonic::Repeat;
     using cljonic::Vector;
+    using cljonic::core::conj;
+    using cljonic::core::count;
+    using cljonic::core::is_empty;
 
     TRACE_ID("entity-fields.IsEmpty");
     TRACE_ID("invariant.IsEmpty.IsEmptyFreeFunctionSupported");
@@ -79,6 +79,7 @@ TEST_CASE("IsEmpty free function operations", "[is_empty]") {
 
 TEST_CASE("IsEmpty observes every owning collection without changing it", "[is_empty][collection]") {
     using namespace cljonic;
+    using namespace cljonic::core;
 
     TRACE_ID("invariant.IsEmpty.LeavesInputUnchanged");
 
@@ -159,6 +160,7 @@ TEST_CASE("IsEmpty observes every owning collection without changing it", "[is_e
 
 TEST_CASE("IsEmpty treats zero-capacity collections as empty", "[is_empty][boundary]") {
     using namespace cljonic;
+    using namespace cljonic::core;
 
     STATIC_REQUIRE(is_empty(Vector<int, 0>{}));
     STATIC_REQUIRE(is_empty(Map<int, int, 0>{}));
@@ -174,6 +176,7 @@ TEST_CASE("IsEmpty treats zero-capacity collections as empty", "[is_empty][bound
 
 TEST_CASE("IsEmpty follows finite and unbounded producer counts without changing parameters", "[is_empty][producer]") {
     using namespace cljonic;
+    using namespace cljonic::core;
 
     TRACE_ID("invariant.IsEmpty.LeavesInputUnchanged");
 

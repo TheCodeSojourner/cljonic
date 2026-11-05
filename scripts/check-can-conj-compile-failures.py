@@ -22,37 +22,37 @@ struct collection_traits<CanConjNonConjableCollection> {
 
 DIAGNOSTIC_CASES = {
     "non-conjable-cljonic-collection-zero-value": (
-        "(void)cljonic::can_conj(CanConjNonConjableCollection{});",
+        "(void)cljonic::core::can_conj(CanConjNonConjableCollection{});",
         "must be a Vector, a Set, a Map, a Queue, or a String",
     ),
     "non-conjable-cljonic-collection": (
-        "(void)cljonic::can_conj(CanConjNonConjableCollection{}, 1);",
+        "(void)cljonic::core::can_conj(CanConjNonConjableCollection{}, 1);",
         "must be a Vector, a Set, a Map, a Queue, or a String",
     ),
     "inadmissible-vector-value": (
-        "(void)cljonic::can_conj(cljonic::Vector<int, 4>{}, CanConjNotConvertible{});",
+        "(void)cljonic::core::can_conj(cljonic::Vector<int, 4>{}, CanConjNotConvertible{});",
         "cannot be added to the collection with conj",
     ),
     "inadmissible-map-value": (
-        "(void)cljonic::can_conj(cljonic::Map<int, int, 4>{}, 1);",
+        "(void)cljonic::core::can_conj(cljonic::Map<int, int, 4>{}, 1);",
         "A Map takes a MapEntry",
     ),
     "inadmissible-string-value": (
-        "(void)cljonic::can_conj(cljonic::String<4>{}, CanConjNotConvertible{});",
+        "(void)cljonic::core::can_conj(cljonic::String<4>{}, CanConjNotConvertible{});",
         "cannot be added to the collection with conj",
     ),
     "inadmissible-variadic-value": (
-        "(void)cljonic::can_conj(cljonic::Vector<int, 4>{}, 1, CanConjNotConvertible{});",
+        "(void)cljonic::core::can_conj(cljonic::Vector<int, 4>{}, 1, CanConjNotConvertible{});",
         "every value after the collection must be one this collection can add",
     ),
 }
 
 PASS_CASES = {
-    "zero-value": "(void)cljonic::can_conj(cljonic::Vector<int, 4>{});",
-    "vector": "(void)cljonic::can_conj(cljonic::Vector<int, 4>{}, 1);",
-    "variadic-vector": "(void)cljonic::can_conj(cljonic::Vector<int, 4>{}, 1, 2);",
-    "map-entry": "(void)cljonic::can_conj(cljonic::Map<int, int, 4>{}, cljonic::MapEntry<int, int>{1, 2});",
-    "string": "(void)cljonic::can_conj(cljonic::String<4>{}, 'A');",
+    "zero-value": "(void)cljonic::core::can_conj(cljonic::Vector<int, 4>{});",
+    "vector": "(void)cljonic::core::can_conj(cljonic::Vector<int, 4>{}, 1);",
+    "variadic-vector": "(void)cljonic::core::can_conj(cljonic::Vector<int, 4>{}, 1, 2);",
+    "map-entry": "(void)cljonic::core::can_conj(cljonic::Map<int, int, 4>{}, cljonic::MapEntry<int, int>{1, 2});",
+    "string": "(void)cljonic::core::can_conj(cljonic::String<4>{}, 'A');",
 }
 
 DIAGNOSTIC_ANCHOR = "cljonic::can_conj:"

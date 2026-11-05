@@ -7,10 +7,10 @@
 #define TRACE_ID(id_literal) INFO("trace-id: " id_literal)
 
 TEST_CASE("CanAssoc free function operations", "[can_assoc]") {
-    using cljonic::can_assoc;
     using cljonic::Map;
     using cljonic::String;
     using cljonic::Vector;
+    using cljonic::core::can_assoc;
 
     TRACE_ID("entity-fields.CanAssoc");
     TRACE_ID("invariant.CanAssoc.CanAssocPreflightSupported");

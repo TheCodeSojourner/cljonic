@@ -10,38 +10,38 @@ import subprocess
 from compile_probe import compile_probe
 
 FAILURE_CASES = {
-    "untyped-empty": "  (void)cljonic::queue();",
-    "void-element-type": "  (void)cljonic::queue<void>();",
-    "unsafe-deduced-conversion": "  (void)cljonic::queue(1, 3LL);",
-    "unsafe-explicit-conversion": "  (void)cljonic::queue<int>(2LL);",
-    "oversized-argument-count": "  (void)cljonic::queue(1, 10, 100);",
-    "explicit-capacity-too-small": "  (void)cljonic::queue<int, 1>(1, 10);",
-    "explicit-capacity-over-maximum": "  (void)cljonic::queue<int, 3>();",
+    "untyped-empty": "  (void)cljonic::core::queue();",
+    "void-element-type": "  (void)cljonic::core::queue<void>();",
+    "unsafe-deduced-conversion": "  (void)cljonic::core::queue(1, 3LL);",
+    "unsafe-explicit-conversion": "  (void)cljonic::core::queue<int>(2LL);",
+    "oversized-argument-count": "  (void)cljonic::core::queue(1, 10, 100);",
+    "explicit-capacity-too-small": "  (void)cljonic::core::queue<int, 1>(1, 10);",
+    "explicit-capacity-over-maximum": "  (void)cljonic::core::queue<int, 3>();",
 }
 
 PASS_CASES = {
     "typed-empty-zero-capacity": (
-        "  constexpr auto value = cljonic::queue<int>(); "
+        "  constexpr auto value = cljonic::core::queue<int>(); "
         "static_assert(value.count() == 0U && value.capacity() == 0U);"
     ),
     "deduced-elements": (
-        "  constexpr auto value = cljonic::queue(1, short{2}); "
+        "  constexpr auto value = cljonic::core::queue(1, short{2}); "
         "static_assert(value.capacity() == 2U && value.count() == 2U && value.peek() == 1);"
     ),
     "explicit-type": (
-        "  constexpr auto value = cljonic::queue<long>(short{1}, short{2}); "
+        "  constexpr auto value = cljonic::core::queue<long>(short{1}, short{2}); "
         "static_assert(value.capacity() == 2U && value.peek() == 1L);"
     ),
     "explicit-capacity": (
-        "  constexpr auto value = cljonic::queue<int, 2>(1, 2); "
+        "  constexpr auto value = cljonic::core::queue<int, 2>(1, 2); "
         "static_assert(value.count() == 2U && value.capacity() == 2U && value.peek() == 1);"
     ),
     "explicit-capacity-empty": (
-        "  constexpr auto value = cljonic::queue<int, 2>(); "
+        "  constexpr auto value = cljonic::core::queue<int, 2>(); "
         "static_assert(value.count() == 0U && value.capacity() == 2U);"
     ),
     "fifo-argument-order": (
-        "  auto value = cljonic::queue(1, 2); "
+        "  auto value = cljonic::core::queue(1, 2); "
         "if (value.capacity() != 2U || value.peek() != 1 || value.pop().peek() != 2) { return 1; }"
     ),
 }

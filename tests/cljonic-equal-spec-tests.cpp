@@ -51,17 +51,17 @@ TEST_CASE("Sequential equality observes each operand cap without claiming infini
     TRACE_ID("invariant.EqualFunction.NoEqualityClaimBeyondObservationBounds");
     TRACE_ID("invariant.EqualFunction.SequentialEqualityRequiresEqualObservedCountsAndElements");
     constexpr auto cap = cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
-    const auto unbounded = cljonic::repeat(1);
-    const auto finite = cljonic::repeat(cap, 1);
-    CHECK(cljonic::equal(unbounded, finite));
-    CHECK(cljonic::equal(finite, unbounded));
-    CHECK_FALSE(cljonic::equal(unbounded, cljonic::repeat(cap - 1, 1)));
-    CHECK_FALSE(cljonic::equal(cljonic::repeat(cap - 1, 1), unbounded));
+    const auto unbounded = cljonic::core::repeat(1);
+    const auto finite = cljonic::core::repeat(cap, 1);
+    CHECK(cljonic::core::equal(unbounded, finite));
+    CHECK(cljonic::core::equal(finite, unbounded));
+    CHECK_FALSE(cljonic::core::equal(unbounded, cljonic::core::repeat(cap - 1, 1)));
+    CHECK_FALSE(cljonic::core::equal(cljonic::core::repeat(cap - 1, 1), unbounded));
     std::size_t calls = 0;
-    const auto differs_after_cap = cljonic::repeatedly([&calls]() noexcept { return ++calls <= cap ? 1 : 2; });
-    CHECK(cljonic::equal(unbounded, differs_after_cap));
+    const auto differs_after_cap = cljonic::core::repeatedly([&calls]() noexcept { return ++calls <= cap ? 1 : 2; });
+    CHECK(cljonic::core::equal(unbounded, differs_after_cap));
     CHECK(calls == cap);
-    CHECK_FALSE(cljonic::equal(cljonic::Vector<int, 2>{1, 2}, cljonic::Vector<int, 2>{1, 3}));
+    CHECK_FALSE(cljonic::core::equal(cljonic::Vector<int, 2>{1, 2}, cljonic::Vector<int, 2>{1, 3}));
 }
 
 TEST_CASE("General equality rejects standard variants including nested components", "[equal][core]") {
@@ -73,8 +73,6 @@ TEST_CASE("General equality rejects standard variants including nested component
 }
 
 TEST_CASE("equal implements general value equality over the supported domain", "[equal][core]") {
-    using cljonic::cycle;
-    using cljonic::equal;
     using cljonic::Iterate;
     using cljonic::Map;
     using cljonic::MapEntry;
@@ -85,6 +83,9 @@ TEST_CASE("equal implements general value equality over the supported domain", "
     using cljonic::Set;
     using cljonic::String;
     using cljonic::Vector;
+    using cljonic::core::count;
+    using cljonic::core::cycle;
+    using cljonic::core::equal;
 
     using cljonic::concepts_detail::EqualPairAdmissible;
 
@@ -153,7 +154,7 @@ TEST_CASE("equal implements general value equality over the supported domain", "
     STATIC_REQUIRE(equal(Scaled{2}, Scaled{2}));
     STATIC_REQUIRE(!equal(Scaled{2}, Scaled{3}));
     STATIC_REQUIRE(cljonic::concepts::NothrowEqualityComparable<Scaled>);
-    STATIC_REQUIRE(count(cljonic::hash_set(Scaled{1}, Scaled{2})) == 2);
+    STATIC_REQUIRE(count(cljonic::core::hash_set(Scaled{1}, Scaled{2})) == 2);
 
     // Parameterized standard-library wrappers are rejected however instantiated:
     // their comparisons are not declared non-throwing, so a floating-point

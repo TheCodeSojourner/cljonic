@@ -10,20 +10,21 @@
 
 namespace {
 template <typename T>
-concept HasAdmittedRest = requires(const T& value) { requires(!std::same_as<decltype(cljonic::rest(value)), void>); };
+concept HasAdmittedRest =
+    requires(const T& value) { requires(!std::same_as<decltype(cljonic::core::rest(value)), void>); };
 } // namespace
 
 TEST_CASE("Rest returns the logical tail as the same collection kind with reduced capacity", "[rest]") {
-    using cljonic::count;
     using cljonic::Map;
     using cljonic::MapEntry;
     using cljonic::Queue;
     using cljonic::Range;
     using cljonic::Repeat;
-    using cljonic::rest;
     using cljonic::Set;
     using cljonic::String;
     using cljonic::Vector;
+    using cljonic::core::count;
+    using cljonic::core::rest;
 
     TRACE_ID("entity-fields.Rest");
     TRACE_ID("invariant.Rest.RestFreeFunctionSupported");
@@ -163,8 +164,8 @@ TEST_CASE("Rest returns the logical tail as the same collection kind with reduce
     STATIC_REQUIRE(HasAdmittedRest<Range<int>>);
     STATIC_REQUIRE(HasAdmittedRest<Repeat<int>>);
     STATIC_REQUIRE(HasAdmittedRest<cljonic::Cycle<Vector<int, 3>>>);
-    STATIC_REQUIRE(HasAdmittedRest<decltype(cljonic::iterate([](int value) noexcept { return value + 1; }, 0))>);
-    STATIC_REQUIRE(HasAdmittedRest<decltype(cljonic::repeatedly(3, []() noexcept { return 7; }))>);
+    STATIC_REQUIRE(HasAdmittedRest<decltype(cljonic::core::iterate([](int value) noexcept { return value + 1; }, 0))>);
+    STATIC_REQUIRE(HasAdmittedRest<decltype(cljonic::core::repeatedly(3, []() noexcept { return 7; }))>);
     STATIC_REQUIRE(HasAdmittedRest<Vector<int, 4>>);
     STATIC_REQUIRE(HasAdmittedRest<Map<int, int, 4>>);
     STATIC_REQUIRE(HasAdmittedRest<Set<int, 4>>);
@@ -224,16 +225,16 @@ TEST_CASE("Rest returns the logical tail as the same collection kind with reduce
 }
 
 TEST_CASE("Rest forwards to Next for every supported producer", "[rest]") {
-    using cljonic::count;
-    using cljonic::cycle;
-    using cljonic::into;
-    using cljonic::iterate;
-    using cljonic::next;
     using cljonic::Range;
-    using cljonic::repeat;
-    using cljonic::repeatedly;
-    using cljonic::rest;
     using cljonic::Vector;
+    using cljonic::core::count;
+    using cljonic::core::cycle;
+    using cljonic::core::into;
+    using cljonic::core::iterate;
+    using cljonic::core::next;
+    using cljonic::core::repeat;
+    using cljonic::core::repeatedly;
+    using cljonic::core::rest;
 
     TRACE_ID("entity-fields.Rest");
     TRACE_ID("invariant.Rest.SupportsSequenceableProducerDomain");

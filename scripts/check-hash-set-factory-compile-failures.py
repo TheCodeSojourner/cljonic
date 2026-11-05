@@ -10,48 +10,48 @@ import subprocess
 from compile_probe import compile_probe
 
 FAILURE_CASES = {
-    "untyped-empty": "  (void)cljonic::hash_set();",
-    "typed-empty-without-capacity": "  (void)cljonic::hash_set<int>();",
-    "unsafe-deduced-conversion": "  (void)cljonic::hash_set(1, 3LL);",
-    "unsafe-explicit-conversion": "  (void)cljonic::hash_set<int>(2LL);",
-    "oversized-argument-count": "  (void)cljonic::hash_set(1, 10, 100);",
-    "explicit-capacity-too-small": "  (void)cljonic::hash_set<int, 1>(1, 10);",
-    "explicit-capacity-over-maximum": "  (void)cljonic::hash_set<int, 3>();",
+    "untyped-empty": "  (void)cljonic::core::hash_set();",
+    "typed-empty-without-capacity": "  (void)cljonic::core::hash_set<int>();",
+    "unsafe-deduced-conversion": "  (void)cljonic::core::hash_set(1, 3LL);",
+    "unsafe-explicit-conversion": "  (void)cljonic::core::hash_set<int>(2LL);",
+    "oversized-argument-count": "  (void)cljonic::core::hash_set(1, 10, 100);",
+    "explicit-capacity-too-small": "  (void)cljonic::core::hash_set<int, 1>(1, 10);",
+    "explicit-capacity-over-maximum": "  (void)cljonic::core::hash_set<int, 3>();",
     # Parameterized standard-library wrappers stay out of element positions, so
     # a floating-point component cannot be smuggled in behind one (REQ-CAP-010).
-    "std-pair-element": "  (void)cljonic::hash_set(std::pair<int, int>{1, 2});",
-    "std-pair-float-element": "  (void)cljonic::hash_set(std::pair<double, double>{1.0, 2.0});",
-    "std-optional-element": "  (void)cljonic::hash_set(std::optional<int>{1});",
-    "std-optional-float-element": "  (void)cljonic::hash_set(std::optional<double>{1.0});",
-    "std-tuple-element": "  (void)cljonic::hash_set(std::tuple<int>{1});",
+    "std-pair-element": "  (void)cljonic::core::hash_set(std::pair<int, int>{1, 2});",
+    "std-pair-float-element": "  (void)cljonic::core::hash_set(std::pair<double, double>{1.0, 2.0});",
+    "std-optional-element": "  (void)cljonic::core::hash_set(std::optional<int>{1});",
+    "std-optional-float-element": "  (void)cljonic::core::hash_set(std::optional<double>{1.0});",
+    "std-tuple-element": "  (void)cljonic::core::hash_set(std::tuple<int>{1});",
     "throwing-comparison-element": (
         "  struct ThrowingEq {\n"
         "    ThrowingEq() noexcept = default;\n"
         "    bool operator==(const ThrowingEq&) const { return true; }\n"
         "  };\n"
-        "  (void)cljonic::hash_set(ThrowingEq{});"
+        "  (void)cljonic::core::hash_set(ThrowingEq{});"
     ),
 }
 
 PASS_CASES = {
     "deduced-elements": (
-        "  constexpr auto value = cljonic::hash_set(1, short{2}); "
+        "  constexpr auto value = cljonic::core::hash_set(1, short{2}); "
         "static_assert(value.capacity() == 2U && value.count() == 2U && value(2) == 2);"
     ),
     "explicit-type": (
-        "  constexpr auto value = cljonic::hash_set<long>(short{1}, short{2}); "
+        "  constexpr auto value = cljonic::core::hash_set<long>(short{1}, short{2}); "
         "static_assert(value.capacity() == 2U && value(1L) == 1L);"
     ),
     "explicit-capacity": (
-        "  constexpr auto value = cljonic::hash_set<int, 2>(1, 2); "
+        "  constexpr auto value = cljonic::core::hash_set<int, 2>(1, 2); "
         "static_assert(value.count() == 2U && value.capacity() == 2U && value(2) == 2);"
     ),
     "typed-empty-zero-capacity": (
-        "  constexpr auto value = cljonic::hash_set<int, 0>(); "
+        "  constexpr auto value = cljonic::core::hash_set<int, 0>(); "
         "static_assert(value.count() == 0U && value.capacity() == 0U);"
     ),
     "runtime-deduplication": (
-        "  auto value = cljonic::hash_set(1, 1); "
+        "  auto value = cljonic::core::hash_set(1, 1); "
         "if (value.capacity() != 2U || value.count() != 1U) { return 1; }"
     ),
 }

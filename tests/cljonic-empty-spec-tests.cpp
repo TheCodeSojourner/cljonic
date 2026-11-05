@@ -7,15 +7,15 @@
 #define TRACE_ID(id_literal) INFO("trace-id: " id_literal)
 
 TEST_CASE("Empty free function operations", "[empty]") {
-    using cljonic::count;
-    using cljonic::empty;
-    using cljonic::is_empty;
     using cljonic::Map;
     using cljonic::MapEntry;
     using cljonic::Queue;
     using cljonic::Set;
     using cljonic::String;
     using cljonic::Vector;
+    using cljonic::core::count;
+    using cljonic::core::empty;
+    using cljonic::core::is_empty;
 
     TRACE_ID("entity-fields.Empty");
     TRACE_ID("invariant.Empty.EmptyFreeFunctionSupported");

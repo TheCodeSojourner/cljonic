@@ -8,8 +8,8 @@
 #define TRACE_ID(id_literal) INFO("trace-id: " id_literal)
 
 TEST_CASE("hash_set factory builds bounded sets from individual element arguments", "[set][factory]") {
-    using cljonic::hash_set;
     using cljonic::Set;
+    using cljonic::core::hash_set;
 
     TRACE_ID("entity-fields.HashSetFactory");
     TRACE_ID("invariant.HashSetFactory.SupportsDeducedElementFactory");

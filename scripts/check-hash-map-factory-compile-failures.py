@@ -10,37 +10,37 @@ import subprocess
 from compile_probe import compile_probe
 
 FAILURE_CASES = {
-    "untyped-empty": "  (void)cljonic::hash_map();",
-    "typed-empty-without-capacity": "  (void)cljonic::hash_map<int, int>();",
-    "odd-deduced-arguments": "  (void)cljonic::hash_map(1, 10, 2);",
-    "odd-explicit-arguments": "  (void)cljonic::hash_map<int, int>(1, 10, 2);",
-    "unsafe-deduced-conversion": "  (void)cljonic::hash_map(1, 10, 3LL, 20);",
-    "unsafe-explicit-conversion": "  (void)cljonic::hash_map<int, int>(1LL, 10);",
-    "oversized-pair-count": "  (void)cljonic::hash_map(1, 10, 2, 20, 3, 30);",
-    "explicit-capacity-too-small": "  (void)cljonic::hash_map<int, int, 1>(1, 10, 2, 20);",
-    "explicit-capacity-over-maximum": "  (void)cljonic::hash_map<int, int, 3>();",
+    "untyped-empty": "  (void)cljonic::core::hash_map();",
+    "typed-empty-without-capacity": "  (void)cljonic::core::hash_map<int, int>();",
+    "odd-deduced-arguments": "  (void)cljonic::core::hash_map(1, 10, 2);",
+    "odd-explicit-arguments": "  (void)cljonic::core::hash_map<int, int>(1, 10, 2);",
+    "unsafe-deduced-conversion": "  (void)cljonic::core::hash_map(1, 10, 3LL, 20);",
+    "unsafe-explicit-conversion": "  (void)cljonic::core::hash_map<int, int>(1LL, 10);",
+    "oversized-pair-count": "  (void)cljonic::core::hash_map(1, 10, 2, 20, 3, 30);",
+    "explicit-capacity-too-small": "  (void)cljonic::core::hash_map<int, int, 1>(1, 10, 2, 20);",
+    "explicit-capacity-over-maximum": "  (void)cljonic::core::hash_map<int, int, 3>();",
     # Parameterized standard-library wrappers stay out of key positions, so a
     # floating-point component cannot be smuggled in behind one (REQ-CAP-010).
-    "std-pair-key": "  (void)cljonic::hash_map(std::pair<int, int>{1, 2}, 10);",
-    "std-optional-key": "  (void)cljonic::hash_map(std::optional<int>{1}, 10);",
-    "std-pair-float-key": "  (void)cljonic::hash_map(std::pair<double, double>{1.0, 2.0}, 10);",
+    "std-pair-key": "  (void)cljonic::core::hash_map(std::pair<int, int>{1, 2}, 10);",
+    "std-optional-key": "  (void)cljonic::core::hash_map(std::optional<int>{1}, 10);",
+    "std-pair-float-key": "  (void)cljonic::core::hash_map(std::pair<double, double>{1.0, 2.0}, 10);",
 }
 
 PASS_CASES = {
     "deduced-pairs": (
-        "  constexpr auto value = cljonic::hash_map(1, 10L, short{2}, int{20}); "
+        "  constexpr auto value = cljonic::core::hash_map(1, 10L, short{2}, int{20}); "
         "static_assert(value.capacity() == 2U && value.count() == 2U && value(2) == 20L);"
     ),
     "explicit-types": (
-        "  constexpr auto value = cljonic::hash_map<long, long>(short{1}, short{10}); "
+        "  constexpr auto value = cljonic::core::hash_map<long, long>(short{1}, short{10}); "
         "static_assert(value.capacity() == 1U && value(1L) == 10L);"
     ),
     "explicit-capacity": (
-        "  constexpr auto value = cljonic::hash_map<int, int, 2>(1, 10); "
+        "  constexpr auto value = cljonic::core::hash_map<int, int, 2>(1, 10); "
         "static_assert(value.count() == 1U && value.capacity() == 2U && value(1) == 10);"
     ),
     "typed-empty-zero-capacity": (
-        "  constexpr auto value = cljonic::hash_map<int, int, 0>(); "
+        "  constexpr auto value = cljonic::core::hash_map<int, int, 0>(); "
         "static_assert(value.count() == 0U && value.capacity() == 0U);"
     ),
 }

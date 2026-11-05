@@ -72,15 +72,15 @@ struct WrongResultStep {
 };
 
 TEST_CASE("Iterate owns a copyable step and exposes bounded unbounded traversal", "[iterate]") {
-    using cljonic::fits_into;
-    using cljonic::into;
-    using cljonic::iterate;
     using cljonic::Vector;
     using cljonic::concepts::CljonicProducer;
     using cljonic::concepts::CljonicSource;
     using cljonic::concepts::IndexedProducer;
     using cljonic::concepts::SequenceableProducer;
     using cljonic::concepts::StableEqualityComparable;
+    using cljonic::core::fits_into;
+    using cljonic::core::into;
+    using cljonic::core::iterate;
 
     TRACE_ID("entity-fields.Iterate");
     TRACE_ID("invariant.Iterate.HeaderOnlyDistribution");

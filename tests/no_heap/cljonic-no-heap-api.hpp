@@ -5,3 +5,7 @@
 #else
 #include <cljonic-core.hpp>
 #endif
+
+namespace cljonic::no_heap::probes {
+using namespace cljonic::core;
+}

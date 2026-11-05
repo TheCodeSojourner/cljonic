@@ -21,20 +21,20 @@ struct CharMaximum {
 } // namespace
 
 TEST_CASE("reduce folds a cljonic source into one accumulator value", "[reduce][core]") {
-    using cljonic::cycle;
-    using cljonic::hash_map;
-    using cljonic::hash_set;
-    using cljonic::iterate;
-    using cljonic::queue;
     using cljonic::Range;
-    using cljonic::reduce;
-    using cljonic::repeat;
-    using cljonic::repeatedly;
-    using cljonic::string;
-    using cljonic::vector;
     using cljonic::Vector;
     using cljonic::concepts_detail::ReduceCallable;
     using cljonic::concepts_detail::ReduceCallableWithInitial;
+    using cljonic::core::cycle;
+    using cljonic::core::hash_map;
+    using cljonic::core::hash_set;
+    using cljonic::core::iterate;
+    using cljonic::core::queue;
+    using cljonic::core::reduce;
+    using cljonic::core::repeat;
+    using cljonic::core::repeatedly;
+    using cljonic::core::string;
+    using cljonic::core::vector;
 
     TRACE_ID("entity-fields.ReduceFunction");
     TRACE_ID("invariant.ReduceFunction.CanonicalReductionOperation");
@@ -183,8 +183,8 @@ TEST_CASE("reduce folds a cljonic source into one accumulator value", "[reduce][
     // survives the operation.
     // ------------------------------------------------------------------------
     STATIC_REQUIRE(std::is_same_v<const int, const decltype(reduce(add, values))>);
-    STATIC_REQUIRE(cljonic::equal(values, vector(1, 2, 3)));
-    STATIC_REQUIRE(cljonic::count(queue_source) == 3);
+    STATIC_REQUIRE(cljonic::core::equal(values, vector(1, 2, 3)));
+    STATIC_REQUIRE(cljonic::core::count(queue_source) == 3);
 
     // noexcept on every admitted call.
     STATIC_REQUIRE(noexcept(reduce(add, values)));
@@ -223,7 +223,7 @@ TEST_CASE("reduce folds a cljonic source into one accumulator value", "[reduce][
     REQUIRE(reduce(add, runtime_values) == 6);
     REQUIRE(reduce(add, runtime_base * 10, runtime_values) == 16);
     REQUIRE(reduce(add, runtime_queue) == 6);
-    REQUIRE(cljonic::equal(runtime_values, vector(1, 2, 3)));
+    REQUIRE(cljonic::core::equal(runtime_values, vector(1, 2, 3)));
 
     const auto runtime_set = hash_set(runtime_base, runtime_base + 1, runtime_base + 2);
     REQUIRE(reduce(add, 0, runtime_set) == 6);

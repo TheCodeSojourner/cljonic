@@ -40,10 +40,10 @@ PASS_CASES = {
     "Repeat-one-arg": "auto value = cljonic::Repeat{7}; (void)value;",
     "Repeat-two-arg": "auto value = cljonic::Repeat{3U, 7}; (void)value;",
     "Cycle-vector": "auto value = cljonic::Cycle{cljonic::Vector<int, 3>{1, 2, 3}}; (void)value;",
-    "Cycle-factory": "auto value = cljonic::cycle(cljonic::Vector<int, 3>{1, 2, 3}); (void)value;",
+    "Cycle-factory": "auto value = cljonic::core::cycle(cljonic::Vector<int, 3>{1, 2, 3}); (void)value;",
     "Iterate-valid": "auto value = cljonic::Iterate{1, AddOne{}}; (void)value;",
-    "Iterate-factory": "auto value = cljonic::iterate(AddOne{}, 1); (void)value;",
-    "Repeatedly-factory": "auto value = cljonic::repeatedly(GenerateStep{}); (void)value;",
+    "Iterate-factory": "auto value = cljonic::core::iterate(AddOne{}, 1); (void)value;",
+    "Repeatedly-factory": "auto value = cljonic::core::repeatedly(GenerateStep{}); (void)value;",
     "Variant-explicit": "auto value = cljonic::Variant<int, long>{1}; (void)value;",
     "Variant-default": "auto value = cljonic::Variant<int, long>{}; (void)value;",
 }
