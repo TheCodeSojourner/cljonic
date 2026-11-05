@@ -24,9 +24,7 @@
 
 ## Detailed Documentation
 
-Detailed documentation is available [here](https://thecodesojourner.github.io/cljonic-playground/).
-
-`make docs` regenerates the HTML documentation. On phone and tablet widths, prose wraps to the viewport while wide code blocks and API tables scroll independently. These layout overrides live in [doc/doxygen-extra.css](doc/doxygen-extra.css), not the generated HTML.
+Detailed documentation is available [here](https://thecodesojourner.github.io/cljonic/).
 
 ## Motivation
 
