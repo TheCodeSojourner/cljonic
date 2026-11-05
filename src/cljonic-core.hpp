@@ -105,7 +105,8 @@
  * - ffirst, \ref FilterFunction "filter", \ref FiltervFunction "filterv", find, \ref First "first",
  *   \ref FitsInto "fits_into", fits_print, flatten, float, fnext, fnil, frequencies
  * - \ref Get "get", get_if, get_in, group_by
- * - \ref HasNext "has_next", has_some, \ref HashMapFactory "hash_map", \ref HashSetFactory "hash_set", holds
+ * - \ref HasNext "has_next", \ref HasRest "has_rest", has_some, \ref HashMapFactory "hash_map",
+ *   \ref HashSetFactory "hash_set", holds
  * - identity, inc, index, int, interleave, interpose, \ref Into "into", \ref IsEmpty "is_empty", is_even, is_every,
  *   is_negative, is_odd, is_positive, is_zero, \ref Iterate "iterate"
  * - juxt
@@ -118,13 +119,13 @@
  *   pr_str, print_to, prn_str
  * - \ref QueueFactory "queue", quot
  * - \ref RangeFactory "range", \ref ReduceFunction "reduce", reduce_kv, reductions, rem, remove, \ref RepeatFactory "repeat", \ref Repeatedly "repeatedly",
- * replace, replicate, reset, reset_vals, \ref Rest "rest", rseq
+ *   replace, replicate, reset, reset_vals, \ref Rest "rest", rseq
  * - second, select_keys, \ref Seq "seq", some, some_fn, sort, sort_by, split_at, split_with, str, \ref StringFactory "string",
  *   sub, subvec, swap, swap_vals
  * - \ref Take "take", take_last, take_nth, \ref TakeWhile "take_while", to_byte, to_char, to_double, to_float, to_int, to_long, to_num, to_short,
  *   tree_seq
  * - unsigned_bit_shift_right, update, update_in, update_keys, update_vals
- * - vals, vec, \ref VariantFactory "variant", variant_alternative, variant_size, \ref cljonic::vector "vector", visit
+ * - vals, \ref VariantFactory "variant", variant_alternative, variant_size, vec, \ref cljonic::vector "vector", visit
  * - zipmap
  *
  * ## Set Functions
@@ -192,6 +193,7 @@
 #include <cljonic-fits-into.hpp>
 #include <cljonic-get.hpp>
 #include <cljonic-has-next.hpp>
+#include <cljonic-has-rest.hpp>
 #include <cljonic-into.hpp>
 #include <cljonic-is-empty.hpp>
 #include <cljonic-map.hpp>

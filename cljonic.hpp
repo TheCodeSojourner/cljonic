@@ -116,7 +116,8 @@
  * - ffirst, \ref FilterFunction "filter", \ref FiltervFunction "filterv", find, \ref First "first",
  *   \ref FitsInto "fits_into", fits_print, flatten, float, fnext, fnil, frequencies
  * - \ref Get "get", get_if, get_in, group_by
- * - \ref HasNext "has_next", has_some, \ref HashMapFactory "hash_map", \ref HashSetFactory "hash_set", holds
+ * - \ref HasNext "has_next", \ref HasRest "has_rest", has_some, \ref HashMapFactory "hash_map",
+ *   \ref HashSetFactory "hash_set", holds
  * - identity, inc, index, int, interleave, interpose, \ref Into "into", \ref IsEmpty "is_empty", is_even, is_every,
  *   is_negative, is_odd, is_positive, is_zero, \ref Iterate "iterate"
  * - juxt
@@ -129,13 +130,13 @@
  *   pr_str, print_to, prn_str
  * - \ref QueueFactory "queue", quot
  * - \ref RangeFactory "range", \ref ReduceFunction "reduce", reduce_kv, reductions, rem, remove, \ref RepeatFactory "repeat", \ref Repeatedly "repeatedly",
- * replace, replicate, reset, reset_vals, \ref Rest "rest", rseq
+ *   replace, replicate, reset, reset_vals, \ref Rest "rest", rseq
  * - second, select_keys, \ref Seq "seq", some, some_fn, sort, sort_by, split_at, split_with, str, \ref StringFactory "string",
  *   sub, subvec, swap, swap_vals
  * - \ref Take "take", take_last, take_nth, \ref TakeWhile "take_while", to_byte, to_char, to_double, to_float, to_int, to_long, to_num, to_short,
  *   tree_seq
  * - unsigned_bit_shift_right, update, update_in, update_keys, update_vals
- * - vals, vec, \ref VariantFactory "variant", variant_alternative, variant_size, \ref cljonic::vector "vector", visit
+ * - vals, \ref VariantFactory "variant", variant_alternative, variant_size, vec, \ref cljonic::vector "vector", visit
  * - zipmap
  *
  * ## Set Functions
@@ -8745,6 +8746,56 @@ constexpr auto has_next([[maybe_unused]] const C& value) noexcept -> void {
 
 } // namespace cljonic
 // End cljonic-has-next.hpp
+// Begin cljonic-has-rest.hpp
+#pragma once
+
+
+namespace cljonic {
+
+/** \anchor HasRest
+ * The \b has_rest free function is an exact forwarding alias for \ref HasNext "has_next". It accepts exactly the same
+ * collections and producers and uses the same preflight behavior, callback timing, and diagnostics.
+ *
+ * \b Examples
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+ using namespace cljonic;
+
+ int main() {
+   constexpr auto vector_values = vector(10, 20);
+   constexpr auto map_values =
+       Map<int, int, 2>{MapEntry{1, 10}, MapEntry{2, 20}};
+   constexpr auto set_values = Set<int, 2>{10, 20};
+   constexpr auto queue_values = queue(10, 20);
+   constexpr auto string_values = string("AB");
+   static_assert(has_rest(vector_values) == has_next(vector_values));
+   static_assert(has_rest(map_values) == has_next(map_values));
+   static_assert(has_rest(set_values) == has_next(set_values));
+   static_assert(has_rest(queue_values) == has_next(queue_values));
+   static_assert(has_rest(string_values) == has_next(string_values));
+   static_assert(has_rest(Range{0, 3}) == has_next(Range{0, 3}));
+   static_assert(has_rest(repeat(2, 7)) == has_next(repeat(2, 7)));
+
+   const auto runtime_values = vector<int, 4>(40, 50);
+   return has_rest(runtime_values) == has_next(runtime_values) ? 0 : 1;
+ }
+ ~~~~~
+ */
+template <concepts_detail::NextSequenceable C>
+[[nodiscard]] constexpr auto has_rest(const C& value) noexcept -> bool {
+    return has_next(value);
+}
+
+template <typename C>
+    requires(!concepts_detail::NextSequenceable<C>)
+constexpr auto has_rest([[maybe_unused]] const C& value) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<C>,
+                  "cljonic::has_rest: expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, "
+                  "TakeWhile, DropWhile, or supported Cycle value.");
+}
+
+} // namespace cljonic
+// End cljonic-has-rest.hpp
 // Begin cljonic-into.hpp
 #pragma once
 
