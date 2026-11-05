@@ -2,7 +2,7 @@
 
 ## Purpose and Scope
 
-This module defines the concrete, array-backed, bounded collection types (`Vector`, `Map`, `Set`, `Queue`, `String`), their current primitive member and free-function operations, and callable lookup forms. `first`, `next`, `rest`, and the `has_next` tail preflight are active traversal operations; `rest` delegates to `next` for every input admitted by `next`, including supported producers. Sequence conversion remains approved future work. Module 3 provides the stored collection building blocks used across all higher-order algorithms.
+This module defines the concrete, array-backed, bounded collection types (`Vector`, `Map`, `Set`, `Queue`, `String`), their current primitive member and free-function operations, and callable lookup forms. `first`, `next`, `rest`, and the `has_first`, `has_next`, and `has_rest` preflights are active traversal operations; `rest` delegates to `next` for every input admitted by `next`, including supported producers. Sequence conversion remains approved future work. Module 3 provides the stored collection building blocks used across all higher-order algorithms.
 
 ## Collection Family Requirements
 
@@ -516,6 +516,20 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ `has_rest(value)`: return exactly `has_next(value)` for the same supported collection and producer domains, with identical preflight behavior, callback timing/effects, input preservation, and `CompileTimeFailure` behavior; implement as a forwarding alias without an independent traversal
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-05, aligned_with: REQ-FN-002A4-002A7}
 
+### Sequence First-Element Preflight (Binding)
+
+λ REQ-FN-002A8(x).
+  ∀ `has_first(collection)`: require(`Vector` ∨ `Map` ∨ `Set` ∨ `Queue` ∨ `String`) ∧ return true iff the collection has at least one logical element
+  ∧ ∀ `has_first(producer)`: require a producer admitted by `first` under `REQ-FN-002A1` ∧ return true iff the producer has a first observable element under its configured observation policy
+  ∧ ∀ producer preflight: determine first-element presence by observing only as much as needed ∧ ¬∃ exact-count traversal ∧ ¬∃ materialization
+  ∧ ∀ producer callback invocation: follow the producer-specific first-element observation rules in `REQ-FN-002A1` ∧ callback-backed traversal and authorized effects MAY occur
+  ∧ ∀ producer at observation cap zero: return false without source traversal or source or predicate callback invocation
+  ∧ ∀ `has_first(MapEntry<K, V>)`: return true because `first(MapEntry)` returns its key
+  ∧ ∀ `has_first`: preserve input value-owned state ∧ `constexpr` ∧ `noexcept` ∧ non-mutating ∧ non-allocating ∧ ¬∃ RTTI
+  ∧ ∀ (`Map` ∧ `Set`): result does not depend on which element appears first in the unspecified `LogicalTraversalOrder`
+  ∧ ∀ unsupported_input: fails compilation with one targeted diagnostic naming `has_first` and its supported collection, producer, and MapEntry domains
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-05, aligned_with: REQ-FN-002A1}
+
 ### Producer Sequence Tail Access (Binding)
 
 λ REQ-FN-002A4(x).
@@ -790,6 +804,6 @@ The clauses in this section define the active `seq` contract. The human approved
 
 ## Traceability and Related Requirements
 
-- **Downstream Artifact**: `Vector`, `MapEntry`, `Map`, `Set`, `Queue`, `String` class templates and core collection free functions (`character_is_valid`, `count`, `get`, `conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`, `empty`, `is_empty`, `not_empty`, `first`, `next`, `has_next`, `has_rest`, `rest`, `seq`).
-- **Governed REQs**: `REQ-COLL-001`, `REQ-COLL-001A`, `REQ-COLL-002`, `REQ-COLL-002A`, `REQ-COLL-004`, `REQ-COLL-004A`–`004C`, `REQ-COLL-005`, `REQ-COLL-005A`–`005B`, `REQ-COLL-006`–`007`, `REQ-COLL-007A`, `REQ-COLL-008`–`010`, `REQ-COLL-010A`–`010B`, `REQ-COLL-011`–`012`, `REQ-COLL-012A`, `REQ-COLL-013`, `REQ-COLL-013A`–`013B`, `REQ-COLL-014`–`018`, `REQ-COLL-018A`, `REQ-COLL-019`, `REQ-COLL-019A`–`019B`, `REQ-COLL-020`, `REQ-COLL-020A`–`020AA`, `REQ-COLL-021`–`022`, `REQ-SEQ-001`–`002`, `REQ-SEQ-002A`–`002B`, `REQ-SEQ-003`–`014`, `REQ-FN-001`–`002`, `REQ-FN-002A`, `REQ-FN-002A1`, `REQ-FN-002A2`, `REQ-FN-002A3`, `REQ-FN-002A4`–`002A7`, `REQ-FN-002B`–`002H`, `REQ-FN-002M`, `REQ-FN-002P`–`002Y`, `REQ-FN-003`–`008`, `REQ-FN-008A`, `REQ-FN-026`.
+- **Downstream Artifact**: `Vector`, `MapEntry`, `Map`, `Set`, `Queue`, `String` class templates and core collection free functions (`character_is_valid`, `count`, `get`, `conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`, `empty`, `is_empty`, `not_empty`, `first`, `has_first`, `next`, `has_next`, `has_rest`, `rest`, `seq`).
+- **Governed REQs**: `REQ-COLL-001`, `REQ-COLL-001A`, `REQ-COLL-002`, `REQ-COLL-002A`, `REQ-COLL-004`, `REQ-COLL-004A`–`004C`, `REQ-COLL-005`, `REQ-COLL-005A`–`005B`, `REQ-COLL-006`–`007`, `REQ-COLL-007A`, `REQ-COLL-008`–`010`, `REQ-COLL-010A`–`010B`, `REQ-COLL-011`–`012`, `REQ-COLL-012A`, `REQ-COLL-013`, `REQ-COLL-013A`–`013B`, `REQ-COLL-014`–`018`, `REQ-COLL-018A`, `REQ-COLL-019`, `REQ-COLL-019A`–`019B`, `REQ-COLL-020`, `REQ-COLL-020A`–`020AA`, `REQ-COLL-021`–`022`, `REQ-SEQ-001`–`002`, `REQ-SEQ-002A`–`002B`, `REQ-SEQ-003`–`014`, `REQ-FN-001`–`002`, `REQ-FN-002A`, `REQ-FN-002A1`, `REQ-FN-002A2`, `REQ-FN-002A3`, `REQ-FN-002A4`–`002A8`, `REQ-FN-002B`–`002H`, `REQ-FN-002M`, `REQ-FN-002P`–`002Y`, `REQ-FN-003`–`008`, `REQ-FN-008A`, `REQ-FN-026`.
 - **Deferred REQs**: `REQ-FN-002A`–`002B`.
