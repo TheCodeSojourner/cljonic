@@ -1,37 +1,34 @@
 ## Current Session State
 
-- last_session_id: 3b50c4df-a8df-4ed6-a558-02930ec1c607
-- current_timestamp: 2026-11-04T16:38:48-07:00
+- last_session_id: 3e0629ae-2ed2-49f2-a522-db1f1cf02178
+- current_timestamp: 2026-11-05T08:29:15-07:00
 - session_complete: true
-- recover: Await human direction on further API work; adapter parameter equality remains deferred. The has_next producer extension, coverage repair, and rendered docs are complete and human-committed; do not repeat implementation or approvals. Coverage passes at 100.0% and the final fast gate passed. The next agenda still calls has_next uncommitted and rendered HTML deferred; current git history supersedes those statements.
+- recover: Await human direction on further API work; adapter parameter equality remains deferred. The human committed has_rest contracts, tests, implementation, agenda, ASCII cheatsheet validation, and rendered docs (0d796aca through e559f6be). Do not repeat implementation or approvals. The agenda still says product changes are uncommitted; current git history and this handoff supersede that statement.
 - Task:
-  1. The human previously approved and committed producer and adapter/dependent Cycle `next`/`rest` behavior.
-  2. Extended `has_next` across every producer domain admitted by `next`; producer calls inspect the first observable element of the `next` result, while collection calls retain the count-based preflight without constructing a tail.
-  3. Updated requirements, vocabulary, architecture, Allium specs, tests, diagnostics, no-heap probes, README, and the next agenda for the new contract.
-  4. Regenerated `cljonic.hpp` and the traceability snapshot. The human subsequently committed the requirements through implementation and agenda changes (7ba5c1cd through bcd5d50f), followed by rendered docs in d871606c.
-  5. Repaired the reported coverage-cli failure without changing implementation: added runtime empty finite Repeat and unbounded Repeat assertions. The missing line was the unbounded Repeat tail return in src/cljonic-next.hpp; exercising only the empty finite case did not cover it.
+  1. Defined `has_rest(value)` to return exactly `has_next(value)` for the identical collection and producer domain, forwarding once so preflight, callback timing/effects, input preservation, and diagnostics remain identical.
+  2. Added `src/cljonic-has-rest.hpp`, included it in the public core, and updated API docs, generated `cljonic.hpp`, rendered Doxygen, requirements, architecture, vocabulary, Allium, traceability, compile-fail diagnostics, Catch2 tests, and a dedicated no-heap probe.
+  3. Corrected the Doxygen cheatsheet: each list item contains names with a shared initial letter, sorted in ASCII order. Added regression checks and verified all 54 rendered groups. Removed the temporary h-group exception after the human clarified the general ASCII rule.
+  4. The human committed requirements (0d796aca), vocabulary (c8e6bfcb), architecture (bf8768fe), spec (2d8f4903), tests/verification (e54d1a84), implementation (a49eec9a), agenda (22f0a998), and rendered docs (e559f6be). Only this state handoff remains for the fini commit.
 - Decisions:
-  1. For collections, `has_next` returns `count(collection) > 1` without constructing `next(collection)`. For producers, it calls `next(producer)` then checks `tail.begin() != tail.end()`; this checks only for the first observable tail element, subject to `next`'s producer-specific callback and traversal behavior.
-  2. Callback-backed producer preflight can invoke callbacks through `next` and first-element observation. In particular, Repeatedly may invoke the callback once to advance the tail and once to observe its first value; owned producer state remains preserved and externally referenced effects follow existing contracts.
-  3. Producer admission is exactly the `next` producer domain, including Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, and supported nested Cycles. An empty producer tail, empty Cycle source, or zero-cap observation reports false.
-  4. Existing `next` decisions remain: direct adapter tails defer output skips with compact saturating metadata; finite adapter-source Cycle tails eagerly count bounded output and normalize a compact scalar offset; avoid large counters, remainder tables, allocation, or materialization.
-  5. Idiomatic callbacks should be pure; replay ordinarily adds runtime cost. Authorized impure exceptions preserve existing state/effect contracts without snapshot guarantees.
-  6. Coverage must exercise the actual missed branch at runtime. Use volatile-derived plain values in tests when necessary to prevent constexpr folding; this reinforces the existing constexpr-calls-defeat-gcov-coverage memory rather than establishing a separate convention.
+  1. Keep `has_rest` in its own public header and Allium/test/no-heap files. It delegates to `has_next` rather than duplicating collection/producer preflight logic.
+  2. `has_next` collection and producer semantics remain unchanged; `has_rest` inherits the exact same domain and behavior.
+  3. Sort names in ASCII order, preserving underscores and case; `_` sorts before all lowercase letters. Do not ignore punctuation, case-fold, or add per-group ordering exceptions. The h group is `has_next, has_rest, has_some, hash_map, hash_set, holds`.
+  4. For builds and tests, use the project's configured job settings, otherwise the available CPU count; do not impose an arbitrary low worker count. Inspect the existing Makefile job controls before invoking commands. The earlier hardcoded `--parallel 2` was an assistant mistake, not project policy.
 - Validation:
-  1. `make requirements-structure` passed (356 unique clauses); `make vocabulary-structure` passed (208 terms); `allium check specs` and `allium analyse specs` passed with no diagnostics or findings.
-  2. Focused modular Catch2 has_next tests passed: 101 assertions in 1 test case.
-  3. `make primitive-compile-fail` passed, including invalid domains and compile-pass coverage for producer categories and adapters.
-  4. `BUILD_JOBS=2 VALIDATION_JOBS=2 make no-heap` passed, including executed modular and single-header probes.
-  5. `make docs-examples` compiled all 49 examples in a fresh temporary build directory; the extracted has_next example linked and ran successfully under C++23 with exceptions and RTTI disabled.
-  6. `make traceability-spec-to-code-update-snapshot`, focused has_next/next trace checks, and `make traceability-spec-to-code` passed.
-  7. `BUILD_JOBS=2 VALIDATION_JOBS=2 make upsert-gate-fast` passed, including format/lint, complexity, diagnostics, traceability, structural checks, and both no-heap harnesses.
-  8. The reported coverage failure had all 346 test cases passing but only 1,027/1,028 source lines covered. After the unbounded Repeat assertion, `BUILD_JOBS=2 VALIDATION_JOBS=2 make coverage-cli` passed at 100.0%; `make upsert-gate-fast` then passed again on the final test changes.
+  1. `make requirements-structure`, `make vocabulary-structure`, Allium check/analyse, traceability, diagnostic coverage, diagnostic message labels, and `git diff --check` passed.
+  2. Focused modular and single-header has_rest Catch2 tests passed (12 assertions in 2 cases per mode); the standalone modular include was verified.
+  3. `make primitive-compile-fail` passed, including supported producer adapters and targeted rejection checks.
+  4. `make no-heap` passed for modular and generated single-header probes.
+  5. `make docs` passed; `make docs-examples` compiled all 50 examples, including has_rest.
+  6. `make coverage-cli COVERAGE_FILE=cljonic-has-rest.hpp` passed at 100.0%; targeted clang-tidy for the new spec test passed.
+  7. Broad `make lint-check` reported existing diagnostics in untouched collection/producer headers; direct lint of the new spec test passed.
+  8. After the final ASCII correction, `make core-cheatsheet-format cljonic docs` passed. Independent parsing of generated `docs/index.html` verified ASCII ordering and matching initials for all 54 rendered list items. These later changes were documentation and validator changes, not API implementation changes.
 - Questions:
-  1. No unresolved has_next contract decisions.
+  1. None for has_rest. Further API work awaits human direction.
 - Next:
-  1. Await human direction on further API work; adapter parameter equality remains deferred.
-  2. The agenda's has_next uncommitted/deferred-HTML statements are stale after the human commits; use the current history and this state when resuming. This fini updates only state.md.
-  3. Product changes and `make git` remain human-owned. The explicitly invoked `/gybis-fini` authorizes its separate mementum-only closeout commit; no product files are to be staged by the assistant.
+  1. Await human direction on further API work; do not repeat completed has_rest work.
+  2. Adapter parameter equality remains deferred.
+  3. The next agenda's has_rest uncommitted statement is stale after the human commits; use current git history and this handoff. This fini updates only state.md and makes a separate mementum-only commit.
 
 ## Previous Session State (Completed producer first)
 
