@@ -41,11 +41,21 @@ namespace cljonic::core {
    constexpr auto v_multi = assoc(vector<int, 4>(10, 20), 1, 200, 2, 300);
    static_assert(v_multi(2) == 300);
 
+   constexpr auto text_const = assoc(string<4>("Hi"), 1, '!');
+   static_assert(text_const(1) == '!');
+   constexpr auto text_append = assoc(string<4>("Hi"), 2, '!');
+   static_assert(text_append(2) == '!');
+
    // Runtime demonstration.
    auto m_runtime = hash_map<int, int, 4>();
    const auto m1 = assoc(m_runtime, 2, 200);
+   auto text_runtime = string<4>("A");
+   const auto text1 = assoc(text_runtime, 1, 'B');
 
-   return (contains(m1, 2) && m1(2) == 200) ? 0 : 1;
+   return (contains(m1, 2) && m1(2) == 200 && text1(0) == 'A' &&
+           text1(1) == 'B' && count(text_runtime) == 1 && text_runtime(0) == 'A')
+              ? 0
+              : 1;
  }
  ~~~~~
  */

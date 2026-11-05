@@ -70,7 +70,12 @@ namespace cljonic::core {
    static_assert(!character_is_valid(300));
    static_assert(!character_is_valid('\0'));
    static_assert(!character_is_valid(static_cast<char>(0x80)));
-   return 0;
+
+   // Runtime demonstration.
+   int runtime_code = 65;
+   const auto runtime_valid = character_is_valid(runtime_code);
+
+   return runtime_valid ? 0 : 1;
  }
  ~~~~~
  */

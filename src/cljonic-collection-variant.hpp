@@ -119,7 +119,9 @@ concept VariantClassArgument =
        hash_set(variant<int, long>(1));
    [[maybe_unused]] constexpr auto as_map_key = map_entry(as_int, 1);
 
-   return 0;
+   const int runtime_value = 5;
+   const auto runtime_variant = variant<int, long>(runtime_value);
+   return equal(runtime_variant, variant<int, long>(runtime_value)) ? 0 : 1;
  }
  ~~~~~
  */
