@@ -899,10 +899,10 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | constexpr ∧ noexcept ∧ non_mutating ∧ non_allocating ∧ preserve(Vector_type ∧ capacity)
   | classify_as(RequirementsBacked) ∧ trace_to(REQ-COLL-022)
 
-λ S2_operation_vocabulary(x). canonical_collection_operations(x) ≡ is_empty ∧ empty ∧ not_empty ∧ first ∧ next ∧ has_next ∧ has_rest ∧ rest
+λ S2_operation_vocabulary(x). canonical_collection_operations(x) ≡ is_empty ∧ empty ∧ not_empty ∧ first ∧ has_first ∧ next ∧ has_next ∧ has_rest ∧ rest
   ∧ full ∧ contains ∧ fits_into ∧ into ∧ count
     ∧ get ∧ conj ∧ assoc ∧ dissoc ∧ disj ∧ peek ∧ pop ∧ can_conj ∧ can_assoc
-  | requirements_backed_operations(x) ≡ is_empty ∧ empty ∧ not_empty ∧ first ∧ next ∧ has_next ∧ has_rest ∧ rest ∧ seq ∧ contains ∧ count ∧ fits_into ∧ into
+  | requirements_backed_operations(x) ≡ is_empty ∧ empty ∧ not_empty ∧ first ∧ has_first ∧ next ∧ has_next ∧ has_rest ∧ rest ∧ seq ∧ contains ∧ count ∧ fits_into ∧ into
     ∧ get ∧ conj ∧ assoc ∧ dissoc ∧ disj ∧ peek ∧ pop ∧ can_conj ∧ can_assoc
   | bounded_insertion_capacity_inspection(x) ≡ full ∨ equivalent_capacity_inspection
   | requirements_backed_operations(x) → classify_as(RequirementsBacked)
@@ -962,6 +962,15 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | has_rest(value) → return_exactly(has_next(value))
     ∧ preserve(has_next_domain ∧ preflight_behavior ∧ callback_timing_and_effects ∧ input_value_state ∧ diagnostics)
     ∧ forward_to(has_next) ∧ ¬independent_traversal ∧ no_heap ∧ noexcept ∧ constexpr
+  | has_first(collection) → require(collection ∈ {Vector, Map, Set, Queue, String})
+    ∧ return(count(collection) > 0) ∧ semantically_independent_of(Map_or_Set_traversal_order)
+  | has_first(producer) → require(producer_admitted_by_first)
+    ∧ return(nonempty(first_observable_element(producer))) ∧ evaluate_only_until(element_found_or_absence_established)
+    ∧ ¬count_exactly ∧ ¬materialize ∧ callback_invocations_follow(first_observation)
+    ∧ zero_observation_cap → return(false) ∧ ¬traverse ∧ ¬invoke(source_or_predicate_callbacks)
+  | has_first(MapEntry) → return(true) because(first(MapEntry) returns its key)
+  | has_first → preserve(input_value_state ∧ no_heap ∧ noexcept ∧ constexpr)
+    ∧ unsupported_input → reject_at_compile_time_with(targeted_diagnostic_naming(has_first ∧ supported_domains) ∧ REQ-DIAG-009)
   | approved_adapter_tail_extension(x) → next(TakeWhile ∨ DropWhile) ∧ rest_delegates_to_next
     ∧ return(exact_input_producer_type_owning_source_predicate_and_compact_output_skip_offset)
     ∧ creation → ¬traverse ∧ ¬count ∧ ¬invoke_callbacks
@@ -1213,6 +1222,9 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | count ∧ is_empty → admit(TakeWhile ∧ DropWhile) ∧ preserve(is_empty(value) = (count(value) == 0))
   | first → admit(TakeWhile ∧ DropWhile ∧ Cycle_over_adapters) under(S2_first_function_contract)
     ∧ producer_extension_explicitly_approved_and_independently_verified
+  | has_first → admit(all_supported_collections ∧ all_producers_admitted_by_first ∧ MapEntry)
+    ∧ producer_result(nonempty(first_observable_element(producer)))
+    ∧ producer_callbacks_follow(first_element_observation) ∧ no_count_prepass ∧ no_materialization
   | fits_into → retain(finite_exact_count_preflight_for_Vector_Queue_String ∧ insertion_sensitive_preflight_for_Map_Set)
     ∧ prediction_requires(equivalent_values_across_independent_traversals)
   | next ∨ rest → approved_adapter_tail_extension ∨ approved_adapter_dependent_Cycle_tail_extension
