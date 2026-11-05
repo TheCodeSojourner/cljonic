@@ -14,7 +14,7 @@ and `Repeatedly`
 producers,
 the active unbounded `cycle(source)` producer, their direct construction,
 member-observation, callable collection forms, current primitive free-function
-operations, including `first`, `next`, `has_next`, and `rest`, and explicit producer
+operations, including `first`, `next`, `has_next`, `has_rest`, and `rest`, and explicit producer
 materialization through `into`, preflighted by `fits_into`. Sequence conversion
 (`seq`) converts collections and supported producers to bounded `Vector` values
 under `REQ-SEQ-010`;
@@ -515,11 +515,19 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### HasNext
-- **Definition:** The preflight predicate for the logical tail produced by `next`. For a supported `Vector`, `Map`, `Set`, `Queue`, or `String`, it returns true exactly when the collection contains more than one logical element, without constructing the `next` result. For any producer admitted by `next`, it returns true exactly when the `next` producer has at least one observable element under its configured observation policy; this constructs the tail and checks for its first element without counting the whole result. That producer preflight follows `next` and first-element callback behavior, so callback-backed sources may be traversed and authorized effects may occur. Unsupported values are rejected at compile time. The operation preserves input value-owned state, is `constexpr`, non-allocating, non-throwing, and part of the current public API.
+- **Definition:** The preflight predicate for the logical tail produced by `next`. For a supported `Vector`, `Map`, `Set`, `Queue`, or `String`, it returns true exactly when the collection contains more than one logical element, without constructing the `next` result. For any producer admitted by `next`, it returns true exactly when the `next` producer has at least one observable element under its configured observation policy; this constructs the tail and checks for its first element without counting the whole result. That producer preflight follows `next` and first-element callback behavior, so callback-backed sources may be traversed and authorized effects may occur. `has_rest` is an exact forwarding alias. Unsupported values are rejected at compile time. The operation preserves input value-owned state, is `constexpr`, non-allocating, non-throwing, and part of the current public API.
 - **Deprecated Synonyms:** None
 - **Related:** Next, Rest, Count, SequenceableCollection, LogicalTraversalOrder, PreflightPredicate, HasPredicatePrefix, StatePredicate, RejectionDiagnostic
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
 - **Examples:** `has_next(vector(1, 2))` and `has_next(repeat(2, 7))` are true; `has_next(queue(1))`, `has_next(repeat(1, 7))`, and `has_next(vector<int, 0>())` are false; a nonempty `Cycle` remains observable after `next`.
+
+
+### HasRest
+- **Definition:** An exact free-function alias for `HasNext`. For every collection or producer admitted by `has_next`, `has_rest(value)` returns the same boolean and forwards to the same preflight, preserving callback timing/effects, input state, and compile-time rejection behavior.
+- **Deprecated Synonyms:** None
+- **Related:** HasNext, Next, Rest, PreflightPredicate, RejectionDiagnostic
+- **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
+- **Examples:** `has_rest(vector(1, 2)) == has_next(vector(1, 2))`; `has_rest(repeat(1, 7)) == has_next(repeat(1, 7))`.
 
 
 ### HasPredicatePrefix
@@ -527,7 +535,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Deprecated Synonyms:** `has_` predicate, presence predicate prefix
 - **Related:** CapabilityPredicate, Associative
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
-- **Examples:** For collections, `has_next` checks for an element after the first without constructing the tail; for supported producers, it checks whether `next` has an observable first element. A `has_` lookup predicate may report key presence without performing a default-returning lookup.
+- **Examples:** `has_next` and its exact alias `has_rest` check for an element after the first; a `has_` lookup predicate may report key presence without performing a default-returning lookup.
 
 
 ### ValidPredicatePrefix
@@ -850,7 +858,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Examples:** `next(vector<int, 4>(10, 20, 30))` returns a `Vector<int, 3>` containing `20, 30`; `next(Queue<int, 4>{10, 20})` returns a `Queue<int, 3>` containing `20`; `next(Vector<int, 0>{})` returns an empty `Vector<int, 0>`; `next(repeat(3, 7))` returns a finite `Repeat` of two sevens; `next(repeat(7))` returns an unbounded `Repeat` of seven; `next(Range{0, 3})` returns the range starting at `1`; `next(Range{0, 1})` returns an empty range at endpoint `1`; `next(Range{0, 5, 0})` remains unbounded and unchanged; `next(cycle(vector(1, 2, 3)))` remains a Cycle whose next traversal starts at `2`.
 
 ### Rest
-- **Definition:** The generic free-function alias for `Next`: for every input admitted by `next`, `rest(input)` returns exactly `next(input)`, preserving its result type, logical tail, source value, observation policy, and callback timing/effects. Collection tails follow `LogicalTraversalOrder`, not `Pop`, with the same collection kind and capacity one smaller (zero stays zero). Producer tails inherit all producer-specific `Next` rules, including deferred TakeWhile/DropWhile tails and compact eagerly normalized adapter-dependent Cycle tails with nested composition. The extension is active after separate explicit implementation approval and verification. Existing domains remain unchanged. Unsupported inputs are exactly those not admitted by `Next`; `has_next` is unchanged. The operation is `constexpr`, non-allocating, non-throwing, and preserves input values.
+- **Definition:** The generic free-function alias for `Next`: for every input admitted by `next`, `rest(input)` returns exactly `next(input)`, preserving its result type, logical tail, source value, observation policy, and callback timing/effects. Collection tails follow `LogicalTraversalOrder`, not `Pop`, with the same collection kind and capacity one smaller (zero stays zero). Producer tails inherit all producer-specific `Next` rules, including deferred TakeWhile/DropWhile tails and compact eagerly normalized adapter-dependent Cycle tails with nested composition. The extension is active after separate explicit implementation approval and verification. Existing domains remain unchanged. Unsupported inputs are exactly those not admitted by `Next`; `has_next` and its `has_rest` alias retain their existing preflight behavior. The operation is `constexpr`, non-allocating, non-throwing, and preserves input values.
 - **Deprecated Synonyms:** None
 - **Related:** Next, First, Sequence, SequenceableCollection, SequenceableProducer, Traversal, LogicalTraversalOrder, Vector, MapEntry, Queue, Repeat, Range, Cycle, Iterate, Repeatedly, TakeWhile, DropWhile, Pop
 - **Usage:** Requirements, architecture, specification, tests, implementation, and documentation
@@ -918,14 +926,14 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Examples:** `drop(2, vector(1, 2, 3))` returns `Vector<int, 3>` containing `3`; `drop(-1, source)` retains the original observable window; dropping three values from an unbounded producer with observation cap 100 retains 97 values, not 100.
 
 ### TakeWhile
-- **Definition:** The active `take_while(predicate, source)` owning finite producer, explicitly approved and independently verified. It copies a cljonic source and predicate without evaluating either, then yields the initial true prefix of the original capped source window. The first false element is examined but excluded, with no later advancement. Each traversal uses fresh predicate state; `count` independently traverses to compute exact output cardinality without caching. Predicate admission follows `FilterFunction`, additionally requiring non-throwing owned copies. Empty traversal and zero cap invoke no callbacks. Source and predicate state owned by value are preserved; authorized referenced/static effects remain shared. Map/Set prefix membership depends on unordered traversal. Capturing predicates are supported; collection-element storage remains conditional on `NothrowCollectionElement`. Parameter equality and has_next remain unavailable. Deferred exact-type next/rest tails and dependent Cycle tails are active under Next after separate explicit implementation approval and verification.
+- **Definition:** The active `take_while(predicate, source)` owning finite producer, explicitly approved and independently verified. It copies a cljonic source and predicate without evaluating either, then yields the initial true prefix of the original capped source window. The first false element is examined but excluded, with no later advancement. Each traversal uses fresh predicate state; `count` independently traverses to compute exact output cardinality without caching. Predicate admission follows `FilterFunction`, additionally requiring non-throwing owned copies. Empty traversal and zero cap invoke no callbacks. Source and predicate state owned by value are preserved; authorized referenced/static effects remain shared. Map/Set prefix membership depends on unordered traversal. Capturing predicates are supported; collection-element storage remains conditional on `NothrowCollectionElement`. Producer parameter equality remains unavailable. `has_next` and its exact `has_rest` alias accept producers admitted by `next`. Deferred exact-type next/rest tails and dependent Cycle tails are active under Next after separate explicit implementation approval and verification.
 - **Deprecated Synonyms:** None
 - **Related:** DropWhile, Producer, CljonicSource, SequenceableProducer, FilterFunction, FiniteObservation, Traversal, NothrowCollectionElement
 - **Usage:** Requirements, architecture, specification, tests, implementation, and documentation
 - **Examples:** With source values `1, 2, 4, 1` and predicate `< 3`, traversal yields `1, 2`; exact count is `2`. An always-false predicate yields an empty producer with count `0`.
 
 ### DropWhile
-- **Definition:** The active `drop_while(predicate, source)` owning finite producer, explicitly approved and independently verified. It copies a cljonic source and predicate without evaluation, skips the initial true prefix, retains the first false element, and yields the remaining original capped window without further predicate calls. Skipping consumes, rather than replenishes, that window. Each traversal uses fresh predicate state; exact `count` requires independent traversal without caching. All-true windows yield empty; empty traversal and zero cap invoke no callbacks. Predicate, source ownership, conditional element storage, unordered Map/Set membership, and authorized external effects follow `TakeWhile`. Parameter equality and has_next remain unavailable. Deferred exact-type next/rest tails and dependent Cycle tails are active under Next after separate explicit implementation approval and verification; tail observation omits output after the original prefix removal, never restarting that removal on the retained suffix.
+- **Definition:** The active `drop_while(predicate, source)` owning finite producer, explicitly approved and independently verified. It copies a cljonic source and predicate without evaluation, skips the initial true prefix, retains the first false element, and yields the remaining original capped window without further predicate calls. Skipping consumes, rather than replenishes, that window. Each traversal uses fresh predicate state; exact `count` requires independent traversal without caching. All-true windows yield empty; empty traversal and zero cap invoke no callbacks. Predicate, source ownership, conditional element storage, unordered Map/Set membership, and authorized external effects follow `TakeWhile`. Producer parameter equality remains unavailable. `has_next` and its exact `has_rest` alias accept producers admitted by `next`. Deferred exact-type next/rest tails and dependent Cycle tails are active under Next after separate explicit implementation approval and verification; tail observation omits output after the original prefix removal, never restarting that removal on the retained suffix.
 - **Deprecated Synonyms:** None
 - **Related:** TakeWhile, Producer, CljonicSource, SequenceableProducer, FilterFunction, FiniteObservation, Traversal, NothrowCollectionElement
 - **Usage:** Requirements, architecture, specification, tests, implementation, and documentation
