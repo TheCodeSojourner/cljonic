@@ -91,8 +91,9 @@
  *
  * ## Core Functions
  *
- * Implemented free functions link to their documentation. Remaining names are deferred functions that the requirements
- * govern but whose specification, tests, and implementation have not yet been propagated.
+ * Entries linked to documentation have implemented documentation. Plain names are inventory entries only; their
+ * presence does not establish that they are implemented or supported. The requirements define each entry's lifecycle,
+ * and only \c requirements-backed entries define supported behavior. \c comp is explicitly deferred and non-binding.
  *
  * - add, apply, \ref Assoc "assoc", assoc_in
  * - bit_and, bit_and_not, bit_clear, bit_flip, bit_not, bit_or, bit_set, bit_shift_left, bit_shift_right, bit_test,
@@ -100,17 +101,18 @@
  * - can_add, \ref CanAssoc "can_assoc", \ref CanConj "can_conj", can_multiply, can_subtract,
  *   \ref CharacterIsValid "character_is_valid", comp, compare, complement, \ref Conj "conj", constantly,
  *   \ref Contains "contains", \ref Count "count", \ref Cycle "cycle"
- * - dec, dedupe, deref, \ref Disj "disj", \ref Dissoc "dissoc", distinct, div, double, \ref Drop "drop", drop_last, \ref DropWhile "drop_while"
+ * - dec, dedupe, deref, \ref Disj "disj", \ref Dissoc "dissoc", distinct, div, \ref Drop "drop", drop_last, \ref DropWhile "drop_while"
  * - emplace, \ref Empty "empty", \ref Equal "equal", every_pred
  * - ffirst, \ref FilterFunction "filter", \ref FiltervFunction "filterv", find, \ref First "first",
- *   \ref FitsInto "fits_into", fits_print, flatten, float, fnext, fnil, frequencies
- * - \ref Get "get", get_if, get_in, group_by
- * - \ref HasNext "has_next", \ref HasRest "has_rest", has_some, \ref HashMapFactory "hash_map",
+ *   \ref FitsInto "fits_into", fits_print, flatten, fnext, fnil, frequencies
+ * - \ref Get "get", get_if, get_in, greater, greater_equal, group_by
+ * - \ref HasNext "has_next", has_re_find, has_re_matches, \ref HasRest "has_rest", has_some, \ref HashMapFactory "hash_map",
  *   \ref HashSetFactory "hash_set", holds
- * - identity, inc, index, int, interleave, interpose, \ref Into "into", \ref IsEmpty "is_empty", is_even, is_every,
+ * - identity, inc, index, interleave, interpose, \ref Into "into", \ref IsEmpty "is_empty", is_even, is_every,
  *   is_negative, is_odd, is_positive, is_zero, \ref Iterate "iterate"
  * - juxt
  * - keep, keep_indexed, keys
+ * - less, less_equal
  * - make_keyword_enum_name_map, \ref MapFunction "map", \ref MapEntryFactory "map_entry", map_indexed, mapcat, mapv, max, max_key,
  *   merge, merge_with, min, min_key, mod, mult
  * - negate, \ref Next "next", nfirst, nnext, not_any, \ref NotEmpty "not_empty", \ref NotEqual "not_equal",
@@ -118,7 +120,8 @@
  * - partial, partition, partition_all, partition_by, partitionv, partitionv_all, \ref Peek "peek", \ref Pop "pop",
  *   pr_str, print_to, prn_str
  * - \ref QueueFactory "queue", quot
- * - \ref RangeFactory "range", \ref ReduceFunction "reduce", reduce_kv, reductions, rem, remove, \ref RepeatFactory "repeat", \ref Repeatedly "repeatedly",
+ * - \ref RangeFactory "range", re_find, re_groups, re_matcher, re_matches, re_pattern, re_seq,
+ *   \ref ReduceFunction "reduce", reduce_kv, reductions, rem, remove, \ref RepeatFactory "repeat", \ref Repeatedly "repeatedly",
  *   replace, replicate, reset, reset_vals, \ref Rest "rest", rseq
  * - second, select_keys, \ref Seq "seq", some, some_fn, sort, sort_by, split_at, split_with, str, \ref StringFactory "string",
  *   sub, subvec, swap, swap_vals
@@ -130,8 +133,8 @@
  *
  * ## Set Functions
  *
- * All entries below are deferred functions that the requirements govern but whose specification, tests, and
- * implementation have not yet been propagated.
+ * Plain names are inventory entries only; their presence does not establish that they are implemented or supported.
+ * The requirements define each entry's lifecycle, and only \c requirements-backed entries define supported behavior.
  *
  * - difference
  * - fits_join, fits_set_algebra
@@ -145,18 +148,16 @@
  *
  * ## String Functions
  *
- * All entries below are deferred functions that the requirements govern but whose specification, tests, and
- * implementation have not yet been propagated.
+ * Plain names are inventory entries only; their presence does not establish that they are implemented or supported.
+ * The requirements define each entry's lifecycle, and only \c requirements-backed entries define supported behavior.
  *
- * - capitalize
+ * - can_parse_bool, can_parse_float, can_parse_int, capitalize
  * - ends_with, escape
- * - has_re_find, has_re_matches
  * - includes, index_of, is_blank
  * - join
  * - last_index_of, lower_case
  * - parse_bool, parse_float, parse_int
- * - re_find, re_groups, re_matcher, re_matches, re_pattern, re_quote_replacement, re_seq, replace, replace_first,
- *   reverse
+ * - re_quote_replacement, replace, replace_first, reverse
  * - split, split_lines, starts_with
  * - trim, trim_newline, triml, trimr
  * - upper_case
