@@ -1,5 +1,53 @@
 ## Current Session State
 
+- last_session_id: e0af8dda-3c6e-4845-9ede-5482d050fbb0
+- current_timestamp: 2026-11-05T13:23:03-07:00
+- session_complete: true
+- recover: Doxygen examples use factories for user-creatable cljonic values where an equivalent factory accepts the input. All 50 active examples use the root namespace import as a consistent style, although 45 compile without it; five use root types unqualified. This is a usage-style choice, not a behavioral spec change.
+- Task:
+  1. Audited active Doxygen C++ fences for direct construction of factory-backed values and alias-based constructions.
+  2. Converted the duplicate-key Map example to `hash_map`; retained Map, Set, Queue, and Vector constructors only for span/view interoperability sources without matching factories.
+  3. Added `using namespace cljonic;` after includes in all 50 active examples, removed selective type imports, and kept `using namespace cljonic::core;`.
+  4. Updated the sample validator and regression tests to require the root import at file scope; recorded the convention in `mementum/memories/doxygen-examples-import-root-namespace.md`.
+  5. Compiled all 50 examples without the root import in a temporary audit: 45 passed and five failed on unqualified root types. Confirmed those five could instead use selective or qualified type names.
+  6. Checked namespace requirements and architecture; found no import-style clause requiring an Allium spec change.
+- Decisions:
+  1. `using namespace cljonic;` is idiomatic in cljonic Doxygen examples; keep it at file scope after includes.
+  2. Use factories for user-created cljonic values where an equivalent factory supports the source; keep direct constructors for standard C++ span/view interoperability.
+  3. Retain `using namespace cljonic::core;` for Core functions where examples use them.
+  4. Do not change behavioral specs for this import-style convention.
+- Validation:
+  1. `make format-doc-samples` passed.
+  2. `make -j"$(nproc)" cljonic docs docs-examples` passed; all 50 Doxygen examples compiled.
+  3. `python3 scripts/test-validation-tools.py` passed all 33 tests.
+  4. `git diff --check` passed after trimming Doxygen-generated trailing spaces.
+- Questions: None.
+- Next: Await human direction. Commit the updated Mementum state during `/gybis-fini`; all other changes are already present in Git.
+
+## Previous Session State (Core namespace migration)
+
+- current_timestamp: 2026-11-05T12:11:29-07:00
+- session_complete: true
+- recover: The human approved moving every Core cheatsheet function and factory into `cljonic::core` as a breaking change. The implementation, tests, generated header, and Doxygen output now reflect that rule. Collection types remain in `cljonic`; no root compatibility exports were added. The earlier `cljonic::lib_string` / `cljonic::lib_set` mapping and `set_` algebra naming decisions remain in force.
+- Task:
+  1. Updated architecture and `REQ-VOCAB-008` to require Core functions only in `cljonic::core`, while collection types remain in the root namespace.
+  2. Moved Core free functions and collection factories, updated call sites and tests, and corrected the `CycleNextAccess::tail` definition to remain in `cljonic::concepts_detail`.
+  3. Migrated compile-fail fixture paths and no-heap probe imports to `cljonic::core`.
+  4. Regenerated `cljonic.hpp` and Doxygen output.
+- Decisions:
+  1. The Core namespace migration is breaking; do not restore root-level compatibility exports.
+  2. `clojure.core` maps to `cljonic::core`; `clojure.set` and `clojure.string` map to `cljonic::lib_set` and `cljonic::lib_string`.
+  3. Prefix only binary set algebra names (`set_union`, `set_intersection`, `set_difference`); retain other Set-library names.
+- Validation:
+  1. `make -j"$(nproc)" test` passed: all 350 tests passed.
+  2. `make -j"$(nproc)" requirements-structure core-cheatsheet-format cljonic docs` passed.
+  3. `make -j"$(nproc)" git` passed, including 52 compile-fail groups, sanitizer, 100% line coverage, no-heap, and the single-header probe.
+  4. `git diff --check` passed.
+- Questions: None.
+- Next: Await human direction. Current changes are uncommitted; no commit was requested.
+
+## Previous Session State
+
 - last_session_id: 5e773510-fc19-4f9c-a021-718a849a013f
 - current_timestamp: 2026-11-05T10:37:52-07:00
 - session_complete: true
