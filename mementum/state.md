@@ -1,19 +1,19 @@
 ## Current Session State
 
 - last_session_id: 61c32006-e8bb-4ee8-9297-de91fe0c34da
-- current_timestamp: 2026-11-05T16:18:39-07:00
+- current_timestamp: 2026-11-05T16:19:00-07:00
 - session_complete: true
-- recover: Completed the approved `has_first` API from requirements through implementation. Its producer path observes only the first-result presence, without counting or materializing; zero observation cap invokes no callbacks; `MapEntry` always returns true because `first(MapEntry)` returns its key. Product edits are uncommitted; do not stage or commit. Generated Doxygen HTML is intentionally deferred.
+- recover: Completed the approved `has_first` API from requirements through implementation and generated docs. Product, HTML, and initial mementum checkpoint commits are present: `aa058f7e`, `31e01046`, `56430798`, `3241394e`, and `0974a160`. Worktree is clean. The latest fini update corrects the earlier checkpoint, which was written before noticing the shared-worktree product/docs commits.
 - Task:
-  1. Added binding `REQ-FN-002A8`, updated the requirements index and vocabulary, and propagated the `has_first` contract to architecture and `specs/primitives/has-first.allium`.
-  2. Added `src/cljonic-has-first.hpp`, the public umbrella include and cheatsheet entry, plus modular/single-header tests, compile-fail cases, a dedicated runtime no-heap probe, and a complete Doxygen example.
+  1. Added binding `REQ-FN-002A8`, updated the requirements index and vocabulary, and propagated the `has_first` contract to architecture and `specs/primitives/has-first.allium` (`aa058f7e`).
+  2. Added `src/cljonic-has-first.hpp`, the public umbrella include and cheatsheet entry, plus modular/single-header tests, compile-fail cases, a dedicated runtime no-heap probe, and a complete Doxygen example (`31e01046`, `56430798`).
   3. Regenerated `cljonic.hpp` and refreshed the spec-to-code obligation snapshot.
-  4. After review, removed `volatile` from the Doxygen example to follow the repository rule: examples use ordinary runtime values; volatile-derived values are reserved for tests and no-heap probes where needed to prevent constant folding.
+  4. After review, removed `volatile` from the Doxygen example to follow the repository rule. The human then committed regenerated rendered HTML (`3241394e`).
 - Decisions:
   1. Collections report `count() > 0`; producers check whether their first observation exists, matching `first`'s only-needed traversal behavior rather than aliasing `!is_empty`.
   2. `has_first(MapEntry)` is true, including a default-valued entry, because the supported `first(MapEntry)` operation always returns its key.
   3. Doxygen source examples use ordinary runtime values, not `volatile`; volatile-derived runtime inputs remain appropriate in tests and no-heap probes when they are needed to prevent constant folding.
-  4. Documentation source examples are validated; rendered HTML is deferred to the human's final documentation gate.
+  4. Documentation examples use ordinary runtime values, not `volatile`; the human regenerated and committed rendered HTML.
 - Validation:
   1. Requirements and vocabulary structure checks passed; Allium check/analyse passed for `specs/primitives/has-first.allium`.
   2. `make trace-id-check` and authoritative `make traceability-spec-to-code` passed with 22 obligations.
@@ -23,7 +23,7 @@
   6. After removing `volatile`, `make docs-examples` compiled 51 examples; the extracted has_first example linked and executed successfully.
   7. `make -j"$(nproc)" upsert-gate-fast` and `git diff --check` passed.
 - Questions: None.
-- Next: Human review of product changes. Product edits remain unstaged and uncommitted; this fini commit contains only `mementum/state.md`. Rendered HTML remains deferred.
+- Next: Await human direction. Current worktree is clean; no further implementation or docs generation is pending.
 
 ## Previous Session State (Variant documentation)
 
