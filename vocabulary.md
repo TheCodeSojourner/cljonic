@@ -8,24 +8,23 @@ status: draft
 
 ## Current Scope
 
-The current implementation and tests cover the core collection types (`Vector`,
-`Map`, `Set`, `Queue`, and `String`), the active `Range`, `Repeat`, `Iterate`,
-and `Repeatedly`
-producers,
-the active unbounded `cycle(source)` producer, their direct construction,
-member-observation, callable collection forms, current primitive free-function
-operations, including `first`, `next`, `has_next`, `has_rest`, and `rest`, and explicit producer
-materialization through `into`, preflighted by `fits_into`. Sequence conversion
-(`seq`) converts collections and supported producers to bounded `Vector` values
-under `REQ-SEQ-010`;
-const range traversal and read-only C++ interoperability are active
-infrastructure. Module 3 establishes the concrete, array-backed, bounded
-collection types, their contiguous storage strategies, linear scan lookup
-algorithms, swap-and-remove policies, and primitive free functions. Module 4's
-active slice establishes `Range`, `Repeat`, `Iterate`, unbounded `cycle(source)`,
-`Repeatedly`, and
-explicit producer materialization. These terms govern stored collection and
-producer building blocks used across all higher-order algorithms.
+The current implementation and tests cover the collection and value types
+(`Vector`, `MapEntry`, `Map`, `Set`, `Queue`, `String`, and `Variant`), the
+producers `Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`, `TakeWhile`, and
+`DropWhile`, and their direct construction, member observation, callable
+collection forms, and factories. The active free-function surface includes
+primitive operations such as `first`, `next`, `has_next`, `has_rest`, and
+`rest`; higher-order operations `map`, `reduce`, `filter`, `filterv`, `take`,
+`drop`, `take_while`, and `drop_while`; and producer materialization through
+`into`, preflighted by `fits_into`. Sequence conversion (`seq`) converts
+collections and supported producers to bounded `Vector` values under
+`REQ-SEQ-010`. Const range traversal and read-only C++ interoperability are
+active infrastructure. Module 3 establishes the concrete, array-backed,
+bounded collection types, their contiguous storage strategies, linear scan
+lookup algorithms, swap-and-remove policies, and primitive free functions.
+Module 4 establishes the base producers and explicit producer materialization.
+These terms govern stored collection and producer building blocks used across
+the active higher-order algorithms.
 
 ### SafeImplicitConversion
 - **Definition:** Argument admission that preserves type identity or admits a standard arithmetic conversion preserving every source value, precision, range, and semantic domain. Cross-type Boolean, character, enum, pointer, and user-defined conversions are not admitted by default. Safety is decided from types, not from a particular literal.
