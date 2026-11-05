@@ -495,8 +495,11 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-VOCAB-008(x).
-  ∀ public_cljonic_namespace_name: ∧ preferred — mirrors the corresponding Clojure namespace names using lowercase C++ namespace identifiers and underscores where separators are needed, so `clojure.core` maps conceptually to `cljonic::core` and `clojure.string` maps conceptually to `cljonic::string`
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  ∀ public_cljonic_namespace_name: uses lowercase C++ namespace identifiers with underscores where needed
+  ∧ mapping: `clojure.core` → `cljonic::core` ∧ `clojure.set` → `cljonic::lib_set` ∧ `clojure.string` → `cljonic::lib_string`
+  ∧ ∀ Core Functions cheatsheet entry: declared only in `cljonic::core`
+  ∧ ∀ core collection type ∈ {`Vector`, `Map`, `Set`, `Queue`, `String`, `MapEntry`, `Variant`}: remains declared in `cljonic::`
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-05}
 
 λ REQ-VOCAB-009(x).
   ∀ public_cljonic_API: developed as a broad Clojure-inspired convenience surface rather than as a minimal embedded collection subset

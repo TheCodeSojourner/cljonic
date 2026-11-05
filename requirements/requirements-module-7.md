@@ -7,22 +7,22 @@ This module specifies specialized domain conveniences built on top of lower modu
 ## Set Algebra and Relational Operations
 
 λ REQ-FN-023(x).
-  ∀ context: the first-class bounded set algebra layer includes binary `union`, `intersection`, and `difference` operations over compatible `Set<T, N>` and `Set<T, M>` inputs, returning owning bounded `Set<T, max(N, M)>` values, plus `is_subset` and `is_superset` predicates returning `bool`
+  ∀ context: the first-class bounded set algebra layer in `cljonic::lib_set` includes binary `set_union`, `set_intersection`, and `set_difference` operations over compatible `Set<T, N>` and `Set<T, M>` inputs, returning owning bounded `Set<T, max(N, M)>` values, plus `is_subset` and `is_superset` predicates returning `bool`
   ∧ ∀ derived result capacity: a compile-time value ∧ remains within `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT` ∧ ∀ statically invalid derived capacity: fails at compile time
   ∧ ∀ set_algebra: requires the stable equality capability applicable to set membership ∧ preserves the semantic unorderedness of set traversal ∧ leaves all input sets unchanged
   ∧ ∀ context: `fits_set_algebra(left, right)` is the non-throwing, non-allocating complete-result preflight for the result-producing set algebra operations
-  ∧ ∀ (`intersection` ∧ `difference`): produce complete results within the derived capacity
-  ∧ ∀ `union` with more distinct values than the derived capacity: returns a deterministic bounded prefix containing the first `max(N, M)` distinct values encountered by its defined operand traversal ∧ `fits_set_algebra` returns `false` ∧ the returned set remains semantically unordered ∧ ¬∃ storage of completeness state in it
+  ∧ ∀ (`set_intersection` ∧ `set_difference`): produce complete results within the derived capacity
+  ∧ ∀ `set_union` with more distinct values than the derived capacity: returns a deterministic bounded prefix containing the first `max(N, M)` distinct values encountered by its defined operand traversal ∧ `fits_set_algebra` returns `false` ∧ the returned set remains semantically unordered ∧ ¬∃ storage of completeness state in it
   ∧ ∀ defined operand traversal for this purpose: left operand traversal followed by right operand traversal, with duplicate values skipped on first encounter ∧ the deterministic prefix rule does not create a semantic ordering guarantee for sets
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-FN-024(x).
-  ∀ relational map/set operation ∈ {`index`, `project`, `rename`, `join`}: conforms to the approved relation model in `REQ-FN-030`
+  ∀ relational map/set operation ∈ {`index`, `project`, `rename`, `join`}: provided in `cljonic::lib_set` ∧ conforms to the approved relation model in `REQ-FN-030`
   ∧ ∀ correspondence to Clojure namespace symbols: ¬∃ weakening of the bounded, owning, no-allocation, static-capability, duplicate, traversal, capacity, preflight, or failure requirements of that model
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-FN-028(x).
-  ∀ context: the set namespace convenience family includes `select`, `map_invert`, and `rename_keys`
+  ∀ context: the `cljonic::lib_set` convenience family includes `select`, `map_invert`, and `rename_keys`
   ∧ ∀ `select(predicate, set)`: returns an owning `Set` with the same element type and capacity as its input, containing exactly the input values for which the pure, non-allocating predicate returns true
   ∧ ∀ `map_invert(map)` on an input `Map<K, V, N>`: returns an owning `Map<V, K, N>` ∧ requires stable equality for `V` ∧ associates each source value with its source key
   ∧ ∀ `rename_keys(map, key_map)`: returns an owning map with the source map's capacity ∧ replaces each source key found in the bounded `key_map` with its mapped key ∧ preserves source keys not found in `key_map` through the documented key conversion capability
@@ -31,7 +31,7 @@ This module specifies specialized domain conveniences built on top of lower modu
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-FN-030(x).
-  ∀ approved relational operation: uses cljonic data structures directly — a relation is represented as an owning bounded `Set<Row, N>` value ∧ a row is represented as an owning bounded `Map<Key, Value, M>` value ∧ ¬∃ requirement of a C++ struct row representation
+  ∀ approved relational operation: provided in `cljonic::lib_set` ∧ uses cljonic data structures directly — a relation is represented as an owning bounded `Set<Row, N>` value ∧ a row is represented as an owning bounded `Map<Key, Value, M>` value ∧ ¬∃ requirement of a C++ struct row representation
   ∧ ∀ (`index` ∧ `project` ∧ `rename` ∧ `join`): free functions ∧ their row, relation, map, set, sequence, value, selector, and combiner requirements expressed through named C++ concepts or equivalent compile-time constraints
   ∧ ∀ `index`: uses the source relation's bounded row capacity as the compile-time upper bound for its result map capacity ∧ the runtime number of distinct key values MAY be smaller ∧ ¬∃ determination of the result type by it ∧ each grouped result set uses the source relation's row capacity ∧ ∀ statically invalid derived capacity: fails at compile time
   ∧ ∀ `join`: uses the caller-supplied destination capacity for the output relation ∧ every intermediate bounded result has a capacity derived from the corresponding source or destination bound ∧ complete-result preflight accounts for all such bounds
@@ -46,7 +46,7 @@ This module specifies specialized domain conveniences built on top of lower modu
 
 λ REQ-FN-002J(x).
   ∀ runtime text parsing: provides `can_parse_int` and `parse_int` for the supported fixed-width integer target, `can_parse_float` and `parse_float` for the supported floating-point target, and `can_parse_bool` and `parse_bool` for documented boolean spellings
-  ∧ ∀ these parsing functions: provided in `cljonic::string` ∧ ¬∃ provision in `cljonic::core`
+  ∧ ∀ these parsing functions: provided in `cljonic::lib_string` ∧ ¬∃ provision in `cljonic::core`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-05}
 
 λ REQ-FN-015(x).
@@ -55,7 +55,7 @@ This module specifies specialized domain conveniences built on top of lower modu
 
 λ REQ-FN-016(x).
   ∀ single-match regex function: provides corresponding non-throwing, non-allocating preflight predicates `has_re_find` and `has_re_matches` that determine whether a match exists
-  ∧ ∀ these preflight predicates: provided in `cljonic::core` ∧ ¬∃ provision in `cljonic::string`
+  ∧ ∀ these preflight predicates: provided in `cljonic::core` ∧ ¬∃ provision in `cljonic::lib_string`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-05}
 
 λ REQ-FN-017(x).
@@ -79,12 +79,12 @@ This module specifies specialized domain conveniences built on top of lower modu
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-FN-022(x).
-  ∀ context: the first-class bounded string convenience layer includes ASCII-preserving or ASCII-transforming operations corresponding to `is_blank`, `capitalize`, `ends_with`, `escape`, `includes`, `index_of`, `last_index_of`, `lower_case`, `re_quote_replacement`, `reverse`, `starts_with`, `trim`, `trim_newline`, `triml`, `trimr`, and `upper_case`
+  ∀ context: the first-class bounded string convenience layer in `cljonic::lib_string` includes ASCII-preserving or ASCII-transforming operations corresponding to `is_blank`, `capitalize`, `ends_with`, `escape`, `includes`, `index_of`, `last_index_of`, `lower_case`, `re_quote_replacement`, `reverse`, `starts_with`, `trim`, `trim_newline`, `triml`, `trimr`, and `upper_case`
   ∧ ∀ operation corresponding to (`join` ∨ `replace` ∨ `replace_first` ∨ `split` ∨ `split_lines`): also supported as a bounded string convenience operation when its destination string or collection capacities are explicit and its complete-result preflight behavior is documented
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-FN-031(x).
-  ∀ supported ∨ subsequently approved `clojure.string` operation: the bounded text model governs it
+  ∀ supported ∨ subsequently approved `clojure.string` operation: provided in `cljonic::lib_string` ∧ the bounded text model governs it
   ∧ ∀ text_value: owning `String<N>` containing only bytes in the range `0x01` through `0x7F`
   ∧ ∀ text_operation: ASCII-deterministic ∧ ¬∃ (allocation ∨ throw) ∧ ¬∃ dependence on (locale ∨ Unicode normalization ∨ external string lifetime ∨ hidden caches ∨ runtime reflection)
   {source: stakeholder_decided, decided_by: original_spec_author}
