@@ -513,7 +513,8 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ `has_next`: preserve input value-owned state ∧ `constexpr` ∧ `noexcept` ∧ non-mutating ∧ non-allocating ∧ ¬∃ RTTI
   ∧ ∀ (`Map` ∧ `Set`): result does not depend on which element appears first in the unspecified traversal order
   ∧ ∀ unsupported_input: fails compilation with one targeted diagnostic naming `has_next` and its supported collection and producer domains
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-04, aligned_with: REQ-FN-002A4-002A7}
+  ∧ ∀ `has_rest(value)`: return exactly `has_next(value)` for the same supported collection and producer domains, with identical preflight behavior, callback timing/effects, input preservation, and compile-time rejection behavior; implement as a forwarding alias without an independent traversal
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-05, aligned_with: REQ-FN-002A4-002A7}
 
 ### Producer Sequence Tail Access (Binding)
 
@@ -789,6 +790,6 @@ The clauses in this section define the active `seq` contract. The human approved
 
 ## Traceability and Related Requirements
 
-- **Downstream Artifact**: `Vector`, `MapEntry`, `Map`, `Set`, `Queue`, `String` class templates and core collection free functions (`character_is_valid`, `count`, `get`, `conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`, `empty`, `is_empty`, `not_empty`, `first`, `next`, `has_next`, `rest`, `seq`).
+- **Downstream Artifact**: `Vector`, `MapEntry`, `Map`, `Set`, `Queue`, `String` class templates and core collection free functions (`character_is_valid`, `count`, `get`, `conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`, `empty`, `is_empty`, `not_empty`, `first`, `next`, `has_next`, `has_rest`, `rest`, `seq`).
 - **Governed REQs**: `REQ-COLL-001`, `REQ-COLL-001A`, `REQ-COLL-002`, `REQ-COLL-002A`, `REQ-COLL-004`, `REQ-COLL-004A`–`004C`, `REQ-COLL-005`, `REQ-COLL-005A`–`005B`, `REQ-COLL-006`–`007`, `REQ-COLL-007A`, `REQ-COLL-008`–`010`, `REQ-COLL-010A`–`010B`, `REQ-COLL-011`–`012`, `REQ-COLL-012A`, `REQ-COLL-013`, `REQ-COLL-013A`–`013B`, `REQ-COLL-014`–`018`, `REQ-COLL-018A`, `REQ-COLL-019`, `REQ-COLL-019A`–`019B`, `REQ-COLL-020`, `REQ-COLL-020A`–`020AA`, `REQ-COLL-021`–`022`, `REQ-SEQ-001`–`002`, `REQ-SEQ-002A`–`002B`, `REQ-SEQ-003`–`014`, `REQ-FN-001`–`002`, `REQ-FN-002A`, `REQ-FN-002A1`, `REQ-FN-002A2`, `REQ-FN-002A3`, `REQ-FN-002A4`–`002A7`, `REQ-FN-002B`–`002H`, `REQ-FN-002M`, `REQ-FN-002P`–`002Y`, `REQ-FN-003`–`008`, `REQ-FN-008A`, `REQ-FN-026`.
 - **Deferred REQs**: `REQ-FN-002A`–`002B`.
