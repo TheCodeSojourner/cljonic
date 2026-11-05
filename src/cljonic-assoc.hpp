@@ -3,7 +3,7 @@
 #include <cljonic-concepts.hpp>
 #include <type_traits>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Assoc
  * The \b assoc free function associates a value with a key in a \ref Map "Map", or with an index in an indexed
@@ -25,6 +25,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -57,7 +58,9 @@ template <typename C, typename K, typename V>
     return collection.assoc(key, value);
 }
 
-namespace concepts_detail {
+} // namespace cljonic::core
+
+namespace cljonic::concepts_detail {
 
 // A single (key, value) pair is admissible for the variadic form when the
 // collection admits it under its own key/value domain (identical to the
@@ -99,7 +102,9 @@ constexpr void fold_assoc_pairs_into(C& result, const K& key, const V& value, co
     fold_assoc_pairs_into(result, rest...);
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** Variadic `assoc`: applies two or more key-value pairs left to right. Each pair is admitted (or rejected at compile
  *  time) under the same collection-specific key/value domain as the single-pair form; a pair that cannot be applied
@@ -164,4 +169,4 @@ template <typename C, typename K1, typename V1, typename K2, typename V2, typena
     return C{};
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

@@ -57,6 +57,7 @@ concept RepeatedlyClassArgument = (concepts::NothrowCollectionElement<T> && conc
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  constexpr auto five() noexcept -> int { return 5; }
 
@@ -250,9 +251,10 @@ class Repeatedly<concepts_detail::RepeatedlyDomainViolation, concepts_detail::Re
   public:
     template <typename... Args>
     constexpr explicit Repeatedly([[maybe_unused]] Args&&... args) noexcept {
-        static_assert(concepts_detail::dependent_false<Args...>,
-                      "cljonic::Repeatedly: the element type cannot be deduced from a step alone. Use the repeatedly() "
-                      "free function, as in cljonic::repeatedly(step) or cljonic::repeatedly(count, step).");
+        static_assert(
+            concepts_detail::dependent_false<Args...>,
+            "cljonic::Repeatedly: the element type cannot be deduced from a step alone. Use the repeatedly() "
+            "free function, as in cljonic::core::repeatedly(step) or cljonic::core::repeatedly(count, step).");
     }
 };
 
@@ -265,6 +267,10 @@ Repeatedly(const Step&)
 template <typename Step, typename Count>
 Repeatedly(const Step&, Count)
     -> Repeatedly<concepts_detail::RepeatedlyDomainViolation, concepts_detail::RepeatedlyDomainViolation>;
+
+} // namespace cljonic
+
+namespace cljonic::core {
 
 template <typename Step, typename T = std::invoke_result_t<std::decay_t<Step>&>>
     requires concepts::RepeatedlyStep<T, std::decay_t<Step>>
@@ -287,8 +293,8 @@ constexpr auto repeatedly([[maybe_unused]] Step&& step) noexcept -> concepts_det
     static_assert(concepts_detail::dependent_false<Step>,
                   "cljonic::repeatedly: this step cannot be used to build a Repeatedly. The step must be a callable -- "
                   "a function, a lambda, or a function object -- that takes no arguments, can be copied, and returns a "
-                  "value that can be stored without throwing. To repeat one value, use cljonic::repeat(value) or "
-                  "cljonic::repeat(count, value).");
+                  "value that can be stored without throwing. To repeat one value, use cljonic::core::repeat(value) or "
+                  "cljonic::core::repeat(count, value).");
     return {};
 }
 
@@ -299,13 +305,13 @@ constexpr auto repeatedly([[maybe_unused]] Count count, [[maybe_unused]] Step&& 
     static_assert(concepts_detail::dependent_false<Step>,
                   "cljonic::repeatedly: this step cannot be used to build a Repeatedly. The step must be a callable -- "
                   "a function, a lambda, or a function object -- that takes no arguments, can be copied, and returns a "
-                  "value that can be stored without throwing. To repeat one value, use cljonic::repeat(value) or "
-                  "cljonic::repeat(count, value). The count must be a non-boolean, non-character integer "
+                  "value that can be stored without throwing. To repeat one value, use cljonic::core::repeat(value) or "
+                  "cljonic::core::repeat(count, value). The count must be a non-boolean, non-character integer "
                   "type whose nonnegative range fits std::size_t.");
     return {};
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 

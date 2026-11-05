@@ -2,7 +2,7 @@
 
 #include <cljonic-concepts.hpp>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Empty
  * The \b empty free function returns a new, empty collection of the same type as its argument. It works with `Vector`,
@@ -12,6 +12,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -44,4 +45,4 @@ constexpr auto empty([[maybe_unused]] const C& collection) noexcept -> void {
                   "cljonic::empty: expected a Vector, Map, Set, Queue, or String value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

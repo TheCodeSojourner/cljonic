@@ -2,7 +2,7 @@
 
 #include <cljonic-is-empty.hpp>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor NotEmpty
  * The \b not_empty free function returns an independent owning copy of a nonempty collection, or an empty value of the
@@ -15,6 +15,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    constexpr auto values = vector(10, 20);
@@ -47,4 +48,4 @@ constexpr auto not_empty([[maybe_unused]] const C& collection) noexcept -> void 
                   "cljonic::not_empty: expected a Vector, Map, Set, Queue, or String value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

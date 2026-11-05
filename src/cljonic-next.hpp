@@ -17,9 +17,9 @@
 #include <functional>
 #include <type_traits>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename C>
 concept NextSequenceableCollection =
@@ -206,7 +206,9 @@ struct NextResult<String<N>> {
     using type = String<next_tail_capacity(N)>;
 };
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor Next
  * The \b next free function returns the logical tail of a \ref Vector "Vector", \ref Map "Map", \ref Set "Set", \ref
@@ -263,6 +265,7 @@ struct NextResult<String<N>> {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -294,26 +297,26 @@ struct NextResult<String<N>> {
    static_assert(count(next(vector(10))) == 0);
 
    constexpr auto repeated_tail = next(repeat(3, 7));
-   constexpr auto repeated_tail_values = into(Vector<int, 2>{}, repeated_tail);
+   constexpr auto repeated_tail_values = into(vector<int, 2>(), repeated_tail);
    static_assert(count(repeated_tail) == 2);
    static_assert(repeated_tail_values(0) == 7 && repeated_tail_values(1) == 7);
    constexpr auto unbounded_tail = next(repeat(7));
-   static_assert(!fits_into(Vector<int, 2>{}, unbounded_tail));
+   static_assert(!fits_into(vector<int, 2>(), unbounded_tail));
    static_assert(count(unbounded_tail) == count(repeat(7)));
-   constexpr auto unbounded_tail_values = into(Vector<int, 2>{}, unbounded_tail);
+   constexpr auto unbounded_tail_values = into(vector<int, 2>(), unbounded_tail);
    static_assert(unbounded_tail_values(0) == 7 && unbounded_tail_values(1) == 7);
 
-   constexpr auto range_tail = next(Range{1, 8, 2});
-   constexpr auto range_tail_values = into(Vector<int, 3>{}, range_tail);
+   constexpr auto range_tail = next(range(1, 8, 2));
+   constexpr auto range_tail_values = into(vector<int, 3>(), range_tail);
    static_assert(count(range_tail) == 3);
    static_assert(range_tail_values(0) == 3 && range_tail_values(1) == 5 &&
                  range_tail_values(2) == 7);
-   constexpr auto unbounded_range_tail = next(Range{4, 9, 0});
-   static_assert(!fits_into(Vector<int, 2>{}, unbounded_range_tail));
-   static_assert(count(unbounded_range_tail) == count(Range{4, 9, 0}));
+   constexpr auto unbounded_range_tail = next(range(4, 9, 0));
+   static_assert(!fits_into(vector<int, 2>(), unbounded_range_tail));
+   static_assert(count(unbounded_range_tail) == count(range(4, 9, 0)));
 
    constexpr auto cycle_tail = next(cycle(vector(1, 2, 3)));
-   constexpr auto cycle_tail_values = into(Vector<int, 5>{}, cycle_tail);
+   constexpr auto cycle_tail_values = into(vector<int, 5>(), cycle_tail);
    static_assert(cycle_tail_values(0) == 2 && cycle_tail_values(1) == 3 &&
                  cycle_tail_values(2) == 1 && cycle_tail_values(3) == 2 &&
                  cycle_tail_values(4) == 3);
@@ -331,18 +334,18 @@ struct NextResult<String<N>> {
    const auto runtime_text_tail = next(runtime_text);
    const auto runtime_repeat_tail = next(repeat(3, 7));
    const auto runtime_repeat_tail_values =
-       into(Vector<int, 2>{}, runtime_repeat_tail);
+       into(vector<int, 2>(), runtime_repeat_tail);
    const auto runtime_unbounded_repeat_tail = next(repeat(7));
    const auto runtime_unbounded_repeat_tail_values =
-       into(Vector<int, 2>{}, runtime_unbounded_repeat_tail);
-   const auto runtime_range_tail = next(Range{5, -6, -2});
+       into(vector<int, 2>(), runtime_unbounded_repeat_tail);
+   const auto runtime_range_tail = next(range(5, -6, -2));
    const auto runtime_range_tail_values =
-       into(Vector<int, 2>{}, runtime_range_tail);
-   const auto runtime_unbounded_range_tail = next(Range{4, 9, 0});
+       into(vector<int, 2>(), runtime_range_tail);
+   const auto runtime_unbounded_range_tail = next(range(4, 9, 0));
    const auto runtime_cycle_tail = next(cycle(vector(1, 2, 3)));
    const auto runtime_cycle_tail_values =
-       into(Vector<int, 5>{}, runtime_cycle_tail);
-   const auto runtime_unbounded_cycle_tail = next(cycle(Range{4, 9, 0}));
+       into(vector<int, 5>(), runtime_cycle_tail);
+   const auto runtime_unbounded_cycle_tail = next(cycle(range(4, 9, 0)));
    auto callback_calls = 0;
    const auto callback_producer =
        repeatedly(2, [&callback_calls]() noexcept { return ++callback_calls; });
@@ -363,23 +366,23 @@ struct NextResult<String<N>> {
            runtime_text(1) == 'E' && count(runtime_repeat_tail) == 2 &&
            runtime_repeat_tail_values(0) == 7 &&
            runtime_repeat_tail_values(1) == 7 &&
-           fits_into(Vector<int, 2>{}, runtime_repeat_tail) &&
+           fits_into(vector<int, 2>(), runtime_repeat_tail) &&
            count(runtime_unbounded_repeat_tail) == count(repeat(7)) &&
-           !fits_into(Vector<int, 2>{}, runtime_unbounded_repeat_tail) &&
+           !fits_into(vector<int, 2>(), runtime_unbounded_repeat_tail) &&
            runtime_unbounded_repeat_tail_values(0) == 7 &&
            runtime_unbounded_repeat_tail_values(1) == 7 &&
            count(runtime_range_tail) == 5 && runtime_range_tail_values(0) == 3 &&
            runtime_range_tail_values(1) == 1 &&
-           count(runtime_unbounded_range_tail) == count(Range{4, 9, 0}) &&
-           !fits_into(Vector<int, 2>{}, runtime_unbounded_range_tail) &&
+           count(runtime_unbounded_range_tail) == count(range(4, 9, 0)) &&
+           !fits_into(vector<int, 2>(), runtime_unbounded_range_tail) &&
            runtime_cycle_tail_values(0) == 2 &&
            runtime_cycle_tail_values(1) == 3 &&
            runtime_cycle_tail_values(2) == 1 &&
            runtime_cycle_tail_values(3) == 2 &&
            runtime_cycle_tail_values(4) == 3 &&
-           !fits_into(Vector<int, 2>{}, runtime_cycle_tail) &&
-           count(runtime_unbounded_cycle_tail) == count(cycle(Range{4, 9, 0})) &&
-           !fits_into(Vector<int, 2>{}, runtime_unbounded_cycle_tail) &&
+           !fits_into(vector<int, 2>(), runtime_cycle_tail) &&
+           count(runtime_unbounded_cycle_tail) == count(cycle(range(4, 9, 0))) &&
+           !fits_into(vector<int, 2>(), runtime_unbounded_cycle_tail) &&
            callback_calls == 1 && count(callback_tail) == 1)
               ? 0
               : 1;
@@ -406,8 +409,12 @@ template <concepts_detail::NextSequenceableProducer P>
     return concepts_detail::next_producer_tail(producer);
 }
 
+} // namespace cljonic::core
+
+namespace cljonic::concepts_detail {
+
 template <concepts::CljonicCycle P>
-[[nodiscard]] constexpr auto concepts_detail::CycleNextAccess::tail(const P& producer) noexcept -> P {
+[[nodiscard]] constexpr auto CycleNextAccess::tail(const P& producer) noexcept -> P {
     if constexpr (CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE == 0U) {
         return producer;
     }
@@ -417,9 +424,13 @@ template <concepts::CljonicCycle P>
         if (producer.source_finiteness()) {
             return finite_tail(producer);
         }
-        return P{next(producer.source_), 0U};
+        return P{cljonic::core::next(producer.source_), 0U};
     }
 }
+
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 template <typename C>
     requires(!concepts_detail::NextSequenceableCollection<C> && !concepts_detail::NextSequenceableProducer<C>)
@@ -430,4 +441,4 @@ constexpr auto next([[maybe_unused]] const C& value) noexcept -> void {
         "DropWhile, or supported Cycle value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

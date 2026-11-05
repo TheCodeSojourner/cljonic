@@ -2,9 +2,9 @@
 
 #include <cljonic-concepts.hpp>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <concepts::CljonicSource Source>
 [[nodiscard]] constexpr auto materialization_source_is_finite(const Source& source) noexcept -> bool {
@@ -34,7 +34,9 @@ template <typename Dest, typename Source>
     return source.count() <= (Dest::capacity() - destination.count());
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor FitsInto
  * The \b fits_into free function checks whether every value from a cljonic collection or producer can be inserted into
@@ -57,6 +59,7 @@ template <typename Dest, typename Source>
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -123,4 +126,4 @@ template <typename Dest, typename Source>
     return false;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

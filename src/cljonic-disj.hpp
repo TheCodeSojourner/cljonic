@@ -4,15 +4,17 @@
 #include <type_traits>
 #include <utility>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename C, typename... Values>
 concept DisjAdmissible = concepts::CljonicSet<C> && requires { typename C::value_type; } &&
                          (concepts::SafeImplicitConversion<typename C::value_type, Values> && ...);
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor Disj
  * The \b disj free function removes zero or more elements from a \ref Set "Set". Values are removed from left to
@@ -26,6 +28,7 @@ concept DisjAdmissible = concepts::CljonicSet<C> && requires { typename C::value
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -70,4 +73,4 @@ template <typename C, typename... Values>
     }
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

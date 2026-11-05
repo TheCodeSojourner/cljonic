@@ -2,9 +2,9 @@
 
 #include <cljonic-concepts.hpp>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename C, typename V>
 concept CanConjValueAdmissible = concepts::ConjableCollection<C> && requires(const C& collection, const V& value) {
@@ -28,7 +28,9 @@ constexpr auto can_conj_values_in_order(C& collection, const V& value, const Res
     return can_conj_values_in_order(collection, rest...);
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor CanConj
  * The \b can_conj free function checks whether \ref Conj "conj" can add one or more values to a \ref
@@ -55,6 +57,7 @@ constexpr auto can_conj_values_in_order(C& collection, const V& value, const Res
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -150,4 +153,4 @@ template <typename C, typename V1, typename V2, typename... Rest>
     return false;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

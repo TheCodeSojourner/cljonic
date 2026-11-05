@@ -45,6 +45,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  using AccountId = int;
  using AccountSet = Set<AccountId, 4>;
@@ -55,9 +56,9 @@ namespace cljonic {
    static_assert(factory_set(2) == 2);
 
    // A named set type makes the element and capacity contract explicit. A
-   // duplicate value is a no-op. Constant-evaluated duplicate construction is
+   // duplicate value is a no-op. Constant-evaluated duplicate creation is
    // rejected at compile time.
-   constexpr auto literal = AccountSet{1, 2, 3};
+   constexpr auto literal = hash_set<AccountId, 4>(1, 2, 3);
    static_assert(literal(2) == 2);
    static_assert(literal(99) == 0);
    static_assert(literal(99, -1) == -1);
@@ -385,6 +386,7 @@ concept HashSetFactoryCapacityArguments =
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  using AccountId = int;
  using AccountSet = Set<AccountId, 4>;
@@ -424,6 +426,10 @@ concept HashSetFactoryCapacityArguments =
  }
  ~~~~~
  */
+} // namespace cljonic
+
+namespace cljonic::core {
+
 template <typename RequestedElementType = concepts_detail::DeducedHashSetElementType, typename... Args>
     requires(concepts_detail::HashSetFactoryArguments<RequestedElementType, Args...> && sizeof...(Args) > 0U)
 [[nodiscard]] constexpr auto hash_set(Args&&... args) noexcept(
@@ -538,7 +544,7 @@ constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
                   "element type without throwing.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 

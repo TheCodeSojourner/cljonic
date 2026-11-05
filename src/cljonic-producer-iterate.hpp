@@ -46,6 +46,7 @@ concept IterateClassArgument = (concepts::NothrowCollectionElement<T> && concept
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  constexpr auto add_two(int value) noexcept -> int { return value + 2; }
 
@@ -193,6 +194,10 @@ template <typename T, typename Step>
 Iterate(const T&, const Step&)
     -> Iterate<concepts_detail::IterateDomainViolation, concepts_detail::IterateDomainViolation>;
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 template <typename Step, typename T>
     requires concepts::NothrowCollectionElement<std::remove_cvref_t<T>> &&
              concepts::IterateStep<std::remove_cvref_t<T>, std::decay_t<Step>>
@@ -217,7 +222,7 @@ constexpr auto iterate([[maybe_unused]] Step&& step, [[maybe_unused]] T&& initia
     return {};
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 

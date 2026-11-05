@@ -2,7 +2,7 @@
 
 #include <cljonic-count.hpp>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor IsEmpty
  * The \b is_empty free function returns true exactly when \ref Count "count" is zero for a collection or producer. It
@@ -15,13 +15,14 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    constexpr auto empty_values = vector<int, 2>();
    constexpr auto values = vector(1, 2);
    constexpr auto text = string("Hi");
-   constexpr auto empty_range = Range{2, 2};
-   constexpr auto unbounded_repeat = Repeat{7};
+   constexpr auto empty_range = range(2, 2);
+   constexpr auto unbounded_repeat = repeat(7);
    static_assert(is_empty(empty_values));
    static_assert(!is_empty(values));
    static_assert(!is_empty(text));
@@ -31,10 +32,10 @@ namespace cljonic {
    const auto value = 3;
    const auto runtime_values = vector(value);
    const auto original_values = runtime_values;
-   const auto runtime_empty_range = Range{value, value};
-   const auto runtime_range = Range{0, value};
+   const auto runtime_empty_range = range(value, value);
+   const auto runtime_range = range(0, value);
    const auto original_range = runtime_range;
-   const auto runtime_repeat = Repeat{value};
+   const auto runtime_repeat = repeat(value);
    const auto runtime_text = string("Hi");
 
    const auto results_match =
@@ -59,4 +60,4 @@ constexpr auto is_empty([[maybe_unused]] const C& collection) noexcept -> void {
     static_assert(concepts_detail::dependent_false<C>, "cljonic::is_empty: value must be a collection or producer.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

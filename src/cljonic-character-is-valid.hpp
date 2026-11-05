@@ -8,9 +8,9 @@
 
 #include <cljonic-collection-string.hpp>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename T>
 concept CharacterValidityInput =
@@ -44,7 +44,9 @@ template <typename T>
     }
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor CharacterIsValid
  * The \b character_is_valid free function checks whether a value converts to a valid \ref String "String" character.
@@ -59,6 +61,7 @@ template <typename T>
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    static_assert(character_is_valid('A'));
@@ -101,4 +104,4 @@ template <typename T>
     return false;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

@@ -2,7 +2,7 @@
 
 #include <cljonic-concepts.hpp>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor CanAssoc
  * The \b can_assoc free function checks whether one or more key-value pairs can be applied with \ref Assoc "assoc" to
@@ -23,6 +23,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -47,7 +48,9 @@ template <typename C, typename K, typename V>
     return collection.can_assoc(key, value);
 }
 
-namespace concepts_detail {
+} // namespace cljonic::core
+
+namespace cljonic::concepts_detail {
 
 // Test key and value admission separately so each rejected operand gets a
 // focused diagnostic.
@@ -92,7 +95,9 @@ constexpr auto can_assoc_pairs_in_order(C& collection, const K& key, const V& va
     return can_assoc_pairs_in_order(collection, rest...);
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 template <typename C, typename K1, typename V1, typename K2, typename V2, typename... Rest>
     requires concepts::AssociativeCollection<C> && (sizeof...(Rest) % 2 == 0) &&
@@ -173,4 +178,4 @@ template <typename C, typename... Arguments>
     return false;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

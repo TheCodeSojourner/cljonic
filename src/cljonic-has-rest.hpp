@@ -2,7 +2,7 @@
 
 #include <cljonic-has-next.hpp>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor HasRest
  * The \b has_rest free function is an exact forwarding alias for \ref HasNext "has_next". It accepts exactly the same
@@ -12,12 +12,12 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    constexpr auto vector_values = vector(10, 20);
-   constexpr auto map_values =
-       Map<int, int, 2>{MapEntry{1, 10}, MapEntry{2, 20}};
-   constexpr auto set_values = Set<int, 2>{10, 20};
+   constexpr auto map_values = hash_map(1, 10, 2, 20);
+   constexpr auto set_values = hash_set(10, 20);
    constexpr auto queue_values = queue(10, 20);
    constexpr auto string_values = string("AB");
    static_assert(has_rest(vector_values) == has_next(vector_values));
@@ -25,7 +25,7 @@ namespace cljonic {
    static_assert(has_rest(set_values) == has_next(set_values));
    static_assert(has_rest(queue_values) == has_next(queue_values));
    static_assert(has_rest(string_values) == has_next(string_values));
-   static_assert(has_rest(Range{0, 3}) == has_next(Range{0, 3}));
+   static_assert(has_rest(range(0, 3)) == has_next(range(0, 3)));
    static_assert(has_rest(repeat(2, 7)) == has_next(repeat(2, 7)));
 
    const auto runtime_values = vector<int, 4>(40, 50);
@@ -46,4 +46,4 @@ constexpr auto has_rest([[maybe_unused]] const C& value) noexcept -> void {
                   "TakeWhile, DropWhile, or supported Cycle value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

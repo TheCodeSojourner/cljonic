@@ -10,9 +10,9 @@
 #include <cljonic-concepts.hpp>
 #include <cljonic-core-collection-maximum-element-count.hpp>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename Source>
 using ReduceElement = std::ranges::range_value_t<const Source>;
@@ -134,7 +134,9 @@ template <typename F, typename Iterator, typename Accumulator>
     return accumulator;
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor ReduceFunction
  * The \b reduce free function folds a cljonic source into a single value. Two forms are available: `reduce(f, source)`
@@ -170,6 +172,7 @@ template <typename F, typename Iterator, typename Accumulator>
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  struct Summary {
    int items{};
@@ -206,7 +209,7 @@ template <typename F, typename Iterator, typename Accumulator>
    static_assert(reduce(count_positive, 0, vector(10L, 20L)) == 2);
 
    // Producers are folded over their observable elements.
-   static_assert(reduce(add, Range{1, 4, 1}) == 6); // produces 1, 2, 3
+   static_assert(reduce(add, range(1, 4, 1)) == 6); // produces 1, 2, 3
 
    // Map and Set traversal order is not semantically significant.
    constexpr auto s = hash_set(1, 2, 3);
@@ -283,4 +286,4 @@ constexpr auto reduce([[maybe_unused]] const F& function, [[maybe_unused]] const
         "Standard-library ranges and containers are not supported.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

@@ -3,7 +3,7 @@
 #include <cljonic-count.hpp>
 #include <cljonic-next.hpp>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor HasNext
  * The \b has_next free function checks whether a \ref Next "next" call has a nonempty observable result.
@@ -19,6 +19,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -70,4 +71,4 @@ constexpr auto has_next([[maybe_unused]] const C& value) noexcept -> void {
                   "TakeWhile, DropWhile, or supported Cycle value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

@@ -234,7 +234,7 @@ template <typename Lhs, typename Rhs>
 
 } // namespace cljonic::equal_match_detail
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Equal
  * The \b equal free function compares one or more values for equality.
@@ -286,6 +286,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  struct Point {
    int x;
@@ -298,9 +299,9 @@ namespace cljonic {
  int main() {
    // Compile-time demonstration.
    constexpr auto v = vector(1, 2, 3);
-   constexpr auto r = Range{1, 4, 1}; // produces 1, 2, 3
+   constexpr auto r = range(1, 4, 1); // produces 1, 2, 3
    constexpr auto q = queue(1, 2, 3);
-   constexpr auto rep = Repeat{3, 1};
+   constexpr auto rep = repeat(3, 1);
    constexpr auto m1 = hash_map(1, 10, 2, 20);
    constexpr auto m2 = hash_map(2, 20, 1, 10);
    constexpr auto s1 = hash_set(3, 1, 2);
@@ -324,18 +325,18 @@ namespace cljonic {
    static_assert(equal(m1, m2));     // Map equality ignores entry order
    static_assert(equal(s1, s2));     // Set equality ignores element order
    static_assert(equal(str1, str2)); // String equality compares content
-   static_assert(equal(Repeat<int>{}, Repeat<int>{})); // bounded prefix
+   static_assert(equal(repeat<int>(0, 0), repeat<int>(0, 0))); // bounded prefix
 
    // Variant equality is alternative-strict
-   constexpr auto var_int = Variant<int, long>{1};
+   constexpr auto var_int = variant<int, long>(1);
    static_assert(
-       equal(var_int, Variant<int, long>{1})); // same alternative and value
+       equal(var_int, variant<int, long>(1))); // same alternative and value
    static_assert(
-       !equal(var_int, Variant<int, long>{1L})); // different alternative
+       !equal(var_int, variant<int, long>(1L))); // different alternative
 
    // Runtime demonstration.
    auto runtime_v = vector(1, 2, 3);
-   auto runtime_r = Range{1, 4, 1};
+   auto runtime_r = range(1, 4, 1);
    return equal(runtime_v, runtime_r) ? 0 : 1;
  }
  ~~~~~
@@ -436,4 +437,4 @@ template <typename Lhs, typename Rhs, typename... Rest>
     return false;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

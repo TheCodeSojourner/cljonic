@@ -10,9 +10,9 @@
 #include <cljonic-concepts.hpp>
 #include <cljonic-core-collection-maximum-element-count.hpp>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename Params, typename Source>
 struct FilterParametersSafe : std::false_type {};
@@ -68,7 +68,9 @@ constexpr void filter_append_if_matching(const F& predicate, const Element& elem
     }
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor FilterFunction
  * The \b filter free function copies matching elements from one cljonic source into a bounded owning \ref Vector
@@ -90,6 +92,7 @@ constexpr void filter_append_if_matching(const F& predicate, const Element& elem
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 using namespace cljonic;
+using namespace cljonic::core;
 
 int main() {
   constexpr auto is_even = [](int value) noexcept { return value % 2 == 0; };
@@ -104,7 +107,7 @@ int main() {
   static_assert(equal(filter(is_even, queue(1, 2, 3)), vector(2)));
   static_assert(count(filter([](char value) noexcept { return value == 'b'; },
                              string<4>("abc"))) == 1);
-  static_assert(equal(filter(is_even, Range<int>{1, 5, 1}), vector(2, 4)));
+  static_assert(equal(filter(is_even, range(1, 5, 1)), vector(2, 4)));
   static_assert(count(filter(is_even, repeat(3, 2))) == 3);
   static_assert(count(filter([](int) noexcept { return true; },
                              cycle(vector(1, 2)))) > 0);
@@ -177,6 +180,7 @@ constexpr auto filter([[maybe_unused]] const F& predicate, [[maybe_unused]] cons
 
 #include "cljonic.hpp"
 using namespace cljonic;
+using namespace cljonic::core;
 
 int main() {
   constexpr auto is_even = [](int value) noexcept { return value % 2 == 0; };
@@ -224,4 +228,4 @@ constexpr auto filterv([[maybe_unused]] const F& predicate, [[maybe_unused]] con
                   "implicit conversion; standard-library ranges and containers are not supported.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

@@ -4,9 +4,9 @@
 #include <type_traits>
 #include <utility>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename C, typename K>
 concept GetKeyAdmissible =
@@ -42,7 +42,9 @@ constexpr auto diagnose_get_fallback() noexcept -> void {
     }
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor Get
  * The \b get free function looks up a value in a \ref Map "Map", \ref Set "Set", \ref Vector "Vector", or \ref String
@@ -60,6 +62,7 @@ constexpr auto diagnose_get_fallback() noexcept -> void {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -105,4 +108,4 @@ constexpr auto get([[maybe_unused]] const C& collection, [[maybe_unused]] const 
     concepts_detail::diagnose_get_fallback<C, K, R>();
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

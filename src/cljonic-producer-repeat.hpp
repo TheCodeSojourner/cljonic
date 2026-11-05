@@ -43,6 +43,7 @@ concept RepeatClassArgument =
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  struct Pixel {
    int x{};
@@ -231,6 +232,7 @@ Repeat(Count, const T&) -> Repeat<concepts_detail::RepeatElementDomainViolation>
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 using namespace cljonic;
+using namespace cljonic::core;
 int main() {
   constexpr auto finite = repeat(3, 7);
   constexpr auto unbounded = repeat(7);
@@ -243,6 +245,10 @@ int main() {
 }
 ~~~~~
  */
+} // namespace cljonic
+
+namespace cljonic::core {
+
 template <typename T>
     requires concepts::NothrowCollectionElement<std::remove_cvref_t<T>>
 [[nodiscard]] constexpr auto repeat(T&& value) noexcept -> Repeat<std::remove_cvref_t<T>> {
@@ -278,7 +284,7 @@ constexpr auto repeat([[maybe_unused]] Count count, [[maybe_unused]] T&& value) 
     return {};
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 

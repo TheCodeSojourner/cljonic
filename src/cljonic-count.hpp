@@ -3,7 +3,7 @@
 #include <cljonic-concepts.hpp>
 #include <cstddef>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Count
  * The \b count free function returns the number of elements in a \ref concepts::SequenceableCollection "collection" or
@@ -16,25 +16,26 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
    constexpr auto v_const = vector(1, 2, 3);
    constexpr auto m_const = hash_map(1, 100);
    constexpr auto q_const = queue(9);
-   constexpr auto r_const = Range{0, 5};
-   constexpr auto finite_repeat = Repeat{3, 7};
-   constexpr auto unbounded_repeat = Repeat{7};
-   constexpr auto unbounded_range = Range{0, 0, 0};
+   constexpr auto r_const = range(0, 5);
+   constexpr auto finite_repeat = repeat(3, 7);
+   constexpr auto unbounded_repeat = repeat(7);
+   constexpr auto unbounded_range = range(0, 0, 0);
    static_assert(count(v_const) == 3);
    static_assert(count(m_const) == 1);
    static_assert(count(q_const) == 1);
    static_assert(count(r_const) == 5);
    static_assert(count(finite_repeat) == 3);
    static_assert(count(unbounded_repeat) ==
-                 CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
+                 cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
    static_assert(count(unbounded_range) ==
-                 CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
+                 cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
 
    // Runtime demonstration.
    auto v_runtime = vector(10, 20);
@@ -59,4 +60,4 @@ template <typename C>
     return 0U;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

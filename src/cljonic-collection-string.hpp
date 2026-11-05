@@ -35,6 +35,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // The factory infers the capacity from the string literal: capacity counts
@@ -426,6 +427,10 @@ concept StringFactoryDeducedArguments = sizeof...(Args) == 1 && (string_factory_
 
 } // namespace concepts_detail
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 template <typename Literal>
     requires(concepts_detail::string_factory_literal_v<Literal> &&
              !concepts_detail::string_factory_literal_exceeds_maximum_v<std::remove_cvref_t<Literal>>)
@@ -454,6 +459,7 @@ template <std::size_t Capacity>
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // The factory deduces the capacity from the literal's content length.
@@ -523,7 +529,7 @@ constexpr auto string([[maybe_unused]] Args&&... args) noexcept -> void {
     }
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 

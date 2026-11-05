@@ -2,7 +2,7 @@
 
 #include <cljonic-next.hpp>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Rest
  * The \b rest free function is an alias for \ref Next "next" over the same supported input domain. It returns exactly
@@ -22,6 +22,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -38,16 +39,16 @@ namespace cljonic {
 
    constexpr auto repeated_remainder = rest(repeat(3, 7));
    static_assert(count(repeated_remainder) == 2);
-   constexpr auto range_remainder = rest(Range{0, 3});
-   constexpr auto range_values = into(Vector<int, 2>{}, range_remainder);
+   constexpr auto range_remainder = rest(range(0, 3));
+   constexpr auto range_values = into(vector<int, 2>(), range_remainder);
    static_assert(range_values(0) == 1 && range_values(1) == 2);
    constexpr auto cycle_remainder = rest(cycle(vector(10, 20, 30)));
-   constexpr auto cycle_values = into(Vector<int, 3>{}, cycle_remainder);
+   constexpr auto cycle_values = into(vector<int, 3>(), cycle_remainder);
    static_assert(cycle_values(0) == 20 && cycle_values(1) == 30 &&
                  cycle_values(2) == 10);
    constexpr auto iterate_remainder =
        rest(iterate([](int value) noexcept { return value + 1; }, 1));
-   constexpr auto iterate_values = into(Vector<int, 1>{}, iterate_remainder);
+   constexpr auto iterate_values = into(vector<int, 1>(), iterate_remainder);
    static_assert(iterate_values(0) == 2);
    constexpr auto repeatedly_remainder =
        rest(repeatedly(3, []() noexcept { return 7; }));
@@ -81,4 +82,4 @@ constexpr auto rest([[maybe_unused]] const C& value) noexcept -> void {
                   "TakeWhile, DropWhile, or supported Cycle value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

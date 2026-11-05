@@ -2,16 +2,18 @@
 
 #include <cljonic-concepts.hpp>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename C, typename T>
 concept ConjValueAdmissible = concepts::ConjableCollection<C> && requires(const C& collection, const T& value) {
     { collection.conj(value) } noexcept -> std::same_as<C>;
 };
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor Conj
  * The \b conj free function returns a \ref concepts::CljonicCollection "collection" with the supplied values added.
@@ -39,6 +41,7 @@ concept ConjValueAdmissible = concepts::ConjableCollection<C> && requires(const 
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -83,7 +86,9 @@ template <typename C>
     return collection;
 }
 
-namespace concepts_detail {
+} // namespace cljonic::core
+
+namespace cljonic::concepts_detail {
 
 // Every value in the argument list is admissible for the collection. The
 // recursion consumes one value per step; an empty tail is admissible.
@@ -112,7 +117,9 @@ constexpr void fold_conj_values_into(C& result, const T& value, const Rest&... r
     fold_conj_values_into(result, rest...);
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** Variadic `conj`: adds two or more values left to right, as if they were added one at a time. Each value must be one
  *  the collection can hold; a value that does not fit because the collection is full is skipped, and the remaining
@@ -174,4 +181,4 @@ template <typename C, typename T1, typename T2, typename... Rest>
     return collection;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

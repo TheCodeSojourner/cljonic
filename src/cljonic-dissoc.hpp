@@ -3,9 +3,9 @@
 #include <cljonic-concepts.hpp>
 #include <type_traits>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename C, typename K>
 concept DissocKeyAdmissible = concepts::CljonicMap<C> && requires(const C& collection, const K& key) {
@@ -35,7 +35,9 @@ constexpr void fold_dissoc_keys_into(C& result, const K& key, const Rest&... res
     fold_dissoc_keys_into(result, rest...);
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor Dissoc
  * The \b dissoc free function removes zero or more keys from a \ref Map "Map". The source map is never modified.
@@ -50,6 +52,7 @@ constexpr void fold_dissoc_keys_into(C& result, const K& key, const Rest&... res
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -145,4 +148,4 @@ template <typename C, typename K1, typename K2, typename... Rest>
     return C{};
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

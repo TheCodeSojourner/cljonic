@@ -8,7 +8,7 @@
 #include <cljonic-concepts.hpp>
 #include <cljonic-core-collection-maximum-element-count.hpp>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Take
  * The \b take free function returns the first requested elements of one cljonic source as a bounded owning \ref Vector
@@ -32,6 +32,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    constexpr auto values = vector(1, 2, 3, 4);
@@ -95,4 +96,4 @@ constexpr auto take([[maybe_unused]] const Args&... args) noexcept -> void {
                   "collection, or a Range, Repeat, Cycle, Iterate, or Repeatedly producer.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

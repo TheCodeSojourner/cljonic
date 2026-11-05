@@ -92,6 +92,7 @@ concept VariantClassArgument =
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Like other C++ types, a Variant type can be named with an ordinary alias.
@@ -99,26 +100,23 @@ concept VariantClassArgument =
 
    // Default construction holds the first alternative at its default value; the
    // first alternative here is int, whose default value is 0.
-   [[maybe_unused]] constexpr MyVariant defaulted{};
-   [[maybe_unused]] constexpr auto defaulted_by_factory = variant<int, long>();
+   [[maybe_unused]] constexpr auto defaulted = variant<int, long>();
 
-   // A converting construction selects the alternative matching the argument's
-   // decayed type; an argument matching no alternative is rejected at compile
-   // time.
-   [[maybe_unused]] constexpr MyVariant as_int{1};
-   [[maybe_unused]] constexpr MyVariant as_long{1L};
-   [[maybe_unused]] constexpr auto as_long_by_factory = variant<int, long>(1L);
+   // The factory selects the alternative matching the argument's decayed type;
+   // an argument matching no alternative is rejected at compile time.
+   [[maybe_unused]] constexpr auto as_int = variant<int, long>(1);
+   [[maybe_unused]] constexpr auto as_long = variant<int, long>(1L);
 
    // Copy construction preserves the active alternative and its value.
    [[maybe_unused]] constexpr auto copied = as_int;
 
    // A Variant nests inside another Variant and is storable as a collection
    // element or a map key.
-   [[maybe_unused]] constexpr auto nested =
-       Variant<Variant<int, long>, char>{as_int};
+   [[maybe_unused]] constexpr auto nested = variant<MyVariant, char>(as_int);
    [[maybe_unused]] constexpr auto as_vector_element =
-       vector(MyVariant{1}, MyVariant{2L});
-   [[maybe_unused]] constexpr auto as_set_element = hash_set(MyVariant{1});
+       vector(variant<int, long>(1), variant<int, long>(2L));
+   [[maybe_unused]] constexpr auto as_set_element =
+       hash_set(variant<int, long>(1));
    [[maybe_unused]] constexpr auto as_map_key = map_entry(as_int, 1);
 
    return 0;
@@ -187,6 +185,10 @@ class Variant {
     std::variant<Alternatives...> storage_{};
 };
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 /** \anchor VariantFactory
  * Constructs a \ref Variant with its alternative types specified explicitly. The value form uses the same
  * exact-alternative selection rule as direct construction; it does not infer or expand the alternative list.
@@ -201,6 +203,10 @@ template <typename... Alternatives, typename T>
 [[nodiscard]] constexpr auto variant(const T& value) noexcept -> Variant<Alternatives...> {
     return Variant<Alternatives...>{value};
 }
+
+} // namespace cljonic::core
+
+namespace cljonic {
 
 /** Diagnostic specialization (REQ-DIAG-012): selected by the redirecting
  *  deduction guide below. A `Variant`'s alternatives are never deducible from

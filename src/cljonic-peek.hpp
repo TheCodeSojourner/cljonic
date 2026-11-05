@@ -3,7 +3,7 @@
 #include <cljonic-concepts.hpp>
 #include <utility>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Peek
  * The \b peek free function returns the last logical element of a \ref Vector "Vector" or the front element of a \ref
@@ -15,6 +15,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -60,4 +61,4 @@ constexpr auto peek([[maybe_unused]] const C& collection) noexcept -> void {
     static_assert(concepts_detail::dependent_false<C>, "cljonic::peek: the first argument must be a Vector or Queue.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

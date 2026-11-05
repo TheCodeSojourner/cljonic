@@ -34,6 +34,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // The factory infers Queue<int, 3> from the argument count.
@@ -324,6 +325,10 @@ concept QueueFactoryCapacityArguments =
 
 } // namespace concepts_detail
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 /** Creates a bounded Queue from its arguments, or a typed empty zero-capacity Queue when called as \c queue<T>(). */
 template <typename RequestedElementType = concepts_detail::DeducedQueueElementType, typename... Args>
     requires concepts_detail::QueueFactoryArguments<RequestedElementType, Args...>
@@ -366,6 +371,7 @@ constexpr auto queue([[maybe_unused]] Args&&... args) noexcept -> void {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Deduced calls infer the element type from the first argument and the
@@ -374,7 +380,7 @@ constexpr auto queue([[maybe_unused]] Args&&... args) noexcept -> void {
    static_assert(fifo.capacity() == 3);
    static_assert(fifo.peek() == 1);
    static_assert(fifo.pop().peek() == 2);
-   static_assert(fifo.pop().pop().pop() == Queue<int, 3>{});
+   static_assert(fifo.pop().pop().pop() == queue<int, 3>());
 
    // Explicit element type and explicit capacity create a queue with room for
    // later conj operations, including an empty zero-capacity queue.
@@ -420,7 +426,7 @@ constexpr auto queue([[maybe_unused]] Args&&... args) noexcept -> void {
     }
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 

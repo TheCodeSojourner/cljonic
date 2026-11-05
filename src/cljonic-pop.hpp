@@ -3,7 +3,7 @@
 #include <cljonic-concepts.hpp>
 #include <utility>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Pop
  * The \b pop free function yields an updated \ref concepts::CljonicCollection "collection" with the accessible element
@@ -16,6 +16,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    constexpr auto values = vector(1, 2);
@@ -63,4 +64,4 @@ constexpr auto pop([[maybe_unused]] const C& collection) noexcept -> void {
                   "other collection types are not supported.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

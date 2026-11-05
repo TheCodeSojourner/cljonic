@@ -47,6 +47,7 @@ concept RangeClassArgument =
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
  int main() {
    // Default: start 0, end 0, step 1 (empty). CTAD cannot deduce from zero
    // arguments.
@@ -337,6 +338,7 @@ concept RangeFactoryArguments =
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 using namespace cljonic;
+using namespace cljonic::core;
 int main() {
   constexpr auto empty = range<int>();
   constexpr auto ascending = range(5);
@@ -353,6 +355,10 @@ int main() {
 }
 ~~~~~
  */
+} // namespace cljonic
+
+namespace cljonic::core {
+
 template <typename RequestedElementType = concepts_detail::DeducedRangeElementType, typename... Args>
     requires concepts_detail::RangeFactoryArguments<RequestedElementType, Args...>
 [[nodiscard]] constexpr auto range(Args&&... args) noexcept
@@ -371,7 +377,7 @@ constexpr auto range([[maybe_unused]] Args&&... args) noexcept -> void {
                   "without loss of range or precision.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 

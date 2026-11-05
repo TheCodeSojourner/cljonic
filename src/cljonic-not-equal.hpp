@@ -2,7 +2,7 @@
 
 #include <cljonic-equal.hpp>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor NotEqual
  * The \b not_equal free function compares one or more values for inequality.
@@ -16,11 +16,12 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
    constexpr auto v = vector(1, 2, 3);
-   constexpr auto r = Range{1, 4, 1}; // produces 1, 2, 3
+   constexpr auto r = range(1, 4, 1); // produces 1, 2, 3
    constexpr auto q = queue(1, 2, 3);
    constexpr auto m1 = hash_map(1, 10);
    constexpr auto m2 = hash_map(2, 20);
@@ -38,18 +39,18 @@ namespace cljonic {
    static_assert(!not_equal(s1, s2)); // same elements
 
    // Variant inequality follows alternative-strict equality
-   constexpr auto var_int = Variant<int, long>{1};
+   constexpr auto var_int = variant<int, long>(1);
    static_assert(
-       not_equal(var_int, Variant<int, long>{1L})); // different alternative
+       not_equal(var_int, variant<int, long>(1L))); // different alternative
    static_assert(
-       !not_equal(var_int, Variant<int, long>{1})); // same alternative and value
+       !not_equal(var_int, variant<int, long>(1))); // same alternative and value
 
    // Runtime demonstration.
    const auto runtime_first = 1;
    const auto runtime_v =
        vector(runtime_first, runtime_first + 1, runtime_first + 2);
    const auto runtime_r =
-       Range{runtime_first, runtime_first + 2, 1}; // produces 1, 2
+       range(runtime_first, runtime_first + 2, 1); // produces 1, 2
    return not_equal(runtime_v, runtime_r) ? 0 : 1;
  }
  ~~~~~
@@ -115,4 +116,4 @@ template <typename Lhs, typename Rhs, typename... Rest>
     return false;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

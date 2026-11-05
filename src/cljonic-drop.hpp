@@ -7,9 +7,9 @@
 #include <cljonic-collection-vector.hpp>
 #include <cljonic-concepts.hpp>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename Source, typename Result>
 constexpr auto copy_drop_suffix(const Source& source, std::size_t observed_count, Result& result,
@@ -27,7 +27,9 @@ constexpr auto copy_drop_suffix(const Source& source, std::size_t observed_count
     }
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor Drop
  * The \b drop free function removes a requested prefix from one cljonic source and returns the remaining observable
@@ -56,6 +58,7 @@ constexpr auto copy_drop_suffix(const Source& source, std::size_t observed_count
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    constexpr auto values = vector(1, 2, 3, 4);
@@ -111,4 +114,4 @@ constexpr auto drop([[maybe_unused]] const Args&... args) noexcept -> void {
                   "collection, or a Range, Repeat, Cycle, Iterate, or Repeatedly producer.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

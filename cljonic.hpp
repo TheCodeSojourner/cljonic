@@ -72,11 +72,11 @@
  *
  * ## Aliases
  *
- * Namespace                      | C++ "using" Statement
+ * Namespace                      | C++ Namespace Alias
  * ------------------------------ | ---------------------------------------------
- * \ref Namespace_Core "Core"     | using **core** = cljonic::core;
- * \ref Namespace_Set "Set"       | using **set** = cljonic::set;
- * \ref Namespace_String "String" | using **string** = cljonic::string;
+ * \ref Namespace_Core "Core"               | namespace **core** = cljonic::core;
+ * \ref Namespace_Set "Set library"          | namespace **st** = cljonic::lib_set;
+ * \ref Namespace_String "String library"    | namespace **s** = cljonic::lib_string;
  *
  * ## Collection Types
  *
@@ -102,9 +102,10 @@
  *
  * ## Core Functions
  *
- * Entries linked to documentation have implemented documentation. Plain names are inventory entries only; their
- * presence does not establish that they are implemented or supported. The requirements define each entry's lifecycle,
- * and only \c requirements-backed entries define supported behavior. \c comp is explicitly deferred and non-binding.
+ * Every Core function is declared in \c cljonic::core. Entries linked to documentation have implemented documentation.
+ * Plain names are inventory entries only; their presence does not establish that they are implemented or supported.
+ * The requirements define each entry's lifecycle, and only \c requirements-backed entries define supported behavior.
+ * \c comp is explicitly deferred and non-binding.
  *
  * - add, apply, \ref Assoc "assoc", assoc_in
  * - bit_and, bit_and_not, bit_clear, bit_flip, bit_not, bit_or, bit_set, bit_shift_left, bit_shift_right, bit_test,
@@ -147,15 +148,14 @@
  * Plain names are inventory entries only; their presence does not establish that they are implemented or supported.
  * The requirements define each entry's lifecycle, and only \c requirements-backed entries define supported behavior.
  *
- * - difference
  * - fits_join, fits_set_algebra
- * - index, intersection, is_subset, is_superset
+ * - index, is_subset, is_superset
  * - join
  * - map_invert
  * - project
  * - rename, rename_keys
  * - select
- * - union
+ * - set_difference, set_intersection, set_union
  *
  * ## String Functions
  *
@@ -968,7 +968,7 @@ concept ValidCycleSource =
 // End cljonic-concepts.hpp
 #include <type_traits>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Assoc
  * The \b assoc free function associates a value with a key in a \ref Map "Map", or with an index in an indexed
@@ -990,6 +990,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -1022,7 +1023,9 @@ template <typename C, typename K, typename V>
     return collection.assoc(key, value);
 }
 
-namespace concepts_detail {
+} // namespace cljonic::core
+
+namespace cljonic::concepts_detail {
 
 // A single (key, value) pair is admissible for the variadic form when the
 // collection admits it under its own key/value domain (identical to the
@@ -1064,7 +1067,9 @@ constexpr void fold_assoc_pairs_into(C& result, const K& key, const V& value, co
     fold_assoc_pairs_into(result, rest...);
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** Variadic `assoc`: applies two or more key-value pairs left to right. Each pair is admitted (or rejected at compile
  *  time) under the same collection-specific key/value domain as the single-pair form; a pair that cannot be applied
@@ -1129,13 +1134,13 @@ template <typename C, typename K1, typename V1, typename K2, typename V2, typena
     return C{};
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-assoc.hpp
 // Begin cljonic-can-assoc.hpp
 #pragma once
 
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor CanAssoc
  * The \b can_assoc free function checks whether one or more key-value pairs can be applied with \ref Assoc "assoc" to
@@ -1156,6 +1161,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -1180,7 +1186,9 @@ template <typename C, typename K, typename V>
     return collection.can_assoc(key, value);
 }
 
-namespace concepts_detail {
+} // namespace cljonic::core
+
+namespace cljonic::concepts_detail {
 
 // Test key and value admission separately so each rejected operand gets a
 // focused diagnostic.
@@ -1225,7 +1233,9 @@ constexpr auto can_assoc_pairs_in_order(C& collection, const K& key, const V& va
     return can_assoc_pairs_in_order(collection, rest...);
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 template <typename C, typename K1, typename V1, typename K2, typename V2, typename... Rest>
     requires concepts::AssociativeCollection<C> && (sizeof...(Rest) % 2 == 0) &&
@@ -1306,15 +1316,15 @@ template <typename C, typename... Arguments>
     return false;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-can-assoc.hpp
 // Begin cljonic-can-conj.hpp
 #pragma once
 
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename C, typename V>
 concept CanConjValueAdmissible = concepts::ConjableCollection<C> && requires(const C& collection, const V& value) {
@@ -1338,7 +1348,9 @@ constexpr auto can_conj_values_in_order(C& collection, const V& value, const Res
     return can_conj_values_in_order(collection, rest...);
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor CanConj
  * The \b can_conj free function checks whether \ref Conj "conj" can add one or more values to a \ref
@@ -1365,6 +1377,7 @@ constexpr auto can_conj_values_in_order(C& collection, const V& value, const Res
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -1460,7 +1473,7 @@ template <typename C, typename V1, typename V2, typename... Rest>
     return false;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-can-conj.hpp
 // Begin cljonic-character-is-valid.hpp
 #pragma once
@@ -1506,6 +1519,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // The factory infers the capacity from the string literal: capacity counts
@@ -1897,6 +1911,10 @@ concept StringFactoryDeducedArguments = sizeof...(Args) == 1 && (string_factory_
 
 } // namespace concepts_detail
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 template <typename Literal>
     requires(concepts_detail::string_factory_literal_v<Literal> &&
              !concepts_detail::string_factory_literal_exceeds_maximum_v<std::remove_cvref_t<Literal>>)
@@ -1925,6 +1943,7 @@ template <std::size_t Capacity>
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // The factory deduces the capacity from the literal's content length.
@@ -1994,7 +2013,7 @@ constexpr auto string([[maybe_unused]] Args&&... args) noexcept -> void {
     }
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 
@@ -2023,9 +2042,9 @@ struct walker_coverage<String<CapacityValue>> {
 } // namespace cljonic::concepts_detail
 // End cljonic-collection-string.hpp
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename T>
 concept CharacterValidityInput =
@@ -2059,7 +2078,9 @@ template <typename T>
     }
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor CharacterIsValid
  * The \b character_is_valid free function checks whether a value converts to a valid \ref String "String" character.
@@ -2074,6 +2095,7 @@ template <typename T>
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    static_assert(character_is_valid('A'));
@@ -2116,7 +2138,7 @@ template <typename T>
     return false;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-character-is-valid.hpp
 // Begin cljonic-collection-map.hpp
 #pragma once
@@ -2155,6 +2177,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -2282,7 +2305,7 @@ concept MapEntryFactoryArguments = map_entry_factory_arguments_are_nothrow<KeyTy
 
 } // namespace cljonic::concepts_detail
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor MapEntryFactory
  * Creates a \ref MapEntry "MapEntry" from exactly one key and one value.
@@ -2344,7 +2367,7 @@ constexpr auto map_entry([[maybe_unused]] Args&&... args) noexcept -> void {
                   "throwing.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-collection-map-entry.hpp
 
 namespace cljonic {
@@ -2370,6 +2393,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  struct Key {
    int id;
@@ -2419,7 +2443,7 @@ namespace cljonic {
    // explicit. A later duplicate key replaces the earlier value (i.e., the
    // right-most value associated with a duplicate key).
    constexpr auto literal =
-       AccountMap{map_entry(Key{1}, Value{10}), map_entry(Key{1}, Value{20})};
+       hash_map<Key, Value, 2>(Key{1}, Value{10}, Key{1}, Value{20});
 
    // A Map is callable for present-key lookup and missing-key fallback.
    static_assert(literal(Key{1}).amount == 20);
@@ -2755,6 +2779,10 @@ template <typename KeyType, typename ValueType, std::size_t Capacity, typename K
 
 } // namespace concepts_detail
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 /** \anchor HashMapFactory
  * Creates a bounded \ref Map "Map" from alternating key/value arguments.
  *
@@ -2876,7 +2904,7 @@ constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
                   "throwing.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 
@@ -2941,6 +2969,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // The factory infers Queue<int, 3> from the argument count.
@@ -3231,6 +3260,10 @@ concept QueueFactoryCapacityArguments =
 
 } // namespace concepts_detail
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 /** Creates a bounded Queue from its arguments, or a typed empty zero-capacity Queue when called as \c queue<T>(). */
 template <typename RequestedElementType = concepts_detail::DeducedQueueElementType, typename... Args>
     requires concepts_detail::QueueFactoryArguments<RequestedElementType, Args...>
@@ -3273,6 +3306,7 @@ constexpr auto queue([[maybe_unused]] Args&&... args) noexcept -> void {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Deduced calls infer the element type from the first argument and the
@@ -3281,7 +3315,7 @@ constexpr auto queue([[maybe_unused]] Args&&... args) noexcept -> void {
    static_assert(fifo.capacity() == 3);
    static_assert(fifo.peek() == 1);
    static_assert(fifo.pop().peek() == 2);
-   static_assert(fifo.pop().pop().pop() == Queue<int, 3>{});
+   static_assert(fifo.pop().pop().pop() == queue<int, 3>());
 
    // Explicit element type and explicit capacity create a queue with room for
    // later conj operations, including an empty zero-capacity queue.
@@ -3327,7 +3361,7 @@ constexpr auto queue([[maybe_unused]] Args&&... args) noexcept -> void {
     }
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 
@@ -3400,6 +3434,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  using AccountId = int;
  using AccountSet = Set<AccountId, 4>;
@@ -3410,9 +3445,9 @@ namespace cljonic {
    static_assert(factory_set(2) == 2);
 
    // A named set type makes the element and capacity contract explicit. A
-   // duplicate value is a no-op. Constant-evaluated duplicate construction is
+   // duplicate value is a no-op. Constant-evaluated duplicate creation is
    // rejected at compile time.
-   constexpr auto literal = AccountSet{1, 2, 3};
+   constexpr auto literal = hash_set<AccountId, 4>(1, 2, 3);
    static_assert(literal(2) == 2);
    static_assert(literal(99) == 0);
    static_assert(literal(99, -1) == -1);
@@ -3740,6 +3775,7 @@ concept HashSetFactoryCapacityArguments =
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  using AccountId = int;
  using AccountSet = Set<AccountId, 4>;
@@ -3779,6 +3815,10 @@ concept HashSetFactoryCapacityArguments =
  }
  ~~~~~
  */
+} // namespace cljonic
+
+namespace cljonic::core {
+
 template <typename RequestedElementType = concepts_detail::DeducedHashSetElementType, typename... Args>
     requires(concepts_detail::HashSetFactoryArguments<RequestedElementType, Args...> && sizeof...(Args) > 0U)
 [[nodiscard]] constexpr auto hash_set(Args&&... args) noexcept(
@@ -3893,7 +3933,7 @@ constexpr auto hash_set([[maybe_unused]] Args&&... args) noexcept -> void {
                   "element type without throwing.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 
@@ -4015,6 +4055,7 @@ concept VariantClassArgument =
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Like other C++ types, a Variant type can be named with an ordinary alias.
@@ -4022,26 +4063,23 @@ concept VariantClassArgument =
 
    // Default construction holds the first alternative at its default value; the
    // first alternative here is int, whose default value is 0.
-   [[maybe_unused]] constexpr MyVariant defaulted{};
-   [[maybe_unused]] constexpr auto defaulted_by_factory = variant<int, long>();
+   [[maybe_unused]] constexpr auto defaulted = variant<int, long>();
 
-   // A converting construction selects the alternative matching the argument's
-   // decayed type; an argument matching no alternative is rejected at compile
-   // time.
-   [[maybe_unused]] constexpr MyVariant as_int{1};
-   [[maybe_unused]] constexpr MyVariant as_long{1L};
-   [[maybe_unused]] constexpr auto as_long_by_factory = variant<int, long>(1L);
+   // The factory selects the alternative matching the argument's decayed type;
+   // an argument matching no alternative is rejected at compile time.
+   [[maybe_unused]] constexpr auto as_int = variant<int, long>(1);
+   [[maybe_unused]] constexpr auto as_long = variant<int, long>(1L);
 
    // Copy construction preserves the active alternative and its value.
    [[maybe_unused]] constexpr auto copied = as_int;
 
    // A Variant nests inside another Variant and is storable as a collection
    // element or a map key.
-   [[maybe_unused]] constexpr auto nested =
-       Variant<Variant<int, long>, char>{as_int};
+   [[maybe_unused]] constexpr auto nested = variant<MyVariant, char>(as_int);
    [[maybe_unused]] constexpr auto as_vector_element =
-       vector(MyVariant{1}, MyVariant{2L});
-   [[maybe_unused]] constexpr auto as_set_element = hash_set(MyVariant{1});
+       vector(variant<int, long>(1), variant<int, long>(2L));
+   [[maybe_unused]] constexpr auto as_set_element =
+       hash_set(variant<int, long>(1));
    [[maybe_unused]] constexpr auto as_map_key = map_entry(as_int, 1);
 
    return 0;
@@ -4110,6 +4148,10 @@ class Variant {
     std::variant<Alternatives...> storage_{};
 };
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 /** \anchor VariantFactory
  * Constructs a \ref Variant with its alternative types specified explicitly. The value form uses the same
  * exact-alternative selection rule as direct construction; it does not infer or expand the alternative list.
@@ -4124,6 +4166,10 @@ template <typename... Alternatives, typename T>
 [[nodiscard]] constexpr auto variant(const T& value) noexcept -> Variant<Alternatives...> {
     return Variant<Alternatives...>{value};
 }
+
+} // namespace cljonic::core
+
+namespace cljonic {
 
 /** Diagnostic specialization (REQ-DIAG-012): selected by the redirecting
  *  deduction guide below. A `Variant`'s alternatives are never deducible from
@@ -4214,6 +4260,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  struct Pixel {
    int x;
@@ -4575,6 +4622,10 @@ concept VectorFactoryCapacityArguments =
 
 } // namespace concepts_detail
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 /** Creates a bounded Vector from its arguments, or a typed empty Vector when called as \c vector<T>(). */
 template <typename RequestedElementType = concepts_detail::DeducedVectorElementType, typename... Args>
     requires concepts_detail::VectorFactoryArguments<RequestedElementType, Args...>
@@ -4631,6 +4682,10 @@ constexpr auto vector([[maybe_unused]] Args&&... args) noexcept -> void {
     }
 }
 
+} // namespace cljonic::core
+
+namespace cljonic {
+
 template <typename First, typename... Rest>
 Vector(First, Rest...) -> Vector<First, 1 + sizeof...(Rest)>;
 
@@ -4677,16 +4732,18 @@ struct walker_coverage<Vector<ElementType, CapacityValue>> {
 #pragma once
 
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename C, typename T>
 concept ConjValueAdmissible = concepts::ConjableCollection<C> && requires(const C& collection, const T& value) {
     { collection.conj(value) } noexcept -> std::same_as<C>;
 };
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor Conj
  * The \b conj free function returns a \ref concepts::CljonicCollection "collection" with the supplied values added.
@@ -4714,6 +4771,7 @@ concept ConjValueAdmissible = concepts::ConjableCollection<C> && requires(const 
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -4758,7 +4816,9 @@ template <typename C>
     return collection;
 }
 
-namespace concepts_detail {
+} // namespace cljonic::core
+
+namespace cljonic::concepts_detail {
 
 // Every value in the argument list is admissible for the collection. The
 // recursion consumes one value per step; an empty tail is admissible.
@@ -4787,7 +4847,9 @@ constexpr void fold_conj_values_into(C& result, const T& value, const Rest&... r
     fold_conj_values_into(result, rest...);
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** Variadic `conj`: adds two or more values left to right, as if they were added one at a time. Each value must be one
  *  the collection can hold; a value that does not fit because the collection is full is skipped, and the remaining
@@ -4849,15 +4911,15 @@ template <typename C, typename T1, typename T2, typename... Rest>
     return collection;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-conj.hpp
 // Begin cljonic-contains.hpp
 #pragma once
 
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename C>
 concept ContainsLookupCollection =
@@ -4875,7 +4937,9 @@ concept ContainsAdmissible =
     (ContainsLookupCollection<C> && concepts::SafeImplicitConversion<typename C::lookup_type, K>) ||
     (ContainsIndexedCollection<C> && IntegerIndexType<K>);
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor Contains
  * The \b contains free function tests key presence, element membership, or index validity in a \ref Map "Map", \ref
@@ -4889,6 +4953,7 @@ concept ContainsAdmissible =
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -4945,14 +5010,14 @@ template <typename C, typename K>
     return false;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-contains.hpp
 // Begin cljonic-count.hpp
 #pragma once
 
 #include <cstddef>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Count
  * The \b count free function returns the number of elements in a \ref concepts::SequenceableCollection "collection" or
@@ -4965,25 +5030,26 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
    constexpr auto v_const = vector(1, 2, 3);
    constexpr auto m_const = hash_map(1, 100);
    constexpr auto q_const = queue(9);
-   constexpr auto r_const = Range{0, 5};
-   constexpr auto finite_repeat = Repeat{3, 7};
-   constexpr auto unbounded_repeat = Repeat{7};
-   constexpr auto unbounded_range = Range{0, 0, 0};
+   constexpr auto r_const = range(0, 5);
+   constexpr auto finite_repeat = repeat(3, 7);
+   constexpr auto unbounded_repeat = repeat(7);
+   constexpr auto unbounded_range = range(0, 0, 0);
    static_assert(count(v_const) == 3);
    static_assert(count(m_const) == 1);
    static_assert(count(q_const) == 1);
    static_assert(count(r_const) == 5);
    static_assert(count(finite_repeat) == 3);
    static_assert(count(unbounded_repeat) ==
-                 CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
+                 cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
    static_assert(count(unbounded_range) ==
-                 CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
+                 cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
 
    // Runtime demonstration.
    auto v_runtime = vector(10, 20);
@@ -5008,7 +5074,7 @@ template <typename C>
     return 0U;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-count.hpp
 // Begin cljonic-disj.hpp
 #pragma once
@@ -5016,15 +5082,17 @@ template <typename C>
 #include <type_traits>
 #include <utility>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename C, typename... Values>
 concept DisjAdmissible = concepts::CljonicSet<C> && requires { typename C::value_type; } &&
                          (concepts::SafeImplicitConversion<typename C::value_type, Values> && ...);
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor Disj
  * The \b disj free function removes zero or more elements from a \ref Set "Set". Values are removed from left to
@@ -5038,6 +5106,7 @@ concept DisjAdmissible = concepts::CljonicSet<C> && requires { typename C::value
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -5082,16 +5151,16 @@ template <typename C, typename... Values>
     }
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-disj.hpp
 // Begin cljonic-dissoc.hpp
 #pragma once
 
 #include <type_traits>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename C, typename K>
 concept DissocKeyAdmissible = concepts::CljonicMap<C> && requires(const C& collection, const K& key) {
@@ -5121,7 +5190,9 @@ constexpr void fold_dissoc_keys_into(C& result, const K& key, const Rest&... res
     fold_dissoc_keys_into(result, rest...);
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor Dissoc
  * The \b dissoc free function removes zero or more keys from a \ref Map "Map". The source map is never modified.
@@ -5136,6 +5207,7 @@ constexpr void fold_dissoc_keys_into(C& result, const K& key, const Rest&... res
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -5231,7 +5303,7 @@ template <typename C, typename K1, typename K2, typename... Rest>
     return C{};
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-dissoc.hpp
 // Begin cljonic-drop.hpp
 #pragma once
@@ -5241,9 +5313,9 @@ template <typename C, typename K1, typename K2, typename... Rest>
 #include <ranges>
 
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename Source, typename Result>
 constexpr auto copy_drop_suffix(const Source& source, std::size_t observed_count, Result& result,
@@ -5261,7 +5333,9 @@ constexpr auto copy_drop_suffix(const Source& source, std::size_t observed_count
     }
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor Drop
  * The \b drop free function removes a requested prefix from one cljonic source and returns the remaining observable
@@ -5290,6 +5364,7 @@ constexpr auto copy_drop_suffix(const Source& source, std::size_t observed_count
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    constexpr auto values = vector(1, 2, 3, 4);
@@ -5345,13 +5420,13 @@ constexpr auto drop([[maybe_unused]] const Args&... args) noexcept -> void {
                   "collection, or a Range, Repeat, Cycle, Iterate, or Repeatedly producer.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-drop.hpp
 // Begin cljonic-empty.hpp
 #pragma once
 
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Empty
  * The \b empty free function returns a new, empty collection of the same type as its argument. It works with `Vector`,
@@ -5361,6 +5436,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -5393,7 +5469,7 @@ constexpr auto empty([[maybe_unused]] const C& collection) noexcept -> void {
                   "cljonic::empty: expected a Vector, Map, Set, Queue, or String value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-empty.hpp
 // Begin cljonic-equal.hpp
 #pragma once
@@ -5631,7 +5707,7 @@ template <typename Lhs, typename Rhs>
 
 } // namespace cljonic::equal_match_detail
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Equal
  * The \b equal free function compares one or more values for equality.
@@ -5683,6 +5759,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  struct Point {
    int x;
@@ -5695,9 +5772,9 @@ namespace cljonic {
  int main() {
    // Compile-time demonstration.
    constexpr auto v = vector(1, 2, 3);
-   constexpr auto r = Range{1, 4, 1}; // produces 1, 2, 3
+   constexpr auto r = range(1, 4, 1); // produces 1, 2, 3
    constexpr auto q = queue(1, 2, 3);
-   constexpr auto rep = Repeat{3, 1};
+   constexpr auto rep = repeat(3, 1);
    constexpr auto m1 = hash_map(1, 10, 2, 20);
    constexpr auto m2 = hash_map(2, 20, 1, 10);
    constexpr auto s1 = hash_set(3, 1, 2);
@@ -5721,18 +5798,18 @@ namespace cljonic {
    static_assert(equal(m1, m2));     // Map equality ignores entry order
    static_assert(equal(s1, s2));     // Set equality ignores element order
    static_assert(equal(str1, str2)); // String equality compares content
-   static_assert(equal(Repeat<int>{}, Repeat<int>{})); // bounded prefix
+   static_assert(equal(repeat<int>(0, 0), repeat<int>(0, 0))); // bounded prefix
 
    // Variant equality is alternative-strict
-   constexpr auto var_int = Variant<int, long>{1};
+   constexpr auto var_int = variant<int, long>(1);
    static_assert(
-       equal(var_int, Variant<int, long>{1})); // same alternative and value
+       equal(var_int, variant<int, long>(1))); // same alternative and value
    static_assert(
-       !equal(var_int, Variant<int, long>{1L})); // different alternative
+       !equal(var_int, variant<int, long>(1L))); // different alternative
 
    // Runtime demonstration.
    auto runtime_v = vector(1, 2, 3);
-   auto runtime_r = Range{1, 4, 1};
+   auto runtime_r = range(1, 4, 1);
    return equal(runtime_v, runtime_r) ? 0 : 1;
  }
  ~~~~~
@@ -5833,7 +5910,7 @@ template <typename Lhs, typename Rhs, typename... Rest>
     return false;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-equal.hpp
 // Begin cljonic-filter.hpp
 #pragma once
@@ -5845,9 +5922,9 @@ template <typename Lhs, typename Rhs, typename... Rest>
 #include <type_traits>
 
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename Params, typename Source>
 struct FilterParametersSafe : std::false_type {};
@@ -5903,7 +5980,9 @@ constexpr void filter_append_if_matching(const F& predicate, const Element& elem
     }
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor FilterFunction
  * The \b filter free function copies matching elements from one cljonic source into a bounded owning \ref Vector
@@ -5925,6 +6004,7 @@ constexpr void filter_append_if_matching(const F& predicate, const Element& elem
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 using namespace cljonic;
+using namespace cljonic::core;
 
 int main() {
   constexpr auto is_even = [](int value) noexcept { return value % 2 == 0; };
@@ -5939,7 +6019,7 @@ int main() {
   static_assert(equal(filter(is_even, queue(1, 2, 3)), vector(2)));
   static_assert(count(filter([](char value) noexcept { return value == 'b'; },
                              string<4>("abc"))) == 1);
-  static_assert(equal(filter(is_even, Range<int>{1, 5, 1}), vector(2, 4)));
+  static_assert(equal(filter(is_even, range(1, 5, 1)), vector(2, 4)));
   static_assert(count(filter(is_even, repeat(3, 2))) == 3);
   static_assert(count(filter([](int) noexcept { return true; },
                              cycle(vector(1, 2)))) > 0);
@@ -6012,6 +6092,7 @@ constexpr auto filter([[maybe_unused]] const F& predicate, [[maybe_unused]] cons
 
 #include "cljonic.hpp"
 using namespace cljonic;
+using namespace cljonic::core;
 
 int main() {
   constexpr auto is_even = [](int value) noexcept { return value % 2 == 0; };
@@ -6059,13 +6140,13 @@ constexpr auto filterv([[maybe_unused]] const F& predicate, [[maybe_unused]] con
                   "implicit conversion; standard-library ranges and containers are not supported.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-filter.hpp
 // Begin cljonic-first.hpp
 #pragma once
 
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor First
  * The \b first free function returns the first logical element of a `Vector`, `Map`, `Set`, `Queue`, or `String` value
@@ -6084,6 +6165,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -6153,15 +6235,15 @@ constexpr auto first([[maybe_unused]] const C& value) noexcept -> void {
                   "cljonic::first: expected a cljonic collection, producer, or MapEntry value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-first.hpp
 // Begin cljonic-fits-into.hpp
 #pragma once
 
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <concepts::CljonicSource Source>
 [[nodiscard]] constexpr auto materialization_source_is_finite(const Source& source) noexcept -> bool {
@@ -6191,7 +6273,9 @@ template <typename Dest, typename Source>
     return source.count() <= (Dest::capacity() - destination.count());
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor FitsInto
  * The \b fits_into free function checks whether every value from a cljonic collection or producer can be inserted into
@@ -6214,6 +6298,7 @@ template <typename Dest, typename Source>
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -6280,7 +6365,7 @@ template <typename Dest, typename Source>
     return false;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-fits-into.hpp
 // Begin cljonic-get.hpp
 #pragma once
@@ -6288,9 +6373,9 @@ template <typename Dest, typename Source>
 #include <type_traits>
 #include <utility>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename C, typename K>
 concept GetKeyAdmissible =
@@ -6326,7 +6411,9 @@ constexpr auto diagnose_get_fallback() noexcept -> void {
     }
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor Get
  * The \b get free function looks up a value in a \ref Map "Map", \ref Set "Set", \ref Vector "Vector", or \ref String
@@ -6344,6 +6431,7 @@ constexpr auto diagnose_get_fallback() noexcept -> void {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -6389,7 +6477,7 @@ constexpr auto get([[maybe_unused]] const C& collection, [[maybe_unused]] const 
     concepts_detail::diagnose_get_fallback<C, K, R>();
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-get.hpp
 // Begin cljonic-has-next.hpp
 #pragma once
@@ -6437,16 +6525,17 @@ concept CycleClassArgument =
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    [[maybe_unused]] constexpr auto finite_cycle = cycle(vector(1, 2, 3));
-   [[maybe_unused]] constexpr auto unbounded_cycle = cycle(Range{0, 0, 0});
+   [[maybe_unused]] constexpr auto unbounded_cycle = cycle(range(0, 0, 0));
 
    // -----------------------------------------------------------------------
    // C++ interoperability: Cycle supports const traversal.
    // -----------------------------------------------------------------------
    auto runtime_cycle = cycle(vector(4, 5, 6));
-   auto runtime_unbounded_cycle = cycle(Range{0, 0, 0});
+   auto runtime_unbounded_cycle = cycle(range(0, 0, 0));
 
    // Use C++ interoperability to observe a finite source cycle at runtime.
    auto runtime_sum = 0;
@@ -6636,6 +6725,10 @@ template <typename Source>
     requires(!concepts_detail::ValidCycleSource<Source>)
 Cycle(const Source&) -> Cycle<concepts_detail::CycleSourceDomainViolation>;
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 template <concepts::CljonicSource Source>
     requires concepts::NothrowCollectionElement<std::ranges::range_value_t<const Source>>
 [[nodiscard]] constexpr auto cycle(const Source& source) noexcept -> Cycle<Source> {
@@ -6654,7 +6747,7 @@ constexpr auto cycle([[maybe_unused]] Source source) noexcept -> concepts_detail
     return {};
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 
@@ -6729,6 +6822,7 @@ concept IterateClassArgument = (concepts::NothrowCollectionElement<T> && concept
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  constexpr auto add_two(int value) noexcept -> int { return value + 2; }
 
@@ -6876,6 +6970,10 @@ template <typename T, typename Step>
 Iterate(const T&, const Step&)
     -> Iterate<concepts_detail::IterateDomainViolation, concepts_detail::IterateDomainViolation>;
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 template <typename Step, typename T>
     requires concepts::NothrowCollectionElement<std::remove_cvref_t<T>> &&
              concepts::IterateStep<std::remove_cvref_t<T>, std::decay_t<Step>>
@@ -6900,7 +6998,7 @@ constexpr auto iterate([[maybe_unused]] Step&& step, [[maybe_unused]] T&& initia
     return {};
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 
@@ -6984,6 +7082,7 @@ concept RangeClassArgument =
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
  int main() {
    // Default: start 0, end 0, step 1 (empty). CTAD cannot deduce from zero
    // arguments.
@@ -7274,6 +7373,7 @@ concept RangeFactoryArguments =
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 using namespace cljonic;
+using namespace cljonic::core;
 int main() {
   constexpr auto empty = range<int>();
   constexpr auto ascending = range(5);
@@ -7290,6 +7390,10 @@ int main() {
 }
 ~~~~~
  */
+} // namespace cljonic
+
+namespace cljonic::core {
+
 template <typename RequestedElementType = concepts_detail::DeducedRangeElementType, typename... Args>
     requires concepts_detail::RangeFactoryArguments<RequestedElementType, Args...>
 [[nodiscard]] constexpr auto range(Args&&... args) noexcept
@@ -7308,7 +7412,7 @@ constexpr auto range([[maybe_unused]] Args&&... args) noexcept -> void {
                   "without loss of range or precision.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 
@@ -7380,6 +7484,7 @@ concept RepeatClassArgument =
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  struct Pixel {
    int x{};
@@ -7568,6 +7673,7 @@ Repeat(Count, const T&) -> Repeat<concepts_detail::RepeatElementDomainViolation>
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 using namespace cljonic;
+using namespace cljonic::core;
 int main() {
   constexpr auto finite = repeat(3, 7);
   constexpr auto unbounded = repeat(7);
@@ -7580,6 +7686,10 @@ int main() {
 }
 ~~~~~
  */
+} // namespace cljonic
+
+namespace cljonic::core {
+
 template <typename T>
     requires concepts::NothrowCollectionElement<std::remove_cvref_t<T>>
 [[nodiscard]] constexpr auto repeat(T&& value) noexcept -> Repeat<std::remove_cvref_t<T>> {
@@ -7615,7 +7725,7 @@ constexpr auto repeat([[maybe_unused]] Count count, [[maybe_unused]] T&& value) 
     return {};
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 
@@ -7701,6 +7811,7 @@ concept RepeatedlyClassArgument = (concepts::NothrowCollectionElement<T> && conc
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  constexpr auto five() noexcept -> int { return 5; }
 
@@ -7894,9 +8005,10 @@ class Repeatedly<concepts_detail::RepeatedlyDomainViolation, concepts_detail::Re
   public:
     template <typename... Args>
     constexpr explicit Repeatedly([[maybe_unused]] Args&&... args) noexcept {
-        static_assert(concepts_detail::dependent_false<Args...>,
-                      "cljonic::Repeatedly: the element type cannot be deduced from a step alone. Use the repeatedly() "
-                      "free function, as in cljonic::repeatedly(step) or cljonic::repeatedly(count, step).");
+        static_assert(
+            concepts_detail::dependent_false<Args...>,
+            "cljonic::Repeatedly: the element type cannot be deduced from a step alone. Use the repeatedly() "
+            "free function, as in cljonic::core::repeatedly(step) or cljonic::core::repeatedly(count, step).");
     }
 };
 
@@ -7909,6 +8021,10 @@ Repeatedly(const Step&)
 template <typename Step, typename Count>
 Repeatedly(const Step&, Count)
     -> Repeatedly<concepts_detail::RepeatedlyDomainViolation, concepts_detail::RepeatedlyDomainViolation>;
+
+} // namespace cljonic
+
+namespace cljonic::core {
 
 template <typename Step, typename T = std::invoke_result_t<std::decay_t<Step>&>>
     requires concepts::RepeatedlyStep<T, std::decay_t<Step>>
@@ -7931,8 +8047,8 @@ constexpr auto repeatedly([[maybe_unused]] Step&& step) noexcept -> concepts_det
     static_assert(concepts_detail::dependent_false<Step>,
                   "cljonic::repeatedly: this step cannot be used to build a Repeatedly. The step must be a callable -- "
                   "a function, a lambda, or a function object -- that takes no arguments, can be copied, and returns a "
-                  "value that can be stored without throwing. To repeat one value, use cljonic::repeat(value) or "
-                  "cljonic::repeat(count, value).");
+                  "value that can be stored without throwing. To repeat one value, use cljonic::core::repeat(value) or "
+                  "cljonic::core::repeat(count, value).");
     return {};
 }
 
@@ -7943,13 +8059,13 @@ constexpr auto repeatedly([[maybe_unused]] Count count, [[maybe_unused]] Step&& 
     static_assert(concepts_detail::dependent_false<Step>,
                   "cljonic::repeatedly: this step cannot be used to build a Repeatedly. The step must be a callable -- "
                   "a function, a lambda, or a function object -- that takes no arguments, can be copied, and returns a "
-                  "value that can be stored without throwing. To repeat one value, use cljonic::repeat(value) or "
-                  "cljonic::repeat(count, value). The count must be a non-boolean, non-character integer "
+                  "value that can be stored without throwing. To repeat one value, use cljonic::core::repeat(value) or "
+                  "cljonic::core::repeat(count, value). The count must be a non-boolean, non-character integer "
                   "type whose nonnegative range fits std::size_t.");
     return {};
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 
@@ -8204,6 +8320,7 @@ namespace cljonic {
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 using namespace cljonic;
+using namespace cljonic::core;
 
 int main() {
   constexpr auto below_three = [](int n) noexcept { return n < 3; };
@@ -8212,7 +8329,7 @@ int main() {
   static_assert(equal(prefix, vector(1, 2)));
   static_assert(equal(next(prefix), vector(2)));
   static_assert(
-      equal(into(Vector<int, 4>{}, next(cycle(prefix))), vector(2, 1, 2, 1)));
+      equal(into(vector<int, 4>(), next(cycle(prefix))), vector(2, 1, 2, 1)));
   static_assert(count(take_while(below_three, queue(1, 2, 4))) == 2);
   static_assert(count(take_while([](char c) noexcept { return c < 'c'; },
                                  string("abcd"))) == 2);
@@ -8239,6 +8356,10 @@ int main() {
 template <typename Predicate, typename Source>
 using TakeWhile = concepts_detail::PredicateProducer<Predicate, Source, false>;
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 template <typename Predicate, typename Source>
     requires concepts_detail::PredicateProducerArguments<std::decay_t<Predicate>, Source>
 [[nodiscard]] constexpr auto take_while(const Predicate& predicate, const Source& source) noexcept
@@ -8255,16 +8376,16 @@ constexpr auto take_while([[maybe_unused]] const Args&... args) noexcept -> conc
     return {};
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-producer-take-while.hpp
 
 #include <cstddef>
 #include <functional>
 #include <type_traits>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename C>
 concept NextSequenceableCollection =
@@ -8451,7 +8572,9 @@ struct NextResult<String<N>> {
     using type = String<next_tail_capacity(N)>;
 };
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor Next
  * The \b next free function returns the logical tail of a \ref Vector "Vector", \ref Map "Map", \ref Set "Set", \ref
@@ -8508,6 +8631,7 @@ struct NextResult<String<N>> {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -8539,26 +8663,26 @@ struct NextResult<String<N>> {
    static_assert(count(next(vector(10))) == 0);
 
    constexpr auto repeated_tail = next(repeat(3, 7));
-   constexpr auto repeated_tail_values = into(Vector<int, 2>{}, repeated_tail);
+   constexpr auto repeated_tail_values = into(vector<int, 2>(), repeated_tail);
    static_assert(count(repeated_tail) == 2);
    static_assert(repeated_tail_values(0) == 7 && repeated_tail_values(1) == 7);
    constexpr auto unbounded_tail = next(repeat(7));
-   static_assert(!fits_into(Vector<int, 2>{}, unbounded_tail));
+   static_assert(!fits_into(vector<int, 2>(), unbounded_tail));
    static_assert(count(unbounded_tail) == count(repeat(7)));
-   constexpr auto unbounded_tail_values = into(Vector<int, 2>{}, unbounded_tail);
+   constexpr auto unbounded_tail_values = into(vector<int, 2>(), unbounded_tail);
    static_assert(unbounded_tail_values(0) == 7 && unbounded_tail_values(1) == 7);
 
-   constexpr auto range_tail = next(Range{1, 8, 2});
-   constexpr auto range_tail_values = into(Vector<int, 3>{}, range_tail);
+   constexpr auto range_tail = next(range(1, 8, 2));
+   constexpr auto range_tail_values = into(vector<int, 3>(), range_tail);
    static_assert(count(range_tail) == 3);
    static_assert(range_tail_values(0) == 3 && range_tail_values(1) == 5 &&
                  range_tail_values(2) == 7);
-   constexpr auto unbounded_range_tail = next(Range{4, 9, 0});
-   static_assert(!fits_into(Vector<int, 2>{}, unbounded_range_tail));
-   static_assert(count(unbounded_range_tail) == count(Range{4, 9, 0}));
+   constexpr auto unbounded_range_tail = next(range(4, 9, 0));
+   static_assert(!fits_into(vector<int, 2>(), unbounded_range_tail));
+   static_assert(count(unbounded_range_tail) == count(range(4, 9, 0)));
 
    constexpr auto cycle_tail = next(cycle(vector(1, 2, 3)));
-   constexpr auto cycle_tail_values = into(Vector<int, 5>{}, cycle_tail);
+   constexpr auto cycle_tail_values = into(vector<int, 5>(), cycle_tail);
    static_assert(cycle_tail_values(0) == 2 && cycle_tail_values(1) == 3 &&
                  cycle_tail_values(2) == 1 && cycle_tail_values(3) == 2 &&
                  cycle_tail_values(4) == 3);
@@ -8576,18 +8700,18 @@ struct NextResult<String<N>> {
    const auto runtime_text_tail = next(runtime_text);
    const auto runtime_repeat_tail = next(repeat(3, 7));
    const auto runtime_repeat_tail_values =
-       into(Vector<int, 2>{}, runtime_repeat_tail);
+       into(vector<int, 2>(), runtime_repeat_tail);
    const auto runtime_unbounded_repeat_tail = next(repeat(7));
    const auto runtime_unbounded_repeat_tail_values =
-       into(Vector<int, 2>{}, runtime_unbounded_repeat_tail);
-   const auto runtime_range_tail = next(Range{5, -6, -2});
+       into(vector<int, 2>(), runtime_unbounded_repeat_tail);
+   const auto runtime_range_tail = next(range(5, -6, -2));
    const auto runtime_range_tail_values =
-       into(Vector<int, 2>{}, runtime_range_tail);
-   const auto runtime_unbounded_range_tail = next(Range{4, 9, 0});
+       into(vector<int, 2>(), runtime_range_tail);
+   const auto runtime_unbounded_range_tail = next(range(4, 9, 0));
    const auto runtime_cycle_tail = next(cycle(vector(1, 2, 3)));
    const auto runtime_cycle_tail_values =
-       into(Vector<int, 5>{}, runtime_cycle_tail);
-   const auto runtime_unbounded_cycle_tail = next(cycle(Range{4, 9, 0}));
+       into(vector<int, 5>(), runtime_cycle_tail);
+   const auto runtime_unbounded_cycle_tail = next(cycle(range(4, 9, 0)));
    auto callback_calls = 0;
    const auto callback_producer =
        repeatedly(2, [&callback_calls]() noexcept { return ++callback_calls; });
@@ -8608,23 +8732,23 @@ struct NextResult<String<N>> {
            runtime_text(1) == 'E' && count(runtime_repeat_tail) == 2 &&
            runtime_repeat_tail_values(0) == 7 &&
            runtime_repeat_tail_values(1) == 7 &&
-           fits_into(Vector<int, 2>{}, runtime_repeat_tail) &&
+           fits_into(vector<int, 2>(), runtime_repeat_tail) &&
            count(runtime_unbounded_repeat_tail) == count(repeat(7)) &&
-           !fits_into(Vector<int, 2>{}, runtime_unbounded_repeat_tail) &&
+           !fits_into(vector<int, 2>(), runtime_unbounded_repeat_tail) &&
            runtime_unbounded_repeat_tail_values(0) == 7 &&
            runtime_unbounded_repeat_tail_values(1) == 7 &&
            count(runtime_range_tail) == 5 && runtime_range_tail_values(0) == 3 &&
            runtime_range_tail_values(1) == 1 &&
-           count(runtime_unbounded_range_tail) == count(Range{4, 9, 0}) &&
-           !fits_into(Vector<int, 2>{}, runtime_unbounded_range_tail) &&
+           count(runtime_unbounded_range_tail) == count(range(4, 9, 0)) &&
+           !fits_into(vector<int, 2>(), runtime_unbounded_range_tail) &&
            runtime_cycle_tail_values(0) == 2 &&
            runtime_cycle_tail_values(1) == 3 &&
            runtime_cycle_tail_values(2) == 1 &&
            runtime_cycle_tail_values(3) == 2 &&
            runtime_cycle_tail_values(4) == 3 &&
-           !fits_into(Vector<int, 2>{}, runtime_cycle_tail) &&
-           count(runtime_unbounded_cycle_tail) == count(cycle(Range{4, 9, 0})) &&
-           !fits_into(Vector<int, 2>{}, runtime_unbounded_cycle_tail) &&
+           !fits_into(vector<int, 2>(), runtime_cycle_tail) &&
+           count(runtime_unbounded_cycle_tail) == count(cycle(range(4, 9, 0))) &&
+           !fits_into(vector<int, 2>(), runtime_unbounded_cycle_tail) &&
            callback_calls == 1 && count(callback_tail) == 1)
               ? 0
               : 1;
@@ -8651,8 +8775,12 @@ template <concepts_detail::NextSequenceableProducer P>
     return concepts_detail::next_producer_tail(producer);
 }
 
+} // namespace cljonic::core
+
+namespace cljonic::concepts_detail {
+
 template <concepts::CljonicCycle P>
-[[nodiscard]] constexpr auto concepts_detail::CycleNextAccess::tail(const P& producer) noexcept -> P {
+[[nodiscard]] constexpr auto CycleNextAccess::tail(const P& producer) noexcept -> P {
     if constexpr (CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE == 0U) {
         return producer;
     }
@@ -8662,9 +8790,13 @@ template <concepts::CljonicCycle P>
         if (producer.source_finiteness()) {
             return finite_tail(producer);
         }
-        return P{next(producer.source_), 0U};
+        return P{cljonic::core::next(producer.source_), 0U};
     }
 }
+
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 template <typename C>
     requires(!concepts_detail::NextSequenceableCollection<C> && !concepts_detail::NextSequenceableProducer<C>)
@@ -8675,10 +8807,10 @@ constexpr auto next([[maybe_unused]] const C& value) noexcept -> void {
         "DropWhile, or supported Cycle value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-next.hpp
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor HasNext
  * The \b has_next free function checks whether a \ref Next "next" call has a nonempty observable result.
@@ -8694,6 +8826,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -8745,13 +8878,13 @@ constexpr auto has_next([[maybe_unused]] const C& value) noexcept -> void {
                   "TakeWhile, DropWhile, or supported Cycle value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-has-next.hpp
 // Begin cljonic-has-rest.hpp
 #pragma once
 
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor HasRest
  * The \b has_rest free function is an exact forwarding alias for \ref HasNext "has_next". It accepts exactly the same
@@ -8761,12 +8894,12 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    constexpr auto vector_values = vector(10, 20);
-   constexpr auto map_values =
-       Map<int, int, 2>{MapEntry{1, 10}, MapEntry{2, 20}};
-   constexpr auto set_values = Set<int, 2>{10, 20};
+   constexpr auto map_values = hash_map(1, 10, 2, 20);
+   constexpr auto set_values = hash_set(10, 20);
    constexpr auto queue_values = queue(10, 20);
    constexpr auto string_values = string("AB");
    static_assert(has_rest(vector_values) == has_next(vector_values));
@@ -8774,7 +8907,7 @@ namespace cljonic {
    static_assert(has_rest(set_values) == has_next(set_values));
    static_assert(has_rest(queue_values) == has_next(queue_values));
    static_assert(has_rest(string_values) == has_next(string_values));
-   static_assert(has_rest(Range{0, 3}) == has_next(Range{0, 3}));
+   static_assert(has_rest(range(0, 3)) == has_next(range(0, 3)));
    static_assert(has_rest(repeat(2, 7)) == has_next(repeat(2, 7)));
 
    const auto runtime_values = vector<int, 4>(40, 50);
@@ -8795,13 +8928,13 @@ constexpr auto has_rest([[maybe_unused]] const C& value) noexcept -> void {
                   "TakeWhile, DropWhile, or supported Cycle value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-has-rest.hpp
 // Begin cljonic-into.hpp
 #pragma once
 
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Into
  * The \b into free function inserts values from a cljonic collection or producer into a copy of a \ref Vector
@@ -8826,11 +8959,12 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
    constexpr auto destination = vector<int, 8>(100, 200);
-   constexpr auto source = Range{0, 5};
+   constexpr auto source = range(0, 5);
    constexpr auto result = into(destination, source);
    static_assert(equal(result, vector(100, 200, 0, 1, 2, 3, 4)));
    static_assert(equal(destination, vector(100, 200)));
@@ -8852,7 +8986,7 @@ namespace cljonic {
    // Runtime demonstration.
    const auto runtime_end = 5;
    const auto runtime_destination = vector<int, 8>(100, 200);
-   const auto runtime_source = Range{0, runtime_end};
+   const auto runtime_source = range(0, runtime_end);
    const auto runtime_result = into(runtime_destination, runtime_source);
    const auto runtime_prefix = into(vector<int, 4>(100, 200), runtime_source);
    const auto invalid_byte = '\x80';
@@ -8895,13 +9029,13 @@ constexpr auto into([[maybe_unused]] const Dest& destination, [[maybe_unused]] c
         "Map requires its declared MapEntry type. External C++ ranges are not supported.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-into.hpp
 // Begin cljonic-is-empty.hpp
 #pragma once
 
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor IsEmpty
  * The \b is_empty free function returns true exactly when \ref Count "count" is zero for a collection or producer. It
@@ -8914,13 +9048,14 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    constexpr auto empty_values = vector<int, 2>();
    constexpr auto values = vector(1, 2);
    constexpr auto text = string("Hi");
-   constexpr auto empty_range = Range{2, 2};
-   constexpr auto unbounded_repeat = Repeat{7};
+   constexpr auto empty_range = range(2, 2);
+   constexpr auto unbounded_repeat = repeat(7);
    static_assert(is_empty(empty_values));
    static_assert(!is_empty(values));
    static_assert(!is_empty(text));
@@ -8930,10 +9065,10 @@ namespace cljonic {
    const auto value = 3;
    const auto runtime_values = vector(value);
    const auto original_values = runtime_values;
-   const auto runtime_empty_range = Range{value, value};
-   const auto runtime_range = Range{0, value};
+   const auto runtime_empty_range = range(value, value);
+   const auto runtime_range = range(0, value);
    const auto original_range = runtime_range;
-   const auto runtime_repeat = Repeat{value};
+   const auto runtime_repeat = repeat(value);
    const auto runtime_text = string("Hi");
 
    const auto results_match =
@@ -8958,7 +9093,7 @@ constexpr auto is_empty([[maybe_unused]] const C& collection) noexcept -> void {
     static_assert(concepts_detail::dependent_false<C>, "cljonic::is_empty: value must be a collection or producer.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-is-empty.hpp
 // Begin cljonic-map.hpp
 #pragma once
@@ -8968,9 +9103,9 @@ constexpr auto is_empty([[maybe_unused]] const C& collection) noexcept -> void {
 #include <utility>
 
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 // Per-position parameter rule (REQ-FN-032): when the callback's parameter types
 // are statically known, each parameter must accept its corresponding source
 // element through a safe implicit conversion. Narrowing conversions and
@@ -9035,7 +9170,9 @@ inline constexpr std::size_t MapResultCapacity = [] constexpr {
     return minimum;
 }();
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor MapFunction
  * The \b map free function applies its transforming function to corresponding elements of one or more cljonic sources.
@@ -9065,6 +9202,7 @@ inline constexpr std::size_t MapResultCapacity = [] constexpr {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -9074,7 +9212,7 @@ inline constexpr std::size_t MapResultCapacity = [] constexpr {
    constexpr auto singles = map(inc, v);
    static_assert(equal(singles, vector(2, 3, 4)));
 
-   constexpr auto r = Range{1, 4, 1}; // produces 1, 2, 3
+   constexpr auto r = range(1, 4, 1); // produces 1, 2, 3
    constexpr auto q = queue(10, 20, 30, 40);
    constexpr auto pairs = map(add, v, q); // terminates at the shorter source
    static_assert(equal(pairs, vector(11, 22, 33)));
@@ -9154,13 +9292,13 @@ constexpr auto map([[maybe_unused]] const F& function, [[maybe_unused]] const So
         "and containers are not supported.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-map.hpp
 // Begin cljonic-not-empty.hpp
 #pragma once
 
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor NotEmpty
  * The \b not_empty free function returns an independent owning copy of a nonempty collection, or an empty value of the
@@ -9173,6 +9311,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    constexpr auto values = vector(10, 20);
@@ -9205,13 +9344,13 @@ constexpr auto not_empty([[maybe_unused]] const C& collection) noexcept -> void 
                   "cljonic::not_empty: expected a Vector, Map, Set, Queue, or String value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-not-empty.hpp
 // Begin cljonic-not-equal.hpp
 #pragma once
 
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor NotEqual
  * The \b not_equal free function compares one or more values for inequality.
@@ -9225,11 +9364,12 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
    constexpr auto v = vector(1, 2, 3);
-   constexpr auto r = Range{1, 4, 1}; // produces 1, 2, 3
+   constexpr auto r = range(1, 4, 1); // produces 1, 2, 3
    constexpr auto q = queue(1, 2, 3);
    constexpr auto m1 = hash_map(1, 10);
    constexpr auto m2 = hash_map(2, 20);
@@ -9247,18 +9387,18 @@ namespace cljonic {
    static_assert(!not_equal(s1, s2)); // same elements
 
    // Variant inequality follows alternative-strict equality
-   constexpr auto var_int = Variant<int, long>{1};
+   constexpr auto var_int = variant<int, long>(1);
    static_assert(
-       not_equal(var_int, Variant<int, long>{1L})); // different alternative
+       not_equal(var_int, variant<int, long>(1L))); // different alternative
    static_assert(
-       !not_equal(var_int, Variant<int, long>{1})); // same alternative and value
+       !not_equal(var_int, variant<int, long>(1))); // same alternative and value
 
    // Runtime demonstration.
    const auto runtime_first = 1;
    const auto runtime_v =
        vector(runtime_first, runtime_first + 1, runtime_first + 2);
    const auto runtime_r =
-       Range{runtime_first, runtime_first + 2, 1}; // produces 1, 2
+       range(runtime_first, runtime_first + 2, 1); // produces 1, 2
    return not_equal(runtime_v, runtime_r) ? 0 : 1;
  }
  ~~~~~
@@ -9324,14 +9464,14 @@ template <typename Lhs, typename Rhs, typename... Rest>
     return false;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-not-equal.hpp
 // Begin cljonic-peek.hpp
 #pragma once
 
 #include <utility>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Peek
  * The \b peek free function returns the last logical element of a \ref Vector "Vector" or the front element of a \ref
@@ -9343,6 +9483,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -9388,14 +9529,14 @@ constexpr auto peek([[maybe_unused]] const C& collection) noexcept -> void {
     static_assert(concepts_detail::dependent_false<C>, "cljonic::peek: the first argument must be a Vector or Queue.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-peek.hpp
 // Begin cljonic-pop.hpp
 #pragma once
 
 #include <utility>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Pop
  * The \b pop free function yields an updated \ref concepts::CljonicCollection "collection" with the accessible element
@@ -9408,6 +9549,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    constexpr auto values = vector(1, 2);
@@ -9455,7 +9597,7 @@ constexpr auto pop([[maybe_unused]] const C& collection) noexcept -> void {
                   "other collection types are not supported.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-pop.hpp
 // Begin cljonic-producer-drop-while.hpp
 #pragma once
@@ -9491,6 +9633,7 @@ namespace cljonic {
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 using namespace cljonic;
+using namespace cljonic::core;
 
 int main() {
   constexpr auto below_three = [](int n) noexcept { return n < 3; };
@@ -9499,7 +9642,7 @@ int main() {
   static_assert(equal(suffix, vector(4, 1)));
   static_assert(equal(rest(suffix), vector(1)));
   static_assert(
-      equal(into(Vector<int, 4>{}, next(cycle(suffix))), vector(1, 4, 1, 4)));
+      equal(into(vector<int, 4>(), next(cycle(suffix))), vector(1, 4, 1, 4)));
   static_assert(count(drop_while(below_three, queue(1, 2, 4))) == 1);
   static_assert(count(drop_while([](char c) noexcept { return c < 'c'; },
                                  string("abcd"))) == 2);
@@ -9528,6 +9671,10 @@ int main() {
 template <typename Predicate, typename Source>
 using DropWhile = concepts_detail::PredicateProducer<Predicate, Source, true>;
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 template <typename Predicate, typename Source>
     requires concepts_detail::PredicateProducerArguments<std::decay_t<Predicate>, Source>
 [[nodiscard]] constexpr auto drop_while(const Predicate& predicate, const Source& source) noexcept
@@ -9544,7 +9691,7 @@ constexpr auto drop_while([[maybe_unused]] const Args&... args) noexcept -> conc
     return {};
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-producer-drop-while.hpp
 // Begin cljonic-reduce.hpp
 #pragma once
@@ -9557,9 +9704,9 @@ constexpr auto drop_while([[maybe_unused]] const Args&... args) noexcept -> conc
 #include <type_traits>
 
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename Source>
 using ReduceElement = std::ranges::range_value_t<const Source>;
@@ -9681,7 +9828,9 @@ template <typename F, typename Iterator, typename Accumulator>
     return accumulator;
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor ReduceFunction
  * The \b reduce free function folds a cljonic source into a single value. Two forms are available: `reduce(f, source)`
@@ -9717,6 +9866,7 @@ template <typename F, typename Iterator, typename Accumulator>
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  struct Summary {
    int items{};
@@ -9753,7 +9903,7 @@ template <typename F, typename Iterator, typename Accumulator>
    static_assert(reduce(count_positive, 0, vector(10L, 20L)) == 2);
 
    // Producers are folded over their observable elements.
-   static_assert(reduce(add, Range{1, 4, 1}) == 6); // produces 1, 2, 3
+   static_assert(reduce(add, range(1, 4, 1)) == 6); // produces 1, 2, 3
 
    // Map and Set traversal order is not semantically significant.
    constexpr auto s = hash_set(1, 2, 3);
@@ -9830,13 +9980,13 @@ constexpr auto reduce([[maybe_unused]] const F& function, [[maybe_unused]] const
         "Standard-library ranges and containers are not supported.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-reduce.hpp
 // Begin cljonic-rest.hpp
 #pragma once
 
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Rest
  * The \b rest free function is an alias for \ref Next "next" over the same supported input domain. It returns exactly
@@ -9856,6 +10006,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -9872,16 +10023,16 @@ namespace cljonic {
 
    constexpr auto repeated_remainder = rest(repeat(3, 7));
    static_assert(count(repeated_remainder) == 2);
-   constexpr auto range_remainder = rest(Range{0, 3});
-   constexpr auto range_values = into(Vector<int, 2>{}, range_remainder);
+   constexpr auto range_remainder = rest(range(0, 3));
+   constexpr auto range_values = into(vector<int, 2>(), range_remainder);
    static_assert(range_values(0) == 1 && range_values(1) == 2);
    constexpr auto cycle_remainder = rest(cycle(vector(10, 20, 30)));
-   constexpr auto cycle_values = into(Vector<int, 3>{}, cycle_remainder);
+   constexpr auto cycle_values = into(vector<int, 3>(), cycle_remainder);
    static_assert(cycle_values(0) == 20 && cycle_values(1) == 30 &&
                  cycle_values(2) == 10);
    constexpr auto iterate_remainder =
        rest(iterate([](int value) noexcept { return value + 1; }, 1));
-   constexpr auto iterate_values = into(Vector<int, 1>{}, iterate_remainder);
+   constexpr auto iterate_values = into(vector<int, 1>(), iterate_remainder);
    static_assert(iterate_values(0) == 2);
    constexpr auto repeatedly_remainder =
        rest(repeatedly(3, []() noexcept { return 7; }));
@@ -9915,7 +10066,7 @@ constexpr auto rest([[maybe_unused]] const C& value) noexcept -> void {
                   "TakeWhile, DropWhile, or supported Cycle value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-rest.hpp
 // Begin cljonic-seq.hpp
 #pragma once
@@ -9925,7 +10076,7 @@ constexpr auto rest([[maybe_unused]] const C& value) noexcept -> void {
 #include <ranges>
 #include <type_traits>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Seq
  * The \b seq free function returns the logical traversal elements of a `Vector`, `Map`, `Set`, `Queue`, or `String`
@@ -9946,6 +10097,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  constexpr auto add_one(int value) noexcept -> int { return value + 1; }
 
@@ -9958,13 +10110,13 @@ namespace cljonic {
    static_assert(first(m_const) == map_entry(1, 100));
    constexpr auto text_const = seq(string("AB"));
    static_assert(count(text_const) == 2 && first(text_const) == 'A');
-   constexpr auto r_const = seq(Range{0, 5});
+   constexpr auto r_const = seq(range(0, 5));
    static_assert(count(r_const) == 5 && equal(r_const, vector(0, 1, 2, 3, 4)));
 
    // An unbounded producer materializes its full observation cap.
    constexpr auto i_const = seq(iterate(add_one, 0));
    static_assert(count(i_const) ==
-                 CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
+                 cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
    static_assert(i_const(0) == 0 && i_const(999) == 999);
 
    // Runtime demonstration.
@@ -9988,14 +10140,17 @@ namespace cljonic {
    return (count(s_runtime) == 2 && s_runtime(0) == 10 && s_runtime(1) == 20 &&
            equal(q_runtime, vector(5, 6)) &&
            equal(t_runtime, vector('C', 'D')) &&
-           iterate_length == CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
+           iterate_length ==
+               cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
            iterate_sum == 499500)
               ? 0
               : 1;
  }
  ~~~~~
  */
-namespace concepts_detail {
+} // namespace cljonic::core
+
+namespace cljonic::concepts_detail {
 
 template <typename Result, typename C>
 [[nodiscard]] constexpr auto materialize_traversal(const C& value) noexcept -> Result {
@@ -10006,7 +10161,9 @@ template <typename Result, typename C>
     return result;
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 template <concepts::CljonicVector C>
 [[nodiscard]] constexpr auto seq(const C& value) noexcept -> C {
@@ -10034,7 +10191,7 @@ constexpr auto seq([[maybe_unused]] const C& value) noexcept -> void {
                                                        "Range, Repeat, Cycle, Iterate, or Repeatedly value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-seq.hpp
 // Begin cljonic-take.hpp
 #pragma once
@@ -10044,7 +10201,7 @@ constexpr auto seq([[maybe_unused]] const C& value) noexcept -> void {
 #include <ranges>
 
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Take
  * The \b take free function returns the first requested elements of one cljonic source as a bounded owning \ref Vector
@@ -10068,6 +10225,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    constexpr auto values = vector(1, 2, 3, 4);
@@ -10131,7 +10289,7 @@ constexpr auto take([[maybe_unused]] const Args&... args) noexcept -> void {
                   "collection, or a Range, Repeat, Cycle, Iterate, or Repeatedly producer.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 // End cljonic-take.hpp
 
 namespace cljonic::core {}

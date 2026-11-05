@@ -25,6 +25,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -152,7 +153,7 @@ concept MapEntryFactoryArguments = map_entry_factory_arguments_are_nothrow<KeyTy
 
 } // namespace cljonic::concepts_detail
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor MapEntryFactory
  * Creates a \ref MapEntry "MapEntry" from exactly one key and one value.
@@ -214,4 +215,4 @@ constexpr auto map_entry([[maybe_unused]] Args&&... args) noexcept -> void {
                   "throwing.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

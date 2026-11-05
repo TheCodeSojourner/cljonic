@@ -39,16 +39,17 @@ concept CycleClassArgument =
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    [[maybe_unused]] constexpr auto finite_cycle = cycle(vector(1, 2, 3));
-   [[maybe_unused]] constexpr auto unbounded_cycle = cycle(Range{0, 0, 0});
+   [[maybe_unused]] constexpr auto unbounded_cycle = cycle(range(0, 0, 0));
 
    // -----------------------------------------------------------------------
    // C++ interoperability: Cycle supports const traversal.
    // -----------------------------------------------------------------------
    auto runtime_cycle = cycle(vector(4, 5, 6));
-   auto runtime_unbounded_cycle = cycle(Range{0, 0, 0});
+   auto runtime_unbounded_cycle = cycle(range(0, 0, 0));
 
    // Use C++ interoperability to observe a finite source cycle at runtime.
    auto runtime_sum = 0;
@@ -238,6 +239,10 @@ template <typename Source>
     requires(!concepts_detail::ValidCycleSource<Source>)
 Cycle(const Source&) -> Cycle<concepts_detail::CycleSourceDomainViolation>;
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 template <concepts::CljonicSource Source>
     requires concepts::NothrowCollectionElement<std::ranges::range_value_t<const Source>>
 [[nodiscard]] constexpr auto cycle(const Source& source) noexcept -> Cycle<Source> {
@@ -256,7 +261,7 @@ constexpr auto cycle([[maybe_unused]] Source source) noexcept -> concepts_detail
     return {};
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 

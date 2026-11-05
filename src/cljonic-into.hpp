@@ -2,7 +2,7 @@
 
 #include <cljonic-concepts.hpp>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Into
  * The \b into free function inserts values from a cljonic collection or producer into a copy of a \ref Vector
@@ -27,11 +27,12 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
    constexpr auto destination = vector<int, 8>(100, 200);
-   constexpr auto source = Range{0, 5};
+   constexpr auto source = range(0, 5);
    constexpr auto result = into(destination, source);
    static_assert(equal(result, vector(100, 200, 0, 1, 2, 3, 4)));
    static_assert(equal(destination, vector(100, 200)));
@@ -53,7 +54,7 @@ namespace cljonic {
    // Runtime demonstration.
    const auto runtime_end = 5;
    const auto runtime_destination = vector<int, 8>(100, 200);
-   const auto runtime_source = Range{0, runtime_end};
+   const auto runtime_source = range(0, runtime_end);
    const auto runtime_result = into(runtime_destination, runtime_source);
    const auto runtime_prefix = into(vector<int, 4>(100, 200), runtime_source);
    const auto invalid_byte = '\x80';
@@ -96,4 +97,4 @@ constexpr auto into([[maybe_unused]] const Dest& destination, [[maybe_unused]] c
         "Map requires its declared MapEntry type. External C++ ranges are not supported.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

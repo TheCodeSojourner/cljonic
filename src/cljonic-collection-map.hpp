@@ -35,6 +35,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  struct Key {
    int id;
@@ -84,7 +85,7 @@ namespace cljonic {
    // explicit. A later duplicate key replaces the earlier value (i.e., the
    // right-most value associated with a duplicate key).
    constexpr auto literal =
-       AccountMap{map_entry(Key{1}, Value{10}), map_entry(Key{1}, Value{20})};
+       hash_map<Key, Value, 2>(Key{1}, Value{10}, Key{1}, Value{20});
 
    // A Map is callable for present-key lookup and missing-key fallback.
    static_assert(literal(Key{1}).amount == 20);
@@ -420,6 +421,10 @@ template <typename KeyType, typename ValueType, std::size_t Capacity, typename K
 
 } // namespace concepts_detail
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 /** \anchor HashMapFactory
  * Creates a bounded \ref Map "Map" from alternating key/value arguments.
  *
@@ -541,7 +546,7 @@ constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
                   "throwing.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 

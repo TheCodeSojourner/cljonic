@@ -3,7 +3,7 @@
 #include <cljonic-collection-map.hpp>
 #include <cljonic-concepts.hpp>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor First
  * The \b first free function returns the first logical element of a `Vector`, `Map`, `Set`, `Queue`, or `String` value
@@ -22,6 +22,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -91,4 +92,4 @@ constexpr auto first([[maybe_unused]] const C& value) noexcept -> void {
                   "cljonic::first: expected a cljonic collection, producer, or MapEntry value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

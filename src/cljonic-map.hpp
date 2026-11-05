@@ -7,9 +7,9 @@
 #include <cljonic-concepts.hpp>
 #include <cljonic-core-collection-maximum-element-count.hpp>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 // Per-position parameter rule (REQ-FN-032): when the callback's parameter types
 // are statically known, each parameter must accept its corresponding source
 // element through a safe implicit conversion. Narrowing conversions and
@@ -74,7 +74,9 @@ inline constexpr std::size_t MapResultCapacity = [] constexpr {
     return minimum;
 }();
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor MapFunction
  * The \b map free function applies its transforming function to corresponding elements of one or more cljonic sources.
@@ -104,6 +106,7 @@ inline constexpr std::size_t MapResultCapacity = [] constexpr {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -113,7 +116,7 @@ inline constexpr std::size_t MapResultCapacity = [] constexpr {
    constexpr auto singles = map(inc, v);
    static_assert(equal(singles, vector(2, 3, 4)));
 
-   constexpr auto r = Range{1, 4, 1}; // produces 1, 2, 3
+   constexpr auto r = range(1, 4, 1); // produces 1, 2, 3
    constexpr auto q = queue(10, 20, 30, 40);
    constexpr auto pairs = map(add, v, q); // terminates at the shorter source
    static_assert(equal(pairs, vector(11, 22, 33)));
@@ -193,4 +196,4 @@ constexpr auto map([[maybe_unused]] const F& function, [[maybe_unused]] const So
         "and containers are not supported.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

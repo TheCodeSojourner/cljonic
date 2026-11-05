@@ -61,11 +61,11 @@
  *
  * ## Aliases
  *
- * Namespace                      | C++ "using" Statement
+ * Namespace                      | C++ Namespace Alias
  * ------------------------------ | ---------------------------------------------
- * \ref Namespace_Core "Core"     | using **core** = cljonic::core;
- * \ref Namespace_Set "Set"       | using **set** = cljonic::set;
- * \ref Namespace_String "String" | using **string** = cljonic::string;
+ * \ref Namespace_Core "Core"               | namespace **core** = cljonic::core;
+ * \ref Namespace_Set "Set library"          | namespace **st** = cljonic::lib_set;
+ * \ref Namespace_String "String library"    | namespace **s** = cljonic::lib_string;
  *
  * ## Collection Types
  *
@@ -91,9 +91,10 @@
  *
  * ## Core Functions
  *
- * Entries linked to documentation have implemented documentation. Plain names are inventory entries only; their
- * presence does not establish that they are implemented or supported. The requirements define each entry's lifecycle,
- * and only \c requirements-backed entries define supported behavior. \c comp is explicitly deferred and non-binding.
+ * Every Core function is declared in \c cljonic::core. Entries linked to documentation have implemented documentation.
+ * Plain names are inventory entries only; their presence does not establish that they are implemented or supported.
+ * The requirements define each entry's lifecycle, and only \c requirements-backed entries define supported behavior.
+ * \c comp is explicitly deferred and non-binding.
  *
  * - add, apply, \ref Assoc "assoc", assoc_in
  * - bit_and, bit_and_not, bit_clear, bit_flip, bit_not, bit_or, bit_set, bit_shift_left, bit_shift_right, bit_test,
@@ -136,15 +137,14 @@
  * Plain names are inventory entries only; their presence does not establish that they are implemented or supported.
  * The requirements define each entry's lifecycle, and only \c requirements-backed entries define supported behavior.
  *
- * - difference
  * - fits_join, fits_set_algebra
- * - index, intersection, is_subset, is_superset
+ * - index, is_subset, is_superset
  * - join
  * - map_invert
  * - project
  * - rename, rename_keys
  * - select
- * - union
+ * - set_difference, set_intersection, set_union
  *
  * ## String Functions
  *

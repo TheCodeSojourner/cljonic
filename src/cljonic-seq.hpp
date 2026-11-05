@@ -8,7 +8,7 @@
 #include <ranges>
 #include <type_traits>
 
-namespace cljonic {
+namespace cljonic::core {
 
 /** \anchor Seq
  * The \b seq free function returns the logical traversal elements of a `Vector`, `Map`, `Set`, `Queue`, or `String`
@@ -29,6 +29,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  constexpr auto add_one(int value) noexcept -> int { return value + 1; }
 
@@ -41,13 +42,13 @@ namespace cljonic {
    static_assert(first(m_const) == map_entry(1, 100));
    constexpr auto text_const = seq(string("AB"));
    static_assert(count(text_const) == 2 && first(text_const) == 'A');
-   constexpr auto r_const = seq(Range{0, 5});
+   constexpr auto r_const = seq(range(0, 5));
    static_assert(count(r_const) == 5 && equal(r_const, vector(0, 1, 2, 3, 4)));
 
    // An unbounded producer materializes its full observation cap.
    constexpr auto i_const = seq(iterate(add_one, 0));
    static_assert(count(i_const) ==
-                 CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
+                 cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE);
    static_assert(i_const(0) == 0 && i_const(999) == 999);
 
    // Runtime demonstration.
@@ -71,14 +72,17 @@ namespace cljonic {
    return (count(s_runtime) == 2 && s_runtime(0) == 10 && s_runtime(1) == 20 &&
            equal(q_runtime, vector(5, 6)) &&
            equal(t_runtime, vector('C', 'D')) &&
-           iterate_length == CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
+           iterate_length ==
+               cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
            iterate_sum == 499500)
               ? 0
               : 1;
  }
  ~~~~~
  */
-namespace concepts_detail {
+} // namespace cljonic::core
+
+namespace cljonic::concepts_detail {
 
 template <typename Result, typename C>
 [[nodiscard]] constexpr auto materialize_traversal(const C& value) noexcept -> Result {
@@ -89,7 +93,9 @@ template <typename Result, typename C>
     return result;
 }
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 template <concepts::CljonicVector C>
 [[nodiscard]] constexpr auto seq(const C& value) noexcept -> C {
@@ -117,4 +123,4 @@ constexpr auto seq([[maybe_unused]] const C& value) noexcept -> void {
                                                        "Range, Repeat, Cycle, Iterate, or Repeatedly value.");
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

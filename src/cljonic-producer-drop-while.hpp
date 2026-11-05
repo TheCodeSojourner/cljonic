@@ -32,6 +32,7 @@ namespace cljonic {
 ~~~~~{.cpp}
 #include "cljonic.hpp"
 using namespace cljonic;
+using namespace cljonic::core;
 
 int main() {
   constexpr auto below_three = [](int n) noexcept { return n < 3; };
@@ -40,7 +41,7 @@ int main() {
   static_assert(equal(suffix, vector(4, 1)));
   static_assert(equal(rest(suffix), vector(1)));
   static_assert(
-      equal(into(Vector<int, 4>{}, next(cycle(suffix))), vector(1, 4, 1, 4)));
+      equal(into(vector<int, 4>(), next(cycle(suffix))), vector(1, 4, 1, 4)));
   static_assert(count(drop_while(below_three, queue(1, 2, 4))) == 1);
   static_assert(count(drop_while([](char c) noexcept { return c < 'c'; },
                                  string("abcd"))) == 2);
@@ -69,6 +70,10 @@ int main() {
 template <typename Predicate, typename Source>
 using DropWhile = concepts_detail::PredicateProducer<Predicate, Source, true>;
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 template <typename Predicate, typename Source>
     requires concepts_detail::PredicateProducerArguments<std::decay_t<Predicate>, Source>
 [[nodiscard]] constexpr auto drop_while(const Predicate& predicate, const Source& source) noexcept
@@ -85,4 +90,4 @@ constexpr auto drop_while([[maybe_unused]] const Args&... args) noexcept -> conc
     return {};
 }
 
-} // namespace cljonic
+} // namespace cljonic::core

@@ -33,6 +33,7 @@ namespace cljonic {
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  struct Pixel {
    int x;
@@ -394,6 +395,10 @@ concept VectorFactoryCapacityArguments =
 
 } // namespace concepts_detail
 
+} // namespace cljonic
+
+namespace cljonic::core {
+
 /** Creates a bounded Vector from its arguments, or a typed empty Vector when called as \c vector<T>(). */
 template <typename RequestedElementType = concepts_detail::DeducedVectorElementType, typename... Args>
     requires concepts_detail::VectorFactoryArguments<RequestedElementType, Args...>
@@ -449,6 +454,10 @@ constexpr auto vector([[maybe_unused]] Args&&... args) noexcept -> void {
                       "cljonic::vector: every argument must safely construct the element type without throwing.");
     }
 }
+
+} // namespace cljonic::core
+
+namespace cljonic {
 
 template <typename First, typename... Rest>
 Vector(First, Rest...) -> Vector<First, 1 + sizeof...(Rest)>;

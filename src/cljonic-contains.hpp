@@ -2,9 +2,9 @@
 
 #include <cljonic-concepts.hpp>
 
-namespace cljonic {
+namespace cljonic::core {} // namespace cljonic::core
 
-namespace concepts_detail {
+namespace cljonic::concepts_detail {
 
 template <typename C>
 concept ContainsLookupCollection =
@@ -22,7 +22,9 @@ concept ContainsAdmissible =
     (ContainsLookupCollection<C> && concepts::SafeImplicitConversion<typename C::lookup_type, K>) ||
     (ContainsIndexedCollection<C> && IntegerIndexType<K>);
 
-} // namespace concepts_detail
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
 
 /** \anchor Contains
  * The \b contains free function tests key presence, element membership, or index validity in a \ref Map "Map", \ref
@@ -36,6 +38,7 @@ concept ContainsAdmissible =
  ~~~~~{.cpp}
  #include "cljonic.hpp"
  using namespace cljonic;
+ using namespace cljonic::core;
 
  int main() {
    // Compile-time demonstration.
@@ -92,4 +95,4 @@ template <typename C, typename K>
     return false;
 }
 
-} // namespace cljonic
+} // namespace cljonic::core
