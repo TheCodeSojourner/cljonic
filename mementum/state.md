@@ -1,28 +1,27 @@
 ## Current Session State
 
-- last_session_id: e0af8dda-3c6e-4845-9ede-5482d050fbb0
-- current_timestamp: 2026-11-05T13:23:03-07:00
+- last_session_id: 31c5609c-fbde-47af-8099-14b85ad5cfb7
+- current_timestamp: 2026-11-05T15:18:41-07:00
 - session_complete: true
-- recover: Doxygen examples use factories for user-creatable cljonic values where an equivalent factory accepts the input. All 50 active examples use the root namespace import as a consistent style, although 45 compile without it; five use root types unqualified. This is a usage-style choice, not a behavioral spec change.
+- recover: `/cljonic-full-converge-auto` and `make upsert-gate-fast` passed. Afterward, the human committed the convergence changes, refreshed generated HTML docs, and left the worktree clean; this `/gybis-fini` commit contains only `mementum/state.md`. The fast gate predates those commits; do not assume `make git` was run.
 - Task:
-  1. Audited active Doxygen C++ fences for direct construction of factory-backed values and alias-based constructions.
-  2. Converted the duplicate-key Map example to `hash_map`; retained Map, Set, Queue, and Vector constructors only for span/view interoperability sources without matching factories.
-  3. Added `using namespace cljonic;` after includes in all 50 active examples, removed selective type imports, and kept `using namespace cljonic::core;`.
-  4. Updated the sample validator and regression tests to require the root import at file scope; recorded the convention in `mementum/memories/doxygen-examples-import-root-namespace.md`.
-  5. Compiled all 50 examples without the root import in a temporary audit: 45 passed and five failed on unqualified root types. Confirmed those five could instead use selective or qualified type names.
-  6. Checked namespace requirements and architecture; found no import-style clause requiring an Allium spec change.
+  1. Ran `/gybis-init` and `/cljonic-full-converge-auto`; reconciled canonical terminology and active inventory across requirements, vocabulary, architecture, and specifications.
+  2. Corrected the stale collection-shaping deferred marker for active `take_while`/`drop_while`, and aligned architecture scope for active collection and predicate-producer APIs.
+  3. Reviewed actual no-heap probes and Doxygen examples for active APIs, including collection operations, traversal, comparison, and materialization. Added missing String replace/append runtime and input-preservation assertions for `assoc`, and improved runtime result checks in the `character_is_valid` and `Variant` examples.
+  4. Regenerated the single-header mirror `cljonic.hpp`. The human subsequently refreshed and committed generated HTML documentation.
 - Decisions:
-  1. `using namespace cljonic;` is idiomatic in cljonic Doxygen examples; keep it at file scope after includes.
-  2. Use factories for user-created cljonic values where an equivalent factory supports the source; keep direct constructors for standard C++ span/view interoperability.
-  3. Retain `using namespace cljonic::core;` for Core functions where examples use them.
-  4. Do not change behavioral specs for this import-style convention.
+  1. Preserve requirement identifiers and normative meaning while canonicalizing terminology; do not resolve genuine semantic or stakeholder conflicts by inventing behavior.
+  2. Keep `take_while` and `drop_while` active under their separate specifications; only operations not already declared active remain deferred.
+  3. Keep `make git` and any product staging/commits for the human's final review workflow; do not infer that the full suite or `make git` ran from the fast gate.
+  4. The `assoc` evidence gap was identity-preserving and covered by both a runtime no-heap probe and a runnable Doxygen example.
 - Validation:
-  1. `make format-doc-samples` passed.
-  2. `make -j"$(nproc)" cljonic docs docs-examples` passed; all 50 Doxygen examples compiled.
-  3. `python3 scripts/test-validation-tools.py` passed all 33 tests.
-  4. `git diff --check` passed after trimming Doxygen-generated trailing spaces.
+  1. Allium 3.5.3 check and analyse completed without diagnostics/findings; `make requirements-structure` passed with 356 unique clauses; `make vocabulary-structure` passed with 209 terms.
+  2. `make traceability-spec-to-code` passed.
+  3. `make docs-examples` compiled 50 examples; all 50 extracted programs linked and exited successfully.
+  4. `make no-heap` and `make no-heap-src` passed.
+  5. Required aggregate `make upsert-gate-fast` passed; final `git diff --check` passed.
 - Questions: None.
-- Next: Await human direction. Commit the updated Mementum state during `/gybis-fini`; all other changes are already present in Git.
+- Next: Await human direction. Convergence changes and regenerated HTML are committed; the human may run `make git` if not already done.
 
 ## Previous Session State (Core namespace migration)
 
