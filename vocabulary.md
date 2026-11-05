@@ -1,6 +1,6 @@
 ---
 created: 2026-08-05
-last_updated: 2026-10-31
+last_updated: 2026-11-05
 status: draft
 ---
 
@@ -13,10 +13,10 @@ The current implementation and tests cover the collection and value types
 producers `Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`, `TakeWhile`, and
 `DropWhile`, and their direct construction, member observation, callable
 collection forms, and factories. The active free-function surface includes
-primitive operations such as `first`, `next`, `has_next`, `has_rest`, and
-`rest`; higher-order operations `map`, `reduce`, `filter`, `filterv`, `take`,
-`drop`, `take_while`, and `drop_while`; and producer materialization through
-`into`, preflighted by `fits_into`. Sequence conversion (`seq`) converts
+primitive operations such as `first`, `has_first`, `next`, `has_next`,
+`has_rest`, and `rest`; higher-order operations `map`, `reduce`, `filter`,
+`filterv`, `take`, `drop`, `take_while`, and `drop_while`; and producer
+materialization through `into`, preflighted by `fits_into`. Sequence conversion (`seq`) converts
 collections and supported producers to bounded `Vector` values under
 `REQ-SEQ-010`. Const range traversal and read-only C++ interoperability are
 active infrastructure. Module 3 establishes the concrete, array-backed,
@@ -486,7 +486,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Deprecated Synonyms:** predicate naming policy, semantic predicate naming
 - **Related:** CapabilityPredicate, StatePredicate, VerbPredicate, IsPredicatePrefix, CanPredicatePrefix, HasPredicatePrefix, ValidPredicatePrefix
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
-- **Examples:** `is_empty`, `contains`, `fits_into`, and `has_next` use names that identify their semantic questions.
+- **Examples:** `is_empty`, `contains`, `fits_into`, `has_first`, and `has_next` use names that identify their semantic questions.
 
 
 ### CapabilityPredicate
@@ -494,7 +494,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Deprecated Synonyms:** capability check, operation precondition predicate
 - **Related:** PreflightPredicate, SemanticPredicateName, FullState
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
-- **Examples:** `can_add`, `can_assoc`, `fits_into`, and `has_next` are capability predicates when their contracts govern corresponding operations.
+- **Examples:** `can_add`, `can_assoc`, `fits_into`, `has_first`, and `has_next` are capability predicates when their contracts govern corresponding operations.
 
 
 ### IsPredicatePrefix
@@ -511,6 +511,14 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Related:** CapabilityPredicate, PreflightPredicate
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
 - **Examples:** `can_add` and `can_assoc` express operation-specific completion capability.
+
+
+### HasFirst
+- **Definition:** The preflight predicate for whether an input admitted by `first` has a first result. For a supported `Vector`, `Map`, `Set`, `Queue`, or `String`, it returns true exactly when the collection has at least one logical element. For a producer admitted by `first`, it observes only what is needed to determine whether a first element exists, without exact counting or materialization; producer callbacks may run under the same first-element observation rules as `first`, while a zero observation cap invokes no callbacks. For `MapEntry`, it returns true because `first(MapEntry)` returns the entry's key. Unsupported values are rejected at compile time. The operation preserves input value-owned state, is `constexpr`, non-allocating, non-throwing, and part of the current public API.
+- **Deprecated Synonyms:** None
+- **Related:** First, IsEmpty, MapEntry, SequenceableCollection, Producer, LogicalTraversalOrder, PreflightPredicate, HasPredicatePrefix, RejectionDiagnostic
+- **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
+- **Examples:** `has_first(vector<int, 0>())` and `has_first(repeat(0, 7))` are false; `has_first(repeat(1, 7))` is true even when its first element is the default value; `has_first(map_entry(1, 100))` is true.
 
 
 ### HasNext
@@ -534,7 +542,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Deprecated Synonyms:** `has_` predicate, presence predicate prefix
 - **Related:** CapabilityPredicate, Associative
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
-- **Examples:** `has_next` and its exact alias `has_rest` check for an element after the first; a `has_` lookup predicate may report key presence without performing a default-returning lookup.
+- **Examples:** `has_first` checks first-element presence, while `has_next` and its exact alias `has_rest` check for an element after the first; a `has_` lookup predicate may report key presence without performing a default-returning lookup.
 
 
 ### ValidPredicatePrefix
@@ -837,7 +845,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 ### First
 - **Definition:** The free function that returns the first logical element of a cljonic collection or producer, or the key of a `MapEntry`. `Vector` and `String` yield the element at index zero, `Queue` yields its front element without removal, `Map` yields one value-semantic `MapEntry`, and `Set` yields one stored element. `Map` and `Set` traversal order is not semantically significant. An empty sequenceable collection yields its `DefaultElement`. Producer access returns an owning copy of the first observable element from any cljonic producer, including nested predicate adapters and Cycles over them; yielded MapEntry values remain whole entries. Empty or zero-cap producer observations yield the element type's `DefaultElement`; zero cap starts no traversal or callbacks. First access performs only the evaluation needed to find that element or establish absence, without an exact-count prepass, materialization, or later advancement. DropWhile may scan its entire bounded matching prefix. Each call uses fresh traversal under existing callback-state rules; authorized external effects may repeat. Producer support is active after separate explicit implementation approval and verification; existing collection and MapEntry behavior is unchanged. The operation is non-mutating, non-allocating, non-throwing, and `constexpr`.
 - **Deprecated Synonyms:** head, first element, first entry
-- **Related:** Sequence, SequenceableCollection, Producer, TakeWhile, DropWhile, Cycle, Traversal, LogicalTraversalOrder, MapEntry, DefaultElement, Peek
+- **Related:** Sequence, SequenceableCollection, Producer, HasFirst, TakeWhile, DropWhile, Cycle, Traversal, LogicalTraversalOrder, MapEntry, DefaultElement, Peek
 - **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
 - **Examples:** `first(vector<int, 4>(10, 20))` is `10`; `first(Queue<int, 4>{5, 6})` is `5`; `first(MapEntry<int, int>{1, 100})` is `1`; `first(vector<int, 4>())` is the default `int` value.
 
