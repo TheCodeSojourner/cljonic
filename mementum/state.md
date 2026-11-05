@@ -3,21 +3,21 @@
 - last_session_id: 0bb0db7a-38cf-4093-af9d-761688b77254
 - current_timestamp: 2026-11-05T15:44:12-07:00
 - session_complete: true
-- recover: Clarified the Variant Doxygen storage description and examples in `src/cljonic-collection-variant.hpp` and regenerated `cljonic.hpp`. `make docs-examples` and `make -j"$(nproc)" upsert-gate-fast` passed. The product edits remain uncommitted for human review; this `/gybis-fini` commit contains only `mementum/state.md`.
+- recover: Clarified the Variant Doxygen storage description and examples in `src/cljonic-collection-variant.hpp` and regenerated `cljonic.hpp`. `make docs-examples` and `make -j"$(nproc)" upsert-gate-fast` passed. The human committed the code as `30c6fcb0` and refreshed/committed the generated HTML docs as `56cfa035`; this `/gybis-fini` commit contains only `mementum/state.md`. Do not assume `make git` ran.
 - Task:
   1. Explained that Variant alternatives must meet non-throwing collection-storage requirements; a valid producer such as an `Iterate` with a stateful capturing step may fail the default-initialization requirement.
   2. Updated the Variant documentation to say that alternatives may be storable cljonic collections and producers, including nested combinations, and added examples using a Vector alternative and a Repeat-of-Vector alternative.
-  3. Regenerated the single-header mirror `cljonic.hpp`.
+  3. Regenerated the single-header mirror `cljonic.hpp`; the human subsequently committed the implementation and refreshed Doxygen HTML.
 - Decisions:
   1. Describe collection/producer alternatives as admissible when they satisfy Variant's storage requirements; do not imply that every producer automatically qualifies.
-  2. Leave product edits uncommitted for human review; the state checkpoint commit must not include them.
+  2. Product edits and generated HTML are committed separately by the human; the state checkpoint commit must not include product files.
 - Validation:
   1. `make docs-examples` passed; 50 examples compiled and ran.
   2. `make -j"$(nproc)" upsert-gate-fast` passed, including traceability and no-heap gates.
   3. A C++23 syntax-only check confirmed a stateful `Iterate` is a producer but does not satisfy `NothrowCollectionElement`.
   4. `git diff --check` passed.
 - Questions: None.
-- Next: Await human review/direction on the uncommitted Variant documentation changes; the human may run `make git` before committing product changes.
+- Next: Await human direction. Variant implementation and generated HTML documentation are committed; the human may run `make git` if desired, but it has not been verified here.
 
 ## Previous Session State (Core namespace migration)
 
