@@ -503,6 +503,15 @@ requires (!concepts_detail::GetKeyAdmissible&lt;C, K&gt;)</td></tr>
 <tr class="memitem:a94b0ec222dcf78f3fb15a492a04c1ac5" id="r_a94b0ec222dcf78f3fb15a492a04c1ac5"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K, typename R&gt; <br />
 requires (!concepts_detail::GetFallbackAdmissible&lt;C, K, R&gt;)</td></tr>
 <tr class="memitem:a94b0ec222dcf78f3fb15a492a04c1ac5 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a94b0ec222dcf78f3fb15a492a04c1ac5">get</a> (const C &amp;collection, const K &amp;key, const R &amp;fallback) noexcept -&gt; void</td></tr>
+<tr class="memitem:a7f48f91e15bcc4de330b82ef155bcf1c" id="r_a7f48f91e15bcc4de330b82ef155bcf1c"><td class="memTemplParams" colspan="2">template&lt;typename KeyType, typename ValueType&gt; </td></tr>
+<tr class="memitem:a7f48f91e15bcc4de330b82ef155bcf1c template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a7f48f91e15bcc4de330b82ef155bcf1c">has_first</a> (const <a class="el" href="structcljonic_1_1_map_entry.html">MapEntry</a>&lt; KeyType, ValueType &gt; &amp;entry) noexcept -&gt; bool</td></tr>
+<tr class="memitem:acd843b5d30818dbf6d4da4104f5d60da" id="r_acd843b5d30818dbf6d4da4104f5d60da"><td class="memTemplParams" colspan="2">template&lt;concepts::SequenceableCollection C&gt; </td></tr>
+<tr class="memitem:acd843b5d30818dbf6d4da4104f5d60da template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#acd843b5d30818dbf6d4da4104f5d60da">has_first</a> (const C &amp;collection) noexcept -&gt; bool</td></tr>
+<tr class="memitem:a5c9c283c49a34765267f4072f88cc869" id="r_a5c9c283c49a34765267f4072f88cc869"><td class="memTemplParams" colspan="2">template&lt;concepts::CljonicProducer P&gt; </td></tr>
+<tr class="memitem:a5c9c283c49a34765267f4072f88cc869 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a5c9c283c49a34765267f4072f88cc869">has_first</a> (const P &amp;producer) noexcept -&gt; bool</td></tr>
+<tr class="memitem:afcc6bd115454e6ce1141b54a87914cd2" id="r_afcc6bd115454e6ce1141b54a87914cd2"><td class="memTemplParams" colspan="2">template&lt;typename C&gt; <br />
+requires (!concepts::SequenceableCollection&lt;C&gt; &amp;&amp; !concepts::CljonicProducer&lt;C&gt; &amp;&amp; !<a class="el" href="namespacecljonic_1_1concepts__detail.html#a3889b714b08533483ca70718c5f1d55c">concepts_detail::is_cljonic_map_entry_v</a>&lt;C&gt;)</td></tr>
+<tr class="memitem:afcc6bd115454e6ce1141b54a87914cd2 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#afcc6bd115454e6ce1141b54a87914cd2">has_first</a> (const C &amp;value) noexcept -&gt; void</td></tr>
 <tr class="memitem:a8fe14c0b770362db9a2d97cdf9ffc823" id="r_a8fe14c0b770362db9a2d97cdf9ffc823"><td class="memTemplParams" colspan="2">template&lt;concepts_detail::NextSequenceableCollection C&gt; </td></tr>
 <tr class="memitem:a8fe14c0b770362db9a2d97cdf9ffc823 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a8fe14c0b770362db9a2d97cdf9ffc823">has_next</a> (const C &amp;collection) noexcept -&gt; bool</td></tr>
 <tr class="memitem:a5ff52bb321282919d4c13a25b6dc7e3e" id="r_a5ff52bb321282919d4c13a25b6dc7e3e"><td class="memTemplParams" colspan="2">template&lt;concepts_detail::NextSequenceableProducer P&gt; </td></tr>
@@ -4204,6 +4213,161 @@ requires concepts_detail::GetKeyAdmissible&lt;C, K&gt; &amp;&amp; concepts_detai
 <div class="ttc" id="anamespacecljonic_1_1core_html_af0db9387e8b8f75f7034b35d3823b81e"><div class="ttname"><a href="#af0db9387e8b8f75f7034b35d3823b81e">cljonic::core::get</a></div><div class="ttdeci">constexpr auto get(const C &amp;collection, const K &amp;key, const V &amp;fallback=V{}) noexcept(noexcept(collection(key, fallback))) -&gt; decltype(collection(key, fallback))</div><div class="ttdef"><b>Definition</b> <a href="cljonic-get_8hpp_source.html#l00092">cljonic-get.hpp:92</a></div></div>
 </div><!-- fragment --> 
 <p class="definition">Definition at line <a class="el" href="cljonic-get_8hpp_source.html#l00092">92</a> of file <a class="el" href="cljonic-get_8hpp_source.html">cljonic-get.hpp</a>.</p>
+
+</div>
+</div>
+<a id="acd843b5d30818dbf6d4da4104f5d60da" name="acd843b5d30818dbf6d4da4104f5d60da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd843b5d30818dbf6d4da4104f5d60da">&#9670;&#160;</a></span>has_first() <span class="overload">[1/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;concepts::SequenceableCollection C&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::has_first </td>
+          <td>(</td>
+          <td class="paramtype">const C &amp;</td>          <td class="paramname"><span class="paramname"><em>collection</em></span></td><td>)</td>
+          <td> -&gt; bool</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Reports whether a <a class="el" href="classcljonic_1_1_vector.html">Vector</a>, <a class="el" href="classcljonic_1_1_map.html">Map</a>, <a class="el" href="classcljonic_1_1_set.html">Set</a>, <a class="el" href="classcljonic_1_1_queue.html">Queue</a>, or <a class="el" href="classcljonic_1_1_string.html">String</a> contains a logical element. </p>
+
+<p class="definition">Definition at line <a class="el" href="cljonic-has-first_8hpp_source.html#l00062">62</a> of file <a class="el" href="cljonic-has-first_8hpp_source.html">cljonic-has-first.hpp</a>.</p>
+
+</div>
+</div>
+<a id="afcc6bd115454e6ce1141b54a87914cd2" name="afcc6bd115454e6ce1141b54a87914cd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afcc6bd115454e6ce1141b54a87914cd2">&#9670;&#160;</a></span>has_first() <span class="overload">[2/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename C&gt; <br />
+requires (!concepts::SequenceableCollection&lt;C&gt; &amp;&amp; !concepts::CljonicProducer&lt;C&gt; &amp;&amp; !<a class="el" href="namespacecljonic_1_1concepts__detail.html#a3889b714b08533483ca70718c5f1d55c">concepts_detail::is_cljonic_map_entry_v</a>&lt;C&gt;)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::has_first </td>
+          <td>(</td>
+          <td class="paramtype">const C &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
+          <td> -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-has-first_8hpp_source.html#l00080">80</a> of file <a class="el" href="cljonic-has-first_8hpp_source.html">cljonic-has-first.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a7f48f91e15bcc4de330b82ef155bcf1c" name="a7f48f91e15bcc4de330b82ef155bcf1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f48f91e15bcc4de330b82ef155bcf1c">&#9670;&#160;</a></span>has_first() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename KeyType, typename ValueType&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::has_first </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structcljonic_1_1_map_entry.html">MapEntry</a>&lt; KeyType, ValueType &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>entry</em></span></td><td>)</td>
+          <td> -&gt; bool</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="anchor" id="HasFirst"></a> The <b>has_first</b> free function reports whether <a class="el" href="#First" title="First">first</a> has a result for a supported collection, producer, or <a class="el" href="structcljonic_1_1_map_entry.html#MapEntry" title="MapEntry">MapEntry</a> value.</p>
+<p>A collection is nonempty when it contains at least one logical element. For a producer, this function observes only what is needed to determine whether a first element exists. It does not count or materialize the producer. The producer's callbacks may run as they do during <a class="el" href="#First" title="First">first</a> observation. At a zero observation limit, no source or predicate callback runs. A <a class="el" href="structcljonic_1_1_map_entry.html#MapEntry" title="MapEntry">MapEntry</a> always has a first result: its key.</p>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> values = <a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(10, 20);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> empty_values = <a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector&lt;int, 0&gt;</a>();</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> no_produced_values = <a class="code hl_function" href="#a4ebeaa5d9bef8520af2e09e8d5aada70">repeat</a>(0, 7);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> default_first_value = <a class="code hl_function" href="#a4ebeaa5d9bef8520af2e09e8d5aada70">repeat</a>(1, 7);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> entry = <a class="code hl_function" href="#a9ad89b2da321b5072a628a8a836a1b7c">map_entry</a>(1, 100);</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a7f48f91e15bcc4de330b82ef155bcf1c">has_first</a>(values));</div>
+<div class="line">  <span class="keyword">static_assert</span>(!<a class="code hl_function" href="#a7f48f91e15bcc4de330b82ef155bcf1c">has_first</a>(empty_values));</div>
+<div class="line">  <span class="keyword">static_assert</span>(!<a class="code hl_function" href="#a7f48f91e15bcc4de330b82ef155bcf1c">has_first</a>(no_produced_values));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a7f48f91e15bcc4de330b82ef155bcf1c">has_first</a>(default_first_value));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a7f48f91e15bcc4de330b82ef155bcf1c">has_first</a>(entry));</div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">const</span> <span class="keywordtype">int</span> value = 40;</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_values = <a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(value, value + 1);</div>
+<div class="line">  <span class="keyword">auto</span> callback_calls = 0;</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> generated = <a class="code hl_function" href="#aec4589540b2582e483d0e62998c84947">repeatedly</a>([&amp;callback_calls, value]() <span class="keyword">noexcept</span> {</div>
+<div class="line">    ++callback_calls;</div>
+<div class="line">    <span class="keywordflow">return</span> value;</div>
+<div class="line">  });</div>
+<div class="line">  <span class="keyword">const</span> <span class="keywordtype">bool</span> has_generated_value = <a class="code hl_function" href="#a7f48f91e15bcc4de330b82ef155bcf1c">has_first</a>(generated);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keywordtype">bool</span> callback_result =</div>
+<div class="line">      <a class="code hl_variable" href="namespacecljonic.html#a41fa65c16edb0a95aa942c48307777d6">cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</a> == 0U</div>
+<div class="line">          ? !has_generated_value &amp;&amp; callback_calls == 0</div>
+<div class="line">          : has_generated_value &amp;&amp; callback_calls == 1;</div>
+<div class="line">  <span class="keywordflow">return</span> <a class="code hl_function" href="#a7f48f91e15bcc4de330b82ef155bcf1c">has_first</a>(runtime_values) &amp;&amp; runtime_values(0) == value &amp;&amp;</div>
+<div class="line">                 callback_result</div>
+<div class="line">             ? 0</div>
+<div class="line">             : 1;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a7f48f91e15bcc4de330b82ef155bcf1c"><div class="ttname"><a href="#a7f48f91e15bcc4de330b82ef155bcf1c">cljonic::core::has_first</a></div><div class="ttdeci">constexpr auto has_first(const MapEntry&lt; KeyType, ValueType &gt; &amp;entry) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-has-first_8hpp_source.html#l00056">cljonic-has-first.hpp:56</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-has-first_8hpp_source.html#l00056">56</a> of file <a class="el" href="cljonic-has-first_8hpp_source.html">cljonic-has-first.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a5c9c283c49a34765267f4072f88cc869" name="a5c9c283c49a34765267f4072f88cc869"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c9c283c49a34765267f4072f88cc869">&#9670;&#160;</a></span>has_first() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;concepts::CljonicProducer P&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::has_first </td>
+          <td>(</td>
+          <td class="paramtype">const P &amp;</td>          <td class="paramname"><span class="paramname"><em>producer</em></span></td><td>)</td>
+          <td> -&gt; bool</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Reports whether a producer has a first observable element. </p>
+
+<p class="definition">Definition at line <a class="el" href="cljonic-has-first_8hpp_source.html#l00068">68</a> of file <a class="el" href="cljonic-has-first_8hpp_source.html">cljonic-has-first.hpp</a>.</p>
 
 </div>
 </div>
