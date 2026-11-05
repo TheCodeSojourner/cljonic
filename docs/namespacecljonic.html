@@ -584,6 +584,11 @@ requires (!concepts_detail::GetFallbackAdmissible&lt;C, K, R&gt;)</td></tr>
 <tr class="memitem:a7b373cdda3957add302043d341dc5470" id="r_a7b373cdda3957add302043d341dc5470"><td class="memTemplParams" colspan="2">template&lt;typename C&gt; <br />
 requires (!concepts_detail::NextSequenceable&lt;C&gt;)</td></tr>
 <tr class="memitem:a7b373cdda3957add302043d341dc5470 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a7b373cdda3957add302043d341dc5470">has_next</a> (const C &amp;value) noexcept -&gt; void</td></tr>
+<tr class="memitem:a92c3630e2546bf2adf1bd2a7ac6b0a54" id="r_a92c3630e2546bf2adf1bd2a7ac6b0a54"><td class="memTemplParams" colspan="2">template&lt;concepts_detail::NextSequenceable C&gt; </td></tr>
+<tr class="memitem:a92c3630e2546bf2adf1bd2a7ac6b0a54 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a92c3630e2546bf2adf1bd2a7ac6b0a54">has_rest</a> (const C &amp;value) noexcept -&gt; bool</td></tr>
+<tr class="memitem:adb60ce0936ce339406ca6e4e5a0ed7cd" id="r_adb60ce0936ce339406ca6e4e5a0ed7cd"><td class="memTemplParams" colspan="2">template&lt;typename C&gt; <br />
+requires (!concepts_detail::NextSequenceable&lt;C&gt;)</td></tr>
+<tr class="memitem:adb60ce0936ce339406ca6e4e5a0ed7cd template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#adb60ce0936ce339406ca6e4e5a0ed7cd">has_rest</a> (const C &amp;value) noexcept -&gt; void</td></tr>
 <tr class="memitem:a6b0a13c640d125d2b026b26ca253f292" id="r_a6b0a13c640d125d2b026b26ca253f292"><td class="memTemplParams" colspan="2">template&lt;typename Dest, typename Source&gt; <br />
 requires concepts_detail::MaterializableSource&lt;Dest, Source&gt;</td></tr>
 <tr class="memitem:a6b0a13c640d125d2b026b26ca253f292 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a6b0a13c640d125d2b026b26ca253f292">into</a> (const Dest &amp;destination, const Source &amp;source) noexcept -&gt; Dest</td></tr>
@@ -4536,6 +4541,91 @@ template&lt;concepts_detail::NextSequenceableProducer P&gt; </div>
 
 </div>
 </div>
+<a id="a92c3630e2546bf2adf1bd2a7ac6b0a54" name="a92c3630e2546bf2adf1bd2a7ac6b0a54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92c3630e2546bf2adf1bd2a7ac6b0a54">&#9670;&#160;</a></span>has_rest() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;concepts_detail::NextSequenceable C&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::has_rest </td>
+          <td>(</td>
+          <td class="paramtype">const C &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
+          <td> -&gt; bool</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="anchor" id="HasRest"></a> The <b>has_rest</b> free function is an exact forwarding alias for <a class="el" href="#HasNext" title="HasNext">has_next</a>. It accepts exactly the same collections and producers and uses the same preflight behavior, callback timing, and diagnostics.</p>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> vector_values = <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector</a>(10, 20);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> map_values =</div>
+<div class="line">      <a class="code hl_class" href="classcljonic_1_1_map.html">Map&lt;int, int, 2&gt;</a>{<a class="code hl_struct" href="structcljonic_1_1_map_entry.html">MapEntry</a>{1, 10}, <a class="code hl_struct" href="structcljonic_1_1_map_entry.html">MapEntry</a>{2, 20}};</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> set_values = <a class="code hl_class" href="classcljonic_1_1_set.html">Set&lt;int, 2&gt;</a>{10, 20};</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> queue_values = <a class="code hl_function" href="#a2693300957a43d0bb2d4c29634a838f7">queue</a>(10, 20);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> string_values = <a class="code hl_function" href="#aac92eb77175a67beb451582c5786027e">string</a>(<span class="stringliteral">&quot;AB&quot;</span>);</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a92c3630e2546bf2adf1bd2a7ac6b0a54">has_rest</a>(vector_values) == <a class="code hl_function" href="#a514eb3e51f09b703e982afb8c67ae932">has_next</a>(vector_values));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a92c3630e2546bf2adf1bd2a7ac6b0a54">has_rest</a>(map_values) == <a class="code hl_function" href="#a514eb3e51f09b703e982afb8c67ae932">has_next</a>(map_values));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a92c3630e2546bf2adf1bd2a7ac6b0a54">has_rest</a>(set_values) == <a class="code hl_function" href="#a514eb3e51f09b703e982afb8c67ae932">has_next</a>(set_values));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a92c3630e2546bf2adf1bd2a7ac6b0a54">has_rest</a>(queue_values) == <a class="code hl_function" href="#a514eb3e51f09b703e982afb8c67ae932">has_next</a>(queue_values));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a92c3630e2546bf2adf1bd2a7ac6b0a54">has_rest</a>(string_values) == <a class="code hl_function" href="#a514eb3e51f09b703e982afb8c67ae932">has_next</a>(string_values));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a92c3630e2546bf2adf1bd2a7ac6b0a54">has_rest</a>(<a class="code hl_class" href="classcljonic_1_1_range.html">Range</a>{0, 3}) == <a class="code hl_function" href="#a514eb3e51f09b703e982afb8c67ae932">has_next</a>(<a class="code hl_class" href="classcljonic_1_1_range.html">Range</a>{0, 3}));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a92c3630e2546bf2adf1bd2a7ac6b0a54">has_rest</a>(<a class="code hl_function" href="#af31c4c3eb2e82ffcc9d64da7ea5ca8bc">repeat</a>(2, 7)) == <a class="code hl_function" href="#a514eb3e51f09b703e982afb8c67ae932">has_next</a>(<a class="code hl_function" href="#af31c4c3eb2e82ffcc9d64da7ea5ca8bc">repeat</a>(2, 7)));</div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_values = <a class="code hl_function" href="#a11e270768e9485445f2885cdecb1c4eb">vector&lt;int, 4&gt;</a>(40, 50);</div>
+<div class="line">  <span class="keywordflow">return</span> <a class="code hl_function" href="#a92c3630e2546bf2adf1bd2a7ac6b0a54">has_rest</a>(runtime_values) == <a class="code hl_function" href="#a514eb3e51f09b703e982afb8c67ae932">has_next</a>(runtime_values) ? 0 : 1;</div>
+<div class="line">}</div>
+<div class="ttc" id="aclasscljonic_1_1_map_html"><div class="ttname"><a href="classcljonic_1_1_map.html">cljonic::Map</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-map_8hpp_source.html#l00139">cljonic-collection-map.hpp:139</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_set_html"><div class="ttname"><a href="classcljonic_1_1_set.html">cljonic::Set</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-set_8hpp_source.html#l00122">cljonic-collection-set.hpp:122</a></div></div>
+<div class="ttc" id="anamespacecljonic_html_a92c3630e2546bf2adf1bd2a7ac6b0a54"><div class="ttname"><a href="#a92c3630e2546bf2adf1bd2a7ac6b0a54">cljonic::has_rest</a></div><div class="ttdeci">constexpr auto has_rest(const C &amp;value) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-has-rest_8hpp_source.html#l00037">cljonic-has-rest.hpp:37</a></div></div>
+<div class="ttc" id="astructcljonic_1_1_map_entry_html"><div class="ttname"><a href="structcljonic_1_1_map_entry.html">cljonic::MapEntry</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-map-entry_8hpp_source.html#l00055">cljonic-collection-map-entry.hpp:55</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-has-rest_8hpp_source.html#l00037">37</a> of file <a class="el" href="cljonic-has-rest_8hpp_source.html">cljonic-has-rest.hpp</a>.</p>
+
+</div>
+</div>
+<a id="adb60ce0936ce339406ca6e4e5a0ed7cd" name="adb60ce0936ce339406ca6e4e5a0ed7cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb60ce0936ce339406ca6e4e5a0ed7cd">&#9670;&#160;</a></span>has_rest() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename C&gt; <br />
+requires (!concepts_detail::NextSequenceable&lt;C&gt;)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::has_rest </td>
+          <td>(</td>
+          <td class="paramtype">const C &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
+          <td> -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-has-rest_8hpp_source.html#l00043">43</a> of file <a class="el" href="cljonic-has-rest_8hpp_source.html">cljonic-has-rest.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a2aa4197e029c665443f7f5d0ebcf61d8" name="a2aa4197e029c665443f7f5d0ebcf61d8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2aa4197e029c665443f7f5d0ebcf61d8">&#9670;&#160;</a></span>hash_map() <span class="overload">[1/10]</span></h2>
 
@@ -5206,7 +5296,6 @@ requires (concepts_detail::HashSetFactoryArguments&lt;RequestedElementType, Args
 <div class="line">             ? 0</div>
 <div class="line">             : 1;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclasscljonic_1_1_set_html"><div class="ttname"><a href="classcljonic_1_1_set.html">cljonic::Set</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-set_8hpp_source.html#l00122">cljonic-collection-set.hpp:122</a></div></div>
 </div><!-- fragment --> 
 <p class="definition">Definition at line <a class="el" href="cljonic-collection-set_8hpp_source.html#l00429">429</a> of file <a class="el" href="cljonic-collection-set_8hpp_source.html">cljonic-collection-set.hpp</a>.</p>
 

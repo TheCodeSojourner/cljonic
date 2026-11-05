@@ -184,7 +184,8 @@ They copy their source and predicate without evaluating either at construction.
   Captured predicates are supported; collection-element storage is conditional.
   Parameter equality remains unavailable. `has_next` accepts the same producer
   domain as `next` and checks whether the producer tail has an observable element;
-  this may traverse callback-backed producers under their existing callback rules.
+  `has_rest` is an exact forwarding alias. This may traverse callback-backed
+  producers under their existing callback rules.
 - `next` and `rest` return the exact same adapter type, owning the original source
   and predicate with a compact output-skip offset. Creating a tail invokes no
   callbacks; observing it replays the original adapter and skips output elements
