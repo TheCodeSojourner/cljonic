@@ -10,6 +10,18 @@ from pathlib import Path
 
 ANCHOR = r"\anchor Core_Cheatsheet"
 COMMENT_LINE = re.compile(r"^\s*\* ?(.*)$")
+REFERENCE = re.compile(r'\\ref\s+\S+\s+"([^"]+)"')
+
+
+def validate_list_item(line_number: int, text: str) -> list[str]:
+    names = [name.strip() for name in REFERENCE.sub(r"\1", text).split(",")]
+    keys = names
+    errors = []
+    if any(not key or key[0] != keys[0][0] for key in keys):
+        errors.append(f"line {line_number}: list item names must start with the same letter")
+    if keys != sorted(keys):
+        errors.append(f"line {line_number}: list item names must be in ASCII order")
+    return errors
 
 
 def cheatsheet_lines(source: str) -> list[tuple[int, str]]:
@@ -62,6 +74,21 @@ def validate(source: str) -> list[str]:
         if len(re.findall(r"(?:^|\s)-\s+\\ref\b", text)) > 1:
             errors.append(f"line {line_number}: each Markdown list item must occupy its own source line")
 
+    item_line = 0
+    item_text = ""
+    for line_number, text in contents:
+        if text.startswith("- "):
+            if item_text:
+                errors.extend(validate_list_item(item_line, item_text))
+            item_line, item_text = line_number, text[2:]
+        elif item_text and text.startswith("  "):
+            item_text += " " + text.strip()
+        elif item_text:
+            errors.extend(validate_list_item(item_line, item_text))
+            item_text = ""
+    if item_text:
+        errors.extend(validate_list_item(item_line, item_text))
+
     return errors
 
 
@@ -73,6 +100,16 @@ def run_self_test(source: str) -> list[str]:
     collapsed = source.replace(" * ___\n * # Cheatsheet", " * ___ # Cheatsheet", 1)
     if not validate(collapsed):
         return ["negative regression did not reject a collapsed cheatsheet heading"]
+    if not validate_list_item(1, "hash_map, has_next"):
+        return ["negative regression did not reject nonalphabetical names"]
+    if not validate_list_item(1, "hash_map, holds, index"):
+        return ["negative regression did not reject mixed initial letters"]
+    if validate_list_item(1, r'has_next, has_rest, has_some, \ref HashMapFactory "hash_map", holds'):
+        return ["positive regression rejected alphabetically ordered linked names"]
+    if validate_list_item(1, "has_next, has_rest, has_some, hash_map, hash_set, holds"):
+        return ["positive regression rejected ASCII ordering of the Core Functions h group"]
+    if not validate_list_item(1, "hash_map, has_next, has_rest, hash_set, has_some, holds"):
+        return ["negative regression did not reject non-ASCII ordering of the Core Functions h group"]
     return []
 
 

@@ -306,6 +306,35 @@ PRIMITIVES = {
             "drop-while": "(void)cljonic::has_next(cljonic::drop_while([](int value) noexcept { return value < 3; }, cljonic::Vector<int, 3>{1, 2, 3}));",
         },
     },
+    "has_rest": {
+        "diagnostic_anchor": "cljonic::has_rest:",
+        "diagnostic_cases": {
+            "unsupported-scalar": (
+                "(void)cljonic::has_rest(42);",
+                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, or supported Cycle value",
+            ),
+            "unsupported-map-entry": (
+                "(void)cljonic::has_rest(cljonic::MapEntry<int, int>{1, 2});",
+                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, or supported Cycle value",
+            ),
+            "unsupported-external-range": (
+                "int values[]{1, 2}; (void)cljonic::has_rest(values);",
+                "expected a Vector, Map, Set, Queue, String, Range, Repeat, Iterate, Repeatedly, TakeWhile, DropWhile, or supported Cycle value",
+            ),
+        },
+        "pass_cases": {
+            "vector": "(void)cljonic::has_rest(cljonic::Vector<int, 4>{1, 2});",
+            "map": "(void)cljonic::has_rest(cljonic::Map<int, int, 4>{cljonic::MapEntry{1, 2}});",
+            "set": "(void)cljonic::has_rest(cljonic::Set<int, 4>{1, 2});",
+            "queue": "(void)cljonic::has_rest(cljonic::Queue<int, 4>{1, 2});",
+            "string": "(void)cljonic::has_rest(cljonic::String<4>{\"AB\"});",
+            "range": "(void)cljonic::has_rest(cljonic::Range<int>{0, 5});",
+            "repeat": "(void)cljonic::has_rest(cljonic::repeat(3, 7));",
+            "cycle": "(void)cljonic::has_rest(cljonic::cycle(cljonic::Vector<int, 3>{1, 2, 3}));",
+            "iterate": "(void)cljonic::has_rest(cljonic::iterate([](int value) noexcept { return value + 1; }, 0));",
+            "repeatedly": "(void)cljonic::has_rest(cljonic::repeatedly(3, []() noexcept { return 7; }));",
+        },
+    },
     "is_empty": {
         "diagnostic_anchor": "cljonic::is_empty:",
         "diagnostic_cases": {
@@ -649,10 +678,11 @@ PRIMITIVES["drop_while"] = {
 
 for adapter in ("take_while", "drop_while"):
     statement = f"const auto p = cljonic::{adapter}([](int) noexcept {{ return true; }}, cljonic::vector(1));"
-    PRIMITIVES["has_next"]["pass_cases"][f"{adapter}-producer"] = statement + " (void)cljonic::has_next(p);"
-    PRIMITIVES["has_next"]["pass_cases"][f"{adapter}-cycle-producer"] = (
-        statement + " (void)cljonic::has_next(cljonic::cycle(p));"
-    )
+    for api in ("has_next", "has_rest"):
+        PRIMITIVES[api]["pass_cases"][f"{adapter}-producer"] = statement + f" (void)cljonic::{api}(p);"
+        PRIMITIVES[api]["pass_cases"][f"{adapter}-cycle-producer"] = (
+            statement + f" (void)cljonic::{api}(cljonic::cycle(p));"
+        )
     for tail in ("next", "rest"):
         PRIMITIVES[tail]["pass_cases"][f"{adapter}-tail"] = (
             f"const auto p = cljonic::{adapter}([limit = 3](int n) noexcept {{ return n < limit; }}, "
