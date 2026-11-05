@@ -17,8 +17,8 @@
   | module4_active_slice(x) → Range(x) ∧ Repeat(x) ∧ Cycle(x) ∧ Iterate(x) ∧ Repeatedly(x) ∧ into(x) ∧ fits_into(x)
   | sequence_conversion(x) → seq(x) ∈ current_collection_api(x) under REQ-SEQ-010
   | stored_collection_building_blocks(x) → govern(higher_order_algorithms(x))
-  | active_higher_order_algorithms(x) ≡ map ∧ reduce ∧ filter ∧ filterv ∧ take_while ∧ drop_while
-  | future_expansion(transformations_except(map ∧ reduce ∧ filter ∧ filterv ∧ take_while ∧ drop_while) ∨ numeric_algorithms ∨ callable_adapters ∨ set_algebra
+  | active_higher_order_algorithms(x) ≡ map ∧ reduce ∧ filter ∧ filterv ∧ take ∧ drop ∧ take_while ∧ drop_while
+  | future_expansion(transformations_except(map ∧ reduce ∧ filter ∧ filterv ∧ take ∧ drop ∧ take_while ∧ drop_while) ∨ numeric_algorithms ∨ callable_adapters ∨ set_algebra
       ∨ relational_models ∨ regexes ∨ formatting ∨ KeywordEnumNameMapping ∨ Atom)
     → describe(approved_future_expansion) ∧ remain_inactive_until(module_propagated(x))
 
@@ -282,7 +282,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | effective_endpoint(x) → normalized_to(EffectiveBoundedPrefixBoundary)
   | producer_materialization(x) → require(ProducerMaterialization) ∧ enforce_synthesis_cap(x)
 
-λ S3_domain_boundary(x). implemented_value_domain(x) ≡ Vector ∧ MapEntry ∧ Map ∧ Set ∧ Queue ∧ String ∧ Variant ∧ Range ∧ Repeat ∧ Cycle ∧ Iterate ∧ Repeatedly
+λ S3_domain_boundary(x). implemented_value_domain(x) ≡ Vector ∧ MapEntry ∧ Map ∧ Set ∧ Queue ∧ String ∧ Variant ∧ Range ∧ Repeat ∧ Cycle ∧ Iterate ∧ Repeatedly ∧ TakeWhile ∧ DropWhile
   | text_matching_domain(x) ≡ bounded_regex_values_and_match_results
   | symbolic_key_domain(x) ≡ supported_scoped_enumerations
   | domain_expansion(x) → require(explicit_approved_requirement)
@@ -318,7 +318,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | collection_primitives(x) ≡ count ∧ get ∧ contains ∧ conj ∧ can_conj ∧ assoc ∧ can_assoc
     ∧ dissoc ∧ disj ∧ peek ∧ pop ∧ empty ∧ is_empty ∧ first ∧ into ∧ fits_into
   | collection_primitives(x) → ¬narrow(universal_obligation(x))
-  | producer_factory_functions(x) ≡ range ∧ repeat ∧ cycle ∧ iterate ∧ repeatedly
+  | producer_factory_functions(x) ≡ range ∧ repeat ∧ cycle ∧ iterate ∧ repeatedly ∧ take_while ∧ drop_while
   | source_constructor_rejection(x) → name(collection ∧ violated_source_construction_rule) ∧ optionally_identify(enclosure_form when applicable) ∧ ¬recommend(materialization ∨ into ∨ fits_into)
   | producer_factory_rejection(x) → name(operation ∧ violated_producer_admission_rule(x)) ∧ state_correct_usage(x)
   | class_template_type_argument_rejection(x) → governed_by(S3_class_template_deduction_diagnostic(x)) ∧ not_exempted_here(x)
@@ -1309,7 +1309,7 @@ concept CljonicVector =
 
 λ CljonicProducer_level(x). gate(type) → nominal_producer_identity(x) ≡ admission(producer_domain(x)) ∧ classification(ProducerKind)
   | recognition(x) → cljonic_owned_traits(x) ∧ distinct_domain_from(ClosedNominalCollectionDomain(x))
-  | nominal_pattern(x) → applies_to(CljonicRange ∧ CljonicRepeat ∧ CljonicCycle ∧ CljonicIterate ∧ CljonicRepeatedly)
+  | nominal_pattern(x) → applies_to(CljonicRange ∧ CljonicRepeat ∧ CljonicCycle ∧ CljonicIterate ∧ CljonicRepeatedly ∧ TakeWhile ∧ DropWhile)
   | ConstInputRange(x) ≡ std::ranges::input_range<const x>
   | NothrowConstInputRange(x) ≡ ConstInputRange(x) ∧ noexcept(begin ∧ end ∧ dereference ∧ increment ∧ sentinel_compare(x))
   | CljonicSource(x) ≡ (CljonicCollection(x) ∨ CljonicProducer(x)) ∧ NothrowConstInputRange(x)
@@ -1632,7 +1632,8 @@ concept SequenceableProducer =
   | view_lifetime(x) → source_lifetime_bounded(x)
 
 λ S1_sequence_guidance(x). sequence_and_materialization_rules(x) → active_for(approved_operations_and_producers)
-  | producer_operation(x) → active(x) when(approved_by(Module4) ∧ governed_by_behavioral_contract(x))
+  | producer_operation(x) → active(x) when((approved_by(Module4) ∨ approved_predicate_producer_scope(x))
+    ∧ governed_by_behavioral_contract(x))
 
 λ S1_sequence_materialization_model(x). unbounded_sequences(x) → represent_as(UnboundedProducer) ∧ attach_synthesis_cap(CollectionMaximumElementCount)
   | producer_family(range ∧ repeat ∧ cycle ∧ iterate ∧ repeatedly) → preserve_semantic_infinity(x) ∧ normalize_effective_bounds(x) ∧ before_materialization(x)
@@ -1753,6 +1754,6 @@ concept SequenceableProducer =
   | module6_numeric_authority(x) ≡ requirements/requirements-module-6.md → govern(checked_arithmetic ∧ callables)
   | module7_extended_domain_authority(x) ≡ requirements/requirements-module-7.md → govern(relations ∧ set_algebra ∧ regex ∧ Atom ∧ formatting ∧ KeywordEnumNameMapping)
 
-λ current_implementation_boundary(x). active_surface(x) ≡ Vector ∧ MapEntry ∧ Map ∧ Set ∧ Queue ∧ String ∧ Variant ∧ Range ∧ Repeat ∧ Cycle ∧ Iterate ∧ Repeatedly ∧ primitive_free_functions ∧ map ∧ reduce ∧ filter ∧ vector_factory ∧ hash_map_factory ∧ map_entry_factory ∧ set_factory ∧ queue_factory ∧ string_factory ∧ variant_factory ∧ into ∧ fits_into
-  | approved_but_unimplemented(algorithms ∨ regexes) → remain_outside(active_surface(x))
+λ current_implementation_boundary(x). active_surface(x) ≡ Vector ∧ MapEntry ∧ Map ∧ Set ∧ Queue ∧ String ∧ Variant ∧ Range ∧ Repeat ∧ Cycle ∧ Iterate ∧ Repeatedly ∧ TakeWhile ∧ DropWhile ∧ primitive_free_functions ∧ map ∧ reduce ∧ filter ∧ filterv ∧ take ∧ drop ∧ take_while ∧ drop_while ∧ vector_factory ∧ hash_map_factory ∧ map_entry_factory ∧ set_factory ∧ queue_factory ∧ string_factory ∧ variant_factory ∧ into ∧ fits_into
+  | approved_but_unimplemented(algorithms_except(map ∧ reduce ∧ filter ∧ filterv ∧ take ∧ drop ∧ take_while ∧ drop_while) ∨ regexes) → remain_outside(active_surface(x))
   | approved_but_unimplemented(x) → require(specification_and_implementation_propagated(x)) before(active_surface_inclusion(x))
