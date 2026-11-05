@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', codefold.init);
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:cljonic" id="r_cljonic"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html">cljonic</a></td></tr>
+<tr class="memitem:cljonic_3A_3Acore" id="r_cljonic_3A_3Acore"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html">cljonic::core</a></td></tr>
 <tr class="memitem:cljonic_3A_3Aconcepts_5Fdetail" id="r_cljonic_3A_3Aconcepts_5Fdetail"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html">cljonic::concepts_detail</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-concepts" class="groupheader"><a id="concepts" name="concepts"></a>
@@ -135,15 +136,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a432efa1e75d7135a0bb445ef74994d56 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html#a432efa1e75d7135a0bb445ef74994d56">cljonic::concepts_detail::diagnose_get_key</a> () noexcept -&gt; void</td></tr>
 <tr class="memitem:a6b6a0aedeba9f6ec243d75cf3f2de072" id="r_a6b6a0aedeba9f6ec243d75cf3f2de072"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K, typename R&gt; </td></tr>
 <tr class="memitem:a6b6a0aedeba9f6ec243d75cf3f2de072 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html#a6b6a0aedeba9f6ec243d75cf3f2de072">cljonic::concepts_detail::diagnose_get_fallback</a> () noexcept -&gt; void</td></tr>
-<tr class="memitem:a1303d4cdb00acfa70d9ffcc65d7670c5" id="r_a1303d4cdb00acfa70d9ffcc65d7670c5"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K, typename V = std::remove_cvref_t&lt;concepts_detail::get_result_t&lt;C, K&gt;&gt;&gt; <br />
+<tr class="memitem:af0db9387e8b8f75f7034b35d3823b81e" id="r_af0db9387e8b8f75f7034b35d3823b81e"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K, typename V = std::remove_cvref_t&lt;concepts_detail::get_result_t&lt;C, K&gt;&gt;&gt; <br />
 requires concepts_detail::GetKeyAdmissible&lt;C, K&gt; &amp;&amp; concepts_detail::GetFallbackAdmissible&lt;C, K, V&gt;</td></tr>
-<tr class="memitem:a1303d4cdb00acfa70d9ffcc65d7670c5 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a1303d4cdb00acfa70d9ffcc65d7670c5">cljonic::get</a> (const C &amp;collection, const K &amp;key, const V &amp;fallback=V{}) noexcept(noexcept(collection(key, fallback))) -&gt; decltype(collection(key, fallback))</td></tr>
-<tr class="memitem:a3035039f1fa5646c650e2681d7142001" id="r_a3035039f1fa5646c650e2681d7142001"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K&gt; <br />
+<tr class="memitem:af0db9387e8b8f75f7034b35d3823b81e template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html#af0db9387e8b8f75f7034b35d3823b81e">cljonic::core::get</a> (const C &amp;collection, const K &amp;key, const V &amp;fallback=V{}) noexcept(noexcept(collection(key, fallback))) -&gt; decltype(collection(key, fallback))</td></tr>
+<tr class="memitem:a3b749a027e36d3394f653ec45c1a061a" id="r_a3b749a027e36d3394f653ec45c1a061a"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K&gt; <br />
 requires (!concepts_detail::GetKeyAdmissible&lt;C, K&gt;)</td></tr>
-<tr class="memitem:a3035039f1fa5646c650e2681d7142001 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a3035039f1fa5646c650e2681d7142001">cljonic::get</a> (const C &amp;collection, const K &amp;key) noexcept -&gt; void</td></tr>
-<tr class="memitem:a93487516073aec1d7c572fba6c8b7b00" id="r_a93487516073aec1d7c572fba6c8b7b00"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K, typename R&gt; <br />
+<tr class="memitem:a3b749a027e36d3394f653ec45c1a061a template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html#a3b749a027e36d3394f653ec45c1a061a">cljonic::core::get</a> (const C &amp;collection, const K &amp;key) noexcept -&gt; void</td></tr>
+<tr class="memitem:a94b0ec222dcf78f3fb15a492a04c1ac5" id="r_a94b0ec222dcf78f3fb15a492a04c1ac5"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K, typename R&gt; <br />
 requires (!concepts_detail::GetFallbackAdmissible&lt;C, K, R&gt;)</td></tr>
-<tr class="memitem:a93487516073aec1d7c572fba6c8b7b00 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a93487516073aec1d7c572fba6c8b7b00">cljonic::get</a> (const C &amp;collection, const K &amp;key, const R &amp;fallback) noexcept -&gt; void</td></tr>
+<tr class="memitem:a94b0ec222dcf78f3fb15a492a04c1ac5 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html#a94b0ec222dcf78f3fb15a492a04c1ac5">cljonic::core::get</a> (const C &amp;collection, const K &amp;key, const R &amp;fallback) noexcept -&gt; void</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

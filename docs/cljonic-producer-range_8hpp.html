@@ -138,6 +138,7 @@ Classes</h2></td></tr>
 Namespaces</h2></td></tr>
 <tr class="memitem:cljonic" id="r_cljonic"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html">cljonic</a></td></tr>
 <tr class="memitem:cljonic_3A_3Aconcepts_5Fdetail" id="r_cljonic_3A_3Aconcepts_5Fdetail"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html">cljonic::concepts_detail</a></td></tr>
+<tr class="memitem:cljonic_3A_3Acore" id="r_cljonic_3A_3Acore"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html">cljonic::core</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-concepts" class="groupheader"><a id="concepts" name="concepts"></a>
 Concepts</h2></td></tr>
@@ -162,12 +163,12 @@ requires (!(concepts::RangeElement&lt;std::remove_cvref_t&lt;Start&gt;&gt; &amp;
 requires (!(concepts::RangeElement&lt;std::remove_cvref_t&lt;Start&gt;&gt; &amp;&amp; concepts::RangeElement&lt;std::remove_cvref_t&lt;End&gt;&gt; &amp;&amp;<br class="typebreak" />
  concepts::RangeElement&lt;std::remove_cvref_t&lt;Step&gt;&gt;))</td></tr>
 <tr class="memitem:a718be13d2bf534ee449e569c76d8583b template"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a718be13d2bf534ee449e569c76d8583b">cljonic::Range</a> (Start, End, Step) -&gt; Range&lt; <a class="el" href="structcljonic_1_1concepts__detail_1_1_range_element_domain_violation.html">concepts_detail::RangeElementDomainViolation</a> &gt;</td></tr>
-<tr class="memitem:a25349a99ffccb2525333ab32f8ce31f6" id="r_a25349a99ffccb2525333ab32f8ce31f6"><td class="memTemplParams" colspan="2">template&lt;typename RequestedElementType = concepts_detail::DeducedRangeElementType, typename... Args&gt; <br />
+<tr class="memitem:a10bb37017fb997694418fdc5cc328afe" id="r_a10bb37017fb997694418fdc5cc328afe"><td class="memTemplParams" colspan="2">template&lt;typename RequestedElementType = concepts_detail::DeducedRangeElementType, typename... Args&gt; <br />
 requires concepts_detail::RangeFactoryArguments&lt;RequestedElementType, Args...&gt;</td></tr>
-<tr class="memitem:a25349a99ffccb2525333ab32f8ce31f6 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a25349a99ffccb2525333ab32f8ce31f6">cljonic::range</a> (Args &amp;&amp;... args) noexcept -&gt; <a class="el" href="classcljonic_1_1_range.html">Range</a>&lt; <a class="el" href="namespacecljonic_1_1concepts__detail.html#a7374f5d60031561f5b3ca2daa0134359">concepts_detail::range_factory_element_t</a>&lt; RequestedElementType, Args... &gt; &gt;</td></tr>
-<tr class="memitem:af0a7309afff86104ade6eba0a71908cb" id="r_af0a7309afff86104ade6eba0a71908cb"><td class="memTemplParams" colspan="2">template&lt;typename RequestedElementType = concepts_detail::DeducedRangeElementType, typename... Args&gt; <br />
+<tr class="memitem:a10bb37017fb997694418fdc5cc328afe template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html#a10bb37017fb997694418fdc5cc328afe">cljonic::core::range</a> (Args &amp;&amp;... args) noexcept -&gt; <a class="el" href="classcljonic_1_1_range.html">Range</a>&lt; <a class="el" href="namespacecljonic_1_1concepts__detail.html#a7374f5d60031561f5b3ca2daa0134359">concepts_detail::range_factory_element_t</a>&lt; RequestedElementType, Args... &gt; &gt;</td></tr>
+<tr class="memitem:afb68e6f71b982f3b8722b8a1b2dd7479" id="r_afb68e6f71b982f3b8722b8a1b2dd7479"><td class="memTemplParams" colspan="2">template&lt;typename RequestedElementType = concepts_detail::DeducedRangeElementType, typename... Args&gt; <br />
 requires (!concepts_detail::RangeFactoryArguments&lt;RequestedElementType, Args...&gt;)</td></tr>
-<tr class="memitem:af0a7309afff86104ade6eba0a71908cb template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#af0a7309afff86104ade6eba0a71908cb">cljonic::range</a> (Args &amp;&amp;... args) noexcept -&gt; void</td></tr>
+<tr class="memitem:afb68e6f71b982f3b8722b8a1b2dd7479 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html#afb68e6f71b982f3b8722b8a1b2dd7479">cljonic::core::range</a> (Args &amp;&amp;... args) noexcept -&gt; void</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>

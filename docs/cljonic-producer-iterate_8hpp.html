@@ -134,6 +134,7 @@ Classes</h2></td></tr>
 Namespaces</h2></td></tr>
 <tr class="memitem:cljonic" id="r_cljonic"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html">cljonic</a></td></tr>
 <tr class="memitem:cljonic_3A_3Aconcepts_5Fdetail" id="r_cljonic_3A_3Aconcepts_5Fdetail"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html">cljonic::concepts_detail</a></td></tr>
+<tr class="memitem:cljonic_3A_3Acore" id="r_cljonic_3A_3Acore"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html">cljonic::core</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-concepts" class="groupheader"><a id="concepts" name="concepts"></a>
 Concepts</h2></td></tr>
@@ -144,14 +145,14 @@ Functions</h2></td></tr>
 <tr class="memitem:aa6ccbc24196b33a215b28b9c085ba3fa" id="r_aa6ccbc24196b33a215b28b9c085ba3fa"><td class="memTemplParams" colspan="2">template&lt;typename T, typename Step&gt; <br />
 requires (!(concepts::NothrowCollectionElement&lt;T&gt; &amp;&amp; concepts::IterateStep&lt;T, Step&gt;))</td></tr>
 <tr class="memitem:aa6ccbc24196b33a215b28b9c085ba3fa template"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#aa6ccbc24196b33a215b28b9c085ba3fa">cljonic::Iterate</a> (const T &amp;, const Step &amp;) -&gt; Iterate&lt; <a class="el" href="structcljonic_1_1concepts__detail_1_1_iterate_domain_violation.html">concepts_detail::IterateDomainViolation</a>, <a class="el" href="structcljonic_1_1concepts__detail_1_1_iterate_domain_violation.html">concepts_detail::IterateDomainViolation</a> &gt;</td></tr>
-<tr class="memitem:a63314a7947b7251553be23329779260a" id="r_a63314a7947b7251553be23329779260a"><td class="memTemplParams" colspan="2">template&lt;typename Step, typename T&gt; <br />
+<tr class="memitem:a2d112b1f93a4379526d4abff8358c4df" id="r_a2d112b1f93a4379526d4abff8358c4df"><td class="memTemplParams" colspan="2">template&lt;typename Step, typename T&gt; <br />
 requires concepts::NothrowCollectionElement&lt;std::remove_cvref_t&lt;T&gt;&gt; &amp;&amp; concepts::IterateStep&lt;std::remove_cvref_t&lt;T&gt;, std::decay_t<br class="typebreak" />
 &lt;Step&gt;&gt;</td></tr>
-<tr class="memitem:a63314a7947b7251553be23329779260a template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a63314a7947b7251553be23329779260a">cljonic::iterate</a> (Step &amp;&amp;step, T &amp;&amp;initial) noexcept -&gt; <a class="el" href="classcljonic_1_1_iterate.html">Iterate</a>&lt; std::remove_cvref_t&lt; T &gt;, std::decay_t&lt; Step &gt; &gt;</td></tr>
-<tr class="memitem:a01988f5cd37139ca5c6a65fb3277459b" id="r_a01988f5cd37139ca5c6a65fb3277459b"><td class="memTemplParams" colspan="2">template&lt;typename Step, typename T&gt; <br />
+<tr class="memitem:a2d112b1f93a4379526d4abff8358c4df template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html#a2d112b1f93a4379526d4abff8358c4df">cljonic::core::iterate</a> (Step &amp;&amp;step, T &amp;&amp;initial) noexcept -&gt; <a class="el" href="classcljonic_1_1_iterate.html">Iterate</a>&lt; std::remove_cvref_t&lt; T &gt;, std::decay_t&lt; Step &gt; &gt;</td></tr>
+<tr class="memitem:ae33a0ca5309d0b08d2cc27eff6d3ae90" id="r_ae33a0ca5309d0b08d2cc27eff6d3ae90"><td class="memTemplParams" colspan="2">template&lt;typename Step, typename T&gt; <br />
 requires (!(concepts::NothrowCollectionElement&lt;std::remove_cvref_t&lt;T&gt;&gt; &amp;&amp; concepts::IterateStep&lt;std::remove_cvref_t&lt;T&gt;,<br class="typebreak" />
  std::decay_t&lt;Step&gt;&gt;))</td></tr>
-<tr class="memitem:a01988f5cd37139ca5c6a65fb3277459b template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a01988f5cd37139ca5c6a65fb3277459b">cljonic::iterate</a> (Step &amp;&amp;step, T &amp;&amp;initial) noexcept -&gt; <a class="el" href="structcljonic_1_1concepts__detail_1_1_rejected_producer_factory.html">concepts_detail::RejectedProducerFactory</a></td></tr>
+<tr class="memitem:ae33a0ca5309d0b08d2cc27eff6d3ae90 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html#ae33a0ca5309d0b08d2cc27eff6d3ae90">cljonic::core::iterate</a> (Step &amp;&amp;step, T &amp;&amp;initial) noexcept -&gt; <a class="el" href="structcljonic_1_1concepts__detail_1_1_rejected_producer_factory.html">concepts_detail::RejectedProducerFactory</a></td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

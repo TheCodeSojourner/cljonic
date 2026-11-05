@@ -117,21 +117,22 @@ document.addEventListener('DOMContentLoaded', codefold.init);
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:cljonic" id="r_cljonic"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html">cljonic</a></td></tr>
+<tr class="memitem:cljonic_3A_3Acore" id="r_cljonic_3A_3Acore"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html">cljonic::core</a></td></tr>
 <tr class="memitem:cljonic_3A_3Aconcepts_5Fdetail" id="r_cljonic_3A_3Aconcepts_5Fdetail"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html">cljonic::concepts_detail</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ace0e30486247690ae5e2f84b10840d2b" id="r_ace0e30486247690ae5e2f84b10840d2b"><td class="memTemplParams" colspan="2">template&lt;typename Source, typename Result&gt; </td></tr>
 <tr class="memitem:ace0e30486247690ae5e2f84b10840d2b template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html#ace0e30486247690ae5e2f84b10840d2b">cljonic::concepts_detail::copy_drop_suffix</a> (const Source &amp;source, std::size_t observed_count, Result &amp;result, std::size_t skipped_count) noexcept -&gt; void</td></tr>
-<tr class="memitem:a239174d4070c8d7ac145f89e6ca4106b" id="r_a239174d4070c8d7ac145f89e6ca4106b"><td class="memTemplParams" colspan="2">template&lt;typename Count, typename Source&gt; <br />
+<tr class="memitem:a250ae62e4b110d27f164c7f3ac6c6051" id="r_a250ae62e4b110d27f164c7f3ac6c6051"><td class="memTemplParams" colspan="2">template&lt;typename Count, typename Source&gt; <br />
 requires concepts_detail::CountedSourceArguments&lt;Count, Source&gt;</td></tr>
-<tr class="memitem:a239174d4070c8d7ac145f89e6ca4106b template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a239174d4070c8d7ac145f89e6ca4106b">cljonic::drop</a> (Count count, const Source &amp;source) noexcept -&gt; <a class="el" href="classcljonic_1_1_vector.html">Vector</a>&lt; std::ranges::range_value_t&lt; const Source &gt;, <a class="el" href="namespacecljonic_1_1concepts__detail.html#a5ac05bfee040e39ad5518f71860d60bc">concepts_detail::SourceResultCapacity</a>&lt; Source &gt; &gt;</td></tr>
-<tr class="memitem:af5b4bfa9d3029b944bad4a5210786524" id="r_af5b4bfa9d3029b944bad4a5210786524"><td class="memTemplParams" colspan="2">template&lt;typename Count, typename Source&gt; <br />
+<tr class="memitem:a250ae62e4b110d27f164c7f3ac6c6051 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html#a250ae62e4b110d27f164c7f3ac6c6051">cljonic::core::drop</a> (Count count, const Source &amp;source) noexcept -&gt; <a class="el" href="classcljonic_1_1_vector.html">Vector</a>&lt; std::ranges::range_value_t&lt; const Source &gt;, <a class="el" href="namespacecljonic_1_1concepts__detail.html#a5ac05bfee040e39ad5518f71860d60bc">concepts_detail::SourceResultCapacity</a>&lt; Source &gt; &gt;</td></tr>
+<tr class="memitem:afa0ad9926fde61e2e384dd19a716eb9e" id="r_afa0ad9926fde61e2e384dd19a716eb9e"><td class="memTemplParams" colspan="2">template&lt;typename Count, typename Source&gt; <br />
 requires (!concepts_detail::CountedSourceArguments&lt;Count, Source&gt;)</td></tr>
-<tr class="memitem:af5b4bfa9d3029b944bad4a5210786524 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#af5b4bfa9d3029b944bad4a5210786524">cljonic::drop</a> (Count count, const Source &amp;source) noexcept -&gt; void</td></tr>
-<tr class="memitem:a1bbe9c6626c0a8c5fbd9d35af16e22be" id="r_a1bbe9c6626c0a8c5fbd9d35af16e22be"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; <br />
+<tr class="memitem:afa0ad9926fde61e2e384dd19a716eb9e template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html#afa0ad9926fde61e2e384dd19a716eb9e">cljonic::core::drop</a> (Count count, const Source &amp;source) noexcept -&gt; void</td></tr>
+<tr class="memitem:a5af2398ef430f4ce17381dca10229008" id="r_a5af2398ef430f4ce17381dca10229008"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; <br />
 requires (sizeof...(Args) != 2)</td></tr>
-<tr class="memitem:a1bbe9c6626c0a8c5fbd9d35af16e22be template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a1bbe9c6626c0a8c5fbd9d35af16e22be">cljonic::drop</a> (const Args &amp;... args) noexcept -&gt; void</td></tr>
+<tr class="memitem:a5af2398ef430f4ce17381dca10229008 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html#a5af2398ef430f4ce17381dca10229008">cljonic::core::drop</a> (const Args &amp;... args) noexcept -&gt; void</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

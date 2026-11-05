@@ -119,6 +119,7 @@ document.addEventListener('DOMContentLoaded', codefold.init);
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:cljonic" id="r_cljonic"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html">cljonic</a></td></tr>
+<tr class="memitem:cljonic_3A_3Acore" id="r_cljonic_3A_3Acore"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html">cljonic::core</a></td></tr>
 <tr class="memitem:cljonic_3A_3Aconcepts_5Fdetail" id="r_cljonic_3A_3Aconcepts_5Fdetail"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html">cljonic::concepts_detail</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-concepts" class="groupheader"><a id="concepts" name="concepts"></a>
@@ -134,14 +135,14 @@ Functions</h2></td></tr>
 <tr class="memitem:a1fb29103b68deec639740ad527003d69 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html#a1fb29103b68deec639740ad527003d69">cljonic::concepts_detail::unsigned_value_fits_char</a> (T value) noexcept -&gt; bool</td></tr>
 <tr class="memitem:a44caa6451a82185e99690a6b5b0aefbc" id="r_a44caa6451a82185e99690a6b5b0aefbc"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
 <tr class="memitem:a44caa6451a82185e99690a6b5b0aefbc template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html#a44caa6451a82185e99690a6b5b0aefbc">cljonic::concepts_detail::value_fits_char</a> (T value) noexcept -&gt; bool</td></tr>
-<tr class="memitem:ace3eca89e83fec40fe2e35e7fbf2cc45" id="r_ace3eca89e83fec40fe2e35e7fbf2cc45"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; <br />
+<tr class="memitem:a267651509f7df0eabeb536c3cc5664ac" id="r_a267651509f7df0eabeb536c3cc5664ac"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; <br />
 requires concepts_detail::CharacterValidityInput&lt;T&gt;</td></tr>
-<tr class="memitem:ace3eca89e83fec40fe2e35e7fbf2cc45 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#ace3eca89e83fec40fe2e35e7fbf2cc45">cljonic::character_is_valid</a> (T value) noexcept -&gt; bool</td></tr>
-<tr class="memitem:a21b31a99cd08f33de14977acd091d996" id="r_a21b31a99cd08f33de14977acd091d996"><td class="memTemplParams" colspan="2">template&lt;std::size_t N&gt; </td></tr>
-<tr class="memitem:a21b31a99cd08f33de14977acd091d996 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#a21b31a99cd08f33de14977acd091d996">cljonic::character_is_valid</a> (const char(&amp;value)[N]) noexcept -&gt; bool</td></tr>
-<tr class="memitem:aaedd2180fbb8f03ad10a0e30df018609" id="r_aaedd2180fbb8f03ad10a0e30df018609"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; <br />
+<tr class="memitem:a267651509f7df0eabeb536c3cc5664ac template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html#a267651509f7df0eabeb536c3cc5664ac">cljonic::core::character_is_valid</a> (T value) noexcept -&gt; bool</td></tr>
+<tr class="memitem:ae738a4f497fef9848559f99de3289ba2" id="r_ae738a4f497fef9848559f99de3289ba2"><td class="memTemplParams" colspan="2">template&lt;std::size_t N&gt; </td></tr>
+<tr class="memitem:ae738a4f497fef9848559f99de3289ba2 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html#ae738a4f497fef9848559f99de3289ba2">cljonic::core::character_is_valid</a> (const char(&amp;value)[N]) noexcept -&gt; bool</td></tr>
+<tr class="memitem:af6b7d4c821da6c2516fb5bce6dc14b30" id="r_af6b7d4c821da6c2516fb5bce6dc14b30"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; <br />
 requires (!concepts_detail::CharacterValidityInput&lt;T&gt; &amp;&amp; !concepts_detail::CharacterStringInput&lt;T&gt;)</td></tr>
-<tr class="memitem:aaedd2180fbb8f03ad10a0e30df018609 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html#aaedd2180fbb8f03ad10a0e30df018609">cljonic::character_is_valid</a> (T &amp;&amp;value) noexcept -&gt; bool</td></tr>
+<tr class="memitem:af6b7d4c821da6c2516fb5bce6dc14b30 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core.html#af6b7d4c821da6c2516fb5bce6dc14b30">cljonic::core::character_is_valid</a> (T &amp;&amp;value) noexcept -&gt; bool</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

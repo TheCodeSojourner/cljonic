@@ -126,13 +126,13 @@ Cheatsheet</h1>
 Aliases</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Namespace  </th><th class="markdownTableHeadNone">C++ "using" Statement  </th></tr>
+<th class="markdownTableHeadNone">Namespace  </th><th class="markdownTableHeadNone">C++ Namespace Alias  </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><a class="el" href="namespacecljonic_1_1core.html#Namespace_Core" title="Namespace_Core">Core</a>  </td><td class="markdownTableBodyNone">using <b>core</b> = <a class="el" href="namespacecljonic_1_1core.html">cljonic::core</a>;  </td></tr>
+<td class="markdownTableBodyNone"><a class="el" href="namespacecljonic_1_1core.html#Namespace_Core" title="Namespace_Core">Core</a>  </td><td class="markdownTableBodyNone">namespace <b>core</b> = <a class="el" href="namespacecljonic_1_1core.html">cljonic::core</a>;  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">Set  </td><td class="markdownTableBodyNone">using <b>set</b> = cljonic::set;  </td></tr>
+<td class="markdownTableBodyNone">Set library  </td><td class="markdownTableBodyNone">namespace <b>st</b> = cljonic::lib_set;  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">String  </td><td class="markdownTableBodyNone">using <b>string</b> = <a class="el" href="namespacecljonic.html#aac92eb77175a67beb451582c5786027e">cljonic::string</a>;  </td></tr>
+<td class="markdownTableBodyNone">String library  </td><td class="markdownTableBodyNone">namespace <b>s</b> = cljonic::lib_string;  </td></tr>
 </table>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md2"></a>
 Collection Types</h2>
@@ -161,44 +161,43 @@ Variant Type</h2>
 </ul>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md5"></a>
 Core Functions</h2>
-<p>Entries linked to documentation have implemented documentation. Plain names are inventory entries only; their presence does not establish that they are implemented or supported. The requirements define each entry's lifecycle, and only <code>requirements-backed</code> entries define supported behavior. <code>comp</code> is explicitly deferred and non-binding.</p>
+<p>Every Core function is declared in <code><a class="el" href="namespacecljonic_1_1core.html">cljonic::core</a></code>. Entries linked to documentation have implemented documentation. Plain names are inventory entries only; their presence does not establish that they are implemented or supported. The requirements define each entry's lifecycle, and only <code>requirements-backed</code> entries define supported behavior. <code>comp</code> is explicitly deferred and non-binding.</p>
 <ul>
-<li>add, apply, <a class="el" href="namespacecljonic.html#Assoc" title="Assoc">assoc</a>, assoc_in</li>
+<li>add, apply, <a class="el" href="namespacecljonic_1_1core.html#Assoc" title="Assoc">assoc</a>, assoc_in</li>
 <li>bit_and, bit_and_not, bit_clear, bit_flip, bit_not, bit_or, bit_set, bit_shift_left, bit_shift_right, bit_test, bit_xor, butlast</li>
-<li>can_add, <a class="el" href="namespacecljonic.html#CanAssoc" title="CanAssoc">can_assoc</a>, <a class="el" href="namespacecljonic.html#CanConj" title="CanConj">can_conj</a>, can_multiply, can_subtract, <a class="el" href="namespacecljonic.html#CharacterIsValid" title="CharacterIsValid">character_is_valid</a>, comp, compare, complement, <a class="el" href="namespacecljonic.html#Conj" title="Conj">conj</a>, constantly, <a class="el" href="namespacecljonic.html#Contains" title="Contains">contains</a>, <a class="el" href="namespacecljonic.html#Count" title="Count">count</a>, <a class="el" href="classcljonic_1_1_cycle.html#Cycle" title="Cycle">cycle</a></li>
-<li>dec, dedupe, deref, <a class="el" href="namespacecljonic.html#Disj" title="Disj">disj</a>, <a class="el" href="namespacecljonic.html#Dissoc" title="Dissoc">dissoc</a>, distinct, div, <a class="el" href="namespacecljonic.html#Drop" title="Drop">drop</a>, drop_last, <a class="el" href="namespacecljonic.html#DropWhile" title="DropWhile">drop_while</a></li>
-<li>emplace, <a class="el" href="namespacecljonic.html#Empty" title="Empty">empty</a>, <a class="el" href="namespacecljonic.html#Equal" title="Equal">equal</a>, every_pred</li>
-<li>ffirst, <a class="el" href="namespacecljonic.html#FilterFunction" title="FilterFunction">filter</a>, <a class="el" href="namespacecljonic.html#FiltervFunction" title="FiltervFunction">filterv</a>, find, <a class="el" href="namespacecljonic.html#First" title="First">first</a>, <a class="el" href="namespacecljonic.html#FitsInto" title="FitsInto">fits_into</a>, fits_print, flatten, fnext, fnil, frequencies</li>
-<li><a class="el" href="namespacecljonic.html#Get" title="Get">get</a>, get_if, get_in, greater, greater_equal, group_by</li>
-<li><a class="el" href="namespacecljonic.html#HasNext" title="HasNext">has_next</a>, has_re_find, has_re_matches, <a class="el" href="namespacecljonic.html#HasRest" title="HasRest">has_rest</a>, has_some, <a class="el" href="namespacecljonic.html#HashMapFactory" title="HashMapFactory">hash_map</a>, <a class="el" href="namespacecljonic.html#HashSetFactory" title="HashSetFactory">hash_set</a>, holds</li>
-<li>identity, inc, index, interleave, interpose, <a class="el" href="namespacecljonic.html#Into" title="Into">into</a>, <a class="el" href="namespacecljonic.html#IsEmpty" title="IsEmpty">is_empty</a>, is_even, is_every, is_negative, is_odd, is_positive, is_zero, <a class="el" href="classcljonic_1_1_iterate.html#Iterate" title="Iterate">iterate</a></li>
+<li>can_add, <a class="el" href="namespacecljonic_1_1core.html#CanAssoc" title="CanAssoc">can_assoc</a>, <a class="el" href="namespacecljonic_1_1core.html#CanConj" title="CanConj">can_conj</a>, can_multiply, can_subtract, <a class="el" href="namespacecljonic_1_1core.html#CharacterIsValid" title="CharacterIsValid">character_is_valid</a>, comp, compare, complement, <a class="el" href="namespacecljonic_1_1core.html#Conj" title="Conj">conj</a>, constantly, <a class="el" href="namespacecljonic_1_1core.html#Contains" title="Contains">contains</a>, <a class="el" href="namespacecljonic_1_1core.html#Count" title="Count">count</a>, <a class="el" href="classcljonic_1_1_cycle.html#Cycle" title="Cycle">cycle</a></li>
+<li>dec, dedupe, deref, <a class="el" href="namespacecljonic_1_1core.html#Disj" title="Disj">disj</a>, <a class="el" href="namespacecljonic_1_1core.html#Dissoc" title="Dissoc">dissoc</a>, distinct, div, <a class="el" href="namespacecljonic_1_1core.html#Drop" title="Drop">drop</a>, drop_last, <a class="el" href="namespacecljonic.html#DropWhile" title="DropWhile">drop_while</a></li>
+<li>emplace, <a class="el" href="namespacecljonic_1_1core.html#Empty" title="Empty">empty</a>, <a class="el" href="namespacecljonic_1_1core.html#Equal" title="Equal">equal</a>, every_pred</li>
+<li>ffirst, <a class="el" href="namespacecljonic_1_1core.html#FilterFunction" title="FilterFunction">filter</a>, <a class="el" href="namespacecljonic_1_1core.html#FiltervFunction" title="FiltervFunction">filterv</a>, find, <a class="el" href="namespacecljonic_1_1core.html#First" title="First">first</a>, <a class="el" href="namespacecljonic_1_1core.html#FitsInto" title="FitsInto">fits_into</a>, fits_print, flatten, fnext, fnil, frequencies</li>
+<li><a class="el" href="namespacecljonic_1_1core.html#Get" title="Get">get</a>, get_if, get_in, greater, greater_equal, group_by</li>
+<li><a class="el" href="namespacecljonic_1_1core.html#HasNext" title="HasNext">has_next</a>, has_re_find, has_re_matches, <a class="el" href="namespacecljonic_1_1core.html#HasRest" title="HasRest">has_rest</a>, has_some, <a class="el" href="namespacecljonic_1_1core.html#HashMapFactory" title="HashMapFactory">hash_map</a>, <a class="el" href="/home/pauwhi/Downloads/junk/cljonic-playground/src/cljonic-collection-set.hpp#HashSetFactory" title="HashSetFactory">hash_set</a>, holds</li>
+<li>identity, inc, index, interleave, interpose, <a class="el" href="namespacecljonic_1_1core.html#Into" title="Into">into</a>, <a class="el" href="namespacecljonic_1_1core.html#IsEmpty" title="IsEmpty">is_empty</a>, is_even, is_every, is_negative, is_odd, is_positive, is_zero, <a class="el" href="classcljonic_1_1_iterate.html#Iterate" title="Iterate">iterate</a></li>
 <li>juxt</li>
 <li>keep, keep_indexed, keys</li>
 <li>less, less_equal</li>
-<li>make_keyword_enum_name_map, <a class="el" href="namespacecljonic.html#MapFunction" title="MapFunction">map</a>, <a class="el" href="namespacecljonic.html#MapEntryFactory" title="MapEntryFactory">map_entry</a>, map_indexed, mapcat, mapv, max, max_key, merge, merge_with, min, min_key, mod, mult</li>
-<li>negate, <a class="el" href="namespacecljonic.html#Next" title="Next">next</a>, nfirst, nnext, not_any, <a class="el" href="namespacecljonic.html#NotEmpty" title="NotEmpty">not_empty</a>, <a class="el" href="namespacecljonic.html#NotEqual" title="NotEqual">not_equal</a>, not_every, nth, nthnext, nthrest</li>
-<li>partial, partition, partition_all, partition_by, partitionv, partitionv_all, <a class="el" href="namespacecljonic.html#Peek" title="Peek">peek</a>, <a class="el" href="namespacecljonic.html#Pop" title="Pop">pop</a>, pr_str, print_to, prn_str</li>
-<li><a class="el" href="namespacecljonic.html#QueueFactory" title="QueueFactory">queue</a>, quot</li>
-<li><a class="el" href="namespacecljonic.html#RangeFactory" title="RangeFactory">range</a>, re_find, re_groups, re_matcher, re_matches, re_pattern, re_seq, <a class="el" href="namespacecljonic.html#ReduceFunction" title="ReduceFunction">reduce</a>, reduce_kv, reductions, rem, remove, <a class="el" href="namespacecljonic.html#RepeatFactory" title="RepeatFactory">repeat</a>, <a class="el" href="classcljonic_1_1_repeatedly.html#Repeatedly" title="Repeatedly">repeatedly</a>, replace, replicate, reset, reset_vals, <a class="el" href="namespacecljonic.html#Rest" title="Rest">rest</a>, rseq</li>
-<li>second, select_keys, <a class="el" href="namespacecljonic_1_1concepts__detail.html#Seq" title="Seq">seq</a>, some, some_fn, sort, sort_by, split_at, split_with, str, <a class="el" href="namespacecljonic.html#StringFactory" title="StringFactory">string</a>, sub, subvec, swap, swap_vals</li>
-<li><a class="el" href="namespacecljonic.html#Take" title="Take">take</a>, take_last, take_nth, <a class="el" href="namespacecljonic.html#TakeWhile" title="TakeWhile">take_while</a>, to_byte, to_char, to_double, to_float, to_int, to_long, to_num, to_short, tree_seq</li>
+<li>make_keyword_enum_name_map, <a class="el" href="namespacecljonic_1_1core.html#MapFunction" title="MapFunction">map</a>, <a class="el" href="namespacecljonic_1_1core.html#MapEntryFactory" title="MapEntryFactory">map_entry</a>, map_indexed, mapcat, mapv, max, max_key, merge, merge_with, min, min_key, mod, mult</li>
+<li>negate, <a class="el" href="namespacecljonic_1_1core.html#Next" title="Next">next</a>, nfirst, nnext, not_any, <a class="el" href="namespacecljonic_1_1core.html#NotEmpty" title="NotEmpty">not_empty</a>, <a class="el" href="namespacecljonic_1_1core.html#NotEqual" title="NotEqual">not_equal</a>, not_every, nth, nthnext, nthrest</li>
+<li>partial, partition, partition_all, partition_by, partitionv, partitionv_all, <a class="el" href="namespacecljonic_1_1core.html#Peek" title="Peek">peek</a>, <a class="el" href="namespacecljonic_1_1core.html#Pop" title="Pop">pop</a>, pr_str, print_to, prn_str</li>
+<li><a class="el" href="namespacecljonic_1_1core.html#QueueFactory" title="QueueFactory">queue</a>, quot</li>
+<li><a class="el" href="/home/pauwhi/Downloads/junk/cljonic-playground/src/cljonic-producer-range.hpp#RangeFactory" title="RangeFactory">range</a>, re_find, re_groups, re_matcher, re_matches, re_pattern, re_seq, <a class="el" href="namespacecljonic_1_1core.html#ReduceFunction" title="ReduceFunction">reduce</a>, reduce_kv, reductions, rem, remove, <a class="el" href="/home/pauwhi/Downloads/junk/cljonic-playground/src/cljonic-producer-repeat.hpp#RepeatFactory" title="RepeatFactory">repeat</a>, <a class="el" href="classcljonic_1_1_repeatedly.html#Repeatedly" title="Repeatedly">repeatedly</a>, replace, replicate, reset, reset_vals, <a class="el" href="namespacecljonic_1_1core.html#Rest" title="Rest">rest</a>, rseq</li>
+<li>second, select_keys, <a class="el" href="/home/pauwhi/Downloads/junk/cljonic-playground/src/cljonic-seq.hpp#Seq" title="Seq">seq</a>, some, some_fn, sort, sort_by, split_at, split_with, str, <a class="el" href="namespacecljonic_1_1core.html#StringFactory" title="StringFactory">string</a>, sub, subvec, swap, swap_vals</li>
+<li><a class="el" href="namespacecljonic_1_1core.html#Take" title="Take">take</a>, take_last, take_nth, <a class="el" href="namespacecljonic.html#TakeWhile" title="TakeWhile">take_while</a>, to_byte, to_char, to_double, to_float, to_int, to_long, to_num, to_short, tree_seq</li>
 <li>unsigned_bit_shift_right, update, update_in, update_keys, update_vals</li>
-<li>vals, <a class="el" href="namespacecljonic.html#VariantFactory" title="VariantFactory">variant</a>, variant_alternative, variant_size, vec, <a class="el" href="namespacecljonic.html#a11e270768e9485445f2885cdecb1c4eb" title="cljonic::vector">vector</a>, visit</li>
+<li>vals, <a class="el" href="namespacecljonic_1_1core.html#VariantFactory" title="VariantFactory">variant</a>, variant_alternative, variant_size, vec, vector, visit</li>
 <li>zipmap</li>
 </ul>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md6"></a>
 Set Functions</h2>
 <p>Plain names are inventory entries only; their presence does not establish that they are implemented or supported. The requirements define each entry's lifecycle, and only <code>requirements-backed</code> entries define supported behavior.</p>
 <ul>
-<li>difference</li>
 <li>fits_join, fits_set_algebra</li>
-<li>index, intersection, is_subset, is_superset</li>
+<li>index, is_subset, is_superset</li>
 <li>join</li>
 <li>map_invert</li>
 <li>project</li>
 <li>rename, rename_keys</li>
 <li>select</li>
-<li>union</li>
+<li>set_difference, set_intersection, set_union</li>
 </ul>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md7"></a>
 String Functions</h2>

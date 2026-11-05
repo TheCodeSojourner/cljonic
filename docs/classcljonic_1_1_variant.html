@@ -134,11 +134,12 @@ requires concepts_detail::VariantClassArgument&lt;Alternatives...&gt;<br />
 class cljonic::Variant&lt; Alternatives &gt;</div><p><a class="anchor" id="Variant"></a> A <a class="el" href="classcljonic_1_1_variant.html">Variant</a> is the supported composite value in the cljonic value domain. It holds exactly one of several alternatives and has no empty or valueless state.</p>
 <p>Every alternative must have a default value and be copyable without throwing, so a <a class="el" href="classcljonic_1_1_variant.html">Variant</a> is a storable value: it can be a map value, a vector element, or a queue element.</p>
 <p>Two values compare equal only when they hold the same alternative and that alternative's values compare equal (alternative-strict equality). Values holding different alternatives always compare unequal.</p>
-<p>Equality is provided only when every alternative is comparable without throwing; otherwise <span class="tt">==</span> is not provided and the value cannot be used in an equality position. A <a class="el" href="classcljonic_1_1_variant.html">Variant</a> may therefore be storable without being comparable, exactly like a collection of floating-point numbers. When it is comparable, a <a class="el" href="classcljonic_1_1_variant.html">Variant</a> takes part in cljonic equality: as an <span class="tt"><a class="el" href="namespacecljonic.html#a3379aa2a8b5ffa4566662c4b4a1455c2">equal</a></span> or <span class="tt"><a class="el" href="namespacecljonic.html#a52f3ba9511cd0e5899669f9450adbdfb">not_equal</a></span> operand, as a map key or set element, and as a stored member of a collection or producer whose own equality is used. When it is not, all of those equality positions reject it.</p>
+<p>Equality is provided only when every alternative is comparable without throwing; otherwise <span class="tt">==</span> is not provided and the value cannot be used in an equality position. A <a class="el" href="classcljonic_1_1_variant.html">Variant</a> may therefore be storable without being comparable, exactly like a collection of floating-point numbers. When it is comparable, a <a class="el" href="classcljonic_1_1_variant.html">Variant</a> takes part in cljonic equality: as an <span class="tt">equal</span> or <span class="tt">not_equal</span> operand, as a map key or set element, and as a stored member of a collection or producer whose own equality is used. When it is not, all of those equality positions reject it.</p>
 <p>Use the lowercase <code>variant</code> factory to construct a <a class="el" href="classcljonic_1_1_variant.html">Variant</a> with its alternative types named explicitly. The factory supports default construction and construction from one exact alternative type.</p>
 <p><b>Examples</b> </p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main() {</div>
 <div class="line">  <span class="comment">// Like other C++ types, a Variant type can be named with an ordinary alias.</span></div>
@@ -146,39 +147,36 @@ class cljonic::Variant&lt; Alternatives &gt;</div><p><a class="anchor" id="Varia
 <div class="line"> </div>
 <div class="line">  <span class="comment">// Default construction holds the first alternative at its default value; the</span></div>
 <div class="line">  <span class="comment">// first alternative here is int, whose default value is 0.</span></div>
-<div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> MyVariant defaulted{};</div>
-<div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> defaulted_by_factory = <a class="code hl_function" href="namespacecljonic.html#a55942096f8c8e04c16c34ed97b7745bf">variant&lt;int, long&gt;</a>();</div>
+<div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> defaulted = <a class="code hl_function" href="namespacecljonic_1_1core.html#a76feb30f68f310e69724d807f5ef0c57">variant&lt;int, long&gt;</a>();</div>
 <div class="line"> </div>
-<div class="line">  <span class="comment">// A converting construction selects the alternative matching the argument&#39;s</span></div>
-<div class="line">  <span class="comment">// decayed type; an argument matching no alternative is rejected at compile</span></div>
-<div class="line">  <span class="comment">// time.</span></div>
-<div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> MyVariant as_int{1};</div>
-<div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> MyVariant as_long{1L};</div>
-<div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> as_long_by_factory = <a class="code hl_function" href="namespacecljonic.html#a55942096f8c8e04c16c34ed97b7745bf">variant&lt;int, long&gt;</a>(1L);</div>
+<div class="line">  <span class="comment">// The factory selects the alternative matching the argument&#39;s decayed type;</span></div>
+<div class="line">  <span class="comment">// an argument matching no alternative is rejected at compile time.</span></div>
+<div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> as_int = <a class="code hl_function" href="namespacecljonic_1_1core.html#a76feb30f68f310e69724d807f5ef0c57">variant&lt;int, long&gt;</a>(1);</div>
+<div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> as_long = <a class="code hl_function" href="namespacecljonic_1_1core.html#a76feb30f68f310e69724d807f5ef0c57">variant&lt;int, long&gt;</a>(1L);</div>
 <div class="line"> </div>
 <div class="line">  <span class="comment">// Copy construction preserves the active alternative and its value.</span></div>
 <div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> copied = as_int;</div>
 <div class="line"> </div>
 <div class="line">  <span class="comment">// A Variant nests inside another Variant and is storable as a collection</span></div>
 <div class="line">  <span class="comment">// element or a map key.</span></div>
-<div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> nested =</div>
-<div class="line">      <a class="code hl_function" href="#a98f8a03f100ac9f6072e29c538eccb7f">Variant&lt;Variant&lt;int, long&gt;</a>, <span class="keywordtype">char</span>&gt;{as_int};</div>
+<div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> nested = <a class="code hl_function" href="namespacecljonic_1_1core.html#a76feb30f68f310e69724d807f5ef0c57">variant&lt;MyVariant, char&gt;</a>(as_int);</div>
 <div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> as_vector_element =</div>
-<div class="line">      <a class="code hl_function" href="namespacecljonic.html#a11e270768e9485445f2885cdecb1c4eb">vector</a>(MyVariant{1}, MyVariant{2L});</div>
-<div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> as_set_element = <a class="code hl_function" href="namespacecljonic.html#ab920b6f72a40bc9c9d4b1c69662e149e">hash_set</a>(MyVariant{1});</div>
-<div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> as_map_key = <a class="code hl_function" href="namespacecljonic.html#a0276d2cc4a963af9ddbc2ad7aa6ac4f0">map_entry</a>(as_int, 1);</div>
+<div class="line">      <a class="code hl_function" href="namespacecljonic_1_1core.html#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(<a class="code hl_function" href="namespacecljonic_1_1core.html#a76feb30f68f310e69724d807f5ef0c57">variant&lt;int, long&gt;</a>(1), <a class="code hl_function" href="namespacecljonic_1_1core.html#a76feb30f68f310e69724d807f5ef0c57">variant&lt;int, long&gt;</a>(2L));</div>
+<div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> as_set_element =</div>
+<div class="line">      <a class="code hl_function" href="namespacecljonic_1_1core.html#a193446da6568cd206c5787c201df0c4f">hash_set</a>(<a class="code hl_function" href="namespacecljonic_1_1core.html#a76feb30f68f310e69724d807f5ef0c57">variant&lt;int, long&gt;</a>(1));</div>
+<div class="line">  [[maybe_unused]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> as_map_key = <a class="code hl_function" href="namespacecljonic_1_1core.html#a9ad89b2da321b5072a628a8a836a1b7c">map_entry</a>(as_int, 1);</div>
 <div class="line"> </div>
 <div class="line">  <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclasscljonic_1_1_variant_html"><div class="ttname"><a href="classcljonic_1_1_variant.html">cljonic::Variant</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-variant_8hpp_source.html#l00130">cljonic-collection-variant.hpp:130</a></div></div>
-<div class="ttc" id="aclasscljonic_1_1_variant_html_a98f8a03f100ac9f6072e29c538eccb7f"><div class="ttname"><a href="#a98f8a03f100ac9f6072e29c538eccb7f">cljonic::Variant::Variant</a></div><div class="ttdeci">constexpr Variant() noexcept=default</div></div>
+<div class="ttc" id="aclasscljonic_1_1_variant_html"><div class="ttname"><a href="classcljonic_1_1_variant.html">cljonic::Variant</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-variant_8hpp_source.html#l00128">cljonic-collection-variant.hpp:128</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html"><div class="ttname"><a href="namespacecljonic_1_1core.html">cljonic::core</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-assoc_8hpp_source.html#l00006">cljonic-assoc.hpp:6</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a193446da6568cd206c5787c201df0c4f"><div class="ttname"><a href="namespacecljonic_1_1core.html#a193446da6568cd206c5787c201df0c4f">cljonic::core::hash_set</a></div><div class="ttdeci">constexpr auto hash_set(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::hash_set_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Set&lt; concepts_detail::hash_set_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-set_8hpp_source.html#l00435">cljonic-collection-set.hpp:435</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a640db1afe4f1644b0ecd12a1b88f2e6a"><div class="ttname"><a href="namespacecljonic_1_1core.html#a640db1afe4f1644b0ecd12a1b88f2e6a">cljonic::core::vector</a></div><div class="ttdeci">constexpr auto vector(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Vector&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-vector_8hpp_source.html#l00405">cljonic-collection-vector.hpp:405</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a76feb30f68f310e69724d807f5ef0c57"><div class="ttname"><a href="namespacecljonic_1_1core.html#a76feb30f68f310e69724d807f5ef0c57">cljonic::core::variant</a></div><div class="ttdeci">constexpr auto variant() noexcept -&gt; Variant&lt; Alternatives... &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-variant_8hpp_source.html#l00197">cljonic-collection-variant.hpp:197</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a9ad89b2da321b5072a628a8a836a1b7c"><div class="ttname"><a href="namespacecljonic_1_1core.html#a9ad89b2da321b5072a628a8a836a1b7c">cljonic::core::map_entry</a></div><div class="ttdeci">constexpr auto map_entry(Args &amp;&amp;... args) noexcept -&gt; MapEntry&lt; concepts_detail::map_entry_factory_key_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, concepts_detail::map_entry_factory_value_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-map-entry_8hpp_source.html#l00175">cljonic-collection-map-entry.hpp:175</a></div></div>
 <div class="ttc" id="anamespacecljonic_html"><div class="ttname"><a href="namespacecljonic.html">cljonic</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-assoc_8hpp_source.html#l00006">cljonic-assoc.hpp:6</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_a0276d2cc4a963af9ddbc2ad7aa6ac4f0"><div class="ttname"><a href="namespacecljonic.html#a0276d2cc4a963af9ddbc2ad7aa6ac4f0">cljonic::map_entry</a></div><div class="ttdeci">constexpr auto map_entry(Args &amp;&amp;... args) noexcept -&gt; MapEntry&lt; concepts_detail::map_entry_factory_key_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, concepts_detail::map_entry_factory_value_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-map-entry_8hpp_source.html#l00174">cljonic-collection-map-entry.hpp:174</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_a11e270768e9485445f2885cdecb1c4eb"><div class="ttname"><a href="namespacecljonic.html#a11e270768e9485445f2885cdecb1c4eb">cljonic::vector</a></div><div class="ttdeci">constexpr auto vector(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Vector&lt; concepts_detail::vector_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-vector_8hpp_source.html#l00400">cljonic-collection-vector.hpp:400</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_a55942096f8c8e04c16c34ed97b7745bf"><div class="ttname"><a href="namespacecljonic.html#a55942096f8c8e04c16c34ed97b7745bf">cljonic::variant</a></div><div class="ttdeci">constexpr auto variant() noexcept -&gt; Variant&lt; Alternatives... &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-variant_8hpp_source.html#l00195">cljonic-collection-variant.hpp:195</a></div></div>
-<div class="ttc" id="anamespacecljonic_html_ab920b6f72a40bc9c9d4b1c69662e149e"><div class="ttname"><a href="namespacecljonic.html#ab920b6f72a40bc9c9d4b1c69662e149e">cljonic::hash_set</a></div><div class="ttdeci">constexpr auto hash_set(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::hash_set_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Set&lt; concepts_detail::hash_set_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-set_8hpp_source.html#l00429">cljonic-collection-set.hpp:429</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00130">130</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00128">128</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a98f8a03f100ac9f6072e29c538eccb7f" name="a98f8a03f100ac9f6072e29c538eccb7f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a98f8a03f100ac9f6072e29c538eccb7f">&#9670;&#160;</a></span>Variant() <span class="overload">[1/2]</span></h2>
@@ -235,7 +233,7 @@ requires (<a class="el" href="namespacecljonic_1_1variant__detail.html#a9ccabbee
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00136">136</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00134">134</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
 
 </div>
 </div>
@@ -268,7 +266,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Reports whether the active alternative is <code class="param">T</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00146">146</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00144">144</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
 
 </div>
 </div>
@@ -298,7 +296,7 @@ template&lt;typename... Alternatives&gt; </div>
 </div><div class="memdoc">
 <p>Returns the zero-based index of the active alternative. </p>
 
-<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00140">140</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00138">138</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
 
 </div>
 </div>
@@ -333,7 +331,7 @@ template&lt;typename... Alternatives&gt; </div>
 </div><div class="memdoc">
 <p>Alternative-strict ordering; provided only when every alternative is totally ordered. Alternatives are ordered by index first, then by value. </p>
 
-<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00161">161</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00159">159</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
 
 </div>
 </div>
@@ -366,7 +364,7 @@ template&lt;typename... Alternatives&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00174">174</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00172">172</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
 
 </div>
 </div>
@@ -400,7 +398,7 @@ template&lt;typename... Alternatives&gt; </div>
 </div><div class="memdoc">
 <p>Alternative-strict equality; provided only when every alternative is comparable without throwing. </p>
 
-<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00152">152</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00150">150</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
 
 </div>
 </div>
@@ -433,7 +431,7 @@ template&lt;typename... Alternatives&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00168">168</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00166">166</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
 
 </div>
 </div>
@@ -466,7 +464,7 @@ template&lt;typename... Alternatives&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00180">180</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-collection-variant_8hpp_source.html#l00178">178</a> of file <a class="el" href="cljonic-collection-variant_8hpp_source.html">cljonic-collection-variant.hpp</a>.</p>
 
 </div>
 </div>

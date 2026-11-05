@@ -135,11 +135,11 @@ C++ ranges/views are not supported by this pair of functions; external sources
 use direct source construction instead.
 
 ```cpp
-constexpr auto values = cljonic::vector(1, 2, 2, 1);
-constexpr auto destination = cljonic::hash_set<int, 2>(1);
-static_assert(cljonic::fits_into(destination, values));
-constexpr auto result = cljonic::into(destination, values);
-static_assert(cljonic::equal(result, cljonic::hash_set(1, 2)));
+constexpr auto values = cljonic::core::vector(1, 2, 2, 1);
+constexpr auto destination = cljonic::core::hash_set<int, 2>(1);
+static_assert(cljonic::core::fits_into(destination, values));
+constexpr auto result = cljonic::core::into(destination, values);
+static_assert(cljonic::core::equal(result, cljonic::core::hash_set(1, 2)));
 ```
 
 Processing follows source traversal order and stops before the first value that
@@ -201,11 +201,11 @@ They copy their source and predicate without evaluating either at construction.
 
 ```cpp
 constexpr auto below_three = [](int n) noexcept { return n < 3; };
-constexpr auto source = cljonic::vector(1, 2, 4, 1);
-static_assert(cljonic::equal(cljonic::take_while(below_three, source), cljonic::vector(1, 2)));
-static_assert(cljonic::equal(cljonic::drop_while(below_three, source), cljonic::vector(4, 1)));
-static_assert(cljonic::equal(cljonic::next(cljonic::take_while(below_three, source)), cljonic::vector(2)));
-static_assert(cljonic::equal(cljonic::rest(cljonic::drop_while(below_three, source)), cljonic::vector(1)));
+constexpr auto source = cljonic::core::vector(1, 2, 4, 1);
+static_assert(cljonic::core::equal(cljonic::core::take_while(below_three, source), cljonic::core::vector(1, 2)));
+static_assert(cljonic::core::equal(cljonic::core::drop_while(below_three, source), cljonic::core::vector(4, 1)));
+static_assert(cljonic::core::equal(cljonic::core::next(cljonic::core::take_while(below_three, source)), cljonic::core::vector(2)));
+static_assert(cljonic::core::equal(cljonic::core::rest(cljonic::core::drop_while(below_three, source)), cljonic::core::vector(1)));
 ```
 
 Use `into` with an explicit destination to materialize either result.

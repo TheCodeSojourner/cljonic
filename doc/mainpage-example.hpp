@@ -54,12 +54,12 @@
  *
  * ## Aliases
  *
- * Namespace                      | "using" C++ Statement
+ * Namespace                      | C++ Namespace Alias
  * ------------------------------ | ---------------------------------------------
- * \ref Namespace_Core "core"     | using **core** = cljonic::core;
- * \ref Namespace_Regex "regex"   | using **regex** = cljonic::regex;
- * \ref Namespace_Set "set"       | using **set** = cljonic::set;
- * \ref Namespace_String "string" | using **string** = cljonic::string;
+ * \ref Namespace_Core "core"               | namespace **core** = cljonic::core;
+ * \ref Namespace_Regex "regex"             | namespace **regex** = cljonic::regex;
+ * \ref Namespace_Set "Set library"          | namespace **st** = cljonic::lib_set;
+ * \ref Namespace_String "String library"    | namespace **s** = cljonic::lib_string;
  *
  * ## Collection Types
  *
