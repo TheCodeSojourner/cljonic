@@ -1,0 +1,67 @@
+-- allium: 3
+-- REQ-FN-002A3: has_rest is an exact forwarding alias for has_next.
+
+entity HasRest {
+    supports_has_rest_free_function: Boolean
+    supports_exact_has_next_domain: Boolean
+    returns_exactly_has_next_result: Boolean
+    forwards_without_additional_preflight: Boolean
+    callback_behavior_matches_has_next: Boolean
+    preserves_input_value_state: Boolean
+    no_heap_allocation: Boolean
+    no_rtti: Boolean
+    no_exceptions: Boolean
+    constexpr_capable: Boolean
+    rejects_unsupported_domain_with_targeted_diagnostic: Boolean
+    diagnostic_names_supported_domains: Boolean
+
+    invariant HasRestFreeFunctionSupported {
+        this.supports_has_rest_free_function = true
+    }
+
+    invariant SupportsExactHasNextDomain {
+        this.supports_exact_has_next_domain = true
+    }
+
+    invariant ReturnsExactlyHasNextResult {
+        this.returns_exactly_has_next_result = true
+    }
+
+    invariant ForwardsWithoutAdditionalPreflight {
+        this.forwards_without_additional_preflight = true
+    }
+
+    invariant CallbackBehaviorMatchesHasNext {
+        this.callback_behavior_matches_has_next = true
+    }
+
+    invariant PreservesInputValueState {
+        this.preserves_input_value_state = true
+    }
+
+    invariant NoHeapAllocation {
+        this.no_heap_allocation = true
+    }
+
+    invariant NoRtti {
+        this.no_rtti = true
+    }
+
+    invariant NoExceptions {
+        this.no_exceptions = true
+    }
+
+    invariant ConstexprCapable {
+        this.constexpr_capable = true
+    }
+
+    invariant RejectsUnsupportedDomainWithTargetedDiagnostic {
+        this.rejects_unsupported_domain_with_targeted_diagnostic = true
+    }
+
+    invariant DiagnosticNamesSupportedDomains {
+        this.diagnostic_names_supported_domains = true
+    }
+}
+
+actor HasRestOperator { identified_by: HasRest }

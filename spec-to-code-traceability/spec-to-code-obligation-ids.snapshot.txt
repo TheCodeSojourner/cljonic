@@ -40,6 +40,7 @@ entity-fields.Get
 entity-fields.HashMapFactory
 entity-fields.HashSetFactory
 entity-fields.HasNext
+entity-fields.HasRest
 entity-fields.ImplicitConversions
 entity-fields.IndexedCollection
 entity-fields.IsEmpty
@@ -731,6 +732,18 @@ invariant.HasNext.ReturnsFalseWhenProducerNextResultIsEmpty
 invariant.HasNext.ReturnsTrueWhenNextResultHasObservableElement
 invariant.HasNext.SupportsNextCollectionDomain
 invariant.HasNext.SupportsNextProducerDomain
+invariant.HasRest.CallbackBehaviorMatchesHasNext
+invariant.HasRest.ConstexprCapable
+invariant.HasRest.DiagnosticNamesSupportedDomains
+invariant.HasRest.ForwardsWithoutAdditionalPreflight
+invariant.HasRest.HasRestFreeFunctionSupported
+invariant.HasRest.NoExceptions
+invariant.HasRest.NoHeapAllocation
+invariant.HasRest.NoRtti
+invariant.HasRest.PreservesInputValueState
+invariant.HasRest.RejectsUnsupportedDomainWithTargetedDiagnostic
+invariant.HasRest.ReturnsExactlyHasNextResult
+invariant.HasRest.SupportsExactHasNextDomain
 invariant.ImplicitConversions.AllApiBoundariesShareAdmission
 invariant.ImplicitConversions.ArgumentConstructionGateIsDistinctFromCollectionStorageAdmission
 invariant.ImplicitConversions.ArgumentConstructionGateRequiresSafeConversionAndNothrowConstruction
