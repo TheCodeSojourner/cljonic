@@ -2,13 +2,13 @@
 
 ## Purpose and Scope
 
-This module specifies the checked fixed-width numeric contract, scalar comparison/selection, bitwise math, conversion/parsing restrictions, raw floating-point policies, closure storage, and callable convenience adapters (`partial`, `juxt`, `fnil`, `apply`, etc.). Module 6 ensures numeric and functional computations remain deterministic, non-allocating, and compile-time checked.
+This module specifies the checked fixed-width `NumericPolicy`, scalar comparison/selection, bitwise math, conversion/`Parsing` restrictions, raw floating-point policies, closure storage, and callable convenience adapters (`partial`, `juxt`, `fnil`, `apply`, etc.). Module 6 ensures numeric and functional computations remain deterministic, non-allocating, and compile-time checked.
 
-## Fixed-Width Numeric Contract & Policy
+## Fixed-Width NumericPolicy
 
 λ REQ-NUM-000(x).
   ∀ raw floating-point calculation ∧ comparison: treated as potentially non-deterministic across values, compiler settings, evaluation modes, and platforms because of rounding, representation, NaN, infinity, signed zero, and other IEEE-754 effects
-  ∧ ∀ raw floating-point behavior: ¬∃ use for a stable semantic contract unless an explicit numeric policy defines and tests that behavior
+  ∧ ∀ raw floating-point behavior: ¬∃ use for a stable semantic contract unless an explicit `NumericPolicy` defines and tests that behavior
   rationale: rounding, representation, NaN, infinity, and signed-zero effects make raw floating-point behavior non-deterministic across platforms
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
 
@@ -22,7 +22,7 @@ This module specifies the checked fixed-width numeric contract, scalar compariso
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
 
 λ REQ-NUM-003(x).
-  ∀ `range`: requires an integral or otherwise explicitly discrete numeric type
+  ∀ `range`: requires an integral or otherwise explicitly `DiscreteNumericType`
   ∧ ∀ raw floating-point bound ∨ step: rejected at compile time because rounding and evaluation differences can change termination and produced values
   rationale: rounding and evaluation differences can change termination and produced values, so range termination cannot be a stable contract over FP
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
@@ -48,7 +48,7 @@ This module specifies the checked fixed-width numeric contract, scalar compariso
 λ REQ-NUM-007(x).
   ∀ collection operation that compares values: applies the same numeric capability constraints recursively to its element, key, and value types
   ∧ ∀ equality of collections containing raw floating-point values: rejected by default even when the collection itself can store those values, because nested floating-point comparisons may not be stable across supported environments
-  ∧ ∀ recursion: traverses only the components the library can analyze — cljonic collections, producers, `MapEntry`, `cljonic::Variant` alternatives, and the scalars themselves — ∧ stops at a user-defined class boundary under `REQ-NUM-018`
+  ∧ ∀ recursion: traverses only the components the library can analyze — `Collection`, `Producer`, `MapEntry`, `cljonic::Variant` alternatives, and the scalars themselves — ∧ stops at a user-defined class boundary under `REQ-NUM-018`
   rationale: nested floating-point comparisons may not be stable across supported environments, even when storage is permitted
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: origin_artifact}
 
@@ -77,7 +77,7 @@ This module specifies the checked fixed-width numeric contract, scalar compariso
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-NUM-013(x).
-  ∀ (numeric conversion ∧ text parsing): separate operations
+  ∀ (numeric conversion ∧ `Parsing`): separate operations
   ∧ ∀ cljonic equivalent of Clojure `int`: accepts numeric or character inputs according to its documented source capabilities ∧ ¬∃ implicit parsing of a `String` ∧ string-to-integer conversion uses a separately named parsing operation with deterministic failure behavior
   {source: stakeholder_decided, decided_by: original_spec_author}
 
@@ -103,11 +103,11 @@ This module specifies the checked fixed-width numeric contract, scalar compariso
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-NUM-018(x).
-  ∀ user-defined class type — an aggregate struct ∨ a non-aggregate class — that provides `operator==` — defaulted ∨ user-written — and that comparison is non-throwing: admitted to the stable equality domain as a stable-equality-capable type, whether or not it contains floating-point members
+  ∀ user-defined class type — an `AggregateLikeStruct` ∨ a non-aggregate class — that provides `operator==` — defaulted ∨ user-written — and that comparison is non-throwing: admitted to the `StableEquality` domain, whether or not it contains floating-point members
   ∧ ∀ such type: the numeric capability recursion of `REQ-NUM-007` stops at this type boundary ∧ the library performs no member-level analysis of it ∧ the library never inspects, requires, or reasons about its individual members
   ∧ ∀ equality semantics inside such a type, including floating-point, NaN, and precision behavior: the responsibility of the type's author, not of cljonic; admitting the type is an explicit transfer of that burden to the user
   ∧ ∀ user-defined class type without an available non-throwing `operator==`: outside the stable equality domain ∧ rejected at compile time
-  ∧ ∀ non-aggregate user-defined class: admission requires the stable-equality capability and the non-throwing comparison that the map-key and set-element contract also requires; that contract additionally requires non-throwing copy construction and assignment, which `equal` does not need because it never copies an operand
+  ∧ ∀ non-aggregate user-defined class: admission requires `StableEquality` and the non-throwing comparison that the map-key and set-element contract also requires; that contract additionally requires non-throwing copy construction and assignment, which `equal` does not need because it never copies an operand
   ∧ ∀ parameterized standard-library wrapper (`std::pair`, `std::optional`, `std::tuple`, `std::variant`) ∧ ∀ other wrapper whose inner types the library cannot analyze: rejected however instantiated, because a floating-point or otherwise unsupported component could otherwise be smuggled in behind the wrapper; the standard library declares none of these comparisons non-throwing, so admission by the non-throwing-comparison rule already excludes them and no separate exclusion list is needed
   ∧ ∀ context: this boundary is an admitted limitation of the type system, not a defect — C++23 provides no standard reflection, so member-level analysis of an arbitrary user-defined class is unavailable; C++26 static reflection would be required to close it
   rationale: a type that states its own equality contract is a trustworthy boundary; refusing to admit it would remove ordinary C++ value types from the collection domain without making the equality any more verifiable
@@ -117,7 +117,7 @@ This module specifies the checked fixed-width numeric contract, scalar compariso
   ∀ floating-point equality comparison that is statically detectable at compile time: rejected at compile time ∧ never deferred to a runtime check
   ∧ ∀ raw floating-point operand of `equal` ∨ `not_equal` (any arity): rejected at compile time
   ∧ ∀ `Set` element type ∧ ∀ `Map` key type that is a raw floating-point type: rejected at compile time, because set membership and map key lookup are equality comparisons
-  ∧ ∀ element, key, value, producer-parameter, or `Variant` alternative type of a cljonic collection, producer, `MapEntry`, or composite that is detectable as floating-point-bearing: rejected at compile time wherever that component participates in equality
+  ∧ ∀ element, key, value, producer-parameter, or `Variant` alternative type of a `Collection`, `Producer`, `MapEntry`, or composite that is detectable as floating-point-bearing: rejected at compile time wherever that component participates in equality
   ∧ ∀ context: detectability is the criterion — every floating-point equality comparison the library can detect must be rejected ∧ ¬∃ detectable comparison that is silently admitted
   ∧ ∀ undetectable case (a floating-point member inside an opaque user-defined aggregate): governed by `REQ-NUM-018` ∧ ¬∃ claim that it was detected
   ∧ ∀ storage independent of equality: storing a floating-point value where the operation never compares it (for example `Vector<double, N>` element storage or `Map<int, double, N>` value storage) remains permitted ∧ every equality operation over such a collection remains rejected at compile time

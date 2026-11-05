@@ -7,9 +7,9 @@ This module specifies specialized domain conveniences built on top of lower modu
 ## Set Algebra and Relational Operations
 
 λ REQ-FN-023(x).
-  ∀ context: the first-class bounded set algebra layer in `cljonic::lib_set` includes binary `set_union`, `set_intersection`, and `set_difference` operations over compatible `Set<T, N>` and `Set<T, M>` inputs, returning owning bounded `Set<T, max(N, M)>` values, plus `is_subset` and `is_superset` predicates returning `bool`
+  ∀ context: the first-class `Set` algebra layer in `cljonic::lib_set` includes binary `set_union`, `set_intersection`, and `set_difference` operations over compatible `Set<T, N>` and `Set<T, M>` inputs, returning owning `Set<T, max(N, M)>` values, plus `is_subset` and `is_superset` predicates returning `bool`
   ∧ ∀ derived result capacity: a compile-time value ∧ remains within `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT` ∧ ∀ statically invalid derived capacity: fails at compile time
-  ∧ ∀ set_algebra: requires the stable equality capability applicable to set membership ∧ preserves the semantic unorderedness of set traversal ∧ leaves all input sets unchanged
+  ∧ ∀ set_algebra: requires the `StableEquality` capability applicable to set membership ∧ preserves the semantic unorderedness of set traversal ∧ leaves all input sets unchanged
   ∧ ∀ context: `fits_set_algebra(left, right)` is the non-throwing, non-allocating complete-result preflight for the result-producing set algebra operations
   ∧ ∀ (`set_intersection` ∧ `set_difference`): produce complete results within the derived capacity
   ∧ ∀ `set_union` with more distinct values than the derived capacity: returns a deterministic bounded prefix containing the first `max(N, M)` distinct values encountered by its defined operand traversal ∧ `fits_set_algebra` returns `false` ∧ the returned set remains semantically unordered ∧ ¬∃ storage of completeness state in it
@@ -36,16 +36,16 @@ This module specifies specialized domain conveniences built on top of lower modu
   ∧ ∀ `index`: uses the source relation's bounded row capacity as the compile-time upper bound for its result map capacity ∧ the runtime number of distinct key values MAY be smaller ∧ ¬∃ determination of the result type by it ∧ each grouped result set uses the source relation's row capacity ∧ ∀ statically invalid derived capacity: fails at compile time
   ∧ ∀ `join`: uses the caller-supplied destination capacity for the output relation ∧ every intermediate bounded result has a capacity derived from the corresponding source or destination bound ∧ complete-result preflight accounts for all such bounds
   ∧ per-operation semantics:
-    - ∀ `project(relation, fields)`: returns an owning bounded set of rows containing only the requested keys present in each input row
-    - ∀ `rename(relation, field_map)`: returns an owning bounded set of rows with keys replaced according to the bounded field map
-    - ∀ `index(relation, key)`: returns an owning bounded map from each present key value to an owning bounded set of matching source rows
+    - ∀ `project(relation, fields)`: returns an owning `Set` of rows containing only the requested keys present in each input row
+    - ∀ `rename(relation, field_map)`: returns an owning `Set` of rows with keys replaced according to the bounded field map
+    - ∀ `index(relation, key)`: returns an owning `Map` from each present key value to an owning `Set` of matching source rows
     - ∀ `join(left, right, left_key, right_key, destination)`: compares values obtained from static key selectors ∧ merges matching map rows into the caller-supplied owning bounded relation destination ∧ `fits_join` is the non-throwing, non-allocating preflight for complete join materialization
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 ## Text, Regex, and Parsing Domain
 
 λ REQ-FN-002J(x).
-  ∀ runtime text parsing: provides `can_parse_int` and `parse_int` for the supported fixed-width integer target, `can_parse_float` and `parse_float` for the supported floating-point target, and `can_parse_bool` and `parse_bool` for documented boolean spellings
+  ∀ runtime `Parsing`: provides `can_parse_int` and `parse_int` for the supported fixed-width integer target, `can_parse_float` and `parse_float` for the supported floating-point target, and `can_parse_bool` and `parse_bool` for documented boolean spellings
   ∧ ∀ these parsing functions: provided in `cljonic::lib_string` ∧ ¬∃ provision in `cljonic::core`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-05}
 
@@ -65,8 +65,8 @@ This module specifies specialized domain conveniences built on top of lower modu
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-FN-018(x).
-  ∀ runtime regex construction: provided through `cljonic::core::re_pattern` using bounded cljonic string input ∧ returns a documented tagged checked construction result with a success state containing a `Regex<N>` whose pattern capacity equals the input `String<N>` content capacity and a failure state for an invalid pattern
-  ∧ ∀ result: uses fixed bounded storage ∧ requires no dynamic allocation or exceptions
+  ∀ runtime regex construction: provided through `cljonic::core::re_pattern` using `String<N>` input ∧ returns a documented tagged checked construction result with a success state containing a `Regex<N>` whose pattern capacity equals the input `String<N>` content capacity and a failure state for an invalid pattern
+  ∧ ∀ result: uses fixed `BoundedStorage` ∧ requires no dynamic allocation or exceptions
   ∧ ∀ invalid runtime pattern: produces the failure state rather than a `Regex<N>` claiming to contain a valid pattern
   {source: stakeholder_decided, decided_by: original_spec_author}
 
@@ -79,8 +79,8 @@ This module specifies specialized domain conveniences built on top of lower modu
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-FN-022(x).
-  ∀ context: the first-class bounded string convenience layer in `cljonic::lib_string` includes ASCII-preserving or ASCII-transforming operations corresponding to `is_blank`, `capitalize`, `ends_with`, `escape`, `includes`, `index_of`, `last_index_of`, `lower_case`, `re_quote_replacement`, `reverse`, `starts_with`, `trim`, `trim_newline`, `triml`, `trimr`, and `upper_case`
-  ∧ ∀ operation corresponding to (`join` ∨ `replace` ∨ `replace_first` ∨ `split` ∨ `split_lines`): also supported as a bounded string convenience operation when its destination string or collection capacities are explicit and its complete-result preflight behavior is documented
+  ∀ context: the first-class `String` convenience layer in `cljonic::lib_string` includes ASCII-preserving or ASCII-transforming operations corresponding to `is_blank`, `capitalize`, `ends_with`, `escape`, `includes`, `index_of`, `last_index_of`, `lower_case`, `re_quote_replacement`, `reverse`, `starts_with`, `trim`, `trim_newline`, `triml`, `trimr`, and `upper_case`
+  ∧ ∀ operation corresponding to (`join` ∨ `replace` ∨ `replace_first` ∨ `split` ∨ `split_lines`): also supported as a `String` convenience operation when its destination `String` or `Collection` capacities are explicit and its complete-result preflight behavior is documented
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-FN-031(x).
@@ -235,7 +235,7 @@ This module specifies specialized domain conveniences built on top of lower modu
   ∧ ∀ `Capacity < argument_count`, `Capacity > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT`, or `argument_count > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT`: rejected at compile time
   ∧ ∀ `T`: satisfies the Queue element requirements (`NothrowCollectionElement`) ∧ ∀ argument: satisfies `NothrowElementConstruction` for the declared element type under `REQ-CONV-001`
   ∧ ∀ arguments: associated in argument order so the first argument becomes the queue front, preserving FIFO construction semantics folded over `conj`
-  ∧ ∀ sole cljonic collection or producer argument: accepted as one element under EnclosureConstruction rather than materialized
+  ∧ ∀ sole `Collection` or `Producer` argument: accepted as one element under `EnclosureConstruction` rather than materialized
   ∧ ∀ `queue`: `constexpr` ∧ `noexcept` ∧ non-allocating
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-23}
 
@@ -246,7 +246,7 @@ This module specifies specialized domain conveniences built on top of lower modu
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-PLAT-025(x).
-  ∀ destructuring of supported tuple-like values ∧ simple aggregate structs: uses ordinary C++ structured bindings or positional decomposition
+  ∀ destructuring of supported tuple-like values ∧ simple `AggregateLikeStruct` values: uses ordinary C++ structured bindings or positional decomposition
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-PLAT-026(x).

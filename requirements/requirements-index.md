@@ -22,7 +22,7 @@ MUST ≡ ∀/¬ (required by constraint) | SHOULD ≡ ∧ preferred | MAY ≡ �
 
 1. **[requirements-module-1.md](requirements-module-1.md)** — *Foundation & Nominal Type System*
    - **Purpose**: Establishes core memory allocation invariants and nominal type recognition without depending on any collection logic.
-   - **Scope**: Zero heap allocation, header-only C++23 distribution, single-threaded execution, value immutability, persistent semantics via deep copying, and closed collection domain rules (`REQ-PLAT-001`–`013`, `REQ-VAL-001`–`020`).
+   - **Scope**: Zero heap allocation, a C++23 distribution using `HeaderOnlyDistribution`, single-threaded execution, value immutability, persistent semantics via deep copying, and closed collection domain rules (`REQ-PLAT-001`–`013`, `REQ-VAL-001`–`020`).
 
 2. **[requirements-module-2.md](requirements-module-2.md)** — *Capability Concepts & Preflight Infrastructure*
    - **Purpose**: Defines the C++20 concept capability framework and non-throwing preflight result model.
@@ -35,7 +35,7 @@ MUST ≡ ∀/¬ (required by constraint) | SHOULD ≡ ∧ preferred | MAY ≡ �
    - **Scope**: `Vector`, `MapEntry`, `Map`, `Set`, `Queue`, `String`, bounded array-backed storage, swap-and-remove mechanics, callable collection syntax (`v(idx)`, `m(key)`, `s(val)`), and current primitive free functions (`character_is_valid`, `count`, `get`, `is_empty`, `empty`, `first`, `next`, `has_next`, `has_rest`, `rest`, `conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`). `has_rest` is an exact forwarding alias for `has_next` under `REQ-FN-002A3`. `seq` converts collections and supported producers under `REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014`; `rest` delegates to `next` for collections and supported producers under `REQ-SEQ-001`–`009` and `REQ-SEQ-012` (`REQ-COLL-*`, `REQ-FN-001`–`008A`, `REQ-FN-002A4`–`002A7`, `REQ-FN-026`).
 
 4. **[requirements-module-4.md](requirements-module-4.md)** — *Sequence Producers & Materialization Pipeline*
-   - **Purpose**: Adds explicit materialization, non-collection generator values, and standard view interop.
+   - **Purpose**: Adds explicit materialization, `Producer` values, and `StandardViewType` interoperability.
    - **Scope**: Active generator producers (`Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`); direct producer consumption by source-taking free functions; materialization free function (`into`) and its completeness preflight (`fits_into`); active const logical-range traversal; and active conditional C++ interoperability accessors (`std::span<const T>`-like and `std::string_view`-like representations) (`REQ-VAL-014`–`017D`, `REQ-SEQ-015`–`021`, `REQ-FN-009`–`014C` including `013A`–`013I`, `REQ-FN-027`–`027A`, `REQ-PLAT-017`–`023` including `017A`, `022A`).
 
 5. **[requirements-module-5.md](requirements-module-5.md)** — *Higher-Order Algorithms & Traversal*

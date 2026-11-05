@@ -62,7 +62,7 @@ This module establishes the C++20 concept capability framework, result status ou
 ## Collection Capability Definitions
 
 λ REQ-CAP-001(x).
-  ∀ context: `Indexed` means a capability for efficient (constant-time, non-traversing), integer-indexed access to a collection's logical elements
+  ∀ context: `Indexed` means a capability for efficient (constant-time, non-traversing), integer-indexed retrieval of a collection's logical elements
   ∧ ∀ accepted_index_type: integral except `bool` and character types (`char`, `signed char`, `unsigned char`, `wchar_t`, `char8_t`, `char16_t`, and `char32_t`)
   ∧ ∀ Indexed_collection: defines a bounded logical index domain ∧ provides non-mutating access for an index in that domain ∧ provides a non-throwing, non-allocating predicate that determines whether an index is in that domain
   ∧ ∀ negative_index (representable by the accepted index type): outside the domain
@@ -75,14 +75,14 @@ This module establishes the C++20 concept capability framework, result status ou
 
 λ REQ-CAP-003(x).
   ∀ context: `Seqable` means a capability for producing the collection's documented logical traversal representation
-  ∧ ∀ collection: satisfies `Seqable` only when its sequence conversion is available under the lifecycle rules for that collection
-  ∧ ∀ Seqable_collection: provides sequence conversion without mutating the source, dynamic allocation, or exceptions ∧ sequence result is an independently valid bounded value whose elements and order follow the collection's documented traversal semantics
+  ∧ ∀ collection: satisfies `Seqable` only when its `Seq` operation is available under the lifecycle rules for that collection
+  ∧ ∀ Seqable_collection: provides `Seq` without mutating the source, dynamic allocation, or exceptions ∧ sequence result is an independently valid bounded value whose elements and order follow the collection's documented traversal semantics
   ∧ ∀ sequence_traversal: implementation-backed through `REQ-SEQ-001` through `REQ-SEQ-014`
   ∧ ∀ declaration_of_Seqable: closed to external extension under `REQ-CAP-014`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-CAP-004(x).
-  ∀ context: `Associative` means a capability for non-mutating association of a key and value into a collection, producing a new collection value
+  ∀ context: `Associative` means a capability for non-mutating association of a key and value into a `Collection`, producing a new `Collection` value
   ∧ ∀ built-in Associative_collection: defines its key and value types ∧ defines the valid-key, value, and capacity policies for association ∧ preserves the source collection ∧ provides a non-throwing, non-allocating preflight predicate over the complete key/value argument set that agrees with the collection's association policy for immutable inputs
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-09}
 
@@ -98,7 +98,7 @@ This module establishes the C++20 concept capability framework, result status ou
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-CAP-007(x).
-  ∀ context: `Indexed` refines `Lookup` for the non-boolean, non-character integer lookup domain — every `Indexed` collection also satisfies `Lookup` with an accepted integer key type ∧ indexed access and lookup agree for the same valid index
+  ∀ context: `Indexed` refines `Lookup` for the non-boolean, non-character integer lookup domain — every `Indexed` collection also satisfies `Lookup` with an accepted integer key type ∧ `Indexed` and `Lookup` agree for the same valid index
   ∧ ∀ context: `Associative` does not generally imply `Indexed` ∨ `Lookup`; its lookup-domain relationship is stated by the concrete collection requirement
   ∧ ∀ context: `Seqable` remains independent of the other four capabilities (`Indexed`, `Lookup`, `Associative`, and `Conjable`)
   {source: stakeholder_decided, decided_by: original_spec_author}
@@ -114,12 +114,12 @@ This module establishes the C++20 concept capability framework, result status ou
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-CAP-010(x).
-  ∀ supported map-key ∧ set-element domain: includes composite values formed by `cljonic::Variant` over scalar C++ literals, scoped enumerations, supported cljonic collections, supported producers whose stored parameters admit stable equality, and `MapEntry` values, subject to the storage, stable-equality, and component-recursion requirements of this module and Modules 3 and 4
+  ∀ supported map-key ∧ set-element domain: includes composite values formed by `cljonic::Variant` over scalar C++ literals, scoped enumerations, supported `Collection` values, supported `Producer` values whose stored parameters admit stable equality, and `MapEntry` values, subject to the storage, stable-equality, and component-recursion requirements of this module and Modules 3 and 4
   ∧ ∀ producer admitted as map key ∨ set element (directly ∨ as composite component): compares by producer parameter equality as governed by `REQ-FN-014B` — equality compares only the producer's bounded stored parameters ∧ ¬∃ traversal ∨ materialization of the produced sequence ∧ ¬∃ implication that equal parameters yield equal materialized sequences
   ∧ ∀ composite_value: satisfies the same admission contract as non-composite values — every stored component admits stable equality ∧ recursion applies to all nested components ∧ callable components are rejected because callables do not admit a stable value-equality comparison in the supported domain
   ∧ ∀ `cljonic::Variant` used as map key ∨ set element: uses alternative-strict equality — two variant values are equal only when they hold the same alternative and that alternative's values compare equal ∧ variants holding different alternatives compare unequal even when the alternative values would compare conventionally equal
   ∧ ∀ composite_domain_extension: does not expand the closed cljonic vocabulary beyond the standard composition operator ∧ does not reproduce Clojure runtime features, cross-type numeric unification, or hash-based equality
-  ∧ ∀ map key ∨ set element admission: the required stable-equality capability includes a non-throwing comparison operation, so key lookup, membership, insertion, and removal never call a comparison that can throw
+  ∧ ∀ map key ∨ set element admission: the required `StableEquality` includes a non-throwing comparison operation, so key lookup, membership, insertion, and removal never call a comparison that can throw
   ∧ ∀ parameterized standard-library wrapper (`std::pair`, `std::optional`, `std::tuple`, `std::variant`) ∧ ∀ other wrapper whose stored types the library cannot analyze: rejected as a map key ∨ set element whatever it is instantiated with, because a floating-point or otherwise unsupported component could otherwise enter a key or element position behind the wrapper; the non-throwing-comparison requirement already excludes the standard-library wrappers, which declare no non-throwing comparison, so no separate exclusion list is required
   rationale: callable components cannot participate in the stable value-equality comparison the composite domain requires; requiring a non-throwing comparison keeps parameterized wrappers from hiding unsupported components such as floating-point values in key and element positions, which the library cannot detect without reflection
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: origin_artifact, rationale_approved_by: human}
@@ -128,13 +128,13 @@ This module establishes the C++20 concept capability framework, result status ou
 λ REQ-CAP-011(x).
   ∀ context: `cljonic::Variant<Alternatives...>` is the nominal cljonic composite value type holding exactly one alternative at a time; it replaces `std::variant` as the supported composite in the cljonic value domain
   ∧ ∀ alternative: require(NothrowCollectionElement) ≡ noexcept(default_construction ∧ copy_construction ∧ copy_assignment ∧ destruction) | permits(Variant_as_map_value ∨ vector_element ∨ queue_element)
-  ∧ ∀ admitted_alternative: arithmetic scalar ∨ scoped enumeration ∨ cljonic collection ∨ producer with stable parameters ∨ `MapEntry` ∨ nested `cljonic::Variant`; floating-point and callable alternatives are admissible for storage exactly where `NothrowCollectionElement` admits them, even though they are not equality-admissible
+  ∧ ∀ admitted_alternative: arithmetic scalar ∨ scoped enumeration ∨ `Collection` ∨ `Producer` with stable parameters ∨ `MapEntry` ∨ nested `cljonic::Variant`; floating-point and callable alternatives are admissible for storage exactly where `NothrowCollectionElement` admits them, even though they are not equality-admissible
   ∧ ∀ cljonic::Variant: provides alternative-strict value equality through the native `==` operator and the `equal` free function exactly when every alternative satisfies `NothrowStableEqualityComparable` and provides a non-throwing comparison; otherwise it provides no `==` and any use in an equality position fails at compile time, mirroring a storable-but-not-comparable collection element such as `Vector<float, N>`
   ∧ ∀ equality_semantics: two `Variant` values are equal exactly when they hold the same alternative and that alternative's values compare equal ∧ variants holding different alternatives compare unequal even when their alternative values would compare conventionally equal ∧ ¬∃ cross-type numeric unification ∧ ¬∃ hash-based equality
   ∧ ∀ ordering: `Variant` provides the native ordering operators exactly when every alternative satisfies `TotallyOrdered`
   ∧ ∀ cljonic::Variant: has no valueless state ∧ ¬∃ `valueless_by_exception` ∧ because every alternative is nothrow-storable, no operation leaves the value without an active alternative
   ∧ ∀ operation: `constexpr` ∧ `noexcept` ∧ non-mutating for const operations ∧ non-allocating ∧ ¬∃ RTTI ∧ ¬∃ throwing access path
-  ∧ ∀ cljonic::Variant: is a component of the closed equality value domain — nestable inside cljonic collections, producers with stable parameters, `MapEntry`, and other `cljonic::Variant` values — and is subject to the same recursive component analysis as every other composite
+  ∧ ∀ cljonic::Variant: is a component of the closed equality value domain — nestable inside `Collection` values, `Producer` values with stable parameters, `MapEntry`, and other `cljonic::Variant` values — and is subject to the same recursive component analysis as every other composite
   ∧ ∀ standard_library `std::variant`: is not a supported cljonic value type ∧ fails at compile time as an `equal` operand ∧ fails at compile time as a map key ∨ set element ∧ MAY be used only as an internal implementation detail of `cljonic::Variant`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
 
@@ -144,7 +144,7 @@ This module establishes the C++20 concept capability framework, result status ou
   ∧ ∀ access ∨ rebinding: non-throwing ∧ ¬∃ `bad_variant_access` ∧ rebinding leaves no valueless state
   ∧ ∀ free_function: has the same behavior as its backing member method ∧ non-allocating ∧ non-mutating for query operations
   ∧ ∀ excluded_std_variant_capability ∈ {`valueless_by_exception`, exception-based `get`, multi-variant `visit`}: not provided
-  ∧ ∀ class_template_argument_deduction: a single-alternative deduction guide is provided, consistent with the library's constructor-pack preference
+  ∧ ∀ class_template_argument_deduction: a single-alternative deduction guide is provided, consistent with the library's `SameTypeArgumentIsOneElement` policy
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-CAP-012A(x).
@@ -155,7 +155,7 @@ This module establishes the C++20 concept capability framework, result status ou
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-27}
 
 λ REQ-CAP-013(x).
-  ∀ context: `Conjable` means a capability for non-mutating insertion of one value into a collection, producing a new collection value
+  ∀ context: `Conjable` means a capability for non-mutating insertion of one value into a `Collection`, producing a new `Collection` value
   ∧ ∀ Conjable_collection: defines its value type and capacity policy ∧ provides `conj` and a non-throwing, non-allocating `can_conj` preflight that agrees with `conj` for immutable inputs ∧ preserves its source collection
   ∧ ∀ context: `Conjable` does not by itself imply `Associative`, `Indexed`, or `Lookup`
   {source: stakeholder_decided, decided_by: original_spec_author}
@@ -171,17 +171,17 @@ This module establishes the C++20 concept capability framework, result status ou
 
 Explanatory definitions; binding obligations reside in the numbered clauses referenced below.
 
-- An owning value is a self-contained cljonic value whose validity does not depend on an external source lifetime, hidden borrowed state, or a hidden result cache.
-- A non-owning view is a borrowed, read-only observation of an existing value, without owned storage or source-lifetime extension (`REQ-VAL-008`).
-- A bounded result is an owning cljonic value whose capacity is known and finite under the operation's documented constraints.
-- A bounded-prefix result is a bounded result that is intentionally smaller than the complete result because the complete result could not fit within the declared capacity or the operation's documented result policy.
-- A default-returning result is the documented default value produced by a convenience operation when the requested access or lookup cannot produce a valid value.
-- A checked-failure result is a documented non-throwing, non-allocating result indicating that an operation could not complete successfully without violating the library's failure model.
-- A producer is an explicit, parameter-owning value representing a sequence or materialization source, distinct from materialized results and borrowed views. Its ownership and lifetime contract is governed by `REQ-VAL-008`.
-- A producer-only result is a public operation result whose value is a self-contained producer rather than an owning materialized collection. A producer-only result owns producer parameters, does not own materialized result storage, and does not borrow source storage or hidden mutable state.
-- A complete result is the full result of an operation as defined by the relevant requirement.
+- An `OwningValue` is a self-contained cljonic value whose validity does not depend on an external source lifetime, hidden borrowed state, or a hidden result cache.
+- A `NonOwningView` is a borrowed, read-only observation of an existing value, without owned storage or source-lifetime extension (`REQ-VAL-008`).
+- A `BoundedResult` is an owning cljonic value whose `Capacity` is known and finite under the operation's documented constraints.
+- A `BoundedPrefixResult` is a `BoundedResult` that is intentionally smaller than the `CompleteResult` because the `CompleteResult` could not fit within the `Capacity` or the operation's documented result policy.
+- A `DefaultReturningResult` is the documented default value produced by a convenience operation when the requested access or lookup cannot produce a valid value.
+- A `CheckedFailureResult` is a documented non-throwing, non-allocating result indicating that an operation could not complete successfully without violating the library's failure model.
+- A `Producer` is an explicit, parameter-owning value representing a sequence or materialization source, distinct from materialized results and borrowed views. Its ownership and lifetime contract is governed by `REQ-VAL-008`.
+- A `ProducerOnlyResult` is a public operation result whose value is a self-contained `Producer` rather than an owning materialized `Collection`. A `ProducerOnlyResult` owns producer parameters, does not own materialized result storage, and does not borrow source storage or hidden mutable state.
+- A `CompleteResult` is the full result of an operation as defined by the relevant requirement.
 - Result classification and documentation are governed by `REQ-ERR-009`–`010`; completion preflights by `REQ-BOUNDS-017` and `REQ-ERR-006`.
-- Stable equality and total ordering are capabilities independent of storage admission (`REQ-VAL-007`, `REQ-VAL-007A`).
+- `StableEquality` and `TotalOrder` are capabilities independent of storage admission (`REQ-VAL-007`, `REQ-VAL-007A`).
 
 ## Result Status Classification Rules
 
@@ -202,19 +202,19 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-BOUNDS-002(x).
-  ∀ collection: defines a default element of its value type, normally produced by value-initialization such as `T{}`
+  ∀ collection: defines a `DefaultElement` of its value type, normally produced by value-initialization such as `T{}`
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-BOUNDS-003(x).
-  ∀ access that cannot return a valid element: returns the collection's default element through the default-returning API
+  ∀ access that cannot return a valid element: returns the collection's `DefaultElement` through the default-returning API
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-BOUNDS-004(x).
-  ∀ context: the API makes it possible to determine before access whether an operation can return a valid element without relying on exceptions or inspecting the value for equality with the default element
+  ∀ context: the API makes it possible to determine before access whether an operation can return a valid element without relying on exceptions or inspecting the value for equality with the `DefaultElement`
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-BOUNDS-005(x).
-  ∀ operation that may return a default element: documented by the library
+  ∀ operation that may return a `DefaultElement`: documented by the library
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-BOUNDS-006(x).
@@ -226,7 +226,7 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-BOUNDS-008(x).
-  ∀ pre_access_predicate: defined in terms of the operation's domain ∧ distinguishes empty collections or sequences, invalid indexes, missing keys, and full-collection capacity state where those conditions apply
+  ∀ pre_access_predicate: defined in terms of the operation's domain ∧ distinguishes empty collections or sequences, invalid indexes, missing keys, and `FullState` where those conditions apply
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-BOUNDS-009(x).
@@ -331,7 +331,7 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
 λ REQ-ERR-007(x).
   ∀ supported_cljonic_operation: defined for all its documented inputs
   ∧ ∀ operation: ¬∃ (throw ∨ undefined_behavior ∨ out-of-bounds_storage_access ∨ unexpected_allocation ∨ silent_state_corruption ∨ process_termination ∨ dependence on hidden mutable error state)
-  ∧ ∀ runtime_detectable_unsuccessful_condition: uses the operation-specific documented mechanism — a preflight predicate with a default or bounded result, a checked result, or a compile-time rejection when the condition is knowable from the types or constant expressions
+  ∧ ∀ runtime_detectable_unsuccessful_condition: uses the operation-specific documented mechanism — a preflight predicate with a default or bounded result, a checked result, or a `CompileTimeFailure` when the condition is knowable from the types or constant expressions
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-ERR-008(x).
@@ -391,24 +391,24 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
 
 λ REQ-DIAG-009(x).
-  ∀ public_free_function, present ∨ added_in_future, whose supported domain is closed and expressible through named capability concepts (illustrative, non-narrowing examples: `equal`, `not_equal`, the producer factories `repeat`, `cycle`, `iterate`, and `repeatedly`, and the collection primitives `count`, `get`, `contains`, `conj`, `can_conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`, `is_empty`, `into`, and `fits_into`):
-  ∧ primary admission: expressed through named capability concepts at the public API boundary (`REQ-DIAG-001`, `REQ-DIAG-002`, `REQ-DIAG-005`)
-  ∧ preferred diagnostic fallback: a diagnostic overload constrained on the negation of the admission gate, provided for each supported arity, so that an argument outside the supported domain fails with one targeted `static_assert` that names the operation, the rejected operand types, and the violated domain rule (`REQ-DIAG-003`)
-  ∧ the diagnostic fallback exists to explain rejection, not to accept it: it never returns a value and is never a supported call target
+  ∀ public_free_function, present ∨ added_in_future, whose supported domain is closed and expressible through named `CapabilityConcept`s (illustrative, non-narrowing examples: `equal`, `not_equal`, the producer factories `repeat`, `cycle`, `iterate`, and `repeatedly`, and the collection primitives `count`, `get`, `contains`, `conj`, `can_conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`, `is_empty`, `into`, and `fits_into`):
+  ∧ primary admission: expressed through named `CapabilityConcept`s at the public API boundary (`REQ-DIAG-001`, `REQ-DIAG-002`, `REQ-DIAG-005`)
+  ∧ preferred `RejectionDiagnostic`: an overload constrained on the negation of the admission gate, provided for each supported arity, so that an argument outside the supported domain fails with one targeted `static_assert` that names the operation, the rejected operand types, and the violated domain rule (`REQ-DIAG-003`)
+  ∧ the `RejectionDiagnostic` exists to explain rejection, not to accept it: it never returns a value and is never a supported call target
   ∧ ∀ diagnostic_fallback message: states the meaning and the violated constraint in plain user-facing terms rather than relying on capability-concept or internal-implementation jargon or on compiler-specific wording (`REQ-DIAG-004`)
-  ∧ detectability contract: compile-time detection of domain support uses the named admission concepts and their `*_admissible_v` predicates, ¬∃ callability detection such as `requires { call(...) }`; a domain-rejected argument MAY satisfy callability once a diagnostic fallback is provided, and that callability is not a supported interface
-  ∧ whenever_possible: a diagnostic fallback is required for a public free function wherever a distinct overload can be formed whose constraints are strictly less preferred than the admitted overload for every valid call and viable only for a rejected call; a public free function whose rejection surface admits no such overload (no sibling candidate exists to compete with) carries a documented exclusion — recorded in the requirement and the function's header — and its single named constraint diagnostic is the accepted outcome
+  ∧ detectability contract: compile-time detection of domain support uses the named admission concepts and their `*_admissible_v` predicates, ¬∃ callability detection such as `requires { call(...) }`; a domain-rejected argument MAY satisfy callability once a `RejectionDiagnostic` is provided, and that callability is not a supported interface
+  ∧ whenever_possible: a `RejectionDiagnostic` is required for a public free function wherever a distinct overload can be formed whose constraints are strictly less preferred than the admitted overload for every valid call and viable only for a rejected call; a public free function whose rejection surface admits no such overload (no sibling candidate exists to compete with) carries a documented exclusion — recorded in the requirement and the function's header — and its single named constraint diagnostic is the accepted outcome
   ∧ forward_binding: the obligation binds every public free function added in the future, not only those named here; a public free function whose rejection surface is neither admitted-gated and fallback-taught nor explicitly excluded is a conformance defect surfaced by the diagnostic-coverage gate
-  ∧ ∀ producer_factory_free_function ∈ {`range`, `repeat`, `cycle`, `iterate`, `repeatedly`}: primary admission is expressed through its product-specific named capability concept (`RangeElement` and the factory's deduction/conversion admission under `REQ-FN-013I` for `range`; `NothrowCollectionElement` for `repeat`; `CljonicSource` for `cycle`; `IterateStep` for `iterate`; `RepeatedlyStep` for `repeatedly`) ∧ an argument outside the closed producer domain fails with one targeted `static_assert` naming the operation, the violated producer-admission rule, and the correct usage, replacing the compiler's list of rejected concept candidates
+  ∧ ∀ producer_factory_free_function ∈ {`range`, `repeat`, `cycle`, `iterate`, `repeatedly`}: primary admission is expressed through its product-specific named `CapabilityConcept` (`RangeElement` and the factory's deduction/conversion admission under `REQ-FN-013I` for `range`; `NothrowCollectionElement` for `repeat`; `CljonicSource` for `cycle`; `IterateStep` for `iterate`; `RepeatedlyStep` for `repeatedly`) ∧ an argument outside the closed producer domain fails with one targeted `static_assert` naming the operation, the violated producer-admission rule, and the correct usage, replacing the compiler's list of rejected concept candidates
   ∧ ∀ class_template_gated_type_argument_rejected_by_deduction: governed by `REQ-DIAG-012` rather than excluded here — the class-template domain constraint keeps the type-level gate SFINAE-friendly, while the deduction path carries one targeted message
   rationale: maximally informative compile-time diagnostics are a global library goal that applies to every public free function, present and future; a single targeted diagnostic is more accurate to a reader than the compiler's list of rejected concept candidates, so a fallback is added wherever one can be formed and an explicit, justified exclusion is recorded wherever it cannot
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
 
 λ REQ-DIAG-010(x).
-  ∀ public_constructor whose source domain is closed and expressible through named constraints (for example a cljonic collection's direct source constructor, which admits only non-cljonic C++ range or view sources — `REQ-FN-027A`):
-  ∧ primary admission: expressed through named constraints at the constructor boundary, so a cljonic collection or producer argument that is not the destination's element type is excluded from source construction
-  ∧ preferred diagnostic fallback: an additional constructor overload constrained on the negation of the source-admission rule, so that a rejected cljonic collection or producer argument fails with one targeted `static_assert` that names the collection and states the violated source-construction rule; it does not recommend materialization or refer callers to `into` or `fits_into`; where a single-element form is supported, it may identify that form (`REQ-DIAG-003`)
-  ∧ the diagnostic fallback exists to explain rejection, not to accept it: it never produces a value and is never a supported call target
+  ∀ public_constructor whose source domain is closed and expressible through named constraints (for example a `Collection`'s direct source constructor, which admits only non-cljonic C++ range or view sources — `REQ-FN-027A`):
+  ∧ primary admission: expressed through named constraints at the constructor boundary, so a `Collection` or `Producer` argument that is not the destination's element type is excluded from source construction
+  ∧ preferred `RejectionDiagnostic`: an additional constructor overload constrained on the negation of the source-admission rule, so that a rejected `Collection` or `Producer` argument fails with one targeted `static_assert` that names the collection and states the violated source-construction rule; it does not recommend materialization or refer callers to `into` or `fits_into`; where a single-element form is supported, it may identify that form (`REQ-DIAG-003`)
+  ∧ the `RejectionDiagnostic` exists to explain rejection, not to accept it: it never produces a value and is never a supported call target
   ∧ ∀ diagnostic_fallback message: states the meaning and the violated constraint in user-facing terms rather than relying on a generic element-conversion message, and does not depend on compiler-specific wording (`REQ-DIAG-004`)
   ∧ ∀ constructor whose rejection occurs at class instantiation (a type argument gated by the class-template `requires`: `Range`, `MapEntry`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`, `Variant`): excluded — no constructor is reached, so a constructor-level fallback is unreachable; the out-of-domain *deduction* path is governed by `REQ-DIAG-012` instead, and explicit naming of the specialization yields one named constraint diagnostic
   ∧ ∀ constructor-level `requires` used as an availability guard rather than a source-domain rejection (`Iterate` and `Repeatedly` default constructors): excluded — it is not a closed source-domain rejection
@@ -431,8 +431,8 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
   {source: stakeholder_decided, decided_by: human, rationale_source: origin_artifact}
 
 λ REQ-DIAG-012(x).
-  ∀ public_class_template, present ∨ added_in_future, whose type-argument domain is closed and expressible through named capability concepts (`Range`'s element type, `Repeat`'s element type, `Cycle`'s source, and their successors):
-  ∧ domain gate: the type-argument domain remains a `requires`-clause constraint expressed through a named capability concept and evaluated before any constructor is considered, so an out-of-domain type argument continues to be rejected softly and SFINAE-friendly; ¬∃ replacement of that constraint by a class-body `static_assert`, by an unconstrained primary template, or by a body-level assertion, because each makes the rejected specialization nameable and corrupts the admission concepts (`CljonicRange`, `NothrowCollectionElement`, `StableEqualityComparable`) that must report it as unsatisfied rather than ill-formed
+  ∀ public_class_template, present ∨ added_in_future, whose type-argument domain is closed and expressible through named `CapabilityConcept`s (`Range`'s element type, `Repeat`'s element type, `Cycle`'s source, and their successors):
+  ∧ domain gate: the type-argument domain remains a `requires`-clause constraint expressed through a named `CapabilityConcept` and evaluated before any constructor is considered, so an out-of-domain type argument continues to be rejected softly and SFINAE-friendly; ¬∃ replacement of that constraint by a class-body `static_assert`, by an unconstrained primary template, or by a body-level assertion, because each makes the rejected specialization nameable and corrupts the admission concepts (`CljonicRange`, `NothrowCollectionElement`, `StableEqualityComparable`) that must report it as unsatisfied rather than ill-formed
   ∧ deduction diagnostic: an out-of-domain class template argument deduction (`Range{"Hello"}` and its successors) MUST select, through deduction guides constrained on the negation of the domain rule and provided for every supported arity, an internal diagnostic specialization that carries exactly one targeted `static_assert` naming the class template, the rejected argument type(s), and the violated domain rule (`REQ-DIAG-004`)
   ∧ the diagnostic specialization is internal and unusable: never a supported construction target, exposing no observable value or operation, existing only to emit the message
   ∧ admitted behavior unchanged: every in-domain deduction and every explicit construction selects the real specialization with unchanged semantics
@@ -463,7 +463,7 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
 ## Vocabulary and Naming Conventions
 
 λ REQ-VOCAB-001(x).
-  ∀ context: the canonical terms include collection, sequence, sequenceable, traversal, `Indexed`, `Lookup`, `Seqable`, `Associative`, `Conjable`, `ConstRangeTraversal`, `LogicalTraversalOrder`, `ReadOnlyInteropAccessor`, `ContiguousConstView`, vector, map, set, queue, string, capacity, default element, `contains`, persistent value, free function, bounded storage, platform interoperability, aggregate-like struct, stable equality, total order, alternative-strict equality, discrete numeric type, numeric policy, owning value, non-owning view, standard view type, bounded result, partial result, preflight predicate, exact conversion, checked conversion, lossy conversion, parsing, finite observation, finite deep equality, bounded inspection, unbounded producer, `ProducerOnlyResult`, producer materialization, `NoMutationConstraint`, relation model, `MapEntry`, general equality, numeric equality, sequential equality, `equal`, semantic predicate name, state predicate, verb predicate, capability predicate, `IsPredicatePrefix`, `CanPredicatePrefix`, `HasPredicatePrefix`, `ValidPredicatePrefix`, lifecycle classification, `CandidateStatus`, `DeferredStatus`, `ExcludedStatus`, `RequirementsBacked`, `KeywordEnumNameEntry`, `KeywordEnumNameMap`, `KeywordEnumNameContext`, and keyword enum name mapping
+  ∀ context: the canonical terms include `Collection`, `Sequence`, `Sequenceable`, `Traversal`, `Indexed`, `Lookup`, `Seqable`, `Associative`, `Conjable`, `ConstRangeTraversal`, `LogicalTraversalOrder`, `ReadOnlyInteropAccessor`, `ContiguousConstView`, `Vector`, `Map`, `Set`, `Queue`, `String`, `Capacity`, `DefaultElement`, `Contains`, `PersistentValue`, `FreeFunction`, `BoundedStorage`, `PlatformInteroperability`, `AggregateLikeStruct`, `StableEquality`, `TotalOrder`, `AlternativeStrictEquality`, `DiscreteNumericType`, `NumericPolicy`, `OwningValue`, `NonOwningView`, `StandardViewType`, `BoundedResult`, `BoundedPrefixResult`, `PreflightPredicate`, `ExactConversion`, `CheckedConversion`, `LossyConversion`, `Parsing`, `FiniteObservation`, `FiniteDeepEquality`, `BoundedInspection`, `UnboundedProducer`, `ProducerOnlyResult`, `ProducerMaterialization`, `NoMutationConstraint`, `RelationModel`, `MapEntry`, `GeneralEquality`, `NumericEquality`, `SequentialEquality`, `Equal`, `SemanticPredicateName`, `StatePredicate`, `VerbPredicate`, `CapabilityPredicate`, `IsPredicatePrefix`, `CanPredicatePrefix`, `HasPredicatePrefix`, `ValidPredicatePrefix`, `LifecycleClassification`, `CandidateStatus`, `DeferredStatus`, `ExcludedStatus`, `RequirementsBacked`, `KeywordEnumNameEntry`, `KeywordEnumNameMap`, `KeywordEnumNameContext`, and `KeywordEnumNameMapping`
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-VOCAB-002(x).

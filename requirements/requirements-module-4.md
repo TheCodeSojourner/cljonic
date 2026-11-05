@@ -6,7 +6,7 @@ Conversion admission is governed by `REQ-CONV-001`–`003`; exact callback-resul
 
 ## Purpose and Scope
 
-This module specifies sequence producer types (`Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`), materialization (`into`) and its completeness preflight (`fits_into`), and bounded C++ interoperability inputs (`std::span`, `std::string_view`) for direct source construction. Module 4 bridges explicit sequence generators to concrete stored collections without dynamic allocation or hidden caching. The active implementation slice covers `Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`, and explicit producer materialization through `into`, preflighted by `fits_into`. Sequence conversion (`seq`) remains deferred future work; `first`, `next`, and `rest` are active traversal APIs, with `rest` forwarding to `next` for every supported producer. Collection-owned const logical-range traversal and read-only C++ interoperability accessors are also active. Standard ranges and views MAY be used internally by cljonic free-function implementations when they preserve the requirements in this module and MUST NOT be exposed as public cljonic result types. Direct use of standard ranges and views by cljonic applications is outside this library contract.
+This module specifies `Producer` types (`Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`), materialization (`into`) and its completeness preflight (`fits_into`), and bounded C++ interoperability inputs (`std::span`, `std::string_view`) for direct source construction. Module 4 bridges explicit sequence generators to concrete stored collections without dynamic allocation or hidden caching. The active implementation slice covers `Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`, and explicit producer materialization through `into`, preflighted by `fits_into`. Sequence conversion (`seq`) remains deferred future work; `first`, `next`, and `rest` are active traversal APIs, with `rest` forwarding to `next` for every supported `Producer`. Collection-owned `ConstRangeTraversal` and read-only C++ interoperability accessors are also active. Standard ranges and views MAY be used internally by cljonic free-function implementations when they preserve the requirements in this module and MUST NOT be exposed as public cljonic result types. Direct use of standard ranges and views by cljonic applications is outside this library contract.
 
 ## Materialization & Producer Invariants
 
@@ -17,7 +17,7 @@ This module specifies sequence producer types (`Range`, `Repeat`, `Cycle`, `Iter
 
 λ REQ-VAL-015(x).
   ∀ destination supplied to `into`: encodes the result capacity and result collection type
-  ∧ ∀ `into(destination, source)`: returns a new destination-typed collection formed by folding source values in traversal order through the destination's insertion semantics ∧ leaves both input values unchanged
+  ∧ ∀ `into(destination, source)`: returns a new destination-typed collection formed by folding source values in the order yielded by the source through the destination's insertion semantics ∧ leaves both input values unchanged
   ∧ ∀ `Vector` ∨ `Queue` destination: appends values after its existing logical contents ∧ preserves FIFO order for `Queue`
   ∧ ∀ `Set` destination: inserts distinct values ∧ duplicate insertion consumes no capacity
   ∧ ∀ `Map` destination: associates compatible `MapEntry` values ∧ a matching key replaces its value without consuming capacity ∧ later entries for the same key replace earlier entries
@@ -60,13 +60,13 @@ This module specifies sequence producer types (`Range`, `Repeat`, `Cycle`, `Iter
 
 λ REQ-VAL-017C(x).
   ∀ context: `NothrowConstInputRange` refines `ConstInputRange` by requiring non-throwing const `begin` and `end`, dereference, pre-increment, post-increment, and iterator/sentinel comparison operations
-  ∧ ∀ `CljonicSource`: admits only a cljonic collection or producer that satisfies `NothrowConstInputRange`
+  ∧ ∀ `CljonicSource`: admits only a `Collection` or `Producer` that satisfies `NothrowConstInputRange`
   ∧ ∀ source-domain requirement: shared by `into`, `fits_into`, and producer operations that accept a `CljonicSource` ∧ a nominally admitted collection or producer that cannot provide non-throwing const input traversal ¬∃ satisfaction of `CljonicSource`
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-VAL-017D(x).
   ∀ Module 4 producer type ∈ {`Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`}: default-constructible ∧ nothrow default-constructible ∧ nothrow copy-constructible ∧ nothrow copy-assignable, so that producer values satisfy the `NothrowCollectionElement` storage contract ∧ MAY be stored as map values, vector elements, queue elements, or nested collection components
-  ∧ ∀ default_constructed_producer: valid, deterministic producer value consistent with the documented default form — `Range{}` is the finite empty `Range` with default start, end, and step; `Repeat{}` is the finite empty repeat of the element default value; `Repeatedly{}` is the finite empty repeatedly producer over a default-constructed step; `Iterate{}` is the unbounded iterate producer over a default element value and default-constructed step; `Cycle{}` is the unbounded cycle producer over a default-constructed source
+  ∧ ∀ default_constructed_producer: valid, deterministic `Producer` value consistent with the documented default form — `Range{}` is the finite empty `Range` with default start, end, and step; `Repeat{}` is the finite empty repeat of the element `DefaultElement`; `Repeatedly{}` is the finite empty `Repeatedly` over a default-constructed step; `Iterate{}` is the unbounded `Iterate` over a `DefaultElement` and default-constructed step; `Cycle{}` is the unbounded `Cycle` over a default-constructed source
   ∧ ∀ producer whose component types are not themselves nothrow default-constructible: ¬∃ satisfaction of `NothrowCollectionElement` ∧ rejected at compile time when used in a storage position
   ∧ ∀ default_construction: ¬∃ (evaluation of producer callbacks ∨ allocation ∨ throw)
   rationale: nothrow default/copy operations let producer values satisfy the `NothrowCollectionElement` storage contract and be stored as collection elements
@@ -97,7 +97,7 @@ This module specifies sequence producer types (`Range`, `Repeat`, `Cycle`, `Iter
 
 λ REQ-SEQ-019(x).
   ∀ operation ∧ ∀ unbounded producer nested inside an owning collection ∨ another producer: ¬∃ implicit recursive materialization ∨ traversal
-  ∧ ∀ bounded inspection ∨ materialization of nested producers: requires explicit caller-selected bounds at each materialized level
+  ∧ ∀ `BoundedInspection` ∨ materialization of nested `Producer` values: requires explicit caller-selected bounds at each materialized level
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-SEQ-020(x).
@@ -106,14 +106,14 @@ This module specifies sequence producer types (`Range`, `Repeat`, `Cycle`, `Iter
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-SEQ-021(x).
-  ∀ operation producing sequenceable results where a useful finite result capacity can be derived from the operation and its inputs: ∧ preferred — returns an owning bounded cljonic value
+  ∀ operation producing sequenceable results where a useful finite `Capacity` for its result can be derived from the operation and its inputs: ∧ preferred — returns an owning bounded `Collection` value
   ∧ ∀ operation whose results are unbounded ∨ for which no useful finite capacity can be derived without imposing an arbitrary caller-independent limit: ∧ preferred — returns or exposes an explicit producer value
   ∧ ∀ runtime-varying result count alone: ¬∃ requirement of producer semantics when a safe compile-time capacity bound exists
   ∧ ∀ producer_value: self-contained ∧ owns its parameters ∧ ¬∃ (owned materialized result storage ∨ borrowed source storage ∨ hidden mutable state ∨ hidden arbitrary result-capacity limit)
   ∧ ∀ producer satisfying `CljonicSource`: consumable directly by source-taking free functions ∧ complete conversion into an owning destination uses `into`, with `fits_into` providing the completeness preflight where required
   {source: stakeholder_decided, decided_by: original_spec_author}
 
-## Sequence Producer Specifications
+## Producer Specifications
 
 λ REQ-FN-009(x).
   ∀ (`cycle` ∧ `iterate` ∧ `range` ∧ `repeat` ∧ `repeatedly`): standalone producer values or producer operations that ¬∃ (owned materialized result storage ∨ required result-capacity template parameter)
@@ -124,16 +124,16 @@ This module specifies sequence producer types (`Range`, `Repeat`, `Cycle`, `Iter
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-FN-009A(x).
-  ∀ context: the only approved public Cycle spelling is `cycle(source)`, where `source` is a supported cljonic collection ∨ producer satisfying `CljonicSource`, whether finite ∨ unbounded
+  ∀ context: the only approved public Cycle spelling is `cycle(source)`, where `source` is a supported `Collection` ∨ `Producer` satisfying `CljonicSource`, whether finite ∨ unbounded
   ∧ ∀ Cycle: stores an independent owned copy of the source value ∧ ∀ Producer_source: that copy consists of the producer's parameters and state ∧ ¬∃ materialized result sequence
   ∧ ∀ Cycle: ¬∃ (borrowed source storage ∨ owned materialized result storage)
   ∧ ∀ finite_source: Cycle repeats the source from its beginning after each complete pass
-  ∧ ∀ unbounded_source: Cycle preserves the source's observable traversal without requiring the source to reach an end ∧ bounded observation of `cycle(source)` produces the same prefix as bounded observation of `source`
+  ∧ ∀ unbounded_source: Cycle preserves the source's observable traversal without requiring the source to reach an end ∧ `FiniteObservation` of `cycle(source)` produces the same prefix as `FiniteObservation` of `source`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
 
 λ REQ-FN-009B(x).
-  ∀ finite `source` supplied to `cycle` that is empty: valid ∧ bounded observation of the Cycle producer is empty
-  ∧ ∀ unbounded `source` supplied to `cycle`: remains unbounded ∧ Cycle continues to report the configured observable traversal cap ∧ `false` from `is_finite()`
+  ∀ finite `source` supplied to `cycle` that is empty: valid ∧ `FiniteObservation` of the `Cycle` is empty
+  ∧ ∀ unbounded `source` supplied to `cycle`: remains an `UnboundedProducer` ∧ Cycle continues to report the configured observable traversal cap ∧ `false` from `is_finite()`
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-FN-010(x).
@@ -160,14 +160,14 @@ This module specifies sequence producer types (`Range`, `Repeat`, `Cycle`, `Iter
   ∧ ∀ deduced `range(end)`, `range(start, end)`, or `range(start, end, step)`: returns `Range<T>` where every supplied argument has the same unqualified signed integral type `T`, matching successful constructor deduction without common-type promotion
   ∧ ∀ explicitly typed `range<T>()`, `range<T>(end)`, `range<T>(start, end)`, or `range<T>(start, end, step)`: returns `Range<T>` ∧ `T` satisfies `RangeElement` ∧ every supplied argument follows the existing Range constructor safe implicit conversion rules under `REQ-CONV-001`
   ∧ ∀ zero-argument `range<T>()`: returns the default empty Range with start `0`, end `0`, and step `1` ∧ untyped `range()` is rejected because the element type cannot be deduced
-  ∧ ∀ `range`: behaves identically to the equivalent Range constructor, including default parameters, exclusive endpoint, zero-step precedence, empty ranges, finite cardinality saturation, and bounded observation under `REQ-FN-012`, `REQ-FN-013`, `REQ-VAL-016`, `REQ-VAL-017A`, and `REQ-VAL-017D`
+  ∧ ∀ `range`: behaves identically to the equivalent `Range` constructor, including default parameters, exclusive endpoint, zero-step precedence, empty ranges, finite cardinality saturation, and `FiniteObservation` under `REQ-FN-012`, `REQ-FN-013`, `REQ-VAL-016`, `REQ-VAL-017A`, and `REQ-VAL-017D`
   ∧ ∀ `range`: `constexpr` ∧ `noexcept` ∧ non-allocating ∧ owns its parameters ∧ preserves input arguments ∧ ¬∃ materialization of result storage during construction
-  ∧ ∀ rejected factory call: compile-time rejection ∧ targeted operation diagnostic under `REQ-DIAG-009` ∧ ¬∃ fallback result ∨ silent narrowing ∨ implicit common-type promotion
+  ∧ ∀ rejected factory call: `CompileTimeFailure` ∧ targeted operation diagnostic under `REQ-DIAG-009` ∧ ¬∃ fallback result ∨ silent narrowing ∨ implicit common-type promotion
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-29}
 
 λ REQ-FN-013A(x).
   ∀ `Range`: provides a non-throwing, non-allocating, constant-time `Range::contains` member predicate over available bounded-observation positions; this predicate does not make `Range` `Indexed`
-  ∧ ∀ `range.contains(index)`: reports whether the position is available for bounded observation, not whether the index is present as a produced value
+  ∧ ∀ `range.contains(index)`: reports whether the position is available for `FiniteObservation`, not whether the index is present as a produced value
   ∧ ∀ `Range`: the generic `contains(range, index)` free-function form is excluded
   ∧ ∀ `Range`: ¬∃ (`Indexed` capability ∨ key-based lookup ∨ `get` ∨ callable lookup); positional value retrieval remains deferred until explicitly approved
   {source: stakeholder_decided, decided_by: original_spec_author}
@@ -247,7 +247,7 @@ This module specifies sequence producer types (`Range`, `Repeat`, `Cycle`, `Iter
 λ REQ-FN-014(x).
   ∀ callback supplied to `iterate`: pure ∧ non-allocating
   ∧ ∀ callback supplied to `repeatedly`: MAY maintain state or produce side effects, mirroring Clojure's `repeatedly` ∧ remains non-allocating ∧ ¬∃ throw when invoked
-  ∧ ∀ counted_form: invokes a callback exactly once per produced element during each `into` call when materialized completely ∧ ∀ uncounted_form: treated as a potentially infinite producer
+  ∧ ∀ counted_form: invokes a callback exactly once per produced element during each `into` call when materialized completely ∧ ∀ uncounted_form: treated as an `UnboundedProducer`
   rationale: mirrors Clojure's semantics where `repeatedly` may be stateful/side-effecting while `iterate` steps must be pure
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
 
@@ -284,8 +284,8 @@ This module specifies sequence producer types (`Range`, `Repeat`, `Cycle`, `Iter
   ∧ external C++ interoperability sources are materialized only through direct source construction (`REQ-FN-027A`) ∧ ¬∃ (retention of the external view ∨ allocation ∨ throw) by `into` or `fits_into`
   ∧ ∀ admitted `into` ∧ `fits_into`: usable in constant evaluation when the arguments support it ∧ non-throwing ∧ non-allocating ∧ non-mutating with respect to the input values
   ∧ ∀ admitted `fits_into`: returns whether the complete source can be inserted under `REQ-VAL-015` and `REQ-VAL-017A` ∧ returns `false` for every unbounded producer
-  ∧ ∀ rejected `fits_into` call: fails at compile time with the targeted rejection diagnostic governed by `REQ-DIAG-009`
-  ∧ ∀ rejected `into` call: fails at compile time with the targeted rejection diagnostic governed by `REQ-DIAG-009`
+  ∧ ∀ rejected `fits_into` call: fails at compile time with the targeted `RejectionDiagnostic` governed by `REQ-DIAG-009`
+  ∧ ∀ rejected `into` call: fails at compile time with the targeted `RejectionDiagnostic` governed by `REQ-DIAG-009`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-29, rationale_source: origin_artifact}
 
 λ REQ-FN-027A(x).
@@ -295,19 +295,19 @@ This module specifies sequence producer types (`Range`, `Repeat`, `Cycle`, `Iter
   ∧ ∀ String span import: applies the String invalid-byte replacement policy, including replacing embedded null bytes and bytes above `0x7F` with `'.'`
   ∧ ∀ source extent that is a compile-time constant greater than the destination capacity: construction fails at compile time ∧ ∀ source extent known only at runtime that exceeds capacity: direct construction returns the deterministic bounded prefix permitted by the destination capacity
   ∧ ∀ direct_source_construction: documented as bounded construction rather than complete materialization ∧ ¬∃ introduction of an optional, result, exception, or other checked-constructor error channel
-  ∧ ∀ constructor_argument: a cljonic_collection ∨ cljonic_producer is admitted only when its type is exactly the destination's element type — in that case it is one element (pack construction), mirroring a Clojure collection literal whose contents are elements (`#{(range 10)}`)
-  ∧ ∀ constructor_argument whose type is a cljonic_collection ∨ cljonic_producer that is ¬the destination's element type: ¬∃ admitted as a direct source constructor argument — materializing a cljonic collection or producer source is the role of `into` ∧ `fits_into` (`REQ-FN-027`), never the constructor; the direct source constructor admits only non-cljonic C++ interoperability sources
-  ∧ ∀ enclosure_construction (a class-template-argument-deduction form, no explicit template argument list) whose sole argument is a cljonic_collection ∨ cljonic_producer: deduces the destination with that source value as its element type and a capacity of one, producing a one-element value that encloses the argument — mirroring a Clojure collection literal (`[v]`, `#{v}`) — ¬∃ copy or element materialization
+  ∧ ∀ constructor_argument: a `CljonicCollection` ∨ `CljonicProducer` is admitted only when its type is exactly the destination's element type — in that case it is one element (pack construction), mirroring a Clojure collection literal whose contents are elements (`#{(range 10)}`)
+  ∧ ∀ constructor_argument whose type is a `CljonicCollection` ∨ `CljonicProducer` that is ¬the destination's element type: ¬∃ admitted as a direct source constructor argument — materializing a `Collection` or `Producer` source is the role of `into` ∧ `fits_into` (`REQ-FN-027`), never the constructor; the direct source constructor admits only non-cljonic C++ interoperability sources
+  ∧ ∀ enclosure_construction (a class-template-argument-deduction form, no explicit template argument list) whose sole argument is a `CljonicCollection` ∨ `CljonicProducer`: deduces the destination with that source value as its element type and a `Capacity` of one, producing a one-element value that encloses the argument — mirroring a Clojure collection literal (`[v]`, `#{v}`) — ¬∃ copy or element materialization
   ∧ ∀ same-type_copy_construction (an explicit template argument list naming the argument's own destination type and capacity): remains a copy of the argument, distinct from enclosure_construction
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 ## Internal Range and View Implementation Support
 
-The following range and interoperability requirements are binding contracts: every supported collection provides a const range-compatible logical traversal mechanism and a read-only C++ interoperability accessor.
+The following range and interoperability requirements are binding contracts: every supported `Collection` provides `ConstRangeTraversal` and a read-only C++ interoperability accessor.
 
 λ REQ-PLAT-017(x).
-  ∀ supported collection type ∈ {`Vector`, `Map`, `Set`, `Queue`, `String`}: provides a const range-compatible logical traversal mechanism sufficient for cljonic free-function implementations to visit each active element without depending on collection-specific storage details
-  ∧ ∀ traversal_mechanism: non-mutating ∧ non-allocating ∧ non-throwing ∧ `constexpr`-capable where supported ∧ exposes only active elements ∧ preserves each collection's documented logical traversal order
+  ∀ supported `Collection` type ∈ {`Vector`, `Map`, `Set`, `Queue`, `String`}: provides `ConstRangeTraversal` sufficient for cljonic free-function implementations to visit each active element without depending on collection-specific storage details
+  ∧ ∀ traversal_mechanism: non-mutating ∧ non-allocating ∧ non-throwing ∧ `constexpr`-capable where supported ∧ exposes only active elements ∧ preserves each `Collection`'s documented `LogicalTraversalOrder`
   ∧ ∀ mechanism: provides the equivalent of const `begin`/`end` traversal ∧ the exact iterator and sentinel types remain an implementation detail unless required by a public interoperability contract
   {source: stakeholder_decided, decided_by: original_spec_author}
 
@@ -349,7 +349,7 @@ The following range and interoperability requirements are binding contracts: eve
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-PLAT-022A(x).
-  ∀ `Queue`: provides its const range-compatible logical traversal as the interoperability mechanism for FIFO access ∧ ¬∃ requirement to provide a single contiguous standard view when its active logical range is physically wrapped
+  ∀ `Queue`: provides its `ConstRangeTraversal` as the interoperability mechanism for FIFO access ∧ ¬∃ requirement to provide a single contiguous `StandardViewType` when its active logical range is physically wrapped
   ∧ ∀ queue interoperability accessor: MAY return a single `std::span<const T>` only when the complete active logical range is already contiguous ∧ ¬∃ (allocation ∨ copy into a temporary buffer ∨ mutation ∨ normalization of the queue solely to manufacture such a span)
   ∧ ∃ permitted_path: a wrapped queue exposes no contiguous standard-view accessor
   {source: stakeholder_decided, decided_by: original_spec_author}

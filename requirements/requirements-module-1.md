@@ -7,7 +7,7 @@ This module defines the foundational resource, memory, platform, value semantics
 ## Core Allocation & Platform Constraints
 
 λ REQ-PLAT-001(x).
-  ∀ distribution: the distributable library is header-only
+  ∀ distribution: the distributable library satisfies `HeaderOnlyDistribution`
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-PLAT-002(x).
@@ -95,7 +95,7 @@ This module defines the foundational resource, memory, platform, value semantics
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-VAL-008(x).
-  ∀ public_semantic_operation returning an owning cljonic result: returns a self-contained owning value whose validity does not depend on the lifetime or state of another value, temporary, external storage, or hidden borrowed state
+  ∀ public_semantic_operation returning an owning cljonic result: returns a self-contained `OwningValue` whose validity does not depend on the lifetime or state of another value, temporary, external storage, or hidden borrowed state
   ∧ ∀ public_semantic_operation: ¬∃ return of (`std::ranges` views ∨ `std::span` values ∨ `std::string_view` values ∨ other borrowed lazy views)
   ∧ ∀ collection_owned C++ interoperability accessor (sole view exception): const-qualified observer ∧ exposes only read-only elements or characters ∧ ¬∃ (mutable references ∨ mutable iterators) ∧ satisfies the bounded, non-mutating lifetime and invalidation requirements defined for interoperability
   ∧ ∀ explicit_producer_value (separate permitted result category, governed by producer requirements): owns its parameters ∧ ¬∃ owned materialized result storage ∧ ¬∃ (borrowed source storage ∨ hidden mutable state)
@@ -113,7 +113,7 @@ This module defines the foundational resource, memory, platform, value semantics
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-VAL-011(x).
-  ∀ collection_type supporting literal construction ∧ ∀ explicit_capacity_literal whose content exceeds declared capacity: fails at compile time
+  ∀ collection_type supporting literal construction ∧ ∀ explicit_capacity_literal whose content exceeds declared `Capacity`: fails at compile time
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-VAL-012(x).
@@ -121,7 +121,7 @@ This module defines the foundational resource, memory, platform, value semantics
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-VAL-013(x).
-  ∀ collection_type with explicit capacity parameter ∧ ∀ declared_capacity > `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT`: fails at compile time with a diagnostic identifying both the declared capacity and the configured maximum
+  ∀ collection_type with explicit `Capacity` parameter ∧ ∀ declared_capacity > `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT`: fails at compile time with a diagnostic identifying both the declared `Capacity` and the configured maximum
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-VAL-018(x).
