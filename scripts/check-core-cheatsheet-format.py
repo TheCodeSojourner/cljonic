@@ -51,11 +51,8 @@ def validate(source: str) -> list[str]:
         if match:
             contents.append((line_number, match.group(1)))
 
-    rule_index = next((index for index, (_, text) in enumerate(contents) if text == "___"), None)
-    if rule_index is None:
-        errors.append("missing standalone horizontal rule `* ___`")
-    elif rule_index + 1 == len(contents) or contents[rule_index + 1][1] != "# Cheatsheet":
-        errors.append(f"line {contents[rule_index][0]}: `* ___` must be followed by standalone `* # Cheatsheet`")
+    if not contents or contents[0][1] != "# Cheatsheet":
+        errors.append("Core_Cheatsheet must start with standalone `* # Cheatsheet` without a horizontal rule")
 
     table_lines = [(line_number, text) for line_number, text in contents if "|" in text]
     if len(table_lines) < 3:
@@ -97,9 +94,12 @@ def run_self_test(source: str) -> list[str]:
     if errors:
         return [f"canonical source failed validation: {error}" for error in errors]
 
-    collapsed = source.replace(" * ___\n * # Cheatsheet", " * ___ # Cheatsheet", 1)
+    collapsed = source.replace(" * # Cheatsheet", " * ___ # Cheatsheet", 1)
     if not validate(collapsed):
         return ["negative regression did not reject a collapsed cheatsheet heading"]
+    ruled = source.replace(" * # Cheatsheet", " * ___\n * # Cheatsheet", 1)
+    if not validate(ruled):
+        return ["negative regression did not reject a horizontal rule above the cheatsheet heading"]
     if not validate_list_item(1, "hash_map, has_next"):
         return ["negative regression did not reject nonalphabetical names"]
     if not validate_list_item(1, "hash_map, holds, index"):
