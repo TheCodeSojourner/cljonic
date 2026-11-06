@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['numbers_20convert_20automatically_0',['When numbers convert automatically',['../implicit-conversions.html#conversion-automatic',1,'']]]
+  ['library_20functions_0',['Library Functions',['../index.html#autotoc_md6',1,'Set Library Functions'],['../index.html#autotoc_md7',1,'String Library Functions']]]
 ];

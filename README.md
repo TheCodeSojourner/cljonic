@@ -7,10 +7,10 @@
 <p align="center"><strong>Header-Only Embedded-System C++ Clojure-esque Functional Programming Library</strong></p>
 
 > **Note**
-> If you are interested in a "big-machine" **C++ Clojure** implementation see the [Jank](https://github.com/jank-lang/jank) project.
+> If you are interested in a "big-machine" **C++ Clojure** implementation, with full C++ interoperability, see the [Jank](https://github.com/jank-lang/jank) project.
 
 > **Important**
-> I am **NOT** a **Modern C++** expert. I'm learning **Modern C++** (e.g., **Concepts**, **Reflection**) using **AI-assisted workflows**. I'm moderately competent in **Clojure**, having used it professionally for several years. If you have suggestions for improvement, **PLEASE** feel free to create issues, and I'll **do my best** to address them. **PRs** are also welcome.
+> I am **NOT** a **Modern C++** expert. I'm learning **Modern C++** (e.g., **Concepts**, **Contracts**, **Reflection**) using **AI-assisted workflows**. I'm moderately competent in **Clojure**, having used it professionally for several years. If you have suggestions for improvement, **PLEASE** feel free to create issues, and I'll **do my best** to address them. **PRs** are also welcome.
 
 ## Pronunciation
 
@@ -63,7 +63,7 @@ systems.
 
 ## Desired cljonic User Experience
 
-The developer using **cljonic** should be able to write **safe** code that is **easy to read**, **easy to understand** and
+The developer using **cljonic** should be able to write **safe** C++ code that is **easy to read**, **easy to understand** and
 **easy to maintain**. These goals will enable **embedded system** projects to be **completed more quickly**, with
 **fewer bugs**, and maintained and enhanced with **less long term effort**.
 
@@ -235,7 +235,7 @@ The key artifacts that define what this system is and does, in order of authorit
 
 | Artifact          | Role                                                                  |
 | ----------------- | --------------------------------------------------------------------- |
-| `requirements/`  | Governing behavior and safety requirements                            |
+| `requirements/`   | Governing behavior and safety requirements                            |
 | `vocabulary.md`   | Shared domain vocabulary; the foundation all other artifacts build on |
 | `architecture.md` | Structural constraints and decisions derived from vocabulary          |
 | `specs/`          | Behavioral specifications derived from architecture                   |
@@ -299,7 +299,7 @@ changes. Assuming all tests pass, executing `make cljonic` will generate the **c
 | Target                                           | Description                                                                                                                  |
 | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
 | `make`                                           | Show available targets                                                                                                       |
-| `make all`                                       | Incremental parallel build and test run                                                                                     |
+| `make all`                                       | Incremental parallel build and test run                                                                                      |
 | `make test`                                      | Incremental parallel rebuild and parallel tests against modular and generated headers                                        |
 | `make clean`                                     | Clean compiled outputs, preserving configuration and downloaded dependencies                                                 |
 | `make distclean`                                 | Remove build directories, including configuration and dependency caches                                                      |
@@ -319,11 +319,11 @@ changes. Assuming all tests pass, executing `make cljonic` will generate the **c
 | `make no-heap`                                   | Strict no-heap gate against modular and generated headers: source check, harness build, and symbol scan                      |
 | `make traceability-spec-to-code`                 | Strict spec-to-code traceability gate: set-scoped allium validation, snapshot drift check, and test traceability enforcement |
 | `make traceability-spec-to-code-update-snapshot` | Regenerate committed obligation snapshot from current specs                                                                  |
-| `make requirements-structure`                    | Check requirement designator uniqueness, declared domains, attribution, and rationale provenance                              |
+| `make requirements-structure`                    | Check requirement designator uniqueness, declared domains, attribution, and rationale provenance                             |
 | `make vocabulary-structure`                      | Check vocabulary term metadata and `Related` references                                                                      |
-| `make audit-scripts`                             | Run regression self-tests for reusable repository audit scripts                                                               |
-| `make trace-id-check`                            | Focused Allium obligation-to-test check; set `SPEC`, `TESTS`, and optionally `EXACT=1`                                         |
-| `make trace-id-check`                            | Focused Allium obligation-to-test check; set `SPEC`, `TESTS`, and optionally `EXACT=1`                                         |
+| `make audit-scripts`                             | Run regression self-tests for reusable repository audit scripts                                                              |
+| `make trace-id-check`                            | Focused Allium obligation-to-test check; set `SPEC`, `TESTS`, and optionally `EXACT=1`                                       |
+| `make trace-id-check`                            | Focused Allium obligation-to-test check; set `SPEC`, `TESTS`, and optionally `EXACT=1`                                       |
 | `make upsert-gate`                               | Fail-fast loop gate: lint, complexity-cli, asan-ubsan, coverage-cli for `UPSERT_COVERAGE_FILE`                               |
 | `make upsert-gate-strict`                        | upsert-gate plus strict spec-to-code traceability and no-heap verification                                                   |
 
@@ -361,11 +361,11 @@ For standalone build targets, optional `BUILD_JOBS=N` bounds CMake build and par
 
 Final-gate measurements on the development host (GCC 16.2.1, CMake 4.4.4, 22 logical CPUs; optimized runs use `VALIDATION_JOBS=4`):
 
-| Run | Wall time |
-| --- | --------- |
-| Original sequential gate baseline | 622.145s (10m22s) |
-| Optimized gate after `make clean` | 298.634s (4m59s) |
-| Optimized gate immediately repeated unchanged | 192.224s (3m12s) |
+| Run                                           | Wall time         |
+| --------------------------------------------- | ----------------- |
+| Original sequential gate baseline             | 622.145s (10m22s) |
+| Optimized gate after `make clean`             | 298.634s (4m59s)  |
+| Optimized gate immediately repeated unchanged | 192.224s (3m12s)  |
 
 Both optimized runs passed every baseline check, all 20 diagnostic suites, 40 documentation examples, and 100% source line coverage (812/812). The normal, sanitizer, and coverage configurations each passed all 280 tests. Tooling regressions also exercise complete gate membership, worker limits, ordered output, and failures blocking dependent stages and final success.
 
@@ -373,12 +373,12 @@ Here, "cold" means compiled outputs were cleaned, not dependency caches, filesys
 
 A subsequent concurrency sweep ran `make clean` before each gate on the same host, retaining configurations and dependency sources:
 
-| Workers | Gate wall time | Peak sampled process-tree RSS |
-| ------- | -------------- | ----------------------------- |
-| 4 | 298.561s | 1.18 GiB |
-| 8 | 228.885s | 2.06 GiB |
-| 12 | 198.840s | 2.65 GiB |
-| 17 (80% of 22 available CPUs) | 198.711s | 4.01 GiB |
+| Workers                       | Gate wall time | Peak sampled process-tree RSS |
+| ----------------------------- | -------------- | ----------------------------- |
+| 4                             | 298.561s       | 1.18 GiB                      |
+| 8                             | 228.885s       | 2.06 GiB                      |
+| 12                            | 198.840s       | 2.65 GiB                      |
+| 17 (80% of 22 available CPUs) | 198.711s       | 4.01 GiB                      |
 
 All four gates passed. Twelve workers matched seventeen within timing noise while using substantially less memory, motivating the automatic cap; separate diagnostic/build budgets were not warranted by these results. RSS was sampled every 250ms across the gate's process tree, may double-count shared pages, and can miss brief peaks. Host-wide swap-out was observed during the eight-worker run but cannot be attributed to this gate on a shared machine; the other runs recorded no swap-out. These are single-run observations, not universal hardware limits. To reproduce the earlier four-worker table, explicitly set `VALIDATION_JOBS=4`.
 

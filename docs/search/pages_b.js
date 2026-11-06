@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['variant_20type_0',['Variant Type',['../index.html#autotoc_md4',1,'']]]
+  ['the_20operation_20s_20own_20rules_0',['Check the operation&apos;s own rules',['../implicit-conversions.html#conversion-operation',1,'']]],
+  ['to_20do_20when_20a_20call_20is_20rejected_1',['What to do when a call is rejected',['../implicit-conversions.html#conversion-explicit',1,'']]],
+  ['type_2',['Variant Type',['../index.html#autotoc_md4',1,'']]],
+  ['types_3',['Types',['../index.html#autotoc_md2',1,'Collection Types'],['../index.html#autotoc_md3',1,'Producer Types']]]
 ];
