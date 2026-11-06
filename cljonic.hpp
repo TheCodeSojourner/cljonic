@@ -14,60 +14,7 @@
 #define CLJONIC_STRINGIFY(x) CLJONIC_STRINGIFY_INNER(x)// End cljonic-config.hpp
 
 /** \mainpage
- * \b cljonic is a header-only C++ library for embedded system developers who want to program in a functional style. It
- * provides functions similar in name and behavior to Clojure.
- *
- * To address its embedded system focus, cljonic does not use the heap or exceptions. It uses modern C++ features to
- * protect, guide, and teach C++ developers, includes unit tests with nearly <b>100% coverage</b>, and is designed to
- * be efficiently maintained.
- *
- * The motivation for \b cljonic comes from observations made about the pragmatic use of C++ for embedded system
- * software development, the progression of the C++ language (e.g., C++11, C++14, C++17, C++20, C++23), and the counsel
- * of software development "experts", in many different programming languages, that <b>a functional programming style
- * should be eagerly embraced by all developers</b>.
- *
- * Many embedded system C++ developers are <b>not academic programming language experts</b> with in-depth knowledge of
- * every C++ feature, and many <b>may not have time</b> to follow the progression of the language.  Rather, many
- * embedded system C++ developers have <b>strong hardware backgrounds</B>, and <B>know a pragmatic specific subset of
- * C++</B> that is often sufficient to deliver reasonably good software in a predictable amount of time, though this is
- * often <b>not optimized for minimal long term cost of ownership</b>.
- *
- * Generally speaking, many C++ developers use a subset of the \b C programming language with some of C++'s <b>Object
- * Oriented</b> capabilities. This begs a question:
- *
- * <b>Is there a pragmatic subset of Modern C++ that enables embedded system developers to produce higher-quality, more
- * efficient, and more maintainable code?</b>
- *
- * Changes to C++ have provided valuable capabilities that are time consuming to master, hence it is both <b> valuable
- * to development organizations</b> for their developers to use modern C++ capabilities, and <b> too expensive to
- * train</b> all of their developers to be experts in their use.  This, too, begs a question:
- *
- * <b>Can one or two embedded system software developers cost-effectively introduce modern C++ capabilities to the
- * entire team?</b>
- *
- * In this post:
- *
- *     https://www.gamedeveloper.com/programming/in-depth-functional-programming-in-c-
- *
- * the author makes the following statements:
- *
- * <b>"A large fraction of the flaws in software development are due to programmers not fully understanding all the
- * possible states their code may execute in. In a multithreaded environment, the lack of understanding and the
- *  resulting problems are greatly amplified, almost to the point of panic if
- * you are paying attention. Programming in a functional style makes the state presented to your code explicit, which
- * makes it much easier to reason about
- *  [(i.e., Fewer mistakes, and less debugging)], and, in a completely pure
- * system, makes thread race conditions impossible."
- *
- * "No matter what language you work in, programming in a functional style provides benefits. You should do it whenever
- * it is convenient, and you should think hard about the decision when it isn't convenient."</b>
- *
- * \b cljonic is a \b header-only library that utilizes \b Modern \b C++ capabilities to provide a functional style C++
- * \b Clojure subset to \b embedded \b system developers, promotes the \b predictable \b development of \b higher \b
- * quality code \b faster, and can be \b cost-effectively \b maintained over time.
- *
  * \anchor Core_Cheatsheet
- * ___
  * # Cheatsheet
  *
  * ## Aliases
@@ -75,8 +22,8 @@
  * Namespace                      | C++ Namespace Alias
  * ------------------------------ | ---------------------------------------------
  * \ref Namespace_Core "Core"               | namespace **core** = cljonic::core;
- * \ref Namespace_Set "Set library"          | namespace **st** = cljonic::lib_set;
- * \ref Namespace_String "String library"    | namespace **s** = cljonic::lib_string;
+ * \ref Namespace_Set "Set Library"          | namespace **st** = cljonic::lib_set;
+ * \ref Namespace_String "String Library"    | namespace **s** = cljonic::lib_string;
  *
  * ## Collection Types
  *
@@ -103,9 +50,7 @@
  * ## Core Functions
  *
  * Every Core function is declared in \c cljonic::core. Entries linked to documentation have implemented documentation.
- * Plain names are inventory entries only; their presence does not establish that they are implemented or supported.
- * The requirements define each entry's lifecycle, and only \c requirements-backed entries define supported behavior.
- * \c comp is explicitly deferred and non-binding.
+ * Plain names are planned entries that are not yet implemented.
  *
  * - add, apply, \ref Assoc "assoc", assoc_in
  * - bit_and, bit_and_not, bit_clear, bit_flip, bit_not, bit_or, bit_set, bit_shift_left, bit_shift_right, bit_test,
@@ -143,10 +88,9 @@
  * - vals, \ref VariantFactory "variant", variant_alternative, variant_size, vec, \ref cljonic::vector "vector", visit
  * - zipmap
  *
- * ## Set Functions
+ * ## Set Library Functions
  *
- * Plain names are inventory entries only; their presence does not establish that they are implemented or supported.
- * The requirements define each entry's lifecycle, and only \c requirements-backed entries define supported behavior.
+ * Plain names are planned entries that are not yet implemented.
  *
  * - fits_join, fits_set_algebra
  * - index, is_subset, is_superset
@@ -157,10 +101,9 @@
  * - select
  * - set_difference, set_intersection, set_union
  *
- * ## String Functions
+ * ## String Library Functions
  *
- * Plain names are inventory entries only; their presence does not establish that they are implemented or supported.
- * The requirements define each entry's lifecycle, and only \c requirements-backed entries define supported behavior.
+ * Plain names are planned entries that are not yet implemented.
  *
  * - can_parse_bool, can_parse_float, can_parse_int, capitalize
  * - ends_with, escape
