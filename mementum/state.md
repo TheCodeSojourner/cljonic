@@ -1,5 +1,15 @@
 ## Current Session State
 
+- last_session_id: 8889ddef-91e4-4bb7-a9d9-836c554f067f
+- current_timestamp: 2026-11-06T14:09:00-07:00
+- session_complete: false
+- recover: Human approved dropping `to_num` from the planned API. Removed it from REQ-NUM-017 and the Core cheatsheet, regenerated the single header and HTML, and recorded the decision in `mementum/memories/drop-to-num-planned-conversion.md`. Changes are uncommitted. Existing human README edits were preserved.
+- Decisions: Governing order is requirements → architecture → specifications → tests → code. Only `to_num` removal was approved; other conversion names and implicit-conversion/equality rules remain unchanged. Generic destination-parameterized conversions and requiring explicit integer/floating conversions remain proposals, not approved contracts.
+- Validation: requirements-structure, single-header generation, core-cheatsheet-format self-tests, Doxygen generation, and git diff --check passed.
+- Questions: Remaining conversion API design is unresolved; await human direction.
+
+## Previous Session State (README documentation link)
+
 - last_session_id: c77e4348-9cef-4ccb-bb9c-b84d8f613489
 - current_timestamp: 2026-11-05T16:28:05-07:00
 - session_complete: true

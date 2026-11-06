@@ -69,13 +69,13 @@ The developer using **cljonic** should be able to write **safe** C++ code that i
 
 ### Default Element
 
-Every **cljonic collection** has a **default element** that is returned whenever a valid collection element can't be returned.
-The value of a collection's **default element** is the **default value** of the type of the collection's values
-(e.g., `T{}`). This approach is taken to avoid using exceptions, error codes/states, `std::optional`, and/or `std::expected`.
+Every **cljonic collection and producer** has a **default element** that is returned whenever a valid element can't be returned.
+The value of a **default element** is the **default value** of the type of the values
+(e.g., `T{}`). This approach is taken to avoid using exceptions, error codes/states, `std::optional`, and/or `std::expected`, which can complicate **embedded system** development.
 
 > **Note**
 > The design choice to use a **default element** means that **cljonic** users must take care to ensure that they know
-> when a **default element** can be returned (e.g., Asking for the First element of an empty collection), and to handle things appropriately. For this reason **cljonic** provides "**preflight preicates**".
+> when a **default element** can be returned (e.g., Asking for the first element of an empty collection), and to handle things appropriately. For this reason **cljonic** provides "**preflight preicates**" that allow developers to check conditions before attempting operations that might return a **default element**.
 
 ### C++ constexpr and consteval
 
@@ -85,8 +85,8 @@ Additionally, this approach helps to detect **undefined behavior** at compile ti
 ### Safe implicit conversions
 
 Collection and producer arguments accept their declared types and value-preserving
-numeric widening, not arbitrary C++ implicit conversions. The destination must
-represent **every value of the source type**; a small literal does not make a
+numeric widening, not arbitrary C++ implicit conversions. The converted-to type must be able to
+represent **every possible value of the converted-from type**; a small literal does not make a
 potentially narrowing conversion safe.
 
 - `short` to `long long` and `float` to `double` are accepted.
