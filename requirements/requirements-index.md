@@ -1,6 +1,8 @@
 # cljonic Requirements Index
 
-This document outlines the modular implementation roadmap for `cljonic`. To ensure clean architecture and testable boundaries, the requirements are organized into 7 dependency-ordered module files that together form the current requirements set, transcribed into nucleus lambda notation (`λ REQ-<DOMAIN>-NNN(x).`).
+This document outlines the modular requirements organization for `cljonic`. To ensure clean architecture and testable boundaries, the requirements are organized into 7 module files grouped by responsibility that together form the current requirements set, transcribed into nucleus lambda notation (`λ REQ-<DOMAIN>-NNN(x).`).
+
+Module order provides a general development progression, not a strict one-module-at-a-time implementation sequence. Implementation order follows the prerequisites of each approved feature. A reference to another module's requirement is an implementation dependency only when that feature requires the referenced behavior to exist first; definitional and boundary references are not.
 
 ## Domain Prefixes (Closed Set)
 
@@ -44,7 +46,7 @@ MUST ≡ ∀/¬ (required by constraint) | SHOULD ≡ ∧ preferred | MAY ≡ �
 
 6. **[requirements-module-6.md](requirements-module-6.md)** — *Numeric & Callable Convenience*
    - **Purpose**: Adds scalar arithmetic, bitwise math, conversion/parsing controls, and functional closure builders.
-   - **Scope**: Checked arithmetic with preflights (`can_add`, `can_subtract`, `can_multiply`), bitwise operations (`bit_and`, `bit_or`, `bit_shift_left`), raw floating-point stability restrictions, stored closure capabilities, and callable adapters (`partial`, `juxt`, `fnil`, `complement`, `apply`) (`REQ-NUM-000`–`017`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`).
+   - **Scope**: Checked arithmetic with preflights (`can_add`, `can_subtract`, `can_multiply`), bitwise operations (`bit_and`, `bit_or`, `bit_shift_left`), raw floating-point stability restrictions, stored closure capabilities, and callable adapters (`partial`, `juxt`, `fnil`, `complement`, `apply`) (`REQ-NUM-000`–`019`, `REQ-NUM-010A`–`010E`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`).
 
 7. **[requirements-module-7.md](requirements-module-7.md)** — *Specialized Value Domains & State*
    - **Purpose**: Implements higher-level domain conveniences and state built on top of lower modules.

@@ -6,7 +6,7 @@ Conversion admission is governed by `REQ-CONV-001`–`003`; exact callback-resul
 
 ## Purpose and Scope
 
-This module specifies `Producer` types (`Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`), materialization (`into`) and its completeness preflight (`fits_into`), and bounded C++ interoperability inputs (`std::span`, `std::string_view`) for direct source construction. Module 4 bridges explicit sequence generators to concrete stored collections without dynamic allocation or hidden caching. The active implementation slice covers `Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`, and explicit producer materialization through `into`, preflighted by `fits_into`. Sequence conversion (`seq`) remains deferred future work; `first`, `next`, and `rest` are active traversal APIs, with `rest` forwarding to `next` for every supported `Producer`. Collection-owned `ConstRangeTraversal` and read-only C++ interoperability accessors are also active. Standard ranges and views MAY be used internally by cljonic free-function implementations when they preserve the requirements in this module and MUST NOT be exposed as public cljonic result types. Direct use of standard ranges and views by cljonic applications is outside this library contract.
+This module specifies `Producer` types (`Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`), materialization (`into`) and its completeness preflight (`fits_into`), and bounded C++ interoperability inputs (`std::span`, `std::string_view`) for direct source construction. Module 4 bridges explicit sequence generators to concrete stored collections without dynamic allocation or hidden caching. The active implementation slice covers `Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`, and explicit producer materialization through `into`, preflighted by `fits_into`. Sequence conversion (`seq`) is active under `REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014`; `first`, `next`, and `rest` are active traversal APIs, with `rest` forwarding to `next` for every supported `Producer`. Collection-owned `ConstRangeTraversal` and read-only C++ interoperability accessors are also active. Standard ranges and views MAY be used internally by cljonic free-function implementations when they preserve the requirements in this module and MUST NOT be exposed as public cljonic result types. Direct use of standard ranges and views by cljonic applications is outside this library contract.
 
 ## Materialization & Producer Invariants
 
@@ -27,9 +27,10 @@ This module specifies `Producer` types (`Range`, `Repeat`, `Cycle`, `Iterate`, `
   ∧ ∀ `Set` destination: a duplicate value is accepted as a no-op even when full
   ∧ ∀ `Map` destination: a `MapEntry` with an existing key is accepted as a value replacement even when full
   ∧ ∀ destination: stops before the first source value that requires unavailable capacity ∧ never skips a rejected value to process later values
-  ∧ ∀ unbounded_source: traversal remains bounded by `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT` even when Set duplicates or Map key replacements consume no capacity
-  ∧ ∀ `fits_into(destination, source)`: reports whether all source values can be inserted under these same semantics ∧ ¬∃ requirement that source count equals result count growth
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-29}
+  ∧ ∀ producer source: materialization preserves its approved observable traversal bound ∧ ¬∃ traversal beyond the bound to establish complete materialization, even when Set duplicates or Map key replacements consume no capacity
+  ∧ ∀ finite source whose complete result exceeds that bound: `into` may return only its documented bounded-prefix result ∧ ¬∃ claim of complete materialization
+  ∧ ∀ `fits_into(destination, source)`: reports whether all source values can be processed within the approved traversal bound and inserted under these same semantics ∧ ¬∃ requirement that source count equals result count growth
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07}
 
 λ REQ-VAL-016(x).
   ∀ public free function `count(value)`: admits values satisfying `SequenceableCollection` or `SequenceableProducer` ∧ returns the non-throwing, non-allocating count observation defined for that value
@@ -47,12 +48,14 @@ This module specifies `Producer` types (`Range`, `Repeat`, `Cycle`, `Iterate`, `
   ∀ Module 4 producer: exposes a non-throwing, non-allocating `is_finite` predicate
   ∧ ∀ `is_finite`: returns `false` exactly when the producer has no finite complete result, despite having a bounded observable traversal count
   ∧ ∀ source where `is_finite` is `false`: `fits_into` returns `false` regardless of duplicate values or matching keys
-  ∧ ∀ finite_source ∧ (`Vector` ∨ `Queue`) destination: `fits_into` compares the source count to `destination.capacity() - destination.count()` without an overflow-prone addition
-  ∧ ∀ finite_source ∧ (`Set` ∨ `Map`) destination: `fits_into` accounts for existing destination values or keys and earlier source values or keys ∧ MAY traverse the source and evaluate producer callbacks ∧ returns `false` at the first insertion requiring unavailable capacity ∧ otherwise returns `true` after the complete traversal
-  ∧ ∀ finite_source ∧ `String` destination: `fits_into` compares source count to remaining character capacity without evaluating or rejecting character validity, because runtime materialization normalizes invalid characters
+  ∧ complete finite materialization means the entire finite result, not merely its capped observation ∧ a saturated public count alone cannot establish completeness
+  ∧ ∀ finite source whose complete result exceeds its approved observable traversal bound: `fits_into` returns `false` for every destination, including Set and Map even when the observed prefix contains only duplicates or matching keys ∧ ¬∃ inspection of an unobservable suffix
+  ∧ ∀ fully observable finite_source ∧ (`Vector` ∨ `Queue`) destination: `fits_into` compares complete source cardinality to `destination.capacity() - destination.count()` without an overflow-prone addition ∧ Range cardinality comparisons use overflow-safe arithmetic rather than traversing merely to count
+  ∧ ∀ fully observable finite_source ∧ (`Set` ∨ `Map`) destination: `fits_into` accounts for existing destination values or keys and earlier source values or keys ∧ MAY traverse the source and evaluate producer callbacks ∧ returns `false` at the first insertion requiring unavailable capacity ∧ returns `true` only after establishing that the entire source can be processed within the approved traversal bound and all insertions or replacements fit
+  ∧ ∀ fully observable finite_source ∧ `String` destination: `fits_into` compares complete source cardinality to remaining character capacity without evaluating or rejecting character validity, because runtime materialization normalizes invalid characters
   ∧ ∀ preflight: preserves both input values ∧ shares no realization cache with `into` ∧ callback effects through references or static storage MAY remain observable across the independent preflight and materialization traversals
   ∧ ∀ value-sensitive preflight followed by `into`: a completeness prediction applies when the subsequent traversal yields the same values; ¬∃ guarantee for callbacks whose external state changes those values between traversals
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-29}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07}
 
 λ REQ-VAL-017B(x).
   ∀ context: `ConstInputRange` requires a usable input-range traversal from a const source expression ∧ is the structural traversal capability ∧ ¬∃ by-itself admission of a type to the cljonic source domain
@@ -65,12 +68,14 @@ This module specifies `Producer` types (`Range`, `Repeat`, `Cycle`, `Iterate`, `
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-VAL-017D(x).
-  ∀ Module 4 producer type ∈ {`Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`}: default-constructible ∧ nothrow default-constructible ∧ nothrow copy-constructible ∧ nothrow copy-assignable, so that producer values satisfy the `NothrowCollectionElement` storage contract ∧ MAY be stored as map values, vector elements, queue elements, or nested collection components
-  ∧ ∀ default_constructed_producer: valid, deterministic `Producer` value consistent with the documented default form — `Range{}` is the finite empty `Range` with default start, end, and step; `Repeat{}` is the finite empty repeat of the element `DefaultElement`; `Repeatedly{}` is the finite empty `Repeatedly` over a default-constructed step; `Iterate{}` is the unbounded `Iterate` over a `DefaultElement` and default-constructed step; `Cycle{}` is the unbounded `Cycle` over a default-constructed source
-  ∧ ∀ producer whose component types are not themselves nothrow default-constructible: ¬∃ satisfaction of `NothrowCollectionElement` ∧ rejected at compile time when used in a storage position
-  ∧ ∀ default_construction: ¬∃ (evaluation of producer callbacks ∨ allocation ∨ throw)
-  rationale: nothrow default/copy operations let producer values satisfy the `NothrowCollectionElement` storage contract and be stored as collection elements
-  {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
+  ∀ Module 4 producer type ∈ {`Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`}: direct construction and use require the capabilities specified for the selected operation ∧ ¬∃ unconditional requirement for default construction or copy assignment solely to instantiate and traverse a producer
+  ∧ ∀ producer: default construction, copying, and assignment are available subject to the corresponding component capabilities and operation contracts ∧ valid non-throwing default construction is provided when its components support the documented default form
+  ∧ ∀ available default_constructed_producer: valid, deterministic `Producer` value consistent with the documented default form — `Range{}` is the finite empty `Range` with default start, end, and step; `Repeat{}` is the finite empty repeat of the element `DefaultElement`; `Repeatedly{}` is the finite empty `Repeatedly` over a default-constructed step; `Iterate{}` is the unbounded `Iterate` over a `DefaultElement` and default-constructed step; `Cycle{}` is the unbounded `Cycle` over a default-constructed source
+  ∧ ∀ producer used as a collection element or nested stored component: requires the full `NothrowCollectionElement` contract, including non-throwing default construction, copy construction, copy assignment, and destruction ∧ default-constructibility alone does not establish storage admission
+  ∧ ∀ producer failing that storage contract: rejected at compile time in a storage position ∧ MAY remain admissible for direct construction and use with explicitly supplied components under its operation contracts
+  ∧ ∀ available default_construction: ¬∃ (evaluation of producer callbacks ∨ allocation ∨ throw)
+  rationale: direct producer use need not invent default callback state; stronger conditional storage capabilities preserve strict collection storage without excluding otherwise admissible stateful callbacks
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07, rationale_source: origin_artifact}
 
 ## Sequence Equality & Deep Traversal Rules
 

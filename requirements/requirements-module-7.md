@@ -285,8 +285,10 @@ This module specifies specialized domain conveniences built on top of lower modu
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-TEST-002(x).
-  ∀ test: verifies persistent value semantics by demonstrating that update operations return independently valid results and leave their input collections unchanged
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  ∀ test that exercises a collection update operation: verifies persistent value semantics by demonstrating that the update returns an independently valid result and leaves its input collection unchanged
+  ∧ ∀ collection update operation: at least one such test exists
+  ∧ compile-time rejection tests, scalar-value tests, and other non-collection tests are outside this obligation
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07}
 
 λ REQ-TEST-003(x).
   ∀ test suite: installs allocation and deallocation traps sufficient to verify that no dynamic allocation or deallocation occurs in supported public paths, including failure paths

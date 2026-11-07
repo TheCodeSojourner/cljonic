@@ -2,7 +2,7 @@
 
 ## Purpose and Scope
 
-This module defines the concrete, array-backed, bounded collection types (`Vector`, `Map`, `Set`, `Queue`, `String`), their current primitive member and free-function operations, and callable lookup forms. `first`, `next`, `rest`, and the `has_first`, `has_next`, and `has_rest` preflights are active traversal operations; `rest` delegates to `next` for every input admitted by `next`, including supported producers. Sequence conversion remains approved future work. Module 3 provides the stored collection building blocks used across all higher-order algorithms.
+This module defines the concrete, array-backed, bounded collection types (`Vector`, `Map`, `Set`, `Queue`, `String`), their current primitive member and free-function operations, and callable lookup forms. `first`, `next`, `rest`, and the `has_first`, `has_next`, and `has_rest` preflights are active traversal operations; `rest` delegates to `next` for every input admitted by `next`, including supported producers. Sequence conversion (`seq`) is active under `REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014`. Module 3 provides the stored collection building blocks used across all higher-order algorithms.
 
 ## Collection Family Requirements
 
@@ -431,11 +431,11 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ `Set` input: the returned vector contains one element per stored element of the set
   ∧ ∀ `Queue` input: the returned vector preserves FIFO order
   ∧ ∀ `String` input: the returned vector's element type is `char` and it contains the string's characters in content order
-  ∧ ∀ supported producer input (`Repeat`, `Range`, `Cycle`, `Iterate`, `Repeatedly`): the returned vector materializes the producer's observable traversal, with result capacity `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE` ∧ a bounded producer contributes exactly `count(producer)` elements ∧ an unbounded producer contributes the full observation cap
+  ∧ ∀ supported producer input (`Repeat`, `Range`, `Cycle`, `Iterate`, `Repeatedly`, and the predicate adapters `TakeWhile` and `DropWhile` admitted by `REQ-FN-041`): the returned vector materializes the producer's observable traversal, with result capacity `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE` ∧ a bounded producer contributes exactly `count(producer)` elements ∧ an unbounded producer contributes the full observation cap
   ∧ ∀ result: uses bounded automatic or static storage ∧ ¬∃ (dynamic_allocation ∨ retained dependency on the source collection)
   ∧ ∀ map_entry_value ∧ external C++ range/view/array/container input: rejected at compile time with one targeted diagnostic naming `seq`
   ∧ ∀ `seq`: preserves the input ∧ `constexpr` ∧ `noexcept` ∧ non-mutating ∧ non-allocating ∧ ¬∃ RTTI
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-30}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07}
 
 λ REQ-SEQ-011(x).
   ∀ `Vector` returned by `seq`: independently valid ∧ uses bounded automatic or static storage ∧ ¬∃ (dynamic_allocation ∨ retained dependency on the source `Collection`)
@@ -641,13 +641,13 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ (pairs belonging to incompatible families ∨ pairs mixing a cljonic value with a non-cljonic value ∨ operands outside the supported stable-equality domain): fail at compile time
   ∧ ∀ ordinary_value_pair (two fallthrough-domain scalars ∨ aggregates ∨ `cljonic::Variant` composites) ∧ ∀ sequential_pair element position: the operand types are identical ∨ related by a value-preserving implicit conversion in at least one direction, and the comparison is made in the wider type, so every admitted pair is compared without truncation or saturation
   ∧ ∀ safe-conversion pairs: equality remains an equivalence relation (symmetric and transitive) because admitted conversions are injective on values ∧ ¬∃ implication that a narrower operand is re-typed, truncated, or saturated
-  ∧ ∀ sign-crossing (signed against unsigned) ∨ Boolean ∨ character ∨ enumeration ∨ pointer ∨ user-defined type pairs: never safely convertible and each rejected with `CompileTimeFailure`
+  ∧ ∀ cross-type pair involving sign-crossing (signed against unsigned) ∨ Boolean ∨ character ∨ enumeration ∨ pointer ∨ user-defined types: never safely convertible and rejected with `CompileTimeFailure` ∧ identical-type pairs remain subject to the existing equality-domain constraints
   ∧ ∀ `cljonic::Variant` alternative identity ∧ ∀ Map key and value identity ∧ ∀ Set element identity ∧ ∀ String content identity: identical types remain required ∧ ¬∃ leak of the safe-conversion rule into alternative-strict variant equality, so `Variant<int, long>{1}` remains unequal to `Variant<int, long>{1L}`
   ∧ ∀ sequential_comparison: equal ≡ same(observed_count ∧ ordered_elements) | compare_only(bounded_logical_observations) ∧ ¬claim(equality_beyond_observation_bound)
   ∧ ∀ sequential_comparison: order-sensitive ∧ lazy_elementwise ∧ ¬eager_materialization ∧ terminate(first_unequal_pair ∨ shorter_exhausted_logical_count)
   ∧ ∀ producer_operand: unbounded_complete_sequence → ¬reject_solely_for_unboundedness ∧ observe_only(configured_bounded_traversal)
   rationale: the human approved on 2026-10-31 admitting value-preserving implicit conversions — identical types, or a safe widening compared in the wider type — for ordinary value pairs and for sequential element positions; narrowing value relations are harmless because comparison happens after widening; this supersedes the earlier blanket cross-type numeric unification ban for `equal`, while Variant alternative identity, Map keys and values, Set elements, and String content keep the identical-type rule
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: origin_artifact, rationale_approved_by: human}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07, rationale_source: origin_artifact, rationale_approved_by: human}
 
 λ REQ-FN-002H(x).
   ∀ context: `not_equal` implements the canonical negation of general value equality as the counterpart of `equal` (`REQ-FN-002G`), in the three arities of Clojure's `not=`
@@ -656,9 +656,9 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ `not_equal(a, b, more...)`: holds exactly when at least one adjacent operand pair does not compare equal ∧ is the logical negation of the conjunctive `equal` variadic form
   ∧ ∀ adjacent pair in the variadic form ∧ the single unary operand: individually satisfies the same compile-time domain gating as `equal`, so an unsupported or mixed pair fails compilation regardless of position in the argument list
   ∧ ∀ context: `not_equal` is a named free-function operation distinct from the native `!=` operators defined by `REQ-COLL-021` and `REQ-FN-014B`
-  ∧ ∀ floating_point_value at any depth: rejected at compile time per `REQ-NUM-006` ∧ ¬∃ cross-type numeric unification under `REQ-NUM-002`, `REQ-NUM-006`, or the pinned `NumericEquality` vocabulary rule beyond the value-preserving conversion rule inherited from `equal` (`REQ-FN-002G`)
+  ∧ ∀ floating_point_value at any depth analyzable under `equal` (`REQ-FN-002G`): rejected at compile time per `REQ-NUM-006` ∧ inspection stops at the same user-defined-type boundary under `REQ-NUM-018`, without inspecting its members ∧ ¬∃ cross-type numeric unification under `REQ-NUM-002`, `REQ-NUM-006`, or the pinned `NumericEquality` vocabulary rule beyond the value-preserving conversion rule inherited from `equal` (`REQ-FN-002G`)
   ∧ ∀ `not_equal`: `constexpr` ∧ `noexcept` ∧ non-mutating ∧ non-allocating ∧ its supported domain, equality-family classification, recursion over nested values, and termination behavior are identical to `equal` (`REQ-FN-002G`) because it delegates to `equal` and negates the result
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07}
 
 λ REQ-FN-002M(x).
   ∀ `can_conj(collection, value)` defined for every `Conjable` collection (`Vector`, `Set`, `Map`, `Queue`, `String`): returns true when `conj` can produce its documented result without capacity failure
@@ -747,7 +747,7 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ one or more values: removes each value if present, applying removals from left to right ∧ an absent value is a no-op ∧ repeated values are permitted and subsequent removal of a now-absent value remains a no-op ∧ result is equivalent to sequential application of the existing Set removal operation
   ∧ ∀ arity: `constexpr` ∧ `noexcept` ∧ non-mutating ∧ non-allocating ∧ returns a `Collection` value ∧ preserves the source
   ∧ ∀ unsupported first-argument or value type: fails compilation with one targeted diagnostic naming `disj` and the violated Set/value-type domain (`REQ-DIAG-003`, `REQ-DIAG-009`)
-  rationale: Clojure_disj ≡ zero_arity_identity ∧ sequential_removal | safe_widening ∧ ¬narrowed_membership
+  rationale: Clojure `disj` is the zero-arity identity followed by sequential removal through the existing Set removal operation; the design admits safe widening of supplied values but never narrowed membership
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
 
 λ REQ-FN-002Y(x).
@@ -795,7 +795,7 @@ The clauses in this section define the active `seq` contract. The human approved
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
 
 λ REQ-FN-026(x).
-  ∀ context: the core vocabulary includes `empty`, `is_empty`, and `not_empty` with the semantics defined by `REQ-BOUNDS-010A`
+  ∀ context: the core vocabulary includes `empty`, `is_empty`, and `not_empty` with semantics defined respectively by `REQ-BOUNDS-010C`, `REQ-BOUNDS-010A`, and `REQ-BOUNDS-010D`
   ∧ ∀ `empty`: produces an empty `OwningValue` of the same supported collection type as its input
   ∧ ∀ `is_empty`: returns a boolean predicate result
   ∧ ∀ `not_empty`: preserves the input collection type and capacity ∧ returns an owning copy of the input when nonempty or the corresponding empty value when empty

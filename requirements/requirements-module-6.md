@@ -53,19 +53,84 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: origin_artifact}
 
 λ REQ-NUM-008(x).
-  ∀ numeric_conversion_operation: has an explicit target type ∧ ¬∃ selection of its result type through a global configuration constant
-  ∧ ∀ cljonic equivalent of Clojure `int` when the conversion succeeds: returns a fixed-width signed 32-bit integer type
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  ∀ numeric_conversion_operation: has an explicit target type ∧ ¬∃ selection of its result type through a global configuration constant ∧ ¬∃ required external application configuration file
+  ∧ ∀ named conversion: destination(`to_byte`) ≡ std::byte ∧ destination(`to_char`) ≡ char ∧ destination(`to_short`) ≡ short ∧ destination(`to_int`) ≡ int ∧ destination(`to_long`) ≡ long ∧ destination(`to_long_long`) ≡ long long
+  ∧ ∀ unsigned named conversion: destination(`to_ushort`) ≡ unsigned short ∧ destination(`to_uint`) ≡ unsigned int ∧ destination(`to_ulong`) ≡ unsigned long ∧ destination(`to_ulong_long`) ≡ unsigned long long
+  ∧ ∀ floating named conversion: destination(`to_float`) ≡ float ∧ destination(`to_double`) ≡ double ∧ destination(`to_long_double`) ≡ long double
+  ∧ destination(`to_size`) ≡ destination(`to_count`) ≡ destination(`to_index`) ≡ std::size_t ∧ `to_count` and `to_index` are complete behavioral aliases of `to_size` ∧ their preflights match `can_to_size`
+  ∧ ∀ these aliases: same source admission, policies, exactness, failures, fallback, diagnostics, and std::size_t representability check ∧ ¬∃ implied collection-specific bounds or capacity check
+  ∧ ∀ generic conversion `to<T>(value)`: destination ≡ explicit T ∧ admits only source/destination combinations with defined cljonic conversion contracts ∧ ¬∃ arbitrary C++ cast facility
+  ∧ generic destination `bool`, character types other than supported `char`, enum, pointer, or user-defined type: rejected at compile time ∧ typedef aliases follow their underlying type
+  ∧ ∀ enum exclusion: `std::byte` is explicitly exempt under its approved byte contract ∧ ¬∃ blanket exemption for scoped enums
+  ∧ admitted generic destinations include `char`, `std::byte`, and supported non-character integer and binary floating-point types subject to their operation contracts
+  ∧ ∀ named conversion and generic conversion expressing the same contract: identical admission, result, and failure behavior
+  ∧ ∀ typedef alias naming the same type: ¬∃ distinct conversion specialization solely because of the alias name
+  ∧ ∀ conversion entry: API surface and destination approved ∧ source admission follows REQ-NUM-013 ∧ exactness and constant evaluation follow REQ-NUM-009 ∧ runtime result representation, preflight, and failure behavior follow REQ-NUM-010 and REQ-NUM-010A–010E ∧ loss policies follow REQ-NUM-012 ∧ an operation-level behavioral specification is required before implementation
+  rationale: familiar native destinations and an explicit generic destination support application needs without globally configurable numeric aliases; count and index share the size destination type
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06, rationale_source: origin_artifact}
 
 λ REQ-NUM-009(x).
-  ∀ default numeric conversion with a statically known conversion that loses range, precision, or accuracy: rejects at compile time
-  ∧ ∃ permitted_path: a statically known conversion that is provably exact and representable accepted in a constant expression
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  ∀ numeric conversion without an explicitly selected loss policy: exact by default ∧ succeeds only when the supplied value is exactly representable in the destination ∧ ¬∃ silent truncation, rounding, wrapping, or saturation
+  ∧ ∀ supported conversion and corresponding preflight: usable in constant expressions when the supplied value, selected policy, and target environment support constant evaluation
+  ∧ ∀ failed conversion required to be a constant expression: compilation fails ∧ ¬∃ runtime diagnostic recording ∨ handler invocation ∨ fallback return during constant evaluation
+  ∧ ∀ failed preflight in a constant expression: returns false ∧ ¬∃ compile-time failure solely because the checked conversion would fail
+  ∧ a conversion call not required to be constant-evaluated follows selected runtime mode even when its input is a literal ∧ ¬∃ guarantee of compile-time rejection merely because a value is statically knowable
+  ∧ explicit conversion checks the supplied value ∧ ¬∃ requirement that every value of the source type fit the destination ∧ ordinary argument admission follows the revised type-based rule in REQ-CONV-001
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
 
 λ REQ-NUM-010(x).
-  ∀ conversion whose safety cannot be determined at compile time: the library provides an explicitly checked, non-throwing runtime conversion whose result communicates success or failure without dynamic allocation or global mutable error state
-  ∧ ∀ checked_result_type ∧ failure_states: documented before implementation
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  ∀ runtime conversion: provides an idiomatic preflight that checks whether the supplied value can be converted under the selected policy ∧ conversion returns its destination value directly rather than requiring a checked-result wrapper
+  ∧ ∀ named `to_*`: provides corresponding `can_to_*` ∧ generic `to<T>`: provides `can_to<T>`
+  ∧ ∀ preflight: returns true exactly when the corresponding conversion succeeds for the same source value and selected policy ∧ accepts the same source types and policies ∧ rejects unsupported source types at compile time
+  ∧ ∀ preflight: false return ¬∃ recording of diagnostic ∨ invocation of failure handler ∧ non-throwing ∧ non-allocating
+  ∧ preflight result applies only to the checked value and policy ∧ a subsequent change of value or policy invalidates that guarantee
+  ∧ a false preflight followed by conversion of the same value and policy produces the configured normal fallback or diagnostic stop ∧ diagnostic code reflects the same failed conditions under the approved precedence
+  ∧ this equivalence applies to numeric, character, byte, and count/index/size conversions ∧ ¬∃ requirement for caching or a particular implementation
+  | refinements: REQ-NUM-010A–010E
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
+
+λ REQ-NUM-010A(x).
+  ∀ application: may select normal mode instead of diagnostic mode ∧ normal-mode runtime conversion failure returns a documented destination value
+  ∧ normal-mode integer destination failure: returns `std::numeric_limits<T>::max()` ∧ includes `std::size_t` for `to_count`, `to_index`, and `to_size`
+  ∧ normal-mode floating destination failure: returns `std::numeric_limits<T>::max()` — the largest finite destination value
+  ∧ normal-mode `std::byte` destination failure: returns a byte with all bits set ∧ normal-mode `char` destination failure: returns NUL (`'\0'`), outside cljonic's valid String-character domain
+  ∧ fallback is not a universally distinguishable error code ∧ success may produce the same value ∧ callers requiring certainty use the preflight
+  ∧ normal-mode fallback passed to another API is an ordinary destination value ∧ receiving API applies its own documented checks ∧ ¬∃ inference of prior conversion failure ∧ ¬∃ hidden failure flag
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
+
+λ REQ-NUM-010B(x).
+  ∀ supported implementation: provides a selectable diagnostic mode in which a runtime conversion failure records a compact error code in a static variable ∧ stops execution without returning a conversion value
+  ∧ application selects conversion mode at compile time using `CLJONIC_CONVERSION_DIAGNOSTICS` ∧ undefined macro defaults to normal mode (`0`) ∧ `1` selects diagnostic mode ∧ every other value rejected at compile time
+  ∧ configuration set before including cljonic ∧ consistent across all application translation units ∧ no external configuration file required
+  ∧ normal mode: ¬∃ diagnostic-state storage, handler reference, registration, or initialization ∧ `conversion_error()` returns `ConversionError::none` ∧ ¬∃ claim of zero conversion checking or executable-code overhead
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
+
+λ REQ-NUM-010C(x).
+  ∀ diagnostic code: non-allocating ∧ suitable for inspection with a debugger or crash dump ∧ documented meaning ∧ ¬∃ runtime error-message construction requirement
+  ∧ diagnostic code type: scoped enum `cljonic::core::ConversionError` with values `none`, `non_finite_input`, `invalid_character`, `unsupported_signed_zero`, `out_of_range`, `underflow_to_zero`, and `precision_loss`
+  ∧ diagnostic mode: one library-managed static error code shared across the application and its translation units ∧ initially holds `ConversionError::none` before normal application execution
+  ∧ successful conversions and all preflights leave the code unchanged ∧ diagnostic-mode failure sets the selected error before invoking the non-returning handler
+  ∧ `cljonic::core::conversion_error()` provides non-throwing, non-allocating, read-only access to the recorded code ∧ handler can read a failure originating in any translation unit ∧ ¬∃ reset operation required
+  ∧ debugger or crash-dump visibility depends on target and build configuration ∧ ¬∃ guarantee that a reset preserves diagnostic state
+  ∧ diagnostic failure categories: out of range ∨ precision loss ∨ non-finite input ∨ nonzero underflow to zero ∨ invalid character ∨ unsupported signed zero
+  ∧ failed preflight: ¬∃ diagnostic-state change ∧ unsupported source types and policy combinations: compile-time rejection, not runtime diagnostic categories
+  ∧ if a failed conversion matches multiple categories: choose first applicable in order non-finite input → invalid character → unsupported signed zero → out of range → nonzero underflow to zero → precision loss
+  ∧ determine failure and applicable categories under the selected policy before applying precedence ∧ precedence changes the diagnostic only, not conversion success
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
+
+λ REQ-NUM-010D(x).
+  ∀ diagnostic-mode failure: record the error code before invoking an application-provided non-returning failure handler ∧ the handler may inspect the recorded code ∧ ¬∃ returning to the failed conversion
+  ∧ ∀ failure handler: non-throwing ∧ ¬∃ dynamic allocation or deallocation
+  ∧ handler non-returning, non-throwing, non-allocating behavior: application responsibility verified by review and target-specific tests ∧ cljonic declares and invokes the handler according to its contract ∧ ¬∃ claim that cljonic detects a handler returning or allocating
+  ∧ returning from the declared `[[noreturn]]` handler violates its C++ contract ∧ ¬∃ recovery as an ordinary conversion failure
+  ∧ diagnostic-mode application defines `[[noreturn]] void cljonic::core::conversion_failure_handler() noexcept` matching cljonic's declaration ∧ ¬∃ library-provided default handler ∧ ¬∃ runtime registration ∧ ¬∃ external configuration file required
+  ∧ normal-mode application: ¬∃ requirement to define the diagnostic failure handler ∧ diagnostic build with reachable failure path and missing handler definition fails to link
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
+
+λ REQ-NUM-010E(x).
+  ∀ conversion mode: non-throwing ∧ non-allocating ∧ avoids performing an invalid underlying C++ conversion
+  ∧ diagnostic state follows the single-threaded and caller-confinement model of REQ-PLAT-012 and REQ-PLAT-013 ∧ ¬∃ required synchronization or thread safety
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
 
 λ REQ-NUM-011(x).
   ∀ potentially lossy conversion from a runtime floating-point value to an integer: ¬∃ performance by an implicitly narrowing overload because rounding and representation differences can change the converted result ∧ requires an explicitly checked or explicitly lossy conversion operation named to make the policy visible at the call site
@@ -73,13 +138,156 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
 
 λ REQ-NUM-012(x).
-  ∃ permitted_path: explicitly lossy numeric conversions provided as separate operations ∧ ∀ such_operation: its truncation, saturation, wrapping, NaN, infinity, out-of-range, and signedness behavior documented ∧ tested ∧ ¬∃ default conversion behavior
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  | local_definitions:
+    s ≡ supplied source value ∧ S ≡ actual source type ∧ T ≡ destination type
+    I ≡ admitted non-Boolean, non-character integer types under REQ-NUM-013
+    F ≡ admitted floating types under this clause ∧ source_admission ≡ REQ-NUM-013
+    in_range(v, T) ≡ mathematical value v lies within T's finite numeric range
+    exact(v, T) ≡ v is exactly representable in T, subject to the special-value rules below
+    nonfinite(s) ≡ floating classification of s is NaN or positive or negative infinity; this is not an equality comparison with NaN
+    finite(s) ≡ ¬nonfinite(s)
+    policy ∈ {exact_default, truncate, nearest} ≡ selected conversion policy; exact_default is selected by omitting the policy argument
+    source_destination_admitted(S, T) ≡ source/destination admission under REQ-NUM-008 and REQ-NUM-013, independently of policy selection
+    policy_admitted(S, T, policy) ≡ the source/destination/policy combination allowed by the policy matrix below
+    admitted(S, T, policy) ≡ source_destination_admitted(S, T) ∧ policy_admitted(S, T, policy)
+    exact_default_success ≡ conversion of s to T under exact_default succeeds after all applicable checks
+    successful_result ≡ destination value returned by a successful conversion, not a failure fallback
+    selected_policy_yields_that_value ≡ the selected policy's validated conversion result is largest_finite(T)
+    Each rule below is independently required within its stated scope. A permitted result remains subject to admission and every other applicable check; it does not override a failure rule.
+    integral_value(s) ≡ s has no fractional part ∧ negative_zero(s) ≡ s is floating zero with a negative sign
+    trunc(s), defined only for finite(s), ≡ mathematical integer obtained by truncating s toward zero
+    nearest(s, T), defined only for finite(s) ∧ in_range(s, T), ≡ nearest representable value in T; halfway ties select the even least-significant significand digit
+    Non-finite input is classified before integrality, range, truncation, or rounding is evaluated. Out-of-range finite input to a floating destination fails before nearest is evaluated; classification follows REQ-NUM-010C.
+    subnormal_in(v, T) ≡ v is represented as a nonzero subnormal value in T
+    fail(reason) ≡ conversion_failure under REQ-NUM-009 ∧ REQ-NUM-010 ∧ REQ-NUM-010A–010E, with precedence under REQ-NUM-010C
+  | policy_interface:
+    ∀ operation ∈ {approved named conversions, approved generic conversions}:
+      (omitted_policy → exact_default)
+      ∧ (explicit_policy → argument_after_value ∧ same_policy_argument_for_matching_preflight)
+      ∧ (policy_tags ≡ distinct_compile_time_objects{cljonic::core::conversion::truncate, cljonic::core::conversion::nearest})
+      ∧ scoped_names ∧ compile_time_identifiable_selection ∧ ¬require(separately_named_function_per_policy)
+      ∧ (¬admitted(S, T, policy) → compile_time_rejection ∧ ¬silently_ignore(policy))
+    ∃ permitted_path: internal_enum_supports_tags ∧ ¬require(public_runtime_enum_policy_argument)
+  | policy_matrix:
+    ∀ source value s of type S, destination T admitted by REQ-NUM-008 and REQ-NUM-013:
+      ((S ∈ I ∧ T ∈ I) → (exact_default_success ↔ in_range(s, T)))
+      ∧ ((S ∈ I ∧ T ∈ F) → (exact_default_success ↔ exact(s, T)))
+      ∧ ((S ∈ F ∧ T ∈ I) → (exact_default_success ↔ (finite(s) ∧ integral_value(s) ∧ in_range(s, T))))
+      ∧ ((S ∈ F ∧ T ∈ F) → (exact_default_success ↔ exact(s, T)))
+      ∧ policy_admitted(S, T, exact_default)
+      ∧ (policy_admitted(S, T, truncate) ↔ (S ∈ F ∧ T ∈ I))
+      ∧ (policy_admitted(S, T, nearest) ↔ ((S ∈ I ∧ T ∈ F) ∨ (S ∈ F ∧ T ∈ F ∧ S ≠ T)))
+      ∧ (same_type(S, T) → exact_default_only ∧ preserve(nonfinite_validation ∧ signed_zero_rules))
+    same_type(S, T) ≡ actual_Cpp_type_identity ∧ ¬determine_by(alias_spelling ∨ representation_equality)
+  | integer_and_truncation_boundaries:
+    ∀ source value s of S ∈ I, admitted unsigned destination T (including std::size_t):
+      (s < 0 → fail(out_of_range) before_conversion ∧ ¬modulo_wrap)
+      ∧ (s ≥ 0 → (exact_default_success ↔ in_range(s, T)))
+    ∀ source value s of S ∈ F, T ∈ I, admitted(S, T, policy):
+      (policy = exact_default → check(finite(s) ∧ integral_value(s) ∧ in_range(s, T)) before_cast)
+      ∧ (policy = truncate ∧ finite(s) → check(in_range(trunc(s), T)) before_cast)
+      ∧ (policy = truncate ∧ finite(s) ∧ in_range(trunc(s), T) → success(value = trunc(s)))
+      ∧ (policy = truncate ∧ finite(s) ∧ ¬in_range(trunc(s), T) → fail(out_of_range))
+      ∧ ¬use(invalid_cast_as_safety_test) ∧ ¬wrap ∧ ¬saturate
+    truncation_example: (s = -0.5 ∧ T ∈ admitted_unsigned_integer_types ∧ policy = truncate) → trunc(s) = 0 ∧ success(0)
+  | floating_range_and_rounding:
+    ∀ source value s of S, T ∈ F, admitted(S, T, policy), policy ∈ {exact_default, nearest}:
+      ((finite(s) ∧ ¬in_range(s, T)) → fail(out_of_range), even_if_an_unrestricted_rounding_operation_would_choose(largest_finite(T)))
+      ∧ ((in_range(s, T) ∧ selected_policy_yields_that_value) → permit(successful_result = largest_finite(T)))
+      ∧ ¬success(infinity) ∧ ¬substitute(clamping_for_overflow_failure)
+    ∀ finite source value s of S, T ∈ F, admitted(S, T, nearest), in_range(s, T): successful_result = nearest(s, T) subject_to(underflow ∧ signed_zero_rules)
+      ∧ precision_loss_permitted ∧ ties_to_even ∧ ¬depend_on(ambient_rounding_mode)
+    ∀ conversion_failure:
+      preflight = false
+      ∧ (runtime_evaluation ∧ normal_mode → fallback_under(REQ-NUM-010A), not_successful_saturation)
+      ∧ (runtime_evaluation ∧ diagnostic_mode → stop_without_fallback_return)
+      ∧ (required_constant_evaluation → compile_time_failure_without_runtime_diagnostic_or_handler_or_fallback) under REQ-NUM-009
+  | subnormal_and_underflow:
+    ∀ finite source value s of S, T ∈ F, admitted(S, T, policy), in_range(s, T):
+      ((policy = exact_default ∧ exact(s, T) ∧ subnormal_in(s, T)) → permitted)
+      ∧ ((policy = nearest ∧ subnormal_in(nearest(s, T), T)) → permitted)
+      ∧ ((policy = nearest ∧ s ≠ 0 ∧ nearest(s, T) = 0) → fail(underflow_to_zero), for_either_sign(s))
+      ∧ (¬supports_subnormals(T) → use(actual_representable_values(T)) ∧ ¬assume(universal_subnormal_support))
+  | nonfinite_and_zero:
+    ∀ numeric source value s of S, destination T, admitted(S, T, policy):
+      (nonfinite(s) → fail(non_finite_input), including(S = T))
+      ∧ (rejected_value(s) → ¬imply(rejected_source_type(S) ∨ prohibition_on_nonconversion_storage_or_use(s)))
+    ∀ source value s of S ∈ F, T ∈ F, s = 0, admitted(S, T, policy):
+      (supports_signed_zero(T) → preserve_zero_sign(s))
+      ∧ ((¬supports_signed_zero(T) ∧ ¬negative_zero(s)) → success(positive_zero))
+      ∧ ((¬supports_signed_zero(T) ∧ negative_zero(s)) → fail(unsupported_signed_zero))
+    ∀ source value s of S ∈ F, T ∈ I, s = 0, admitted(S, T, exact_default): success(integer_zero), regardless_of_zero_sign(s)
+    ∀ source value s of S ∈ I, T ∈ F, s = 0, admitted(S, T, policy): success(positive_floating_zero)
+  | supported_environments:
+    ∀ T ∈ {float, double, long double}: binary_radix(T) ∧ environment_satisfies_contract → supported_floating_conversion(T)
+    ∃ permitted_path: additional_compiler_binary_floating_type(T) ∧ defined_and_satisfied_contract(T) → generic_to<T>_support
+    ∀ supported_environment: preserve(ties_to_even_independent_of_rounding_mode ∧ applicable_subnormal_rules ∧ signed_zero_rules ∧ nonfinite_detection_where_supported)
+      ∧ ((compiler_options ∨ runtime_settings) → ¬silently_violate(contract))
+    (unsupported_floating_type ∧ statically_detectable) → compile_time_rejection
+    ∧ (undetectable_environmental_restriction → documented ∧ unsupported_configuration_outside_contract)
+    ∧ (nonbinary_formats → unapproved)
+  | boundaries:
+    (range_rules → defined_by(representable_values) ∧ ¬exponent_field_comparison_alone)
+    ∧ ((wrapping ∨ saturation ∨ other_loss_policy) → unapproved)
+    ∧ (implementation → requires(operation_level_behavioral_specification))
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
 
 λ REQ-NUM-013(x).
-  ∀ (numeric conversion ∧ `Parsing`): separate operations
-  ∧ ∀ cljonic equivalent of Clojure `int`: accepts numeric or character inputs according to its documented source capabilities ∧ ¬∃ implicit parsing of a `String` ∧ string-to-integer conversion uses a separately named parsing operation with deterministic failure behavior
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  | local_definitions:
+    s ≡ original source value ∧ S ≡ actual source type ∧ T ≡ destination type
+    I ≡ supported built-in integer types excluding bool and all character types
+    F ≡ supported floating types under REQ-NUM-012 ∧ N ≡ I ∪ F
+    C ≡ char ∧ B ≡ std::byte
+    code(s) ≡ character code for S = C, or unsigned byte value for S = B; neither denotes a parsed decimal digit
+    ascii_valid(v) ≡ valid non-NUL cljonic ASCII code under existing character-validity rules, in 0x01–0x7F
+    Type admission and value validation are separate. A matrix entry admits a source type; it does not establish that every value or policy succeeds.
+  | boundaries:
+    ∀ conversion_operation: distinct_from(Parsing) ∧ ¬implicitly_parse(text) ∧ ¬implicitly_invoke(user_defined_conversion)
+  | source_destination_matrix:
+    ∀ destination T supported by REQ-NUM-008:
+      (T ∈ N → permitted_source_types = N)
+      ∧ (T = C → permitted_source_types = I ∪ {C, B})
+      ∧ (T = B → permitted_source_types = I ∪ {C, B})
+    ∀ pair outside the matrix: compile_time_rejection unless a separate governing contract explicitly admits it
+    ∀ numeric pair S ∈ N, T ∈ N: policy_admission_and_value_checks under REQ-NUM-012
+    ∀ T ∈ {C, B}: exact_default_only ∧ compile_time_reject(truncate ∨ nearest)
+    In particular, char and std::byte sources are not ordinary numeric sources. Other character types, bool, application enums, pointers, and user-defined types are rejected. The byte entries explicitly exempt std::byte from enum exclusions; they do not exempt application enums.
+  | character_validation:
+    ∀ s of admitted source type S, T = C:
+      v ≡ s when S ∈ I; otherwise code(s)
+      ∧ validate(ascii_valid(v)) before_cast
+      ∧ (ascii_valid(v) → success(character_with_code(v)))
+      ∧ (¬ascii_valid(v) → false_preflight ∧ configured_conversion_failure)
+      ∧ ¬truncate ∧ ¬wrap ∧ ¬interpret_integer_as_printed_decimal_digit
+    to_char(s) ≡ to<char>(s) under this same contract
+  | byte_validation:
+    ∀ s of S ∈ I, T = B:
+      validate(0 ≤ s ≤ UCHAR_MAX) before_cast
+      ∧ ((0 ≤ s ≤ UCHAR_MAX) → success(byte_with_value(s)))
+      ∧ (¬(0 ≤ s ≤ UCHAR_MAX) → false_preflight ∧ configured_conversion_failure)
+    ∀ s of S = C, T = B:
+      validate(ascii_valid(code(s))) before_cast
+      ∧ (ascii_valid(code(s)) → success(byte_with_value(code(s))))
+      ∧ (¬ascii_valid(code(s)) → false_preflight ∧ configured_conversion_failure)
+    ∀ s of S = B, T = B: success(s_unchanged)
+    ∀ byte_conversion: ¬truncate ∧ ¬wrap ∧ byte_width_follows(UCHAR_MAX) ∧ ¬assume(eight_bit_byte)
+    to_byte(s) ≡ to<std::byte>(s) under this same contract
+  | type_identity_and_aliases:
+    ∀ typedef_alias: admission_follows(actual_underlying_type) ∧ ¬distinct_type_from_alias_spelling
+    ∀ character_type_alias: same_numeric_source_exclusion_as_underlying_character_type
+    ∀ T ∈ {signed char, unsigned char} or aliases_of_those_types: generic_destination_rejected_at_compile_time
+    ∀ supported_noncharacter_integer_destination: generic_destination_admitted_under_its_contract
+    Examples: std::uint8_t aliases unsigned char on many platforms and inherits its exclusion; std::int8_t similarly inherits signed char exclusion. std::uint32_t is admitted when its underlying type is a supported non-character integer type such as unsigned int. Platform-dependent alias limitations are documented.
+  | shared_contracts:
+    ∀ supported T: same_type_source_admitted ∧ preserve(applicable_validity_and_special_value_checks)
+    ∀ S ∈ F, T ∈ {C, B}: direct_call_rejected_at_compile_time, including_integral_valued_floating_sources_or_explicit_loss_policy
+    Floating-to-character/byte use requires a successful explicit numeric-to-integer conversion first, followed by conversion of that integer. It does not introduce a direct floating-source overload.
+    ∀ equivalent_named_and_generic_forms: identical_source_admission ∧ ¬admit(unlisted_character_or_byte_pair)
+    ∀ unsupported_source_type: compile_time_rejection, not_runtime_value_failure
+    ∀ admitted_source_value_failure: behavior_under(REQ-NUM-009 ∧ REQ-NUM-010 ∧ REQ-NUM-010A–010E)
+    ∀ implementation: requires(operation_level_behavioral_specification)
+  rationale: ordinary numeric conversion, character-code validation, raw-byte conversion, and parsing have distinct meanings; floating-to-character/byte conversion must expose the intermediate numeric policy and successful integer conversion
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06, rationale_source: origin_artifact}
 
 λ REQ-NUM-014(x).
   ∀ `parse_float`: documents its accepted syntax, sign, decimal, exponent, infinity, NaN, range, rounding, and accuracy behavior
@@ -97,10 +305,10 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-NUM-017(x).
-  ∀ context: the first-pass numeric convenience family includes checked fixed-width arithmetic corresponding to `add`, `sub`, `mult`, `div`, `quot`, `rem`, and `mod`, with `can_add`, `can_subtract`, and `can_multiply` preflights; scalar comparison and selection corresponding to `compare`, `min`, `max`, `min_key`, and `max_key`; integer-step operations corresponding to `inc`, `dec`, and `negate`; constrained numeric predicates corresponding to `is_zero`, `is_positive`, `is_negative`, `is_even`, and `is_odd`; explicit conversions corresponding to `to_int`, `to_long`, `to_float`, `to_double`, `to_char`, `to_byte`, and `to_short`; and fixed-width bitwise operations `bit_not`, `bit_and`, `bit_or`, `bit_xor`, `bit_and_not`, `bit_clear`, `bit_set`, `bit_flip`, `bit_test`, `bit_shift_left`, `bit_shift_right`, and `unsigned_bit_shift_right`
+  ∀ context: the first-pass numeric convenience family includes checked fixed-width arithmetic corresponding to `add`, `sub`, `mult`, `div`, `quot`, `rem`, and `mod`, with `can_add`, `can_subtract`, and `can_multiply` preflights; scalar comparison and selection corresponding to `compare`, `min`, `max`, `min_key`, and `max_key`; integer-step operations corresponding to `inc`, `dec`, and `negate`; constrained numeric predicates corresponding to `is_zero`, `is_positive`, `is_negative`, `is_even`, and `is_odd`; explicit conversions corresponding to `to_byte`, `to_char`, `to_count`, `to_double`, `to_float`, `to_index`, `to_int`, `to_long`, `to_long_double`, `to_long_long`, `to_short`, `to_size`, `to_uint`, `to_ulong`, `to_ulong_long`, `to_ushort`, and `to<T>` under REQ-NUM-008; and fixed-width bitwise operations `bit_not`, `bit_and`, `bit_or`, `bit_xor`, `bit_and_not`, `bit_clear`, `bit_set`, `bit_flip`, `bit_test`, `bit_shift_left`, `bit_shift_right`, and `unsigned_bit_shift_right`
   ∧ ∀ such_operation: obeys the applicable compile-time capability, representability, overflow, division-by-zero, shift-count, floating-point, and preflight requirements
   ∧ ∀ raw floating-point value: remains excluded from operations that require the stable equality, identity, or total-order capabilities defined by this document
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
 
 λ REQ-NUM-018(x).
   ∀ user-defined class type — an `AggregateLikeStruct` ∨ a non-aggregate class — that provides `operator==` — defaulted ∨ user-written — and that comparison is non-throwing: admitted to the `StableEquality` domain, whether or not it contains floating-point members
@@ -111,7 +319,7 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   ∧ ∀ parameterized standard-library wrapper (`std::pair`, `std::optional`, `std::tuple`, `std::variant`) ∧ ∀ other wrapper whose inner types the library cannot analyze: rejected however instantiated, because a floating-point or otherwise unsupported component could otherwise be smuggled in behind the wrapper; the standard library declares none of these comparisons non-throwing, so admission by the non-throwing-comparison rule already excludes them and no separate exclusion list is needed
   ∧ ∀ context: this boundary is an admitted limitation of the type system, not a defect — C++23 provides no standard reflection, so member-level analysis of an arbitrary user-defined class is unavailable; C++26 static reflection would be required to close it
   rationale: a type that states its own equality contract is a trustworthy boundary; refusing to admit it would remove ordinary C++ value types from the collection domain without making the equality any more verifiable
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: AI_inferred}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07, rationale_source: origin_artifact, rationale_approved_by: human}
 
 λ REQ-NUM-019(x).
   ∀ floating-point equality comparison that is statically detectable at compile time: rejected at compile time ∧ never deferred to a runtime check
@@ -122,7 +330,7 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   ∧ ∀ undetectable case (a floating-point member inside an opaque user-defined aggregate): governed by `REQ-NUM-018` ∧ ¬∃ claim that it was detected
   ∧ ∀ storage independent of equality: storing a floating-point value where the operation never compares it (for example `Vector<double, N>` element storage or `Map<int, double, N>` value storage) remains permitted ∧ every equality operation over such a collection remains rejected at compile time
   rationale: floating-point identity is not stable across supported environments; the defensible policy is to reject every detectable instance and to state honestly where detection stops
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: AI_inferred}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07, rationale_source: origin_artifact, rationale_approved_by: human}
 
 λ REQ-FN-002N(x).
   ∀ context: the supported free-function vocabulary includes `can_add`, `can_subtract`, and `can_multiply` for checked fixed-width arithmetic preflight
@@ -146,4 +354,4 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
 ## Traceability and Related Requirements
 
 - **Downstream Artifact**: Numeric functions, checked arithmetic helpers, bitwise functions, and callable builder adapters (`partial`, `juxt`, `fnil`, `complement`, `apply`).
-- **Governed REQs**: `REQ-NUM-000`–`019`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`.
+- **Governed REQs**: `REQ-NUM-000`–`019`, `REQ-NUM-010A`–`010E`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`.
