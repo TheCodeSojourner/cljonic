@@ -44,7 +44,9 @@
  * - add, apply, \ref Assoc "assoc", assoc_in
  * - bit_and, bit_and_not, bit_clear, bit_flip, bit_not, bit_or, bit_set, bit_shift_left, bit_shift_right, bit_test,
  *   bit_xor, butlast
- * - can_add, \ref CanAssoc "can_assoc", \ref CanConj "can_conj", can_multiply, can_subtract,
+ * - can_add, \ref CanAssoc "can_assoc", \ref CanConj "can_conj", can_multiply, can_subtract, can_to, can_to_byte,
+ *   can_to_char, can_to_count, can_to_double, can_to_float, can_to_index, can_to_int, can_to_long, can_to_long_double,
+ *   can_to_long_long, can_to_short, can_to_size, can_to_uint, can_to_ulong, can_to_ulong_long, can_to_ushort,
  *   \ref CharacterIsValid "character_is_valid", comp, compare, complement, \ref Conj "conj", constantly,
  *   \ref Contains "contains", \ref Count "count", \ref Cycle "cycle"
  * - dec, dedupe, deref, \ref Disj "disj", \ref Dissoc "dissoc", distinct, div, \ref Drop "drop", drop_last, \ref DropWhile "drop_while"
@@ -71,7 +73,8 @@
  *   replace, replicate, reset, reset_vals, \ref Rest "rest", rseq
  * - second, select_keys, \ref Seq "seq", some, some_fn, sort, sort_by, split_at, split_with, str, \ref StringFactory "string",
  *   sub, subvec, swap, swap_vals
- * - \ref Take "take", take_last, take_nth, \ref TakeWhile "take_while", to_byte, to_char, to_double, to_float, to_int, to_long, to_short,
+ * - \ref Take "take", take_last, take_nth, \ref TakeWhile "take_while", to, to_byte, to_char, to_count, to_double, to_float,
+ *   to_index, to_int, to_long, to_long_double, to_long_long, to_short, to_size, to_uint, to_ulong, to_ulong_long, to_ushort,
  *   tree_seq
  * - unsigned_bit_shift_right, update, update_in, update_keys, update_vals
  * - vals, \ref VariantFactory "variant", variant_alternative, variant_size, vec, \ref cljonic::vector "vector", visit
