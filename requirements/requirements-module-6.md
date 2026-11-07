@@ -138,98 +138,58 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
 
 λ REQ-NUM-012(x).
-  | local_definitions:
-    s ≡ supplied source value ∧ S ≡ actual source type ∧ T ≡ destination type
-    I ≡ admitted non-Boolean, non-character integer types under REQ-NUM-013
-    F ≡ admitted floating types under this clause ∧ source_admission ≡ REQ-NUM-013
-    in_range(v, T) ≡ mathematical value v lies within T's finite numeric range
-    exact(v, T) ≡ v is exactly representable in T, subject to the special-value rules below
-    nonfinite(s) ≡ floating classification of s is NaN or positive or negative infinity; this is not an equality comparison with NaN
-    finite(s) ≡ ¬nonfinite(s)
-    policy ∈ {exact_default, truncate, nearest} ≡ selected conversion policy; exact_default is selected by omitting the policy argument
-    source_destination_admitted(S, T) ≡ source/destination admission under REQ-NUM-008 and REQ-NUM-013, independently of policy selection
-    policy_admitted(S, T, policy) ≡ the source/destination/policy combination allowed by the policy matrix below
-    admitted(S, T, policy) ≡ source_destination_admitted(S, T) ∧ policy_admitted(S, T, policy)
-    exact_default_success ≡ conversion of s to T under exact_default succeeds after all applicable checks
-    successful_result ≡ destination value returned by a successful conversion, not a failure fallback
-    selected_policy_yields_that_value ≡ the selected policy's validated conversion result is largest_finite(T)
-    Each rule below is independently required within its stated scope. A permitted result remains subject to admission and every other applicable check; it does not override a failure rule.
-    integral_value(s) ≡ s has no fractional part ∧ negative_zero(s) ≡ s is floating zero with a negative sign
-    trunc(s), defined only for finite(s), ≡ mathematical integer obtained by truncating s toward zero
-    nearest(s, T), defined only for finite(s) ∧ in_range(s, T), ≡ nearest representable value in T; halfway ties select the even least-significant significand digit
-    Non-finite input is classified before integrality, range, truncation, or rounding is evaluated. Out-of-range finite input to a floating destination fails before nearest is evaluated; classification follows REQ-NUM-010C.
-    subnormal_in(v, T) ≡ v is represented as a nonzero subnormal value in T
-    fail(reason) ≡ conversion_failure under REQ-NUM-009 ∧ REQ-NUM-010 ∧ REQ-NUM-010A–010E, with precedence under REQ-NUM-010C
-  | policy_interface:
-    ∀ operation ∈ {approved named conversions, approved generic conversions}:
-      (omitted_policy → exact_default)
-      ∧ (explicit_policy → argument_after_value ∧ same_policy_argument_for_matching_preflight)
-      ∧ (policy_tags ≡ distinct_compile_time_objects{cljonic::core::conversion::truncate, cljonic::core::conversion::nearest})
-      ∧ scoped_names ∧ compile_time_identifiable_selection ∧ ¬require(separately_named_function_per_policy)
-      ∧ (¬admitted(S, T, policy) → compile_time_rejection ∧ ¬silently_ignore(policy))
-    ∃ permitted_path: internal_enum_supports_tags ∧ ¬require(public_runtime_enum_policy_argument)
+  | scope:
+    S and T denote the actual source and destination C++ types; s is the supplied source value.
+    Integer excludes bool and all character types under REQ-NUM-013. Floating means a supported floating type under the environment rules below.
+    Source/destination admission follows REQ-NUM-008 and REQ-NUM-013 independently of policy selection. The matrix applies only to admitted numeric pairs. Each permitted policy and result remains subject to every applicable value check below.
   | policy_matrix:
-    ∀ source value s of type S, destination T admitted by REQ-NUM-008 and REQ-NUM-013:
-      ((S ∈ I ∧ T ∈ I) → (exact_default_success ↔ in_range(s, T)))
-      ∧ ((S ∈ I ∧ T ∈ F) → (exact_default_success ↔ exact(s, T)))
-      ∧ ((S ∈ F ∧ T ∈ I) → (exact_default_success ↔ (finite(s) ∧ integral_value(s) ∧ in_range(s, T))))
-      ∧ ((S ∈ F ∧ T ∈ F) → (exact_default_success ↔ exact(s, T)))
-      ∧ policy_admitted(S, T, exact_default)
-      ∧ (policy_admitted(S, T, truncate) ↔ (S ∈ F ∧ T ∈ I))
-      ∧ (policy_admitted(S, T, nearest) ↔ ((S ∈ I ∧ T ∈ F) ∨ (S ∈ F ∧ T ∈ F ∧ S ≠ T)))
-      ∧ (same_type(S, T) → exact_default_only ∧ preserve(nonfinite_validation ∧ signed_zero_rules))
-    same_type(S, T) ≡ actual_Cpp_type_identity ∧ ¬determine_by(alias_spelling ∨ representation_equality)
+
+    | Source → destination | Exact default | Truncate | Nearest |
+    | --- | --- | --- | --- |
+    | Integer → integer | Value lies within destination range | Rejected | Rejected |
+    | Integer → floating | Value is exactly representable | Rejected | Allowed |
+    | Floating → integer | Value is finite, integral, and within destination range | Allowed | Rejected |
+    | Different floating types | Value is exactly representable | Rejected | Allowed |
+    | Same actual C++ type | Exact only; applicable validity checks remain | Rejected | Rejected |
+
+    Same-type admission uses actual C++ type identity, not alias spelling or matching representations. Same-type floating conversions retain non-finite and signed-zero checks.
+  | policy_interface:
+    Omission selects exact. Explicit policy selection uses an argument after the value; matching preflight accepts the same policy argument.
+    Policies are distinct, scoped compile-time tag objects: cljonic::core::conversion::truncate and cljonic::core::conversion::nearest. Unsupported source/destination/policy combinations are rejected at compile time, never silently ignored.
+    An internal enum may support the tags. Neither a public runtime enum policy argument nor a separately named function for each policy is required.
   | integer_and_truncation_boundaries:
-    ∀ source value s of S ∈ I, admitted unsigned destination T (including std::size_t):
-      (s < 0 → fail(out_of_range) before_conversion ∧ ¬modulo_wrap)
-      ∧ (s ≥ 0 → (exact_default_success ↔ in_range(s, T)))
-    ∀ source value s of S ∈ F, T ∈ I, admitted(S, T, policy):
-      (policy = exact_default → check(finite(s) ∧ integral_value(s) ∧ in_range(s, T)) before_cast)
-      ∧ (policy = truncate ∧ finite(s) → check(in_range(trunc(s), T)) before_cast)
-      ∧ (policy = truncate ∧ finite(s) ∧ in_range(trunc(s), T) → success(value = trunc(s)))
-      ∧ (policy = truncate ∧ finite(s) ∧ ¬in_range(trunc(s), T) → fail(out_of_range))
-      ∧ ¬use(invalid_cast_as_safety_test) ∧ ¬wrap ∧ ¬saturate
-    truncation_example: (s = -0.5 ∧ T ∈ admitted_unsigned_integer_types ∧ policy = truncate) → trunc(s) = 0 ∧ success(0)
+    Integer → integer succeeds exactly when the value fits the destination. Negative integer input to an unsigned destination, including std::size_t, fails as out_of_range before conversion; it never wraps modulo the destination range.
+    For floating → integer, classify non-finite input before evaluating integrality, range, or truncation:
+      exact → check finiteness, absence of a fractional part, and mathematical destination range before casting
+      truncate → for finite input, truncate toward zero and check the mathematical truncated integer against destination range before casting; return it if it fits, otherwise fail as out_of_range
+    Truncation can succeed when the original value lies outside integer range: -0.5 converts to unsigned zero. Never use an invalid cast as a safety test, wrap, or saturate.
   | floating_range_and_rounding:
-    ∀ source value s of S, T ∈ F, admitted(S, T, policy), policy ∈ {exact_default, nearest}:
-      ((finite(s) ∧ ¬in_range(s, T)) → fail(out_of_range), even_if_an_unrestricted_rounding_operation_would_choose(largest_finite(T)))
-      ∧ ((in_range(s, T) ∧ selected_policy_yields_that_value) → permit(successful_result = largest_finite(T)))
-      ∧ ¬success(infinity) ∧ ¬substitute(clamping_for_overflow_failure)
-    ∀ finite source value s of S, T ∈ F, admitted(S, T, nearest), in_range(s, T): successful_result = nearest(s, T) subject_to(underflow ∧ signed_zero_rules)
-      ∧ precision_loss_permitted ∧ ties_to_even ∧ ¬depend_on(ambient_rounding_mode)
-    ∀ conversion_failure:
-      preflight = false
-      ∧ (runtime_evaluation ∧ normal_mode → fallback_under(REQ-NUM-010A), not_successful_saturation)
-      ∧ (runtime_evaluation ∧ diagnostic_mode → stop_without_fallback_return)
-      ∧ (required_constant_evaluation → compile_time_failure_without_runtime_diagnostic_or_handler_or_fallback) under REQ-NUM-009
+    For either exact or nearest with a floating destination:
+      finite input magnitude > destination's largest finite value → fail as out_of_range before rounding, even if unrestricted rounding would select that maximum
+      exact → require exact representability
+      nearest → select the nearest representable value, permitting precision loss; halfway ties select the even least-significant significand digit independently of ambient rounding mode
+    The largest finite value may be a successful result when the source lies within destination range and the selected policy produces it, subject to all other checks. Infinity is never a successful result; clamping cannot replace overflow failure.
   | subnormal_and_underflow:
-    ∀ finite source value s of S, T ∈ F, admitted(S, T, policy), in_range(s, T):
-      ((policy = exact_default ∧ exact(s, T) ∧ subnormal_in(s, T)) → permitted)
-      ∧ ((policy = nearest ∧ subnormal_in(nearest(s, T), T)) → permitted)
-      ∧ ((policy = nearest ∧ s ≠ 0 ∧ nearest(s, T) = 0) → fail(underflow_to_zero), for_either_sign(s))
-      ∧ (¬supports_subnormals(T) → use(actual_representable_values(T)) ∧ ¬assume(universal_subnormal_support))
+    For finite input within floating destination range, exact admits exactly representable subnormals; nearest admits a nonzero subnormal result.
+    nearest ∧ nonzero source rounds to zero → fail as underflow_to_zero, for either sign
+    Use the destination's actual representable values when it lacks subnormals; do not assume universal subnormal support.
   | nonfinite_and_zero:
-    ∀ numeric source value s of S, destination T, admitted(S, T, policy):
-      (nonfinite(s) → fail(non_finite_input), including(S = T))
-      ∧ (rejected_value(s) → ¬imply(rejected_source_type(S) ∨ prohibition_on_nonconversion_storage_or_use(s)))
-    ∀ source value s of S ∈ F, T ∈ F, s = 0, admitted(S, T, policy):
-      (supports_signed_zero(T) → preserve_zero_sign(s))
-      ∧ ((¬supports_signed_zero(T) ∧ ¬negative_zero(s)) → success(positive_zero))
-      ∧ ((¬supports_signed_zero(T) ∧ negative_zero(s)) → fail(unsupported_signed_zero))
-    ∀ source value s of S ∈ F, T ∈ I, s = 0, admitted(S, T, exact_default): success(integer_zero), regardless_of_zero_sign(s)
-    ∀ source value s of S ∈ I, T ∈ F, s = 0, admitted(S, T, policy): success(positive_floating_zero)
+    NaN and positive or negative infinity → fail as non_finite_input under every admitted numeric policy, including same-type conversion
+    Use floating classification, not equality with NaN, before evaluating integrality, range, truncation, or rounding. Rejecting these values does not reject their source type or prohibit non-conversion storage or use.
+    For floating zero → floating:
+      destination supports signed zero → preserve the source zero's sign
+      destination lacks signed zero ∧ source is positive zero → return positive zero
+      destination lacks signed zero ∧ source is negative zero → fail as unsupported_signed_zero
+    Both signs of floating zero convert exactly to integer zero. Integer zero converts to positive floating zero under every admitted policy.
+  | failure_and_preflight:
+    Failed value checks give false preflight and conversion failure under REQ-NUM-009 and REQ-NUM-010/010A–010E. Diagnostic classification and overlapping-failure precedence follow REQ-NUM-010C.
+    Runtime mode behavior and required-constant-evaluation failure remain governed by those clauses. A normal-mode fallback is a failure result, not successful saturation.
   | supported_environments:
-    ∀ T ∈ {float, double, long double}: binary_radix(T) ∧ environment_satisfies_contract → supported_floating_conversion(T)
-    ∃ permitted_path: additional_compiler_binary_floating_type(T) ∧ defined_and_satisfied_contract(T) → generic_to<T>_support
-    ∀ supported_environment: preserve(ties_to_even_independent_of_rounding_mode ∧ applicable_subnormal_rules ∧ signed_zero_rules ∧ nonfinite_detection_where_supported)
-      ∧ ((compiler_options ∨ runtime_settings) → ¬silently_violate(contract))
-    (unsupported_floating_type ∧ statically_detectable) → compile_time_rejection
-    ∧ (undetectable_environmental_restriction → documented ∧ unsupported_configuration_outside_contract)
-    ∧ (nonbinary_formats → unapproved)
+    Support float, double, and long double with binary radix where the environment satisfies these contracts. Generic conversion may additionally support compiler binary floating types with defined and satisfied contracts.
+    Compiler options and runtime settings must not silently violate ties-to-even independent of ambient rounding mode, applicable subnormal and signed-zero rules, or non-finite detection where supported.
+    Statically detectable unsupported floating types are rejected at compile time. Undetectable environmental restrictions are documented as unsupported configurations outside the contract. Non-binary formats remain unapproved.
   | boundaries:
-    (range_rules → defined_by(representable_values) ∧ ¬exponent_field_comparison_alone)
-    ∧ ((wrapping ∨ saturation ∨ other_loss_policy) → unapproved)
-    ∧ (implementation → requires(operation_level_behavioral_specification))
+    Range rules use representable values, not exponent-field comparisons alone. Wrapping, saturation, and other loss policies remain unapproved. Implementation requires an operation-level behavioral specification.
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
 
 λ REQ-NUM-013(x).
