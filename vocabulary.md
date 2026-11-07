@@ -1,6 +1,6 @@
 ---
 created: 2026-08-05
-last_updated: 2026-11-05
+last_updated: 2026-11-07
 status: draft
 ---
 
@@ -27,14 +27,14 @@ These terms govern stored collection and producer building blocks used across
 the active higher-order algorithms.
 
 ### SafeImplicitConversion
-- **Definition:** Argument admission that preserves type identity or admits a standard arithmetic conversion preserving every source value, precision, range, and semantic domain. Cross-type Boolean, character, enum, pointer, and user-defined conversions are not admitted by default. Safety is decided from types, not from a particular literal.
+- **Definition:** Argument admission that preserves type identity or admits a standard arithmetic conversion preserving every source value, precision, range, and semantic domain. Integer/floating domain crossings are rejected even when value-preserving; cross-type Boolean, character, enum, pointer, and user-defined conversions are not admitted by default. Admission is decided from types, not from a particular literal. This approved policy has not yet been propagated to implementation.
 - **Deprecated Synonyms:** safe coercion
 - **Related:** ValuePreservingConversion, CheckedNormalization, NothrowCollectionElement, NothrowElementConstruction
 - **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
-- **Examples:** `short` to `long long` is permitted; `double` to `int`, `int` to `unsigned int`, and `bool` to `int` are not.
+- **Examples:** `short` to `long long` and value-preserving `float` to `double` are permitted; integer/floating crossings in either direction, `int` to `unsigned int`, and `bool` to `int` are not.
 
 ### ValuePreservingConversion
-- **Definition:** A conversion whose destination represents the complete source value domain without loss of range, precision, or floating-point special-value support. Value preservation is necessary but not sufficient for SafeImplicitConversion: the argument's Boolean, character, enum, and nominal domain must also retain its meaning.
+- **Definition:** A conversion whose destination represents the complete source value domain without loss of range, precision, or floating-point special-value support. Value preservation is necessary but not sufficient for SafeImplicitConversion: integer/floating crossings are excluded, and the argument's Boolean, character, enum, and nominal domain must also retain its meaning.
 - **Deprecated Synonyms:** lossless coercion
 - **Related:** SafeImplicitConversion, CheckedNormalization
 - **Usage:** Requirements, architecture, specifications, tests, and implementation
@@ -263,11 +263,11 @@ the active higher-order algorithms.
 
 
 ### NumericPolicy
-- **Definition:** The explicit rule governing numeric comparison, representability, conversion, overflow, and failure for an operation.
+- **Definition:** The explicit rule governing numeric comparison, representability, conversion, overflow, and failure for an operation. For the approved but unimplemented explicit conversion API, exact is the default; distinct compile-time `cljonic::core::conversion::truncate` and `cljonic::core::conversion::nearest` tags select the documented lossy policies for admitted source/destination pairs. Unsupported policy combinations are rejected at compile time.
 - **Deprecated Synonyms:** numeric semantics, numeric contract
-- **Related:** DiscreteNumericType, DeterministicOverflowPolicy, ExactConversion, LossyConversion
+- **Related:** DiscreteNumericType, DeterministicOverflowPolicy, ExactConversion, LossyConversion, ExplicitConversion
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
-- **Examples:** A conversion's numeric policy states whether narrowing is exact, checked, or lossy.
+- **Examples:** `to_int(floating_value, conversion::truncate)` requests truncation toward zero; `to_float(integer_value, conversion::nearest)` requests nearest rounding subject to the approved range and underflow rules.
 
 
 ### FullState
@@ -320,28 +320,42 @@ the active higher-order algorithms.
 
 
 ### ExactConversion
-- **Definition:** A conversion that preserves the source value exactly in the destination representation and satisfies the applicable representability policy.
+- **Definition:** A conversion that preserves the supplied source value exactly in the destination representation and satisfies the applicable representability and domain policy. It is the default for the approved but unimplemented explicit conversion API. Its value-specific check differs from SafeImplicitConversion's whole-source-type admission rule; signed floating zero to integer zero follows the explicit approved exception.
 - **Deprecated Synonyms:** exact numeric conversion, lossless conversion
-- **Related:** CheckedConversion, LossyConversion, NumericPolicy
+- **Related:** CheckedConversion, LossyConversion, NumericPolicy, ExplicitConversion, SafeImplicitConversion
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
-- **Examples:** A conversion is exact only when the destination can represent the source without information loss.
+- **Examples:** `to_int(42.0)` is exact; `to_int(42.5)` fails under the default policy.
 
 
 ### CheckedConversion
-- **Definition:** A conversion that verifies representability or validity and communicates failure through the documented checked-failure or preflight mechanism without throwing or allocating.
+- **Definition:** A conversion that verifies representability or validity under its documented policy without throwing or allocating. For the approved but unimplemented explicit conversion API, the matching preflight predicts conversion success for the same value and policy; normal failure returns the documented fallback, while diagnostic-mode failure records an error and invokes the handler.
 - **Deprecated Synonyms:** checked numeric conversion, validated conversion
-- **Related:** ExactConversion, LossyConversion, CheckedFailureResult, PreflightPredicate
+- **Related:** ExactConversion, LossyConversion, CheckedFailureResult, PreflightPredicate, ExplicitConversion, ConversionDiagnosticMode
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
-- **Examples:** A checked conversion reports failure when a runtime value cannot be represented in the destination type.
+- **Examples:** `can_to_int(value)` reports whether the corresponding exact `to_int(value)` succeeds.
 
 
 ### LossyConversion
-- **Definition:** A conversion that may discard precision, range, or other source information under an explicitly documented numeric policy.
+- **Definition:** A conversion that may discard precision, range, or other source information under an explicitly documented numeric policy. The approved but unimplemented conversion API permits explicitly selected truncation toward zero for floating-to-integer conversion and nearest rounding for integer-to-floating or different-type floating-to-floating conversion; the applicable range and failure checks still apply.
 - **Deprecated Synonyms:** lossy numeric conversion, narrowing conversion
-- **Related:** ExactConversion, CheckedConversion, NumericPolicy
+- **Related:** ExactConversion, CheckedConversion, NumericPolicy, ExplicitConversion
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
 - **Examples:** A lossy conversion is permitted only when the governing operation explicitly documents that policy.
 
+
+### ExplicitConversion
+- **Definition:** An approved but unimplemented `cljonic::core` named `to_*` or generic `to<T>` operation that retains its original source type and value until validating it against an explicitly selected destination contract. It defaults to exact conversion; separately selected loss policies apply only to admitted combinations. Matching `can_to_*` or `can_to<T>` preflights predict success for the same value and policy. It is distinct from Parsing and is not an arbitrary C++ cast facility.
+- **Deprecated Synonyms:** none
+- **Related:** ExactConversion, LossyConversion, CheckedConversion, NumericPolicy, PreflightPredicate, ConversionDiagnosticMode, Parsing
+- **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
+- **Examples:** `to_int(value)` requests conversion to `int`; `to<std::uint32_t>(value)` requests an approved non-character destination type when available.
+
+### ConversionDiagnosticMode
+- **Definition:** The approved but unimplemented compile-time-selectable mode for explicit conversions that records a `cljonic::core::ConversionError` in shared static state and invokes the application's non-returning handler on runtime failure. Preflights do not modify diagnostic state. Normal mode uses documented fallbacks and has no diagnostic-state storage; it is the default.
+- **Deprecated Synonyms:** none
+- **Related:** ExplicitConversion, CheckedConversion, PreflightPredicate, DefaultReturningResult
+- **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
+- **Examples:** A diagnostic build selects `CLJONIC_CONVERSION_DIAGNOSTICS=1`; its failure handler reads the error through `cljonic::core::conversion_error()`.
 
 ### Parsing
 - **Definition:** The bounded interpretation of an input representation into a cljonic value with explicit validity, representability, and failure semantics.
@@ -1044,9 +1058,9 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### DefaultReturningResult
-- **Definition:** A documented default value result used when the requested access or lookup cannot produce a valid value.
+- **Definition:** A documented default value result used when an operation cannot produce its requested result. The approved but unimplemented explicit conversion API returns a destination-specific fallback on normal-mode failure; the fallback may also be a valid successful result and therefore does not by itself prove failure. Diagnostic-mode conversion failure is a documented non-returning exception.
 - **Deprecated Synonyms:** default result, sentinel-return result
-- **Related:** DefaultElement, CheckedFailureResult, ProbeFirstAccess
+- **Related:** DefaultElement, CheckedFailureResult, ProbeFirstAccess, ExplicitConversion, ConversionDiagnosticMode
 - **Usage:** Requirements, specification, implementation, tests, and documentation
 - **Examples:** `get` on a missing key returns a default-returning result according to its contract.
 
@@ -1060,7 +1074,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### PreflightPredicate
-- **Definition:** A non-throwing, non-allocating predicate that measures the same completion and failure conditions as its paired operation. `fits_into(destination, source)` tests whether the complete source can be inserted under the destination's insertion semantics, accounting for Set duplicates and Map key replacements rather than treating every source value as capacity growth. It is false for an UnboundedProducer regardless of its capped observable count. Value-sensitive preflight may evaluate producer callbacks; without shared realization caching, its prediction depends on the later operation observing the same values.
+- **Definition:** A non-throwing, non-allocating predicate that measures the same completion and failure conditions as its paired operation. The approved but unimplemented explicit conversion preflights agree with their conversion for the same source value and policy, and do not change diagnostic state or invoke the failure handler. `fits_into(destination, source)` tests whether the complete source can be inserted under the destination's insertion semantics, accounting for Set duplicates and Map key replacements rather than treating every source value as capacity growth. It is false for an UnboundedProducer regardless of its capped observable count. Value-sensitive preflight may evaluate producer callbacks; without shared realization caching, its prediction depends on the later operation observing the same values.
 - **Deprecated Synonyms:** preflight check, capability precheck
 - **Related:** CompleteResult, BoundedPrefixResult, ProbeFirstAccess
 - **Usage:** Requirements, specification, implementation, tests, and documentation
@@ -1231,7 +1245,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### CompileTimeFailure
-- **Definition:** A result classification indicating an operation or construction is rejected during compilation rather than producing a runtime value, used when a violation is statically knowable ahead of program execution.
+- **Definition:** A result classification indicating an operation or construction is rejected during compilation rather than producing a runtime value. For the approved but unimplemented explicit conversion API, a failed conversion required to be a constant expression fails compilation; a call not required to be constant-evaluated follows runtime mode even when its input is a literal.
 - **Deprecated Synonyms:** compile-time failure, compile-time rejection
 - **Related:** CapacityConstruction, CheckedFailureResult
 - **Usage:** Architecture, specification, implementation, tests, and documentation
