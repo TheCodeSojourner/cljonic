@@ -193,23 +193,120 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | collection_storage_position(x) ≡ element ∨ map_key ∨ map_value
   | String(x) → apply(non_throwing_storage_and_destruction(x))
 
-λ S3_conversion_admission(source, destination). governed_by(REQ-CONV-001 ∧ REQ-CONV-002 ∧ REQ-CONV-003)
+λ S3_explicit_conversion_surface(x). governed_by(REQ-NUM-008 ∧ REQ-NUM-009 ∧ REQ-NUM-010 ∧ REQ-NUM-010A–010E ∧ REQ-NUM-012 ∧ REQ-NUM-013 ∧ REQ-NUM-017)
   | traces_to(S5_domain_and_conversion_safety)
-  | SafeImplicitConversion(source, destination) ≡ same_unqualified_type(source, destination)
-    ∨ (standard_arithmetic_conversion(source, destination) ∧ ValuePreservingConversion(source, destination)
-      ∧ ¬crosses(Boolean ∨ character ∨ enumeration domain))
-  | ValuePreservingConversion(source, destination) → preserve(entire_source_range ∧ precision ∧ floating_special_values)
-  | ¬SafeImplicitConversion(source, destination) → reject_at_argument_boundary
-  | NothrowElementConstruction(argument_expression, destination) ≡ SafeImplicitConversion(argument_expression, destination)
+  | planned_core_surface(x) ≡ to_byte ∧ to_char ∧ to_count ∧ to_double ∧ to_float ∧ to_index ∧ to_int ∧ to_long
+    ∧ to_long_double ∧ to_long_long ∧ to_short ∧ to_size ∧ to_uint ∧ to_ulong ∧ to_ulong_long ∧ to_ushort ∧ to<T>
+  | named_destination(x) → native_Cpp_type_under(REQ-NUM-008) ∧ destination(to_count ∨ to_index ∨ to_size) ≡ std::size_t
+  | count_index_size_synonyms(x) → identical_behavior ∧ matching_preflights ∧ ¬implied_collection_specific_bounds_or_capacity
+  | generic_destination(to<T>) ≡ T ∧ require(defined_source_destination_contract) ∧ ¬arbitrary_cast_facility
+    ∧ admit(char ∨ std_byte ∨ supported_noncharacter_integer ∨ supported_binary_floating)
+    ∧ reject(bool ∨ character_except_char ∨ enum ∨ pointer ∨ user_defined) ∧ typedef_follows_underlying_type
+  | equivalent_named_and_generic_contracts(x) → identical(admission ∧ result ∧ failure_behavior)
+  | ¬required_external_application_config ∧ ¬globally_configured_destination_types
+  | default_conversion(x) → exact_for_supplied_value under REQ-NUM-009 ∧ ordinary_argument_admission_follows(REQ-CONV-001)
+  | explicit_conversion_source(x) → preserve_original_type_and_value_before_validation ∧ ¬implicit_conversion_to_destination
+  | numeric_conversion_matrix(x) → exact_default_for(integer_to_integer ∨ integer_to_float ∨ float_to_integer ∨ float_to_float)
+    ∧ truncate_only_for(float_to_integer) ∧ nearest_only_for(integer_to_float ∨ float_to_float)
+    ∧ reject_unsupported_policies_at_compile_time
+  | exact_integer_to_unsigned(x) → reject_negative_before_conversion ∧ require(nonnegative_value_representable) ∧ ¬modulo_wrap
+  | exact_float_to_integer(x) → check(finite ∧ integral ∧ mathematical_destination_range) before_conversion
+    ∧ ¬out_of_range_cast_as_safety_test ∧ diagnose_under(REQ-NUM-010C_precedence)
+  | truncate_float_to_integer(x) → check(finite ∧ truncated_toward_zero_value_in_destination_range) before_cast
+    ∧ admit(original_outside_integer_range_when_truncated_result_fits) ∧ ¬invalid_cast_as_safety_test
+  | explicit_loss_policy(x) → truncation_toward_zero_for_integer_destination ∨ nearest_for_floating_destination under REQ-NUM-012
+  | finite_source_magnitude_exceeds_destination_max(x) → floating_conversion_failure(out_of_range) for exact ∧ nearest
+  | nearest_halfway_tie(x) → even_least_significant_significand_digit ∧ ¬depend_on(ambient_rounding_mode)
+  | exact_subnormal(x) ∨ nearest_nonzero_subnormal(x) → permitted_when_destination_represents_result
+  | nearest_nonzero_source_rounds_to_zero(x) → conversion_failure(x) ∧ apply(actual_destination_representable_values)
+  | numeric_conversion_of(NaN ∨ positive_infinity ∨ negative_infinity) → conversion_failure ∧ includes_same_type_conversion
+    ∧ preserve(existing_nonconversion_storage_and_usage_contracts)
+  | floating_zero_to_floating(x) → preserve_sign_when_supported ∧ reject_negative_zero_if_destination_lacks_signed_zero
+  | floating_zero_to_integer(x) → integer_zero ∧ integer_zero_to_floating(x) → positive_zero
+  | supported_floating_conversion(x) → binary_radix ∧ target_environment_satisfies(approved_conversion_contract)
+    ∧ additional_generic_floating_type(x) → require(defined_and_satisfied_contract) ∧ nonbinary_floating_formats_unapproved
+    ∧ reject_unsupported_types_when_detectable ∧ document_undetectable_environmental_restrictions
+  | policy_selection(x) → optional_argument_after_value ∧ default(exact) ∧ same_argument_for_matching_preflight
+    ∧ distinct_scoped_compile_time_tags(cljonic::core::conversion::truncate, cljonic::core::conversion::nearest)
+    ∧ reject_unsupported_combinations_at_compile_time ∧ ¬require(public_runtime_enum_policy)
+  | loss_policy(x) → ¬wrapping ∧ ¬saturation ∧ reject_overflow ∧ selection_visible_at_call_site
+  | source_admission(x) → follow(REQ-NUM-013) ∧ distinguish(unsupported_source_type ∧ admitted_source_value_failure)
+  | ordinary_numeric_sources(x) ≡ builtin_integer_except(Boolean ∨ character) ∨ builtin_floating
+  | character_source_to_ordinary_numeric(x) → reject_at_compile_time ∧ ¬interpret_as_code_or_parsed_digit
+    ∧ fixed_width_alias_of_character_type(x) → same_exclusion ∧ ¬distinguish_typedef_spelling
+  | generic_destination(signed_char ∨ unsigned_char ∨ aliases_of_those_types) → reject_at_compile_time
+    ∧ preserve_separate(to<char> ∧ to<std::byte>) ∧ admit(supported_noncharacter_integer_destinations)
+  | explicit_domain_boundaries(x) ≡ validated_integer_to_char ∨ validated_char_to_char ∨ checked_integer_to_byte ∨ validated_ASCII_char_to_byte
+  | character_destination(x) → accept_only_valid_non_NUL_ASCII_from(integer ∨ char ∨ std_byte) ∧ validate_before_cast
+    ∧ reject(floating ∨ Boolean ∨ other_character ∨ enum ∨ pointer ∨ user_defined) ∧ reject(truncate ∨ nearest)
+  | std_byte_source(x) → admit_only_for(std_byte ∨ character_destination) ∧ reject_ordinary_integer_and_floating_destinations
+  | byte_destination(x) → accept_integer_in(0..UCHAR_MAX) ∨ valid_ASCII_char ∨ unchanged_std_byte
+    ∧ reject(floating ∨ Boolean ∨ other_character ∨ enum ∨ pointer ∨ user_defined) ∧ reject(truncate ∨ nearest)
+  | same_type_conversion(x) → admitted_under_destination_contract ∧ exact_default_only ∧ reject_explicit_loss_policy_at_compile_time
+    ∧ determine_by(actual_Cpp_type_identity_not_alias_spelling_or_representation) ∧ floating_inputs_still_follow(non_finite ∧ signed_zero_validation)
+  | floating_source_to(char ∨ std::byte) → reject_even_with_loss_policy ∧ require(successful_explicit_integer_intermediate)
+  | parsing ∨ arbitrary_user_defined_conversion → ¬implicit_conversion_source
+  | runtime_conversion(x) → preflight_available(x) ∧ direct_destination_return(x) under REQ-NUM-010
+  | preflight_for(to_*(x)) ≡ can_to_*(x) ∧ preflight_for(to<T>(x)) ≡ can_to<T>(x)
+  | preflight(x, policy) → true iff corresponding_conversion_succeeds(x, policy) ∧ same(source_admission ∧ policies)
+    ∧ ¬throw ∧ ¬allocate ∧ ¬record_diagnostic ∧ ¬invoke_failure_handler
+  | false_preflight_followed_by_same_conversion(x, policy) → configured_failure_outcome ∧ diagnostic_uses_same_failed_conditions
+    ∧ applies_to(numeric ∧ character ∧ byte ∧ count_index_size_aliases) ∧ ¬require(caching)
+  | supported_conversion_and_preflight(x) → constant_expression_usable_when_inputs_and_environment_allow
+  | failed_conversion_required_constant_expression(x) → compile_failure ∧ ¬runtime_diagnostic ∧ ¬handler ∧ ¬fallback
+    ∧ narrow_exception_to(REQ-ERR-008_statically_known_overflow_rule) under REQ-NUM-009 ∧ REQ-NUM-010A ∧ REQ-NUM-010B
+  | failed_constant_preflight(x) → false ∧ ¬compile_failure_from_checked_value
+  | ¬required_constant_evaluation(x) → runtime_mode_applies_even_if_input_is_literal
+  | diagnostic_mode(x) → record_compact_static_error_code(x) ∧ call(application_provided_nonreturning_failure_handler) ∧ required_implementation_capability(x)
+  | failure_handler(x) ≡ cljonic::core::conversion_failure_handler() → application_definition_of_noreturn_noexcept_declaration
+    ∧ ¬library_default ∧ ¬runtime_registration
+    ∧ may_inspect(recorded_error_code) ∧ ¬return_to_conversion ∧ ¬throw ∧ ¬allocate ∧ ¬deallocate
+    ∧ compliance_is_application_responsibility ∧ verify_by_review_and_target_tests ∧ ¬claim_library_detects_violations
+  | normal_mode(x) → ¬require(handler_definition) ∧ missing_diagnostic_handler_with_reachable_failure_path → link_failure
+  | error_code(x) → scoped_enum(cljonic::core::ConversionError) ∧ one_library_managed_static_code_shared_across_translation_units
+    ∧ initial_value(none) ∧ set_before(handler) ∧ successful_conversions_and_preflights_leave_unchanged
+    ∧ debugger_or_crash_dump_inspectable_subject_to_target_and_build(x) ∧ ¬guarantee(reset_preserves_state)
+    ∧ documented_meaning(x) ∧ ¬runtime_message_construction_required
+  | conversion_error() → non_throwing_read_only_code ∧ normal_mode_returns(none) ∧ ¬reset_required
+  | normal_mode(x) → ¬diagnostic_state_storage ∧ ¬handler_reference ∧ ¬registration ∧ ¬diagnostic_initialization
+    ∧ ¬claim_zero_conversion_checking_or_executable_code_overhead
+  | error_category(x) ∈ {out_of_range, precision_loss, non_finite_input, underflow_to_zero, invalid_character, unsupported_signed_zero}
+    ∧ overlapping_failures_select_first(non_finite_input, invalid_character, unsupported_signed_zero, out_of_range, underflow_to_zero, precision_loss)
+    ∧ classify_under_selected_policy ∧ precedence_does_not_change_success ∧ compile_time_rejections_have_no_runtime_code
+  | application_selects(diagnostic_mode ∨ normal_mode) → compile_time_macro(CLJONIC_CONVERSION_DIAGNOSTICS) ∧ default(normal_mode) ∧ valid_values(0 ∨ 1)
+    ∧ identical_configuration_across_translation_units ∧ ¬required_external_config_file
+  | conversion_outcome(x) → default_returning_in_normal_mode ∧ document(nonreturning_diagnostic_failure_exception)
+    ∧ constant_evaluation_failure_is_separate_compile_time_rule ∧ conversion_preflight_is_boolean_predicate
+  | normal_mode_failure(x) → documented_destination_fallback(x)
+  | fallback(x) ≡ max_integral_destination ∨ max_finite_floating_destination ∨ all_bits_set_byte ∨ NUL_for_char under REQ-NUM-010A
+  | fallback(x) → ¬guaranteed_distinct_from_success(x) ∧ certainty_requires(preflight)
+    ∧ downstream_api_receives_ordinary_value(x) ∧ applies_own_checks ∧ ¬infer_prior_failure ∧ ¬hidden_failure_flag
+  | diagnostic_state(x) → governed_by(REQ-PLAT-012 ∧ REQ-PLAT-013) ∧ ¬required_synchronization
+  | conversion_diagnostic_mode(x) → narrow_exception_to(REQ-ERR-007 process_termination ∧ library_managed_error_state)
+    ∧ preserve(no_throw ∧ no_allocation ∧ all_other_safety_protections)
+  | incomplete_operation_level_behavior(x) → ¬implementation_ready(x)
+
+λ S3_conversion_admission(destination, source). governed_by(REQ-CONV-001 ∧ REQ-CONV-002 ∧ REQ-CONV-003)
+  | argument_order: admission_predicates are destination_first(destination, source) matching REQ-CONV-001 ∧ directional_conversion_uses(source → destination)
+  | traces_to(S5_domain_and_conversion_safety)
+  | SafeImplicitConversion(destination, source) ≡ same_unqualified_type(destination, source)
+    ∨ (standard_arithmetic_conversion(source, destination) ∧ ValuePreservingConversion(source → destination)
+      ∧ ¬crosses(integer ↔ floating ∨ Boolean ∨ character ∨ enumeration domain))
+  | ValuePreservingConversion(source → destination) → preserve(entire_source_range ∧ precision ∧ floating_special_values)
+  | integer_floating_domain_crossing(x) → reject_at_compile_time ∧ require_explicit_conversion_before_ordinary_call
+  | revised_admission(x) → type_based_only ∧ ¬add_general_runtime_value_checks ∧ preserve(operation_specific_checks_and_documented_exceptions)
+  | explicit_conversion_preflight(x) → use(explicit_conversion_source_and_policy_admission) under REQ-NUM-010 ∧ REQ-NUM-013
+  | ¬SafeImplicitConversion(destination, source) → reject_at_argument_boundary
+  | NothrowElementConstruction(destination, argument_expression) ≡ SafeImplicitConversion(destination, argument_expression)
     ∧ non_throwing_construction_from_actual_expression(argument_expression, destination)
     ∧ preserve_argument_cv_qualification_and_reference_category(argument_expression)
-  | argument_construction_gate_applies(x) → require(NothrowElementConstruction(argument_expression, destination))
-  | SafeImplicitConversion(source, destination) → ¬imply(non_throwing_construction_from_actual_expression(source, destination))
+  | argument_construction_gate_applies(x) → require(NothrowElementConstruction(destination, argument_expression))
+  | SafeImplicitConversion(destination, source) → ¬imply(non_throwing_construction_from_actual_expression(source, destination))
   | NothrowElementConstruction(x) → distinct_from(NothrowCollectionElement_storage_contract(x))
   | cross_type_user_defined_conversion ∨ cross_type_pointer_conversion → reject_unless_explicitly_specified
   | constructor ∨ member ∨ free_function ∨ preflight ∨ fallback ∨ variadic_operand → share(admission_rule)
   | source_import → check(actual_dereference_expression ∧ nothrow_traversal
-    ∧ NothrowElementConstruction(actual_dereference_expression, destination))
+    ∧ NothrowElementConstruction(destination, actual_dereference_expression))
   | finite_Repeat_or_Repeatedly_count → require(non_boolean_non_character_integral ∧ nonnegative_type_range_fits_size_t)
     ∧ admit(signed ∨ unsigned) ∧ trace_to(REQ-CONV-002E)
   | admitted_finite_producer_count(count) → normalize(count ≤ 0 ? 0 : count) before(unsigned_conversion)
@@ -605,7 +702,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
 
 λ S2_dissoc_contract(x). dissoc(map, keys...) → require(CljonicMap(map))
   | zero_keys(x) → return(unchanged_map_copy(x))
-  | keys(x) → require(SafeImplicitConversion(each_key, Map::key_type))
+  | keys(x) → require(SafeImplicitConversion(Map::key_type, each_key))
     ∧ apply_left_to_right(x)
   | present_key(x) → return(new_map_without_entry_via_swap_and_remove(x))
   | absent_or_repeated_key(x) → no_op(x)
@@ -1008,7 +1105,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ unsupported_input(rest) → reject_at_compile_time_with(targeted_diagnostic_naming(rest ∧ supported_domains) ∧ REQ-DIAG-009)
     ∧ classify_as(RequirementsBacked)
     ∧ trace_to(REQ-SEQ-001 ∧ REQ-SEQ-002 ∧ REQ-SEQ-002A ∧ REQ-SEQ-002B ∧ REQ-SEQ-003 ∧ REQ-SEQ-004 ∧ REQ-SEQ-005 ∧ REQ-SEQ-006 ∧ REQ-SEQ-007 ∧ REQ-SEQ-008 ∧ REQ-SEQ-009 ∧ REQ-SEQ-012 ∧ REQ-FN-002A4 ∧ REQ-FN-002A5 ∧ REQ-FN-002A6 ∧ REQ-FN-002A7)
-  | seq(value) → require(value ∈ {Vector, Map, Set, Queue, String} ∨ producer ∈ {Repeat, Range, Cycle, Iterate, Repeatedly})
+  | seq(value) → require(value ∈ {Vector, Map, Set, Queue, String} ∨ producer ∈ {Repeat, Range, Cycle, Iterate, Repeatedly, TakeWhile, DropWhile})
     ∧ return(owning_bounded_Vector(value) of logical_traversal_elements(value) in_traversal_order)
     ∧ Vector_input(x) → return(by_value_copy(x) with_same_element_type ∧ capacity)
     ∧ Map_input(x) → return(Vector<MapEntry<K,V>, N> of value_semantic_entries)
@@ -1037,7 +1134,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ typed_absence_and_failure_policy_is_declared(x) ∧ result_status_is_declared(x)
     ∧ bounded_owning_results_are_preferred(x) ∧ maps_and_sets_are_semantically_unordered(x)
     ∧ transducers_and_hidden_lazy_sequences_are_unsupported(x))
-  | contains(x) → admit((LookupCollection ∧ SafeImplicitConversion(key, declared_lookup_type)) ∨ (IndexedCollection ∧ non_boolean_non_character_integer_index))(x)
+  | contains(x) → admit((LookupCollection ∧ SafeImplicitConversion(declared_lookup_type, key)) ∨ (IndexedCollection ∧ non_boolean_non_character_integer_index))(x)
     ∧ support(Map ∨ Set ∨ Vector ∨ String)(x) ∧ ¬support(Range)(x)
   | fits_into(x) → govern(complete_producer_materialization(x))
   | can_conj(x) ∧ can_assoc(x) → govern(PreflightPredicate(x))
@@ -1279,7 +1376,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | always_terminates(x) ∧ ¬∃ early_termination_wrapper(x)
   | classify_as(CompleteResult) ∧ trace_to(REQ-FN-034)
 
-λ S2_disj_function_contract(x). disj(set, values...) → admit(CljonicSet(set) ∧ ∀ value: SafeImplicitConversion(value, Set::value_type))
+λ S2_disj_function_contract(x). disj(set, values...) → admit(CljonicSet(set) ∧ ∀ value: SafeImplicitConversion(Set::value_type, value))
   | arity(values) = 0 → return(unchanged_copy(set))
   | arity(values) > 0 → fold(left_to_right, Set::disj, set, values)
     ∧ absent_or_repeated_value → unchanged_accumulator
