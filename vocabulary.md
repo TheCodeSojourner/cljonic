@@ -26,12 +26,14 @@ Module 4 establishes the base producers and explicit producer materialization.
 These terms govern stored collection and producer building blocks used across
 the active higher-order algorithms.
 
+
 ### SafeImplicitConversion
 - **Definition:** Argument admission that preserves type identity or admits a standard arithmetic conversion preserving every source value, precision, range, and semantic domain. Integer/floating domain crossings are rejected even when value-preserving; cross-type Boolean, character, enum, pointer, and user-defined conversions are not admitted by default. Admission is decided from types, not from a particular literal. This approved policy has not yet been propagated to implementation.
 - **Deprecated Synonyms:** safe coercion
 - **Related:** ValuePreservingConversion, CheckedNormalization, NothrowCollectionElement, NothrowElementConstruction
 - **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
 - **Examples:** `short` to `long long` and value-preserving `float` to `double` are permitted; integer/floating crossings in either direction, `int` to `unsigned int`, and `bool` to `int` are not.
+
 
 ### ValuePreservingConversion
 - **Definition:** A conversion whose destination represents the complete source value domain without loss of range, precision, or floating-point special-value support. Value preservation is necessary but not sufficient for SafeImplicitConversion: integer/floating crossings are excluded, and the argument's Boolean, character, enum, and nominal domain must also retain its meaning.
@@ -40,6 +42,7 @@ the active higher-order algorithms.
 - **Usage:** Requirements, architecture, specifications, tests, and implementation
 - **Examples:** `float` to `double` is normally value-preserving; `int` to `float` is not when the source has more precision bits.
 
+
 ### CheckedNormalization
 - **Definition:** An explicitly specified API path that validates an admitted argument's value before conversion and uses the operation's documented failure outcome for unrepresentable values. It is not an unchecked implicit conversion.
 - **Deprecated Synonyms:** checked coercion
@@ -47,12 +50,14 @@ the active higher-order algorithms.
 - **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
 - **Examples:** Vector/String indexes check representability before conversion to `std::size_t`; `character_is_valid` checks representability before conversion to `char`.
 
+
 ### NothrowElementConstruction
 - **Definition:** The argument-construction admission contract requiring both SafeImplicitConversion to the destination type and non-throwing construction from the actual argument expression, including its cv-qualification and reference category. Safe conversion alone does not prove non-throwing construction. This operation-specific gate is distinct from the NothrowCollectionElement storage contract.
 - **Deprecated Synonyms:** non-throwing element construction
 - **Related:** SafeImplicitConversion, NothrowCollectionElement
 - **Usage:** Requirements, architecture, specifications, tests, and implementation
 - **Examples:** Construction of `long long` from a `short` argument satisfies this gate; a potentially throwing same-type copy does not, even though type identity satisfies SafeImplicitConversion.
+
 
 ### Collection
 - **Definition:** A bounded cljonic value or data structure admitted to the closed nominal collection domain and governed by collection-specific capacity, access, failure, and value-semantic rules.
@@ -75,7 +80,7 @@ the active higher-order algorithms.
 - **Deprecated Synonyms:** sequence capability
 - **Related:** Sequence, Seqable, Traversal, ConstRangeTraversal
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
-- **Examples:** `next(collection)` and `rest(collection)` return bounded `Vector` values of the remaining traversal elements; `rest(producer)` returns the same producer-tail value as `next(producer)`; `has_next(collection)` checks whether that tail is nonempty without constructing it; `seq` converts the value to a bounded `Vector` of its traversal elements. Current collections also provide `count()` and `is_empty(collection)`.
+- **Examples:** `next(collection)` and `rest(collection)` return the same collection kind with capacity reduced by one, remaining zero for a zero-capacity input; `rest(producer)` returns the same producer-tail value as `next(producer)`; `has_next(collection)` checks whether that tail is nonempty without constructing it; `seq` converts the value to a bounded `Vector` of its traversal elements. Current collections also provide `count()` and `is_empty(collection)`.
 
 
 ### Indexed
@@ -239,7 +244,7 @@ the active higher-order algorithms.
 
 
 ### StableEquality
-- **Definition:** A non-floating-point equality capability whose comparison is stable for the supported value and operation domain. The capability is recursive over the values the library can analyze — cljonic collections, producers, `MapEntry`, `cljonic::Variant` alternatives, and scalar values — and stops at a user-defined aggregate boundary: a simple aggregate that provides a non-throwing `operator==`, defaulted or user-written, is stable-equality-capable on the strength of its own comparison, and its internal equality semantics, including any floating-point members, are the author's responsibility (`REQ-NUM-018`). Detectability is the criterion: every floating-point equality comparison the library can detect — raw floating-point operands, `Set` element types, `Map` key types, and detectable floating-point-bearing components — is rejected at compile time, and no detectable comparison is ever silently admitted (`REQ-NUM-019`).
+- **Definition:** A non-floating-point equality capability whose comparison is stable for the supported value and operation domain. The capability is recursive over the values the library can analyze — cljonic collections, producers, `MapEntry`, `cljonic::Variant` alternatives, and scalar values — and stops at an opaque user-defined class boundary: a qualifying aggregate or non-aggregate class that provides a non-throwing `operator==`, defaulted or user-written, is stable-equality-capable on the strength of its own comparison, and its internal equality semantics, including any floating-point members, are the author's responsibility (`REQ-NUM-018`). Library-analyzable components and explicitly excluded wrapper types do not acquire this exemption. Detectability is the criterion: every floating-point equality comparison the library can detect — raw floating-point operands, `Set` element types, `Map` key types, and detectable floating-point-bearing components — is rejected at compile time, and no detectable comparison is ever silently admitted (`REQ-NUM-019`).
 - **Deprecated Synonyms:** stable equality comparable, equality capability
 - **Related:** GeneralEquality, NumericEquality, AggregateLikeStruct, SimpleAggregateBoundary, AggregateEqualityBoundary
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
@@ -287,7 +292,7 @@ the active higher-order algorithms.
 
 
 ### FitsInto
-- **Definition:** The canonical materialization-completeness preflight predicate; its C++ free-function spelling is `fits_into`. It returns a non-throwing, non-allocating boolean indicating whether every value from a compatible `CljonicSource` can be inserted into a Vector, Set, Map, Queue, or String destination under the same insertion and capacity rules as `into`. Vector, Queue, and String compare finite source count to remaining capacity; Set and Map account for existing and earlier source values or keys, since duplicates and matching-key replacements consume no capacity. String preflight does not evaluate character validity because runtime `into` normalizes invalid characters. Finite Set/Map preflight may traverse the source and evaluate producer callbacks; it shares no realization cache with `into`, so its prediction requires the subsequent traversal to yield the same values. Every unbounded producer returns false. External C++ range or view sources are excluded.
+- **Definition:** The canonical materialization-completeness preflight predicate; its C++ free-function spelling is `fits_into`. It returns a non-throwing, non-allocating boolean indicating whether every value from a compatible `CljonicSource` can be inserted into a Vector, Set, Map, Queue, or String destination under the same insertion and capacity rules as `into`. Vector, Queue, and String compare finite source count to remaining capacity; Set and Map account for existing and earlier source values or keys, since duplicates and matching-key replacements consume no capacity. String preflight does not evaluate character validity because runtime `into` normalizes invalid characters. Finite Set/Map preflight may traverse the source and evaluate producer callbacks; it shares no realization cache with `into`, so its prediction requires the subsequent traversal to yield the same values. Every unbounded producer returns false. Complete materialization means the entire finite result, not its capped observable prefix: a finite source whose complete consumption exceeds its approved traversal bound also returns false, including when Set duplicates or Map key replacements avoid capacity growth. Preflight does not inspect an unobservable suffix. External C++ range or view sources are excluded.
 - **Deprecated Synonyms:** `fits_into`, materialization-fit check, capacity-fit predicate
 - **Related:** FreeFunction, ProducerMaterialization, CompleteResult, BoundedPrefixResult, PreflightPredicate, CapabilityPredicate
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
@@ -296,7 +301,7 @@ the active higher-order algorithms.
 
 ### Into
 - **Destination Domain:** `CljonicVector`, `CljonicSet`, `CljonicMap`, `CljonicQueue`, and `CljonicString` destinations are admitted. Producer destinations are excluded.
-- **Definition:** The canonical owning-materialization free function modeled on Clojure's `into`; its C++ spelling is `into`. It folds a compatible `CljonicSource` in traversal order into a copy of the destination, returning the destination type and leaving both input values unchanged. Vector and Queue append; Set inserts distinct values; Map associates compatible nominal MapEntry values, with later matching keys replacing earlier values; String appends characters. Actual source references must satisfy the destination's existing safe implicit conversion and non-throwing insertion rules. At full capacity, Set accepts an already-present value as a no-op, and Map accepts a MapEntry with an already-present key as a value replacement; Vector, Queue, and String cannot accept further values. Invalid String characters are rejected during constant evaluation; at runtime they are replaced with `'.'` and traversal continues. Processing stops before the first value requiring unavailable capacity, without skipping it. Unbounded source traversal remains capped by CollectionMaximumElementCount even when Set or Map insertion consumes no capacity. Use `fits_into` beforehand when complete materialization matters. External C++ ranges and views are imported only through direct source construction.
+- **Definition:** The canonical owning-materialization free function modeled on Clojure's `into`; its C++ spelling is `into`. It folds a compatible `CljonicSource` in traversal order into a copy of the destination, returning the destination type and leaving both input values unchanged. Vector and Queue append; Set inserts distinct values; Map associates compatible nominal MapEntry values, with later matching keys replacing earlier values; String appends characters. Actual source references must satisfy the destination's existing safe implicit conversion and non-throwing insertion rules. At full capacity, Set accepts an already-present value as a no-op, and Map accepts a MapEntry with an already-present key as a value replacement; Vector, Queue, and String cannot accept further values. Invalid String characters are rejected during constant evaluation; at runtime they are replaced with `'.'` and traversal continues. Processing stops before the first value requiring unavailable capacity, without skipping it. Source traversal respects its approved observation bound, including CollectionMaximumElementCount for unbounded sources, even when Set or Map insertion consumes no capacity. A capped prefix of a larger finite result is not complete materialization. Use `fits_into` beforehand when complete materialization matters. External C++ ranges and views are imported only through direct source construction.
 - **Deprecated Synonyms:** `into`, materialization function, owning materialization
 - **Related:** FreeFunction, ProducerMaterialization, FitsInto, CljonicSource, BoundedPrefixResult, CompleteResult
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
@@ -336,7 +341,7 @@ the active higher-order algorithms.
 
 
 ### LossyConversion
-- **Definition:** A conversion that may discard precision, range, or other source information under an explicitly documented numeric policy. The approved but unimplemented conversion API permits explicitly selected truncation toward zero for floating-to-integer conversion and nearest rounding for integer-to-floating or different-type floating-to-floating conversion; the applicable range and failure checks still apply.
+- **Definition:** A conversion that may discard source information only under an explicitly documented policy. The approved but unimplemented conversion API permits floating-to-integer truncation toward zero, checking the mathematical truncated integer against destination range before casting, and nearest rounding for integer-to-floating or different-type floating-to-floating conversion. Nearest chooses the even least-significant significand digit at halfway ties, independently of ambient rounding mode. These policies reject overflow, non-finite input, and nonzero-to-zero nearest rounding; they never wrap or saturate. Same-type conversion permits only exact default and retains validity checks.
 - **Deprecated Synonyms:** lossy numeric conversion, narrowing conversion
 - **Related:** ExactConversion, CheckedConversion, NumericPolicy, ExplicitConversion
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
@@ -344,11 +349,12 @@ the active higher-order algorithms.
 
 
 ### ExplicitConversion
-- **Definition:** An approved but unimplemented `cljonic::core` named `to_*` or generic `to<T>` operation that retains its original source type and value until validating it against an explicitly selected destination contract. It defaults to exact conversion; separately selected loss policies apply only to admitted combinations. Matching `can_to_*` or `can_to<T>` preflights predict success for the same value and policy. It is distinct from Parsing and is not an arbitrary C++ cast facility.
+- **Definition:** An approved but unimplemented `cljonic::core` named `to_*` or generic `to<T>` operation that retains its original source type and value until validating it against an explicitly selected destination contract. Numeric destinations admit supported built-in integers excluding Boolean and all character types, and supported floating types. The separate `char` and `std::byte` destinations admit those integers, `char`, and `std::byte`, subject to their character-code and byte-value validation; character and byte sources are not ordinary numeric sources. Aliases follow their actual underlying types. Unsupported types and policy combinations are compile-time rejections, distinct from admitted-value failures. Conversion defaults to exact; selected loss policies apply only to admitted combinations. Matching `can_to_*` or `can_to<T>` preflights predict success for the same value and policy. It is distinct from Parsing and does not invoke arbitrary user-defined conversions or provide an arbitrary C++ cast facility.
 - **Deprecated Synonyms:** none
 - **Related:** ExactConversion, LossyConversion, CheckedConversion, NumericPolicy, PreflightPredicate, ConversionDiagnosticMode, Parsing
 - **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
 - **Examples:** `to_int(value)` requests conversion to `int`; `to<std::uint32_t>(value)` requests an approved non-character destination type when available.
+
 
 ### ConversionDiagnosticMode
 - **Definition:** The approved but unimplemented compile-time-selectable mode for explicit conversions that records a `cljonic::core::ConversionError` in shared static state and invokes the application's non-returning handler on runtime failure. Preflights do not modify diagnostic state. Normal mode uses documented fallbacks and has no diagnostic-state storage; it is the default.
@@ -356,6 +362,7 @@ the active higher-order algorithms.
 - **Related:** ExplicitConversion, CheckedConversion, PreflightPredicate, DefaultReturningResult
 - **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
 - **Examples:** A diagnostic build selects `CLJONIC_CONVERSION_DIAGNOSTICS=1`; its failure handler reads the error through `cljonic::core::conversion_error()`.
+
 
 ### Parsing
 - **Definition:** The bounded interpretation of an input representation into a cljonic value with explicit validity, representability, and failure semantics.
@@ -398,7 +405,7 @@ the active higher-order algorithms.
 
 
 ### Producer
-- **Definition:** An explicit, self-contained value representing a sequence or materialization source without owning the storage of its eventual materialized result. A Producer owns its parameters and MUST NOT borrow source storage, retain hidden mutable state, or depend on a source lifetime. Every Module 4 Producer exposes non-throwing `count()`, `is_finite()`, and const `begin()`/`end()` traversal. Finite forms return their exact runtime count; unbounded forms return the configured observable traversal cap and report false from `is_finite()`. Producers are not `Indexed` collections: their elements are observed through traversal, and a bounded-observation predicate such as `Range::contains` does not provide positional value access. Cycle has only the public form `cycle(source)` and is always unbounded. No currently supported producer provides positional value retrieval.
+- **Definition:** An explicit, self-contained value representing a sequence or materialization source without owning the storage of its eventual materialized result. A Producer owns its parameters and MUST NOT borrow source storage, retain hidden mutable state, or depend on a source lifetime. Every Module 4 Producer exposes non-throwing `count()`, `is_finite()`, and const `begin()`/`end()` traversal. Finite count follows each producer's contract: finite Range returns the smaller of its complete cardinality and the configured observation cap, while other finite forms report their specified counts. Finite status does not guarantee complete observability. Unbounded forms return the configured observable traversal cap and report false from `is_finite()`. Producers are not `Indexed` collections: their elements are observed through traversal, and a bounded-observation predicate such as `Range::contains` does not provide positional value access. Cycle has only the public form `cycle(source)` and is always unbounded. No currently supported producer provides positional value retrieval.
 - **Deprecated Synonyms:** sequence producer, source producer
 - **Related:** Sequence, ProducerOnlyResult, UnboundedProducer, ProducerIteration, ProducerMaterialization, OwningValue, Indexed, Iterate
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
@@ -414,7 +421,7 @@ the active higher-order algorithms.
 
 
 ### Range
-- **Definition:** A producer describing an arithmetic sequence from an inclusive start to an exclusive end by a fixed step, defaulting to start `0` and step `1`. Use the lowercase RangeFactory as the idiomatic creation surface at runtime or compile time; the public `Range<T>` type and existing constructors remain supported. A zero step produces an infinite repetition of `start`, taking precedence over otherwise-empty-range cases including equal start and end; a nonzero step that moves away from the end produces an empty finite range. Finite Range forms return their exact count and `true` from `is_finite()`; zero-step forms return the configured traversal cap and `false`. `Range` exposes no canonical `start`/`end`/`step` observation and is not `Indexed`: `r.contains(i)` tests in O(1) whether position `i` is available for bounded observation, but does not retrieve its value. `Range` is not invocable (`IFn`), exposes no callable operator, and positional value retrieval remains deferred future work. `Range` is never `Associative`/`Lookup`; `get`/key-based lookup are excluded.
+- **Definition:** A producer describing an arithmetic sequence from an inclusive start to an exclusive end by a fixed step, defaulting to start `0` and step `1`. Use the lowercase RangeFactory as the idiomatic creation surface at runtime or compile time; the public `Range<T>` type and existing constructors remain supported. A zero step produces an infinite repetition of `start`, taking precedence over otherwise-empty-range cases including equal start and end; a nonzero step that moves away from the end produces an empty finite range. Finite Range forms return the smaller of their complete cardinality and the configured traversal cap from `count()`, and `true` from `is_finite()` even when only a prefix is observable; zero-step forms return the configured traversal cap and `false`. `Range` exposes no canonical `start`/`end`/`step` observation and is not `Indexed`: `r.contains(i)` tests in O(1) whether position `i` is available for bounded observation, but does not retrieve its value. `Range` is not invocable (`IFn`), exposes no callable operator, and positional value retrieval remains deferred future work. `Range` is never `Associative`/`Lookup`; `get`/key-based lookup are excluded.
 - **Deprecated Synonyms:** range producer, arithmetic range
 - **Related:** Producer, UnboundedProducer, CollectionMaximumElementCount, Contains, CljonicRange, RangeFactory
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
@@ -464,7 +471,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### SequentialEquality
-- **Definition:** The equality family rule under which Vector, Queue, Cycle, Iterate, Range, Repeat, and Repeatedly are mutually comparable by bounded logical observation: two sequential values are equal exactly when their observed counts are equal and their observed elements compare equal in the same order, with element types that are identical or related by a value-preserving implicit conversion (compared in the wider type), regardless of their concrete types. Comparison is order-sensitive, element-wise, lazy (no eager producer materialization), and terminates at the first differing element pair or exhaustion of the shorter logical observation. Each unbounded producer operand uses its configured observable traversal cap, whether the other operand is finite or unbounded; equality makes no claim beyond the observed bounds.
+- **Definition:** The equality family rule under which Vector, Queue, Cycle, Iterate, Range, Repeat, Repeatedly, TakeWhile, and DropWhile are mutually comparable by bounded logical observation (distinct from native producer-parameter equality): two sequential values are equal exactly when their observed counts are equal and their observed elements compare equal in the same order, with element types that are identical or related by a value-preserving implicit conversion (compared in the wider type), regardless of their concrete types. Comparison is order-sensitive, element-wise, lazy (no eager producer materialization), and terminates at the first differing element pair or exhaustion of the shorter logical observation. Each unbounded producer operand uses its configured observable traversal cap, whether the other operand is finite or unbounded; equality makes no claim beyond the observed bounds.
 - **Deprecated Synonyms:** sequence equality family, cross-type sequential comparison
 - **Related:** Equal, GeneralEquality, FiniteDeepEquality, ProducerParameterEquality, FiniteObservation, StableEqualityComparable
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
@@ -598,12 +605,14 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
 - **Examples:** A mapped `Status::pending` formats as `:pending`; an unmapped value formats as `Status(7)` or `7` under the documented fallback policy.
 
+
 ### Atom
 - **Definition:** A bounded single-threaded `Atom<T>` providing an explicit mutable reference to one cljonic value in automatic or static storage. Its binding contract defines `deref` to read the current value, `reset` to replace it with a value assignable to `T`, and `swap` to invoke an update function synchronously exactly once and store its result assignable to `T`, without retry or compare-and-set semantics. Atom mutation is an explicitly authorized effect under `REQ-VAL-009`, not ordinary collection mutation or hidden library state; the stored value retains its ordinary value semantics. Atom provides no thread-safety or concurrent-mutation guarantee. Requirements approval alone does not establish implementation readiness.
 - **Deprecated Synonyms:** explicit state reference
 - **Related:** SingleThreadedExecutionModel, NoHiddenGlobalInitialization
 - **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
 - **Examples:** Under the required contract, `reset(atom, replacement)` explicitly changes the referenced value, while `swap(atom, update)` evaluates the update exactly once rather than retrying it.
+
 
 ### CopyableElement
 - **Definition:** A user-defined type admissible to a cljonic storage boundary when it is default-initializable and copyable, without requiring the copy operations to be non-throwing. This is the broader storage-admission gate that underpins the stricter non-throwing form used by bounded collections.
@@ -748,12 +757,14 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
 - **Examples:** The required literal form `cljonic::Regex{"^[A-Z]+$"}` validates at compile time; invalid runtime pattern construction returns the documented checked failure state.
 
+
 ### RegexGroup
 - **Definition:** The root-namespace `cljonic::RegexGroup` public regex value type representing one capture group within a successful pattern match, identified by its group index. It is self-contained, immutable, bounded, and lives in the root `cljonic` namespace. It is approved-but-unimplemented: its lifecycle status is DeferredStatus until its behavioral specification, tests, and implementation are separately propagated.
 - **Deprecated Synonyms:** regex_group, regex capture group value
 - **Related:** Regex, RegexMatch, RegexMatcher, String, LifecycleClassification, DeferredStatus
 - **Usage:** Requirements, architecture, specifications, and documentation
 - **Examples:** `RegexGroup` is named by `REQ-VAL-018` as one of the public cljonic regex value types; no supported construction or observation exists today.
+
 
 ### RegexMatch
 - **Definition:** The root-namespace `cljonic::RegexMatch` public regex value type representing one successful pattern match: the matched extent together with its capture groups. It is self-contained, immutable, bounded, and lives in the root `cljonic` namespace. It is approved-but-unimplemented: its lifecycle status is DeferredStatus until its behavioral specification, tests, and implementation are separately propagated.
@@ -762,12 +773,14 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Usage:** Requirements, architecture, specifications, and documentation
 - **Examples:** `RegexMatch` is named by `REQ-VAL-018` as one of the public cljonic regex value types; no supported construction or observation exists today.
 
+
 ### RegexMatcher
 - **Definition:** The root-namespace `cljonic::RegexMatcher` public regex value type pairing a bounded pattern value with the bounded input it searches, and yielding RegexMatch results. It is self-contained, immutable, bounded, and lives in the root `cljonic` namespace. It is approved-but-unimplemented: its lifecycle status is DeferredStatus until its behavioral specification, tests, and implementation are separately propagated.
 - **Deprecated Synonyms:** regex_matcher, regex matcher value
 - **Related:** Regex, RegexMatch, RegexGroup, String, LifecycleClassification, DeferredStatus
 - **Usage:** Requirements, architecture, specifications, and documentation
 - **Examples:** `RegexMatcher` is named by `REQ-VAL-018` as one of the public cljonic regex value types; no supported construction exists today.
+
 
 ### SwapAndRemove
 - **Definition:** An $O(1)$ removal strategy for unsorted collections (`Map` and `Set`) where the target element or key-value entry is overwritten by the last active stored element before decrementing the count.
@@ -818,11 +831,11 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### Dissoc
-- **Definition:** The primitive associative free function supported only for `Map`; zero keys return an unchanged copy, while one or more keys are removed left-to-right via the `Map::dissoc` member key parameter domain (including implicit conversions accepted by that member). Present keys are removed via swap-and-remove; absent or repeated keys are no-ops.
+- **Definition:** The primitive associative free function supported only for `Map`; zero keys return an unchanged copy, while one or more keys are removed left-to-right. Every key argument, in every variadic position, must satisfy SafeImplicitConversion to the Map's declared key type together with the operation-specific constraints. Present keys are removed via swap-and-remove; absent or repeated keys are no-ops.
 - **Deprecated Synonyms:** disassociate, map remove, erase key
 - **Related:** Map, Assoc, SwapAndRemove, CopyOnModifyCollection, RejectionDiagnostic
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
-- **Examples:** `dissoc(m)` returns an unchanged copy; `dissoc(m, key)` removes one key; `dissoc(m, key₁, key₂)` removes keys left-to-right. An absent or repeated key is a no-op. Keys may use implicit conversions accepted by `Map::dissoc`.
+- **Examples:** `dissoc(m)` returns an unchanged copy; `dissoc(m, key)` removes one key; `dissoc(m, key₁, key₂)` removes keys left-to-right. An absent or repeated key is a no-op. Each key must satisfy SafeImplicitConversion to the declared key type.
 
 
 ### Disj
@@ -834,7 +847,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### Count
-- **Definition:** The free function that reports the count observation of a `SequenceableCollection` or `SequenceableProducer`. Collections and finite producers return their exact logical element count. An unbounded producer returns its configured observable traversal cap, not its complete cardinality.
+- **Definition:** The free function that reports the count observation of a `SequenceableCollection` or `SequenceableProducer`. Collections return their exact stored logical element count. Finite Range returns the smaller of complete cardinality and its configured observation cap; other finite producers follow their specified count contracts. An unbounded producer returns its configured observable traversal cap, not its complete cardinality. Finite status alone does not establish complete observability.
 - **Deprecated Synonyms:** element count function, count operation
 - **Related:** SequenceableCollection, SequenceableProducer, CollectionMaximumElementCount, ProducerIteration
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
@@ -856,12 +869,14 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
 - **Examples:** `empty(vector<int, 4>(1, 2))` returns an empty `Vector<int, 4>` while leaving its input unchanged.
 
+
 ### First
 - **Definition:** The free function that returns the first logical element of a cljonic collection or producer, or the key of a `MapEntry`. `Vector` and `String` yield the element at index zero, `Queue` yields its front element without removal, `Map` yields one value-semantic `MapEntry`, and `Set` yields one stored element. `Map` and `Set` traversal order is not semantically significant. An empty sequenceable collection yields its `DefaultElement`. Producer access returns an owning copy of the first observable element from any cljonic producer, including nested predicate adapters and Cycles over them; yielded MapEntry values remain whole entries. Empty or zero-cap producer observations yield the element type's `DefaultElement`; zero cap starts no traversal or callbacks. First access performs only the evaluation needed to find that element or establish absence, without an exact-count prepass, materialization, or later advancement. DropWhile may scan its entire bounded matching prefix. Each call uses fresh traversal under existing callback-state rules; authorized external effects may repeat. Producer support is active after separate explicit implementation approval and verification; existing collection and MapEntry behavior is unchanged. The operation is non-mutating, non-allocating, non-throwing, and `constexpr`.
 - **Deprecated Synonyms:** head, first element, first entry
 - **Related:** Sequence, SequenceableCollection, Producer, HasFirst, TakeWhile, DropWhile, Cycle, Traversal, LogicalTraversalOrder, MapEntry, DefaultElement, Peek
 - **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
 - **Examples:** `first(vector<int, 4>(10, 20))` is `10`; `first(Queue<int, 4>{5, 6})` is `5`; `first(MapEntry<int, int>{1, 100})` is `1`; `first(vector<int, 4>())` is the default `int` value.
+
 
 ### NotEmpty
 - **Definition:** The `not_empty` free function whose result is an independent owning copy of a nonempty input or the corresponding empty owning value when the input is empty, preserving the supported collection type and capacity when present. It admits `Vector`, `Map`, `Set`, `Queue`, and `String`, but not producers or external ranges. It preserves the input and requires no allocation or exceptions. It is not a boolean alias for IsEmpty and is part of the current public API.
@@ -870,6 +885,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
 - **Examples:** `not_empty(vector<int, 4>(1, 2))` returns an independent `Vector<int, 4>` containing `1, 2`; an empty input returns an empty `Vector<int, 4>`.
 
+
 ### Next
 - **Definition:** The free function returning an owning logical tail. Collections retain their kind and element/key/value types with static capacity one smaller (zero stays zero); empty or singleton collections yield empty results. Map entries stay whole, Map/Set order remains semantically unordered, and Queue retains FIFO order. Producer tails preserve their exact type. Finite Repeat decrements its count; unbounded Repeat retains its observation cap. Range retains endpoint/step and advances its start when nonempty, with an overflow-safe empty endpoint for a singleton and no change for a zero-step range. Cycle advances its finite-source starting position modulo observed source length, or tails its unbounded owned source and resets its offset. Existing non-adapter Cycle callback timing is unchanged. Nonempty Iterate eagerly invokes its step once; nonempty Repeatedly invokes and retains an advanced step copy, decrementing a finite count or preserving an unbounded cap. Value-held state is preserved in the input; authorized referenced/static effects remain shared. TakeWhile/DropWhile return deferred tails of the exact same type, with compact output-skip metadata and no traversal or callbacks during next. Observation replays the original adapter and omits output elements within its unchanged original bounded window; skipping never replenishes it. DropWhile does not reapply prefix removal to its suffix, and TakeWhile never resumes beyond its false boundary. Nested adapters are included; exhausted tails stay empty, and finite offsets saturate at the observation cap without overflow. For finite adapter-source Cycles, next eagerly determines bounded output length and normalizes a compact ordinary offset before advancing; it retains the complete source and unbounded Cycle policy, including through nested Cycles. No large counters, remainder tables, cap-proportional metadata, or materialization are introduced. Pure callbacks are idiomatic; replay chiefly costs runtime, while authorized impure callbacks follow existing state/effect rules without snapshot guarantees. Zero-cap adapter/dependent Cycle tails invoke no callbacks. This tail extension is active after separate explicit implementation approval and verification; previously supported domains remain unchanged. The operation is constexpr, non-allocating, non-throwing, and preserves input values.
 - **Deprecated Synonyms:** tail, sequence remainder
@@ -877,6 +893,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Related:** First, Rest, Seq, Sequence, SequenceableCollection, SequenceableProducer, Traversal, LogicalTraversalOrder, Vector, MapEntry, Queue, Repeat, Range, Cycle, Iterate, Repeatedly, TakeWhile, DropWhile, Producer
 - **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
 - **Examples:** `next(vector<int, 4>(10, 20, 30))` returns a `Vector<int, 3>` containing `20, 30`; `next(Queue<int, 4>{10, 20})` returns a `Queue<int, 3>` containing `20`; `next(Vector<int, 0>{})` returns an empty `Vector<int, 0>`; `next(repeat(3, 7))` returns a finite `Repeat` of two sevens; `next(repeat(7))` returns an unbounded `Repeat` of seven; `next(Range{0, 3})` returns the range starting at `1`; `next(Range{0, 1})` returns an empty range at endpoint `1`; `next(Range{0, 5, 0})` remains unbounded and unchanged; `next(cycle(vector(1, 2, 3)))` remains a Cycle whose next traversal starts at `2`.
+
 
 ### Rest
 - **Definition:** The generic free-function alias for `Next`: for every input admitted by `next`, `rest(input)` returns exactly `next(input)`, preserving its result type, logical tail, source value, observation policy, and callback timing/effects. Collection tails follow `LogicalTraversalOrder`, not `Pop`, with the same collection kind and capacity one smaller (zero stays zero). Producer tails inherit all producer-specific `Next` rules, including deferred TakeWhile/DropWhile tails and compact eagerly normalized adapter-dependent Cycle tails with nested composition. The extension is active after separate explicit implementation approval and verification. Existing domains remain unchanged. Unsupported inputs are exactly those not admitted by `Next`; `has_next` and its `has_rest` alias retain their existing preflight behavior. The operation is `constexpr`, non-allocating, non-throwing, and preserves input values.
@@ -903,14 +920,15 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### Seq
-- **Definition:** The active primitive traversal free function (`seq`) converting a supported collection or supported producer into an owning, value-semantic, independently valid bounded `Vector` of its logical traversal elements in traversal order. A `Vector` input returns a by-value copy of itself; a `Map` input yields `Vector<MapEntry<K, V>, N>`; a `Set` or `Queue` input yields a vector of its stored elements; a `String` input yields `Vector<char, N>` of its characters. A supported producer (`Repeat`, `Range`, `Cycle`, `Iterate`, `Repeatedly`) materializes its observable traversal into a vector of observation-cap capacity. `seq` preserves its input, does not support `MapEntry` input, and does not support arbitrary external ranges, iterables, arrays, or containers.
+- **Definition:** The active primitive traversal free function (`seq`) converting a supported collection or supported producer into an owning, value-semantic, independently valid bounded `Vector` of its logical traversal elements in traversal order. A `Vector` input returns a by-value copy of itself; a `Map` input yields `Vector<MapEntry<K, V>, N>`; a `Set` or `Queue` input yields a vector of its stored elements; a `String` input yields `Vector<char, N>` of its characters. A supported producer (`Repeat`, `Range`, `Cycle`, `Iterate`, `Repeatedly`, `TakeWhile`, `DropWhile`) materializes its observable traversal into a vector of observation-cap capacity. `seq` preserves its input, does not support `MapEntry` input, and does not support arbitrary external ranges, iterables, arrays, or containers.
 - **Deprecated Synonyms:** sequence conversion, to-seq, seq conversion
 - **Related:** Seqable, ConstRangeTraversal, ProducerIteration, BoundedResult, Vector, MapEntry, Traversal
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
 - **Examples:** `seq(m)` returns an owning `Vector<MapEntry<K, V>, N>` of the map's entries; `seq("AB")`-style conversion over a `String` yields `Vector<char, N>` of its characters; `seq(Range{0, 5})` yields the five observed values.
 
+
 ### MapFunction
-- **Definition:** The multi-source mapping free function (`map`) applying its transforming function to corresponding elements of one or more cljonic sources. Each source is a `Vector`, `Map`, `Set`, `Queue`, or `String` collection, or a `Range`, `Repeat`, `Cycle`, `Iterate`, or `Repeatedly` producer; a unary function is applied over one source, a binary function over two sources, and so on, and traversal terminates when the first source is exhausted. The result is a bounded owning `Vector` of the function results whose compile-time capacity is the minimum of the sources' observable-count bounds (a collection contributes its declared capacity; any producer contributes the configured observable traversal cap; every contribution saturates at `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE`), while the runtime mapped element count is the minimum of the sources' effective counts (a finite producer contributes its count; an unbounded producer contributes the observation cap); the callback must be copy-constructible, invoked without throwing, and return a storable element, and each callback parameter must accept its corresponding source element through a safe implicit conversion (an identical type or a value-preserving arithmetic conversion, never a narrowing conversion or a crossing into or out of the Boolean, character, enumeration, pointer, or user-defined domains), with uninspectable callables such as generic lambdas admitted on nothrow invocability alone. Map and Set traversal order is semantically unordered. Standard-library ranges, containers, throwing callbacks, and unstorable results are rejected at compile time. The operation is `constexpr`, non-allocating, non-throwing, and preserves every source value. Distinct from the `Map` collection type.
+- **Definition:** The multi-source mapping free function (`map`) applying its transforming function to corresponding elements of one or more cljonic sources. Each source is a `Vector`, `Map`, `Set`, `Queue`, or `String` collection, or a `Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`, `TakeWhile`, or `DropWhile` producer; a unary function is applied over one source, a binary function over two sources, and so on, and traversal terminates when the first source is exhausted. The result is a bounded owning `Vector` of the function results whose compile-time capacity is the minimum of the sources' observable-count bounds (a collection contributes its declared capacity; any producer contributes the configured observable traversal cap; every contribution saturates at `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE`), while the runtime mapped element count is the minimum of the sources' effective counts (a finite producer contributes its count; an unbounded producer contributes the observation cap); the callback must be copy-constructible, invoked without throwing, and return a storable element, and each callback parameter must accept its corresponding source element through a safe implicit conversion (an identical type or a value-preserving arithmetic conversion, never a narrowing conversion or a crossing into or out of the Boolean, character, enumeration, pointer, or user-defined domains), with uninspectable callables such as generic lambdas admitted on nothrow invocability alone. Map and Set traversal order is semantically unordered. Standard-library ranges, containers, throwing callbacks, and unstorable results are rejected at compile time. The operation is `constexpr`, non-allocating, non-throwing, and preserves every source value. Distinct from the `Map` collection type.
 - **Deprecated Synonyms:** None
 - **Related:** Vector, Map, Set, Queue, String, Range, Repeat, Cycle, Iterate, Repeatedly, Seqable, Traversal, NothrowCollectionElement, BoundedResult
 - **Usage:** Requirements, architecture, specification, tests, implementation, and documentation
@@ -918,11 +936,12 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### FilterFunction
-- **Definition:** The filtering free function (`filter`) accepting a predicate and one cljonic source (a `Vector`, `Map`, `Set`, `Queue`, or `String` collection, or a `Range`, `Repeat`, `Cycle`, `Iterate`, or `Repeatedly` producer). It returns a bounded owning `Vector` of source elements whose predicate returns exactly `bool` true, preserving traversal order where the source defines one. Capacity is the source's observable-count bound (declared collection capacity or producer observation cap), saturated at the collection maximum; because that capacity equals the source's observable-count bound, every observed element fits and traversal ends when the source is exhausted. The predicate should be a pure function (i.e., with no side effects) returning a `bool`; it must be copy-constructible and non-throwing; statically inspectable parameter types follow safe implicit-conversion rules, while generic callables are admitted on non-throwing invocation with a const source element and exact `bool` result. `Map` and `Set` traversal order is semantically unordered. Standard-library ranges, containers, non-cljonic sources, throwing predicates, unsafe inspectable parameter conversions, and non-`bool` results are rejected at compile time. The operation is `constexpr`, non-allocating, non-throwing, and preserves its input.
+- **Definition:** The filtering free function (`filter`) accepting a predicate and one cljonic source (a `Vector`, `Map`, `Set`, `Queue`, or `String` collection, or a `Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`, `TakeWhile`, or `DropWhile` producer). It returns a bounded owning `Vector` of source elements whose predicate returns exactly `bool` true, preserving traversal order where the source defines one. Capacity is the source's observable-count bound (declared collection capacity or producer observation cap), saturated at the collection maximum; because that capacity equals the source's observable-count bound, every observed element fits and traversal ends when the source is exhausted. The predicate should be a pure function (i.e., with no side effects) returning a `bool`; it must be copy-constructible and non-throwing; statically inspectable parameter types follow safe implicit-conversion rules, while generic callables are admitted on non-throwing invocation with a const source element and exact `bool` result. `Map` and `Set` traversal order is semantically unordered. Standard-library ranges, containers, non-cljonic sources, throwing predicates, unsafe inspectable parameter conversions, and non-`bool` results are rejected at compile time. The operation is `constexpr`, non-allocating, non-throwing, and preserves its input.
 - **Deprecated Synonyms:** None
 - **Related:** Vector, Map, Set, Queue, String, Range, Repeat, Cycle, Iterate, Repeatedly, Seqable, Traversal, SafeImplicitConversion, NothrowCollectionElement, BoundedResult
 - **Usage:** Requirements, architecture, specification, tests, implementation, and documentation
 - **Examples:** `filter(is_even, vector(1, 2, 3, 4))` yields `Vector<int, 4>` containing `2, 4`; filtering an empty source yields an empty vector; filtering an unbounded producer examines only its configured observation cap.
+
 
 ### FiltervFunction
 - **Definition:** The `filterv` free-function alias of `filter`. It accepts the same predicate and one cljonic source, admits and rejects the same calls, and returns exactly the same bounded owning `Vector` type and logical values under the complete `FilterFunction` contract.
@@ -939,12 +958,14 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Usage:** Requirements, architecture, specification, tests, implementation, and documentation
 - **Examples:** `take(2, vector(1, 2, 3))` returns `Vector<int, 3>` containing `1, 2`; `take(-1, source)` is empty; oversized requests return the complete observable prefix.
 
+
 ### Drop
 - **Definition:** The suffix free function `drop(count, source)` accepting one cljonic collection or producer and returning a bounded owning `Vector`. Count admission, nonpositive normalization, source element type, and runtime-independent capacity follow `Take`. It removes the requested prefix from the original source observation window, bounded by the source count, result capacity, and actual traversal exhaustion; it does not start a fresh producer observation window. Nonpositive counts retain the whole window. Counts covering its count bound, or zero capacity, return typed empty vectors without starting traversal or invoking callbacks. Empty sources, including empty Cycle traversal, invoke no callbacks. Otherwise skipped and retained producer values follow existing iterator callback timing without advancing beyond the original window. The source remains unchanged; referenced or static callback state remains shared. Map and Set order is semantically unordered; Queue is FIFO, String yields characters, and Map yields MapEntry values. No additional equality or ordering capability, result wrapper, absence sentinel, or preflight is required. Invalid count/source domains and arities have targeted compile-time diagnostics. The operation is `constexpr`, non-throwing, non-allocating, non-mutating, and uses no RTTI.
 - **Deprecated Synonyms:** None
 - **Related:** Take, Vector, Map, Set, Queue, String, Range, Repeat, Cycle, Iterate, Repeatedly, CljonicSource, BoundedResult, Traversal
 - **Usage:** Requirements, architecture, specification, tests, implementation, and documentation
 - **Examples:** `drop(2, vector(1, 2, 3))` returns `Vector<int, 3>` containing `3`; `drop(-1, source)` retains the original observable window; dropping three values from an unbounded producer with observation cap 100 retains 97 values, not 100.
+
 
 ### TakeWhile
 - **Definition:** The active `take_while(predicate, source)` owning finite producer, explicitly approved and independently verified. It copies a cljonic source and predicate without evaluating either, then yields the initial true prefix of the original capped source window. The first false element is examined but excluded, with no later advancement. Each traversal uses fresh predicate state; `count` independently traverses to compute exact output cardinality without caching. Predicate admission follows `FilterFunction`, additionally requiring non-throwing owned copies. Empty traversal and zero cap invoke no callbacks. Source and predicate state owned by value are preserved; authorized referenced/static effects remain shared. Map/Set prefix membership depends on unordered traversal. Capturing predicates are supported; collection-element storage remains conditional on `NothrowCollectionElement`. Producer parameter equality remains unavailable. `has_next` and its exact `has_rest` alias accept producers admitted by `next`. Deferred exact-type next/rest tails and dependent Cycle tails are active under Next after separate explicit implementation approval and verification.
@@ -953,6 +974,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Usage:** Requirements, architecture, specification, tests, implementation, and documentation
 - **Examples:** With source values `1, 2, 4, 1` and predicate `< 3`, traversal yields `1, 2`; exact count is `2`. An always-false predicate yields an empty producer with count `0`.
 
+
 ### DropWhile
 - **Definition:** The active `drop_while(predicate, source)` owning finite producer, explicitly approved and independently verified. It copies a cljonic source and predicate without evaluation, skips the initial true prefix, retains the first false element, and yields the remaining original capped window without further predicate calls. Skipping consumes, rather than replenishes, that window. Each traversal uses fresh predicate state; exact `count` requires independent traversal without caching. All-true windows yield empty; empty traversal and zero cap invoke no callbacks. Predicate, source ownership, conditional element storage, unordered Map/Set membership, and authorized external effects follow `TakeWhile`. Producer parameter equality remains unavailable. `has_next` and its exact `has_rest` alias accept producers admitted by `next`. Deferred exact-type next/rest tails and dependent Cycle tails are active under Next after separate explicit implementation approval and verification; tail observation omits output after the original prefix removal, never restarting that removal on the retained suffix.
 - **Deprecated Synonyms:** None
@@ -960,8 +982,9 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Usage:** Requirements, architecture, specification, tests, implementation, and documentation
 - **Examples:** With source values `1, 2, 4, 1` and predicate `< 3`, traversal yields `4, 1`; the predicate is evaluated on `1, 2, 4` only. An always-true predicate yields an empty producer with count `0`.
 
+
 ### ReduceFunction
-- **Definition:** The reduction free function (`reduce`) folding a cljonic source into a single accumulator value. It accepts a copy-constructible reducing function invoked without throwing as `(accumulator, element)` and returning exactly the accumulator type, and it always traverses the source's saturated observed element count (`count(source)` capped at `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE`), so an unbounded producer folds over its configured observable traversal cap and the operation always terminates. The no-initial form `reduce(f, source)` requires a statically inspectable function signature, takes the first declared parameter type as the accumulator type, requires the first source element to convert safely to that type, seeds the accumulator from that element, and folds the remaining elements left to right; over an empty source it yields the accumulator type's default value. Each callback parameter must safely accept its corresponding argument, the no-initial form's first source element must safely convert to the accumulator type, and the explicit-initial form's initial value must safely convert to the accumulator type. The explicit-initial form `reduce(f, initial, source)` seeds from the safely convertible initial value and folds every observed element; it is the only form that admits a function whose parameter types cannot be inspected, since the initial value supplies the accumulator type. Each consumed argument position must accept its argument through a safe implicit conversion (an identical type or a value-preserving arithmetic conversion, never narrowing and never crossing into or out of the Boolean, character, enumeration, pointer, or user-defined domains). The source is a `Vector`, `Map`, `Set`, `Queue`, or `String` collection, or a `Range`, `Repeat`, `Cycle`, `Iterate`, or `Repeatedly` producer; standard-library ranges, containers, throwing functions, and unstorable accumulators are rejected at compile time. Map and Set traversal order is semantically unordered. The operation is `constexpr`, non-allocating, non-throwing, and preserves every source value.
+- **Definition:** The reduction free function (`reduce`) folding a cljonic source into a single accumulator value. It accepts a copy-constructible reducing function invoked without throwing as `(accumulator, element)` and returning exactly the accumulator type, and it always traverses the source's saturated observed element count (`count(source)` capped at `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE`), so an unbounded producer folds over its configured observable traversal cap and the operation always terminates. The no-initial form `reduce(f, source)` requires a statically inspectable function signature, takes the first declared parameter type as the accumulator type, requires the first source element to convert safely to that type, seeds the accumulator from that element, and folds the remaining elements left to right; over an empty source it yields the accumulator type's default value. Each callback parameter must safely accept its corresponding argument, the no-initial form's first source element must safely convert to the accumulator type, and the explicit-initial form's initial value must safely convert to the accumulator type. The explicit-initial form `reduce(f, initial, source)` seeds from the safely convertible initial value and folds every observed element; it is the only form that admits a function whose parameter types cannot be inspected, since the initial value supplies the accumulator type. Each consumed argument position must accept its argument through a safe implicit conversion (an identical type or a value-preserving arithmetic conversion, never narrowing and never crossing into or out of the Boolean, character, enumeration, pointer, or user-defined domains). The source is a `Vector`, `Map`, `Set`, `Queue`, or `String` collection, or a `Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`, `TakeWhile`, or `DropWhile` producer; standard-library ranges, containers, throwing functions, and unstorable accumulators are rejected at compile time. Map and Set traversal order is semantically unordered. The operation is `constexpr`, non-allocating, non-throwing, and preserves every source value.
 - **Deprecated Synonyms:** None
 - **Related:** MapFunction, Vector, Map, Set, Queue, String, Range, Repeat, Cycle, Iterate, Repeatedly, Seqable, Traversal, SafeImplicitConversion, NothrowCollectionElement, DefaultElement, CompleteResult
 - **Usage:** Requirements, architecture, specification, tests, implementation, and documentation
@@ -969,7 +992,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### CanConj
-- **Definition:** The canonical preflight capability predicate (`can_conj`) checking whether the supplied value can be accepted without capacity failure. For `Set` and `Map`, an element or key already present returns true because insertion is a no-op or a value replacement that needs no capacity; for `Vector` and `Queue` the result depends only on remaining capacity. For `String`, both capacity and a valid non-NUL ASCII character are required; invalid characters return false even though runtime `conj` normalizes them to `.`.
+- **Definition:** The canonical preflight capability predicate (`can_conj`) checking whether all supplied values can be accepted cumulatively, left-to-right, under the paired `conj` rules. Each later value is checked against the intermediate result of earlier insertions; independent checks against the original collection are insufficient. Zero supplied values return true. For `Set` and `Map`, an element or key already present returns true because insertion is a no-op or a value replacement that needs no capacity; for `Vector` and `Queue` the result depends only on remaining capacity. For `String`, both capacity and a valid non-NUL ASCII character are required; invalid characters return false even though runtime `conj` normalizes them to `.`.
 - **Deprecated Synonyms:** can_conj, can-conj predicate
 - **Related:** Conj, Conjable, CapabilityPredicate, PreflightPredicate, FullState, Vector, Set, Map, Queue, String
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
@@ -977,7 +1000,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### CanAssoc
-- **Definition:** The canonical `Associative` preflight predicate (`can_assoc`) checking whether `assoc` can produce its documented result without key-domain, capacity, or value-domain failure. For `Map`, existing keys are valid and new keys require spare capacity; for `Vector`, existing indexes are valid and the logical-count append index is valid only when capacity remains; for `String`, the same index rules apply and the character value must be non-NUL ASCII. Invalid, full-capacity append keys, and invalid String characters return false.
+- **Definition:** The canonical `Associative` preflight predicate (`can_assoc`) checking whether `assoc` can produce its documented result without key-domain, capacity, or value-domain failure. For multiple key/value pairs, feasibility is cumulative and left-to-right: each pair is checked against the intermediate result of earlier associations, not independently against the original collection. For `Map`, existing keys are valid and new keys require spare capacity; for `Vector`, existing indexes are valid and the logical-count append index is valid only when capacity remains; for `String`, the same index rules apply and the character value must be non-NUL ASCII. Invalid, full-capacity append keys, and invalid String characters return false.
 - **Deprecated Synonyms:** can_assoc, can-assoc predicate
 - **Related:** Assoc, Associative, CapabilityPredicate, PreflightPredicate, FullState, Map, Vector, String
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
@@ -1016,6 +1039,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Examples:** When an arithmetic preflight such as `can_add` returns false, the corresponding default operation returns its documented default and leaves inputs unchanged; wrapping or saturation requires a separately named alternative.
 
 ## Result and Lifecycle Vocabulary
+
 
 ### OwningValue
 - **Definition:** A self-contained cljonic value whose validity does not depend on another value, temporary, external storage, hidden borrowed state, or hidden result cache.
@@ -1070,11 +1094,11 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Deprecated Synonyms:** checked failure, explicit failure result
 - **Related:** DefaultReturningResult, DeterministicBehavior, NoExceptionConstraint, Regex
 - **Usage:** Requirements, specification, implementation, tests, and documentation
-- **Examples:** A checked numeric conversion may return a checked-failure result when representability requirements are not met.
+- **Examples:** Runtime Regex construction through `re_pattern` returns its documented tagged failure state for an invalid pattern. Explicit conversions instead return destination values with normal-mode fallbacks or stop in diagnostic mode; they do not return checked-result wrappers.
 
 
 ### PreflightPredicate
-- **Definition:** A non-throwing, non-allocating predicate that measures the same completion and failure conditions as its paired operation. The approved but unimplemented explicit conversion preflights agree with their conversion for the same source value and policy, and do not change diagnostic state or invoke the failure handler. `fits_into(destination, source)` tests whether the complete source can be inserted under the destination's insertion semantics, accounting for Set duplicates and Map key replacements rather than treating every source value as capacity growth. It is false for an UnboundedProducer regardless of its capped observable count. Value-sensitive preflight may evaluate producer callbacks; without shared realization caching, its prediction depends on the later operation observing the same values.
+- **Definition:** A non-throwing, non-allocating predicate that measures the same completion and failure conditions as its paired operation. The approved but unimplemented explicit conversion preflights agree with their conversion for the same source value and policy, and do not change diagnostic state or invoke the failure handler. `fits_into(destination, source)` tests whether the complete source can be inserted under the destination's insertion semantics, accounting for Set duplicates and Map key replacements rather than treating every source value as capacity growth. It is false for an UnboundedProducer regardless of its capped observable count, and for a finite source whose complete consumption exceeds its approved traversal bound, even if duplicates or replacements avoid capacity growth; it never inspects an unobservable suffix. Value-sensitive preflight may evaluate producer callbacks; without shared realization caching, its prediction depends on the later operation observing the same values.
 - **Deprecated Synonyms:** preflight check, capability precheck
 - **Related:** CompleteResult, BoundedPrefixResult, ProbeFirstAccess
 - **Usage:** Requirements, specification, implementation, tests, and documentation
@@ -1138,7 +1162,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### ProducerMaterialization
-- **Definition:** The explicit process of folding a producer's values into a copy of a selected bounded Vector, Set, Map, Queue, or String under its insertion semantics. `fits_into` determines whether the complete source can be inserted; `into` processes the source prefix ending before the first insertion requiring unavailable capacity. Duplicates and matching-key replacements consume no capacity, so source count need not equal result count growth. Invalid String characters normalize at runtime and are rejected during constant evaluation. Unbounded producers retain their observable traversal cap and never satisfy complete-result preflight.
+- **Definition:** The explicit process of folding a producer's values into a copy of a selected bounded Vector, Set, Map, Queue, or String under its insertion semantics. `fits_into` determines whether the complete source can be inserted; `into` processes the source prefix ending before the first insertion requiring unavailable capacity. Duplicates and matching-key replacements consume no capacity, so source count need not equal result count growth. Invalid String characters normalize at runtime and are rejected during constant evaluation. Complete materialization covers the entire finite result, not merely a capped observation. Unbounded producers and finite sources whose complete consumption exceeds their approved traversal bounds never satisfy complete-result preflight, even when duplicates or replacements avoid capacity growth; no unobservable suffix is inspected.
 - **Deprecated Synonyms:** producer realization, producer into-materialization
 - **Related:** UnboundedProducer, PreflightPredicate, ProducerIteration
 - **Usage:** Requirements, specification, implementation, tests, and documentation
@@ -1454,12 +1478,14 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
 - **Examples:** `IterateStep<int, int (*)(int) noexcept>` is satisfied by a non-throwing function pointer; the `Iterate` class template is gated on this concept.
 
+
 ### RepeatedlyStep
 - **Definition:** The named capability concept admitting a zero-argument step callable to `Repeatedly`: the step must be copy-constructible, must produce the producer's element type, and must not throw when invoked. It may have a non-const call operator. Each traversal invokes a copy of the producer's stored step; value-held mutable state therefore starts from the stored state, while referenced or static state can be shared across traversals. Unlike `IterateStep`, the step MAY maintain state or produce side effects. It is the product-specific admission concept for the `repeatedly` producer factory (`REQ-DIAG-009`).
 - **Deprecated Synonyms:** repeatedly_step, repeatedly step concept
 - **Related:** Repeatedly, CljonicSource, NothrowCollectionElement, CljonicProducer, Producer, ProducerMaterialization, CapabilityConcept
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
 - **Examples:** `RepeatedlyStep<int, int (*)() noexcept>` is satisfied by a non-throwing generator; the `Repeatedly` class template is gated on this concept.
+
 
 ### ConstInputRange
 - **Definition:** The named structural capability requiring a value to provide input-range traversal from a const source expression. ConstInputRange is the weaker traversal capability refined by `NothrowConstInputRange`; it does not by itself imply nominal cljonic collection or producer admission, ownership, no-heap behavior, or exact cardinality.
@@ -1491,6 +1517,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Related:** Seqable, CapabilityConcept, SequenceableCollection
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
 - **Examples:** No external or new type can satisfy `Seqable`; a user-defined `struct` with `count()` and a matching range interface remains non-`Seqable`, because membership is library-owned rather than structural.
+
 
 ### SequenceableCollection
 - **Definition:** The C++ concept identifier implementing the current collection sequenceable CapabilityConcept baseline, requiring non-throwing `count` observation on an admitted collection. The public `is_empty(value)` free function accepts either `SequenceableCollection` or `SequenceableProducer` and derives its result from `count(value) == 0`; no collection `is_empty()` member is required. SequenceableCollection is intentionally bootstrapped and may grow only when a public operation needs stronger sequence behavior; it is not the complete semantic definition of `Sequenceable` and does not by itself imply `ConstRangeTraversal`, indexed access, lookup, contiguous storage, or a particular iterator category.
@@ -1549,7 +1576,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### StableEqualityComparable
-- **Definition:** The C++ concept identifier implementing the StableEquality capability: a non-floating-point, non-callable equality comparison admitting a type for equality-dependent operations. For composite values, StableEqualityComparable is recursive: it is satisfied only when every stored component admits stable equality. The recursion covers exactly the components the library can analyze; a user-defined aggregate is a boundary, so the concept admits it when its own `operator==` is non-throwing and performs no member-level inspection of it (`REQ-NUM-018`). For producers, StableEqualityComparable is satisfied only when every stored parameter admits stable equality and the producer provides producer parameter equality as governed by ProducerParameterEquality.
+- **Definition:** The C++ concept identifier implementing the StableEquality capability: a non-floating-point, non-callable equality comparison admitting a type for equality-dependent operations. For composite values, StableEqualityComparable is recursive: it is satisfied only when every stored component admits stable equality. The recursion covers exactly the components the library can analyze; a qualifying user-defined class, aggregate or non-aggregate, is an opaque boundary, so the concept admits it when its own `operator==` is non-throwing and performs no member-level inspection of it (`REQ-NUM-018`). Library-analyzable components and explicitly excluded wrapper types retain their own admission rules. For producers, StableEqualityComparable is satisfied only when every stored parameter admits stable equality and the producer provides producer parameter equality as governed by ProducerParameterEquality.
 - **Deprecated Synonyms:** stable_equality_comparable, stable equality comparable concept
 - **Related:** StableEquality, TotalOrder, TotallyOrdered, AggregateLikeStruct, AlternativeStrictEquality, ProducerParameterEquality, Map, Set, MapEntry
 - **Usage:** Architecture, specification, implementation, tests, and documentation
@@ -1669,7 +1696,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### NoHiddenGlobalInitialization
-- **Definition:** The rule that cljonic introduces no hidden global initialization or library-managed mutable global state.
+- **Definition:** The rule that ordinary cljonic operations introduce no hidden global initialization or library-managed mutable global state. The approved but unimplemented ConversionDiagnosticMode is a narrow exception: explicit compile-time selection permits one application-wide static conversion error code and the specified application-provided non-returning handler. It does not relax no-allocation, no-exception, or single-threaded/caller-confinement constraints.
 - **Deprecated Synonyms:** no global initialization, no hidden global state
 - **Related:** DeterministicBehavior, ReferentialTransparency, Atom
 - **Usage:** Requirements, architecture, implementation, and tests
@@ -1701,7 +1728,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### AggregateEqualityBoundary
-- **Definition:** The rule that cljonic's stable-equality recursion stops at a user-defined aggregate. The aggregate is admitted on the strength of its own non-throwing `operator==`, defaulted or user-written, and the library performs no member-level analysis of it, so the semantic correctness of that aggregate's equality — including any floating-point, NaN, or precision behavior — belongs to the type's author. The boundary exists because no standard reflection is available to analyze arbitrary members; the type's own comparison is the contract.
+- **Definition:** The rule that cljonic's stable-equality recursion stops at a qualifying user-defined class, whether aggregate or non-aggregate. The class is admitted on the strength of its own non-throwing `operator==`, defaulted or user-written, and the library performs no member-level analysis of it, so the semantic correctness of that class's equality — including any floating-point, NaN, or precision behavior — belongs to the type's author. The historical term name does not restrict this boundary to aggregates. Library-analyzable components and explicitly excluded wrappers retain their own admission rules under REQ-NUM-018. The boundary exists because no standard reflection is available to analyze arbitrary members; the type's own comparison is the contract.
 - **Deprecated Synonyms:** aggregate equality escape, user-defined equality boundary
 - **Related:** SimpleAggregateBoundary, StableEquality, StableEqualityComparable, AggregateLikeStruct, NumericEquality
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
