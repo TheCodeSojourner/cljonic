@@ -90,8 +90,10 @@ represent **every possible value of the converted-from type**; a small literal d
 potentially narrowing conversion safe.
 
 - `short` to `long long` and `float` to `double` are accepted.
-- Integer-to-floating conversion is accepted only when all source integers are
-  representable exactly; floating-to-integer conversion is rejected.
+- Integer-to-floating conversion is currently accepted only when all source integers are
+  representable exactly; floating-to-integer conversion is rejected. An approved requirements
+  change will require explicit conversion for both integer-to-floating and floating-to-integer
+  crossings; this stricter rule is not yet implemented.
 - Boolean, character, and enum types retain their distinct meanings. For example,
   an `int` does not implicitly become a String character, and `bool` is not an index.
 - Cross-type user-defined and pointer conversions must be performed explicitly.
