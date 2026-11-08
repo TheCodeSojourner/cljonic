@@ -419,7 +419,7 @@ concept NothrowElementConstruction = SafeImplicitConversion<T, Arg> && requires(
 // Value Capability Concepts
 // ============================================================================
 
-/** Requires stable value equality comparison, explicitly rejecting
+/** Requires non-throwing stable value equality comparison, explicitly rejecting
  *  floating-point types to prevent NaN/precision instabilities in map keys
  *  and set elements.
  *
@@ -430,19 +430,17 @@ concept NothrowElementConstruction = SafeImplicitConversion<T, Arg> && requires(
  *  that skips the declaration fails here instead of silently admitting a
  *  detectable floating-point comparison. */
 template <typename T>
-concept StableEqualityComparable = std::equality_comparable<T> && !concepts_detail::contains_floating_point_v<T> &&
+concept StableEqualityComparable = std::equality_comparable<T> && concepts_detail::nothrow_equality_v<T> &&
+                                   !concepts_detail::contains_floating_point_v<T> &&
                                    !concepts_detail::contains_callable_v<T> && concepts_detail::walker_coverage_ok_v<T>;
 
 /** Requires a strict total ordering layered on stable equality. */
 template <typename T>
 concept TotallyOrdered = StableEqualityComparable<T> && std::totally_ordered<T>;
 
-/** Requires stable equality whose comparison cannot throw, so operations
- *  declared \c noexcept (such as \c equal and \c not_equal) cannot terminate
- *  through a throwing \c operator==.
- *
- *  std::variant relational operators are not declared noexcept by the standard,
- *  so composites recurse over their alternatives. */
+/** Retains the explicit non-throwing equality constraint for operations declared
+ *  \c noexcept (such as \c equal and \c not_equal). Stable equality also requires
+ *  a non-throwing comparison. */
 template <typename T>
 concept NothrowEqualityComparable = StableEqualityComparable<T> && concepts_detail::nothrow_equality_v<T>;
 
