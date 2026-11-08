@@ -248,7 +248,7 @@ the active higher-order algorithms.
 - **Deprecated Synonyms:** stable equality comparable, equality capability
 - **Related:** GeneralEquality, NumericEquality, AggregateLikeStruct, SimpleAggregateBoundary, AggregateEqualityBoundary
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
-- **Examples:** `StableEqualityComparable<T>` admits a type for equality-dependent operations when `a == b` returns `bool`; `Vector<double, 2>` is rejected because the library can analyze the element type, while `Vector<MyStruct, 2>` is admitted when `MyStruct::operator==` is non-throwing even if `MyStruct` contains a `double` member.
+- **Examples:** `StableEqualityComparable<T>` requires a non-throwing `a == b`; `Vector<double, 2>` is rejected because the library can analyze the element type, while `Vector<MyStruct, 2>` is admitted when `MyStruct::operator==` is non-throwing even if `MyStruct` contains a `double` member. A class with potentially throwing equality is rejected for equality, but may still meet an independent storage contract.
 
 
 ### TotalOrder
@@ -1213,7 +1213,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### NoHeapConstraint
-- **Definition:** The rule that no supported configuration or public API path may allocate from or deallocate to dynamic storage, directly or transitively. It applies to construction, update, lookup, traversal, transformation, failure handling, and destruction, including standard-library and dependency behavior invoked by cljonic.
+- **Definition:** The rule that cljonic code never allocates from or deallocates to the heap, directly or transitively. User code is assumed to meet the same hard no-heap obligation; cljonic cannot generally verify arbitrary user code. The rule covers construction, update, lookup, traversal, transformation, failure handling, and destruction, including standard-library and dependency behavior invoked by cljonic.
 - **Deprecated Synonyms:** no heap allocation, no-heap rule
 - **Related:** EmbeddedConstraint, StaticInspectableStorage, DeterministicBehavior
 - **Usage:** Architecture, specification, implementation, tests, and documentation
@@ -1221,7 +1221,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### NoExceptionConstraint
-- **Definition:** The rule that library behavior is non-throwing and does not depend on exception-based control flow.
+- **Definition:** The rule that cljonic code never throws and does not depend on exception-based control flow. User code is assumed to meet the same hard non-throwing obligation; cljonic cannot generally verify arbitrary user code.
 - **Deprecated Synonyms:** no exceptions, non-throwing rule
 - **Related:** EmbeddedConstraint, SentinelBasedAccess, DeterministicBehavior
 - **Usage:** Architecture, specification, implementation, tests, and documentation
@@ -1576,11 +1576,11 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### StableEqualityComparable
-- **Definition:** The C++ concept identifier implementing the StableEquality capability: a non-floating-point, non-callable equality comparison admitting a type for equality-dependent operations. For composite values, StableEqualityComparable is recursive: it is satisfied only when every stored component admits stable equality. The recursion covers exactly the components the library can analyze; a qualifying user-defined class, aggregate or non-aggregate, is an opaque boundary, so the concept admits it when its own `operator==` is non-throwing and performs no member-level inspection of it (`REQ-NUM-018`). Library-analyzable components and explicitly excluded wrapper types retain their own admission rules. For producers, StableEqualityComparable is satisfied only when every stored parameter admits stable equality and the producer provides producer parameter equality as governed by ProducerParameterEquality.
+- **Definition:** The C++ concept identifier implementing the StableEquality capability: a non-throwing, non-floating-point, non-callable equality comparison admitting a type for equality-dependent operations. For composite values, StableEqualityComparable is recursive: it is satisfied only when every stored component admits stable equality. The recursion covers exactly the components the library can analyze; a qualifying user-defined class, aggregate or non-aggregate, is an opaque boundary, so the concept admits it when its own `operator==` is non-throwing and performs no member-level inspection of it (`REQ-NUM-018`). Library-analyzable components and explicitly excluded wrapper types retain their own admission rules. For producers, StableEqualityComparable is satisfied only when every stored parameter admits stable equality and the producer provides producer parameter equality as governed by ProducerParameterEquality.
 - **Deprecated Synonyms:** stable_equality_comparable, stable equality comparable concept
 - **Related:** StableEquality, TotalOrder, TotallyOrdered, AggregateLikeStruct, AlternativeStrictEquality, ProducerParameterEquality, Map, Set, MapEntry
 - **Usage:** Architecture, specification, implementation, tests, and documentation
-- **Examples:** `StableEqualityComparable<T>` is satisfied when `a == b` returns `bool`, `T` is not a floating-point type, and every component of a composite `T` (such as a `cljonic::Variant` alternative, a cljonic collection element, or a producer's stored parameter) is itself stable-equality comparable. A callable component is never admitted.
+- **Examples:** `StableEqualityComparable<T>` requires a non-throwing `a == b`, `T` not to be a floating-point type, and every component of a composite `T` (such as a `cljonic::Variant` alternative, a cljonic collection element, or a producer's stored parameter) to be stable-equality comparable. A callable component is never admitted.
 
 
 ### ProducerParameterEquality
@@ -1632,7 +1632,7 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 
 
 ### NothrowEqualityComparable
-- **Definition:** The C++ concept identifier refining StableEqualityComparable with a non-throwing equality comparison, the value-domain admission capability behind operations declared `noexcept` (such as `Equal` and `NotEqual`) so that a comparison which can throw is rejected at compile time rather than terminating the program at run time. The type's own `operator==` must be `noexcept`; for a composite whose relational operators are not themselves declared `noexcept`, satisfaction recurses over its stored components.
+- **Definition:** The C++ concept identifier retaining an explicit non-throwing equality requirement for value-domain admission to operations declared `noexcept` (such as `Equal` and `NotEqual`). StableEqualityComparable already requires a non-throwing comparison, so potentially throwing equality is rejected at compile time by both concepts. The comparison's non-throwing exception specification may be explicitly declared or implicitly deduced.
 - **Deprecated Synonyms:** nothrow_equality_comparable, non-throwing equality concept
 - **Related:** StableEqualityComparable, StableEquality, Equal, NotEqual, AlternativeStrictEquality, Variant, NoExceptionConstraint
 - **Usage:** Architecture, specification, implementation, tests, and documentation
