@@ -43,7 +43,9 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | preserve_identity(x) → CopyOnModifyCollection(x) ∧ SentinelBasedAccess(x) ∧ ProbeFirstAccess(x) ∧ strict_resource_determinism(x)
 
 λ S5_identity(x). embedded_first(x) ∧ determinism_by_default(x) ∧ fixed_capacity_value_semantics(x)
-  | no_hidden_allocation(x) ∧ no_exceptions(x)
+  | cljonic_code(x) → ¬heap_allocation(x) ∧ ¬heap_deallocation(x) ∧ ¬throw_exceptions(x)
+  | user_code(x) → assume(¬heap_allocation(x) ∧ ¬heap_deallocation(x) ∧ ¬throw_exceptions(x))
+    ∧ application_obligation(x) ∧ ¬claim(general_compile_time_verification_of_user_code(x))
   | canonical_vocabulary_governs(x)
 
 λ S5_failure(x). violate(NoHeapConstraint) ∨ violate(NoExceptionConstraint)
@@ -857,6 +859,8 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ AggregateEqualityBoundary(x) → stop_recursion(x) ∧ defer_semantics_to_type_author(x)
   | user_defined_class_type(x) ≡ aggregate_struct(x) ∨ non_aggregate_class(x)
     ∧ user_defined_class_type(x) with(nothrow_operator_equality(x)) → admit(x) ∧ ¬analyze_members(x)
+    ∧ unavailable_or_potentially_throwing_equality(x) → reject_from(StableEquality) ∧ compile_time_rejection(equality_use(x))
+    ∧ equality_rejection(x) → ¬prohibit_storage_when_independent_storage_contract_satisfied(x)
     ∧ internal_equality_semantics_belong_to(type_author(x)) ∧ trace_to(REQ-NUM-018)
     ∧ non_aggregate_class(x) → admit_on(NothrowEqualityComparable(x))
       ∧ require(the_stable_equality_and_nothrow_comparison_shared_with(map_key_admission(x) ∧ set_element_admission(x)))
@@ -1504,16 +1508,17 @@ concept ComparableVariantAlternative =
 
 ```cpp
 // Value capabilities (apply to element and key types)
-// StableEqualityComparable is recursive over composite components:
-// a composite admits stable equality only when every stored component
-// admits stable equality; callable components never admit stable equality.
-// A library-owned composite must additionally declare that the walkers
-// reach its components (`walker_coverage`), so an added composite that
-// skips the declaration fails here instead of silently admitting a
-// detectable floating-point comparison.
+// StableEqualityComparable requires a non-throwing equality comparison.
+// It is recursive over composite components: a composite admits stable
+// equality only when every stored component admits stable equality; callable
+// components never admit stable equality. A library-owned composite must
+// additionally declare that the walkers reach its components
+// (`walker_coverage`), so an added composite that skips the declaration fails
+// here instead of silently admitting a detectable floating-point comparison.
 template<class T>
 concept StableEqualityComparable =
     std::equality_comparable<T> &&
+    cljonic::concepts_detail::nothrow_equality_v<T> &&
     !cljonic::concepts_detail::contains_floating_point_v<T> &&
     !cljonic::concepts_detail::contains_callable_v<T> &&
     cljonic::concepts_detail::walker_coverage_ok_v<T>;
@@ -1521,13 +1526,9 @@ concept StableEqualityComparable =
 template<class T>
 concept TotallyOrdered = StableEqualityComparable<T> && std::totally_ordered<T>;
 
-// NothrowEqualityComparable refines StableEqualityComparable with a
-// non-throwing comparison so operations declared noexcept cannot terminate:
-// the type's own operator== must be noexcept, and a composite whose relational
-// operators are not themselves declared noexcept recurses over its stored
-// components (std::variant relational operators are one such case; the
-// cljonic::Variant declares its own noexcept == over alternatives whose == is
-// noexcept).
+// NothrowEqualityComparable retains an explicit non-throwing comparison
+// requirement for operations declared noexcept. StableEqualityComparable
+// already requires it; the named refinement preserves the API boundary.
 template<class T>
 concept NothrowEqualityComparable =
     StableEqualityComparable<T> &&
