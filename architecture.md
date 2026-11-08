@@ -105,7 +105,8 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
 λ S5_authorized_effect_policy(x). public_operation(x) → require(DeterministicBehavior(x) ∧ ReferentialTransparency(x))
     unless(explicit_governing_contract_authorizes_effect(x))
   | authorized_effect(x) → limited_to(explicitly_declared_effect_scope(x))
-    ∧ ¬authorize(additional_effects(x) ∨ hidden_library_state(x) ∨ mutation_of_input_collection_storage(x))
+    ∧ ¬authorize(additional_effects(x) ∨ mutation_of_input_collection_storage(x))
+    ∧ (hidden_library_state(x) → forbidden_unless(explicitly_selected_ConversionDiagnosticMode_error_code(x)))
   | authorized_effect(x) → preserve(NoHeapConstraint(x) ∧ NoExceptionConstraint(x)
     ∧ SingleThreadedExecutionModel(x))
   | effect_authorization(x) → ¬imply(implemented(x) ∨ implementation_ready(x))
@@ -373,6 +374,10 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | fits_into((Vector ∨ Queue)(destination) ∧ finite_source) → compare(source_count ≤ remaining_destination_capacity) ∧ avoid(unsigned_addition_overflow)
   | fits_into((Set ∨ Map)(destination) ∧ finite_source) → measure(capacity_needed_by_ordered_insertion_fold) ∧ account_for(existing_and_source_duplicates ∨ matching_keys)
   | fits_into(destination ∧ unbounded_producer) → return(false)
+  | finite_source(x) ∧ complete_consumption_exceeds_approved_traversal_bound(x)
+    → fits_into(destination, x) = false ∧ ¬inspect(unobservable_suffix(x))
+    ∧ applies_even_when(Set_duplicates ∨ Map_key_replacements avoid_capacity_growth)
+  | finite_source_capacity_preflight(x) → require(complete_consumption_within_approved_traversal_bound(x))
   | compile_time_known_capacity_or_representability_failure(x) → reject_at_compile_time(x) ∧ diagnostic_not_result_status(x)
   | synthesis_cap(x) → classify_as(CollectionMaximumElementCount)
   | effective_size(x) → authoritative_for(ProducerIteration ∧ ProducerMaterialization)
@@ -510,7 +515,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | vague_concept_name(x) → reject(x)
 
 λ S2_canonical_capabilities(x). public_capability_names(x) ≡ Indexed ∧ Lookup ∧ Seqable ∧ Associative ∧ Conjable
-  | Indexed(x) → ordered_access_by_non_boolean_non_character_integer_index(x) ∧ bounded_logical_index_domain(x)
+  | Indexed(x) → constant_time_non_traversing_access_by_non_boolean_non_character_integer_index(x) ∧ bounded_logical_index_domain(x)
     ∧ non_mutating_access(x) ∧ non_throwing_non_allocating_membership_predicate(x)
     ∧ negative_index_outside_domain_when_representable(x)
   | Lookup(x) → collection_defined_lookup_domain(x) ∧ non_mutating_access(x)
@@ -834,13 +839,13 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ constexpr(x) ∧ noexcept(x)
   | ordinary_value_pair(x) → require(identical_types(x) ∨ safe_widening_relation_in_either_direction(x))
     ∧ compare_in_wider_type(x) ∧ ¬∃ truncation_or_saturation(x)
-    ∧ sign_crossing_pair(x) ∨ boolean_pair(x) ∨ character_pair(x) ∨ enumeration_pair(x) ∨ pointer_pair(x)
-      ∨ user_defined_pair(x) → compile_time_rejection(x)
+    ∧ (sign_crossing_pair(x) ∨ cross_type_domain_crossing_pair(Boolean ∨ character ∨ enumeration ∨ user_defined)(x)
+      ∨ pointer_pair(x)) → compile_time_rejection(x)
     ∧ equality_remains_equivalence_relation(x) because(admitted_conversions_are_injective_on_values(x))
   | non_cljonic_scalar_operands(x) → compare_via(operator== (x))
     ∧ fallthrough_domain(x) ≡ closed_value_domain(
         arithmetic_scalars ∨ scoped_enumerations
-        ∨ aggregate_like_structs_with_nothrow_equality ∨ cljonic_variant_composites)
+        ∨ qualifying_opaque_user_defined_classes_with_nothrow_equality ∨ cljonic_variant_composites)
     ∧ unscoped_enumerations_and_pointers_excluded_from_fallthrough(x)
     ∧ standard_library_variant(x) → compile_time_rejection(x) ∧ at_any_depth(x)
       because(¬cljonic_value_type(x))
@@ -849,7 +854,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     because(equal_is_not_interop_surface(x))
   | floating_point_component(x) → compile_time_rejection(x) ∧ at_any_analyzable_depth(x)
     ∧ detectability_is_the_criterion(x) ∧ trace_to(REQ-NUM-019) ∧ ¬∃ silent_admission_of_detectable_comparison(x)
-    ∧ aggregate_boundary(x) → stop_recursion(x) ∧ defer_semantics_to_type_author(x)
+    ∧ AggregateEqualityBoundary(x) → stop_recursion(x) ∧ defer_semantics_to_type_author(x)
   | user_defined_class_type(x) ≡ aggregate_struct(x) ∨ non_aggregate_class(x)
     ∧ user_defined_class_type(x) with(nothrow_operator_equality(x)) → admit(x) ∧ ¬analyze_members(x)
     ∧ internal_equality_semantics_belong_to(type_author(x)) ∧ trace_to(REQ-NUM-018)
@@ -863,7 +868,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
       ∧ mechanism(x) ≡ ¬nothrow_comparison(x) so(no_exclusion_list_is_required(x))
   | value_whose_equality_comparison_may_throw(x) → compile_time_rejection(x)
     because(noexcept_guarantee_cannot_be_violated(x))
-  | sequential_family(x) ≡ Vector ∨ Queue ∨ Cycle ∨ Iterate ∨ Range ∨ Repeat ∨ Repeatedly
+  | sequential_family(x) ≡ Vector ∨ Queue ∨ Cycle ∨ Iterate ∨ Range ∨ Repeat ∨ Repeatedly ∨ TakeWhile ∨ DropWhile
     ∧ sequential_family_pair(x) → compare(produced_sequence(x))
       ∧ require(identical_element_types(x) ∨ safe_widening_relation_in_either_direction(element_types(x)))
       ∧ compare_elements_in_wider_type(x)
@@ -921,6 +926,9 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | fits_into(destination, finite_source) ∧ (Set ∨ Map)(destination) → preserve(input_values) ∧ ¬share(realization_cache_with(into))
     ∧ allow(callback_effects_through_external_state) ∧ completeness_prediction_requires(same_values_on_subsequent_traversal)
   | fits_into(destination, unbounded_source) → return(false)
+  | fits_into(destination, finite_source) → require(complete_consumption_within_approved_traversal_bound(source))
+    ∧ otherwise_return(false) ∧ ¬inspect(unobservable_suffix(source))
+    ∧ applies_even_when(duplicates_or_replacements_consume_no_capacity)
 
 λ S2_into_function_contract(x). into(destination, source) → admit((CljonicVector ∨ CljonicSet ∨ CljonicMap ∨ CljonicQueue ∨ CljonicString)(destination) ∧ CljonicSource(source) ∧ MaterializableSource(destination, source))
   | destination_domain(x) ≡ CljonicVector ∨ CljonicSet ∨ CljonicMap ∨ CljonicQueue ∨ CljonicString
@@ -1203,14 +1211,17 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ narrowing_conversion(x) → reject_at_compile_time(x)
     ∧ domain_crossing(Boolean ∨ character ∨ enumeration ∨ pointer ∨ user_defined)(x) → reject_at_compile_time(x)
   | uninspectable_callback(generic_lambda ∨ templated_operator_call)(x) → admit_on(nothrow_invocability(x))
-  | arity(sources) = 1 → return(Vector<transform_result, effective_count(source₁)> of transform(source₁(i)) in_traversal_order)
+  | arity(sources) = 1 → return(Vector<transform_result, source_capacity_bound(source₁)> of transform results in_traversal_order)
   | arity(sources) = n > 1 → invoke(transform with one corresponding element from each source per_step)
     ∧ terminate(when_first_source_exhausted)
-    ∧ return(Vector<transform_result, min_over_sources(effective_count)> of successive transform results in_step_order)
-  | effective_count(source) ≡ collection(source) → count(source)
-    ∧ finite_producer(source) → count(source)
+    ∧ return(Vector<transform_result, min_over_sources(source_capacity_bound)> of successive transform results in_step_order)
+  | source_capacity_bound(source) ≡ collection(source) → declared_capacity(source)
+    ∧ producer(source) → configured_observable_traversal_cap
+    ∧ each_contribution_saturated_at(CollectionMaximumElementCount)
+  | effective_count(source) ≡ collection(source) ∨ finite_producer(source) → count(source)
     ∧ unbounded_producer(source) → observable_traversal_cap
     ∧ each_contribution_saturated_at(CollectionMaximumElementCount)
+  | runtime_mapped_count(x) → minimum_effective_source_count_subject_to_actual_traversal_exhaustion(x)
   | Map_source(x) ∨ Set_source(x) → traversal_order_semantically_unordered(x)
   | standard_library_range ∨ container ∨ non_cljonic_source ∨ throwing_callback ∨ unstorable_result → reject_at_compile_time_with(targeted_diagnostic_naming(map ∧ supported_domains) ∧ REQ-DIAG-009)
   | preserve(every_source_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
@@ -1242,7 +1253,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | preserve(identical_input ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating)
   | reject(the_same_unsupported_domains_and_predicate_forms)
     with(targeted_diagnostic_naming(filterv ∧ supported_domains) ∧ REQ-DIAG-009)
-  | classify_as(RequirementsBackedAlias) ∧ trace_to(REQ-FN-036 ∧ REQ-FN-035)
+  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-036 ∧ REQ-FN-035)
 
 λ S2_take_function_contract(x). take(count, source) → admit(CljonicSource(source) ∧ valid_take_count(count))(x)
   | valid_take_count(count) ≡ signed_or_unsigned_integer_except(Boolean ∨ character)
@@ -1636,7 +1647,7 @@ concept SequenceableProducer =
   | IndexedProducer(x) ¬imply(CallableLookup(x)) because(Indexed_access_does_not_imply_invocability(x))
   | ¬expose(callable_operator_parenthesis(x)) on(producer(x)) because(operator_parenthesis_reserved_for_CallableLookup_mirroring(x))
   | positional_value_retrieval(x) → remain(deferred_future_work) until(Module5_nth_approved(x))
-  | current_producers(x) ≡ Range ∨ Repeat ∨ Cycle ∨ Iterate ∨ Repeatedly
+  | current_producers(x) ≡ Range ∨ Repeat ∨ Cycle ∨ Iterate ∨ Repeatedly ∨ TakeWhile ∨ DropWhile
   | ∀ current_producer(x) → ¬satisfy(IndexedProducer(x))
   | future_IndexedProducer(x) → require(explicit_positional_access_contract(x) ∧ matching_availability_predicate(x))
 
