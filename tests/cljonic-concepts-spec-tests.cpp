@@ -37,6 +37,17 @@ struct NoEqualityAggregate {
     double value;
 };
 
+class FloatClass {
+  public:
+    constexpr FloatClass() noexcept = default;
+    constexpr explicit FloatClass(double value) noexcept : value_(value) {
+    }
+    constexpr auto operator==(const FloatClass&) const noexcept -> bool = default;
+
+  private:
+    double value_{};
+};
+
 // Nominal walker-coverage gate probes: both types are nominally admitted
 // cljonic collections with non-throwing equality, so the only difference that
 // can make them non-`StableEqualityComparable` is the coverage declaration.
@@ -210,10 +221,20 @@ struct EqualityOnly {
     }
 };
 
-// Equality whose comparison is stable but may throw: admissible to
-// StableEqualityComparable, rejected by NothrowEqualityComparable.
 struct ThrowingEqualityOnly {
     friend auto operator==(const ThrowingEqualityOnly&, const ThrowingEqualityOnly&) -> bool {
+        return true;
+    }
+};
+
+struct ImplicitNothrowEquality {
+    int value{};
+    auto operator==(const ImplicitNothrowEquality&) const -> bool = default;
+};
+
+class ThrowingClassEquality {
+  public:
+    auto operator==(const ThrowingClassEquality&) const noexcept(false) -> bool {
         return true;
     }
 };
@@ -624,8 +645,9 @@ TEST_CASE("StableEqualityComparable value capability", "[concepts][value]") {
 
     TRACE_ID("entity-fields.StableEqualityComparable");
     TRACE_ID("invariant.StableEqualityComparable.RequiresBoolEquality");
+    TRACE_ID("invariant.StableEqualityComparable.RequiresNonThrowingEquality");
     TRACE_ID("invariant.StableEqualityComparable.RejectsFloatingPoint");
-    TRACE_ID("invariant.StableEqualityComparable.AggregateBoundaryEqualityIsCallerOwned");
+    TRACE_ID("invariant.StableEqualityComparable.OpaqueUserDefinedClassEqualityIsCallerOwned");
 
     // RequiresBoolEquality.
     STATIC_REQUIRE(StableEqualityComparable<int>);
@@ -636,12 +658,24 @@ TEST_CASE("StableEqualityComparable value capability", "[concepts][value]") {
     STATIC_REQUIRE_FALSE(StableEqualityComparable<float>);
     STATIC_REQUIRE_FALSE(StableEqualityComparable<double>);
 
-    // AggregateBoundaryEqualityIsCallerOwned (REQ-NUM-018): a user-defined
-    // aggregate is admitted on its own non-throwing operator==, so member-level
-    // floating-point analysis never happens and its semantics are the author's.
+    // REQ-NUM-018: opaque classes own their internal equality semantics.
+    STATIC_REQUIRE_FALSE(std::is_aggregate_v<FloatClass>);
+    STATIC_REQUIRE(StableEqualityComparable<FloatClass>);
+    STATIC_REQUIRE(StableEqualityComparable<cljonic::Vector<FloatClass, 2>>);
     STATIC_REQUIRE(StableEqualityComparable<FloatAggregate>);
     STATIC_REQUIRE(StableEqualityComparable<UserEqualityAggregate>);
     STATIC_REQUIRE_FALSE(StableEqualityComparable<NoEqualityAggregate>);
+
+    STATIC_REQUIRE(noexcept(ImplicitNothrowEquality{} == ImplicitNothrowEquality{}));
+    STATIC_REQUIRE(StableEqualityComparable<ImplicitNothrowEquality>);
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<ThrowingEqualityOnly>);
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<ThrowingClassEquality>);
+    STATIC_REQUIRE(NothrowCollectionElement<ThrowingEqualityOnly>);
+    STATIC_REQUIRE(NothrowCollectionElement<ThrowingClassEquality>);
+    STATIC_REQUIRE(cljonic::Vector<ThrowingEqualityOnly, 2>{}.count() == 0U);
+    STATIC_REQUIRE_FALSE(std::equality_comparable<cljonic::Vector<ThrowingEqualityOnly, 2>>);
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<cljonic::Vector<ThrowingEqualityOnly, 2>>);
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<cljonic::Repeat<ThrowingClassEquality>>);
 }
 
 TEST_CASE("Nominal walker coverage is gated", "[concepts][value][composite]") {
@@ -737,7 +771,7 @@ TEST_CASE("NothrowStableEqualityComparable value capability", "[concepts][value]
     // RequiresNothrowComparison: a throwing comparison is rejected even when
     // storage is non-throwing, because key lookup and set membership would
     // otherwise be able to throw.
-    STATIC_REQUIRE(StableEqualityComparable<ThrowingEqualityOnly>);
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<ThrowingEqualityOnly>);
     STATIC_REQUIRE(NothrowCollectionElement<ThrowingEqualityOnly>);
     STATIC_REQUIRE_FALSE(NothrowStableEqualityComparable<ThrowingEqualityOnly>);
 
@@ -763,9 +797,8 @@ TEST_CASE("NothrowEqualityComparable value capability", "[concepts][value]") {
     STATIC_REQUIRE(StableEqualityComparable<EqualityOnly>);
     STATIC_REQUIRE(NothrowEqualityComparable<EqualityOnly>);
 
-    // RequiresNothrowComparison: a comparison that may throw is rejected even
-    // though it is stable.
-    STATIC_REQUIRE(StableEqualityComparable<ThrowingEqualityOnly>);
+    // Potentially throwing equality is rejected by both concepts.
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<ThrowingEqualityOnly>);
     STATIC_REQUIRE_FALSE(NothrowEqualityComparable<ThrowingEqualityOnly>);
 
     // RecursesOverVariantAlternatives: a cljonic::Variant declares its own

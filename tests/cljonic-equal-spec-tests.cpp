@@ -197,15 +197,16 @@ TEST_CASE("equal implements general value equality over the supported domain", "
 
     // Non-throwing equality at any depth
     // (invariant EqualityComparisonNonThrowingAtAnyDepth): a comparison that
-    // may throw is stable but not admissible to noexcept operations.
+    // may throw is outside the stable-equality domain.
     struct ThrowingAggregate {
         int x;
         [[nodiscard]] auto operator==(const ThrowingAggregate& other) const -> bool {
             return x == other.x;
         }
     };
-    STATIC_REQUIRE(cljonic::concepts::StableEqualityComparable<ThrowingAggregate>);
+    STATIC_REQUIRE_FALSE(cljonic::concepts::StableEqualityComparable<ThrowingAggregate>);
     STATIC_REQUIRE_FALSE(cljonic::concepts::NothrowEqualityComparable<ThrowingAggregate>);
+    STATIC_REQUIRE_FALSE(cljonic::concepts_detail::EqualPairAdmissible<ThrowingAggregate, ThrowingAggregate>);
 
     // Standard-range components are rejected at any depth
     // (invariant StandardRangeComponentsRejectedAtAnyDepth).

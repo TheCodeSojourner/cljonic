@@ -1,5 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include <limits>
 #include <span>
 #include <string_view>
 #include <type_traits>
@@ -8,6 +9,36 @@
 #include "cljonic-test-api.hpp"
 
 #define TRACE_ID(id_literal) INFO("trace-id: " id_literal)
+
+TEST_CASE("fits_into rejects a finite Range beyond its observation bound", "[into][fits-into]") {
+    using namespace cljonic;
+    using namespace cljonic::core;
+    TRACE_ID("invariant.ProducerMaterialization.FiniteSourceExceedingTraversalBoundDoesNotFit");
+
+    constexpr auto cap = CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
+    constexpr auto end = static_cast<long long>(cap);
+    constexpr Range<long long> at_bound{0LL, end};
+    constexpr Range<long long> beyond_bound{0LL, end + 1LL};
+    constexpr Range<long long> descending{end, -1LL, -1LL};
+    constexpr Range<long long> extreme{std::numeric_limits<long long>::min(), std::numeric_limits<long long>::max()};
+    STATIC_REQUIRE(at_bound.count() == beyond_bound.count());
+    STATIC_REQUIRE(beyond_bound.is_finite());
+    STATIC_REQUIRE(fits_into(Vector<long long, cap>{}, at_bound));
+    STATIC_REQUIRE_FALSE(fits_into(Vector<long long, cap>{}, beyond_bound));
+    STATIC_REQUIRE_FALSE(fits_into(Queue<long long, cap>{}, beyond_bound));
+    STATIC_REQUIRE_FALSE(fits_into(Vector<long long, cap>{}, descending));
+    STATIC_REQUIRE_FALSE(fits_into(Vector<long long, cap>{}, extreme));
+    STATIC_REQUIRE_FALSE(fits_into(Vector<long long, cap>{}, Range<long long>{0LL, 0LL, 0LL}));
+
+    // Every observed value already exists: spare capacity cannot establish completeness.
+    Set<long long, cap> destination{};
+    for (auto value : beyond_bound) {
+        destination = destination.conj(value);
+    }
+    CHECK_FALSE(fits_into(destination, beyond_bound));
+    CHECK(fits_into(destination, at_bound));
+    CHECK(fits_into(Set<long long, 1>{7LL}, Repeat<long long>{cap + 1U, 7LL}));
+}
 
 TEST_CASE("into and fits_into materialize a producer into a bounded destination", "[into][fits-into]") {
     using cljonic::Range;
