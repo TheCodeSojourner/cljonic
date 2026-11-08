@@ -2362,7 +2362,7 @@ requires concepts::SequenceableCollection&lt;C&gt; || concepts::SequenceableProd
 <div class="line"> </div>
 <div class="line">  <span class="keywordflow">return</span> (sz == 2) ? 0 : 1;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_a10bb37017fb997694418fdc5cc328afe"><div class="ttname"><a href="#a10bb37017fb997694418fdc5cc328afe">cljonic::core::range</a></div><div class="ttdeci">constexpr auto range(Args &amp;&amp;... args) noexcept -&gt; Range&lt; concepts_detail::range_factory_element_t&lt; RequestedElementType, Args... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-range_8hpp_source.html#l00364">cljonic-producer-range.hpp:364</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a10bb37017fb997694418fdc5cc328afe"><div class="ttname"><a href="#a10bb37017fb997694418fdc5cc328afe">cljonic::core::range</a></div><div class="ttdeci">constexpr auto range(Args &amp;&amp;... args) noexcept -&gt; Range&lt; concepts_detail::range_factory_element_t&lt; RequestedElementType, Args... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-range_8hpp_source.html#l00366">cljonic-producer-range.hpp:366</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1core_html_a4ebeaa5d9bef8520af2e09e8d5aada70"><div class="ttname"><a href="#a4ebeaa5d9bef8520af2e09e8d5aada70">cljonic::core::repeat</a></div><div class="ttdeci">constexpr auto repeat(T &amp;&amp;value) noexcept -&gt; Repeat&lt; std::remove_cvref_t&lt; T &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-producer-repeat_8hpp_source.html#l00254">cljonic-producer-repeat.hpp:254</a></div></div>
 <div class="ttc" id="anamespacecljonic_html_a41fa65c16edb0a95aa942c48307777d6"><div class="ttname"><a href="namespacecljonic.html#a41fa65c16edb0a95aa942c48307777d6">cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</a></div><div class="ttdeci">constexpr std::size_t CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE</div><div class="ttdef"><b>Definition</b> <a href="cljonic-core-collection-maximum-element-count_8hpp_source.html#l00016">cljonic-core-collection-maximum-element-count.hpp:16</a></div></div>
 </div><!-- fragment --> 
@@ -3991,7 +3991,7 @@ requires (!concepts_detail::MaterializableSource&lt;Dest, Source&gt;)</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-fits-into_8hpp_source.html#l00120">120</a> of file <a class="el" href="cljonic-fits-into_8hpp_source.html">cljonic-fits-into.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-fits-into_8hpp_source.html#l00135">135</a> of file <a class="el" href="cljonic-fits-into_8hpp_source.html">cljonic-fits-into.hpp</a>.</p>
 
 </div>
 </div>
@@ -4025,7 +4025,7 @@ requires concepts_detail::MaterializableSource&lt;Dest, Source&gt;</div>
 </table>
 </div><div class="memdoc">
 <p><a class="anchor" id="FitsInto"></a> The <b>fits_into</b> free function checks whether every value from a cljonic collection or producer can be inserted into a <a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vector</a>, <a class="el" href="classcljonic_1_1_set.html#Set" title="Set">Set</a>, <a class="el" href="classcljonic_1_1_map.html#Map" title="Map">Map</a>, <a class="el" href="classcljonic_1_1_queue.html#Queue" title="Queue">Queue</a>, or <a class="el" href="classcljonic_1_1_string.html#String" title="String">String</a>.</p>
-<p>Uses the same insertion rules as <a class="el" href="#Into" title="Into">into</a>, leaving both input values unchanged. <a class="el" href="classcljonic_1_1_vector.html">Vector</a> and <a class="el" href="classcljonic_1_1_queue.html">Queue</a> compare the finite source count to remaining capacity. <a class="el" href="classcljonic_1_1_set.html">Set</a> and <a class="el" href="classcljonic_1_1_map.html">Map</a> inspect values, accounting for duplicates and matching-key updates in the destination and earlier source values. It returns <span class="tt">false</span> at the first insertion that needs unavailable capacity, or <span class="tt">true</span> after the complete finite source is accepted. Every unbounded producer returns <span class="tt">false</span>, even though its normal const traversal is capped. <a class="el" href="classcljonic_1_1_string.html">String</a> compares finite source count to remaining character capacity without evaluating character validity; invalid characters are normalized at runtime by <span class="tt"><a class="el" href="#a180fbef1f0faf6742a852760b557db7f">into</a></span>.</p>
+<p>Uses the same insertion rules as <a class="el" href="#Into" title="Into">into</a>, leaving both input values unchanged. <a class="el" href="classcljonic_1_1_vector.html">Vector</a> and <a class="el" href="classcljonic_1_1_queue.html">Queue</a> compare the finite source count to remaining capacity. <a class="el" href="classcljonic_1_1_set.html">Set</a> and <a class="el" href="classcljonic_1_1_map.html">Map</a> inspect values, accounting for duplicates and matching-key updates in the destination and earlier source values. It returns <span class="tt">false</span> at the first insertion that needs unavailable capacity, or <span class="tt">true</span> after the complete finite source is accepted. Every unbounded producer returns <span class="tt">false</span>, even though its normal const traversal is capped. A finite <a class="el" href="classcljonic_1_1_range.html">Range</a> whose complete cardinality exceeds its observation cap also returns <span class="tt">false</span>, without inspecting an unobservable suffix, even for <a class="el" href="classcljonic_1_1_set.html">Set</a> or <a class="el" href="classcljonic_1_1_map.html">Map</a> destinations. A <a class="el" href="classcljonic_1_1_range.html">Range</a> exactly at the cap remains fully observable. <a class="el" href="classcljonic_1_1_string.html">String</a> compares finite source count to remaining character capacity without evaluating character validity; invalid characters are normalized at runtime by <span class="tt"><a class="el" href="#a180fbef1f0faf6742a852760b557db7f">into</a></span>.</p>
 <p>Finite Set/Map preflight may evaluate producer callbacks. Preflight and <span class="tt"><a class="el" href="#a180fbef1f0faf6742a852760b557db7f">into</a></span> traverse independently, without shared caching; callback effects through references or static storage may remain observable. The prediction applies only when the subsequent traversal yields the same values.</p>
 <p>Source values follow the same <a class="el" href="implicit-conversions.html" title="Safe implicit conversions">safe implicit conversion rules</a> as <span class="tt"><a class="el" href="#a180fbef1f0faf6742a852760b557db7f">into</a></span>; <a class="el" href="classcljonic_1_1_map.html">Map</a> requires its declared <a class="el" href="structcljonic_1_1_map_entry.html#MapEntry" title="MapEntry">MapEntry</a> type. External C++ range or view sources are excluded.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
@@ -4069,9 +4069,9 @@ requires concepts_detail::MaterializableSource&lt;Dest, Source&gt;</div>
 <div class="line">             ? 0</div>
 <div class="line">             : 1;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_a3f23366e27084c4a19944901abd09c6b"><div class="ttname"><a href="#a3f23366e27084c4a19944901abd09c6b">cljonic::core::fits_into</a></div><div class="ttdeci">constexpr auto fits_into(const Dest &amp;destination, const Source &amp;source) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-fits-into_8hpp_source.html#l00105">cljonic-fits-into.hpp:105</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a3f23366e27084c4a19944901abd09c6b"><div class="ttname"><a href="#a3f23366e27084c4a19944901abd09c6b">cljonic::core::fits_into</a></div><div class="ttdeci">constexpr auto fits_into(const Dest &amp;destination, const Source &amp;source) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-fits-into_8hpp_source.html#l00120">cljonic-fits-into.hpp:120</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="cljonic-fits-into_8hpp_source.html#l00105">105</a> of file <a class="el" href="cljonic-fits-into_8hpp_source.html">cljonic-fits-into.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-fits-into_8hpp_source.html#l00120">120</a> of file <a class="el" href="cljonic-fits-into_8hpp_source.html">cljonic-fits-into.hpp</a>.</p>
 
 </div>
 </div>
@@ -6708,7 +6708,7 @@ requires concepts_detail::RangeFactoryArguments&lt;RequestedElementType, Args...
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-range_8hpp_source.html#l00364">364</a> of file <a class="el" href="cljonic-producer-range_8hpp_source.html">cljonic-producer-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-range_8hpp_source.html#l00366">366</a> of file <a class="el" href="cljonic-producer-range_8hpp_source.html">cljonic-producer-range.hpp</a>.</p>
 
 </div>
 </div>
@@ -6738,7 +6738,7 @@ requires (!concepts_detail::RangeFactoryArguments&lt;RequestedElementType, Args.
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cljonic-producer-range_8hpp_source.html#l00372">372</a> of file <a class="el" href="cljonic-producer-range_8hpp_source.html">cljonic-producer-range.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cljonic-producer-range_8hpp_source.html#l00374">374</a> of file <a class="el" href="cljonic-producer-range_8hpp_source.html">cljonic-producer-range.hpp</a>.</p>
 
 </div>
 </div>
