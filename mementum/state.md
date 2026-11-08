@@ -1,5 +1,30 @@
 ## Current Session State
 
+- last_session_id: e59defd3-7188-48c8-86e9-cab02f3268bc
+- current_timestamp: 2026-11-07T18:27:35-07:00
+- session_complete: true
+- recover: Continue on branch `refine/numeric-conversion-contracts`. The human committed the contract, specifications, tests, implementation, generated header, and generated documentation; the working tree was clean before this state update. Do not describe those changes as pending. Follow the human's Make workflow and the governing layer order. On direction, address the remaining focused behavioral coverage gaps, not an unapproved exhaustive audit.
+- task: Synchronized the spec-to-code obligation snapshot; audited the three recently changed obligation IDs; clarified and propagated non-throwing equality and the no-heap/no-exceptions contract; investigated a failed VS Code CMake Tools request without attributing it to the project.
+- decisions:
+  - The human clarified that cljonic code never allocates/deallocates on the heap or throws. User code is assumed to obey the same hard constraints. `noexcept` or concepts cannot prove arbitrary user code is heap-free or that an implementation honors its declaration.
+  - A user-defined aggregate or non-aggregate class with unavailable or potentially throwing equality is outside `StableEquality` and rejected for equality use; independently valid storage is still allowed. A defaulted comparison can have an implicitly deduced non-throwing exception specification.
+  - `StableEqualityComparable` now requires non-throwing equality; `NothrowEqualityComparable` remains an explicitly named refinement. Requirements, architecture, vocabulary, specs, tests, source, snapshot, and generated header were updated.
+  - The human explicitly corrected the assistant: this project uses a Make workflow. A VS Code CMake Tools request returning `Unable to configure the project` with no diagnostics does not prove the repository build is broken. Do not substitute that failure for evidence about the human's Make test run.
+- commits_since_previous_checkpoint: `0633f531` requirements/README; `5b3c3125` vocabulary; `2caf24a7` architecture; `4f5c2030` specifications and snapshot; `eb5cfd0a` tests; `c00ea17b` implementation and generated header; `edce4610` generated docs. These were already committed by the human; inspect `git log` for details.
+- validation:
+  - The human reported `make test` passed 354 tests before the equality changes. The later `build/Testing/Temporary/LastTest.log` records 354 passed and zero failed at 18:10; corresponding test objects were rebuilt at 18:09–18:10 after the 17:49 equality edits. That is evidence of a later test run, but do not claim the assistant ran it or infer an undocumented `make git` outcome.
+  - `src/cljonic-fits-into.hpp` and the generated header were touched at 18:13, after that run; comparison with the earlier viewed source showed only documentation-comment reflow in `src/cljonic-fits-into.hpp`. A full test run after that touch was not observed.
+  - Requirements structure passed (362 unique clauses), vocabulary structure passed (212 terms), `make traceability-spec-to-code` passed, `make cljonic-test` passed, `make equal-compile-fail` passed, changed-file formatting passed, and `clang-tidy` parsed focused tests under both compilation configurations. These do not prove complete behavioral coverage.
+  - Earlier active Allium plan comparison found 1,833/1,833 IDs traced; adding `StableEqualityComparable.RequiresNonThrowingEquality` raised the snapshot to 1,834. Ten obligations in deferred `specs/capabilities/variant-api.allium` were untraced; deferred specs are excluded from the active gate. Trace IDs are not proof of assertion quality.
+- next:
+  1. On human direction, examine and address the focused materialization gaps: key-replacing Map behavior and direct evidence that an unobservable suffix is not inspected. Current tests cover Range cap boundaries, Vector/Queue/Set, and counted Repeat as a distinct fully traversable control; do not assume all producer families are covered.
+  2. Full requirements↔architecture, architecture↔spec, and spec↔test behavioral coverage were not audited. Explicit numeric conversions and tighter implicit boundaries still need separately approved downstream work; do not conflate traceability with semantic proof.
+  3. Preserve the Make-oriented workflow; use focused checks and the human-owned final gate as applicable. The broad generated-header diff was committed; its size alone does not establish a defect.
+- synthesis: `mementum/knowledge/value-equality-domain.md` is stale: its concept formula and opaque aggregate-only description predate the latest non-throwing/class-boundary changes. `mementum/memories/nothrow-contract-is-the-heap-freedom-proxy.md` is misleading if read as proof that `noexcept` means heap-free: a non-throwing operation can allocate. Surface and propose correction with human approval; do not silently rely on those statements.
+- questions: Full behavioral coverage remains unproven. The precise cause of the VS Code CMake Tools failure remains unknown; no project failure was established.
+
+## Previous Session State
+
 - last_session_id: eb3efb7c-ca38-4c8a-a289-f8df351be0d6
 - current_timestamp: 2026-11-07T17:30:44-07:00
 - session_complete: true
