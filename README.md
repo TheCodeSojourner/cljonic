@@ -6,6 +6,10 @@
 
 <p align="center"><strong>Header-Only Embedded-System C++ Clojure-esque Functional Programming Library</strong></p>
 
+cljonic code never uses the heap or throws exceptions. User code is assumed to
+obey the same hard constraints: no heap allocation or deallocation, and no
+throwing exceptions. The library cannot generally verify arbitrary user code.
+
 > **Note**
 > If you are interested in a "big-machine" **C++ Clojure** implementation, with full C++ interoperability, see the [Jank](https://github.com/jank-lang/jank) project.
 
