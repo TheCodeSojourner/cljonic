@@ -280,15 +280,22 @@ entity ConjableCollection {
 
 entity StableEqualityComparable {
     requires_bool_equality: Boolean
+    requires_non_throwing_equality: Boolean
     rejects_floating_point: Boolean
     recurses_over_components: Boolean
     recurses_into_producer_parameters: Boolean
     rejects_callable_components: Boolean
-    aggregate_boundary_equality_is_caller_owned: Boolean
+    opaque_user_defined_class_equality_is_caller_owned: Boolean
     nominal_walker_coverage_is_gated: Boolean
 
     invariant RequiresBoolEquality {
         this.requires_bool_equality = true
+    }
+
+    -- Reject potentially throwing or unavailable equality, including at opaque class boundaries.
+    -- This does not prohibit storage under the independent storage contract.
+    invariant RequiresNonThrowingEquality {
+        this.requires_non_throwing_equality = true
     }
 
     invariant RejectsFloatingPoint {
@@ -307,8 +314,8 @@ entity StableEqualityComparable {
         this.rejects_callable_components = true
     }
 
-    invariant AggregateBoundaryEqualityIsCallerOwned {
-        this.aggregate_boundary_equality_is_caller_owned = true
+    invariant OpaqueUserDefinedClassEqualityIsCallerOwned {
+        this.opaque_user_defined_class_equality_is_caller_owned = true
     }
 
     invariant NominalWalkerCoverageIsGated {

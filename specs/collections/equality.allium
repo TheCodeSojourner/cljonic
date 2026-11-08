@@ -10,7 +10,7 @@ entity CollectionEquality {
     no_implicit_sequence_equality_for_producers: Boolean
     producer_components_use_producer_parameter_equality: Boolean
     no_cross_type_numeric_unification: Boolean
-    aggregate_boundary_equality_is_caller_owned: Boolean
+    opaque_user_defined_class_equality_is_caller_owned: Boolean
 
     invariant OrderSensitiveForVectorStringQueue {
         this.order_sensitive_for_vector_string_queue = true
@@ -48,8 +48,11 @@ entity CollectionEquality {
         this.no_cross_type_numeric_unification = true
     }
 
-    invariant AggregateBoundaryEqualityIsCallerOwned {
-        this.aggregate_boundary_equality_is_caller_owned = true
+    -- The recursion boundary is a qualifying opaque user-defined class, aggregate or non-aggregate,
+    -- that provides its own non-throwing equality; internal semantics belong to the type author.
+    -- An unavailable or potentially throwing comparison excludes the class from equality, not storage.
+    invariant OpaqueUserDefinedClassEqualityIsCallerOwned {
+        this.opaque_user_defined_class_equality_is_caller_owned = true
     }
 }
 
