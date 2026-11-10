@@ -1509,10 +1509,12 @@ concept ComparableVariantAlternative =
 ```cpp
 // Value capabilities (apply to element and key types)
 // StableEqualityComparable requires a non-throwing equality comparison.
-// It is recursive over composite components: a composite admits stable
-// equality only when every stored component admits stable equality; callable
-// components never admit stable equality. A library-owned composite must
-// additionally declare that the walkers reach its components
+// It recursively checks library-analyzable composite components and stops at
+// opaque user-defined class boundaries under REQ-NUM-018. A non-throwing
+// operator== is trusted there, including when members contain floating point.
+// For analyzed composites, every stored component must admit stable equality;
+// callable components never admit stable equality. A library-owned composite
+// must additionally declare that the walkers reach its components
 // (`walker_coverage`), so an added composite that skips the declaration fails
 // here instead of silently admitting a detectable floating-point comparison.
 template<class T>
