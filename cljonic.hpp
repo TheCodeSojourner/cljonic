@@ -10326,11 +10326,12 @@ template <typename Count, typename Source>
 [[nodiscard]] constexpr auto take(Count count, const Source& source) noexcept
     -> Vector<std::ranges::range_value_t<const Source>, concepts_detail::SourceResultCapacity<Source>> {
     constexpr auto capacity = concepts_detail::SourceResultCapacity<Source>;
-    const auto observed_count = std::min({concepts_detail::normalize_producer_count(count), source.count(), capacity});
+    const auto requested_count = concepts_detail::normalize_producer_count(count);
     Vector<std::ranges::range_value_t<const Source>, capacity> result{};
-    if (observed_count == 0) {
+    if (requested_count == 0 || capacity == 0) {
         return result;
     }
+    const auto observed_count = std::min({requested_count, source.count(), capacity});
     auto iterator = source.begin();
     const auto end = source.end();
     for (std::size_t index = 0; iterator != end; ++index) {
