@@ -51,9 +51,11 @@ namespace cljonic::no_heap::probes {
            queue_rest.begin()[0U] == second && queue_rest.begin()[1U] == third && queue.count() == 3U &&
            queue.begin()[0] == first && queue_rest.capacity() + 1U == queue.capacity() && map_rest.count() == 2U &&
            map_rest.begin()[0U] == map.begin()[1] && map_rest.begin()[1U] == map.begin()[2] && map.count() == 3U &&
-           map.begin()[0] == MapEntry{first, second} && map_rest.capacity() + 1U == map.capacity() &&
+           map.contains(first) && map(first) == second && map.contains(second) && map(second) == third &&
+           map.contains(third) && map(third) == first && map_rest.capacity() + 1U == map.capacity() &&
            set_rest.count() == 2U && set_rest.begin()[0U] == set.begin()[1] && set_rest.begin()[1U] == set.begin()[2] &&
-           set.count() == 3U && set.begin()[0] == first && set_rest.capacity() + 1U == set.capacity() &&
+           set.count() == 3U && set.contains(first) && set.contains(second) && set.contains(third) &&
+           set_rest.capacity() + 1U == set.capacity() &&
            text_rest.count() == 2U && text_rest(0U) == second_char && text_rest(1U) == third_char &&
            text.count() == 3U && text(0U) == first_char && text_rest.capacity() + 1U == text.capacity() &&
            rest(Vector<int, 4>{first}).count() == 0U && rest(Map<int, int, 4>{MapEntry{first, second}}).count() == 0U &&

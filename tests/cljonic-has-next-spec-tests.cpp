@@ -25,6 +25,8 @@ TEST_CASE("has_next reports whether next has an observable result", "[has_next]"
     using cljonic::core::cycle;
     using cljonic::core::drop_while;
     using cljonic::core::has_next;
+    using cljonic::core::hash_map;
+    using cljonic::core::hash_set;
     using cljonic::core::iterate;
     using cljonic::core::next;
     using cljonic::core::repeat;
@@ -58,6 +60,20 @@ TEST_CASE("has_next reports whether next has an observable result", "[has_next]"
     constexpr auto iterated = iterate([](int value) noexcept { return value + 1; }, 0);
     constexpr auto taken = take_while([](int value) noexcept { return value < 30; }, vector);
     constexpr auto dropped = drop_while([](int value) noexcept { return value < 3; }, Vector<int, 4>{1, 2, 3, 4});
+    constexpr auto unordered_map_source = hash_map(1, 10, 2, 20);
+    constexpr auto unordered_map_taken =
+        take_while([](const auto&) noexcept { return true; }, unordered_map_source);
+    constexpr auto unordered_map_empty_take =
+        take_while([](const auto&) noexcept { return false; }, unordered_map_source);
+    constexpr auto unordered_map_dropped =
+        drop_while([](const auto&) noexcept { return false; }, unordered_map_source);
+    constexpr auto unordered_map_empty_drop =
+        drop_while([](const auto&) noexcept { return true; }, unordered_map_source);
+    constexpr auto unordered_set_source = hash_set(10, 20);
+    constexpr auto unordered_set_taken = take_while([](int) noexcept { return true; }, unordered_set_source);
+    constexpr auto unordered_set_empty_take = take_while([](int) noexcept { return false; }, unordered_set_source);
+    constexpr auto unordered_set_dropped = drop_while([](int) noexcept { return false; }, unordered_set_source);
+    constexpr auto unordered_set_empty_drop = drop_while([](int) noexcept { return true; }, unordered_set_source);
     constexpr auto repeated_cycle = cycle(Vector<int, 1>{10});
     STATIC_REQUIRE(has_next(vector));
     STATIC_REQUIRE(has_next(map));
@@ -69,6 +85,14 @@ TEST_CASE("has_next reports whether next has an observable result", "[has_next]"
     STATIC_REQUIRE(has_next(finite_repeatedly));
     STATIC_REQUIRE(has_next(taken));
     STATIC_REQUIRE(has_next(dropped));
+    STATIC_REQUIRE(has_next(unordered_map_taken));
+    STATIC_REQUIRE_FALSE(has_next(unordered_map_empty_take));
+    STATIC_REQUIRE(has_next(unordered_map_dropped));
+    STATIC_REQUIRE_FALSE(has_next(unordered_map_empty_drop));
+    STATIC_REQUIRE(has_next(unordered_set_taken));
+    STATIC_REQUIRE_FALSE(has_next(unordered_set_empty_take));
+    STATIC_REQUIRE(has_next(unordered_set_dropped));
+    STATIC_REQUIRE_FALSE(has_next(unordered_set_empty_drop));
     STATIC_REQUIRE(has_next(repeated_cycle) == (cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE > 0U));
 
     TRACE_ID("invariant.HasNext.ReturnsFalseForEmptyOrSingletonCollection");
@@ -189,11 +213,47 @@ TEST_CASE("has_next reports whether next has an observable result", "[has_next]"
     const auto runtime_unbounded_repeat = repeat(first);
     const auto runtime_adapter =
         take_while([](int value) noexcept { return value < 43; }, Vector<int, 4>{first, second, second + 1});
+    const auto runtime_drop_while_with_next =
+        drop_while([](int value) noexcept { return value < 42; },
+                   Vector<int, 4>{first, second, second + 1, second + 2});
+    const auto runtime_drop_while_singleton =
+        drop_while([](int value) noexcept { return value < 42; }, Vector<int, 4>{first, second, second + 1});
+    const auto runtime_drop_while_empty =
+        drop_while([](int) noexcept { return true; }, Vector<int, 4>{first, second});
+    const auto runtime_unordered_map_source = hash_map(first, first + 100, second, second + 100);
+    const auto runtime_unordered_map_taken =
+        take_while([](const auto&) noexcept { return true; }, runtime_unordered_map_source);
+    const auto runtime_unordered_map_empty_take =
+        take_while([](const auto&) noexcept { return false; }, runtime_unordered_map_source);
+    const auto runtime_unordered_map_dropped =
+        drop_while([](const auto&) noexcept { return false; }, runtime_unordered_map_source);
+    const auto runtime_unordered_map_empty_drop =
+        drop_while([](const auto&) noexcept { return true; }, runtime_unordered_map_source);
+    const auto runtime_unordered_set_source = hash_set(first, second);
+    const auto runtime_unordered_set_taken =
+        take_while([](int) noexcept { return true; }, runtime_unordered_set_source);
+    const auto runtime_unordered_set_empty_take =
+        take_while([](int) noexcept { return false; }, runtime_unordered_set_source);
+    const auto runtime_unordered_set_dropped =
+        drop_while([](int) noexcept { return false; }, runtime_unordered_set_source);
+    const auto runtime_unordered_set_empty_drop =
+        drop_while([](int) noexcept { return true; }, runtime_unordered_set_source);
     REQUIRE(has_next(runtime_range));
     REQUIRE_FALSE(has_next(runtime_empty_repeat));
     REQUIRE(has_next(runtime_repeat));
     REQUIRE(has_next(runtime_unbounded_repeat));
     REQUIRE(has_next(runtime_adapter));
+    REQUIRE(has_next(runtime_drop_while_with_next));
+    REQUIRE_FALSE(has_next(runtime_drop_while_singleton));
+    REQUIRE_FALSE(has_next(runtime_drop_while_empty));
+    REQUIRE(has_next(runtime_unordered_map_taken));
+    REQUIRE_FALSE(has_next(runtime_unordered_map_empty_take));
+    REQUIRE(has_next(runtime_unordered_map_dropped));
+    REQUIRE_FALSE(has_next(runtime_unordered_map_empty_drop));
+    REQUIRE(has_next(runtime_unordered_set_taken));
+    REQUIRE_FALSE(has_next(runtime_unordered_set_empty_take));
+    REQUIRE(has_next(runtime_unordered_set_dropped));
+    REQUIRE_FALSE(has_next(runtime_unordered_set_empty_drop));
     REQUIRE(count(runtime_repeat) == 3U);
     REQUIRE(cljonic::core::first(runtime_repeat) == first);
 

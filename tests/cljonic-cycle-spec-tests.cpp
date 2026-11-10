@@ -21,6 +21,60 @@ TEST_CASE("Cycle first access does not pre-count nested adapter sources", "[cycl
     STATIC_REQUIRE(cljonic::core::first(cljonic::core::next(cljonic::core::cycle(cljonic::core::vector(1, 2)))) == 2);
 }
 
+TEST_CASE("Cycle repeats complete Map and Set adapter periods without assuming order", "[cycle]") {
+    using namespace cljonic;
+    using namespace cljonic::core;
+    using Entry = MapEntry<int, int>;
+
+    TRACE_ID("invariant.Cycle.RepeatsSourceSequenceInOrder");
+    TRACE_ID("invariant.Cycle.FiniteSourceRestartsAfterCompletePass");
+
+    constexpr auto map_source = hash_map(1, 10, 2, 20);
+    constexpr auto map_adapter = take_while([](const auto&) noexcept { return true; }, map_source);
+    constexpr auto map_result = into(Vector<Entry, 4>{}, cycle(map_adapter));
+    STATIC_REQUIRE(map_result.count() == 4U);
+    STATIC_REQUIRE(map_result(0U) == map_result(2U));
+    STATIC_REQUIRE(map_result(1U) == map_result(3U));
+    STATIC_REQUIRE(map_result(0U) != map_result(1U));
+    STATIC_REQUIRE(((map_result(0U) == map_entry(1, 10) && map_result(1U) == map_entry(2, 20)) ||
+                    (map_result(0U) == map_entry(2, 20) && map_result(1U) == map_entry(1, 10))));
+
+    constexpr auto set_source = hash_set(1, 2);
+    constexpr auto set_adapter = drop_while([](int) noexcept { return false; }, set_source);
+    constexpr auto set_result = into(Vector<int, 4>{}, cycle(set_adapter));
+    STATIC_REQUIRE(set_result.count() == 4U);
+    STATIC_REQUIRE(set_result(0U) == set_result(2U));
+    STATIC_REQUIRE(set_result(1U) == set_result(3U));
+    STATIC_REQUIRE(set_result(0U) != set_result(1U));
+    STATIC_REQUIRE((set_result(0U) == 1 && set_result(1U) == 2) ||
+                   (set_result(0U) == 2 && set_result(1U) == 1));
+
+    volatile int runtime_key_raw = 1;
+    volatile int runtime_value_raw = 10;
+    const int runtime_key = runtime_key_raw;
+    const int runtime_value = runtime_value_raw;
+    const auto runtime_map_source =
+        hash_map(runtime_key, runtime_value, runtime_key + 1, runtime_value + 10);
+    const auto runtime_map_adapter = take_while([](const auto&) noexcept { return true; }, runtime_map_source);
+    const auto runtime_map_result = into(Vector<Entry, 4>{}, cycle(runtime_map_adapter));
+    REQUIRE(runtime_map_result.count() == 4U);
+    REQUIRE(runtime_map_result(0U) == runtime_map_result(2U));
+    REQUIRE(runtime_map_result(1U) == runtime_map_result(3U));
+    REQUIRE(runtime_map_result(0U) != runtime_map_result(1U));
+    REQUIRE(((runtime_map_result(0U) == map_entry(1, 10) && runtime_map_result(1U) == map_entry(2, 20)) ||
+             (runtime_map_result(0U) == map_entry(2, 20) && runtime_map_result(1U) == map_entry(1, 10))));
+
+    const auto runtime_set_source = hash_set(runtime_key, runtime_key + 1);
+    const auto runtime_set_adapter = drop_while([](int) noexcept { return false; }, runtime_set_source);
+    const auto runtime_set_result = into(Vector<int, 4>{}, cycle(runtime_set_adapter));
+    REQUIRE(runtime_set_result.count() == 4U);
+    REQUIRE(runtime_set_result(0U) == runtime_set_result(2U));
+    REQUIRE(runtime_set_result(1U) == runtime_set_result(3U));
+    REQUIRE(runtime_set_result(0U) != runtime_set_result(1U));
+    REQUIRE(((runtime_set_result(0U) == 1 && runtime_set_result(1U) == 2) ||
+             (runtime_set_result(0U) == 2 && runtime_set_result(1U) == 1)));
+}
+
 TEST_CASE("Cycle repeats a bounded source value sequence and materializes bounded prefixes", "[cycle]") {
     using cljonic::Range;
     using cljonic::Set;

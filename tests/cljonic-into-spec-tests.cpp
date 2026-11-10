@@ -145,6 +145,71 @@ TEST_CASE("into and fits_into materialize a producer into a bounded destination"
     CHECK_FALSE(fits_into(populated_destination_for_composition, huge_source));
 }
 
+TEST_CASE("into and fits_into accept TakeWhile and DropWhile sources", "[into][fits-into]") {
+    using namespace cljonic;
+    using namespace cljonic::core;
+
+    TRACE_ID("invariant.ProducerMaterialization.IntoAndFitsIntoShareCompatibleSourceDomain");
+    TRACE_ID("invariant.ProducerMaterialization.FitsIntoPredictsIntoCompleteness");
+
+    constexpr auto source = Vector<int, 4>{1, 2, 4, 5};
+    constexpr auto prefix = take_while([](int value) noexcept { return value < 3; }, source);
+    constexpr auto suffix = drop_while([](int value) noexcept { return value < 3; }, source);
+    constexpr auto fitting_destination = Vector<int, 4>{9, 8};
+    constexpr auto constrained_destination = Vector<int, 3>{9, 8};
+
+    STATIC_REQUIRE(equal(into(fitting_destination, prefix), Vector<int, 4>{9, 8, 1, 2}));
+    STATIC_REQUIRE(equal(into(fitting_destination, suffix), Vector<int, 4>{9, 8, 4, 5}));
+    STATIC_REQUIRE(fits_into(fitting_destination, prefix));
+    STATIC_REQUIRE(fits_into(fitting_destination, suffix));
+    STATIC_REQUIRE_FALSE(fits_into(constrained_destination, prefix));
+    STATIC_REQUIRE_FALSE(fits_into(constrained_destination, suffix));
+    STATIC_REQUIRE(equal(into(constrained_destination, prefix), Vector<int, 3>{9, 8, 1}));
+    STATIC_REQUIRE(equal(into(constrained_destination, suffix), Vector<int, 3>{9, 8, 4}));
+    constexpr auto queue_destination = Queue<int, 4>{9};
+    constexpr auto constrained_queue_destination = Queue<int, 2>{9};
+    STATIC_REQUIRE(equal(into(queue_destination, prefix), Queue<int, 4>{9, 1, 2}));
+    STATIC_REQUIRE(equal(into(queue_destination, suffix), Queue<int, 4>{9, 4, 5}));
+    STATIC_REQUIRE(fits_into(queue_destination, prefix));
+    STATIC_REQUIRE(fits_into(queue_destination, suffix));
+    STATIC_REQUIRE_FALSE(fits_into(constrained_queue_destination, prefix));
+    STATIC_REQUIRE_FALSE(fits_into(constrained_queue_destination, suffix));
+    STATIC_REQUIRE(equal(into(constrained_queue_destination, prefix), Queue<int, 2>{9, 1}));
+    STATIC_REQUIRE(equal(into(constrained_queue_destination, suffix), Queue<int, 2>{9, 4}));
+    STATIC_REQUIRE(equal(queue_destination, Queue<int, 4>{9}));
+
+    volatile int runtime_limit_raw = 3;
+    const auto runtime_limit = runtime_limit_raw;
+    const auto runtime_source = Vector<int, 4>{1, 2, 4, 5};
+    const auto runtime_prefix =
+        take_while([runtime_limit](int value) noexcept { return value < runtime_limit; }, runtime_source);
+    const auto runtime_suffix =
+        drop_while([runtime_limit](int value) noexcept { return value < runtime_limit; }, runtime_source);
+    const auto runtime_fitting_destination = Vector<int, 4>{9, 8};
+    const auto runtime_constrained_destination = Vector<int, 3>{9, 8};
+    const auto runtime_queue_destination = Queue<int, 4>{9};
+    const auto runtime_constrained_queue_destination = Queue<int, 2>{9};
+
+    CHECK(equal(into(runtime_fitting_destination, runtime_prefix), Vector<int, 4>{9, 8, 1, 2}));
+    CHECK(equal(into(runtime_fitting_destination, runtime_suffix), Vector<int, 4>{9, 8, 4, 5}));
+    CHECK(fits_into(runtime_fitting_destination, runtime_prefix));
+    CHECK(fits_into(runtime_fitting_destination, runtime_suffix));
+    CHECK_FALSE(fits_into(runtime_constrained_destination, runtime_prefix));
+    CHECK_FALSE(fits_into(runtime_constrained_destination, runtime_suffix));
+    CHECK(equal(into(runtime_constrained_destination, runtime_prefix), Vector<int, 3>{9, 8, 1}));
+    CHECK(equal(into(runtime_constrained_destination, runtime_suffix), Vector<int, 3>{9, 8, 4}));
+    CHECK(equal(into(runtime_queue_destination, runtime_prefix), Queue<int, 4>{9, 1, 2}));
+    CHECK(equal(into(runtime_queue_destination, runtime_suffix), Queue<int, 4>{9, 4, 5}));
+    CHECK(fits_into(runtime_queue_destination, runtime_prefix));
+    CHECK(fits_into(runtime_queue_destination, runtime_suffix));
+    CHECK_FALSE(fits_into(runtime_constrained_queue_destination, runtime_prefix));
+    CHECK_FALSE(fits_into(runtime_constrained_queue_destination, runtime_suffix));
+    CHECK(equal(into(runtime_constrained_queue_destination, runtime_prefix), Queue<int, 2>{9, 1}));
+    CHECK(equal(into(runtime_constrained_queue_destination, runtime_suffix), Queue<int, 2>{9, 4}));
+    CHECK(equal(runtime_queue_destination, Queue<int, 4>{9}));
+    CHECK(equal(runtime_source, Vector<int, 4>{1, 2, 4, 5}));
+}
+
 TEST_CASE("into materializes each collection source without changing its inputs", "[into]") {
     using namespace cljonic;
     using namespace cljonic::core;
@@ -298,6 +363,52 @@ TEST_CASE("String materialization normalizes invalid runtime characters and cont
     CHECK(equal(source, Vector<char, 5>{'a', static_cast<char>(invalid_byte), 'b', '\0', 'c'}));
 }
 
+TEST_CASE("into and fits_into accept adapter sources for String destinations", "[into][fits-into]") {
+    using namespace cljonic;
+    using namespace cljonic::core;
+
+    TRACE_ID("invariant.ProducerMaterialization.IntoAndFitsIntoShareCompatibleSourceDomain");
+    TRACE_ID("invariant.ProducerMaterialization.FitsIntoPredictsIntoCompleteness");
+    TRACE_ID("invariant.ProducerMaterialization.FiniteStringPreflightUsesRemainingCapacity");
+
+    constexpr auto source = String<4>{"abc"};
+    constexpr auto prefix = take_while([](char value) noexcept { return value < 'c'; }, source);
+    constexpr auto suffix = drop_while([](char value) noexcept { return value < 'b'; }, source);
+    constexpr auto destination = String<4>{"x"};
+    constexpr auto constrained_destination = String<2>{"x"};
+    STATIC_REQUIRE(into(destination, prefix).view() == std::string_view{"xab"});
+    STATIC_REQUIRE(into(destination, suffix).view() == std::string_view{"xbc"});
+    STATIC_REQUIRE(fits_into(destination, prefix));
+    STATIC_REQUIRE(fits_into(destination, suffix));
+    STATIC_REQUIRE_FALSE(fits_into(constrained_destination, prefix));
+    STATIC_REQUIRE_FALSE(fits_into(constrained_destination, suffix));
+    STATIC_REQUIRE(into(constrained_destination, prefix).view() == std::string_view{"xa"});
+    STATIC_REQUIRE(into(constrained_destination, suffix).view() == std::string_view{"xb"});
+    STATIC_REQUIRE(destination.view() == std::string_view{"x"});
+    STATIC_REQUIRE(source.view() == std::string_view{"abc"});
+
+    volatile char runtime_prefix_limit_raw = 'c';
+    volatile char runtime_suffix_limit_raw = 'b';
+    const char runtime_prefix_limit = runtime_prefix_limit_raw;
+    const char runtime_suffix_limit = runtime_suffix_limit_raw;
+    const auto runtime_source = String<4>{"abc"};
+    const auto runtime_prefix =
+        take_while([runtime_prefix_limit](char value) noexcept { return value < runtime_prefix_limit; },
+                   runtime_source);
+    const auto runtime_suffix =
+        drop_while([runtime_suffix_limit](char value) noexcept { return value < runtime_suffix_limit; },
+                   runtime_source);
+    CHECK(into(destination, runtime_prefix).view() == std::string_view{"xab"});
+    CHECK(into(destination, runtime_suffix).view() == std::string_view{"xbc"});
+    CHECK(fits_into(destination, runtime_prefix));
+    CHECK(fits_into(destination, runtime_suffix));
+    CHECK_FALSE(fits_into(constrained_destination, runtime_prefix));
+    CHECK_FALSE(fits_into(constrained_destination, runtime_suffix));
+    CHECK(into(constrained_destination, runtime_prefix).view() == std::string_view{"xa"});
+    CHECK(into(constrained_destination, runtime_suffix).view() == std::string_view{"xb"});
+    CHECK(runtime_source.view() == std::string_view{"abc"});
+}
+
 TEST_CASE("into and fits_into preserve queue FIFO order and remaining capacity", "[into][fits-into]") {
     using namespace cljonic;
     using namespace cljonic::core;
@@ -389,6 +500,13 @@ TEST_CASE("Map materialization replaces keys in source order without skipping ca
     STATIC_REQUIRE(destination.count() == 1U);
     STATIC_REQUIRE(noexcept(into(destination, source)));
     STATIC_REQUIRE(noexcept(fits_into(destination, source)));
+    constexpr auto full_destination = Map<int, int, 2>{Entry{1, 10}, Entry{2, 20}};
+    constexpr auto repeated_replacements = Vector<Entry, 2>{Entry{1, 30}, Entry{1, 40}};
+    constexpr auto replacement_result = into(full_destination, repeated_replacements);
+    STATIC_REQUIRE(fits_into(full_destination, repeated_replacements));
+    STATIC_REQUIRE(replacement_result.count() == 2U);
+    STATIC_REQUIRE(replacement_result(1) == 40);
+    STATIC_REQUIRE(replacement_result(2) == 20);
     STATIC_REQUIRE(fits_into(Map<int, int, 0>{}, Vector<Entry, 0>{}));
     STATIC_REQUIRE_FALSE(fits_into(Map<int, int, 0>{}, Vector<Entry, 1>{Entry{1, 10}}));
     STATIC_REQUIRE(into(Map<int, int, 0>{}, source).count() == 0U);
@@ -413,6 +531,80 @@ TEST_CASE("Map materialization replaces keys in source order without skipping ca
     CHECK(fits_into(destination, map_source));
     CHECK(fits_into(full, repeat(3, Entry{1, 50})));
     CHECK(into(full, repeat(3, Entry{1, 50}))(1) == 50);
+}
+
+TEST_CASE("adapter materialization preserves insertion-sensitive preflight", "[into][fits-into]") {
+    using namespace cljonic;
+    using namespace cljonic::core;
+    using Entry = MapEntry<int, int>;
+
+    TRACE_ID("invariant.ProducerMaterialization.IntoSetAcceptsDuplicateValuesAsNoOpsWhenFull");
+    TRACE_ID("invariant.ProducerMaterialization.IntoMapAcceptsExistingKeyEntriesAsReplacementsWhenFull");
+    TRACE_ID("invariant.ProducerMaterialization.FiniteSetAndMapPreflightAccountsForExistingAndPriorSourceValues");
+    TRACE_ID("invariant.ProducerMaterialization.FitsIntoPredictsIntoCompleteness");
+
+    constexpr auto set_source = Vector<int, 4>{1, 2, 2, 3};
+    constexpr auto set_prefix = take_while([](int value) noexcept { return value < 3; }, set_source);
+    constexpr auto set_suffix = drop_while([](int value) noexcept { return value < 2; }, set_source);
+    constexpr auto prefix_set_destination = Set<int, 2>{1};
+    constexpr auto suffix_set_destination = Set<int, 2>{2};
+    STATIC_REQUIRE(fits_into(prefix_set_destination, set_prefix));
+    STATIC_REQUIRE(fits_into(suffix_set_destination, set_suffix));
+    STATIC_REQUIRE(equal(into(prefix_set_destination, set_prefix), Set<int, 2>{1, 2}));
+    STATIC_REQUIRE(equal(into(suffix_set_destination, set_suffix), Set<int, 2>{2, 3}));
+    STATIC_REQUIRE_FALSE(fits_into(Set<int, 1>{1}, set_prefix));
+    STATIC_REQUIRE_FALSE(fits_into(Set<int, 1>{2}, set_suffix));
+    STATIC_REQUIRE(equal(into(Set<int, 1>{1}, set_prefix), Set<int, 1>{1}));
+    STATIC_REQUIRE(equal(into(Set<int, 1>{2}, set_suffix), Set<int, 1>{2}));
+
+    constexpr auto map_source =
+        Vector<Entry, 4>{Entry{1, 10}, Entry{1, 11}, Entry{2, 20}, Entry{2, 22}};
+    constexpr auto map_prefix =
+        take_while([](const Entry& entry) noexcept { return entry.key < 2; }, map_source);
+    constexpr auto map_suffix =
+        drop_while([](const Entry& entry) noexcept { return entry.key < 2; }, map_source);
+    constexpr auto prefix_map_destination = Map<int, int, 1>{Entry{1, 0}};
+    constexpr auto suffix_map_destination = Map<int, int, 1>{Entry{2, 0}};
+    STATIC_REQUIRE(fits_into(prefix_map_destination, map_prefix));
+    STATIC_REQUIRE(fits_into(suffix_map_destination, map_suffix));
+    STATIC_REQUIRE(into(prefix_map_destination, map_prefix)(1) == 11);
+    STATIC_REQUIRE(into(suffix_map_destination, map_suffix)(2) == 22);
+    constexpr auto unrelated_map_destination = Map<int, int, 1>{Entry{9, 90}};
+    STATIC_REQUIRE_FALSE(fits_into(unrelated_map_destination, map_prefix));
+    STATIC_REQUIRE_FALSE(fits_into(unrelated_map_destination, map_suffix));
+    STATIC_REQUIRE(equal(into(unrelated_map_destination, map_prefix), unrelated_map_destination));
+    STATIC_REQUIRE(equal(into(unrelated_map_destination, map_suffix), unrelated_map_destination));
+
+    volatile int runtime_set_limit = 3;
+    const auto set_limit = runtime_set_limit;
+    const auto runtime_set_source = Vector<int, 4>{1, 2, 2, 3};
+    const auto runtime_set_prefix =
+        take_while([set_limit](int value) noexcept { return value < set_limit; }, runtime_set_source);
+    const auto runtime_set_suffix =
+        drop_while([set_limit](int value) noexcept { return value < 2; }, runtime_set_source);
+    CHECK(fits_into(prefix_set_destination, runtime_set_prefix));
+    CHECK(fits_into(suffix_set_destination, runtime_set_suffix));
+    CHECK(equal(into(prefix_set_destination, runtime_set_prefix), Set<int, 2>{1, 2}));
+    CHECK(equal(into(suffix_set_destination, runtime_set_suffix), Set<int, 2>{2, 3}));
+    CHECK_FALSE(fits_into(Set<int, 1>{1}, runtime_set_prefix));
+    CHECK_FALSE(fits_into(Set<int, 1>{2}, runtime_set_suffix));
+
+    volatile int runtime_map_limit = 2;
+    const auto map_limit = runtime_map_limit;
+    const auto runtime_map_source =
+        Vector<Entry, 4>{Entry{1, 10}, Entry{1, 11}, Entry{2, 20}, Entry{2, 22}};
+    const auto runtime_map_prefix =
+        take_while([map_limit](const Entry& entry) noexcept { return entry.key < map_limit; }, runtime_map_source);
+    const auto runtime_map_suffix =
+        drop_while([map_limit](const Entry& entry) noexcept { return entry.key < map_limit; }, runtime_map_source);
+    CHECK(fits_into(prefix_map_destination, runtime_map_prefix));
+    CHECK(fits_into(suffix_map_destination, runtime_map_suffix));
+    CHECK(into(prefix_map_destination, runtime_map_prefix)(1) == 11);
+    CHECK(into(suffix_map_destination, runtime_map_suffix)(2) == 22);
+    CHECK_FALSE(fits_into(unrelated_map_destination, runtime_map_prefix));
+    CHECK_FALSE(fits_into(unrelated_map_destination, runtime_map_suffix));
+    CHECK(equal(runtime_map_source, map_source));
+    CHECK(equal(runtime_set_source, set_source));
 }
 
 TEST_CASE("value-sensitive preflight and materialization independently evaluate finite producers",
@@ -462,6 +654,28 @@ TEST_CASE("value-sensitive preflight and materialization independently evaluate 
     CHECK(calls == 7);
     CHECK(fits_into(Set<int, 0>{}, repeatedly(0, [&calls] noexcept { return ++calls; })));
     CHECK(calls == 7);
+
+    calls = 0;
+    const auto adapter_source = Vector<int, 4>{1, 2, 4, 5};
+    const auto prefix = take_while([&calls](int value) noexcept {
+        ++calls;
+        return value < 3;
+    }, adapter_source);
+    CHECK(fits_into(Vector<int, 4>{}, prefix));
+    CHECK(calls == 3);
+    CHECK(equal(into(Vector<int, 4>{}, prefix), Vector<int, 4>{1, 2}));
+    CHECK(calls == 6);
+
+    calls = 0;
+    const auto suffix = drop_while([&calls](int value) noexcept {
+        ++calls;
+        return value < 3;
+    }, adapter_source);
+    CHECK(fits_into(Vector<int, 4>{}, suffix));
+    CHECK(calls == 3);
+    CHECK(equal(into(Vector<int, 4>{}, suffix), Vector<int, 4>{4, 5}));
+    CHECK(calls == 6);
+    CHECK(equal(adapter_source, Vector<int, 4>{1, 2, 4, 5}));
 }
 
 TEST_CASE("unbounded duplicate and replacement materialization stays traversal bounded", "[into][fits-into]") {

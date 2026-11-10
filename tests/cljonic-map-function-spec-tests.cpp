@@ -117,6 +117,42 @@ TEST_CASE("map applies a transforming function over one or more cljonic sources"
     STATIC_REQUIRE(first(iterate_values) == 0);
     STATIC_REQUIRE(equal(map(inc, repeatedly(2, []() noexcept { return 9; })), vector(10, 10)));
 
+    constexpr auto adapter_source = vector(1, 2, 4);
+    constexpr auto adapter_prefix =
+        cljonic::core::take_while([](int value) noexcept { return value < 3; }, adapter_source);
+    constexpr auto adapter_suffix =
+        cljonic::core::drop_while([](int value) noexcept { return value < 3; }, adapter_source);
+    STATIC_REQUIRE(equal(map(inc, adapter_prefix), vector(2, 3)));
+    STATIC_REQUIRE(equal(map(inc, adapter_suffix), vector(5)));
+
+    constexpr auto map_adapter_prefix =
+        cljonic::core::take_while([](const auto&) noexcept { return true; }, map_source);
+    constexpr auto map_adapter_suffix =
+        cljonic::core::drop_while([](const auto&) noexcept { return false; }, map_source);
+    constexpr auto mapped_map_prefix = map(entry_value, map_adapter_prefix);
+    constexpr auto mapped_map_suffix = map(entry_value, map_adapter_suffix);
+    STATIC_REQUIRE(mapped_map_prefix.count() == 2U);
+    STATIC_REQUIRE(mapped_map_suffix.count() == 2U);
+    STATIC_REQUIRE((equal(mapped_map_prefix, vector(10, 20)) || equal(mapped_map_prefix, vector(20, 10))));
+    STATIC_REQUIRE((equal(mapped_map_suffix, vector(10, 20)) || equal(mapped_map_suffix, vector(20, 10))));
+
+    constexpr auto set_adapter_prefix =
+        cljonic::core::take_while([](int) noexcept { return true; }, set_source);
+    constexpr auto set_adapter_suffix =
+        cljonic::core::drop_while([](int) noexcept { return false; }, set_source);
+    constexpr auto mapped_set_prefix = map(identity, set_adapter_prefix);
+    constexpr auto mapped_set_suffix = map(identity, set_adapter_suffix);
+    STATIC_REQUIRE(mapped_set_prefix.count() == 3U);
+    STATIC_REQUIRE(mapped_set_suffix.count() == 3U);
+    STATIC_REQUIRE(
+        (equal(mapped_set_prefix, vector(1, 2, 3)) || equal(mapped_set_prefix, vector(1, 3, 2)) ||
+         equal(mapped_set_prefix, vector(2, 1, 3)) || equal(mapped_set_prefix, vector(2, 3, 1)) ||
+         equal(mapped_set_prefix, vector(3, 1, 2)) || equal(mapped_set_prefix, vector(3, 2, 1))));
+    STATIC_REQUIRE(
+        (equal(mapped_set_suffix, vector(1, 2, 3)) || equal(mapped_set_suffix, vector(1, 3, 2)) ||
+         equal(mapped_set_suffix, vector(2, 1, 3)) || equal(mapped_set_suffix, vector(2, 3, 1)) ||
+         equal(mapped_set_suffix, vector(3, 1, 2)) || equal(mapped_set_suffix, vector(3, 2, 1))));
+
     // Producer result capacity is the configured observation cap.
     STATIC_REQUIRE(std::is_same_v<const Vector<int, 1000>, const decltype(map(inc, repeat(3, 7)))>);
 
@@ -151,7 +187,12 @@ TEST_CASE("map applies a transforming function over one or more cljonic sources"
     constexpr auto widen_double = [](double value) noexcept { return value; };
     STATIC_REQUIRE(equal(map(widen_long, values), vector(2L, 3L, 4L))); // int -> long
     STATIC_REQUIRE(std::is_same_v<const Vector<long, 3>, const decltype(map(widen_long, values))>);
-    STATIC_REQUIRE(std::is_same_v<const Vector<double, 3>, const decltype(map(widen_double, values))>);
+    constexpr auto float_values = vector(1.0F, 2.0F, 3.0F);
+    constexpr auto mapped_doubles = map(widen_double, float_values);
+    STATIC_REQUIRE(std::is_same_v<const Vector<double, 3>, const decltype(mapped_doubles)>);
+    STATIC_REQUIRE(mapped_doubles(0) == 1.0);
+    STATIC_REQUIRE(mapped_doubles(1) == 2.0);
+    STATIC_REQUIRE(mapped_doubles(2) == 3.0);
 
     constexpr auto generic_identity = [](auto value) noexcept { return value; };
     STATIC_REQUIRE(equal(map(generic_identity, vector<long, 2>(1L, 2L)), vector(1L, 2L)));
@@ -180,12 +221,53 @@ TEST_CASE("map applies a transforming function over one or more cljonic sources"
     REQUIRE(runtime_pairs(1) == 22);
     REQUIRE(runtime_pairs(2) == 33);
     REQUIRE(equal(runtime_singles, vector(2, 3, 4)));
+    const auto runtime_adapter_source = vector(runtime_base, runtime_base + 1, runtime_base + 3);
+    const auto runtime_adapter_prefix =
+        cljonic::core::take_while([](int value) noexcept { return value < 3; }, runtime_adapter_source);
+    const auto runtime_adapter_suffix =
+        cljonic::core::drop_while([](int value) noexcept { return value < 3; }, runtime_adapter_source);
+    REQUIRE(equal(map(inc, runtime_adapter_prefix), vector(2, 3)));
+    REQUIRE(equal(map(inc, runtime_adapter_suffix), vector(5)));
 
     // Map runtime mapping preserves unordered traversal semantics.
     const auto runtime_map = hash_map(runtime_base, runtime_base * 10, runtime_base + 1, (runtime_base + 1) * 10);
     const auto runtime_mapped = map(entry_value, runtime_map);
     REQUIRE(count(runtime_mapped) == 2);
     REQUIRE((runtime_mapped(0) == 10 || runtime_mapped(0) == 20));
+    const auto runtime_map_adapter_prefix =
+        cljonic::core::take_while([](const auto&) noexcept { return true; }, runtime_map);
+    const auto runtime_map_adapter_suffix =
+        cljonic::core::drop_while([](const auto&) noexcept { return false; }, runtime_map);
+    const auto runtime_mapped_map_prefix = map(entry_value, runtime_map_adapter_prefix);
+    const auto runtime_mapped_map_suffix = map(entry_value, runtime_map_adapter_suffix);
+    REQUIRE(count(runtime_mapped_map_prefix) == 2U);
+    REQUIRE(count(runtime_mapped_map_suffix) == 2U);
+    REQUIRE((equal(runtime_mapped_map_prefix, vector(runtime_base * 10, (runtime_base + 1) * 10)) ||
+             equal(runtime_mapped_map_prefix, vector((runtime_base + 1) * 10, runtime_base * 10))));
+    REQUIRE((equal(runtime_mapped_map_suffix, vector(runtime_base * 10, (runtime_base + 1) * 10)) ||
+             equal(runtime_mapped_map_suffix, vector((runtime_base + 1) * 10, runtime_base * 10))));
+
+    const auto runtime_set = hash_set(runtime_base, runtime_base + 1, runtime_base + 2);
+    const auto runtime_set_adapter_prefix =
+        cljonic::core::take_while([](int) noexcept { return true; }, runtime_set);
+    const auto runtime_set_adapter_suffix =
+        cljonic::core::drop_while([](int) noexcept { return false; }, runtime_set);
+    const auto runtime_mapped_set_prefix = map(identity, runtime_set_adapter_prefix);
+    const auto runtime_mapped_set_suffix = map(identity, runtime_set_adapter_suffix);
+    REQUIRE(count(runtime_mapped_set_prefix) == 3U);
+    REQUIRE(count(runtime_mapped_set_suffix) == 3U);
+    REQUIRE((equal(runtime_mapped_set_prefix, vector(runtime_base, runtime_base + 1, runtime_base + 2)) ||
+             equal(runtime_mapped_set_prefix, vector(runtime_base, runtime_base + 2, runtime_base + 1)) ||
+             equal(runtime_mapped_set_prefix, vector(runtime_base + 1, runtime_base, runtime_base + 2)) ||
+             equal(runtime_mapped_set_prefix, vector(runtime_base + 1, runtime_base + 2, runtime_base)) ||
+             equal(runtime_mapped_set_prefix, vector(runtime_base + 2, runtime_base, runtime_base + 1)) ||
+             equal(runtime_mapped_set_prefix, vector(runtime_base + 2, runtime_base + 1, runtime_base))));
+    REQUIRE((equal(runtime_mapped_set_suffix, vector(runtime_base, runtime_base + 1, runtime_base + 2)) ||
+             equal(runtime_mapped_set_suffix, vector(runtime_base, runtime_base + 2, runtime_base + 1)) ||
+             equal(runtime_mapped_set_suffix, vector(runtime_base + 1, runtime_base, runtime_base + 2)) ||
+             equal(runtime_mapped_set_suffix, vector(runtime_base + 1, runtime_base + 2, runtime_base)) ||
+             equal(runtime_mapped_set_suffix, vector(runtime_base + 2, runtime_base, runtime_base + 1)) ||
+             equal(runtime_mapped_set_suffix, vector(runtime_base + 2, runtime_base + 1, runtime_base))));
 
     // noexcept: every admitted call is non-throwing.
     STATIC_REQUIRE(noexcept(map(inc, values)));

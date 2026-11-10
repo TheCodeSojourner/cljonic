@@ -19,6 +19,8 @@ TEST_CASE("First free function operations", "[first]") {
     using cljonic::Set;
     using cljonic::String;
     using cljonic::Vector;
+    using cljonic::core::assoc;
+    using cljonic::core::conj;
     using cljonic::core::count;
     using cljonic::core::first;
 
@@ -49,10 +51,13 @@ TEST_CASE("First free function operations", "[first]") {
     STATIC_REQUIRE(first(Queue<int, 4>{5, 6}) == 5);
 
     TRACE_ID("invariant.First.MapReturnsValueSemanticEntry");
-    STATIC_REQUIRE(first(Map<int, int, 4>{MapEntry<int, int>{1, 100}}) == MapEntry<int, int>{1, 100});
+    constexpr auto map_value = assoc(assoc(Map<int, int, 4>{}, 1, 100), 2, 200);
+    STATIC_REQUIRE((first(map_value) == MapEntry<int, int>{1, 100} ||
+                    first(map_value) == MapEntry<int, int>{2, 200}));
 
     TRACE_ID("invariant.First.SetReturnsStoredElement");
-    STATIC_REQUIRE(first(Set<int, 4>{7}) == 7);
+    constexpr auto set_value = conj(conj(Set<int, 4>{}, 7), 8);
+    STATIC_REQUIRE((first(set_value) == 7 || first(set_value) == 8));
 
     TRACE_ID("invariant.First.MapEntryReturnsKey");
     STATIC_REQUIRE(first(MapEntry<int, int>{3, 300}) == 3);
@@ -66,10 +71,9 @@ TEST_CASE("First free function operations", "[first]") {
     STATIC_REQUIRE(first(String<4>{}) == '\0');
 
     TRACE_ID("invariant.First.MapAndSetTraversalOrderIsNotSemanticallySignificant");
-    constexpr Map<int, int, 4> map_value{MapEntry<int, int>{1, 100}};
-    constexpr Set<int, 4> set_value{7};
-    STATIC_REQUIRE(first(map_value) == MapEntry<int, int>{1, 100});
-    STATIC_REQUIRE(first(set_value) == 7);
+    STATIC_REQUIRE((first(map_value) == MapEntry<int, int>{1, 100} ||
+                    first(map_value) == MapEntry<int, int>{2, 200}));
+    STATIC_REQUIRE((first(set_value) == 7 || first(set_value) == 8));
 
     TRACE_ID("invariant.First.LeavesInputUnchanged");
     constexpr Vector<int, 4> source{10, 20};
@@ -109,16 +113,13 @@ TEST_CASE("First free function operations", "[first]") {
     REQUIRE(first(rv) == 42);
     REQUIRE(count(rv) == 2U);
 
-    volatile int map_key_raw = 5;
-    volatile int map_mapped_value_raw = 500;
-    int map_key = map_key_raw;
-    int map_mapped_value = map_mapped_value_raw;
-    auto rm = Map<int, int, 4>{MapEntry<int, int>{map_key, map_mapped_value}};
-    REQUIRE(first(rm) == MapEntry<int, int>{5, 500});
-    REQUIRE(count(rm) == 1U);
+    auto rm = assoc(assoc(Map<int, int, 4>{}, 5, 500), 6, 600);
+    REQUIRE((first(rm) == MapEntry<int, int>{5, 500} || first(rm) == MapEntry<int, int>{6, 600}));
+    REQUIRE(count(rm) == 2U);
 
-    auto rs = Set<int, 4>{7};
-    REQUIRE(first(rs) == 7);
+    auto rs = conj(conj(Set<int, 4>{}, 7), 8);
+    REQUIRE((first(rs) == 7 || first(rs) == 8));
+    REQUIRE(count(rs) == 2U);
 
     volatile int queue_value_raw = 11;
     int queue_value = queue_value_raw;
@@ -178,6 +179,20 @@ TEST_CASE("First observes every producer family by owning element value", "[firs
     STATIC_REQUIRE(first(take_while([](char) noexcept { return true; }, string("AB"))) == 'A');
     STATIC_REQUIRE(first(drop_while([](int n) noexcept { return n < 5; }, queue(3, 5, 6))) == 5);
     STATIC_REQUIRE(first(take_while([](int) noexcept { return true; }, hash_set(7))) == 7);
+    constexpr auto unordered_map_source = hash_map(1, 10, 2, 20);
+    STATIC_REQUIRE((first(take_while([](const auto&) noexcept { return true; }, unordered_map_source)) ==
+                       map_entry(1, 10) ||
+                   first(take_while([](const auto&) noexcept { return true; }, unordered_map_source)) ==
+                       map_entry(2, 20)));
+    STATIC_REQUIRE((first(drop_while([](const auto&) noexcept { return false; }, unordered_map_source)) ==
+                       map_entry(1, 10) ||
+                   first(drop_while([](const auto&) noexcept { return false; }, unordered_map_source)) ==
+                       map_entry(2, 20)));
+    constexpr auto unordered_set_source = hash_set(1, 2);
+    STATIC_REQUIRE((first(take_while([](int) noexcept { return true; }, unordered_set_source)) == 1 ||
+                   first(take_while([](int) noexcept { return true; }, unordered_set_source)) == 2));
+    STATIC_REQUIRE((first(drop_while([](int) noexcept { return false; }, unordered_set_source)) == 1 ||
+                   first(drop_while([](int) noexcept { return false; }, unordered_set_source)) == 2));
     STATIC_REQUIRE(first(repeat(vector(1, 2)))(0) == 1);
     struct Element {
         int value = 42;
@@ -194,6 +209,25 @@ TEST_CASE("First observes every producer family by owning element value", "[firs
     STATIC_REQUIRE(!std::is_copy_assignable_v<std::remove_cv_t<decltype(adapter)>>);
     REQUIRE(first(adapter) == value - 1);
     REQUIRE(first(cycle(adapter)) == value - 1);
+    volatile int first_key_raw = 11;
+    volatile int first_value_raw = 110;
+    const int first_key = first_key_raw;
+    const int first_value = first_value_raw;
+    const auto runtime_map_source =
+        hash_map(first_key, first_value, first_key + 1, first_value + 10);
+    const auto runtime_map_take =
+        take_while([](const auto&) noexcept { return true; }, runtime_map_source);
+    const auto runtime_map_drop =
+        drop_while([](const auto&) noexcept { return false; }, runtime_map_source);
+    REQUIRE((first(runtime_map_take) == map_entry(first_key, first_value) ||
+             first(runtime_map_take) == map_entry(first_key + 1, first_value + 10)));
+    REQUIRE((first(runtime_map_drop) == map_entry(first_key, first_value) ||
+             first(runtime_map_drop) == map_entry(first_key + 1, first_value + 10)));
+    const auto runtime_set_source = hash_set(first_key, first_key + 1);
+    const auto runtime_set_take = take_while([](int) noexcept { return true; }, runtime_set_source);
+    const auto runtime_set_drop = drop_while([](int) noexcept { return false; }, runtime_set_source);
+    REQUIRE((first(runtime_set_take) == first_key || first(runtime_set_take) == first_key + 1));
+    REQUIRE((first(runtime_set_drop) == first_key || first(runtime_set_drop) == first_key + 1));
     const auto source = repeat(vector(value, value + 1));
     auto result = first(source);
     result = assoc(result, 0, 99);

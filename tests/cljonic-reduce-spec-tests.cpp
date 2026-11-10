@@ -163,6 +163,16 @@ TEST_CASE("reduce folds a cljonic source into one accumulator value", "[reduce][
     STATIC_REQUIRE(reduce(entry_total, 0, map_source) == 60);
     constexpr auto set_source = hash_set(1, 2, 3);
     STATIC_REQUIRE(reduce(add, 0, set_source) == 6);
+    constexpr auto map_adapter_prefix =
+        cljonic::core::take_while([](const auto&) noexcept { return true; }, map_source);
+    constexpr auto map_adapter_suffix =
+        cljonic::core::drop_while([](const auto&) noexcept { return false; }, map_source);
+    STATIC_REQUIRE(reduce(entry_total, 0, map_adapter_prefix) == 60);
+    STATIC_REQUIRE(reduce(entry_total, 0, map_adapter_suffix) == 60);
+    constexpr auto set_adapter_prefix = cljonic::core::take_while([](int) noexcept { return true; }, set_source);
+    constexpr auto set_adapter_suffix = cljonic::core::drop_while([](int) noexcept { return false; }, set_source);
+    STATIC_REQUIRE(reduce(add, 0, set_adapter_prefix) == 6);
+    STATIC_REQUIRE(reduce(add, 0, set_adapter_suffix) == 6);
 
     // ------------------------------------------------------------------------
     // Producers, finite and unbounded. The observed count is the source count
@@ -177,6 +187,13 @@ TEST_CASE("reduce folds a cljonic source into one accumulator value", "[reduce][
     STATIC_REQUIRE(cap == 1000);
     STATIC_REQUIRE(reduce(add, 0, cycle(vector(1, 2))) == 1500); // 500 ones + 500 twos
     STATIC_REQUIRE(reduce(add, 0, iterate([](int value) noexcept { return value + 1; }, 0)) == 499500);
+    constexpr auto adapter_source = vector(1, 2, 4);
+    constexpr auto adapter_prefix =
+        cljonic::core::take_while([](int value) noexcept { return value < 3; }, adapter_source);
+    constexpr auto adapter_suffix =
+        cljonic::core::drop_while([](int value) noexcept { return value < 3; }, adapter_source);
+    STATIC_REQUIRE(reduce(add, adapter_prefix) == 3);
+    STATIC_REQUIRE(reduce(add, adapter_suffix) == 4);
 
     // ------------------------------------------------------------------------
     // The result is the accumulator value itself, and every source value
@@ -218,15 +235,36 @@ TEST_CASE("reduce folds a cljonic source into one accumulator value", "[reduce][
     const auto runtime_values = vector(runtime_base, runtime_base + 1, runtime_base + 2);
     const auto runtime_empty = vector<int, 0>();
     const auto runtime_queue = queue(runtime_base, runtime_base + 1, runtime_base + 2);
+    const auto runtime_adapter_source = vector(runtime_base, runtime_base + 1, runtime_base + 3);
+    const auto runtime_adapter_prefix =
+        cljonic::core::take_while([](int value) noexcept { return value < 3; }, runtime_adapter_source);
+    const auto runtime_adapter_suffix =
+        cljonic::core::drop_while([](int value) noexcept { return value < 3; }, runtime_adapter_source);
 
     REQUIRE(reduce(add, runtime_empty) == 0);
     REQUIRE(reduce(add, runtime_values) == 6);
     REQUIRE(reduce(add, runtime_base * 10, runtime_values) == 16);
     REQUIRE(reduce(add, runtime_queue) == 6);
+    REQUIRE(reduce(add, runtime_adapter_prefix) == 3);
+    REQUIRE(reduce(add, runtime_adapter_suffix) == 4);
     REQUIRE(cljonic::core::equal(runtime_values, vector(1, 2, 3)));
 
     const auto runtime_set = hash_set(runtime_base, runtime_base + 1, runtime_base + 2);
     REQUIRE(reduce(add, 0, runtime_set) == 6);
+    const auto runtime_map = hash_map(runtime_base, runtime_base * 10, runtime_base + 1, (runtime_base + 1) * 10,
+                                      runtime_base + 2, (runtime_base + 2) * 10);
+    const auto runtime_map_adapter_prefix =
+        cljonic::core::take_while([](const auto&) noexcept { return true; }, runtime_map);
+    const auto runtime_map_adapter_suffix =
+        cljonic::core::drop_while([](const auto&) noexcept { return false; }, runtime_map);
+    REQUIRE(reduce(entry_total, 0, runtime_map_adapter_prefix) == 60);
+    REQUIRE(reduce(entry_total, 0, runtime_map_adapter_suffix) == 60);
+    const auto runtime_set_adapter_prefix =
+        cljonic::core::take_while([](int) noexcept { return true; }, runtime_set);
+    const auto runtime_set_adapter_suffix =
+        cljonic::core::drop_while([](int) noexcept { return false; }, runtime_set);
+    REQUIRE(reduce(add, 0, runtime_set_adapter_prefix) == 6);
+    REQUIRE(reduce(add, 0, runtime_set_adapter_suffix) == 6);
 
     const auto runtime_generic = reduce(generic_add, runtime_base, runtime_values);
     REQUIRE(runtime_generic == 7);

@@ -10,6 +10,7 @@ TEST_CASE("Count free function operations", "[count]") {
     using cljonic::Range;
     using cljonic::Repeat;
     using cljonic::Set;
+    using cljonic::String;
     using cljonic::Vector;
     using cljonic::core::assoc;
     using cljonic::core::conj;
@@ -33,6 +34,9 @@ TEST_CASE("Count free function operations", "[count]") {
 
     constexpr Vector<int, 4> v{1, 2, 3};
     STATIC_REQUIRE(count(v) == 3U);
+    constexpr String<8> text{"abc"};
+    STATIC_REQUIRE(count(text) == 3U);
+    STATIC_REQUIRE(count(String<8>{}) == 0U);
 
     constexpr Set<int, 4> s{};
     constexpr auto s1 = conj(s, 10);
@@ -54,6 +58,8 @@ TEST_CASE("Count free function operations", "[count]") {
     int val = val_raw;
     auto rv = Vector<int, 4>{1, 2};
     REQUIRE(count(rv) == 2U);
+    REQUIRE(count(String<8>{"xy"}) == 2U);
+    REQUIRE(count(String<8>{}) == 0U);
     auto rs = Set<int, 4>{};
     REQUIRE(count(conj(rs, val)) == 1U);
 }
@@ -63,8 +69,10 @@ TEST_CASE("Count free function reports producer observations", "[count][producer
     using cljonic::Repeat;
     using cljonic::core::count;
     using cljonic::core::cycle;
+    using cljonic::core::drop_while;
     using cljonic::core::iterate;
     using cljonic::core::repeatedly;
+    using cljonic::core::take_while;
 
     TRACE_ID("invariant.Count.FiniteProducerCountIsExact");
     TRACE_ID("invariant.Count.UnboundedProducerCountIsObservableCap");
@@ -72,9 +80,14 @@ TEST_CASE("Count free function reports producer observations", "[count][producer
     constexpr auto finite_range = Range{0, 5};
     constexpr auto finite_repeat = Repeat{3U, 7};
     constexpr auto finite_repeatedly = repeatedly(3U, []() constexpr noexcept { return 42; });
+    constexpr auto below_three = [](int value) constexpr noexcept { return value < 3; };
+    constexpr auto finite_prefix = take_while(below_three, cljonic::core::vector(1, 2, 4));
+    constexpr auto finite_suffix = drop_while(below_three, cljonic::core::vector(1, 2, 4));
     STATIC_REQUIRE(count(finite_range) == 5U);
     STATIC_REQUIRE(count(finite_repeat) == 3U);
     STATIC_REQUIRE(count(finite_repeatedly) == 3U);
+    STATIC_REQUIRE(count(finite_prefix) == 2U);
+    STATIC_REQUIRE(count(finite_suffix) == 1U);
 
     constexpr auto observation_cap = cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
     constexpr auto unbounded_range = Range{0, 0, 0};
@@ -90,4 +103,59 @@ TEST_CASE("Count free function reports producer observations", "[count][producer
 
     const auto runtime_producer = Range{2, 6};
     REQUIRE(count(runtime_producer) == 4U);
+    const auto runtime_prefix = take_while(below_three, cljonic::core::vector(1, 2, 4));
+    const auto runtime_suffix = drop_while(below_three, cljonic::core::vector(1, 2, 4));
+    REQUIRE(count(runtime_prefix) == 2U);
+    REQUIRE(count(runtime_suffix) == 1U);
+}
+
+TEST_CASE("Count observes unordered-source TakeWhile and DropWhile adapters", "[count][adapter]") {
+    using namespace cljonic;
+    using namespace cljonic::core;
+
+    constexpr auto map_source = hash_map(1, 10, 2, 20);
+    constexpr auto map_prefix = take_while([](const auto&) constexpr noexcept { return true; }, map_source);
+    constexpr auto map_empty_prefix = take_while([](const auto&) constexpr noexcept { return false; }, map_source);
+    constexpr auto map_suffix = drop_while([](const auto&) constexpr noexcept { return false; }, map_source);
+    constexpr auto map_empty_suffix = drop_while([](const auto&) constexpr noexcept { return true; }, map_source);
+    constexpr auto set_source = hash_set(1, 2);
+    constexpr auto set_prefix = take_while([](int) constexpr noexcept { return true; }, set_source);
+    constexpr auto set_empty_prefix = take_while([](int) constexpr noexcept { return false; }, set_source);
+    constexpr auto set_suffix = drop_while([](int) constexpr noexcept { return false; }, set_source);
+    constexpr auto set_empty_suffix = drop_while([](int) constexpr noexcept { return true; }, set_source);
+
+    STATIC_REQUIRE(count(map_prefix) == 2U);
+    STATIC_REQUIRE(count(map_empty_prefix) == 0U);
+    STATIC_REQUIRE(count(map_suffix) == 2U);
+    STATIC_REQUIRE(count(map_empty_suffix) == 0U);
+    STATIC_REQUIRE(count(set_prefix) == 2U);
+    STATIC_REQUIRE(count(set_empty_prefix) == 0U);
+    STATIC_REQUIRE(count(set_suffix) == 2U);
+    STATIC_REQUIRE(count(set_empty_suffix) == 0U);
+
+    volatile int raw = 7;
+    const int value = raw;
+    const auto runtime_map_source = hash_map(value, value + 10, value + 1, value + 20);
+    const auto runtime_map_prefix =
+        take_while([](const auto&) noexcept { return true; }, runtime_map_source);
+    const auto runtime_map_empty_prefix =
+        take_while([](const auto&) noexcept { return false; }, runtime_map_source);
+    const auto runtime_map_suffix =
+        drop_while([](const auto&) noexcept { return false; }, runtime_map_source);
+    const auto runtime_map_empty_suffix =
+        drop_while([](const auto&) noexcept { return true; }, runtime_map_source);
+    const auto runtime_set_source = hash_set(value, value + 1);
+    const auto runtime_set_prefix = take_while([](int) noexcept { return true; }, runtime_set_source);
+    const auto runtime_set_empty_prefix = take_while([](int) noexcept { return false; }, runtime_set_source);
+    const auto runtime_set_suffix = drop_while([](int) noexcept { return false; }, runtime_set_source);
+    const auto runtime_set_empty_suffix = drop_while([](int) noexcept { return true; }, runtime_set_source);
+
+    REQUIRE(count(runtime_map_prefix) == 2U);
+    REQUIRE(count(runtime_map_empty_prefix) == 0U);
+    REQUIRE(count(runtime_map_suffix) == 2U);
+    REQUIRE(count(runtime_map_empty_suffix) == 0U);
+    REQUIRE(count(runtime_set_prefix) == 2U);
+    REQUIRE(count(runtime_set_empty_prefix) == 0U);
+    REQUIRE(count(runtime_set_suffix) == 2U);
+    REQUIRE(count(runtime_set_empty_suffix) == 0U);
 }

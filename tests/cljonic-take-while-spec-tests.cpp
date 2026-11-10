@@ -45,6 +45,11 @@ TEST_CASE("TakeWhile owns finite source prefixes with exact counts", "[take-whil
     STATIC_REQUIRE(std::same_as<typename decltype(prefix)::value_type, int>);
     STATIC_REQUIRE(prefix.is_finite());
     STATIC_REQUIRE(prefix.count() == 2);
+    constexpr auto adapter_observation_cap = cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
+    constexpr auto unbounded_prefix =
+        cljonic::core::take_while([](int) noexcept { return true; }, cljonic::core::repeat(7));
+    STATIC_REQUIRE(unbounded_prefix.is_finite());
+    STATIC_REQUIRE(unbounded_prefix.count() == adapter_observation_cap);
     STATIC_REQUIRE(cljonic::core::equal(prefix, cljonic::core::vector(1, 2)));
     STATIC_REQUIRE(!cljonic::core::is_empty(prefix));
     STATIC_REQUIRE(cljonic::core::is_empty(cljonic::core::take_while(below_three, cljonic::core::vector(4, 1))));
@@ -57,10 +62,24 @@ TEST_CASE("TakeWhile owns finite source prefixes with exact counts", "[take-whil
     STATIC_REQUIRE(cljonic::core::equal(
         cljonic::core::take_while([](char c) noexcept { return c < 'c'; }, cljonic::core::string<4>("abcd")),
         cljonic::core::vector('a', 'b')));
-    STATIC_REQUIRE(
-        cljonic::core::take_while([](auto) noexcept { return true; }, cljonic::core::hash_map(1, 2)).count() == 1);
-    STATIC_REQUIRE(
-        cljonic::core::take_while([](auto) noexcept { return true; }, cljonic::core::hash_set(1, 2)).count() == 2);
+    constexpr auto keep_all = [](const auto&) noexcept { return true; };
+    constexpr auto all_map_source = cljonic::core::hash_map(1, 10, 2, 20);
+    constexpr auto retained_map =
+        cljonic::core::into(cljonic::core::hash_map<int, int, 2>(),
+                            cljonic::core::take_while(keep_all, all_map_source));
+    STATIC_REQUIRE(retained_map.count() == 2);
+    STATIC_REQUIRE(retained_map.contains(1));
+    STATIC_REQUIRE(retained_map(1) == 10);
+    STATIC_REQUIRE(retained_map.contains(2));
+    STATIC_REQUIRE(retained_map(2) == 20);
+
+    constexpr auto all_set_source = cljonic::core::hash_set(1, 2);
+    constexpr auto retained_set =
+        cljonic::core::into(cljonic::core::hash_set<int, 2>(),
+                            cljonic::core::take_while(keep_all, all_set_source));
+    STATIC_REQUIRE(retained_set.count() == 2);
+    STATIC_REQUIRE(retained_set.contains(1));
+    STATIC_REQUIRE(retained_set.contains(2));
     STATIC_REQUIRE(cljonic::core::take_while([](const UncomparedValue& v) noexcept { return v.value < 2; },
                                              cljonic::core::vector(UncomparedValue{1}, UncomparedValue{2}))
                        .count() == 1);
@@ -71,6 +90,11 @@ TEST_CASE("TakeWhile owns finite source prefixes with exact counts", "[take-whil
     const auto owned = cljonic::core::take_while(below_three, source);
     source = cljonic::core::vector(9, 9, 9);
     REQUIRE(cljonic::core::equal(owned, cljonic::core::vector(initial, initial + 1)));
+    REQUIRE_FALSE(cljonic::core::is_empty(owned));
+    const auto runtime_unbounded_prefix =
+        cljonic::core::take_while([](int) noexcept { return true; }, cljonic::core::repeat(initial));
+    REQUIRE(runtime_unbounded_prefix.is_finite());
+    REQUIRE(runtime_unbounded_prefix.count() == adapter_observation_cap);
     REQUIRE(cljonic::core::take_while(below_three, cljonic::core::range(initial, 5)).count() == 2);
     REQUIRE(cljonic::core::take_while(below_three, cljonic::core::repeat(3, initial)).count() == 3);
     REQUIRE(cljonic::core::take_while(below_three, cljonic::core::repeat(initial)).count() ==
@@ -241,4 +265,70 @@ TEST_CASE("TakeWhile integrates callbacks storage and source consumers", "[take-
     REQUIRE(cljonic::core::filter(below_three, changing).count() == 0);
     REQUIRE(cljonic::core::seq(changing).count() == 0);
     REQUIRE(cljonic::core::map([](int n) noexcept { return n; }, changing).count() == 0);
+}
+
+TEST_CASE("TakeWhile and DropWhile retain unordered source prefixes and suffixes", "[take-while][drop-while]") {
+    using namespace cljonic;
+    using namespace cljonic::core;
+
+    TRACE_ID("invariant.TakeWhile.MapSetMembershipDependsOnUnorderedTraversal");
+    TRACE_ID("invariant.DropWhile.MapSetMembershipDependsOnUnorderedTraversal");
+
+    constexpr auto map_source = hash_map(1, 10, 2, 20);
+    constexpr auto matches_first_map_entry = [](const auto& entry) noexcept { return entry == map_entry(1, 10); };
+    constexpr auto map_prefix = into(hash_map<int, int, 2>(), take_while(matches_first_map_entry, map_source));
+    constexpr auto map_suffix = into(hash_map<int, int, 2>(), drop_while(matches_first_map_entry, map_source));
+    constexpr auto map_keeps_first_at_boundary =
+        map_prefix.count() == 1U && map_prefix.contains(1) && map_prefix(1) == 10 && map_suffix.count() == 1U &&
+        map_suffix.contains(2) && map_suffix(2) == 20;
+    constexpr auto map_starts_after_boundary =
+        map_prefix.count() == 0U && map_suffix.count() == 2U && map_suffix.contains(1) && map_suffix(1) == 10 &&
+        map_suffix.contains(2) && map_suffix(2) == 20;
+    STATIC_REQUIRE(map_keeps_first_at_boundary || map_starts_after_boundary);
+
+    constexpr auto set_source = hash_set(1, 2);
+    constexpr auto matches_first_set_element = [](int value) noexcept { return value == 1; };
+    constexpr auto set_prefix = into(hash_set<int, 2>(), take_while(matches_first_set_element, set_source));
+    constexpr auto set_suffix = into(hash_set<int, 2>(), drop_while(matches_first_set_element, set_source));
+    constexpr auto set_keeps_first_at_boundary =
+        set_prefix.count() == 1U && set_prefix.contains(1) && set_suffix.count() == 1U && set_suffix.contains(2);
+    constexpr auto set_starts_after_boundary =
+        set_prefix.count() == 0U && set_suffix.count() == 2U && set_suffix.contains(1) && set_suffix.contains(2);
+    STATIC_REQUIRE(set_keeps_first_at_boundary || set_starts_after_boundary);
+
+    volatile int first_key_raw = 7;
+    const int first_key = first_key_raw;
+    const int second_key = first_key + 1;
+    const int first_value = first_key + 10;
+    const int second_value = second_key + 10;
+    const auto runtime_map_source = hash_map(first_key, first_value, second_key, second_value);
+    const auto runtime_matches_first_map_entry =
+        [first_key, first_value](const auto& entry) noexcept { return entry == map_entry(first_key, first_value); };
+    const auto runtime_map_prefix =
+        into(hash_map<int, int, 2>(), take_while(runtime_matches_first_map_entry, runtime_map_source));
+    const auto runtime_map_suffix =
+        into(hash_map<int, int, 2>(), drop_while(runtime_matches_first_map_entry, runtime_map_source));
+    const auto runtime_map_keeps_first_at_boundary =
+        runtime_map_prefix.count() == 1U && runtime_map_prefix.contains(first_key) &&
+        runtime_map_prefix(first_key) == first_value && runtime_map_suffix.count() == 1U &&
+        runtime_map_suffix.contains(second_key) && runtime_map_suffix(second_key) == second_value;
+    const auto runtime_map_starts_after_boundary =
+        runtime_map_prefix.count() == 0U && runtime_map_suffix.count() == 2U &&
+        runtime_map_suffix.contains(first_key) && runtime_map_suffix(first_key) == first_value &&
+        runtime_map_suffix.contains(second_key) && runtime_map_suffix(second_key) == second_value;
+    REQUIRE((runtime_map_keeps_first_at_boundary || runtime_map_starts_after_boundary));
+
+    const auto runtime_set_source = hash_set(first_key, second_key);
+    const auto runtime_matches_first_set_element = [first_key](int value) noexcept { return value == first_key; };
+    const auto runtime_set_prefix =
+        into(hash_set<int, 2>(), take_while(runtime_matches_first_set_element, runtime_set_source));
+    const auto runtime_set_suffix =
+        into(hash_set<int, 2>(), drop_while(runtime_matches_first_set_element, runtime_set_source));
+    const auto runtime_set_keeps_first_at_boundary =
+        runtime_set_prefix.count() == 1U && runtime_set_prefix.contains(first_key) &&
+        runtime_set_suffix.count() == 1U && runtime_set_suffix.contains(second_key);
+    const auto runtime_set_starts_after_boundary =
+        runtime_set_prefix.count() == 0U && runtime_set_suffix.count() == 2U &&
+        runtime_set_suffix.contains(first_key) && runtime_set_suffix.contains(second_key);
+    REQUIRE((runtime_set_keeps_first_at_boundary || runtime_set_starts_after_boundary));
 }

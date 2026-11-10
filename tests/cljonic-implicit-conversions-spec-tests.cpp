@@ -80,14 +80,16 @@ TEST_CASE("Implicit conversion admission preserves values and semantic domains",
     TRACE_ID("entity-fields.ImplicitConversions");
     TRACE_ID("invariant.ImplicitConversions.SameTypeValuesPreserveIdentity");
     TRACE_ID("invariant.ImplicitConversions.ArithmeticConversionsPreserveEntireSourceDomain");
+    TRACE_ID("invariant.ImplicitConversions.RejectsIntegerFloatingDomainCrossings");
     TRACE_ID("invariant.ImplicitConversions.BooleanCharacterEnumDomainsRemainDistinct");
     TRACE_ID("invariant.ImplicitConversions.RejectsCrossTypeUserDefinedAndPointerConversions");
 
     STATIC_REQUIRE(SafeImplicitConversion<int, const int&>);
     STATIC_REQUIRE(SafeImplicitConversion<long long, short>);
     STATIC_REQUIRE(SafeImplicitConversion<double, float>);
-    STATIC_REQUIRE(SafeImplicitConversion<double, short>);
-    STATIC_REQUIRE(cljonic::concepts::NothrowElementConstruction<double, short>);
+    STATIC_REQUIRE_FALSE(SafeImplicitConversion<double, short>);
+    STATIC_REQUIRE_FALSE(SafeImplicitConversion<short, double>);
+    STATIC_REQUIRE_FALSE(cljonic::concepts::NothrowElementConstruction<double, short>);
     STATIC_REQUIRE_FALSE(SafeImplicitConversion<short, int>);
     STATIC_REQUIRE_FALSE(SafeImplicitConversion<unsigned int, int>);
     STATIC_REQUIRE_FALSE(SafeImplicitConversion<int, unsigned int>);
@@ -142,6 +144,7 @@ TEST_CASE("Safe conversions agree across construction lookup update and removal"
     TRACE_ID("invariant.ImplicitConversions.AllApiBoundariesShareAdmission");
     constexpr short key = 7;
     constexpr short value = 12;
+    constexpr float floating_value = 12.0F;
     constexpr MapEntry<long long, long long> entry{key, value};
     constexpr Map<long long, long long, 4> map{entry};
     STATIC_REQUIRE(contains(map, key));
@@ -157,23 +160,25 @@ TEST_CASE("Safe conversions agree across construction lookup update and removal"
     STATIC_REQUIRE(can_conj(Queue<long long, 4>{value}, key));
     STATIC_REQUIRE(Repeat<long long>{2U, value}.count() == 2U);
     STATIC_REQUIRE(Range<long long>{short{0}, short{3}}.count() == 3U);
-    STATIC_REQUIRE(Vector<double, 2>{value}(0) == 12.0);
-    STATIC_REQUIRE(Queue<double, 2>{value}.peek() == 12.0);
-    STATIC_REQUIRE(MapEntry<int, double>{7, value}.value == 12.0);
+    STATIC_REQUIRE(Vector<double, 2>{floating_value}(0) == 12.0);
+    STATIC_REQUIRE(Queue<double, 2>{floating_value}.peek() == 12.0);
+    STATIC_REQUIRE(MapEntry<int, double>{7, floating_value}.value == 12.0);
     STATIC_REQUIRE(MapEntry<int, double>{7}.value == 0.0);
     STATIC_REQUIRE_FALSE(std::is_convertible_v<int, MapEntry<int, double>>);
 
     volatile short raw = 42;
     const short runtime_value = raw;
+    volatile float raw_floating_value = 42.0F;
+    const float runtime_floating_value = raw_floating_value;
     const auto updated = assoc(map, runtime_value, runtime_value);
     CHECK(contains(updated, runtime_value));
     CHECK(get(updated, runtime_value) == 42);
     CHECK_FALSE(contains(dissoc(updated, runtime_value), runtime_value));
     CHECK(is_empty(disj(Set<long long, 2>{runtime_value}, runtime_value)));
-    CHECK(get(conj(Vector<double, 2>{}, runtime_value), 0) == 42.0);
-    CHECK(Vector<double, 2>{runtime_value}(0) == 42.0);
-    CHECK(Queue<double, 2>{runtime_value}.peek() == 42.0);
-    CHECK(MapEntry<int, double>{1, runtime_value}.value == 42.0);
+    CHECK(get(conj(Vector<double, 2>{}, runtime_floating_value), 0) == 42.0);
+    CHECK(Vector<double, 2>{runtime_floating_value}(0) == 42.0);
+    CHECK(Queue<double, 2>{runtime_floating_value}.peek() == 42.0);
+    CHECK(MapEntry<int, double>{1, runtime_floating_value}.value == 42.0);
     CHECK(MapEntry<int, double>{1}.value == 0.0);
 }
 
@@ -183,11 +188,13 @@ TEST_CASE("Range imports and materialization use safe actual element expressions
     TRACE_ID("invariant.ImplicitConversions.RangesCheckActualReferenceAndNothrowTraversal");
     static constexpr short values[] = {1, 2};
     constexpr auto source = std::span{values};
+    static constexpr float floating_values[] = {1.0F, 2.0F};
+    constexpr auto floating_source = std::span{floating_values};
     STATIC_REQUIRE(Vector<long long, 2>{source}(1) == 2);
     STATIC_REQUIRE(Set<long long, 2>{source}.contains(short{2}));
     STATIC_REQUIRE(Queue<long long, 2>{source}.peek() == 1);
-    STATIC_REQUIRE(Vector<double, 2>{source}(1) == 2.0);
-    STATIC_REQUIRE(Queue<double, 2>{source}.peek() == 1.0);
+    STATIC_REQUIRE(Vector<double, 2>{floating_source}(1) == 2.0);
+    STATIC_REQUIRE(Queue<double, 2>{floating_source}.peek() == 1.0);
     STATIC_REQUIRE(fits_into(Vector<long long, 2>{}, Range<short>{short{0}, short{2}}));
     STATIC_REQUIRE(into(Vector<long long, 2>{}, Range<short>{short{0}, short{2}})(1) == 1);
     STATIC_REQUIRE_FALSE(cljonic::concepts_detail::MaterializableSource<Vector<short, 2>, Range<int>>);
@@ -197,7 +204,8 @@ TEST_CASE("Range imports and materialization use safe actual element expressions
     volatile short raw = 4;
     ActualReferenceRange<short> actual_references{{raw, raw}};
     CHECK(Vector<long long, 2>{actual_references}(1) == 4);
-    CHECK(Queue<double, 2>{actual_references}.peek() == 4.0);
+    ActualReferenceRange<float> floating_references{{4.0F, 5.0F}};
+    CHECK(Queue<double, 2>{floating_references}.peek() == 4.0);
     ActualReferenceRange<char> character_references{{static_cast<char>(raw + 93), 'b'}};
     CHECK(String<2>{character_references}(0) == 'a');
 }

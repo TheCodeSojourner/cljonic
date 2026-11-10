@@ -52,6 +52,36 @@ TEST_CASE("Drop returns independent source-bound collection suffixes", "[drop]")
         cljonic::core::equal(cljonic::core::drop(1, cljonic::core::queue(1, 2, 3)), cljonic::core::vector(2, 3)));
     STATIC_REQUIRE(
         cljonic::core::equal(cljonic::core::drop(1, cljonic::core::string<4>("abc")), cljonic::core::vector('b', 'c')));
+    constexpr auto take_while_source =
+        cljonic::core::take_while([](int value) noexcept { return value < 4; }, cljonic::core::vector(1, 2, 3, 4));
+    constexpr auto drop_while_source =
+        cljonic::core::drop_while([](int value) noexcept { return value < 3; }, cljonic::core::vector(1, 2, 3, 4));
+    STATIC_REQUIRE(cljonic::core::equal(cljonic::core::drop(1, take_while_source), cljonic::core::vector(2, 3)));
+    STATIC_REQUIRE(cljonic::core::equal(cljonic::core::drop(1, drop_while_source), cljonic::core::vector(4)));
+    constexpr auto map_adapter_source = cljonic::core::hash_map(1, 10, 2, 20);
+    constexpr auto map_adapter_prefix =
+        cljonic::core::take_while([](const auto&) noexcept { return true; }, map_adapter_source);
+    constexpr auto map_adapter_suffix =
+        cljonic::core::drop_while([](const auto&) noexcept { return false; }, map_adapter_source);
+    constexpr auto dropped_map_prefix = cljonic::core::drop(1, map_adapter_prefix);
+    constexpr auto dropped_map_suffix = cljonic::core::drop(1, map_adapter_suffix);
+    STATIC_REQUIRE(dropped_map_prefix.count() == 1U);
+    STATIC_REQUIRE(dropped_map_suffix.count() == 1U);
+    STATIC_REQUIRE((dropped_map_prefix(0U) == cljonic::core::map_entry(1, 10) ||
+                    dropped_map_prefix(0U) == cljonic::core::map_entry(2, 20)));
+    STATIC_REQUIRE((dropped_map_suffix(0U) == cljonic::core::map_entry(1, 10) ||
+                    dropped_map_suffix(0U) == cljonic::core::map_entry(2, 20)));
+    constexpr auto set_adapter_source = cljonic::core::hash_set(1, 2);
+    constexpr auto set_adapter_prefix =
+        cljonic::core::take_while([](int) noexcept { return true; }, set_adapter_source);
+    constexpr auto set_adapter_suffix =
+        cljonic::core::drop_while([](int) noexcept { return false; }, set_adapter_source);
+    constexpr auto dropped_set_prefix = cljonic::core::drop(1, set_adapter_prefix);
+    constexpr auto dropped_set_suffix = cljonic::core::drop(1, set_adapter_suffix);
+    STATIC_REQUIRE(dropped_set_prefix.count() == 1U);
+    STATIC_REQUIRE(dropped_set_suffix.count() == 1U);
+    STATIC_REQUIRE((dropped_set_prefix(0U) == 1 || dropped_set_prefix(0U) == 2));
+    STATIC_REQUIRE((dropped_set_suffix(0U) == 1 || dropped_set_suffix(0U) == 2));
     STATIC_REQUIRE(std::same_as<decltype(cljonic::core::drop(1, cljonic::core::hash_map(1, 2))),
                                 cljonic::Vector<cljonic::MapEntry<int, int>, 1>>);
     STATIC_REQUIRE(cljonic::core::drop(1, cljonic::core::vector(DropElement{1}, DropElement{2}))(0).value == 2);
@@ -63,6 +93,39 @@ TEST_CASE("Drop returns independent source-bound collection suffixes", "[drop]")
     check_drop_suffix(cljonic::core::hash_map(base, base + 10, base + 1, base + 11, base + 2, base + 12), 1);
     check_drop_suffix(cljonic::core::hash_set(base, base + 1, base + 2), 1);
     check_drop_suffix(cljonic::core::string<4>("abc"), 1);
+    REQUIRE(cljonic::core::equal(
+        cljonic::core::drop(1, cljonic::core::take_while([base](int value) noexcept { return value < base + 3; },
+                                                          cljonic::core::vector(base, base + 1, base + 2))),
+        cljonic::core::vector(base + 1, base + 2)));
+    REQUIRE(cljonic::core::equal(
+        cljonic::core::drop(1, cljonic::core::drop_while([base](int value) noexcept { return value < base + 1; },
+                                                          cljonic::core::vector(base, base + 1, base + 2))),
+        cljonic::core::vector(base + 2)));
+    const auto runtime_map_adapter_source =
+        cljonic::core::hash_map(base, base + 10, base + 1, base + 11);
+    const auto runtime_map_adapter_prefix =
+        cljonic::core::take_while([](const auto&) noexcept { return true; }, runtime_map_adapter_source);
+    const auto runtime_map_adapter_suffix =
+        cljonic::core::drop_while([](const auto&) noexcept { return false; }, runtime_map_adapter_source);
+    const auto runtime_dropped_map_prefix = cljonic::core::drop(1, runtime_map_adapter_prefix);
+    const auto runtime_dropped_map_suffix = cljonic::core::drop(1, runtime_map_adapter_suffix);
+    REQUIRE(runtime_dropped_map_prefix.count() == 1U);
+    REQUIRE(runtime_dropped_map_suffix.count() == 1U);
+    REQUIRE((runtime_dropped_map_prefix(0U) == cljonic::core::map_entry(base, base + 10) ||
+             runtime_dropped_map_prefix(0U) == cljonic::core::map_entry(base + 1, base + 11)));
+    REQUIRE((runtime_dropped_map_suffix(0U) == cljonic::core::map_entry(base, base + 10) ||
+             runtime_dropped_map_suffix(0U) == cljonic::core::map_entry(base + 1, base + 11)));
+    const auto runtime_set_adapter_source = cljonic::core::hash_set(base, base + 1);
+    const auto runtime_set_adapter_prefix =
+        cljonic::core::take_while([](int) noexcept { return true; }, runtime_set_adapter_source);
+    const auto runtime_set_adapter_suffix =
+        cljonic::core::drop_while([](int) noexcept { return false; }, runtime_set_adapter_source);
+    const auto runtime_dropped_set_prefix = cljonic::core::drop(1, runtime_set_adapter_prefix);
+    const auto runtime_dropped_set_suffix = cljonic::core::drop(1, runtime_set_adapter_suffix);
+    REQUIRE(runtime_dropped_set_prefix.count() == 1U);
+    REQUIRE(runtime_dropped_set_suffix.count() == 1U);
+    REQUIRE((runtime_dropped_set_prefix(0U) == base || runtime_dropped_set_prefix(0U) == base + 1));
+    REQUIRE((runtime_dropped_set_suffix(0U) == base || runtime_dropped_set_suffix(0U) == base + 1));
     auto source = cljonic::core::vector(base, base + 1, base + 2);
     const auto result = cljonic::core::drop(1, source);
     source = cljonic::core::vector(base + 10, base + 11, base + 12);

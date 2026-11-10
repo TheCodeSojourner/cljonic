@@ -268,3 +268,54 @@ TEST_CASE("IsEmpty follows finite and unbounded producer counts without changing
         REQUIRE(*finite.begin() == *original.begin());
     }
 }
+
+TEST_CASE("IsEmpty observes unordered-source TakeWhile and DropWhile adapters", "[is_empty][adapter]") {
+    using namespace cljonic;
+    using namespace cljonic::core;
+
+    constexpr auto map_source = hash_map(1, 10, 2, 20);
+    constexpr auto map_prefix = take_while([](const auto&) constexpr noexcept { return true; }, map_source);
+    constexpr auto map_empty_prefix = take_while([](const auto&) constexpr noexcept { return false; }, map_source);
+    constexpr auto map_suffix = drop_while([](const auto&) constexpr noexcept { return false; }, map_source);
+    constexpr auto map_empty_suffix = drop_while([](const auto&) constexpr noexcept { return true; }, map_source);
+    constexpr auto set_source = hash_set(1, 2);
+    constexpr auto set_prefix = take_while([](int) constexpr noexcept { return true; }, set_source);
+    constexpr auto set_empty_prefix = take_while([](int) constexpr noexcept { return false; }, set_source);
+    constexpr auto set_suffix = drop_while([](int) constexpr noexcept { return false; }, set_source);
+    constexpr auto set_empty_suffix = drop_while([](int) constexpr noexcept { return true; }, set_source);
+
+    STATIC_REQUIRE_FALSE(is_empty(map_prefix));
+    STATIC_REQUIRE(is_empty(map_empty_prefix));
+    STATIC_REQUIRE_FALSE(is_empty(map_suffix));
+    STATIC_REQUIRE(is_empty(map_empty_suffix));
+    STATIC_REQUIRE_FALSE(is_empty(set_prefix));
+    STATIC_REQUIRE(is_empty(set_empty_prefix));
+    STATIC_REQUIRE_FALSE(is_empty(set_suffix));
+    STATIC_REQUIRE(is_empty(set_empty_suffix));
+
+    volatile int raw = 7;
+    const int value = raw;
+    const auto runtime_map_source = hash_map(value, value + 10, value + 1, value + 20);
+    const auto runtime_map_prefix =
+        take_while([](const auto&) noexcept { return true; }, runtime_map_source);
+    const auto runtime_map_empty_prefix =
+        take_while([](const auto&) noexcept { return false; }, runtime_map_source);
+    const auto runtime_map_suffix =
+        drop_while([](const auto&) noexcept { return false; }, runtime_map_source);
+    const auto runtime_map_empty_suffix =
+        drop_while([](const auto&) noexcept { return true; }, runtime_map_source);
+    const auto runtime_set_source = hash_set(value, value + 1);
+    const auto runtime_set_prefix = take_while([](int) noexcept { return true; }, runtime_set_source);
+    const auto runtime_set_empty_prefix = take_while([](int) noexcept { return false; }, runtime_set_source);
+    const auto runtime_set_suffix = drop_while([](int) noexcept { return false; }, runtime_set_source);
+    const auto runtime_set_empty_suffix = drop_while([](int) noexcept { return true; }, runtime_set_source);
+
+    REQUIRE_FALSE(is_empty(runtime_map_prefix));
+    REQUIRE(is_empty(runtime_map_empty_prefix));
+    REQUIRE_FALSE(is_empty(runtime_map_suffix));
+    REQUIRE(is_empty(runtime_map_empty_suffix));
+    REQUIRE_FALSE(is_empty(runtime_set_prefix));
+    REQUIRE(is_empty(runtime_set_empty_prefix));
+    REQUIRE_FALSE(is_empty(runtime_set_suffix));
+    REQUIRE(is_empty(runtime_set_empty_suffix));
+}

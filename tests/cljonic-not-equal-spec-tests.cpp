@@ -79,6 +79,35 @@ TEST_CASE("not_equal negates general value equality over the supported domain", 
     // not_equal remains available for pairs with no native cross-type operator,
     // such as a Vector compared with a Range.
     STATIC_REQUIRE(not_equal(Vector<int, 4>{1, 2, 3}, Range<int>{1, 3, 1}));
+    constexpr auto adapter_take_source = Vector<int, 4>{1, 2, 4};
+    constexpr auto adapter_drop_source = Vector<int, 4>{0, 1, 2};
+    constexpr auto adapter_drop_different_source = Vector<int, 4>{0, 1, 3};
+    constexpr auto adapter_take =
+        cljonic::core::take_while([](int value) noexcept { return value < 3; }, adapter_take_source);
+    constexpr auto adapter_drop =
+        cljonic::core::drop_while([](int value) noexcept { return value < 1; }, adapter_drop_source);
+    constexpr auto adapter_drop_different =
+        cljonic::core::drop_while([](int value) noexcept { return value < 1; }, adapter_drop_different_source);
+    STATIC_REQUIRE(!not_equal(adapter_take, adapter_drop));
+    STATIC_REQUIRE(not_equal(adapter_take, adapter_drop_different));
+    constexpr auto unordered_map_source = Map<int, int, 4>{MapEntry{1, 10}, MapEntry{2, 20}};
+    constexpr auto unordered_map_take =
+        cljonic::core::take_while([](const auto&) noexcept { return true; }, unordered_map_source);
+    constexpr auto unordered_map_drop =
+        cljonic::core::drop_while([](const auto&) noexcept { return false; }, unordered_map_source);
+    constexpr auto unordered_map_empty =
+        cljonic::core::take_while([](const auto&) noexcept { return false; }, unordered_map_source);
+    constexpr auto unordered_set_source = Set<int, 4>{1, 2};
+    constexpr auto unordered_set_take =
+        cljonic::core::take_while([](int) noexcept { return true; }, unordered_set_source);
+    constexpr auto unordered_set_drop =
+        cljonic::core::drop_while([](int) noexcept { return false; }, unordered_set_source);
+    constexpr auto unordered_set_empty =
+        cljonic::core::take_while([](int) noexcept { return false; }, unordered_set_source);
+    STATIC_REQUIRE(!not_equal(unordered_map_take, unordered_map_drop));
+    STATIC_REQUIRE(not_equal(unordered_map_take, unordered_map_empty));
+    STATIC_REQUIRE(!not_equal(unordered_set_take, unordered_set_drop));
+    STATIC_REQUIRE(not_equal(unordered_set_take, unordered_set_empty));
 
     // ------------------------------------------------------------------------
     // Map, Set, String families: same-kind only, order-insensitive, negated.
@@ -165,6 +194,35 @@ TEST_CASE("not_equal negates general value equality over the supported domain", 
 
     auto runtime_queue = Queue<int, 4>{runtime_one, runtime_two};
     CHECK_FALSE(not_equal(runtime_vector, runtime_queue));
+    const auto runtime_adapter_take_source = Vector<int, 4>{runtime_one, runtime_two, 4};
+    const auto runtime_adapter_drop_source = Vector<int, 4>{0, runtime_one, runtime_two};
+    const auto runtime_adapter_drop_different_source = Vector<int, 4>{0, runtime_one, 3};
+    const auto runtime_adapter_take =
+        cljonic::core::take_while([](int value) noexcept { return value < 3; }, runtime_adapter_take_source);
+    const auto runtime_adapter_drop =
+        cljonic::core::drop_while([](int value) noexcept { return value < 1; }, runtime_adapter_drop_source);
+    const auto runtime_adapter_drop_different =
+        cljonic::core::drop_while([](int value) noexcept { return value < 1; }, runtime_adapter_drop_different_source);
+    CHECK_FALSE(not_equal(runtime_adapter_take, runtime_adapter_drop));
+    CHECK(not_equal(runtime_adapter_take, runtime_adapter_drop_different));
+    const auto runtime_unordered_map_source = Map<int, int, 4>{MapEntry{1, 10}, MapEntry{2, 20}};
+    const auto runtime_unordered_map_take =
+        cljonic::core::take_while([](const auto&) noexcept { return true; }, runtime_unordered_map_source);
+    const auto runtime_unordered_map_drop =
+        cljonic::core::drop_while([](const auto&) noexcept { return false; }, runtime_unordered_map_source);
+    const auto runtime_unordered_map_empty =
+        cljonic::core::take_while([](const auto&) noexcept { return false; }, runtime_unordered_map_source);
+    const auto runtime_unordered_set_source = Set<int, 4>{1, 2};
+    const auto runtime_unordered_set_take =
+        cljonic::core::take_while([](int) noexcept { return true; }, runtime_unordered_set_source);
+    const auto runtime_unordered_set_drop =
+        cljonic::core::drop_while([](int) noexcept { return false; }, runtime_unordered_set_source);
+    const auto runtime_unordered_set_empty =
+        cljonic::core::take_while([](int) noexcept { return false; }, runtime_unordered_set_source);
+    CHECK_FALSE(not_equal(runtime_unordered_map_take, runtime_unordered_map_drop));
+    CHECK(not_equal(runtime_unordered_map_take, runtime_unordered_map_empty));
+    CHECK_FALSE(not_equal(runtime_unordered_set_take, runtime_unordered_set_drop));
+    CHECK(not_equal(runtime_unordered_set_take, runtime_unordered_set_empty));
 
     auto runtime_map = Map<int, int, 4>{MapEntry<int, int>{1, 10}, MapEntry<int, int>{2, 20}};
     auto runtime_map_reordered = Map<int, int, 8>{MapEntry<int, int>{2, 20}, MapEntry<int, int>{1, 10}};

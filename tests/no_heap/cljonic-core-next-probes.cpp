@@ -96,10 +96,12 @@ namespace {
            vector(0U) == first && equal(vector, vector_before) && queue_tail.count() == 2U &&
            queue_tail.begin()[0U] == second && queue_tail.begin()[1U] == third && queue.count() == 3U &&
            queue.begin()[0] == first && equal(queue, queue_before) && map_tail.count() == 1U &&
-           map_tail.begin()[0U] == map.begin()[1] && map.count() == 2U && map.begin()[0] == MapEntry{first, second} &&
-           equal(map, map_before) && set_tail.count() == 2U && set_tail.begin()[0U] == set.begin()[1] &&
-           set_tail.begin()[1U] == set.begin()[2] && set.count() == 3U && set.begin()[0] == first &&
-           equal(set, set_before) && text_tail.count() == 2U && text_tail(0U) == second_char &&
+           map_tail.begin()[0U] == map.begin()[1] && map.count() == 2U && map.contains(first) &&
+           map(first) == second && map.contains(second) && map(second) == third && equal(map, map_before) &&
+           set_tail.count() == 2U && set_tail.begin()[0U] == set.begin()[1] &&
+           set_tail.begin()[1U] == set.begin()[2] && set.count() == 3U && set.contains(first) &&
+           set.contains(second) && set.contains(third) && equal(set, set_before) && text_tail.count() == 2U &&
+           text_tail(0U) == second_char &&
            text_tail(1U) == third_char && text.count() == 3U && text(0U) == first_char && equal(text, text_before) &&
            count(finite_repeat_tail) == 2U && fits_into(Vector<int, 2>{}, finite_repeat_tail) &&
            finite_repeat_tail_values(0U) == first && finite_repeat_tail_values(1U) == first &&

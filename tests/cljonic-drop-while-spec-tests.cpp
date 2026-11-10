@@ -37,7 +37,13 @@ TEST_CASE("DropWhile owns finite original-window suffixes", "[drop-while]") {
     STATIC_REQUIRE(std::same_as<typename decltype(suffix)::value_type, int>);
     STATIC_REQUIRE(suffix.is_finite());
     STATIC_REQUIRE(suffix.count() == 2);
+    constexpr auto adapter_observation_cap = cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
+    constexpr auto unbounded_suffix =
+        cljonic::core::drop_while([](int) noexcept { return false; }, cljonic::core::repeat(7));
+    STATIC_REQUIRE(unbounded_suffix.is_finite());
+    STATIC_REQUIRE(unbounded_suffix.count() == adapter_observation_cap);
     STATIC_REQUIRE(cljonic::core::equal(suffix, cljonic::core::vector(4, 1)));
+    STATIC_REQUIRE(!cljonic::core::is_empty(suffix));
     STATIC_REQUIRE(*suffix.begin() == 4);
     STATIC_REQUIRE(cljonic::core::is_empty(cljonic::core::drop_while(predicate, cljonic::core::vector(1, 2))));
     STATIC_REQUIRE(
@@ -49,10 +55,24 @@ TEST_CASE("DropWhile owns finite original-window suffixes", "[drop-while]") {
     STATIC_REQUIRE(cljonic::core::equal(
         cljonic::core::drop_while([](char c) noexcept { return c < 'c'; }, cljonic::core::string<4>("abcd")),
         cljonic::core::vector('c', 'd')));
-    STATIC_REQUIRE(
-        cljonic::core::drop_while([](auto) noexcept { return false; }, cljonic::core::hash_map(1, 2)).count() == 1);
-    STATIC_REQUIRE(
-        cljonic::core::drop_while([](auto) noexcept { return false; }, cljonic::core::hash_set(1, 2)).count() == 2);
+    constexpr auto drop_none = [](const auto&) noexcept { return false; };
+    constexpr auto all_map_source = cljonic::core::hash_map(1, 10, 2, 20);
+    constexpr auto retained_map =
+        cljonic::core::into(cljonic::core::hash_map<int, int, 2>(),
+                            cljonic::core::drop_while(drop_none, all_map_source));
+    STATIC_REQUIRE(retained_map.count() == 2);
+    STATIC_REQUIRE(retained_map.contains(1));
+    STATIC_REQUIRE(retained_map(1) == 10);
+    STATIC_REQUIRE(retained_map.contains(2));
+    STATIC_REQUIRE(retained_map(2) == 20);
+
+    constexpr auto all_set_source = cljonic::core::hash_set(1, 2);
+    constexpr auto retained_set =
+        cljonic::core::into(cljonic::core::hash_set<int, 2>(),
+                            cljonic::core::drop_while(drop_none, all_set_source));
+    STATIC_REQUIRE(retained_set.count() == 2);
+    STATIC_REQUIRE(retained_set.contains(1));
+    STATIC_REQUIRE(retained_set.contains(2));
     struct Element {
         int value{};
     };
@@ -65,6 +85,11 @@ TEST_CASE("DropWhile owns finite original-window suffixes", "[drop-while]") {
     const auto owned = cljonic::core::drop_while(predicate, source);
     source = cljonic::core::vector(9, 9, 9);
     REQUIRE(cljonic::core::equal(owned, cljonic::core::vector(4)));
+    REQUIRE_FALSE(cljonic::core::is_empty(owned));
+    const auto runtime_unbounded_suffix =
+        cljonic::core::drop_while([](int) noexcept { return false; }, cljonic::core::repeat(start));
+    REQUIRE(runtime_unbounded_suffix.is_finite());
+    REQUIRE(runtime_unbounded_suffix.count() == adapter_observation_cap);
     REQUIRE(cljonic::core::drop_while(predicate, cljonic::core::range(start, 5)).count() == 2);
     REQUIRE(cljonic::core::drop_while(predicate, cljonic::core::repeat(3, start)).count() == 0);
     REQUIRE(cljonic::core::drop_while(predicate, cljonic::core::repeat(start)).count() == 0);

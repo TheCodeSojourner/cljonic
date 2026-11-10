@@ -43,11 +43,15 @@ TEST_CASE("Contains free function operates on each supported lookup or indexed d
     constexpr auto m = assoc(Map<int, int, 4>{}, 1, 100);
     STATIC_REQUIRE(contains(m, 1));
     STATIC_REQUIRE_FALSE(contains(m, 2));
+    constexpr auto zero_value_map = assoc(Map<int, int, 4>{}, 3, 0);
+    STATIC_REQUIRE(contains(zero_value_map, 3));
 
     // Set: element presence.
     constexpr auto s = conj(Set<int, 4>{}, 5);
     STATIC_REQUIRE(contains(s, 5));
     STATIC_REQUIRE_FALSE(contains(s, 8));
+    constexpr auto zero_value_set = conj(Set<int, 4>{}, 0);
+    STATIC_REQUIRE(contains(zero_value_set, 0));
 
     // Vector: index in range.
     constexpr Vector<int, 4> v{10, 20, 30};
@@ -84,10 +88,14 @@ TEST_CASE("Contains free function operates on each supported lookup or indexed d
     const auto m_runtime = assoc(Map<int, int, 4>{}, 7, 70);
     CHECK(contains(m_runtime, 7));
     CHECK_FALSE(contains(m_runtime, 8));
+    const auto zero_value_map_runtime = assoc(Map<int, int, 4>{}, 9, 0);
+    CHECK(contains(zero_value_map_runtime, 9));
 
     const auto s_runtime = conj(Set<int, 4>{}, 9);
     CHECK(contains(s_runtime, 9));
     CHECK_FALSE(contains(s_runtime, 10));
+    const auto zero_value_set_runtime = conj(Set<int, 4>{}, 0);
+    CHECK(contains(zero_value_set_runtime, 0));
 
     const auto v_runtime = Vector<int, 4>{1, 2};
     CHECK(contains(v_runtime, 1U));

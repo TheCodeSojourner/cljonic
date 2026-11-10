@@ -62,6 +62,14 @@ TEST_CASE("Seq free function operations", "[seq]") {
                                 Vector<int, cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE>>);
     STATIC_REQUIRE(std::same_as<decltype(seq(Repeatedly<int, int (*)() noexcept>{})),
                                 Vector<int, cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE>>);
+    constexpr auto adapter_prefix =
+        cljonic::core::take_while([](int value) noexcept { return value < 3; }, vector(1, 2, 4));
+    constexpr auto adapter_suffix =
+        cljonic::core::drop_while([](int value) noexcept { return value < 3; }, vector(1, 2, 4));
+    STATIC_REQUIRE(std::same_as<decltype(seq(adapter_prefix)),
+                                Vector<int, cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE>>);
+    STATIC_REQUIRE(std::same_as<decltype(seq(adapter_suffix)),
+                                Vector<int, cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE>>);
 
     TRACE_ID("invariant.Seq.ReturnsOwningBoundedVectorOfTraversalElements");
     STATIC_REQUIRE(equal(seq(vector(1, 2, 3)), vector(1, 2, 3)));
@@ -80,12 +88,16 @@ TEST_CASE("Seq free function operations", "[seq]") {
     }
 
     TRACE_ID("invariant.Seq.SetInputReturnsOneElementPerStoredElement");
-    STATIC_REQUIRE(count(seq(hash_set(7, 8))) == 2U);
+    constexpr auto compile_time_set_result = seq(hash_set(7, 8));
+    STATIC_REQUIRE((equal(compile_time_set_result, vector(7, 8)) ||
+                    equal(compile_time_set_result, vector(8, 7))));
     {
         const auto stored = hash_set(7, 8, 9);
         const auto result = seq(stored);
         REQUIRE(count(result) == 3U);
-        REQUIRE((first(result) == 7 || first(result) == 8 || first(result) == 9));
+        REQUIRE((equal(result, vector(7, 8, 9)) || equal(result, vector(7, 9, 8)) ||
+                 equal(result, vector(8, 7, 9)) || equal(result, vector(8, 9, 7)) ||
+                 equal(result, vector(9, 7, 8)) || equal(result, vector(9, 8, 7))));
     }
 
     TRACE_ID("invariant.Seq.QueueInputPreservesFifoOrder");
@@ -107,36 +119,113 @@ TEST_CASE("Seq free function operations", "[seq]") {
     }
 
     TRACE_ID("invariant.Seq.MapInputReturnsValueSemanticMapEntries");
-    STATIC_REQUIRE(first(seq(hash_map(1, 100))) == map_entry(1, 100));
+    constexpr auto compile_time_map_result = seq(hash_map(1, 100, 2, 200));
+    STATIC_REQUIRE((equal(compile_time_map_result, vector(map_entry(1, 100), map_entry(2, 200))) ||
+                    equal(compile_time_map_result, vector(map_entry(2, 200), map_entry(1, 100)))));
     {
-        volatile int key_raw = 2;
-        volatile int value_raw = 200;
-        int key = key_raw;
-        int value = value_raw;
-        const auto stored = Map<int, int, 4>{MapEntry<int, int>{key, value}};
-        REQUIRE(equal(seq(stored), vector(map_entry(2, 200))));
+        const auto stored = Map<int, int, 4>{MapEntry<int, int>{2, 200}, MapEntry<int, int>{3, 300}};
+        const auto result = seq(stored);
+        REQUIRE((equal(result, vector(map_entry(2, 200), map_entry(3, 300))) ||
+                 equal(result, vector(map_entry(3, 300), map_entry(2, 200)))));
     }
 
     TRACE_ID("invariant.Seq.MapSetTraversalOrderIsNotSemanticallySignificant");
-    STATIC_REQUIRE(count(seq(hash_map(1, 100))) == 1U);
+    constexpr auto unordered_map_result = seq(hash_map(1, 100, 2, 200));
+    STATIC_REQUIRE((equal(unordered_map_result, vector(map_entry(1, 100), map_entry(2, 200))) ||
+                    equal(unordered_map_result, vector(map_entry(2, 200), map_entry(1, 100)))));
     {
         const auto stored = hash_set(1, 2, 3);
         const auto result = seq(stored);
         REQUIRE(count(result) == 3U);
-        bool all_stored = true;
-        for (const auto item : result) {
-            all_stored = all_stored && (item == 1 || item == 2 || item == 3);
-        }
-        REQUIRE(all_stored);
+        REQUIRE((equal(result, vector(1, 2, 3)) || equal(result, vector(1, 3, 2)) ||
+                 equal(result, vector(2, 1, 3)) || equal(result, vector(2, 3, 1)) ||
+                 equal(result, vector(3, 1, 2)) || equal(result, vector(3, 2, 1))));
     }
+    constexpr auto map_adapter_source = hash_map(1, 100, 2, 200);
+    constexpr auto map_adapter_prefix =
+        cljonic::core::take_while([](const auto&) noexcept { return true; }, map_adapter_source);
+    constexpr auto map_adapter_suffix =
+        cljonic::core::drop_while([](const auto&) noexcept { return false; }, map_adapter_source);
+    STATIC_REQUIRE((equal(seq(map_adapter_prefix), vector(map_entry(1, 100), map_entry(2, 200))) ||
+                    equal(seq(map_adapter_prefix), vector(map_entry(2, 200), map_entry(1, 100)))));
+    STATIC_REQUIRE((equal(seq(map_adapter_suffix), vector(map_entry(1, 100), map_entry(2, 200))) ||
+                    equal(seq(map_adapter_suffix), vector(map_entry(2, 200), map_entry(1, 100)))));
+    constexpr auto set_adapter_source = hash_set(1, 2, 3);
+    constexpr auto set_adapter_prefix =
+        cljonic::core::take_while([](int) noexcept { return true; }, set_adapter_source);
+    constexpr auto set_adapter_suffix =
+        cljonic::core::drop_while([](int) noexcept { return false; }, set_adapter_source);
+    STATIC_REQUIRE((equal(seq(set_adapter_prefix), vector(1, 2, 3)) ||
+                    equal(seq(set_adapter_prefix), vector(1, 3, 2)) ||
+                    equal(seq(set_adapter_prefix), vector(2, 1, 3)) ||
+                    equal(seq(set_adapter_prefix), vector(2, 3, 1)) ||
+                    equal(seq(set_adapter_prefix), vector(3, 1, 2)) ||
+                    equal(seq(set_adapter_prefix), vector(3, 2, 1))));
+    STATIC_REQUIRE((equal(seq(set_adapter_suffix), vector(1, 2, 3)) ||
+                    equal(seq(set_adapter_suffix), vector(1, 3, 2)) ||
+                    equal(seq(set_adapter_suffix), vector(2, 1, 3)) ||
+                    equal(seq(set_adapter_suffix), vector(2, 3, 1)) ||
+                    equal(seq(set_adapter_suffix), vector(3, 1, 2)) ||
+                    equal(seq(set_adapter_suffix), vector(3, 2, 1))));
 
     TRACE_ID("invariant.Seq.ProducerInputMaterializesObservableTraversal");
     STATIC_REQUIRE(equal(seq(Range{0, 5}), vector(0, 1, 2, 3, 4)));
     STATIC_REQUIRE(equal(seq(Repeat{3U, 7}), vector(7, 7, 7)));
+    STATIC_REQUIRE(equal(seq(adapter_prefix), vector(1, 2)));
+    STATIC_REQUIRE(equal(seq(adapter_suffix), vector(4)));
     {
         const auto stepped = seq(Range{10, 40, 10});
         REQUIRE(equal(stepped, vector(10, 20, 30)));
     }
+    {
+        const auto runtime_prefix =
+            cljonic::core::take_while([](int value) noexcept { return value < 3; }, vector(1, 2, 4));
+        const auto runtime_suffix =
+            cljonic::core::drop_while([](int value) noexcept { return value < 3; }, vector(1, 2, 4));
+        REQUIRE(equal(seq(runtime_prefix), vector(1, 2)));
+        REQUIRE(equal(seq(runtime_suffix), vector(4)));
+    }
+    volatile int runtime_first_raw = 1;
+    volatile int runtime_second_raw = 2;
+    volatile int runtime_third_raw = 3;
+    const int runtime_first = runtime_first_raw;
+    const int runtime_second = runtime_second_raw;
+    const int runtime_third = runtime_third_raw;
+    const auto runtime_map_adapter_source =
+        hash_map(runtime_first, runtime_first * 100, runtime_second, runtime_second * 100);
+    const auto runtime_map_adapter_prefix =
+        cljonic::core::take_while([](const auto&) noexcept { return true; }, runtime_map_adapter_source);
+    const auto runtime_map_adapter_suffix =
+        cljonic::core::drop_while([](const auto&) noexcept { return false; }, runtime_map_adapter_source);
+    REQUIRE((equal(seq(runtime_map_adapter_prefix),
+                   vector(map_entry(runtime_first, runtime_first * 100),
+                          map_entry(runtime_second, runtime_second * 100))) ||
+             equal(seq(runtime_map_adapter_prefix),
+                   vector(map_entry(runtime_second, runtime_second * 100),
+                          map_entry(runtime_first, runtime_first * 100)))));
+    REQUIRE((equal(seq(runtime_map_adapter_suffix),
+                   vector(map_entry(runtime_first, runtime_first * 100),
+                          map_entry(runtime_second, runtime_second * 100))) ||
+             equal(seq(runtime_map_adapter_suffix),
+                   vector(map_entry(runtime_second, runtime_second * 100),
+                          map_entry(runtime_first, runtime_first * 100)))));
+    const auto runtime_set_adapter_source = hash_set(runtime_first, runtime_second, runtime_third);
+    const auto runtime_set_adapter_prefix =
+        cljonic::core::take_while([](int) noexcept { return true; }, runtime_set_adapter_source);
+    const auto runtime_set_adapter_suffix =
+        cljonic::core::drop_while([](int) noexcept { return false; }, runtime_set_adapter_source);
+    REQUIRE((equal(seq(runtime_set_adapter_prefix), vector(runtime_first, runtime_second, runtime_third)) ||
+             equal(seq(runtime_set_adapter_prefix), vector(runtime_first, runtime_third, runtime_second)) ||
+             equal(seq(runtime_set_adapter_prefix), vector(runtime_second, runtime_first, runtime_third)) ||
+             equal(seq(runtime_set_adapter_prefix), vector(runtime_second, runtime_third, runtime_first)) ||
+             equal(seq(runtime_set_adapter_prefix), vector(runtime_third, runtime_first, runtime_second)) ||
+             equal(seq(runtime_set_adapter_prefix), vector(runtime_third, runtime_second, runtime_first))));
+    REQUIRE((equal(seq(runtime_set_adapter_suffix), vector(runtime_first, runtime_second, runtime_third)) ||
+             equal(seq(runtime_set_adapter_suffix), vector(runtime_first, runtime_third, runtime_second)) ||
+             equal(seq(runtime_set_adapter_suffix), vector(runtime_second, runtime_first, runtime_third)) ||
+             equal(seq(runtime_set_adapter_suffix), vector(runtime_second, runtime_third, runtime_first)) ||
+             equal(seq(runtime_set_adapter_suffix), vector(runtime_third, runtime_first, runtime_second)) ||
+             equal(seq(runtime_set_adapter_suffix), vector(runtime_third, runtime_second, runtime_first))));
 
     TRACE_ID("invariant.Seq.ProducerResultCapacityIsObservationCap");
     STATIC_REQUIRE(std::same_as<decltype(seq(Range<int>{0, 5})),
