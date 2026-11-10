@@ -251,4 +251,24 @@ TEST_CASE("Take limits producer evaluation and preserves value-held callback sta
     REQUIRE(cljonic::core::count(stateful) == 5);
     REQUIRE(cljonic::core::equal(cljonic::core::take(20, stateful),
                                  cljonic::core::vector(base, base + 1, base + 2, base + 3, base + 4)));
+
+    int take_while_calls = 0;
+    const auto take_while_source = cljonic::core::take_while(
+        [&take_while_calls](int) noexcept {
+            ++take_while_calls;
+            return true;
+        },
+        cljonic::core::vector(1, 2, 3));
+    REQUIRE(cljonic::core::take(0, take_while_source).count() == 0);
+    REQUIRE(take_while_calls == 0);
+
+    int drop_while_calls = 0;
+    const auto drop_while_source = cljonic::core::drop_while(
+        [&drop_while_calls](int) noexcept {
+            ++drop_while_calls;
+            return true;
+        },
+        cljonic::core::vector(1, 2, 3));
+    REQUIRE(cljonic::core::take(0, drop_while_source).count() == 0);
+    REQUIRE(drop_while_calls == 0);
 }
