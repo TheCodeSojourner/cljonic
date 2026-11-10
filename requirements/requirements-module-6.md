@@ -288,7 +288,7 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   ∧ ∀ `Set` element type ∧ ∀ `Map` key type that is a raw floating-point type: rejected at compile time, because set membership and map key lookup are equality comparisons
   ∧ ∀ element, key, value, producer-parameter, or `Variant` alternative type of a `Collection`, `Producer`, `MapEntry`, or composite that is detectable as floating-point-bearing: rejected at compile time wherever that component participates in equality
   ∧ ∀ context: detectability is the criterion — every floating-point equality comparison the library can detect must be rejected ∧ ¬∃ detectable comparison that is silently admitted
-  ∧ ∀ undetectable case (a floating-point member inside an opaque user-defined aggregate): governed by `REQ-NUM-018` ∧ ¬∃ claim that it was detected
+  ∧ ∀ undetectable case (a floating-point member inside an opaque user-defined class, aggregate or non-aggregate): cljonic does not inspect or validate that member ∧ equality admission and semantics at that boundary are governed by `REQ-NUM-018` ∧ ¬∃ claim that the library detected the member
   ∧ ∀ storage independent of equality: storing a floating-point value where the operation never compares it (for example `Vector<double, N>` element storage or `Map<int, double, N>` value storage) remains permitted ∧ every equality operation over such a collection remains rejected at compile time
   rationale: floating-point identity is not stable across supported environments; the defensible policy is to reject every detectable instance and to state honestly where detection stops
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07, rationale_source: origin_artifact, rationale_approved_by: human}
