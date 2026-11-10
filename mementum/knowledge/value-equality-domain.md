@@ -80,8 +80,14 @@ std::equality_comparable<T>
   admission for every instantiation because the standard library declares no
   non-throwing comparison on them — no exclusion list required, and user classes
   with `noexcept operator==` still pass (REQ-NUM-018).
-- Heap-freedom is not queryable in C++23; the nothrow contract is its
-  enforceable proxy (REQ-PLAT-009 forbids indirect allocation too). See
+- Heap-freedom is not a property of a type or operation that C++23 can
+  generally query. The non-throwing requirements in
+  `NothrowCollectionElement` and equality admission are separate constraints,
+  not evidence that an operation is heap-free: a `noexcept` operation can
+  allocate and handle failure. REQ-PLAT-009 independently forbids dynamic
+  allocation and deallocation on every public API path, including transitive
+  dependencies. Validate no-heap claims with the dedicated source, harness,
+  and symbol checks; do not infer them from `noexcept`. See
   `nothrow-contract-is-the-heap-freedom-proxy.md`.
 
 ## Fallthrough domain and rejection diagnostics
