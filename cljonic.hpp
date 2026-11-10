@@ -172,12 +172,12 @@ constexpr std::size_t CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE = CLJONIC_C
  *
  * \section conversion-automatic When numbers convert automatically
  *
- * You can pass a different numeric type when the conversion preserves every possible value of that type, not just the
- * value you happen to pass:
+ * You can pass a different numeric type within the same numeric domain when the conversion preserves every possible
+ * value of that type, not just the value you happen to pass:
  * - A \c short can become a \c long \c long without losing its value.
  * - A \c float can become a \c double without losing precision.
- * - An integer can become a floating-point number only if the destination can represent every value of the integer
- *   type exactly. Do not assume that a floating-point type can hold every integer just because it has a larger range.
+ * Integer and floating-point types are separate domains: conversions between them are rejected in both directions,
+ * even when a particular value is representable.
  *
  * A conversion that could lose information is rejected at compile time, even for a literal that fits. For example,
  * passing an \c int to an operation expecting \c short is rejected even when the argument is \c 1. Floating-point
@@ -298,6 +298,7 @@ template <typename To, typename From>
     requires(std::is_arithmetic_v<To> && std::is_arithmetic_v<From>)
 inline constexpr bool value_preserving_arithmetic<To, From> =
     !std::same_as<To, bool> && !std::same_as<From, bool> && !CharacterType<To> && !CharacterType<From> &&
+    std::is_integral_v<To> == std::is_integral_v<From> &&
     std::numeric_limits<To>::radix == std::numeric_limits<From>::radix &&
     std::numeric_limits<To>::digits >= std::numeric_limits<From>::digits &&
     (std::is_floating_point_v<To> || (std::is_integral_v<From> && (std::is_signed_v<To> || !std::is_signed_v<From>))) &&
@@ -552,8 +553,9 @@ concept NothrowCollectionElement = CopyableElement<T> && std::destructible<T> &&
     { value = other } noexcept;
 };
 
-/** Admits identical types or value-preserving arithmetic conversions without
- *  crossing Boolean, character, enumeration, pointer, or user-defined domains. */
+/** Admits identical types or value-preserving arithmetic conversions within
+ *  the same integer or floating-point domain. Integer/floating crossings and
+ *  Boolean, character, enumeration, pointer, or user-defined domains are excluded. */
 template <typename T, typename Arg>
 concept SafeImplicitConversion =
     std::same_as<std::remove_cvref_t<T>, std::remove_cvref_t<Arg>> ||
@@ -5307,7 +5309,8 @@ namespace cljonic::core {
  * The \b drop free function removes a requested prefix from one cljonic source and returns the remaining observable
  * elements as a bounded owning \ref Vector "Vector". Use \c drop(count, source) with a \ref Vector "Vector", \ref Map
  * "Map", \ref Set "Set", \ref Queue "Queue", or \ref String "String" collection, or a \ref Range "Range", \ref Repeat
- * "Repeat", \ref Cycle "Cycle", \ref Iterate "Iterate", or \ref Repeatedly "Repeatedly" producer.
+ * "Repeat", \ref Cycle "Cycle", \ref Iterate "Iterate", \ref Repeatedly "Repeatedly", \ref TakeWhile "TakeWhile", or
+ * \ref DropWhile "DropWhile" producer.
  *
  * Counts follow the \ref implicit-conversions "safe count conversion rules": signed or unsigned integers whose
  * nonnegative ranges fit std::size_t, excluding Boolean and character types. Zero or negative counts drop nothing. The
@@ -10149,8 +10152,9 @@ namespace cljonic::core {
 
 /** \anchor Seq
  * The \b seq free function returns the logical traversal elements of a `Vector`, `Map`, `Set`, `Queue`, or `String`
- * value, or of a supported \ref Range "Range", \ref Repeat "Repeat", \ref Cycle "Cycle", \ref Iterate "Iterate", or
- * \ref Repeatedly "Repeatedly" producer, as an owning, value-semantic \ref Vector "Vector" in traversal order.
+ * value, or of a supported \ref Range "Range", \ref Repeat "Repeat", \ref Cycle "Cycle", \ref Iterate "Iterate", \ref
+ * Repeatedly "Repeatedly", \ref TakeWhile "TakeWhile", or \ref DropWhile "DropWhile" producer, as an owning,
+ * value-semantic \ref Vector "Vector" in traversal order.
  *
  * A \ref Vector "Vector" input returns a by-value copy of itself. A \ref Map "Map" input yields a vector of
  * value-semantic \ref MapEntryFactory "map_entry" values. A \ref Set "Set" or \ref Queue "Queue" input yields a vector
@@ -10276,7 +10280,7 @@ namespace cljonic::core {
  * The \b take free function returns the first requested elements of one cljonic source as a bounded owning \ref Vector
  * "Vector". Use \c take(count, source) with a \ref Vector "Vector", \ref Map "Map", \ref Set "Set", \ref Queue
  * "Queue", or \ref String "String" collection, or a \ref Range "Range", \ref Repeat "Repeat", \ref Cycle "Cycle", \ref
- * Iterate "Iterate", or \ref Repeatedly "Repeatedly" producer.
+ * Iterate "Iterate", \ref Repeatedly "Repeatedly", \ref TakeWhile "TakeWhile", or \ref DropWhile "DropWhile" producer.
  *
  * Counts follow the \ref implicit-conversions "safe count conversion rules": signed or unsigned integers whose
  * nonnegative ranges fit std::size_t, excluding Boolean and character types. Zero or negative counts return an empty
