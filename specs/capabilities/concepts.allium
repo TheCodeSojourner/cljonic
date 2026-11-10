@@ -298,6 +298,8 @@ entity StableEqualityComparable {
         this.requires_non_throwing_equality = true
     }
 
+    -- Reject floating-point equality the library can detect; recursion stops at opaque
+    -- user-defined class boundaries under REQ-NUM-018.
     invariant RejectsFloatingPoint {
         this.rejects_floating_point = true
     }

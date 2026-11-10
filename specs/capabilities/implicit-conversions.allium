@@ -15,6 +15,7 @@
 entity ImplicitConversions {
     same_type_values_preserve_identity: Boolean
     arithmetic_conversions_preserve_entire_source_domain: Boolean
+    rejects_integer_floating_domain_crossings: Boolean
     boolean_character_enum_domains_remain_distinct: Boolean
     cross_type_user_defined_and_pointer_conversions_are_rejected: Boolean
     all_api_boundaries_share_admission: Boolean
@@ -38,6 +39,12 @@ entity ImplicitConversions {
 
     invariant ArithmeticConversionsPreserveEntireSourceDomain {
         this.arithmetic_conversions_preserve_entire_source_domain = true
+    }
+
+    -- Reject both integer/floating crossings at ordinary boundaries even when the
+    -- particular value is representable; callers must convert explicitly first.
+    invariant RejectsIntegerFloatingDomainCrossings {
+        this.rejects_integer_floating_domain_crossings = true
     }
 
     invariant BooleanCharacterEnumDomainsRemainDistinct {
