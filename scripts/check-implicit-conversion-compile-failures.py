@@ -11,6 +11,7 @@ from pathlib import Path
 
 def rejection_cases() -> dict[str, str]:
     cases = {
+        "vector-integer-to-floating": "(void)cljonic::Vector<double, 2>{short{1}};",
         "vector-pack": "(void)cljonic::Vector<short, 2>{1};",
         "set-pack": "(void)cljonic::Set<int, 2>{true};",
         "queue-pack": "(void)cljonic::Queue<int, 2>{'x'};",
