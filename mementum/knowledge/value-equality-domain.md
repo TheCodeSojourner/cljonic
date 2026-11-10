@@ -28,12 +28,14 @@ before re-deriving how equality works in cljonic.
 
 ```
 std::equality_comparable<T>
+&& concepts_detail::nothrow_equality_v<T>
 && !concepts_detail::contains_floating_point_v<T>
 && !concepts_detail::contains_callable_v<T>
+&& concepts_detail::walker_coverage_ok_v<T>
 ```
 
-- Floats are rejected as a class (NaN/precision instability); storability
-  (REQ-NUM-001) never implies equality.
+- Raw floating-point types and detectable floating-point-bearing composites
+  are rejected for equality (REQ-NUM-001); storability never implies equality.
 - Detection policy (REQ-NUM-019, human 2026-10-31): every floating-point
   equality comparison that can be detected statically is rejected at compile
   time, and no detectable comparison may be silently admitted. Concretely this
@@ -41,8 +43,9 @@ std::equality_comparable<T>
   type, a `Map` key type, and any floating-point-bearing component the walkers
   can see. Storage that is never compared stays permitted (`Vector<double, N>`
   elements, `Map<int, double, N>` values), while equality over such collections
-  stays rejected. Detection stops at an opaque user-defined aggregate
-  (REQ-NUM-018), and that limit is stated rather than papered over.
+  stays rejected. Detection stops at an opaque user-defined class, whether
+  aggregate or non-aggregate (REQ-NUM-018), and that limit is stated rather than
+  papered over.
 - The detection obligation is enforced nominally, not by convention
   (`REQ-NUM-019`, `StableEqualityComparable.NominalWalkerCoverageIsGated`). The
   walkers are enumerative, so the unspecialized form answers "no floating point"
@@ -50,8 +53,10 @@ std::equality_comparable<T>
   `concepts_detail::walker_coverage<Self>` in its own header. The primary
   template denies coverage, so a nominal composite that forgets the declaration
   is not `StableEqualityComparable` — the omission fails at first equality use
-  instead of silently admitting a detectable floating-point comparison. Types
-  outside the nominal domain are exempt, because their members are unanalyzable.
+  instead of silently admitting a detectable floating-point comparison.
+  User-defined classes outside the library's nominal composite domain are
+  opaque: their members are unanalyzable, and a non-throwing `operator==` is
+  trusted under REQ-NUM-018.
   Adding a library-owned composite now requires: nominal trait, the three walker
   specializations, and the coverage declaration.
 - Callables are rejected as a class, including function pointers (a function
@@ -61,9 +66,10 @@ std::equality_comparable<T>
   `cljonic::Variant` alternatives, cljonic collections, `MapEntry`, and producer
   stored parameters. (`std::variant` specializations were removed 2026-10-02.)
 - `NothrowEqualityComparable = StableEqualityComparable &&
-  concepts_detail::nothrow_equality_v<T>` requires a non-throwing `operator==`.
-  Because `equal` / `not_equal` are `noexcept`, a value whose comparison may
-  throw is rejected by contract (added 2026-10-02).
+  concepts_detail::nothrow_equality_v<T>` names the non-throwing comparison
+  requirement for operations such as `equal` / `not_equal`. The term is
+  currently logically redundant because `StableEqualityComparable` itself
+  requires it.
 - `NothrowStableEqualityComparable = StableEqualityComparable &&
   NothrowCollectionElement && concepts_detail::nothrow_equality_v<T>` is the
   map-key / set-element contract. The non-throwing-comparison term was added
@@ -150,17 +156,16 @@ propagation.
 
 ## Known limitations (do not rediscover these)
 
-1. User-defined aggregates are a deliberate boundary, not a defect (human
-   decision, 2026-10-31, `REQ-NUM-018`). An aggregate providing a non-throwing
-   `operator==` — defaulted or user-written — is admitted to the stable equality
-   domain even when it stores floats; the recursion of `REQ-NUM-007` stops at
-   the type boundary and the equality semantics are the author's responsibility.
-   The boundary exists because C++23 has no standard reflection and the
-   available approximations (structured-bindings aggregate tie ala Boost.PFR,
-   aggregate field-count probing) are aggregate-only, arity-bounded, and blind
-   to private/base members. C++26 static reflection (P2996) would be needed to
-   analyze members instead. An aggregate without an available non-throwing
-   `operator==` remains rejected.
+1. Opaque user-defined classes are a deliberate boundary, not a defect (human
+   decision, `REQ-NUM-018`). An aggregate or non-aggregate class providing a
+   non-throwing `operator==` — defaulted or user-written — is admitted to the
+   stable equality domain even when it stores floats. The recursion of
+   `REQ-NUM-007` stops at the class boundary; cljonic does not inspect or verify
+   its members or equality semantics, which remain the author's responsibility.
+   C++23 has no standard reflection for analyzing arbitrary user-defined class
+   members. A class without an available non-throwing `operator==` remains
+   rejected for equality, though it may still be storable when it satisfies the
+   independent storage contract.
 2. Set duplicate insertion at compile time is rejected by a declared-never-
    defined trap (`rejected_duplicate_value_at_compile_time()`), so the diagnostic
    reads as a non-constexpr call rather than `'abort()' is not a constant
