@@ -59,6 +59,7 @@ TEST_CASE("reduce folds a cljonic source into one accumulator value", "[reduce][
     TRACE_ID("invariant.ReduceFunction.InitialValueConvertsSafelyToAccumulator");
     TRACE_ID("invariant.ReduceFunction.ConsumedArgumentPositionsUseSafeImplicitConversion");
     TRACE_ID("invariant.ReduceFunction.NarrowingAndDomainCrossingConversionsRejectedAtCompileTime");
+    TRACE_ID("invariant.ReduceFunction.IntegerFloatingCallbackCrossingsRejected");
     TRACE_ID("invariant.ReduceFunction.ObservedCountSaturatedAtCollectionMaximum");
     TRACE_ID("invariant.ReduceFunction.UnboundedProducerFoldsOverObservationCap");
     TRACE_ID("invariant.ReduceFunction.MapSetTraversalOrderSemanticallyUnordered");
@@ -259,10 +260,8 @@ TEST_CASE("reduce folds a cljonic source into one accumulator value", "[reduce][
         cljonic::core::drop_while([](const auto&) noexcept { return false; }, runtime_map);
     REQUIRE(reduce(entry_total, 0, runtime_map_adapter_prefix) == 60);
     REQUIRE(reduce(entry_total, 0, runtime_map_adapter_suffix) == 60);
-    const auto runtime_set_adapter_prefix =
-        cljonic::core::take_while([](int) noexcept { return true; }, runtime_set);
-    const auto runtime_set_adapter_suffix =
-        cljonic::core::drop_while([](int) noexcept { return false; }, runtime_set);
+    const auto runtime_set_adapter_prefix = cljonic::core::take_while([](int) noexcept { return true; }, runtime_set);
+    const auto runtime_set_adapter_suffix = cljonic::core::drop_while([](int) noexcept { return false; }, runtime_set);
     REQUIRE(reduce(add, 0, runtime_set_adapter_prefix) == 6);
     REQUIRE(reduce(add, 0, runtime_set_adapter_suffix) == 6);
 

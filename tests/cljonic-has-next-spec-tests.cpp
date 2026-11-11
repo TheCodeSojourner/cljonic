@@ -61,12 +61,10 @@ TEST_CASE("has_next reports whether next has an observable result", "[has_next]"
     constexpr auto taken = take_while([](int value) noexcept { return value < 30; }, vector);
     constexpr auto dropped = drop_while([](int value) noexcept { return value < 3; }, Vector<int, 4>{1, 2, 3, 4});
     constexpr auto unordered_map_source = hash_map(1, 10, 2, 20);
-    constexpr auto unordered_map_taken =
-        take_while([](const auto&) noexcept { return true; }, unordered_map_source);
+    constexpr auto unordered_map_taken = take_while([](const auto&) noexcept { return true; }, unordered_map_source);
     constexpr auto unordered_map_empty_take =
         take_while([](const auto&) noexcept { return false; }, unordered_map_source);
-    constexpr auto unordered_map_dropped =
-        drop_while([](const auto&) noexcept { return false; }, unordered_map_source);
+    constexpr auto unordered_map_dropped = drop_while([](const auto&) noexcept { return false; }, unordered_map_source);
     constexpr auto unordered_map_empty_drop =
         drop_while([](const auto&) noexcept { return true; }, unordered_map_source);
     constexpr auto unordered_set_source = hash_set(10, 20);
@@ -213,13 +211,11 @@ TEST_CASE("has_next reports whether next has an observable result", "[has_next]"
     const auto runtime_unbounded_repeat = repeat(first);
     const auto runtime_adapter =
         take_while([](int value) noexcept { return value < 43; }, Vector<int, 4>{first, second, second + 1});
-    const auto runtime_drop_while_with_next =
-        drop_while([](int value) noexcept { return value < 42; },
-                   Vector<int, 4>{first, second, second + 1, second + 2});
+    const auto runtime_drop_while_with_next = drop_while([](int value) noexcept { return value < 42; },
+                                                         Vector<int, 4>{first, second, second + 1, second + 2});
     const auto runtime_drop_while_singleton =
         drop_while([](int value) noexcept { return value < 42; }, Vector<int, 4>{first, second, second + 1});
-    const auto runtime_drop_while_empty =
-        drop_while([](int) noexcept { return true; }, Vector<int, 4>{first, second});
+    const auto runtime_drop_while_empty = drop_while([](int) noexcept { return true; }, Vector<int, 4>{first, second});
     const auto runtime_unordered_map_source = hash_map(first, first + 100, second, second + 100);
     const auto runtime_unordered_map_taken =
         take_while([](const auto&) noexcept { return true; }, runtime_unordered_map_source);

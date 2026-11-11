@@ -89,15 +89,13 @@ TEST_CASE("Seq free function operations", "[seq]") {
 
     TRACE_ID("invariant.Seq.SetInputReturnsOneElementPerStoredElement");
     constexpr auto compile_time_set_result = seq(hash_set(7, 8));
-    STATIC_REQUIRE((equal(compile_time_set_result, vector(7, 8)) ||
-                    equal(compile_time_set_result, vector(8, 7))));
+    STATIC_REQUIRE((equal(compile_time_set_result, vector(7, 8)) || equal(compile_time_set_result, vector(8, 7))));
     {
         const auto stored = hash_set(7, 8, 9);
         const auto result = seq(stored);
         REQUIRE(count(result) == 3U);
-        REQUIRE((equal(result, vector(7, 8, 9)) || equal(result, vector(7, 9, 8)) ||
-                 equal(result, vector(8, 7, 9)) || equal(result, vector(8, 9, 7)) ||
-                 equal(result, vector(9, 7, 8)) || equal(result, vector(9, 8, 7))));
+        REQUIRE((equal(result, vector(7, 8, 9)) || equal(result, vector(7, 9, 8)) || equal(result, vector(8, 7, 9)) ||
+                 equal(result, vector(8, 9, 7)) || equal(result, vector(9, 7, 8)) || equal(result, vector(9, 8, 7))));
     }
 
     TRACE_ID("invariant.Seq.QueueInputPreservesFifoOrder");
@@ -137,9 +135,8 @@ TEST_CASE("Seq free function operations", "[seq]") {
         const auto stored = hash_set(1, 2, 3);
         const auto result = seq(stored);
         REQUIRE(count(result) == 3U);
-        REQUIRE((equal(result, vector(1, 2, 3)) || equal(result, vector(1, 3, 2)) ||
-                 equal(result, vector(2, 1, 3)) || equal(result, vector(2, 3, 1)) ||
-                 equal(result, vector(3, 1, 2)) || equal(result, vector(3, 2, 1))));
+        REQUIRE((equal(result, vector(1, 2, 3)) || equal(result, vector(1, 3, 2)) || equal(result, vector(2, 1, 3)) ||
+                 equal(result, vector(2, 3, 1)) || equal(result, vector(3, 1, 2)) || equal(result, vector(3, 2, 1))));
     }
     constexpr auto map_adapter_source = hash_map(1, 100, 2, 200);
     constexpr auto map_adapter_prefix =
@@ -155,18 +152,14 @@ TEST_CASE("Seq free function operations", "[seq]") {
         cljonic::core::take_while([](int) noexcept { return true; }, set_adapter_source);
     constexpr auto set_adapter_suffix =
         cljonic::core::drop_while([](int) noexcept { return false; }, set_adapter_source);
-    STATIC_REQUIRE((equal(seq(set_adapter_prefix), vector(1, 2, 3)) ||
-                    equal(seq(set_adapter_prefix), vector(1, 3, 2)) ||
-                    equal(seq(set_adapter_prefix), vector(2, 1, 3)) ||
-                    equal(seq(set_adapter_prefix), vector(2, 3, 1)) ||
-                    equal(seq(set_adapter_prefix), vector(3, 1, 2)) ||
-                    equal(seq(set_adapter_prefix), vector(3, 2, 1))));
-    STATIC_REQUIRE((equal(seq(set_adapter_suffix), vector(1, 2, 3)) ||
-                    equal(seq(set_adapter_suffix), vector(1, 3, 2)) ||
-                    equal(seq(set_adapter_suffix), vector(2, 1, 3)) ||
-                    equal(seq(set_adapter_suffix), vector(2, 3, 1)) ||
-                    equal(seq(set_adapter_suffix), vector(3, 1, 2)) ||
-                    equal(seq(set_adapter_suffix), vector(3, 2, 1))));
+    STATIC_REQUIRE(
+        (equal(seq(set_adapter_prefix), vector(1, 2, 3)) || equal(seq(set_adapter_prefix), vector(1, 3, 2)) ||
+         equal(seq(set_adapter_prefix), vector(2, 1, 3)) || equal(seq(set_adapter_prefix), vector(2, 3, 1)) ||
+         equal(seq(set_adapter_prefix), vector(3, 1, 2)) || equal(seq(set_adapter_prefix), vector(3, 2, 1))));
+    STATIC_REQUIRE(
+        (equal(seq(set_adapter_suffix), vector(1, 2, 3)) || equal(seq(set_adapter_suffix), vector(1, 3, 2)) ||
+         equal(seq(set_adapter_suffix), vector(2, 1, 3)) || equal(seq(set_adapter_suffix), vector(2, 3, 1)) ||
+         equal(seq(set_adapter_suffix), vector(3, 1, 2)) || equal(seq(set_adapter_suffix), vector(3, 2, 1))));
 
     TRACE_ID("invariant.Seq.ProducerInputMaterializesObservableTraversal");
     STATIC_REQUIRE(equal(seq(Range{0, 5}), vector(0, 1, 2, 3, 4)));
@@ -197,18 +190,14 @@ TEST_CASE("Seq free function operations", "[seq]") {
         cljonic::core::take_while([](const auto&) noexcept { return true; }, runtime_map_adapter_source);
     const auto runtime_map_adapter_suffix =
         cljonic::core::drop_while([](const auto&) noexcept { return false; }, runtime_map_adapter_source);
-    REQUIRE((equal(seq(runtime_map_adapter_prefix),
-                   vector(map_entry(runtime_first, runtime_first * 100),
-                          map_entry(runtime_second, runtime_second * 100))) ||
-             equal(seq(runtime_map_adapter_prefix),
-                   vector(map_entry(runtime_second, runtime_second * 100),
-                          map_entry(runtime_first, runtime_first * 100)))));
-    REQUIRE((equal(seq(runtime_map_adapter_suffix),
-                   vector(map_entry(runtime_first, runtime_first * 100),
-                          map_entry(runtime_second, runtime_second * 100))) ||
-             equal(seq(runtime_map_adapter_suffix),
-                   vector(map_entry(runtime_second, runtime_second * 100),
-                          map_entry(runtime_first, runtime_first * 100)))));
+    REQUIRE((equal(seq(runtime_map_adapter_prefix), vector(map_entry(runtime_first, runtime_first * 100),
+                                                           map_entry(runtime_second, runtime_second * 100))) ||
+             equal(seq(runtime_map_adapter_prefix), vector(map_entry(runtime_second, runtime_second * 100),
+                                                           map_entry(runtime_first, runtime_first * 100)))));
+    REQUIRE((equal(seq(runtime_map_adapter_suffix), vector(map_entry(runtime_first, runtime_first * 100),
+                                                           map_entry(runtime_second, runtime_second * 100))) ||
+             equal(seq(runtime_map_adapter_suffix), vector(map_entry(runtime_second, runtime_second * 100),
+                                                           map_entry(runtime_first, runtime_first * 100)))));
     const auto runtime_set_adapter_source = hash_set(runtime_first, runtime_second, runtime_third);
     const auto runtime_set_adapter_prefix =
         cljonic::core::take_while([](int) noexcept { return true; }, runtime_set_adapter_source);

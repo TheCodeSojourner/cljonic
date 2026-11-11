@@ -136,14 +136,10 @@ TEST_CASE("Count observes unordered-source TakeWhile and DropWhile adapters", "[
     volatile int raw = 7;
     const int value = raw;
     const auto runtime_map_source = hash_map(value, value + 10, value + 1, value + 20);
-    const auto runtime_map_prefix =
-        take_while([](const auto&) noexcept { return true; }, runtime_map_source);
-    const auto runtime_map_empty_prefix =
-        take_while([](const auto&) noexcept { return false; }, runtime_map_source);
-    const auto runtime_map_suffix =
-        drop_while([](const auto&) noexcept { return false; }, runtime_map_source);
-    const auto runtime_map_empty_suffix =
-        drop_while([](const auto&) noexcept { return true; }, runtime_map_source);
+    const auto runtime_map_prefix = take_while([](const auto&) noexcept { return true; }, runtime_map_source);
+    const auto runtime_map_empty_prefix = take_while([](const auto&) noexcept { return false; }, runtime_map_source);
+    const auto runtime_map_suffix = drop_while([](const auto&) noexcept { return false; }, runtime_map_source);
+    const auto runtime_map_empty_suffix = drop_while([](const auto&) noexcept { return true; }, runtime_map_source);
     const auto runtime_set_source = hash_set(value, value + 1);
     const auto runtime_set_prefix = take_while([](int) noexcept { return true; }, runtime_set_source);
     const auto runtime_set_empty_prefix = take_while([](int) noexcept { return false; }, runtime_set_source);

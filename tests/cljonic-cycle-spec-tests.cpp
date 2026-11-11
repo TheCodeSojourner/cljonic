@@ -46,15 +46,13 @@ TEST_CASE("Cycle repeats complete Map and Set adapter periods without assuming o
     STATIC_REQUIRE(set_result(0U) == set_result(2U));
     STATIC_REQUIRE(set_result(1U) == set_result(3U));
     STATIC_REQUIRE(set_result(0U) != set_result(1U));
-    STATIC_REQUIRE((set_result(0U) == 1 && set_result(1U) == 2) ||
-                   (set_result(0U) == 2 && set_result(1U) == 1));
+    STATIC_REQUIRE((set_result(0U) == 1 && set_result(1U) == 2) || (set_result(0U) == 2 && set_result(1U) == 1));
 
     volatile int runtime_key_raw = 1;
     volatile int runtime_value_raw = 10;
     const int runtime_key = runtime_key_raw;
     const int runtime_value = runtime_value_raw;
-    const auto runtime_map_source =
-        hash_map(runtime_key, runtime_value, runtime_key + 1, runtime_value + 10);
+    const auto runtime_map_source = hash_map(runtime_key, runtime_value, runtime_key + 1, runtime_value + 10);
     const auto runtime_map_adapter = take_while([](const auto&) noexcept { return true; }, runtime_map_source);
     const auto runtime_map_result = into(Vector<Entry, 4>{}, cycle(runtime_map_adapter));
     REQUIRE(runtime_map_result.count() == 4U);

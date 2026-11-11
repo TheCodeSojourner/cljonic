@@ -56,6 +56,7 @@ TEST_CASE("Filter matches source values in traversal order", "[filter]") {
     TRACE_ID("invariant.FilterFunction.PredicateResultIsExactBool");
     TRACE_ID("invariant.FilterFunction.InspectableParameterUsesSafeImplicitConversion");
     TRACE_ID("invariant.FilterFunction.UnsafeParameterConversionsRejectedAtCompileTime");
+    TRACE_ID("invariant.FilterFunction.IntegerFloatingParameterCrossingsRejected");
     TRACE_ID("invariant.FilterFunction.UninspectableCallableRequiresNothrowExactBoolInvocation");
     TRACE_ID("invariant.FilterFunction.MapAndSetOrderIsSemanticallyUnordered");
     TRACE_ID("invariant.FilterFunction.InputIsPreserved");
@@ -78,14 +79,11 @@ TEST_CASE("Filter matches source values in traversal order", "[filter]") {
     constexpr auto filtered_map =
         cljonic::core::filter(filter_entry_value_is_even, cljonic::core::hash_map(1, 2, 2, 3, 3, 4));
     STATIC_REQUIRE(filtered_map.count() == 2);
-    STATIC_REQUIRE((cljonic::core::equal(
-                        filtered_map,
-                        cljonic::core::vector(cljonic::MapEntry<int, int>{1, 2}, cljonic::MapEntry<int, int>{3, 4})) ||
-                    cljonic::core::equal(
-                        filtered_map,
-                        cljonic::core::vector(cljonic::MapEntry<int, int>{3, 4}, cljonic::MapEntry<int, int>{1, 2}))));
-    constexpr auto filtered_set =
-        cljonic::core::filter(filter_is_even, cljonic::core::hash_set(1, 2, 3, 4));
+    STATIC_REQUIRE((cljonic::core::equal(filtered_map, cljonic::core::vector(cljonic::MapEntry<int, int>{1, 2},
+                                                                             cljonic::MapEntry<int, int>{3, 4})) ||
+                    cljonic::core::equal(filtered_map, cljonic::core::vector(cljonic::MapEntry<int, int>{3, 4},
+                                                                             cljonic::MapEntry<int, int>{1, 2}))));
+    constexpr auto filtered_set = cljonic::core::filter(filter_is_even, cljonic::core::hash_set(1, 2, 3, 4));
     STATIC_REQUIRE(filtered_set.count() == 2);
     STATIC_REQUIRE((cljonic::core::equal(filtered_set, cljonic::core::vector(2, 4)) ||
                     cljonic::core::equal(filtered_set, cljonic::core::vector(4, 2))));
@@ -107,10 +105,10 @@ TEST_CASE("Filter matches source values in traversal order", "[filter]") {
         cljonic::core::take_while([](int value) noexcept { return value < 3; }, adapter_source);
     constexpr auto adapter_suffix =
         cljonic::core::drop_while([](int value) noexcept { return value < 3; }, adapter_source);
-    STATIC_REQUIRE(cljonic::core::equal(cljonic::core::filter(filter_is_even, adapter_prefix),
-                                        cljonic::core::vector(2)));
-    STATIC_REQUIRE(cljonic::core::equal(cljonic::core::filter(filter_is_even, adapter_suffix),
-                                        cljonic::core::vector(4)));
+    STATIC_REQUIRE(
+        cljonic::core::equal(cljonic::core::filter(filter_is_even, adapter_prefix), cljonic::core::vector(2)));
+    STATIC_REQUIRE(
+        cljonic::core::equal(cljonic::core::filter(filter_is_even, adapter_suffix), cljonic::core::vector(4)));
     constexpr auto adapter_map_source = cljonic::core::hash_map(1, 2, 3, 4);
     constexpr auto map_adapter_prefix =
         cljonic::core::take_while([](const auto&) noexcept { return true; }, adapter_map_source);
@@ -120,31 +118,27 @@ TEST_CASE("Filter matches source values in traversal order", "[filter]") {
     constexpr auto map_suffix_filtered = cljonic::core::filter(filter_entry_value_is_even, map_adapter_suffix);
     STATIC_REQUIRE(map_prefix_filtered.count() == 2U);
     STATIC_REQUIRE(map_suffix_filtered.count() == 2U);
-    STATIC_REQUIRE((cljonic::core::equal(map_prefix_filtered,
-                                         cljonic::core::vector(cljonic::MapEntry<int, int>{1, 2},
-                                                               cljonic::MapEntry<int, int>{3, 4})) ||
-                    cljonic::core::equal(map_prefix_filtered,
-                                         cljonic::core::vector(cljonic::MapEntry<int, int>{3, 4},
-                                                               cljonic::MapEntry<int, int>{1, 2}))));
-    STATIC_REQUIRE((cljonic::core::equal(map_suffix_filtered,
-                                         cljonic::core::vector(cljonic::MapEntry<int, int>{1, 2},
-                                                               cljonic::MapEntry<int, int>{3, 4})) ||
-                    cljonic::core::equal(map_suffix_filtered,
-                                         cljonic::core::vector(cljonic::MapEntry<int, int>{3, 4},
-                                                               cljonic::MapEntry<int, int>{1, 2}))));
+    STATIC_REQUIRE(
+        (cljonic::core::equal(map_prefix_filtered, cljonic::core::vector(cljonic::MapEntry<int, int>{1, 2},
+                                                                         cljonic::MapEntry<int, int>{3, 4})) ||
+         cljonic::core::equal(map_prefix_filtered, cljonic::core::vector(cljonic::MapEntry<int, int>{3, 4},
+                                                                         cljonic::MapEntry<int, int>{1, 2}))));
+    STATIC_REQUIRE(
+        (cljonic::core::equal(map_suffix_filtered, cljonic::core::vector(cljonic::MapEntry<int, int>{1, 2},
+                                                                         cljonic::MapEntry<int, int>{3, 4})) ||
+         cljonic::core::equal(map_suffix_filtered, cljonic::core::vector(cljonic::MapEntry<int, int>{3, 4},
+                                                                         cljonic::MapEntry<int, int>{1, 2}))));
     constexpr auto set_adapter_source = cljonic::core::hash_set(1, 2, 3, 4);
     constexpr auto set_adapter_prefix =
         cljonic::core::take_while([](int) noexcept { return true; }, set_adapter_source);
     constexpr auto set_adapter_suffix =
         cljonic::core::drop_while([](int) noexcept { return false; }, set_adapter_source);
-    STATIC_REQUIRE((cljonic::core::equal(cljonic::core::filter(filter_is_even, set_adapter_prefix),
-                                         cljonic::core::vector(2, 4)) ||
-                    cljonic::core::equal(cljonic::core::filter(filter_is_even, set_adapter_prefix),
-                                         cljonic::core::vector(4, 2))));
-    STATIC_REQUIRE((cljonic::core::equal(cljonic::core::filter(filter_is_even, set_adapter_suffix),
-                                         cljonic::core::vector(2, 4)) ||
-                    cljonic::core::equal(cljonic::core::filter(filter_is_even, set_adapter_suffix),
-                                         cljonic::core::vector(4, 2))));
+    STATIC_REQUIRE(
+        (cljonic::core::equal(cljonic::core::filter(filter_is_even, set_adapter_prefix), cljonic::core::vector(2, 4)) ||
+         cljonic::core::equal(cljonic::core::filter(filter_is_even, set_adapter_prefix), cljonic::core::vector(4, 2))));
+    STATIC_REQUIRE(
+        (cljonic::core::equal(cljonic::core::filter(filter_is_even, set_adapter_suffix), cljonic::core::vector(2, 4)) ||
+         cljonic::core::equal(cljonic::core::filter(filter_is_even, set_adapter_suffix), cljonic::core::vector(4, 2))));
     STATIC_REQUIRE((cljonic::core::filter(filter_is_even, cljonic::Vector<int, 4>{}).count() == 0));
     STATIC_REQUIRE(cljonic::core::filter(filter_is_even, cljonic::core::vector(1, 3, 5)).count() == 0);
     STATIC_REQUIRE(cljonic::core::filter(filter_is_positive, cljonic::core::vector(1, 2, 3, 4)).count() == 4);
@@ -179,19 +173,17 @@ TEST_CASE("Filter matches source values in traversal order", "[filter]") {
     const auto runtime_filtered_map =
         cljonic::core::filter(filter_entry_value_is_even, cljonic::core::hash_map(first, second, third, fourth));
     REQUIRE(runtime_filtered_map.count() == 2);
-    REQUIRE((cljonic::core::equal(runtime_filtered_map,
-                                  cljonic::core::vector(cljonic::MapEntry<int, int>{first, second},
-                                                        cljonic::MapEntry<int, int>{third, fourth})) ||
-             cljonic::core::equal(runtime_filtered_map,
-                                  cljonic::core::vector(cljonic::MapEntry<int, int>{third, fourth},
-                                                        cljonic::MapEntry<int, int>{first, second}))));
+    REQUIRE((
+        cljonic::core::equal(runtime_filtered_map, cljonic::core::vector(cljonic::MapEntry<int, int>{first, second},
+                                                                         cljonic::MapEntry<int, int>{third, fourth})) ||
+        cljonic::core::equal(runtime_filtered_map, cljonic::core::vector(cljonic::MapEntry<int, int>{third, fourth},
+                                                                         cljonic::MapEntry<int, int>{first, second}))));
     const auto runtime_filtered_set =
         cljonic::core::filter(filter_is_even, cljonic::core::hash_set(first, second, third, fourth));
     REQUIRE(runtime_filtered_set.count() == 2);
     REQUIRE((cljonic::core::equal(runtime_filtered_set, cljonic::core::vector(second, fourth)) ||
              cljonic::core::equal(runtime_filtered_set, cljonic::core::vector(fourth, second))));
-    const auto runtime_adapter_map_source =
-        cljonic::core::hash_map(first, second, third, fourth);
+    const auto runtime_adapter_map_source = cljonic::core::hash_map(first, second, third, fourth);
     const auto runtime_map_adapter_prefix =
         cljonic::core::take_while([](const auto&) noexcept { return true; }, runtime_adapter_map_source);
     const auto runtime_map_adapter_suffix =
@@ -261,14 +253,11 @@ TEST_CASE("Filterv is an alias of filter", "[filterv]") {
     constexpr auto filterv_map =
         cljonic::core::filterv(filter_entry_value_is_even, cljonic::core::hash_map(1, 2, 2, 3, 3, 4));
     STATIC_REQUIRE(filterv_map.count() == 2);
-    STATIC_REQUIRE((cljonic::core::equal(
-                        filterv_map,
-                        cljonic::core::vector(cljonic::MapEntry<int, int>{1, 2}, cljonic::MapEntry<int, int>{3, 4})) ||
-                    cljonic::core::equal(
-                        filterv_map,
-                        cljonic::core::vector(cljonic::MapEntry<int, int>{3, 4}, cljonic::MapEntry<int, int>{1, 2}))));
-    constexpr auto filterv_set =
-        cljonic::core::filterv(filter_is_even, cljonic::core::hash_set(1, 2, 3, 4));
+    STATIC_REQUIRE((cljonic::core::equal(filterv_map, cljonic::core::vector(cljonic::MapEntry<int, int>{1, 2},
+                                                                            cljonic::MapEntry<int, int>{3, 4})) ||
+                    cljonic::core::equal(filterv_map, cljonic::core::vector(cljonic::MapEntry<int, int>{3, 4},
+                                                                            cljonic::MapEntry<int, int>{1, 2}))));
+    constexpr auto filterv_set = cljonic::core::filterv(filter_is_even, cljonic::core::hash_set(1, 2, 3, 4));
     STATIC_REQUIRE(filterv_set.count() == 2);
     STATIC_REQUIRE((cljonic::core::equal(filterv_set, cljonic::core::vector(2, 4)) ||
                     cljonic::core::equal(filterv_set, cljonic::core::vector(4, 2))));
@@ -290,10 +279,10 @@ TEST_CASE("Filterv is an alias of filter", "[filterv]") {
         cljonic::core::take_while([](int value) noexcept { return value < 3; }, adapter_source);
     constexpr auto adapter_suffix =
         cljonic::core::drop_while([](int value) noexcept { return value < 3; }, adapter_source);
-    STATIC_REQUIRE(cljonic::core::equal(cljonic::core::filterv(filter_is_even, adapter_prefix),
-                                        cljonic::core::vector(2)));
-    STATIC_REQUIRE(cljonic::core::equal(cljonic::core::filterv(filter_is_even, adapter_suffix),
-                                        cljonic::core::vector(4)));
+    STATIC_REQUIRE(
+        cljonic::core::equal(cljonic::core::filterv(filter_is_even, adapter_prefix), cljonic::core::vector(2)));
+    STATIC_REQUIRE(
+        cljonic::core::equal(cljonic::core::filterv(filter_is_even, adapter_suffix), cljonic::core::vector(4)));
     constexpr auto filterv_map_adapter_prefix =
         cljonic::core::take_while([](const auto&) noexcept { return true; }, cljonic::core::hash_map(1, 2, 3, 4));
     constexpr auto filterv_map_adapter_suffix =
@@ -304,18 +293,16 @@ TEST_CASE("Filterv is an alias of filter", "[filterv]") {
         cljonic::core::filterv(filter_entry_value_is_even, filterv_map_adapter_suffix);
     STATIC_REQUIRE(filterv_map_prefix_result.count() == 2U);
     STATIC_REQUIRE(filterv_map_suffix_result.count() == 2U);
-    STATIC_REQUIRE((cljonic::core::equal(filterv_map_prefix_result,
-                                         cljonic::core::vector(cljonic::MapEntry<int, int>{1, 2},
-                                                               cljonic::MapEntry<int, int>{3, 4})) ||
-                    cljonic::core::equal(filterv_map_prefix_result,
-                                         cljonic::core::vector(cljonic::MapEntry<int, int>{3, 4},
-                                                               cljonic::MapEntry<int, int>{1, 2}))));
-    STATIC_REQUIRE((cljonic::core::equal(filterv_map_suffix_result,
-                                         cljonic::core::vector(cljonic::MapEntry<int, int>{1, 2},
-                                                               cljonic::MapEntry<int, int>{3, 4})) ||
-                    cljonic::core::equal(filterv_map_suffix_result,
-                                         cljonic::core::vector(cljonic::MapEntry<int, int>{3, 4},
-                                                               cljonic::MapEntry<int, int>{1, 2}))));
+    STATIC_REQUIRE(
+        (cljonic::core::equal(filterv_map_prefix_result, cljonic::core::vector(cljonic::MapEntry<int, int>{1, 2},
+                                                                               cljonic::MapEntry<int, int>{3, 4})) ||
+         cljonic::core::equal(filterv_map_prefix_result, cljonic::core::vector(cljonic::MapEntry<int, int>{3, 4},
+                                                                               cljonic::MapEntry<int, int>{1, 2}))));
+    STATIC_REQUIRE(
+        (cljonic::core::equal(filterv_map_suffix_result, cljonic::core::vector(cljonic::MapEntry<int, int>{1, 2},
+                                                                               cljonic::MapEntry<int, int>{3, 4})) ||
+         cljonic::core::equal(filterv_map_suffix_result, cljonic::core::vector(cljonic::MapEntry<int, int>{3, 4},
+                                                                               cljonic::MapEntry<int, int>{1, 2}))));
     constexpr auto filterv_set_adapter_prefix =
         cljonic::core::take_while([](int) noexcept { return true; }, cljonic::core::hash_set(1, 2, 3, 4));
     constexpr auto filterv_set_adapter_suffix =
@@ -355,21 +342,20 @@ TEST_CASE("Filterv is an alias of filter", "[filterv]") {
     const auto runtime_filterv_map =
         cljonic::core::filterv(filter_entry_value_is_even, cljonic::core::hash_map(first, second, third, fourth));
     REQUIRE(runtime_filterv_map.count() == 2);
-    REQUIRE((cljonic::core::equal(runtime_filterv_map,
-                                  cljonic::core::vector(cljonic::MapEntry<int, int>{first, second},
-                                                        cljonic::MapEntry<int, int>{third, fourth})) ||
-             cljonic::core::equal(runtime_filterv_map,
-                                  cljonic::core::vector(cljonic::MapEntry<int, int>{third, fourth},
-                                                        cljonic::MapEntry<int, int>{first, second}))));
+    REQUIRE(
+        (cljonic::core::equal(runtime_filterv_map, cljonic::core::vector(cljonic::MapEntry<int, int>{first, second},
+                                                                         cljonic::MapEntry<int, int>{third, fourth})) ||
+         cljonic::core::equal(runtime_filterv_map, cljonic::core::vector(cljonic::MapEntry<int, int>{third, fourth},
+                                                                         cljonic::MapEntry<int, int>{first, second}))));
     const auto runtime_filterv_set =
         cljonic::core::filterv(filter_is_even, cljonic::core::hash_set(first, second, third, fourth));
     REQUIRE(runtime_filterv_set.count() == 2);
     REQUIRE((cljonic::core::equal(runtime_filterv_set, cljonic::core::vector(second, fourth)) ||
              cljonic::core::equal(runtime_filterv_set, cljonic::core::vector(fourth, second))));
-    const auto runtime_filterv_map_adapter_prefix =
-        cljonic::core::take_while([](const auto&) noexcept { return true; }, cljonic::core::hash_map(first, second, third, fourth));
-    const auto runtime_filterv_map_adapter_suffix =
-        cljonic::core::drop_while([](const auto&) noexcept { return false; }, cljonic::core::hash_map(first, second, third, fourth));
+    const auto runtime_filterv_map_adapter_prefix = cljonic::core::take_while(
+        [](const auto&) noexcept { return true; }, cljonic::core::hash_map(first, second, third, fourth));
+    const auto runtime_filterv_map_adapter_suffix = cljonic::core::drop_while(
+        [](const auto&) noexcept { return false; }, cljonic::core::hash_map(first, second, third, fourth));
     const auto runtime_filterv_map_prefix_result =
         cljonic::core::filterv(filter_entry_value_is_even, runtime_filterv_map_adapter_prefix);
     const auto runtime_filterv_map_suffix_result =
@@ -388,10 +374,10 @@ TEST_CASE("Filterv is an alias of filter", "[filterv]") {
              cljonic::core::equal(runtime_filterv_map_suffix_result,
                                   cljonic::core::vector(cljonic::MapEntry<int, int>{third, fourth},
                                                         cljonic::MapEntry<int, int>{first, second}))));
-    const auto runtime_filterv_set_adapter_prefix =
-        cljonic::core::take_while([](int) noexcept { return true; }, cljonic::core::hash_set(first, second, third, fourth));
-    const auto runtime_filterv_set_adapter_suffix =
-        cljonic::core::drop_while([](int) noexcept { return false; }, cljonic::core::hash_set(first, second, third, fourth));
+    const auto runtime_filterv_set_adapter_prefix = cljonic::core::take_while(
+        [](int) noexcept { return true; }, cljonic::core::hash_set(first, second, third, fourth));
+    const auto runtime_filterv_set_adapter_suffix = cljonic::core::drop_while(
+        [](int) noexcept { return false; }, cljonic::core::hash_set(first, second, third, fourth));
     REQUIRE((cljonic::core::equal(cljonic::core::filterv(filter_is_even, runtime_filterv_set_adapter_prefix),
                                   cljonic::core::vector(second, fourth)) ||
              cljonic::core::equal(cljonic::core::filterv(filter_is_even, runtime_filterv_set_adapter_prefix),

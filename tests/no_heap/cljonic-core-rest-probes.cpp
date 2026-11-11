@@ -55,16 +55,15 @@ namespace cljonic::no_heap::probes {
            map.contains(third) && map(third) == first && map_rest.capacity() + 1U == map.capacity() &&
            set_rest.count() == 2U && set_rest.begin()[0U] == set.begin()[1] && set_rest.begin()[1U] == set.begin()[2] &&
            set.count() == 3U && set.contains(first) && set.contains(second) && set.contains(third) &&
-           set_rest.capacity() + 1U == set.capacity() &&
-           text_rest.count() == 2U && text_rest(0U) == second_char && text_rest(1U) == third_char &&
-           text.count() == 3U && text(0U) == first_char && text_rest.capacity() + 1U == text.capacity() &&
-           rest(Vector<int, 4>{first}).count() == 0U && rest(Map<int, int, 4>{MapEntry{first, second}}).count() == 0U &&
-           rest(Set<int, 4>{first}).count() == 0U && rest(Queue<int, 4>{first}).count() == 0U &&
-           rest(String<4>{std::array{first_char}}).count() == 0U && rest(empty_vector).count() == 0U &&
-           rest(empty_map).count() == 0U && rest(empty_set).count() == 0U && rest(empty_queue).count() == 0U &&
-           rest(empty_text).count() == 0U && rest(zero_capacity_vector).count() == 0U && repeat_rest.count() == 2U &&
-           range_rest.count() == 21U && cycle_rest.count() == cycle(vector).count() && iterate_rest.count() > 0U &&
-           repeatedly_rest.count() == 2U;
+           set_rest.capacity() + 1U == set.capacity() && text_rest.count() == 2U && text_rest(0U) == second_char &&
+           text_rest(1U) == third_char && text.count() == 3U && text(0U) == first_char &&
+           text_rest.capacity() + 1U == text.capacity() && rest(Vector<int, 4>{first}).count() == 0U &&
+           rest(Map<int, int, 4>{MapEntry{first, second}}).count() == 0U && rest(Set<int, 4>{first}).count() == 0U &&
+           rest(Queue<int, 4>{first}).count() == 0U && rest(String<4>{std::array{first_char}}).count() == 0U &&
+           rest(empty_vector).count() == 0U && rest(empty_map).count() == 0U && rest(empty_set).count() == 0U &&
+           rest(empty_queue).count() == 0U && rest(empty_text).count() == 0U &&
+           rest(zero_capacity_vector).count() == 0U && repeat_rest.count() == 2U && range_rest.count() == 21U &&
+           cycle_rest.count() == cycle(vector).count() && iterate_rest.count() > 0U && repeatedly_rest.count() == 2U;
 }
 
 } // namespace cljonic::no_heap::probes

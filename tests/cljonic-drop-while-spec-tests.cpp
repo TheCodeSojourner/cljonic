@@ -57,9 +57,8 @@ TEST_CASE("DropWhile owns finite original-window suffixes", "[drop-while]") {
         cljonic::core::vector('c', 'd')));
     constexpr auto drop_none = [](const auto&) noexcept { return false; };
     constexpr auto all_map_source = cljonic::core::hash_map(1, 10, 2, 20);
-    constexpr auto retained_map =
-        cljonic::core::into(cljonic::core::hash_map<int, int, 2>(),
-                            cljonic::core::drop_while(drop_none, all_map_source));
+    constexpr auto retained_map = cljonic::core::into(cljonic::core::hash_map<int, int, 2>(),
+                                                      cljonic::core::drop_while(drop_none, all_map_source));
     STATIC_REQUIRE(retained_map.count() == 2);
     STATIC_REQUIRE(retained_map.contains(1));
     STATIC_REQUIRE(retained_map(1) == 10);
@@ -68,8 +67,7 @@ TEST_CASE("DropWhile owns finite original-window suffixes", "[drop-while]") {
 
     constexpr auto all_set_source = cljonic::core::hash_set(1, 2);
     constexpr auto retained_set =
-        cljonic::core::into(cljonic::core::hash_set<int, 2>(),
-                            cljonic::core::drop_while(drop_none, all_set_source));
+        cljonic::core::into(cljonic::core::hash_set<int, 2>(), cljonic::core::drop_while(drop_none, all_set_source));
     STATIC_REQUIRE(retained_set.count() == 2);
     STATIC_REQUIRE(retained_set.contains(1));
     STATIC_REQUIRE(retained_set.contains(2));
@@ -186,6 +184,7 @@ TEST_CASE("DropWhile integrates nested producers storage and consumers", "[drop-
     TRACE_ID("invariant.DropWhile.PredicatePurityAndNoAllocation");
     TRACE_ID("invariant.DropWhile.PredicateNothrowConstElementExactBool");
     TRACE_ID("invariant.DropWhile.InspectableParameterConversionsAreSafe");
+    TRACE_ID("invariant.DropWhile.IntegerFloatingParameterCrossingsRejected");
     TRACE_ID("invariant.DropWhile.GenericPredicateNothrowExactBoolFallback");
     TRACE_ID("invariant.DropWhile.CapturingPredicatesDoNotRequireDefaultOrAssignment");
     TRACE_ID("invariant.DropWhile.ConditionalNothrowProducerStorage");

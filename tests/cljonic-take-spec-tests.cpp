@@ -64,31 +64,25 @@ TEST_CASE("Take preserves collection prefixes and source-bound result types", "[
         cljonic::core::take_while([](const auto&) noexcept { return true; }, map_adapter_source);
     constexpr auto map_adapter_suffix =
         cljonic::core::drop_while([](const auto&) noexcept { return false; }, map_adapter_source);
-    STATIC_REQUIRE((cljonic::core::equal(cljonic::core::take(2, map_adapter_prefix),
-                                         cljonic::core::vector(cljonic::core::map_entry(1, 10),
-                                                               cljonic::core::map_entry(2, 20))) ||
-                    cljonic::core::equal(cljonic::core::take(2, map_adapter_prefix),
-                                         cljonic::core::vector(cljonic::core::map_entry(2, 20),
-                                                               cljonic::core::map_entry(1, 10)))));
-    STATIC_REQUIRE((cljonic::core::equal(cljonic::core::take(2, map_adapter_suffix),
-                                         cljonic::core::vector(cljonic::core::map_entry(1, 10),
-                                                               cljonic::core::map_entry(2, 20))) ||
-                    cljonic::core::equal(cljonic::core::take(2, map_adapter_suffix),
-                                         cljonic::core::vector(cljonic::core::map_entry(2, 20),
-                                                               cljonic::core::map_entry(1, 10)))));
+    STATIC_REQUIRE((
+        cljonic::core::equal(cljonic::core::take(2, map_adapter_prefix),
+                             cljonic::core::vector(cljonic::core::map_entry(1, 10), cljonic::core::map_entry(2, 20))) ||
+        cljonic::core::equal(cljonic::core::take(2, map_adapter_prefix),
+                             cljonic::core::vector(cljonic::core::map_entry(2, 20), cljonic::core::map_entry(1, 10)))));
+    STATIC_REQUIRE((
+        cljonic::core::equal(cljonic::core::take(2, map_adapter_suffix),
+                             cljonic::core::vector(cljonic::core::map_entry(1, 10), cljonic::core::map_entry(2, 20))) ||
+        cljonic::core::equal(cljonic::core::take(2, map_adapter_suffix),
+                             cljonic::core::vector(cljonic::core::map_entry(2, 20), cljonic::core::map_entry(1, 10)))));
     constexpr auto set_adapter_source = cljonic::core::hash_set(1, 2);
     constexpr auto set_adapter_prefix =
         cljonic::core::take_while([](int) noexcept { return true; }, set_adapter_source);
     constexpr auto set_adapter_suffix =
         cljonic::core::drop_while([](int) noexcept { return false; }, set_adapter_source);
-    STATIC_REQUIRE((cljonic::core::equal(cljonic::core::take(2, set_adapter_prefix),
-                                         cljonic::core::vector(1, 2)) ||
-                    cljonic::core::equal(cljonic::core::take(2, set_adapter_prefix),
-                                         cljonic::core::vector(2, 1))));
-    STATIC_REQUIRE((cljonic::core::equal(cljonic::core::take(2, set_adapter_suffix),
-                                         cljonic::core::vector(1, 2)) ||
-                    cljonic::core::equal(cljonic::core::take(2, set_adapter_suffix),
-                                         cljonic::core::vector(2, 1))));
+    STATIC_REQUIRE((cljonic::core::equal(cljonic::core::take(2, set_adapter_prefix), cljonic::core::vector(1, 2)) ||
+                    cljonic::core::equal(cljonic::core::take(2, set_adapter_prefix), cljonic::core::vector(2, 1))));
+    STATIC_REQUIRE((cljonic::core::equal(cljonic::core::take(2, set_adapter_suffix), cljonic::core::vector(1, 2)) ||
+                    cljonic::core::equal(cljonic::core::take(2, set_adapter_suffix), cljonic::core::vector(2, 1))));
     STATIC_REQUIRE(std::same_as<decltype(cljonic::core::take(1, cljonic::core::hash_map(1, 2))),
                                 cljonic::Vector<cljonic::MapEntry<int, int>, 1>>);
     STATIC_REQUIRE(cljonic::core::take(1, cljonic::core::vector(TakeElement{1}, TakeElement{2}))(0).value == 1);
@@ -167,14 +161,13 @@ TEST_CASE("Take limits producer evaluation and preserves value-held callback sta
                                  cljonic::core::vector(base, base, base)));
     REQUIRE(cljonic::core::equal(
         cljonic::core::take(requested, cljonic::core::take_while([](int value) noexcept { return value < 4; },
-                                                                  cljonic::core::vector(base, base + 1, base + 2))),
+                                                                 cljonic::core::vector(base, base + 1, base + 2))),
         cljonic::core::vector(base, base + 1, base + 2)));
     REQUIRE(cljonic::core::equal(
         cljonic::core::take(requested, cljonic::core::drop_while([](int value) noexcept { return value < 2; },
-                                                                  cljonic::core::vector(base, base + 1, base + 2))),
+                                                                 cljonic::core::vector(base, base + 1, base + 2))),
         cljonic::core::vector(base + 1, base + 2)));
-    const auto runtime_map_adapter_source =
-        cljonic::core::hash_map(base, base + 10, base + 1, base + 11);
+    const auto runtime_map_adapter_source = cljonic::core::hash_map(base, base + 10, base + 1, base + 11);
     const auto runtime_map_adapter_prefix =
         cljonic::core::take_while([](const auto&) noexcept { return true; }, runtime_map_adapter_source);
     const auto runtime_map_adapter_suffix =

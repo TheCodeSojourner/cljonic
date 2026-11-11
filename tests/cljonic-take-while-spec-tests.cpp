@@ -64,9 +64,8 @@ TEST_CASE("TakeWhile owns finite source prefixes with exact counts", "[take-whil
         cljonic::core::vector('a', 'b')));
     constexpr auto keep_all = [](const auto&) noexcept { return true; };
     constexpr auto all_map_source = cljonic::core::hash_map(1, 10, 2, 20);
-    constexpr auto retained_map =
-        cljonic::core::into(cljonic::core::hash_map<int, int, 2>(),
-                            cljonic::core::take_while(keep_all, all_map_source));
+    constexpr auto retained_map = cljonic::core::into(cljonic::core::hash_map<int, int, 2>(),
+                                                      cljonic::core::take_while(keep_all, all_map_source));
     STATIC_REQUIRE(retained_map.count() == 2);
     STATIC_REQUIRE(retained_map.contains(1));
     STATIC_REQUIRE(retained_map(1) == 10);
@@ -75,8 +74,7 @@ TEST_CASE("TakeWhile owns finite source prefixes with exact counts", "[take-whil
 
     constexpr auto all_set_source = cljonic::core::hash_set(1, 2);
     constexpr auto retained_set =
-        cljonic::core::into(cljonic::core::hash_set<int, 2>(),
-                            cljonic::core::take_while(keep_all, all_set_source));
+        cljonic::core::into(cljonic::core::hash_set<int, 2>(), cljonic::core::take_while(keep_all, all_set_source));
     STATIC_REQUIRE(retained_set.count() == 2);
     STATIC_REQUIRE(retained_set.contains(1));
     STATIC_REQUIRE(retained_set.contains(2));
@@ -192,6 +190,7 @@ TEST_CASE("TakeWhile integrates callbacks storage and source consumers", "[take-
     TRACE_ID("invariant.TakeWhile.PredicatePurityAndNoAllocation");
     TRACE_ID("invariant.TakeWhile.PredicateNothrowConstElementExactBool");
     TRACE_ID("invariant.TakeWhile.InspectableParameterConversionsAreSafe");
+    TRACE_ID("invariant.TakeWhile.IntegerFloatingParameterCrossingsRejected");
     TRACE_ID("invariant.TakeWhile.GenericPredicateNothrowExactBoolFallback");
     TRACE_ID("invariant.TakeWhile.CapturingPredicatesDoNotRequireDefaultOrAssignment");
     TRACE_ID("invariant.TakeWhile.ConditionalNothrowProducerStorage");
@@ -278,12 +277,12 @@ TEST_CASE("TakeWhile and DropWhile retain unordered source prefixes and suffixes
     constexpr auto matches_first_map_entry = [](const auto& entry) noexcept { return entry == map_entry(1, 10); };
     constexpr auto map_prefix = into(hash_map<int, int, 2>(), take_while(matches_first_map_entry, map_source));
     constexpr auto map_suffix = into(hash_map<int, int, 2>(), drop_while(matches_first_map_entry, map_source));
-    constexpr auto map_keeps_first_at_boundary =
-        map_prefix.count() == 1U && map_prefix.contains(1) && map_prefix(1) == 10 && map_suffix.count() == 1U &&
-        map_suffix.contains(2) && map_suffix(2) == 20;
-    constexpr auto map_starts_after_boundary =
-        map_prefix.count() == 0U && map_suffix.count() == 2U && map_suffix.contains(1) && map_suffix(1) == 10 &&
-        map_suffix.contains(2) && map_suffix(2) == 20;
+    constexpr auto map_keeps_first_at_boundary = map_prefix.count() == 1U && map_prefix.contains(1) &&
+                                                 map_prefix(1) == 10 && map_suffix.count() == 1U &&
+                                                 map_suffix.contains(2) && map_suffix(2) == 20;
+    constexpr auto map_starts_after_boundary = map_prefix.count() == 0U && map_suffix.count() == 2U &&
+                                               map_suffix.contains(1) && map_suffix(1) == 10 &&
+                                               map_suffix.contains(2) && map_suffix(2) == 20;
     STATIC_REQUIRE(map_keeps_first_at_boundary || map_starts_after_boundary);
 
     constexpr auto set_source = hash_set(1, 2);
@@ -302,8 +301,9 @@ TEST_CASE("TakeWhile and DropWhile retain unordered source prefixes and suffixes
     const int first_value = first_key + 10;
     const int second_value = second_key + 10;
     const auto runtime_map_source = hash_map(first_key, first_value, second_key, second_value);
-    const auto runtime_matches_first_map_entry =
-        [first_key, first_value](const auto& entry) noexcept { return entry == map_entry(first_key, first_value); };
+    const auto runtime_matches_first_map_entry = [first_key, first_value](const auto& entry) noexcept {
+        return entry == map_entry(first_key, first_value);
+    };
     const auto runtime_map_prefix =
         into(hash_map<int, int, 2>(), take_while(runtime_matches_first_map_entry, runtime_map_source));
     const auto runtime_map_suffix =

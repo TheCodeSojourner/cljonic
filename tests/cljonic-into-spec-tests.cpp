@@ -392,12 +392,10 @@ TEST_CASE("into and fits_into accept adapter sources for String destinations", "
     const char runtime_prefix_limit = runtime_prefix_limit_raw;
     const char runtime_suffix_limit = runtime_suffix_limit_raw;
     const auto runtime_source = String<4>{"abc"};
-    const auto runtime_prefix =
-        take_while([runtime_prefix_limit](char value) noexcept { return value < runtime_prefix_limit; },
-                   runtime_source);
-    const auto runtime_suffix =
-        drop_while([runtime_suffix_limit](char value) noexcept { return value < runtime_suffix_limit; },
-                   runtime_source);
+    const auto runtime_prefix = take_while(
+        [runtime_prefix_limit](char value) noexcept { return value < runtime_prefix_limit; }, runtime_source);
+    const auto runtime_suffix = drop_while(
+        [runtime_suffix_limit](char value) noexcept { return value < runtime_suffix_limit; }, runtime_source);
     CHECK(into(destination, runtime_prefix).view() == std::string_view{"xab"});
     CHECK(into(destination, runtime_suffix).view() == std::string_view{"xbc"});
     CHECK(fits_into(destination, runtime_prefix));
@@ -557,12 +555,9 @@ TEST_CASE("adapter materialization preserves insertion-sensitive preflight", "[i
     STATIC_REQUIRE(equal(into(Set<int, 1>{1}, set_prefix), Set<int, 1>{1}));
     STATIC_REQUIRE(equal(into(Set<int, 1>{2}, set_suffix), Set<int, 1>{2}));
 
-    constexpr auto map_source =
-        Vector<Entry, 4>{Entry{1, 10}, Entry{1, 11}, Entry{2, 20}, Entry{2, 22}};
-    constexpr auto map_prefix =
-        take_while([](const Entry& entry) noexcept { return entry.key < 2; }, map_source);
-    constexpr auto map_suffix =
-        drop_while([](const Entry& entry) noexcept { return entry.key < 2; }, map_source);
+    constexpr auto map_source = Vector<Entry, 4>{Entry{1, 10}, Entry{1, 11}, Entry{2, 20}, Entry{2, 22}};
+    constexpr auto map_prefix = take_while([](const Entry& entry) noexcept { return entry.key < 2; }, map_source);
+    constexpr auto map_suffix = drop_while([](const Entry& entry) noexcept { return entry.key < 2; }, map_source);
     constexpr auto prefix_map_destination = Map<int, int, 1>{Entry{1, 0}};
     constexpr auto suffix_map_destination = Map<int, int, 1>{Entry{2, 0}};
     STATIC_REQUIRE(fits_into(prefix_map_destination, map_prefix));
@@ -591,8 +586,7 @@ TEST_CASE("adapter materialization preserves insertion-sensitive preflight", "[i
 
     volatile int runtime_map_limit = 2;
     const auto map_limit = runtime_map_limit;
-    const auto runtime_map_source =
-        Vector<Entry, 4>{Entry{1, 10}, Entry{1, 11}, Entry{2, 20}, Entry{2, 22}};
+    const auto runtime_map_source = Vector<Entry, 4>{Entry{1, 10}, Entry{1, 11}, Entry{2, 20}, Entry{2, 22}};
     const auto runtime_map_prefix =
         take_while([map_limit](const Entry& entry) noexcept { return entry.key < map_limit; }, runtime_map_source);
     const auto runtime_map_suffix =
@@ -657,20 +651,24 @@ TEST_CASE("value-sensitive preflight and materialization independently evaluate 
 
     calls = 0;
     const auto adapter_source = Vector<int, 4>{1, 2, 4, 5};
-    const auto prefix = take_while([&calls](int value) noexcept {
-        ++calls;
-        return value < 3;
-    }, adapter_source);
+    const auto prefix = take_while(
+        [&calls](int value) noexcept {
+            ++calls;
+            return value < 3;
+        },
+        adapter_source);
     CHECK(fits_into(Vector<int, 4>{}, prefix));
     CHECK(calls == 3);
     CHECK(equal(into(Vector<int, 4>{}, prefix), Vector<int, 4>{1, 2}));
     CHECK(calls == 6);
 
     calls = 0;
-    const auto suffix = drop_while([&calls](int value) noexcept {
-        ++calls;
-        return value < 3;
-    }, adapter_source);
+    const auto suffix = drop_while(
+        [&calls](int value) noexcept {
+            ++calls;
+            return value < 3;
+        },
+        adapter_source);
     CHECK(fits_into(Vector<int, 4>{}, suffix));
     CHECK(calls == 3);
     CHECK(equal(into(Vector<int, 4>{}, suffix), Vector<int, 4>{4, 5}));

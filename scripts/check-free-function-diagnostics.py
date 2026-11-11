@@ -32,6 +32,7 @@ FALLBACK_MARKER = "dependent_false"
 # header -> status
 REGISTRY: dict[str, str] = {
     # Free-function and source-constructor fallbacks already in place.
+    "cljonic-core-conversions.hpp": "fallback",
     "cljonic-equal.hpp": "fallback",
     "cljonic-map.hpp": "fallback",
     "cljonic-reduce.hpp": "fallback",

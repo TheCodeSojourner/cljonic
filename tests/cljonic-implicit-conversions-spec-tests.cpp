@@ -81,6 +81,7 @@ TEST_CASE("Implicit conversion admission preserves values and semantic domains",
     TRACE_ID("invariant.ImplicitConversions.SameTypeValuesPreserveIdentity");
     TRACE_ID("invariant.ImplicitConversions.ArithmeticConversionsPreserveEntireSourceDomain");
     TRACE_ID("invariant.ImplicitConversions.RejectsIntegerFloatingDomainCrossings");
+    TRACE_ID("invariant.ImplicitConversions.RejectsIntegerFloatingCrossingsAtEveryOrdinaryBoundary");
     TRACE_ID("invariant.ImplicitConversions.BooleanCharacterEnumDomainsRemainDistinct");
     TRACE_ID("invariant.ImplicitConversions.RejectsCrossTypeUserDefinedAndPointerConversions");
 

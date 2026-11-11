@@ -52,6 +52,7 @@ TEST_CASE("map applies a transforming function over one or more cljonic sources"
     TRACE_ID("invariant.MapFunction.CallbackInvokedNothrowWithOneArgumentPerSource");
     TRACE_ID("invariant.MapFunction.CallbackResultNothrowStorable");
     TRACE_ID("invariant.MapFunction.CallbackParameterTypesSafelyAcceptCorrespondingElements");
+    TRACE_ID("invariant.MapFunction.CallbackParameterIntegerFloatingCrossingsRejected");
     TRACE_ID("invariant.MapFunction.UninspectableCallablesFallBackToNothrowInvocability");
     TRACE_ID("invariant.MapFunction.ThrowingCallbackOrUnstorableResultRejectedAtCompileTime");
     TRACE_ID("invariant.MapFunction.MapSetTraversalOrderSemanticallyUnordered");
@@ -136,22 +137,18 @@ TEST_CASE("map applies a transforming function over one or more cljonic sources"
     STATIC_REQUIRE((equal(mapped_map_prefix, vector(10, 20)) || equal(mapped_map_prefix, vector(20, 10))));
     STATIC_REQUIRE((equal(mapped_map_suffix, vector(10, 20)) || equal(mapped_map_suffix, vector(20, 10))));
 
-    constexpr auto set_adapter_prefix =
-        cljonic::core::take_while([](int) noexcept { return true; }, set_source);
-    constexpr auto set_adapter_suffix =
-        cljonic::core::drop_while([](int) noexcept { return false; }, set_source);
+    constexpr auto set_adapter_prefix = cljonic::core::take_while([](int) noexcept { return true; }, set_source);
+    constexpr auto set_adapter_suffix = cljonic::core::drop_while([](int) noexcept { return false; }, set_source);
     constexpr auto mapped_set_prefix = map(identity, set_adapter_prefix);
     constexpr auto mapped_set_suffix = map(identity, set_adapter_suffix);
     STATIC_REQUIRE(mapped_set_prefix.count() == 3U);
     STATIC_REQUIRE(mapped_set_suffix.count() == 3U);
-    STATIC_REQUIRE(
-        (equal(mapped_set_prefix, vector(1, 2, 3)) || equal(mapped_set_prefix, vector(1, 3, 2)) ||
-         equal(mapped_set_prefix, vector(2, 1, 3)) || equal(mapped_set_prefix, vector(2, 3, 1)) ||
-         equal(mapped_set_prefix, vector(3, 1, 2)) || equal(mapped_set_prefix, vector(3, 2, 1))));
-    STATIC_REQUIRE(
-        (equal(mapped_set_suffix, vector(1, 2, 3)) || equal(mapped_set_suffix, vector(1, 3, 2)) ||
-         equal(mapped_set_suffix, vector(2, 1, 3)) || equal(mapped_set_suffix, vector(2, 3, 1)) ||
-         equal(mapped_set_suffix, vector(3, 1, 2)) || equal(mapped_set_suffix, vector(3, 2, 1))));
+    STATIC_REQUIRE((equal(mapped_set_prefix, vector(1, 2, 3)) || equal(mapped_set_prefix, vector(1, 3, 2)) ||
+                    equal(mapped_set_prefix, vector(2, 1, 3)) || equal(mapped_set_prefix, vector(2, 3, 1)) ||
+                    equal(mapped_set_prefix, vector(3, 1, 2)) || equal(mapped_set_prefix, vector(3, 2, 1))));
+    STATIC_REQUIRE((equal(mapped_set_suffix, vector(1, 2, 3)) || equal(mapped_set_suffix, vector(1, 3, 2)) ||
+                    equal(mapped_set_suffix, vector(2, 1, 3)) || equal(mapped_set_suffix, vector(2, 3, 1)) ||
+                    equal(mapped_set_suffix, vector(3, 1, 2)) || equal(mapped_set_suffix, vector(3, 2, 1))));
 
     // Producer result capacity is the configured observation cap.
     STATIC_REQUIRE(std::is_same_v<const Vector<int, 1000>, const decltype(map(inc, repeat(3, 7)))>);
@@ -248,10 +245,8 @@ TEST_CASE("map applies a transforming function over one or more cljonic sources"
              equal(runtime_mapped_map_suffix, vector((runtime_base + 1) * 10, runtime_base * 10))));
 
     const auto runtime_set = hash_set(runtime_base, runtime_base + 1, runtime_base + 2);
-    const auto runtime_set_adapter_prefix =
-        cljonic::core::take_while([](int) noexcept { return true; }, runtime_set);
-    const auto runtime_set_adapter_suffix =
-        cljonic::core::drop_while([](int) noexcept { return false; }, runtime_set);
+    const auto runtime_set_adapter_prefix = cljonic::core::take_while([](int) noexcept { return true; }, runtime_set);
+    const auto runtime_set_adapter_suffix = cljonic::core::drop_while([](int) noexcept { return false; }, runtime_set);
     const auto runtime_mapped_set_prefix = map(identity, runtime_set_adapter_prefix);
     const auto runtime_mapped_set_suffix = map(identity, runtime_set_adapter_suffix);
     REQUIRE(count(runtime_mapped_set_prefix) == 3U);

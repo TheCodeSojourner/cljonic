@@ -95,14 +95,13 @@ TEST_CASE("Drop returns independent source-bound collection suffixes", "[drop]")
     check_drop_suffix(cljonic::core::string<4>("abc"), 1);
     REQUIRE(cljonic::core::equal(
         cljonic::core::drop(1, cljonic::core::take_while([base](int value) noexcept { return value < base + 3; },
-                                                          cljonic::core::vector(base, base + 1, base + 2))),
+                                                         cljonic::core::vector(base, base + 1, base + 2))),
         cljonic::core::vector(base + 1, base + 2)));
     REQUIRE(cljonic::core::equal(
         cljonic::core::drop(1, cljonic::core::drop_while([base](int value) noexcept { return value < base + 1; },
-                                                          cljonic::core::vector(base, base + 1, base + 2))),
+                                                         cljonic::core::vector(base, base + 1, base + 2))),
         cljonic::core::vector(base + 2)));
-    const auto runtime_map_adapter_source =
-        cljonic::core::hash_map(base, base + 10, base + 1, base + 11);
+    const auto runtime_map_adapter_source = cljonic::core::hash_map(base, base + 10, base + 1, base + 11);
     const auto runtime_map_adapter_prefix =
         cljonic::core::take_while([](const auto&) noexcept { return true; }, runtime_map_adapter_source);
     const auto runtime_map_adapter_suffix =

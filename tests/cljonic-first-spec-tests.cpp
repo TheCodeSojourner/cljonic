@@ -52,8 +52,7 @@ TEST_CASE("First free function operations", "[first]") {
 
     TRACE_ID("invariant.First.MapReturnsValueSemanticEntry");
     constexpr auto map_value = assoc(assoc(Map<int, int, 4>{}, 1, 100), 2, 200);
-    STATIC_REQUIRE((first(map_value) == MapEntry<int, int>{1, 100} ||
-                    first(map_value) == MapEntry<int, int>{2, 200}));
+    STATIC_REQUIRE((first(map_value) == MapEntry<int, int>{1, 100} || first(map_value) == MapEntry<int, int>{2, 200}));
 
     TRACE_ID("invariant.First.SetReturnsStoredElement");
     constexpr auto set_value = conj(conj(Set<int, 4>{}, 7), 8);
@@ -71,8 +70,7 @@ TEST_CASE("First free function operations", "[first]") {
     STATIC_REQUIRE(first(String<4>{}) == '\0');
 
     TRACE_ID("invariant.First.MapAndSetTraversalOrderIsNotSemanticallySignificant");
-    STATIC_REQUIRE((first(map_value) == MapEntry<int, int>{1, 100} ||
-                    first(map_value) == MapEntry<int, int>{2, 200}));
+    STATIC_REQUIRE((first(map_value) == MapEntry<int, int>{1, 100} || first(map_value) == MapEntry<int, int>{2, 200}));
     STATIC_REQUIRE((first(set_value) == 7 || first(set_value) == 8));
 
     TRACE_ID("invariant.First.LeavesInputUnchanged");
@@ -180,19 +178,17 @@ TEST_CASE("First observes every producer family by owning element value", "[firs
     STATIC_REQUIRE(first(drop_while([](int n) noexcept { return n < 5; }, queue(3, 5, 6))) == 5);
     STATIC_REQUIRE(first(take_while([](int) noexcept { return true; }, hash_set(7))) == 7);
     constexpr auto unordered_map_source = hash_map(1, 10, 2, 20);
-    STATIC_REQUIRE((first(take_while([](const auto&) noexcept { return true; }, unordered_map_source)) ==
-                       map_entry(1, 10) ||
-                   first(take_while([](const auto&) noexcept { return true; }, unordered_map_source)) ==
-                       map_entry(2, 20)));
-    STATIC_REQUIRE((first(drop_while([](const auto&) noexcept { return false; }, unordered_map_source)) ==
-                       map_entry(1, 10) ||
-                   first(drop_while([](const auto&) noexcept { return false; }, unordered_map_source)) ==
-                       map_entry(2, 20)));
+    STATIC_REQUIRE(
+        (first(take_while([](const auto&) noexcept { return true; }, unordered_map_source)) == map_entry(1, 10) ||
+         first(take_while([](const auto&) noexcept { return true; }, unordered_map_source)) == map_entry(2, 20)));
+    STATIC_REQUIRE(
+        (first(drop_while([](const auto&) noexcept { return false; }, unordered_map_source)) == map_entry(1, 10) ||
+         first(drop_while([](const auto&) noexcept { return false; }, unordered_map_source)) == map_entry(2, 20)));
     constexpr auto unordered_set_source = hash_set(1, 2);
     STATIC_REQUIRE((first(take_while([](int) noexcept { return true; }, unordered_set_source)) == 1 ||
-                   first(take_while([](int) noexcept { return true; }, unordered_set_source)) == 2));
+                    first(take_while([](int) noexcept { return true; }, unordered_set_source)) == 2));
     STATIC_REQUIRE((first(drop_while([](int) noexcept { return false; }, unordered_set_source)) == 1 ||
-                   first(drop_while([](int) noexcept { return false; }, unordered_set_source)) == 2));
+                    first(drop_while([](int) noexcept { return false; }, unordered_set_source)) == 2));
     STATIC_REQUIRE(first(repeat(vector(1, 2)))(0) == 1);
     struct Element {
         int value = 42;
@@ -213,12 +209,9 @@ TEST_CASE("First observes every producer family by owning element value", "[firs
     volatile int first_value_raw = 110;
     const int first_key = first_key_raw;
     const int first_value = first_value_raw;
-    const auto runtime_map_source =
-        hash_map(first_key, first_value, first_key + 1, first_value + 10);
-    const auto runtime_map_take =
-        take_while([](const auto&) noexcept { return true; }, runtime_map_source);
-    const auto runtime_map_drop =
-        drop_while([](const auto&) noexcept { return false; }, runtime_map_source);
+    const auto runtime_map_source = hash_map(first_key, first_value, first_key + 1, first_value + 10);
+    const auto runtime_map_take = take_while([](const auto&) noexcept { return true; }, runtime_map_source);
+    const auto runtime_map_drop = drop_while([](const auto&) noexcept { return false; }, runtime_map_source);
     REQUIRE((first(runtime_map_take) == map_entry(first_key, first_value) ||
              first(runtime_map_take) == map_entry(first_key + 1, first_value + 10)));
     REQUIRE((first(runtime_map_drop) == map_entry(first_key, first_value) ||
