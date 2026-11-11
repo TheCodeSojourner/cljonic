@@ -325,7 +325,7 @@ the active higher-order algorithms.
 
 
 ### ExactConversion
-- **Definition:** A conversion that preserves the supplied source value exactly in the destination representation and satisfies the applicable representability and domain policy. It is the default for the approved but unimplemented explicit conversion API. Its value-specific check differs from SafeImplicitConversion's whole-source-type admission rule; signed floating zero to integer zero follows the explicit approved exception.
+- **Definition:** A conversion that preserves the supplied source value exactly in the destination representation and satisfies the applicable representability and domain policy. It is the default for the explicit conversion API. Its value-specific check differs from SafeImplicitConversion's whole-source-type admission rule; signed floating zero to integer zero follows the explicit approved exception.
 - **Deprecated Synonyms:** exact numeric conversion, lossless conversion
 - **Related:** CheckedConversion, LossyConversion, NumericPolicy, ExplicitConversion, SafeImplicitConversion
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
@@ -333,7 +333,7 @@ the active higher-order algorithms.
 
 
 ### CheckedConversion
-- **Definition:** A conversion that verifies representability or validity under its documented policy without throwing or allocating. For the approved but unimplemented explicit conversion API, the matching preflight predicts conversion success for the same value and policy; normal failure returns the documented fallback, while diagnostic-mode failure records an error and invokes the handler.
+- **Definition:** A conversion that verifies representability or validity under its documented policy without throwing or allocating. For the explicit conversion API, the matching preflight predicts conversion success for the same value and policy; normal failure returns the documented fallback, while diagnostic-mode failure records an error and invokes the handler.
 - **Deprecated Synonyms:** checked numeric conversion, validated conversion
 - **Related:** ExactConversion, LossyConversion, CheckedFailureResult, PreflightPredicate, ExplicitConversion, ConversionDiagnosticMode
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
@@ -341,7 +341,7 @@ the active higher-order algorithms.
 
 
 ### LossyConversion
-- **Definition:** A conversion that may discard source information only under an explicitly documented policy. The approved but unimplemented conversion API permits floating-to-integer truncation toward zero, checking the mathematical truncated integer against destination range before casting, and nearest rounding for integer-to-floating or different-type floating-to-floating conversion. Nearest chooses the even least-significant significand digit at halfway ties, independently of ambient rounding mode. These policies reject overflow, non-finite input, and nonzero-to-zero nearest rounding; they never wrap or saturate. Same-type conversion permits only exact default and retains validity checks.
+- **Definition:** A conversion that may discard source information only under an explicitly documented policy. The explicit conversion API permits floating-to-integer truncation toward zero, checking the mathematical truncated integer against destination range before casting, and nearest rounding for integer-to-floating or different-type floating-to-floating conversion. Nearest chooses the even least-significant significand digit at halfway ties, independently of ambient rounding mode. These policies reject overflow, non-finite input, and nonzero-to-zero nearest rounding; they never wrap or saturate. Same-type conversion permits only exact default and retains validity checks.
 - **Deprecated Synonyms:** lossy numeric conversion, narrowing conversion
 - **Related:** ExactConversion, CheckedConversion, NumericPolicy, ExplicitConversion
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
@@ -349,15 +349,15 @@ the active higher-order algorithms.
 
 
 ### ExplicitConversion
-- **Definition:** An approved but unimplemented `cljonic::core` named `to_*` or generic `to<T>` operation that retains its original source type and value until validating it against an explicitly selected destination contract. Numeric destinations admit supported built-in integers excluding Boolean and all character types, and supported floating types. The separate `char` and `std::byte` destinations admit those integers, `char`, and `std::byte`, subject to their character-code and byte-value validation; character and byte sources are not ordinary numeric sources. Aliases follow their actual underlying types. Unsupported types and policy combinations are compile-time rejections, distinct from admitted-value failures. Conversion defaults to exact; selected loss policies apply only to admitted combinations. Matching `can_to_*` or `can_to<T>` preflights predict success for the same value and policy. It is distinct from Parsing and does not invoke arbitrary user-defined conversions or provide an arbitrary C++ cast facility.
+- **Definition:** A `cljonic::core` named `to_*` or generic `to<T>` operation that retains its original source type and value until validating it against an explicitly selected destination contract. Numeric destinations admit supported non-character integers and floating types; integer destinations additionally admit plain `char`, preserving its native platform signedness and numeric value. The separate `char` and `std::byte` destinations admit non-character integers, `char`, and `std::byte`. Character destinations check the platform's `char` range; byte destinations check `0..UCHAR_MAX` without reinterpreting negative `char` values. These low-level conversions admit NUL and representable non-ASCII values independently of String character validity. Other character types remain unsupported, as do character-to-floating and byte-to-numeric conversions. Aliases follow their actual underlying types. Unsupported types and policy combinations are compile-time rejections, distinct from admitted-value failures. Conversion defaults to exact; selected loss policies apply only to admitted numeric combinations, not character or byte pairs. Matching `can_to_*` or `can_to<T>` preflights predict success for the same value and policy. It is distinct from Parsing and does not invoke arbitrary user-defined conversions or provide an arbitrary C++ cast facility.
 - **Deprecated Synonyms:** none
 - **Related:** ExactConversion, LossyConversion, CheckedConversion, NumericPolicy, PreflightPredicate, ConversionDiagnosticMode, Parsing
 - **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
-- **Examples:** `to_int(value)` requests conversion to `int`; `to<std::uint32_t>(value)` requests an approved non-character destination type when available.
+- **Examples:** `to_int('\0')` returns zero and `to_char(0)` returns NUL even though NUL is invalid String content; `to_int('A')` returns the platform's numeric character code, not a parsed digit.
 
 
 ### ConversionDiagnosticMode
-- **Definition:** The approved but unimplemented compile-time-selectable mode for explicit conversions that records a `cljonic::core::ConversionError` in shared static state and invokes the application's non-returning handler on runtime failure. Preflights do not modify diagnostic state. Normal mode uses documented fallbacks and has no diagnostic-state storage; it is the default.
+- **Definition:** The compile-time-selectable mode for explicit conversions that records a `cljonic::core::ConversionError` in shared static state and invokes the application's non-returning handler on runtime failure. Preflights do not modify diagnostic state. Normal mode uses documented fallbacks and has no diagnostic-state storage; it is the default.
 - **Deprecated Synonyms:** none
 - **Related:** ExplicitConversion, CheckedConversion, PreflightPredicate, DefaultReturningResult
 - **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
