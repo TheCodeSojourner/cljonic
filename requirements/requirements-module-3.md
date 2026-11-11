@@ -77,7 +77,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 λ REQ-COLL-007A(x).
   ∃ permitted_path: `Capacity` is zero
   ∧ ∀ zero_capacity_collection: valid empty `OwningValue` ∧ reports `count() == 0` ∧ `is_empty(collection) == true` ∧ returns documented default or fallback values for access ∧ preserves its value when an insertion operation cannot add an element
-  ∧ ∀ future traversal_work: supports empty const traversal without accessing element storage, allocating, throwing, or invoking capacity-dependent arithmetic with zero as a divisor
+  ∧ ∀ future traversal operation for a zero-capacity collection: supports empty const traversal without accessing element storage, allocating, throwing, or invoking capacity-dependent arithmetic with zero as a divisor
   ∧ ∀ zero_capacity_collection: fails any compile-time construction that would require stored elements
   {source: stakeholder_decided, decided_by: original_spec_author}
 
@@ -514,7 +514,7 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ (`Map` ∧ `Set`): result does not depend on which element appears first in the unspecified `LogicalTraversalOrder`
   ∧ ∀ unsupported_input: fails compilation with one targeted diagnostic naming `has_next` and its supported collection and producer domains
   ∧ ∀ `has_rest(value)`: return exactly `has_next(value)` for the same supported collection and producer domains, with identical preflight behavior, callback timing/effects, input preservation, and `CompileTimeFailure` behavior; implement as a forwarding alias without an independent traversal
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-05, aligned_with: REQ-FN-002A4-002A7}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-05, aligned_with: REQ-FN-002A4, REQ-FN-002A5, REQ-FN-002A6, REQ-FN-002A7}
 
 ### Sequence First-Element Preflight (Binding)
 

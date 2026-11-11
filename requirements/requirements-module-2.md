@@ -252,7 +252,7 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
 
 λ REQ-BOUNDS-010B(x).
-  ∀ future traversal_work: defines the sequence behavior corresponding to `is_empty`
+  ∀ future sequence traversal operation: defines empty/nonempty behavior consistently with `is_empty` under `REQ-BOUNDS-010A`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
 
 λ REQ-BOUNDS-010C(x).
