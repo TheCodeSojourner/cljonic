@@ -1,5 +1,34 @@
 ## Current Session State
 
+- last_session_id: 60952539-bb89-431d-b4b9-07e02194c428
+- current_timestamp: 2026-11-11T10:36:22-07:00
+- session_complete: true
+- recover: The product work and documentation are committed; the worktree and index were clean before this closeout. Latest observed commits are `1cd71766` (explicit conversions and boundary rejections), `55630b1d` (conversion contracts and diagnostic test configuration), and `b31fb2d1` (documentation). No implementation task remains requested. On further conversion work, use the current REQ-NUM-013 native-char contract, not the superseded ASCII-only conversion memory. Preserve the Make-only workflow and resume validation at a known failing stage rather than restarting `make git` unnecessarily.
+- task: Implemented mandatory explicit conversion APIs and integer/floating implicit-boundary restrictions; repaired stale compile-fail expectations, complexity, coverage, and diagnostic registration; expanded user-facing Doxygen documentation and examples; propagated approved low-level native-char conversion semantics through requirements, vocabulary, architecture, specs, tests, source, and docs in that order.
+- decisions:
+  - Explicit `to<T>` and all named `to_*` operations share checked value-level conversion logic and matching `can_to*` preflights. Exact is default; truncate is only floating-to-integer, nearest is only integer-to-floating or different-type floating-to-floating. Mandatory implicit restrictions are not opt-in, and breaking changes were explicitly authorized.
+  - The human approved low-level character conversion independent of String validity. Plain `char` sources are admitted for non-character integer destinations, preserving native platform signedness and numeric value; `to_int('A')` and `to_int('\0')` succeed when representable. This is code conversion, not digit parsing.
+  - `to_char` checks the native `std::numeric_limits<char>::min()` through `max()` range; NUL and representable non-ASCII values are admitted. Char-to-char is unchanged. Byte conversion admits integer/native-char values in `0..UCHAR_MAX` and unchanged std::byte; negative plain char fails rather than being reinterpreted as unsigned byte bits. Character/byte range failures use out_of_range.
+  - Signed char, unsigned char, wide character types, char-to-floating, and byte-to-numeric remain unsupported; aliases follow actual underlying types. Plain char remains a distinct C++ type even on platforms where it is signed. String's non-NUL ASCII policy, character_is_valid, and implicit character-domain restrictions are unchanged.
+  - Normal runtime failure returns destination fallback; diagnostic mode records an error and calls an application-provided nonreturning noexcept handler. Preflights never record or clear diagnostics or call the handler. Failed required constant conversions fail compilation; failed constant preflights return false. Unsupported types/policies have operation-labelled rejection diagnostics.
+  - Documentation must stand alone for API users: define policies before using the term, distinguish unsupported types from invalid values, specify example results, and do not recommend internal conversion_detail concepts. Examples should show ordinary result assignment, not discard casts merely to trigger an error. Conversion and preflight cheatsheet entries now link to the shared documentation.
+- synthesis:
+  - `mementum/memories/conversion-source-domain-admission.md` is superseded by the human's 2026-11-11 native-char approval and current REQ-NUM-013. Its ASCII-only to_char/to_byte rules, rejection of char-to-integer, and statement that implementation is unapproved are stale. Closeout is restricted to this state file; refresh that older memory during a separately authorized memory-maintenance task.
+  - Conversion vocabulary entries now describe implemented APIs, not unimplemented approval. The older state's assertion that explicit conversion implementation is separate and unapproved no longer applies.
+  - Adding a public header requires diagnostic registry classification and actual targeted rejection coverage, not just registration. Runtime coverage must exercise paths also checked by STATIC_REQUIRE; constexpr assertions alone do not provide runtime line coverage.
+- validation:
+  - After native-char implementation, `make test` passed 382 tests; `make implicit-conversion-compile-fail` passed 238 cases, with positive controls explicitly compiled under both -fsigned-char and -funsigned-char for modular and single-header configurations.
+  - The conversion test file also passed an unsigned-char runtime build using the existing Catch2 libraries: 2221 assertions across 5 test cases. The initial standalone command used an incorrect generated include path; retry with the configured generated-includes path passed and the temporary executable was removed.
+  - `make coverage-cli` reported 100.0% source line coverage. Sanitizers, no-heap, requirements/vocabulary structure, diagnostic coverage/labels, conversion lint/complexity, spec-to-code snapshot/traceability, documentation examples (53 programs), and documentation generation passed.
+  - Subsequent edits were documentation-only: clarified source/destination categories and the distinction between plain char and signed/unsigned char; regenerated cljonic.hpp and passed formatting/diff checks. Do not claim a fresh full `make git` pass: earlier runs exposed specific gates that were repaired and resumed directly, and no final full-run outcome was observed.
+- questions: None awaiting a human decision.
+- next:
+  1. Await the next requested task; product changes are already committed and must not be described as pending.
+  2. If memory maintenance is authorized, reconcile the superseded character-domain conversion memory with current REQ-NUM-013; retain String validity as an independent contract.
+  3. Use Make targets only, configured/available worker counts, and focused validation. The human owns the final full `make git` workflow unless explicitly requesting otherwise.
+
+## Previous Session State (2026-11-10)
+
 - last_session_id: 17dd4153-851f-4aa7-94a8-d156daa155a5
 - current_timestamp: 2026-11-10T14:40:38-07:00
 - session_complete: true
