@@ -198,27 +198,31 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
     I ≡ supported built-in integer types excluding bool and all character types
     F ≡ supported floating types under REQ-NUM-012 ∧ N ≡ I ∪ F
     C ≡ char ∧ B ≡ std::byte
-    code(s) ≡ character code for S = C, or unsigned byte value for S = B; neither denotes a parsed decimal digit
-    ascii_valid(v) ≡ valid non-NUL cljonic ASCII code under existing character-validity rules, in 0x01–0x7F
+    code(s) ≡ native numeric value for S = C, preserving the platform's plain-char signedness, or unsigned byte value for S = B; neither denotes a parsed decimal digit
     Type admission and value validation are separate. A matrix entry admits a source type; it does not establish that every value or policy succeeds.
   | boundaries:
     ∀ conversion_operation: distinct_from(Parsing) ∧ ¬implicitly_parse(text) ∧ ¬implicitly_invoke(user_defined_conversion)
+    ∧ low_level_character_conversion: independent_of(String_character_validity) ∧ admit(NUL ∧ non_ASCII_values_when_representable)
+    ∧ preserve(existing_String_valid_character_range ∧ character_is_valid ∧ ordinary_implicit_character_domain_rejection)
   | source_destination_matrix:
     ∀ destination T supported by REQ-NUM-008:
-      (T ∈ N → permitted_source_types = N)
+      (T ∈ I → permitted_source_types = N ∪ {C})
+      ∧ (T ∈ F → permitted_source_types = N)
       ∧ (T = C → permitted_source_types = I ∪ {C, B})
       ∧ (T = B → permitted_source_types = I ∪ {C, B})
     ∀ pair outside the matrix: compile_time_rejection unless a separate governing contract explicitly admits it
     ∀ numeric pair S ∈ N, T ∈ N: policy_admission_and_value_checks under REQ-NUM-012
     ∀ T ∈ {C, B}: exact_default_only ∧ compile_time_reject(truncate ∨ nearest)
-    In particular, char and std::byte sources are not ordinary numeric sources. Other character types, bool, application enums, pointers, and user-defined types are rejected. The byte entries explicitly exempt std::byte from enum exclusions; they do not exempt application enums.
+    ∀ S = C, T ∈ I: exact_default_only ∧ validate(native_numeric_value_fits_destination) before_cast ∧ preserve_numeric_value ∧ reject_negative_to_unsigned_as(out_of_range) ∧ compile_time_reject(truncate ∨ nearest)
+    In particular, char sources are admitted for integer destinations only, not floating destinations. std::byte sources remain limited to char and std::byte destinations. Other character types, bool, application enums, pointers, and user-defined types are rejected. The byte entries explicitly exempt std::byte from enum exclusions; they do not exempt application enums.
   | character_validation:
     ∀ s of admitted source type S, T = C:
       v ≡ s when S ∈ I; otherwise code(s)
-      ∧ validate(ascii_valid(v)) before_cast
-      ∧ (ascii_valid(v) → success(character_with_code(v)))
-      ∧ (¬ascii_valid(v) → false_preflight ∧ configured_conversion_failure)
+      ∧ validate(std::numeric_limits<char>::min() ≤ v ≤ std::numeric_limits<char>::max()) before_cast
+      ∧ (value_fits_char → success(char_with_native_numeric_value(v)))
+      ∧ (¬value_fits_char → false_preflight ∧ configured_conversion_failure(out_of_range))
       ∧ ¬truncate ∧ ¬wrap ∧ ¬interpret_integer_as_printed_decimal_digit
+    ∀ S = C: to_char(s) succeeds unchanged for every native char value, including NUL and negative values on signed-char platforms
     to_char(s) ≡ to<char>(s) under this same contract
   | byte_validation:
     ∀ s of S ∈ I, T = B:
@@ -226,15 +230,16 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
       ∧ ((0 ≤ s ≤ UCHAR_MAX) → success(byte_with_value(s)))
       ∧ (¬(0 ≤ s ≤ UCHAR_MAX) → false_preflight ∧ configured_conversion_failure)
     ∀ s of S = C, T = B:
-      validate(ascii_valid(code(s))) before_cast
-      ∧ (ascii_valid(code(s)) → success(byte_with_value(code(s))))
-      ∧ (¬ascii_valid(code(s)) → false_preflight ∧ configured_conversion_failure)
+      validate(0 ≤ code(s) ≤ UCHAR_MAX) before_cast
+      ∧ ((0 ≤ code(s) ≤ UCHAR_MAX) → success(byte_with_value(code(s))))
+      ∧ (¬(0 ≤ code(s) ≤ UCHAR_MAX) → false_preflight ∧ configured_conversion_failure(out_of_range))
+      ∧ ¬reinterpret_negative_char_as_unsigned_byte
     ∀ s of S = B, T = B: success(s_unchanged)
     ∀ byte_conversion: ¬truncate ∧ ¬wrap ∧ byte_width_follows(UCHAR_MAX) ∧ ¬assume(eight_bit_byte)
     to_byte(s) ≡ to<std::byte>(s) under this same contract
   | type_identity_and_aliases:
     ∀ typedef_alias: admission_follows(actual_underlying_type) ∧ ¬distinct_type_from_alias_spelling
-    ∀ character_type_alias: same_numeric_source_exclusion_as_underlying_character_type
+    ∀ character_type_alias: same_source_admission_as_underlying_character_type
     ∀ T ∈ {signed char, unsigned char} or aliases_of_those_types: generic_destination_rejected_at_compile_time
     ∀ supported_noncharacter_integer_destination: generic_destination_admitted_under_its_contract
     Examples: std::uint8_t aliases unsigned char on many platforms and inherits its exclusion; std::int8_t similarly inherits signed char exclusion. std::uint32_t is admitted when its underlying type is a supported non-character integer type such as unsigned int. Platform-dependent alias limitations are documented.
@@ -246,8 +251,8 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
     ∀ unsupported_source_type: compile_time_rejection, not_runtime_value_failure
     ∀ admitted_source_value_failure: behavior_under(REQ-NUM-009 ∧ REQ-NUM-010 ∧ REQ-NUM-010A–010E)
     ∀ implementation: requires(operation_level_behavioral_specification)
-  rationale: ordinary numeric conversion, character-code validation, raw-byte conversion, and parsing have distinct meanings; floating-to-character/byte conversion must expose the intermediate numeric policy and successful integer conversion
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06, rationale_source: origin_artifact}
+  rationale: low-level conversions preserve the native platform meaning of char independently of String character validity; negative char values are not silently reinterpreted as unsigned byte codes, and floating-to-character/byte conversion must expose the intermediate numeric policy and successful integer conversion
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-11, rationale_source: origin_artifact}
 
 λ REQ-NUM-014(x).
   ∀ `parse_float`: documents its accepted syntax, sign, decimal, exponent, infinity, NaN, range, rounding, and accuracy behavior
