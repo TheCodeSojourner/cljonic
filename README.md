@@ -94,10 +94,8 @@ represent **every possible value of the converted-from type**; a small literal d
 potentially narrowing conversion safe.
 
 - `short` to `long long` and `float` to `double` are accepted.
-- Integer-to-floating conversion is currently accepted only when all source integers are
-  representable exactly; floating-to-integer conversion is rejected. An approved requirements
-  change will require explicit conversion for both integer-to-floating and floating-to-integer
-  crossings; this stricter rule is not yet implemented.
+- Integer-to-floating and floating-to-integer implicit conversions are rejected, even when a
+  particular value would fit exactly. Use an explicit conversion when crossing that boundary.
 - Boolean, character, and enum types retain their distinct meanings. For example,
   an `int` does not implicitly become a String character, and `bool` is not an index.
 - Cross-type user-defined and pointer conversions must be performed explicitly.
@@ -120,6 +118,30 @@ representability check when needed. An unchecked cast is not a safety check.
 is no longer a C++ aggregate: its constructor enforces these conversion rules.
 Standard transform views remain supported when their base traversal and callback
 are non-throwing; declare such callbacks `noexcept`.
+
+### Explicit conversions
+
+The Core API provides `to<T>(value)` and named conversions such as `to_int`,
+`to_float`, `to_char`, and `to_byte`, with corresponding `can_to<T>` and
+`can_to_*` preflights. Numeric conversions are exact by default. Use
+`conversion::truncate` for floating-to-integer truncation and
+`conversion::nearest` for integer-to-floating or floating-to-floating rounding.
+These are low-level conversions, independent of String's character-validity policy.
+`to_int('A')` preserves the platform's numeric character code; `to_int('\0')`
+returns zero. `to_char` accepts values in the platform's native `char` range,
+including NUL and representable non-ASCII values. Plain `char` signedness is
+preserved: negative character values cannot convert to unsigned integers or bytes.
+Byte conversions check `0..UCHAR_MAX`; `std::byte` inputs remain unchanged.
+Character-to-floating conversions and other character types remain unsupported.
+String and `character_is_valid` still enforce non-NUL ASCII content (`1..127`).
+
+Check `can_to*` when a failure must be distinguished from a successful fallback.
+In normal mode, failed runtime conversions return the destination fallback
+(maximum integer or finite floating value, all-bits-set byte, or NUL character);
+failed constant evaluation does not produce a value. Applications can select
+diagnostic mode by defining `CLJONIC_CONVERSION_DIAGNOSTICS=1` consistently
+before including cljonic and defining the non-returning
+`cljonic::core::conversion_failure_handler() noexcept`.
 
 ### Materializing cljonic sources
 

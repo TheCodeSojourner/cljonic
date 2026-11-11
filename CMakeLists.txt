@@ -55,6 +55,32 @@ if(BUILD_TESTING)
     configure_cljonic_spec_tests(cljonic_single_header_tests TRUE)
     add_dependencies(cljonic_tests cljonic_modular_header_smoke)
 
+    set(CLJONIC_CONVERSION_DIAGNOSTIC_SOURCES
+        tests/conversion-diagnostics-main.cpp
+        tests/conversion-diagnostics-trigger.cpp
+        tests/conversion-diagnostics-handler.cpp
+    )
+    add_executable(cljonic_conversion_diagnostics_tests ${CLJONIC_CONVERSION_DIAGNOSTIC_SOURCES})
+    target_compile_features(cljonic_conversion_diagnostics_tests PRIVATE cxx_std_23)
+    target_compile_definitions(cljonic_conversion_diagnostics_tests PRIVATE CLJONIC_CONVERSION_DIAGNOSTICS=1)
+    target_include_directories(cljonic_conversion_diagnostics_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME cljonic_conversion_diagnostics_tests COMMAND cljonic_conversion_diagnostics_tests)
+
+    add_executable(cljonic_single_header_conversion_diagnostics_tests ${CLJONIC_CONVERSION_DIAGNOSTIC_SOURCES})
+    target_compile_features(cljonic_single_header_conversion_diagnostics_tests PRIVATE cxx_std_23)
+    target_compile_definitions(cljonic_single_header_conversion_diagnostics_tests PRIVATE
+        CLJONIC_CONVERSION_DIAGNOSTICS=1
+        CLJONIC_USE_SINGLE_HEADER=1
+    )
+    target_include_directories(cljonic_single_header_conversion_diagnostics_tests PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
+    add_dependencies(cljonic_single_header_conversion_diagnostics_tests cljonic_header)
+    add_test(NAME cljonic_single_header_conversion_diagnostics_tests
+        COMMAND cljonic_single_header_conversion_diagnostics_tests
+    )
+
     option(CLJONIC_COVERAGE "Enable coverage instrumentation (host profiles only)" OFF)
     if(CLJONIC_COVERAGE)
         target_compile_options(cljonic_tests PRIVATE --coverage)
