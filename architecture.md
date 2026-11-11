@@ -198,7 +198,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
 
 λ S3_explicit_conversion_surface(x). governed_by(REQ-NUM-008 ∧ REQ-NUM-009 ∧ REQ-NUM-010 ∧ REQ-NUM-010A–010E ∧ REQ-NUM-012 ∧ REQ-NUM-013 ∧ REQ-NUM-017)
   | traces_to(S5_domain_and_conversion_safety)
-  | planned_core_surface(x) ≡ to_byte ∧ to_char ∧ to_count ∧ to_double ∧ to_float ∧ to_index ∧ to_int ∧ to_long
+  | implemented_core_surface(x) ≡ to_byte ∧ to_char ∧ to_count ∧ to_double ∧ to_float ∧ to_index ∧ to_int ∧ to_long
     ∧ to_long_double ∧ to_long_long ∧ to_short ∧ to_size ∧ to_uint ∧ to_ulong ∧ to_ulong_long ∧ to_ushort ∧ to<T>
   | named_destination(x) → native_Cpp_type_under(REQ-NUM-008) ∧ destination(to_count ∨ to_index ∨ to_size) ≡ std::size_t
   | count_index_size_synonyms(x) → identical_behavior ∧ matching_preflights ∧ ¬implied_collection_specific_bounds_or_capacity
@@ -235,15 +235,21 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | loss_policy(x) → ¬wrapping ∧ ¬saturation ∧ reject_overflow ∧ selection_visible_at_call_site
   | source_admission(x) → follow(REQ-NUM-013) ∧ distinguish(unsupported_source_type ∧ admitted_source_value_failure)
   | ordinary_numeric_sources(x) ≡ builtin_integer_except(Boolean ∨ character) ∨ builtin_floating
-  | character_source_to_ordinary_numeric(x) → reject_at_compile_time ∧ ¬interpret_as_code_or_parsed_digit
-    ∧ fixed_width_alias_of_character_type(x) → same_exclusion ∧ ¬distinguish_typedef_spelling
+  | char_source_to_noncharacter_integer(x) → exact_default_only ∧ preserve(native_numeric_value ∧ platform_char_signedness)
+    ∧ check(destination_representability) before_cast ∧ negative_to_unsigned_failure(out_of_range) ∧ ¬parse_digit
+  | char_source_to_floating(x) ∨ other_character_source_to_numeric(x) → reject_at_compile_time
+    ∧ fixed_width_alias_of_character_type(x) → follow_underlying_type ∧ ¬distinguish_typedef_spelling
   | generic_destination(signed_char ∨ unsigned_char ∨ aliases_of_those_types) → reject_at_compile_time
     ∧ preserve_separate(to<char> ∧ to<std::byte>) ∧ admit(supported_noncharacter_integer_destinations)
-  | explicit_domain_boundaries(x) ≡ validated_integer_to_char ∨ validated_char_to_char ∨ checked_integer_to_byte ∨ validated_ASCII_char_to_byte
-  | character_destination(x) → accept_only_valid_non_NUL_ASCII_from(integer ∨ char ∨ std_byte) ∧ validate_before_cast
+  | explicit_domain_boundaries(x) ≡ checked_integer_to_char ∨ unchanged_char_to_char ∨ checked_char_to_integer ∨ checked_integer_to_byte ∨ checked_char_to_byte
+  | low_level_character_conversion(x) → independent_of(String_character_validity) ∧ admit(NUL ∧ representable_non_ASCII)
+    ∧ preserve(existing_String_policy ∧ character_is_valid ∧ implicit_character_domain_rejection)
+  | character_destination(x) → accept_native_char_range_from(integer ∨ char ∨ std_byte) ∧ validate_before_cast
+    ∧ range(std::numeric_limits<char>::min()..std::numeric_limits<char>::max()) ∧ range_failure(out_of_range)
     ∧ reject(floating ∨ Boolean ∨ other_character ∨ enum ∨ pointer ∨ user_defined) ∧ reject(truncate ∨ nearest)
   | std_byte_source(x) → admit_only_for(std_byte ∨ character_destination) ∧ reject_ordinary_integer_and_floating_destinations
-  | byte_destination(x) → accept_integer_in(0..UCHAR_MAX) ∨ valid_ASCII_char ∨ unchanged_std_byte
+  | byte_destination(x) → accept_integer_in(0..UCHAR_MAX) ∨ nonnegative_native_char ∨ unchanged_std_byte
+    ∧ negative_char_failure(out_of_range) ∧ ¬reinterpret_negative_char_as_unsigned_byte
     ∧ reject(floating ∨ Boolean ∨ other_character ∨ enum ∨ pointer ∨ user_defined) ∧ reject(truncate ∨ nearest)
   | same_type_conversion(x) → admitted_under_destination_contract ∧ exact_default_only ∧ reject_explicit_loss_policy_at_compile_time
     ∧ determine_by(actual_Cpp_type_identity_not_alias_spelling_or_representation) ∧ floating_inputs_still_follow(non_finite ∧ signed_zero_validation)
@@ -1877,6 +1883,6 @@ concept SequenceableProducer =
   | module6_numeric_authority(x) ≡ requirements/requirements-module-6.md → govern(checked_arithmetic ∧ callables)
   | module7_extended_domain_authority(x) ≡ requirements/requirements-module-7.md → govern(relations ∧ set_algebra ∧ regex ∧ Atom ∧ formatting ∧ KeywordEnumNameMapping)
 
-λ current_implementation_boundary(x). active_surface(x) ≡ Vector ∧ MapEntry ∧ Map ∧ Set ∧ Queue ∧ String ∧ Variant ∧ Range ∧ Repeat ∧ Cycle ∧ Iterate ∧ Repeatedly ∧ TakeWhile ∧ DropWhile ∧ primitive_free_functions ∧ map ∧ reduce ∧ filter ∧ filterv ∧ take ∧ drop ∧ take_while ∧ drop_while ∧ vector_factory ∧ hash_map_factory ∧ map_entry_factory ∧ set_factory ∧ queue_factory ∧ string_factory ∧ variant_factory ∧ into ∧ fits_into
+λ current_implementation_boundary(x). active_surface(x) ≡ Vector ∧ MapEntry ∧ Map ∧ Set ∧ Queue ∧ String ∧ Variant ∧ Range ∧ Repeat ∧ Cycle ∧ Iterate ∧ Repeatedly ∧ TakeWhile ∧ DropWhile ∧ primitive_free_functions ∧ explicit_conversions ∧ map ∧ reduce ∧ filter ∧ filterv ∧ take ∧ drop ∧ take_while ∧ drop_while ∧ vector_factory ∧ hash_map_factory ∧ map_entry_factory ∧ set_factory ∧ queue_factory ∧ string_factory ∧ variant_factory ∧ into ∧ fits_into
   | approved_but_unimplemented(algorithms_except(map ∧ reduce ∧ filter ∧ filterv ∧ take ∧ drop ∧ take_while ∧ drop_while) ∨ regexes) → remain_outside(active_surface(x))
   | approved_but_unimplemented(x) → require(specification_and_implementation_propagated(x)) before(active_surface_inclusion(x))
