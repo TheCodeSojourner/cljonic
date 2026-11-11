@@ -25,9 +25,8 @@
  * You can pass a different numeric type within the same numeric domain when the conversion preserves every possible
  * value of that type, not just the value you happen to pass:
  * - A \c short can become a \c long \c long without losing its value.
- * - A \c float can become a \c double without losing precision.
- * Integer and floating-point types are separate domains: conversions between them are rejected in both directions,
- * even when a particular value is representable.
+ * - A \c float can become a \c double without losing precision. Integer and floating-point types are separate domains:
+ * conversions between them are rejected in both directions, even when a particular value is representable.
  *
  * A conversion that could lose information is rejected at compile time, even for a literal that fits. For example,
  * passing an \c int to an operation expecting \c short is rejected even when the argument is \c 1. Floating-point

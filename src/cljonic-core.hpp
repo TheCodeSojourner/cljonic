@@ -39,14 +39,18 @@
  * ## Core Functions
  *
  * Every Core function is declared in \c cljonic::core. Entries linked to documentation have implemented documentation.
- * Plain names are planned entries that are not yet implemented.
+ * Unlinked names include both planned functions and implemented functions without a dedicated cheatsheet link.
  *
  * - add, apply, \ref Assoc "assoc", assoc_in
  * - bit_and, bit_and_not, bit_clear, bit_flip, bit_not, bit_or, bit_set, bit_shift_left, bit_shift_right, bit_test,
  *   bit_xor, butlast
- * - can_add, \ref CanAssoc "can_assoc", \ref CanConj "can_conj", can_multiply, can_subtract, can_to, can_to_byte,
- *   can_to_char, can_to_count, can_to_double, can_to_float, can_to_index, can_to_int, can_to_long, can_to_long_double,
- *   can_to_long_long, can_to_short, can_to_size, can_to_uint, can_to_ulong, can_to_ulong_long, can_to_ushort,
+ * - can_add, \ref CanAssoc "can_assoc", \ref CanConj "can_conj", can_multiply, can_subtract,
+ *   \ref ExplicitConversions "can_to", \ref ExplicitConversions "can_to_byte", \ref ExplicitConversions "can_to_char",
+ *   \ref ExplicitConversions "can_to_count", \ref ExplicitConversions "can_to_double", \ref ExplicitConversions "can_to_float",
+ *   \ref ExplicitConversions "can_to_index", \ref ExplicitConversions "can_to_int", \ref ExplicitConversions "can_to_long",
+ *   \ref ExplicitConversions "can_to_long_double", \ref ExplicitConversions "can_to_long_long",
+ *   \ref ExplicitConversions "can_to_short", \ref ExplicitConversions "can_to_size", \ref ExplicitConversions "can_to_uint",
+ *   \ref ExplicitConversions "can_to_ulong", \ref ExplicitConversions "can_to_ulong_long", \ref ExplicitConversions "can_to_ushort",
  *   \ref CharacterIsValid "character_is_valid", comp, compare, complement, \ref Conj "conj", constantly,
  *   \ref Contains "contains", \ref Count "count", \ref Cycle "cycle"
  * - dec, dedupe, deref, \ref Disj "disj", \ref Dissoc "dissoc", distinct, div, \ref Drop "drop", drop_last, \ref DropWhile "drop_while"
@@ -73,12 +77,18 @@
  *   replace, replicate, reset, reset_vals, \ref Rest "rest", rseq
  * - second, select_keys, \ref Seq "seq", some, some_fn, sort, sort_by, split_at, split_with, str, \ref StringFactory "string",
  *   sub, subvec, swap, swap_vals
- * - \ref Take "take", take_last, take_nth, \ref TakeWhile "take_while", to, to_byte, to_char, to_count, to_double, to_float,
- *   to_index, to_int, to_long, to_long_double, to_long_long, to_short, to_size, to_uint, to_ulong, to_ulong_long, to_ushort,
- *   tree_seq
+ * - \ref Take "take", take_last, take_nth, \ref TakeWhile "take_while", \ref ExplicitConversions "to",
+ *   \ref ExplicitConversions "to_byte", \ref ExplicitConversions "to_char", \ref ExplicitConversions "to_count",
+ *   \ref ExplicitConversions "to_double", \ref ExplicitConversions "to_float", \ref ExplicitConversions "to_index",
+ *   \ref ExplicitConversions "to_int", \ref ExplicitConversions "to_long", \ref ExplicitConversions "to_long_double",
+ *   \ref ExplicitConversions "to_long_long", \ref ExplicitConversions "to_short", \ref ExplicitConversions "to_size",
+ *   \ref ExplicitConversions "to_uint", \ref ExplicitConversions "to_ulong", \ref ExplicitConversions "to_ulong_long",
+ *   \ref ExplicitConversions "to_ushort", tree_seq
  * - unsigned_bit_shift_right, update, update_in, update_keys, update_vals
  * - vals, \ref VariantFactory "variant", variant_alternative, variant_size, vec, \ref cljonic::vector "vector", visit
  * - zipmap
+ *
+ * See \ref ExplicitConversions "Explicit conversions" for numeric, character, and byte conversion policies.
  *
  * ## Set Library Functions
  *
@@ -129,6 +139,7 @@
 #include <cljonic-conj.hpp>
 #include <cljonic-contains.hpp>
 #include <cljonic-core-collection-maximum-element-count.hpp>
+#include <cljonic-core-conversions.hpp>
 #include <cljonic-count.hpp>
 #include <cljonic-disj.hpp>
 #include <cljonic-dissoc.hpp>
