@@ -115,71 +115,71 @@ document.addEventListener('DOMContentLoaded', codefold.init);
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a> {</div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span></div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>} <span class="comment">// namespace cljonic::core</span></div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span> </div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1concepts__detail.html">cljonic::concepts_detail</a> {</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span> </div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> C&gt;</div>
-<div class="foldopen" id="foldopen00088" data-start="{" data-end="}">
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1concepts__detail.html#a35cd627752d7c58231fd17957b3bd260">   88</a></span>[[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1concepts__detail.html#a35cd627752d7c58231fd17957b3bd260">materialize_traversal</a>(<span class="keyword">const</span> C&amp; value) <span class="keyword">noexcept</span> -&gt; Result {</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    <span class="keyword">auto</span> result = Result{};</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp;&amp; item : value) {</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        result = result.conj(<span class="keyword">typename</span> Result::value_type(item));</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    }</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>}</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>} <span class="comment">// namespace cljonic::core</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1concepts__detail.html">cljonic::concepts_detail</a> {</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Result, <span class="keyword">typename</span> C&gt;</div>
+<div class="foldopen" id="foldopen00089" data-start="{" data-end="}">
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1concepts__detail.html#a35cd627752d7c58231fd17957b3bd260">   89</a></span>[[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1concepts__detail.html#a35cd627752d7c58231fd17957b3bd260">materialize_traversal</a>(<span class="keyword">const</span> C&amp; value) <span class="keyword">noexcept</span> -&gt; Result {</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keyword">auto</span> result = Result{};</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp;&amp; item : value) {</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>        result = result.conj(<span class="keyword">typename</span> Result::value_type(item));</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    }</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>}</div>
 </div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>} <span class="comment">// namespace cljonic::concepts_detail</span></div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a> {</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span><span class="keyword">template</span> &lt;concepts::CljonicVector C&gt;</div>
-<div class="foldopen" id="foldopen00101" data-start="{" data-end="}">
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#ac0530d9b4c0d04f6ce083a6ab4fb62d9">  101</a></span>[[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#ac0530d9b4c0d04f6ce083a6ab4fb62d9">seq</a>(<span class="keyword">const</span> C&amp; value) <span class="keyword">noexcept</span> -&gt; C {</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    <span class="keywordflow">return</span> value;</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>}</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>} <span class="comment">// namespace cljonic::concepts_detail</span></div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a> {</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span> </div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span><span class="keyword">template</span> &lt;concepts::CljonicVector C&gt;</div>
+<div class="foldopen" id="foldopen00102" data-start="{" data-end="}">
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#ac0530d9b4c0d04f6ce083a6ab4fb62d9">  102</a></span>[[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#ac0530d9b4c0d04f6ce083a6ab4fb62d9">seq</a>(<span class="keyword">const</span> C&amp; value) <span class="keyword">noexcept</span> -&gt; C {</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    <span class="keywordflow">return</span> value;</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>}</div>
 </div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="keyword">template</span> &lt;concepts::CljonicCollection C&gt;</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    <span class="keyword">requires</span>(!<a class="code hl_concept" href="conceptcljonic_1_1concepts_1_1_cljonic_vector.html">concepts::CljonicVector&lt;C&gt;</a>)</div>
-<div class="foldopen" id="foldopen00107" data-start="{" data-end="}">
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#a8dd83cf634f9eb6a9efb9b836b5e597c">  107</a></span>[[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#ac0530d9b4c0d04f6ce083a6ab4fb62d9">seq</a>(<span class="keyword">const</span> C&amp; value) <span class="keyword">noexcept</span> {</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="namespacecljonic_1_1concepts__detail.html#a35cd627752d7c58231fd17957b3bd260">concepts_detail::materialize_traversal</a>&lt;<a class="code hl_class" href="classcljonic_1_1_vector.html">Vector</a>&lt;<span class="keyword">typename</span> C::value_type, C::capacity()&gt;&gt;(value);</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>}</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span> </div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="keyword">template</span> &lt;concepts::CljonicCollection C&gt;</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>    <span class="keyword">requires</span>(!<a class="code hl_concept" href="conceptcljonic_1_1concepts_1_1_cljonic_vector.html">concepts::CljonicVector&lt;C&gt;</a>)</div>
+<div class="foldopen" id="foldopen00108" data-start="{" data-end="}">
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#a8dd83cf634f9eb6a9efb9b836b5e597c">  108</a></span>[[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#ac0530d9b4c0d04f6ce083a6ab4fb62d9">seq</a>(<span class="keyword">const</span> C&amp; value) <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="namespacecljonic_1_1concepts__detail.html#a35cd627752d7c58231fd17957b3bd260">concepts_detail::materialize_traversal</a>&lt;<a class="code hl_class" href="classcljonic_1_1_vector.html">Vector</a>&lt;<span class="keyword">typename</span> C::value_type, C::capacity()&gt;&gt;(value);</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>}</div>
 </div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span> </div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span><span class="keyword">template</span> &lt;concepts::SequenceableProducer C&gt;</div>
-<div class="foldopen" id="foldopen00112" data-start="{" data-end="}">
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#a5ef43afa7b1b77e10c774a02e6f4aaaf">  112</a></span>[[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#ac0530d9b4c0d04f6ce083a6ab4fb62d9">seq</a>(<span class="keyword">const</span> C&amp; value) <span class="keyword">noexcept</span> {</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="namespacecljonic_1_1concepts__detail.html#a35cd627752d7c58231fd17957b3bd260">concepts_detail::materialize_traversal</a>&lt;</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>        <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;typename C::value_type, CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE&gt;</a>&gt;(value);</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>}</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="keyword">template</span> &lt;concepts::SequenceableProducer C&gt;</div>
+<div class="foldopen" id="foldopen00113" data-start="{" data-end="}">
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#a5ef43afa7b1b77e10c774a02e6f4aaaf">  113</a></span>[[nodiscard]] <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#ac0530d9b4c0d04f6ce083a6ab4fb62d9">seq</a>(<span class="keyword">const</span> C&amp; value) <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="namespacecljonic_1_1concepts__detail.html#a35cd627752d7c58231fd17957b3bd260">concepts_detail::materialize_traversal</a>&lt;</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>        <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;typename C::value_type, CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE&gt;</a>&gt;(value);</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>}</div>
 </div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span> </div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span><span class="comment">// Diagnostic fallback (REQ-DIAG-009): a call outside the admitted domain names</span></div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span><span class="comment">// the domain instead of listing failed concept candidates. It produces no value.</span></div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> C&gt;</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>    <span class="keyword">requires</span>(!<a class="code hl_concept" href="conceptcljonic_1_1concepts_1_1_cljonic_source.html">concepts::CljonicSource&lt;C&gt;</a>)</div>
-<div class="foldopen" id="foldopen00121" data-start="{" data-end="}">
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#a6596a38e8d4f8ac3045564a4134723f8">  121</a></span><span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#ac0530d9b4c0d04f6ce083a6ab4fb62d9">seq</a>([[maybe_unused]] <span class="keyword">const</span> C&amp; value) <span class="keyword">noexcept</span> -&gt; <span class="keywordtype">void</span> {</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    <span class="keyword">static_assert</span>(<a class="code hl_variable" href="namespacecljonic_1_1concepts__detail.html#ab8fd50010c5a1e2e4f202ac1d645d757">concepts_detail::dependent_false&lt;C&gt;</a>, <span class="stringliteral">&quot;cljonic::seq: expected a Vector, Map, Set, Queue, String, &quot;</span></div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>                                                       <span class="stringliteral">&quot;Range, Repeat, Cycle, Iterate, or Repeatedly value.&quot;</span>);</div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>}</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span><span class="comment">// Diagnostic fallback (REQ-DIAG-009): a call outside the admitted domain names</span></div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span><span class="comment">// the domain instead of listing failed concept candidates. It produces no value.</span></div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> C&gt;</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    <span class="keyword">requires</span>(!<a class="code hl_concept" href="conceptcljonic_1_1concepts_1_1_cljonic_source.html">concepts::CljonicSource&lt;C&gt;</a>)</div>
+<div class="foldopen" id="foldopen00122" data-start="{" data-end="}">
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno"><a class="line" href="namespacecljonic_1_1core.html#a6596a38e8d4f8ac3045564a4134723f8">  122</a></span><span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="namespacecljonic_1_1core.html#ac0530d9b4c0d04f6ce083a6ab4fb62d9">seq</a>([[maybe_unused]] <span class="keyword">const</span> C&amp; value) <span class="keyword">noexcept</span> -&gt; <span class="keywordtype">void</span> {</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>    <span class="keyword">static_assert</span>(<a class="code hl_variable" href="namespacecljonic_1_1concepts__detail.html#ab8fd50010c5a1e2e4f202ac1d645d757">concepts_detail::dependent_false&lt;C&gt;</a>, <span class="stringliteral">&quot;cljonic::seq: expected a Vector, Map, Set, Queue, String, &quot;</span></div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>                                                       <span class="stringliteral">&quot;Range, Repeat, Cycle, Iterate, or Repeatedly value.&quot;</span>);</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>}</div>
 </div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>} <span class="comment">// namespace cljonic::core</span></div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>} <span class="comment">// namespace cljonic::core</span></div>
 <div class="ttc" id="aclasscljonic_1_1_vector_html"><div class="ttname"><a href="classcljonic_1_1_vector.html">cljonic::Vector</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-vector_8hpp_source.html#l00149">cljonic-collection-vector.hpp:149</a></div></div>
 <div class="ttc" id="acljonic-collection-vector_8hpp_html"><div class="ttname"><a href="cljonic-collection-vector_8hpp.html">cljonic-collection-vector.hpp</a></div></div>
 <div class="ttc" id="acljonic-concepts_8hpp_html"><div class="ttname"><a href="cljonic-concepts_8hpp.html">cljonic-concepts.hpp</a></div></div>
 <div class="ttc" id="acljonic-config_8hpp_html"><div class="ttname"><a href="cljonic-config_8hpp.html">cljonic-config.hpp</a></div></div>
-<div class="ttc" id="aconceptcljonic_1_1concepts_1_1_cljonic_source_html"><div class="ttname"><a href="conceptcljonic_1_1concepts_1_1_cljonic_source.html">cljonic::concepts::CljonicSource</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00551">cljonic-concepts.hpp:551</a></div></div>
-<div class="ttc" id="aconceptcljonic_1_1concepts_1_1_cljonic_vector_html"><div class="ttname"><a href="conceptcljonic_1_1concepts_1_1_cljonic_vector.html">cljonic::concepts::CljonicVector</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00555">cljonic-concepts.hpp:555</a></div></div>
+<div class="ttc" id="aconceptcljonic_1_1concepts_1_1_cljonic_source_html"><div class="ttname"><a href="conceptcljonic_1_1concepts_1_1_cljonic_source.html">cljonic::concepts::CljonicSource</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00552">cljonic-concepts.hpp:552</a></div></div>
+<div class="ttc" id="aconceptcljonic_1_1concepts_1_1_cljonic_vector_html"><div class="ttname"><a href="conceptcljonic_1_1concepts_1_1_cljonic_vector.html">cljonic::concepts::CljonicVector</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00556">cljonic-concepts.hpp:556</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1concepts__detail_html"><div class="ttname"><a href="namespacecljonic_1_1concepts__detail.html">cljonic::concepts_detail</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-assoc_8hpp_source.html#l00073">cljonic-assoc.hpp:73</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a35cd627752d7c58231fd17957b3bd260"><div class="ttname"><a href="namespacecljonic_1_1concepts__detail.html#a35cd627752d7c58231fd17957b3bd260">cljonic::concepts_detail::materialize_traversal</a></div><div class="ttdeci">constexpr auto materialize_traversal(const C &amp;value) noexcept -&gt; Result</div><div class="ttdef"><b>Definition</b> <a href="#l00088">cljonic-seq.hpp:88</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_ab8fd50010c5a1e2e4f202ac1d645d757"><div class="ttname"><a href="namespacecljonic_1_1concepts__detail.html#ab8fd50010c5a1e2e4f202ac1d645d757">cljonic::concepts_detail::dependent_false</a></div><div class="ttdeci">constexpr bool dependent_false</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00078">cljonic-concepts.hpp:78</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_a35cd627752d7c58231fd17957b3bd260"><div class="ttname"><a href="namespacecljonic_1_1concepts__detail.html#a35cd627752d7c58231fd17957b3bd260">cljonic::concepts_detail::materialize_traversal</a></div><div class="ttdeci">constexpr auto materialize_traversal(const C &amp;value) noexcept -&gt; Result</div><div class="ttdef"><b>Definition</b> <a href="#l00089">cljonic-seq.hpp:89</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1concepts__detail_html_ab8fd50010c5a1e2e4f202ac1d645d757"><div class="ttname"><a href="namespacecljonic_1_1concepts__detail.html#ab8fd50010c5a1e2e4f202ac1d645d757">cljonic::concepts_detail::dependent_false</a></div><div class="ttdeci">constexpr bool dependent_false</div><div class="ttdef"><b>Definition</b> <a href="cljonic-concepts_8hpp_source.html#l00077">cljonic-concepts.hpp:77</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1core_html"><div class="ttname"><a href="namespacecljonic_1_1core.html">cljonic::core</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-assoc_8hpp_source.html#l00006">cljonic-assoc.hpp:6</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_ac0530d9b4c0d04f6ce083a6ab4fb62d9"><div class="ttname"><a href="namespacecljonic_1_1core.html#ac0530d9b4c0d04f6ce083a6ab4fb62d9">cljonic::core::seq</a></div><div class="ttdeci">constexpr auto seq(const C &amp;value) noexcept -&gt; C</div><div class="ttdef"><b>Definition</b> <a href="#l00101">cljonic-seq.hpp:101</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_ac0530d9b4c0d04f6ce083a6ab4fb62d9"><div class="ttname"><a href="namespacecljonic_1_1core.html#ac0530d9b4c0d04f6ce083a6ab4fb62d9">cljonic::core::seq</a></div><div class="ttdeci">constexpr auto seq(const C &amp;value) noexcept -&gt; C</div><div class="ttdef"><b>Definition</b> <a href="#l00102">cljonic-seq.hpp:102</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

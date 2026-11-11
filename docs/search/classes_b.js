@@ -1,7 +1,14 @@
 var searchData=
 [
-  ['queue_0',['Queue',['../classcljonic_1_1_queue.html',1,'cljonic']]],
-  ['queue_3c_20t_2c_20next_5ftail_5fcapacity_28n_29_3e_1',['Queue&lt; T, next_tail_capacity(N)&gt;',['../classcljonic_1_1_queue.html',1,'cljonic']]],
-  ['queue_5ffactory_5felement_5ftype_2',['queue_factory_element_type',['../structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html',1,'cljonic::concepts_detail']]],
-  ['queue_5ffactory_5felement_5ftype_3c_20deducedqueueelementtype_2c_20first_2c_20rest_2e_2e_2e_20_3e_3',['queue_factory_element_type&lt; DeducedQueueElementType, First, Rest... &gt;',['../structcljonic_1_1concepts__detail_1_1queue__factory__element__type_3_01_deduced_queue_element_tya8c165f244576e2f44b2c88eb98e986c.html',1,'cljonic::concepts_detail']]]
+  ['predicateproducer_0',['PredicateProducer',['../classcljonic_1_1concepts__detail_1_1_predicate_producer.html',1,'cljonic::concepts_detail']]],
+  ['predicateproducer_3c_20predicate_2c_20source_2c_20false_20_3e_1',['PredicateProducer&lt; Predicate, Source, false &gt;',['../classcljonic_1_1concepts__detail_1_1_predicate_producer.html',1,'cljonic::concepts_detail']]],
+  ['predicateproducer_3c_20predicate_2c_20source_2c_20true_20_3e_2',['PredicateProducer&lt; Predicate, Source, true &gt;',['../classcljonic_1_1concepts__detail_1_1_predicate_producer.html',1,'cljonic::concepts_detail']]],
+  ['predicateproducernextaccess_3',['PredicateProducerNextAccess',['../structcljonic_1_1concepts__detail_1_1_predicate_producer_next_access.html',1,'cljonic::concepts_detail']]],
+  ['producer_5ftraits_4',['producer_traits',['../structcljonic_1_1concepts__detail_1_1producer__traits.html',1,'cljonic::concepts_detail']]],
+  ['producer_5ftraits_3c_20cycle_3c_20source_20_3e_20_3e_5',['producer_traits&lt; Cycle&lt; Source &gt; &gt;',['../structcljonic_1_1concepts__detail_1_1producer__traits_3_01_cycle_3_01_source_01_4_01_4.html',1,'cljonic::concepts_detail']]],
+  ['producer_5ftraits_3c_20iterate_3c_20t_2c_20step_20_3e_20_3e_6',['producer_traits&lt; Iterate&lt; T, Step &gt; &gt;',['../structcljonic_1_1concepts__detail_1_1producer__traits_3_01_iterate_3_01_t_00_01_step_01_4_01_4.html',1,'cljonic::concepts_detail']]],
+  ['producer_5ftraits_3c_20predicateproducer_3c_20predicate_2c_20source_2c_20dropprefix_20_3e_20_3e_7',['producer_traits&lt; PredicateProducer&lt; Predicate, Source, DropPrefix &gt; &gt;',['../structcljonic_1_1concepts__detail_1_1producer__traits_3_01_predicate_producer_3_01_predicate_00_df98ce1ec2ab276e2b7a62e3b2f6728b.html',1,'cljonic::concepts_detail']]],
+  ['producer_5ftraits_3c_20range_3c_20t_20_3e_20_3e_8',['producer_traits&lt; Range&lt; T &gt; &gt;',['../structcljonic_1_1concepts__detail_1_1producer__traits_3_01_range_3_01_t_01_4_01_4.html',1,'cljonic::concepts_detail']]],
+  ['producer_5ftraits_3c_20repeat_3c_20t_20_3e_20_3e_9',['producer_traits&lt; Repeat&lt; T &gt; &gt;',['../structcljonic_1_1concepts__detail_1_1producer__traits_3_01_repeat_3_01_t_01_4_01_4.html',1,'cljonic::concepts_detail']]],
+  ['producer_5ftraits_3c_20repeatedly_3c_20t_2c_20step_20_3e_20_3e_10',['producer_traits&lt; Repeatedly&lt; T, Step &gt; &gt;',['../structcljonic_1_1concepts__detail_1_1producer__traits_3_01_repeatedly_3_01_t_00_01_step_01_4_01_4.html',1,'cljonic::concepts_detail']]]
 ];

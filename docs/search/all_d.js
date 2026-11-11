@@ -11,5 +11,6 @@ var searchData=
   ['operator_3e_8',['operator&gt;',['../classcljonic_1_1_variant.html#a251fb5422a125baa92542e2dc5272b3c',1,'cljonic::Variant::operator&gt;()'],['../classcljonic_1_1_variant.html#a251fb5422a125baa92542e2dc5272b3c',1,'cljonic::Variant&lt; concepts_detail::VariantDomainViolation &gt;::operator&gt;()']]],
   ['operator_3e_3d_9',['operator&gt;=',['../classcljonic_1_1_variant.html#a8e6d19c9fb7f7cacf0b6a8c58c592587',1,'cljonic::Variant::operator&gt;=()'],['../classcljonic_1_1_variant.html#a8e6d19c9fb7f7cacf0b6a8c58c592587',1,'cljonic::Variant&lt; concepts_detail::VariantDomainViolation &gt;::operator&gt;=()']]],
   ['operator_5b_5d_10',['operator[]',['../classcljonic_1_1_queue_1_1const__iterator.html#a523ad6b1523c1b2cb58e28744e203c22',1,'cljonic::Queue::const_iterator']]],
-  ['own_20rules_11',['Check the operation&apos;s own rules',['../implicit-conversions.html#conversion-operation',1,'']]]
+  ['out_5fof_5frange_11',['out_of_range',['../namespacecljonic_1_1core.html#acbc01f7d5beec88712c8a83855efae0ea4fb901c70a0fdc05b55d95985f3300b0',1,'cljonic::core']]],
+  ['own_20rules_12',['Check the operation&apos;s own rules',['../implicit-conversions.html#conversion-operation',1,'']]]
 ];

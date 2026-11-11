@@ -102,10 +102,9 @@ document.addEventListener('DOMContentLoaded', codefold.init);
 <div class="textblock"><p>Use the type an operation asks for whenever possible. For a collection, check its element, key, or value type; for a producer, check its documented value and count types. These rules apply when creating values, looking them up, providing fallbacks, updating or removing them, and checking whether an operation can succeed.</p>
 <h1 class="doxsection"><a class="anchor" id="conversion-automatic"></a>
 When numbers convert automatically</h1>
-<p>You can pass a different numeric type when the conversion preserves every possible value of that type, not just the value you happen to pass:</p><ul>
+<p>You can pass a different numeric type within the same numeric domain when the conversion preserves every possible value of that type, not just the value you happen to pass:</p><ul>
 <li>A <code>short</code> can become a <code>long</code> <code>long</code> without losing its value.</li>
-<li>A <code>float</code> can become a <code>double</code> without losing precision.</li>
-<li>An integer can become a floating-point number only if the destination can represent every value of the integer type exactly. Do not assume that a floating-point type can hold every integer just because it has a larger range.</li>
+<li>A <code>float</code> can become a <code>double</code> without losing precision. Integer and floating-point types are separate domains: conversions between them are rejected in both directions, even when a particular value is representable.</li>
 </ul>
 <p>A conversion that could lose information is rejected at compile time, even for a literal that fits. For example, passing an <code>int</code> to an operation expecting <code>short</code> is rejected even when the argument is <code>1</code>. Floating-point numbers do not automatically become integers.</p>
 <h1 class="doxsection"><a class="anchor" id="conversion-explicit"></a>

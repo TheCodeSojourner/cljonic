@@ -1,29 +1,7 @@
 var searchData=
 [
-  ['range_0',['Range',['../classcljonic_1_1_range.html',1,'cljonic']]],
-  ['range_3c_20concepts_5fdetail_3a_3arangeelementdomainviolation_20_3e_1',['Range&lt; concepts_detail::RangeElementDomainViolation &gt;',['../classcljonic_1_1_range_3_01concepts__detail_1_1_range_element_domain_violation_01_4.html',1,'cljonic']]],
-  ['range_5ffactory_5felement_5ftype_2',['range_factory_element_type',['../structcljonic_1_1concepts__detail_1_1range__factory__element__type.html',1,'cljonic::concepts_detail']]],
-  ['range_5ffactory_5felement_5ftype_3c_20deducedrangeelementtype_2c_20first_2c_20rest_2e_2e_2e_20_3e_3',['range_factory_element_type&lt; DeducedRangeElementType, First, Rest... &gt;',['../structcljonic_1_1concepts__detail_1_1range__factory__element__type_3_01_deduced_range_element_ty48b2c0b44c38366b79e2698bd30783de.html',1,'cljonic::concepts_detail']]],
-  ['rangeelementdomainviolation_4',['RangeElementDomainViolation',['../structcljonic_1_1concepts__detail_1_1_range_element_domain_violation.html',1,'cljonic::concepts_detail']]],
-  ['rangematerializationaccess_5',['RangeMaterializationAccess',['../structcljonic_1_1concepts__detail_1_1_range_materialization_access.html',1,'cljonic::concepts_detail']]],
-  ['rangenextaccess_6',['RangeNextAccess',['../structcljonic_1_1concepts__detail_1_1_range_next_access.html',1,'cljonic::concepts_detail']]],
-  ['reduceaccumulator_7',['ReduceAccumulator',['../structcljonic_1_1concepts__detail_1_1_reduce_accumulator.html',1,'cljonic::concepts_detail']]],
-  ['reduceaccumulator_3c_20f_2c_20initial_20_3e_8',['ReduceAccumulator&lt; F, Initial &gt;',['../structcljonic_1_1concepts__detail_1_1_reduce_accumulator_3_01_f_00_01_initial_01_4.html',1,'cljonic::concepts_detail']]],
-  ['reduceaccumulatorfromsignature_9',['ReduceAccumulatorFromSignature',['../structcljonic_1_1concepts__detail_1_1_reduce_accumulator_from_signature.html',1,'cljonic::concepts_detail']]],
-  ['reduceaccumulatorfromsignature_3c_20f_20_3e_10',['ReduceAccumulatorFromSignature&lt; F &gt;',['../structcljonic_1_1concepts__detail_1_1_reduce_accumulator_from_signature_3_01_f_01_4.html',1,'cljonic::concepts_detail']]],
-  ['reduceparameterssafe_11',['ReduceParametersSafe',['../structcljonic_1_1concepts__detail_1_1_reduce_parameters_safe.html',1,'cljonic::concepts_detail']]],
-  ['reduceparameterssafe_3c_20parameters_2c_20source_20_3e_12',['ReduceParametersSafe&lt; Parameters, Source &gt;',['../structcljonic_1_1concepts__detail_1_1_reduce_parameters_safe_3_01_parameters_00_01_source_01_4.html',1,'cljonic::concepts_detail']]],
-  ['reduceresultmatches_13',['ReduceResultMatches',['../structcljonic_1_1concepts__detail_1_1_reduce_result_matches.html',1,'cljonic::concepts_detail']]],
-  ['reduceresultmatches_3c_20f_2c_20accumulator_2c_20source_20_3e_14',['ReduceResultMatches&lt; F, Accumulator, Source &gt;',['../structcljonic_1_1concepts__detail_1_1_reduce_result_matches_3_01_f_00_01_accumulator_00_01_source_01_4.html',1,'cljonic::concepts_detail']]],
-  ['reduceseedsafe_15',['ReduceSeedSafe',['../structcljonic_1_1concepts__detail_1_1_reduce_seed_safe.html',1,'cljonic::concepts_detail']]],
-  ['reduceseedsafe_3c_20parameters_2c_20source_20_3e_16',['ReduceSeedSafe&lt; Parameters, Source &gt;',['../structcljonic_1_1concepts__detail_1_1_reduce_seed_safe_3_01_parameters_00_01_source_01_4.html',1,'cljonic::concepts_detail']]],
-  ['rejectedproducerfactory_17',['RejectedProducerFactory',['../structcljonic_1_1concepts__detail_1_1_rejected_producer_factory.html',1,'cljonic::concepts_detail']]],
-  ['repeat_18',['Repeat',['../classcljonic_1_1_repeat.html',1,'cljonic']]],
-  ['repeat_3c_20concepts_5fdetail_3a_3arepeatelementdomainviolation_20_3e_19',['Repeat&lt; concepts_detail::RepeatElementDomainViolation &gt;',['../classcljonic_1_1_repeat_3_01concepts__detail_1_1_repeat_element_domain_violation_01_4.html',1,'cljonic']]],
-  ['repeatedly_20',['Repeatedly',['../classcljonic_1_1_repeatedly.html',1,'cljonic']]],
-  ['repeatedly_3c_20concepts_5fdetail_3a_3arepeatedlydomainviolation_2c_20concepts_5fdetail_3a_3arepeatedlydomainviolation_20_3e_21',['Repeatedly&lt; concepts_detail::RepeatedlyDomainViolation, concepts_detail::RepeatedlyDomainViolation &gt;',['../classcljonic_1_1_repeatedly_3_01concepts__detail_1_1_repeatedly_domain_violation_00_01concepts__a14cbd13f5a5036b68ab7e49d50a791c.html',1,'cljonic']]],
-  ['repeatedlydomainviolation_22',['RepeatedlyDomainViolation',['../structcljonic_1_1concepts__detail_1_1_repeatedly_domain_violation.html',1,'cljonic::concepts_detail']]],
-  ['repeatedlynextaccess_23',['RepeatedlyNextAccess',['../structcljonic_1_1concepts__detail_1_1_repeatedly_next_access.html',1,'cljonic::concepts_detail']]],
-  ['repeatelementdomainviolation_24',['RepeatElementDomainViolation',['../structcljonic_1_1concepts__detail_1_1_repeat_element_domain_violation.html',1,'cljonic::concepts_detail']]],
-  ['repeatnextaccess_25',['RepeatNextAccess',['../structcljonic_1_1concepts__detail_1_1_repeat_next_access.html',1,'cljonic::concepts_detail']]]
+  ['queue_0',['Queue',['../classcljonic_1_1_queue.html',1,'cljonic']]],
+  ['queue_3c_20t_2c_20next_5ftail_5fcapacity_28n_29_3e_1',['Queue&lt; T, next_tail_capacity(N)&gt;',['../classcljonic_1_1_queue.html',1,'cljonic']]],
+  ['queue_5ffactory_5felement_5ftype_2',['queue_factory_element_type',['../structcljonic_1_1concepts__detail_1_1queue__factory__element__type.html',1,'cljonic::concepts_detail']]],
+  ['queue_5ffactory_5felement_5ftype_3c_20deducedqueueelementtype_2c_20first_2c_20rest_2e_2e_2e_20_3e_3',['queue_factory_element_type&lt; DeducedQueueElementType, First, Rest... &gt;',['../structcljonic_1_1concepts__detail_1_1queue__factory__element__type_3_01_deduced_queue_element_tya8c165f244576e2f44b2c88eb98e986c.html',1,'cljonic::concepts_detail']]]
 ];
