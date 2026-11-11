@@ -22,8 +22,10 @@
 -- implicit conversion: an identical type or a value-preserving arithmetic
 -- conversion. Narrowing conversions (for example long to int) and crossings
 -- into or out of the Boolean, character, enumeration, pointer, and user-defined
--- domains are rejected at compile time. Map and Set traversal order is
--- semantically unordered. Standard-library ranges, containers, and other
+-- domains are rejected at compile time. Integer/floating crossings are also
+-- rejected at every consumed callback position, even when a particular value
+-- is representable; callers must perform an explicit conversion. Map and Set
+-- traversal order is semantically unordered. Standard-library ranges, containers, and other
 -- non-cljonic sources, throwing functions, and unstorable accumulators are
 -- rejected at compile time with targeted diagnostics. The operation is
 -- constexpr, non-throwing, non-allocating, non-mutating, and preserves every
@@ -52,6 +54,7 @@ entity ReduceFunction {
     initial_value_converts_safely_to_accumulator: Boolean
     consumed_argument_positions_use_safe_implicit_conversion: Boolean
     narrowing_and_domain_crossing_conversions_rejected_at_compile_time: Boolean
+    integer_floating_callback_crossings_rejected: Boolean
     observed_count_saturated_at_collection_maximum: Boolean
     unbounded_producer_folds_over_observation_cap: Boolean
     map_set_traversal_order_semantically_unordered: Boolean
@@ -148,6 +151,10 @@ entity ReduceFunction {
 
     invariant NarrowingAndDomainCrossingConversionsRejectedAtCompileTime {
         this.narrowing_and_domain_crossing_conversions_rejected_at_compile_time = true
+    }
+
+    invariant IntegerFloatingCallbackCrossingsRejected {
+        this.integer_floating_callback_crossings_rejected = true
     }
 
     invariant ObservedCountSaturatedAtCollectionMaximum {

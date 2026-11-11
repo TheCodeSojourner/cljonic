@@ -8,8 +8,10 @@
 -- collection maximum. The predicate should be a pure function (i.e., with no side
 -- effects) returning exactly bool; it must be copy-constructible and
 -- nothrow-invocable on each const source element. Statically
--- inspectable predicate parameters follow the safe implicit-conversion rules;
--- generic callables are admitted on nothrow invocability and exact bool result.
+-- inspectable predicate parameters follow the mandatory safe implicit-conversion
+-- rules under REQ-CONV-001, including integer/floating crossing rejection even
+-- when an individual value is representable; callers must convert explicitly.
+-- Generic callables are admitted on nothrow invocability and exact bool result.
 -- Traversal visits the source's observed elements in traversal order and appends
 -- matching values. Because the result capacity equals the source's
 -- observable-count bound, every observed element fits, so traversal ends when
@@ -42,6 +44,7 @@ entity FilterFunction {
     predicate_result_is_exact_bool: Boolean
     inspectable_parameter_uses_safe_implicit_conversion: Boolean
     unsafe_parameter_conversions_rejected_at_compile_time: Boolean
+    integer_floating_parameter_crossings_rejected: Boolean
     uninspectable_callable_requires_nothrow_exact_bool_invocation: Boolean
     map_and_set_order_is_semantically_unordered: Boolean
     input_is_preserved: Boolean
@@ -72,6 +75,7 @@ entity FilterFunction {
     invariant PredicateResultIsExactBool { this.predicate_result_is_exact_bool = true }
     invariant InspectableParameterUsesSafeImplicitConversion { this.inspectable_parameter_uses_safe_implicit_conversion = true }
     invariant UnsafeParameterConversionsRejectedAtCompileTime { this.unsafe_parameter_conversions_rejected_at_compile_time = true }
+    invariant IntegerFloatingParameterCrossingsRejected { this.integer_floating_parameter_crossings_rejected = true }
     invariant UninspectableCallableRequiresNothrowExactBoolInvocation { this.uninspectable_callable_requires_nothrow_exact_bool_invocation = true }
     invariant MapAndSetOrderIsSemanticallyUnordered { this.map_and_set_order_is_semantically_unordered = true }
     invariant InputIsPreserved { this.input_is_preserved = true }

@@ -5,6 +5,9 @@
 -- its cv-qualification and reference category wherever that gate applies.
 -- Safe conversion alone does not prove non-throwing construction; collection
 -- storage admission remains the separate NothrowCollectionElement contract.
+-- These ordinary-boundary admission rules are mandatory for every caller; no
+-- configuration or opt-in enables integer/floating crossings. Such conversions
+-- require an explicit conversion operation before the ordinary API call.
 -- Finite Repeat/Repeatedly counts admit non-Boolean, non-character signed or
 -- unsigned integral types whose nonnegative range fits std::size_t.
 -- Nonpositive counts normalize to zero before unsigned conversion; positive
@@ -16,6 +19,7 @@ entity ImplicitConversions {
     same_type_values_preserve_identity: Boolean
     arithmetic_conversions_preserve_entire_source_domain: Boolean
     rejects_integer_floating_domain_crossings: Boolean
+    rejects_integer_floating_crossings_at_every_ordinary_boundary: Boolean
     boolean_character_enum_domains_remain_distinct: Boolean
     cross_type_user_defined_and_pointer_conversions_are_rejected: Boolean
     all_api_boundaries_share_admission: Boolean
@@ -45,6 +49,10 @@ entity ImplicitConversions {
     -- particular value is representable; callers must convert explicitly first.
     invariant RejectsIntegerFloatingDomainCrossings {
         this.rejects_integer_floating_domain_crossings = true
+    }
+
+    invariant RejectsIntegerFloatingCrossingsAtEveryOrdinaryBoundary {
+        this.rejects_integer_floating_crossings_at_every_ordinary_boundary = true
     }
 
     invariant BooleanCharacterEnumDomainsRemainDistinct {

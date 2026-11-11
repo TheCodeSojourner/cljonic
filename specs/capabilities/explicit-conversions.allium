@@ -1,0 +1,171 @@
+-- allium: 3
+-- Explicit numeric, character, and byte conversions governed by REQ-NUM-008,
+-- REQ-NUM-009, REQ-NUM-010/010A-010E, REQ-NUM-012, REQ-NUM-013, and REQ-NUM-017.
+-- These operations are mandatory ordinary APIs, not opt-in policy for ordinary
+-- argument admission. Calls name the destination and preserve the original
+-- source type until its value has been checked. Ordinary APIs continue to
+-- reject integer/floating implicit crossings under REQ-CONV-001.
+--
+-- Named conversions and generic to<T> share one value-level contract. Numeric
+-- sources exclude bool and character types except that plain char is admitted
+-- for non-character integer destinations, with exact default only. Its native
+-- numeric value and platform signedness are preserved; destination range is
+-- checked before casting and negative-to-unsigned fails as out_of_range.
+-- char-to-floating and std::byte-to-numeric remain unsupported.
+-- char and std::byte otherwise have their specifically approved domains. Numeric destinations exclude bool,
+-- characters, enums, pointers, and user-defined types. Generic destinations
+-- exclude bool, character types other than char, enums, pointers, and
+-- user-defined types; signed char and unsigned char are also excluded as
+-- destinations. Aliases follow their actual underlying type.
+--
+-- Named destinations are std::byte (`to_byte`), char (`to_char`), the native
+-- signed/unsigned integer types (`to_short`, `to_int`, `to_long`,
+-- `to_long_long`, and their unsigned variants), float/double/long double, and
+-- std::size_t (`to_size`, `to_count`, `to_index`). `to_count` and `to_index`
+-- exactly share `to_size` behavior, including `can_to_size` preflight behavior.
+-- Every named conversion has a matching `can_to_*`; generic `to<T>` and
+-- `can_to<T>` select an explicit destination. Equivalent named and generic
+-- forms have identical admission, result, and failure behavior. Conversion
+-- receives the original source type and value before any destination cast.
+--
+-- Numeric exact conversion is the default. Integer-to-integer succeeds only
+-- when the value fits; negative-to-unsigned fails without wrapping.
+-- Integer-to-floating and floating-to-floating require exact representability
+-- by default. Floating-to-integer exact conversion requires finite, integral,
+-- in-range input. `truncate` is allowed only for floating-to-integer, truncates
+-- toward zero, and checks the truncated mathematical value before casting, so
+-- `-0.5` may convert to unsigned zero. `nearest` is allowed only for
+-- integer-to-floating and different-type floating-to-floating conversion; it
+-- rounds ties to even independently of the ambient rounding mode. Overflow
+-- fails rather than clamping. Exact subnormals and nonzero rounded subnormals
+-- are admitted when representable; a nonzero nearest result rounded to zero
+-- fails. NaN and infinities fail for every numeric conversion, including
+-- same-type conversions. Floating zero preserves its sign when supported;
+-- unsupported negative zero fails. Both floating zero signs convert exactly
+-- to integer zero, and integer zero converts to positive floating zero.
+-- Non-binary floating formats are unsupported; supported floating types and
+-- target environments must meet the approved binary conversion contract.
+--
+-- `to_char` accepts only non-Boolean, non-character integer values, char, or
+-- std::byte values representable between std::numeric_limits<char>::min()
+-- and max(). All native char values, including NUL, succeed unchanged.
+-- `to_byte` accepts integer values in 0..UCHAR_MAX, nonnegative native char
+-- values (including NUL), or std::byte unchanged. Negative char values are
+-- rejected, not reinterpreted as unsigned byte codes. Character and byte
+-- range failures report out_of_range, not invalid_character.
+-- These low-level conversions do not enforce cljonic String's non-NUL ASCII
+-- validity policy; String, character_is_valid, and implicit character-domain
+-- restrictions remain unchanged. Neither accepts floating sources or loss policies;
+-- floating callers first perform a successful explicit integer conversion.
+-- These checks occur before casting, and byte width follows UCHAR_MAX rather
+-- than an eight-bit assumption.
+--
+-- Unsupported source, destination, and policy combinations fail at compile
+-- time. The only numeric policies are exact (omitted), `truncate`, and
+-- `nearest`; same-type conversion is exact-only but retains floating
+-- special-value checks. Wrapping and saturation are not supported.
+--
+-- Preflights accept the same inputs and policy as their conversion, return true
+-- exactly when that conversion succeeds, and never change diagnostics or call
+-- the failure handler. Failed runtime conversions return destination-specific
+-- fallbacks in normal mode: max integer, max finite floating value, all-bits-set
+-- byte, or NUL char. A fallback can also be a valid successful value; use the
+-- preflight when certainty is required. Diagnostic mode is selected at compile
+-- time by `CLJONIC_CONVERSION_DIAGNOSTICS` (default 0, diagnostic mode 1,
+-- other values rejected), consistently across translation units. A diagnostic
+-- failure records `cljonic::core::ConversionError` before calling the
+-- application-defined `[[noreturn]] void
+-- cljonic::core::conversion_failure_handler() noexcept`; the library provides
+-- no default handler or reset operation. Error categories are `none`,
+-- `non_finite_input`, `invalid_character`, `unsupported_signed_zero`,
+-- `out_of_range`, `underflow_to_zero`, and `precision_loss`. When several
+-- conditions apply, diagnostic precedence is non-finite, invalid character,
+-- unsupported signed zero, out of range, underflow, then precision loss.
+-- Success and preflight do not change the shared diagnostic code. Normal mode
+-- has no diagnostic-state storage, handler reference, or initialization, and
+-- `conversion_error()` returns `none`.
+--
+-- Failed conversions required to be constant-evaluated fail compilation
+-- without runtime diagnostics, handler calls, or fallbacks; failed constant
+-- preflights return false. A call not required to be constant-evaluated uses
+-- runtime mode even when its argument is a literal.
+
+entity ExplicitConversions {
+    exposes_named_native_destination_conversions_and_generic_to: Boolean
+    named_and_generic_equivalent_forms_share_contract: Boolean
+    count_index_size_are_behavioral_size_t_aliases: Boolean
+    source_admission_preserves_original_type_until_value_validation: Boolean
+    numeric_policy_matrix_and_exactness_are_enforced: Boolean
+    character_and_byte_domains_are_validated_before_conversion: Boolean
+    native_char_values_preserve_platform_range_and_signedness: Boolean
+    low_level_conversions_are_independent_of_string_character_validity: Boolean
+    preflight_matches_conversion_without_side_effects: Boolean
+    normal_mode_failure_returns_documented_destination_fallback: Boolean
+    diagnostic_mode_records_error_then_stops_without_conversion_result: Boolean
+    diagnostic_state_and_application_handler_follow_declared_contract: Boolean
+    constant_evaluation_distinguishes_conversion_from_preflight_failure: Boolean
+    conversions_are_nonthrowing_nonallocating_and_avoid_invalid_casts: Boolean
+    unsupported_types_and_policies_are_compile_time_rejected: Boolean
+
+    invariant NamedNativeDestinationSurface {
+        this.exposes_named_native_destination_conversions_and_generic_to = true
+    }
+
+    invariant EquivalentFormsShareContract {
+        this.named_and_generic_equivalent_forms_share_contract = true
+    }
+
+    invariant CountIndexSizeAreBehavioralAliases {
+        this.count_index_size_are_behavioral_size_t_aliases = true
+    }
+
+    invariant OriginalSourceReachesValueValidation {
+        this.source_admission_preserves_original_type_until_value_validation = true
+    }
+
+    invariant NumericPolicyMatrixAndExactness {
+        this.numeric_policy_matrix_and_exactness_are_enforced = true
+    }
+
+    invariant CharacterAndByteDomainsAreValidated {
+        this.character_and_byte_domains_are_validated_before_conversion = true
+    }
+
+    invariant NativeCharValuesPreservePlatformRangeAndSignedness {
+        this.native_char_values_preserve_platform_range_and_signedness = true
+    }
+
+    invariant LowLevelConversionsAreIndependentOfStringCharacterValidity {
+        this.low_level_conversions_are_independent_of_string_character_validity = true
+    }
+
+    invariant PreflightMatchesConversionWithoutSideEffects {
+        this.preflight_matches_conversion_without_side_effects = true
+    }
+
+    invariant NormalModeReturnsDocumentedFallback {
+        this.normal_mode_failure_returns_documented_destination_fallback = true
+    }
+
+    invariant DiagnosticModeRecordsThenStops {
+        this.diagnostic_mode_records_error_then_stops_without_conversion_result = true
+    }
+
+    invariant DiagnosticStateAndHandlerContract {
+        this.diagnostic_state_and_application_handler_follow_declared_contract = true
+    }
+
+    invariant ConstantEvaluationFailureSemantics {
+        this.constant_evaluation_distinguishes_conversion_from_preflight_failure = true
+    }
+
+    invariant NoThrowNoHeapAndNoInvalidCast {
+        this.conversions_are_nonthrowing_nonallocating_and_avoid_invalid_casts = true
+    }
+
+    invariant UnsupportedTypesAndPoliciesRejected {
+        this.unsupported_types_and_policies_are_compile_time_rejected = true
+    }
+}
+
+actor ExplicitConversionCaller { identified_by: ExplicitConversions }

@@ -21,10 +21,12 @@
 -- a safe implicit conversion only: an identical type or a value-preserving
 -- arithmetic conversion. Narrowing conversions (for example long to int) and
 -- crossings into or out of the Boolean, character, enumeration, pointer, and
--- user-defined domains are rejected at compile time. A callback whose parameter
--- types are not statically inspectable (a generic lambda or a templated
--- operator()) cannot be checked position by position and is admitted on nothrow
--- invocability alone.
+-- user-defined domains are rejected at compile time. Integer/floating crossings
+-- are also rejected at every inspectable callback position, even when the
+-- particular value is representable; the callback must perform an explicit
+-- conversion. A callback whose parameter types are not statically inspectable
+-- (a generic lambda or a templated operator()) cannot be checked position by
+-- position and is admitted on nothrow invocability alone.
 -- Map and Set traversal order is semantically unordered, so the mapped result
 -- order carries no semantic significance for those sources. Standard-library
 -- ranges, containers, and other non-cljonic sources, throwing callbacks, and
@@ -54,6 +56,7 @@ entity MapFunction {
     callback_invoked_nothrow_with_one_argument_per_source: Boolean
     callback_result_nothrow_storable: Boolean
     callback_parameter_types_safely_accept_corresponding_elements: Boolean
+    callback_parameter_integer_floating_crossings_rejected: Boolean
     uninspectable_callables_fall_back_to_nothrow_invocability: Boolean
     throwing_callback_or_unstorable_result_rejected_at_compile_time: Boolean
     map_set_traversal_order_semantically_unordered: Boolean
@@ -144,6 +147,10 @@ entity MapFunction {
 
     invariant CallbackParameterTypesSafelyAcceptCorrespondingElements {
         this.callback_parameter_types_safely_accept_corresponding_elements = true
+    }
+
+    invariant CallbackParameterIntegerFloatingCrossingsRejected {
+        this.callback_parameter_integer_floating_crossings_rejected = true
     }
 
     invariant UninspectableCallablesFallBackToNothrowInvocability {
