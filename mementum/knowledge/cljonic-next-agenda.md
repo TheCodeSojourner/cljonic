@@ -59,7 +59,7 @@ The `filterv` alias work is complete and committed. The `first`, `next`, `not_em
 
 1. /gybis-spec-weed is the propagation handoff for checking spec-code alignment. Do not repeat completed operation-level implementation approval.
 2. Producer-first work and the next/rest extension, including rendered HTML, are committed by the human (d0f3941c, c7dd924f, c9c1afbc, 1358b59c, 8b262072, 08562cd7, b16cc9ba, and 5a7a314a). No implementation or rendered-documentation final gate remains.
-3. Producer `has_next` admits the full `next` domain; the implementation, evidence, and rendered HTML are complete and committed. The follow-on `has_rest` exact alias was added and verified in the current session, including its rendered documentation. Product changes remain uncommitted; the human owns `make git` and commits.
+3. Producer `has_next` admits the full `next` domain; the implementation, evidence, and rendered HTML are complete and committed. The follow-on `has_rest` exact alias was added and verified in the current session, including its rendered documentation. Product changes were committed by the human (d55cf04c through edb9c1ca on 2026-11-16, covering concept gates, fixtures, and a rendered-documentation refresh); the working tree is clean.
 4. Select further API work only on human direction. Adapter parameter equality remains outside this extension.
 5. `take`, `drop`, and responsive documentation are complete. Other `REQ-SEQ-022` operations remain unapproved until their individual contracts exist.
 
