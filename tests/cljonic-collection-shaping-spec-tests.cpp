@@ -133,20 +133,6 @@ TEST_CASE("Collection shaping transformation contracts", "[collection-shaping][s
     TRACE_ID("invariant.Mapv.ResultElementTypeIsCallbackResultType");
     TRACE_ID("invariant.Mapv.FailurePolicyIsTyped");
     TRACE_ID("invariant.Mapv.InputIsPreserved");
-    TRACE_ID("entity-fields.Filterv");
-    TRACE_ID("invariant.Filterv.MinimumArityIsTwo");
-    TRACE_ID("invariant.Filterv.MaximumArityIsTwo");
-    TRACE_ID("invariant.Filterv.PredicateIsFirstArgument");
-    TRACE_ID("invariant.Filterv.SourceIsSecondArgument");
-    TRACE_ID("invariant.Filterv.PredicateIsPureAndNonAllocating");
-    TRACE_ID("invariant.Filterv.ReturnsBoundedFilteredResult");
-    TRACE_ID("invariant.Filterv.SourceOrderIsPreserved");
-    TRACE_ID("invariant.Filterv.ResultIsBoundedOwningCollection");
-    TRACE_ID("invariant.Filterv.ResultCapacityIsSourceCapacityBound");
-    TRACE_ID("invariant.Filterv.ResultElementTypeIsSourceElementType");
-    TRACE_ID("invariant.Filterv.FailurePolicyIsTyped");
-    TRACE_ID("invariant.Filterv.InputIsPreserved");
-
     constexpr int take_last_count_argument = 1;
     constexpr int take_last_source_argument = 2;
     constexpr int drop_last_count_argument = 1;
