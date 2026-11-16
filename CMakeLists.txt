@@ -126,6 +126,7 @@ if(BUILD_TESTING)
     function(configure_cljonic_no_heap_probe target_name use_single_header)
         add_executable(${target_name} EXCLUDE_FROM_ALL ${CLJONIC_NO_HEAP_SOURCES})
         target_compile_features(${target_name} PRIVATE cxx_std_23)
+        target_compile_options(${target_name} PRIVATE -fno-exceptions -fno-rtti)
         target_include_directories(${target_name} PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src
             ${CMAKE_CURRENT_SOURCE_DIR}/tests

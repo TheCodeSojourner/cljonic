@@ -59,7 +59,7 @@ GIT_INDEPENDENT_CHECKS = lint-check complexity-cli header-guards diagnostic-cove
 .PHONY: compile-fail compile-fail-registry
 .PHONY: distclean
 .PHONY: _git-preflight _git-prepare _git-checks _git-sanitizer _git-coverage _git-no-heap _git-probe
-.PHONY: help all test clean configure coverage coverage-cli sanitizer sanitizer-cli complexity complexity-cli format format-doc-samples core-cheatsheet-format docs-examples lint no-heap-src no-heap-symbols no-heap range-compile-fail variant-compile-fail equal-compile-fail map-compile-fail reduce-compile-fail filter-compile-fail not-equal-compile-fail assoc-compile-fail can-assoc-compile-fail can-conj-compile-fail conj-compile-fail character-is-valid-compile-fail primitive-compile-fail source-construction-compile-fail producer-compile-fail ctad-compile-fail vector-factory-compile-fail hash-map-factory-compile-fail map-entry-factory-compile-fail hash-set-factory-compile-fail queue-factory-compile-fail string-factory-compile-fail header-guards diagnostic-coverage diagnostic-message-labels requirements-structure vocabulary-structure audit-scripts trace-id-check _traceability-obligation-ids-current _traceability-test-ids-current traceability-spec-to-code traceability-spec-to-code-update-snapshot traceability-category-report upsert-fast upsert-gate-fast upsert-gate upsert-gate-strict docs git validate cljonic cljonic-test
+.PHONY: help all test clean configure coverage coverage-cli sanitizer sanitizer-cli complexity complexity-cli format format-doc-samples core-cheatsheet-format docs-examples lint no-heap-src single-threaded-src no-heap-symbols no-heap range-compile-fail variant-compile-fail equal-compile-fail map-compile-fail reduce-compile-fail filter-compile-fail not-equal-compile-fail assoc-compile-fail can-assoc-compile-fail can-conj-compile-fail conj-compile-fail character-is-valid-compile-fail primitive-compile-fail source-construction-compile-fail producer-compile-fail ctad-compile-fail vector-factory-compile-fail hash-map-factory-compile-fail map-entry-factory-compile-fail hash-set-factory-compile-fail queue-factory-compile-fail string-factory-compile-fail header-guards diagnostic-coverage diagnostic-message-labels requirements-structure vocabulary-structure audit-scripts trace-id-check _traceability-obligation-ids-current _traceability-test-ids-current traceability-spec-to-code traceability-spec-to-code-update-snapshot traceability-category-report upsert-fast upsert-gate-fast upsert-gate upsert-gate-strict docs git validate cljonic cljonic-test
 
 help:
 	@printf '%-12s %s\n' 'all' 'Incremental parallel build and test run'
@@ -92,9 +92,10 @@ help:
 	@printf '%-12s %s\n' 'help' 'Show available targets'
 	@printf '%-12s %s\n' 'lint' 'Run clang-format and clang-tidy checks; set LINT_FILE=src/foo.hpp or tests/bar.cpp to narrow scope'
 	@printf '%-12s %s\n' 'lint-check' 'Check formatting and clang-tidy without rewriting source files'
-	@printf '%-12s %s\n' 'no-heap' 'Strict no-heap gate for modular/generated headers: source check, harness build, and symbol scan'
+	@printf '%-12s %s\n' 'no-heap' 'Strict resource gate for modular/generated headers: source checks, probe builds, and symbol scan'
 	@printf '%-12s %s\n' 'no-heap-src' 'Fail if src contains common heap-allocation APIs or heap-backed STL containers'
 	@printf '%-12s %s\n' 'no-heap-symbols' 'Fail if compiled artifact contains forbidden allocator symbols'
+	@printf '%-12s %s\n' 'single-threaded-src' 'Fail if src creates or synchronizes threads internally'
 	@printf '%-12s %s\n' 'range-compile-fail' 'Verify statically oversized range sources fail for all collections and header variants'
 	@printf '%-12s %s\n' 'variant-compile-fail' 'Verify composite keys with floating-point or callable components and non-storable producers fail for all header variants'
 	@printf '%-12s %s\n' 'sanitizer' 'Build with ASan+UBSan and run tests'
@@ -380,6 +381,18 @@ no-heap-src:
 	fi
 	@echo "no-heap-src:ok"
 
+single-threaded-src:
+	@command -v rg > /dev/null 2>&1 || (echo "missing required tool: rg" >&2; exit 1)
+	@if rg -n --color never -S -g 'src/**' \
+		-e 'std::(jthread|thread|async|mutex|timed_mutex|recursive_mutex|recursive_timed_mutex|shared_mutex|shared_timed_mutex|lock_guard|unique_lock|shared_lock|condition_variable|condition_variable_any|atomic(_flag)?|call_once|once_flag)\b' \
+		-e '\b(thread_local|pthread_[[:alnum:]_]*|thrd_[[:alnum:]_]*)\b' \
+		-e '\b(CreateThread|CreateRemoteThread|_beginthread(ex)?)\b' src; then \
+		echo "single-threaded-src:fail" >&2; \
+		echo "single-threaded-src: thread creation or synchronization facility found in src" >&2; \
+		exit 1; \
+	fi
+	@echo "single-threaded-src:ok"
+
 no-heap-symbols:
 	@command -v nm > /dev/null 2>&1 || (echo "missing required tool: nm" >&2; exit 1)
 	@# Binary-level no-heap gate: verify no allocator symbols in either compiled artifact.
@@ -394,6 +407,7 @@ no-heap-symbols:
 
 no-heap:
 	@$(MAKE) --no-print-directory -s no-heap-src
+	@$(MAKE) --no-print-directory -s single-threaded-src
 	@$(CMAKE) -S . -B $(BUILD_DIR) > /dev/null
 	@$(CMAKE) --build $(BUILD_DIR) --target cljonic_no_heap_probe cljonic_single_header_no_heap_probe --parallel $(BUILD_JOBS) > /dev/null
 	@$(MAKE) --no-print-directory -s no-heap-symbols
