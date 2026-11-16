@@ -120,7 +120,7 @@ This module establishes the C++20 concept capability framework, result status ou
   ∀ supported map-key ∧ set-element domain: includes composite values formed by `cljonic::Variant` over scalar C++ literals, scoped enumerations, supported `Collection` values, supported `Producer` values whose stored parameters admit stable equality, and `MapEntry` values, subject to the storage, stable-equality, and component-recursion requirements of this module and Modules 3 and 4
   ∧ ∀ producer admitted as map key ∨ set element (directly ∨ as composite component): compares by producer parameter equality as governed by `REQ-FN-014B` — equality compares only the producer's bounded stored parameters ∧ ¬∃ traversal ∨ materialization of the produced sequence ∧ ¬∃ implication that equal parameters yield equal materialized sequences
   ∧ ∀ composite_value: satisfies the same admission contract as non-composite values — every stored component admits stable equality ∧ recursion applies to all nested components ∧ callable components are rejected because callables do not admit a stable value-equality comparison in the supported domain
-  ∧ ∀ `cljonic::Variant` used as map key ∨ set element: uses alternative-strict equality — two variant values are equal only when they hold the same alternative and that alternative's values compare equal ∧ variants holding different alternatives compare unequal even when the alternative values would compare conventionally equal
+  ∧ ∀ `cljonic::Variant` used as map key ∨ set element: uses `AlternativeStrictEquality` — two variant values are equal only when they hold the same alternative and that alternative's values compare equal ∧ variants holding different alternatives compare unequal even when the alternative values would compare conventionally equal
   ∧ ∀ composite_domain_extension: does not expand the closed cljonic vocabulary beyond the standard composition operator ∧ does not reproduce Clojure runtime features, cross-type numeric unification, or hash-based equality
   ∧ ∀ map key ∨ set element admission: the required `StableEquality` includes a non-throwing comparison operation, so key lookup, membership, insertion, and removal never call a comparison that can throw
   ∧ ∀ parameterized standard-library wrapper (`std::pair`, `std::optional`, `std::tuple`, `std::variant`) ∧ ∀ other wrapper whose stored types the library cannot analyze: rejected as a map key ∨ set element whatever it is instantiated with, because a floating-point or otherwise unsupported component could otherwise enter a key or element position behind the wrapper; the non-throwing-comparison requirement already excludes the standard-library wrappers, which declare no non-throwing comparison, so no separate exclusion list is required
@@ -166,7 +166,7 @@ This module establishes the C++20 concept capability framework, result status ou
 λ REQ-CAP-014(x).
   ∀ `Seqable` declaration: closed to external extension ∧ ¬∃ declaration mechanism by which a type outside the cljonic-owned collection family (`Vector`, `Map`, `Set`, `Queue`, `String`) confers `Seqable` on itself
   ∧ ∀ third-party type ∧ ∀ new type: must never be able to declare itself `Seqable`; the library provides no concept-specialization point, trait hook, adopter-supplied trait, or opt-in mechanism that confers the capability
-  ∧ ∀ structural similarity to a supported collection: does not confer `Seqable` ∧ never substitutes for cljonic-owned nominal admission (`REQ-CAP-009`, `REQ-COLL-001`)
+  ∧ ∀ structural similarity to a supported collection: does not confer `Seqable` ∧ never substitutes for cljonic-owned `NominalCollectionRecognition` (`REQ-CAP-009`, `REQ-COLL-001`)
   rationale: capability identity is library-owned; an external declaration point would let a type claim sequence semantics cljonic cannot guarantee, trace, or constrain at the public API boundary
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07, rationale_source: origin_artifact, rationale_approved_by: human}
 
@@ -182,7 +182,7 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
 - A `CheckedFailureResult` is a documented non-throwing, non-allocating result indicating that an operation could not complete successfully without violating the library's failure model.
 - A `Producer` is an explicit, parameter-owning value representing a sequence or materialization source, distinct from materialized results and borrowed views. Its ownership and lifetime contract is governed by `REQ-VAL-008`.
 - A `ProducerOnlyResult` is a public operation result whose value is a self-contained `Producer` rather than an owning materialized `Collection`. A `ProducerOnlyResult` owns producer parameters, does not own materialized result storage, and does not borrow source storage or hidden mutable state.
-- A `CompleteResult` is the full result of an operation as defined by the relevant requirement.
+- A `CompleteResult` is the result containing all outputs defined by the relevant operation requirement.
 - Result classification and documentation are governed by `REQ-ERR-009`–`010`; completion preflights by `REQ-BOUNDS-017` and `REQ-ERR-006`.
 - `StableEquality` and `TotalOrder` are capabilities independent of storage admission (`REQ-VAL-007`, `REQ-VAL-007A`).
 
@@ -252,7 +252,7 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
 
 λ REQ-BOUNDS-010B(x).
-  ∀ future sequence traversal operation: defines empty/nonempty behavior consistently with `is_empty` under `REQ-BOUNDS-010A`
+  ∀ future `Traversal` operation: defines empty/nonempty behavior consistently with `is_empty` under `REQ-BOUNDS-010A`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
 
 λ REQ-BOUNDS-010C(x).
@@ -366,7 +366,7 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-DIAG-003(x).
-  ∧ preferred: the library uses targeted `static_assert` diagnostics for context-dependent compile-time failures that cannot be expressed clearly through concepts or equivalent constraints
+  ∧ preferred: the library uses targeted `static_assert` diagnostics for context-dependent `CompileTimeFailure` outcomes that cannot be expressed clearly through concepts or equivalent constraints
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-DIAG-004(x).
@@ -521,7 +521,7 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-VOCAB-011(x).
-  ∀ public_function considered during API-surface review: one explicit lifecycle classification ∈ {`candidate`, `deferred`, `excluded`, `requirements-backed`}
+  ∀ public_function considered during API-surface review: one explicit lifecycle classification ∈ {`CandidateStatus`, `DeferredStatus`, `ExcludedStatus`, `RequirementsBacked`}
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-VOCAB-012(x).

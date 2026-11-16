@@ -2,7 +2,7 @@
 
 ## Purpose and Scope
 
-This module defines the concrete, array-backed, bounded collection types (`Vector`, `Map`, `Set`, `Queue`, `String`), their current primitive member and free-function operations, and callable lookup forms. `first`, `next`, `rest`, and the `has_first`, `has_next`, and `has_rest` preflights are active traversal operations; `rest` delegates to `next` for every input admitted by `next`, including supported producers. Sequence conversion (`seq`) is active under `REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014`. Module 3 provides the stored collection building blocks used across all higher-order algorithms.
+This module defines the concrete, array-backed, bounded collection types (`Vector`, `Map`, `Set`, `Queue`, `String`), their current primitive member and free-function operations, and callable lookup forms. `first`, `next`, `rest`, and the `has_first`, `has_next`, and `has_rest` preflights are active traversal operations; `rest` delegates to `next` for every input admitted by `next`, including supported producers. `Seq` (`seq`) is active under `REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014`. Module 3 provides the stored collection building blocks used across all higher-order algorithms.
 
 ## Collection Family Requirements
 
@@ -30,7 +30,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 
 λ REQ-COLL-004(x).
   ∀ context: the library provides a `Map` with key/value association, lookup, association, removal, membership, and count
-  ∧ ∀ (`Seq` ∧ traversal): `requirements-backed` through `REQ-SEQ-001`–`014`
+  ∧ ∀ (`Seq` ∧ traversal): `RequirementsBacked` through `REQ-SEQ-001`–`014`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-COLL-004A(x).
@@ -52,7 +52,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 
 λ REQ-COLL-005(x).
   ∀ context: the library provides a `Set` with membership, insertion, removal, and count
-  ∧ ∀ (`Seq` ∧ traversal): `requirements-backed` through `REQ-SEQ-001`–`014`
+  ∧ ∀ (`Seq` ∧ traversal): `RequirementsBacked` through `REQ-SEQ-001`–`014`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-COLL-005A(x).
@@ -67,7 +67,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 
 λ REQ-COLL-006(x).
   ∀ context: the library provides a `Queue` with insertion at the rear, removal at the front, peek, and count
-  ∧ ∀ (`Seq` ∧ traversal): `requirements-backed` through `REQ-SEQ-001`–`014`
+  ∧ ∀ (`Seq` ∧ traversal): `RequirementsBacked` through `REQ-SEQ-001`–`014`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-COLL-007(x).
@@ -195,7 +195,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 
 λ REQ-COLL-020B(x).
   ∀ context: the library models collection behavior using the Clojure-style capability definitions in `REQ-CAP-001` through `REQ-CAP-009`, `REQ-CAP-013`, and `REQ-CAP-014`, including `Indexed`, `Lookup`, `Seqable`, `Associative`, and `Conjable`, while preserving the bounded, non-allocating, value-semantic implementation model
-  ∧ ∀ `Seqable` capability ∧ its traversal operations: `requirements-backed` through `REQ-SEQ-001`–`014` ∧ closed to external declaration under `REQ-CAP-014`
+  ∧ ∀ `Seqable` capability ∧ its traversal operations: `RequirementsBacked` through `REQ-SEQ-001`–`014` ∧ closed to external declaration under `REQ-CAP-014`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-COLL-020C(x).
@@ -282,15 +282,15 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
 
 λ REQ-COLL-020S(x).
-  ∀ context: the lifecycle classification is `requirements-backed` for `Indexed`, `Lookup`, `Associative`, and `Conjable`, and for `count`, `get`, `contains`, `conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`, `first`, `next`, and `has_next` over their supported collection and next-supported producer inputs
-  ∧ ∀ `rest`: lifecycle classification is `requirements-backed` over every input admitted by `next` under `REQ-SEQ-001`–`009` and `REQ-SEQ-012`
-  ∧ ∀ `seq`: `requirements-backed` over the input domain and semantics defined by `REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014` ∧ ∀ `Seqable`: remains a closed `CapabilityConcept` under the `ClosedCapability` rule that no type outside the cljonic-owned collection family may declare (`REQ-CAP-014`)
+  ∀ context: the lifecycle classification is `RequirementsBacked` for `Indexed`, `Lookup`, `Associative`, and `Conjable`, and for `count`, `get`, `contains`, `conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`, `first`, `next`, and `has_next` over their supported collection and next-supported producer inputs
+  ∧ ∀ `rest`: lifecycle classification is `RequirementsBacked` over every input admitted by `next` under `REQ-SEQ-001`–`009` and `REQ-SEQ-012`
+  ∧ ∀ `seq`: `RequirementsBacked` over the input domain and semantics defined by `REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014` ∧ ∀ `Seqable`: remains a closed `CapabilityConcept` under the `ClosedCapability` rule that no type outside the cljonic-owned collection family may declare (`REQ-CAP-014`)
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-COLL-020T(x).
-  ∀ context: the lifecycle classification is also `requirements-backed` for `is_empty` over its supported sequenceable collection and producer inputs, `empty`, `can_conj`, and the `full` predicate or equivalent capacity inspection over their supported bounded collection inputs
-  ∧ ∀ `not_empty`: `requirements-backed` active public free function over supported owning collection inputs, with owning-value behavior governed by `REQ-BOUNDS-010D` and `REQ-FN-026`
-  ∧ ∀ behavioral contracts for `into` ∧ `fits_into`: approved by Module 2 and Module 4 ∧ both operations are `requirements-backed` public free functions over `CljonicVector`, `CljonicSet`, `CljonicMap`, `CljonicQueue`, or `CljonicString` destinations and compatible `CljonicSource` sources under `REQ-FN-027`
+  ∀ context: the lifecycle classification is also `RequirementsBacked` for `is_empty` over its supported sequenceable collection and producer inputs, `empty`, `can_conj`, and the `full` predicate or equivalent capacity inspection over their supported bounded collection inputs
+  ∧ ∀ `not_empty`: `RequirementsBacked` active public free function over supported owning collection inputs, with owning-value behavior governed by `REQ-BOUNDS-010D` and `REQ-FN-026`
+  ∧ ∀ behavioral contracts for `into` ∧ `fits_into`: approved by Module 2 and Module 4 ∧ both operations are `RequirementsBacked` public free functions over `CljonicVector`, `CljonicSet`, `CljonicMap`, `CljonicQueue`, or `CljonicString` destinations and compatible `CljonicSource` sources under `REQ-FN-027`
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-COLL-020U(x).
@@ -362,7 +362,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 
 ## Active Rest Remainder Operation
 
-`first`, `next`, and `rest` are current traversal APIs. The clauses in this section define the active `rest` contract. `rest` is an alias for `next` over the complete `next` input domain, including supported producers. Sequence conversion (`seq`) is defined in the following section.
+`first`, `next`, and `rest` are current traversal APIs. The clauses in this section define the active `rest` contract. `rest` is an alias for `next` over the complete `next` input domain, including supported producers. `Seq` (`seq`) is defined in the following section.
 
 λ REQ-SEQ-001(x).
   ∀ context: the library defines `Sequence` as a traversal behavior over immutable `Collection` and supported `Producer` values, not as a separate owning `Collection` type
@@ -421,7 +421,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
   ∧ ∀ `Map` `LogicalTraversalOrder`: semantically unordered
   {source: stakeholder_decided, decided_by: original_spec_author}
 
-## Sequence Conversion (Binding)
+## `Seq` (Binding)
 
 The clauses in this section define the active `seq` contract. The human approved full activation of `Seq` on 2026-10-30, promoting the former deferred clauses to binding status and extending the domain to the supported producers.
 
@@ -457,7 +457,7 @@ The clauses in this section define the active `seq` contract. The human approved
 
 λ REQ-FN-002(x).
   ∀ context: the supported free-function vocabulary includes at least the functions listed in the API Vocabulary Inventories, subject to each entry's `LifecycleClassification` and the capabilities of each input
-  ∧ ∀ entry: only entries classified as `requirements-backed` constitute supported behavior
+  ∧ ∀ entry: only entries classified as `RequirementsBacked` constitute supported behavior
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 ### Sequence First Access (Binding)

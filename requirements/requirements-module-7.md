@@ -89,7 +89,7 @@ This module specifies specialized domain conveniences built on top of lower modu
   ∧ ∀ text_operation: ASCII-deterministic ∧ ¬∃ (allocation ∨ throw) ∧ ¬∃ dependence on (locale ∨ Unicode normalization ∨ external string lifetime ∨ hidden caches ∨ runtime reflection)
   {source: stakeholder_decided, decided_by: original_spec_author}
 
-## Bounded Debug Formatting & Keyword Enum Mapping
+## Bounded Debug Formatting & `KeywordEnumNameMapping`
 
 λ REQ-PLAT-033(x).
   ∀ context: cljonic provides bounded human-readable debug formatting for supported built-in values through an explicit fixed-capacity destination without (dynamic allocation ∨ iostreams ∨ exceptions ∨ RTTI)
@@ -287,7 +287,7 @@ This module specifies specialized domain conveniences built on top of lower modu
 λ REQ-TEST-002(x).
   ∀ test that exercises a collection update operation: verifies persistent value semantics by demonstrating that the update returns an independently valid result and leaves its input collection unchanged
   ∧ ∀ collection update operation: at least one such test exists
-  ∧ compile-time rejection tests, scalar-value tests, and other non-collection tests are outside this obligation
+  ∧ `CompileTimeFailure` tests, scalar-value tests, and other non-collection tests are outside this obligation
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07}
 
 λ REQ-TEST-003(x).

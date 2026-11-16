@@ -13,7 +13,7 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
 
 λ REQ-NUM-001(x).
-  ∃ permitted_path: raw floating-point types stored as scalar values, vector elements, or map values when the selected operation does not require semantic equality or ordering, because those storage operations do not claim a stable floating-point result or identity contract
+  ∃ permitted_path: raw floating-point types stored as scalar values, vector elements, or map values when the selected operation does not require `StableEquality` or ordering, because those storage operations do not claim a stable floating-point result or identity contract
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-NUM-002(x).
@@ -22,7 +22,8 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
 
 λ REQ-NUM-003(x).
-  ∀ `range`: requires an integral or otherwise explicitly `DiscreteNumericType`
+  ∀ `RangeElement<T>`: `T` is a signed integral type
+  ∧ ∀ `range`: requires `RangeElement`
   ∧ ∀ raw floating-point bound ∨ step: rejected at compile time because rounding and evaluation differences can change termination and produced values
   rationale: rounding and evaluation differences can change termination and produced values, so range termination cannot be a stable contract over FP
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
@@ -73,8 +74,8 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   ∀ numeric conversion without an explicitly selected loss policy: exact by default ∧ succeeds only when the supplied value is exactly representable in the destination ∧ ¬∃ silent truncation, rounding, wrapping, or saturation
   ∧ ∀ supported conversion and corresponding preflight: usable in constant expressions when the supplied value, selected policy, and target environment support constant evaluation
   ∧ ∀ failed conversion required to be a constant expression: compilation fails ∧ ¬∃ runtime diagnostic recording ∨ handler invocation ∨ fallback return during constant evaluation
-  ∧ ∀ failed preflight in a constant expression: returns false ∧ ¬∃ compile-time failure solely because the checked conversion would fail
-  ∧ a conversion call not required to be constant-evaluated follows selected runtime mode even when its input is a literal ∧ ¬∃ guarantee of compile-time rejection merely because a value is statically knowable
+  ∧ ∀ failed preflight in a constant expression: returns false ∧ ¬∃ `CompileTimeFailure` solely because the checked conversion would fail
+  ∧ a conversion call not required to be constant-evaluated follows selected runtime mode even when its input is a literal ∧ ¬∃ guarantee of `CompileTimeFailure` merely because a value is statically knowable
   ∧ explicit conversion checks the supplied value ∧ ¬∃ requirement that every value of the source type fit the destination ∧ ordinary argument admission follows the revised type-based rule in REQ-CONV-001
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
 
@@ -113,7 +114,7 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   ∧ `cljonic::core::conversion_error()` provides non-throwing, non-allocating, read-only access to the recorded code ∧ handler can read a failure originating in any translation unit ∧ ¬∃ reset operation required
   ∧ debugger or crash-dump visibility depends on target and build configuration ∧ ¬∃ guarantee that a reset preserves diagnostic state
   ∧ diagnostic failure categories: out of range ∨ precision loss ∨ non-finite input ∨ nonzero underflow to zero ∨ invalid character ∨ unsupported signed zero
-  ∧ failed preflight: ¬∃ diagnostic-state change ∧ unsupported source types and policy combinations: compile-time rejection, not runtime diagnostic categories
+  ∧ failed preflight: ¬∃ diagnostic-state change ∧ unsupported source types and policy combinations: result in `CompileTimeFailure`, not runtime diagnostic categories
   ∧ if a failed conversion matches multiple categories: choose first applicable in order non-finite input → invalid character → unsupported signed zero → out of range → nonzero underflow to zero → precision loss
   ∧ determine failure and applicable categories under the selected policy before applying precedence ∧ precedence changes the diagnostic only, not conversion success
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
