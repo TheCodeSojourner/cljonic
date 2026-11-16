@@ -281,7 +281,8 @@ struct AssocWithoutCountLike {
     [[nodiscard]] constexpr auto can_assoc(const key_type&, const association_value_type&) const noexcept -> bool {
         return true;
     }
-    [[nodiscard]] constexpr auto assoc(const key_type&, const association_value_type&) const noexcept -> AssocWithoutCountLike {
+    [[nodiscard]] constexpr auto assoc(const key_type&, const association_value_type&) const noexcept
+        -> AssocWithoutCountLike {
         return {};
     }
 };
@@ -292,7 +293,8 @@ struct AssocWithoutKeyTypeLike {
     [[nodiscard]] constexpr auto can_assoc(const int&, const association_value_type&) const noexcept -> bool {
         return true;
     }
-    [[nodiscard]] constexpr auto assoc(const int&, const association_value_type&) const noexcept -> AssocWithoutKeyTypeLike {
+    [[nodiscard]] constexpr auto assoc(const int&, const association_value_type&) const noexcept
+        -> AssocWithoutKeyTypeLike {
         return {};
     }
 };
@@ -321,7 +323,8 @@ struct AssocWithoutPreflightLike {
     using key_type = int;
     using association_value_type = int;
 
-    [[nodiscard]] constexpr auto assoc(const key_type&, const association_value_type&) const noexcept -> AssocWithoutPreflightLike {
+    [[nodiscard]] constexpr auto assoc(const key_type&, const association_value_type&) const noexcept
+        -> AssocWithoutPreflightLike {
         return {};
     }
 };
@@ -348,7 +351,8 @@ struct NonConstAssocPreflightLike {
     [[nodiscard]] auto can_assoc(const key_type&, const association_value_type&) noexcept -> bool {
         return true;
     }
-    [[nodiscard]] constexpr auto assoc(const key_type&, const association_value_type&) const noexcept -> NonConstAssocPreflightLike {
+    [[nodiscard]] constexpr auto assoc(const key_type&, const association_value_type&) const noexcept
+        -> NonConstAssocPreflightLike {
         return {};
     }
 };
@@ -468,7 +472,8 @@ class ThrowingClassEquality {
 // Equality returning a non-boolean-testable value: std::equality_comparable
 // rejects it, isolating the bool-result requirement.
 struct NonBooleanEqualityLike {
-    friend constexpr auto operator==(const NonBooleanEqualityLike&, const NonBooleanEqualityLike&) noexcept -> NonBooleanEqualityLike {
+    friend constexpr auto operator==(const NonBooleanEqualityLike&, const NonBooleanEqualityLike&) noexcept
+        -> NonBooleanEqualityLike {
         return {};
     }
 };
