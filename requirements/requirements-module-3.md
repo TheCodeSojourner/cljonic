@@ -647,7 +647,7 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ sequential_comparison: order-sensitive ∧ lazy_elementwise ∧ ¬eager_materialization ∧ terminate(first_unequal_pair ∨ shorter_exhausted_logical_count)
   ∧ ∀ producer_operand: unbounded_complete_sequence → ¬reject_solely_for_unboundedness ∧ observe_only(configured_bounded_traversal)
   rationale: the human approved on 2026-10-31 admitting value-preserving implicit conversions — identical types, or a safe widening compared in the wider type — for ordinary value pairs and for sequential element positions; narrowing value relations are harmless because comparison happens after widening; this supersedes the earlier blanket cross-type numeric unification ban for `equal`, while Variant alternative identity, Map keys and values, Set elements, and String content keep the identical-type rule
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07, rationale_source: origin_artifact, rationale_approved_by: human}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07, rationale_source: origin_artifact, rationale_approved_by: human, compound_by_design: true}
 
 λ REQ-FN-002H(x).
   ∀ context: `not_equal` implements the canonical negation of general value equality as the counterpart of `equal` (`REQ-FN-002G`), in the three arities of Clojure's `not=`

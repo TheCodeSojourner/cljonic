@@ -30,7 +30,7 @@ This module specifies `Producer` types (`Range`, `Repeat`, `Cycle`, `Iterate`, `
   ∧ ∀ producer source: materialization preserves its approved observable traversal bound ∧ ¬∃ traversal beyond the bound to establish complete materialization, even when Set duplicates or Map key replacements consume no capacity
   ∧ ∀ finite source whose complete result exceeds that bound: `into` may return only its documented bounded-prefix result ∧ ¬∃ claim of complete materialization
   ∧ ∀ `fits_into(destination, source)`: reports whether all source values can be processed within the approved traversal bound and inserted under these same semantics ∧ ¬∃ requirement that source count equals result count growth
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07, compound_by_design: true}
 
 λ REQ-VAL-016(x).
   ∀ public free function `count(value)`: admits values satisfying `SequenceableCollection` or `SequenceableProducer` ∧ returns the non-throwing, non-allocating count observation defined for that value
@@ -304,7 +304,7 @@ This module specifies `Producer` types (`Range`, `Repeat`, `Cycle`, `Iterate`, `
   ∧ ∀ constructor_argument whose type is a `CljonicCollection` ∨ `CljonicProducer` that is ¬the destination's element type: ¬∃ admitted as a direct source constructor argument — materializing a `Collection` or `Producer` source is the role of `into` ∧ `fits_into` (`REQ-FN-027`), never the constructor; the direct source constructor admits only non-cljonic C++ interoperability sources
   ∧ ∀ enclosure_construction (a class-template-argument-deduction form, no explicit template argument list) whose sole argument is a `CljonicCollection` ∨ `CljonicProducer`: deduces the destination with that source value as its element type and a `Capacity` of one, producing a one-element value that encloses the argument — mirroring a Clojure collection literal (`[v]`, `#{v}`) — ¬∃ copy or element materialization
   ∧ ∀ same-type_copy_construction (an explicit template argument list naming the argument's own destination type and capacity): remains a copy of the argument, distinct from enclosure_construction
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  {source: stakeholder_decided, decided_by: original_spec_author, compound_by_design: true}
 
 ## Internal Range and View Implementation Support
 

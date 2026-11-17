@@ -167,7 +167,7 @@ This module specifies specialized domain conveniences built on top of lower modu
   ∧ ∀ argument_count: does not exceed `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT` ∧ a larger count is rejected at compile time
   ∧ ∀ `vector`: `constexpr` ∧ `noexcept` ∧ non-allocating ∧ preserves lvalue arguments ∧ permits moving from rvalue arguments during element construction
   ∧ ∀ untyped zero-argument `vector()`: rejected because the element type cannot be deduced
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-22}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-22, compound_by_design: true}
 
 ## String Factory
 

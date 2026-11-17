@@ -21,7 +21,7 @@ This module establishes the C++20 concept capability framework, result status ou
   ∧ intentional_conversion: explicit_before_call ∧ (¬established(representability) → checked_conversion)
   ∧ NothrowElementConstruction(T, argument) ≡ SafeImplicitConversion(T, type(argument)) ∧ noexcept(construct(T, actual_argument_expression))
   rationale: human approved on 2026-11-06 requiring visible explicit conversion across integer and floating domains while retaining safe within-domain widening and existing operation-specific checks
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06, rationale_source: origin_artifact}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06, rationale_source: origin_artifact, compound_by_design: true}
 
 λ REQ-CONV-002(x).
   ∀ ordinary boundary ∈ {query, update, removal, preflight, fallback, ctor, materialization}, ∀ variadic_position: same(destination_domain) → same(SafeImplicitConversion)
@@ -125,7 +125,7 @@ This module establishes the C++20 concept capability framework, result status ou
   ∧ ∀ map key ∨ set element admission: the required `StableEquality` includes a non-throwing comparison operation, so key lookup, membership, insertion, and removal never call a comparison that can throw
   ∧ ∀ parameterized standard-library wrapper (`std::pair`, `std::optional`, `std::tuple`, `std::variant`) ∧ ∀ other wrapper whose stored types the library cannot analyze: rejected as a map key ∨ set element whatever it is instantiated with, because a floating-point or otherwise unsupported component could otherwise enter a key or element position behind the wrapper; the non-throwing-comparison requirement already excludes the standard-library wrappers, which declare no non-throwing comparison, so no separate exclusion list is required
   rationale: callable components cannot participate in the stable value-equality comparison the composite domain requires; requiring a non-throwing comparison keeps parameterized wrappers from hiding unsupported components such as floating-point values in key and element positions, which the library cannot detect without reflection
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: origin_artifact, rationale_approved_by: human}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: origin_artifact, rationale_approved_by: human, compound_by_design: true}
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
 
 λ REQ-CAP-011(x).
@@ -139,7 +139,7 @@ This module establishes the C++20 concept capability framework, result status ou
   ∧ ∀ operation: `constexpr` ∧ `noexcept` ∧ non-mutating for const operations ∧ non-allocating ∧ ¬∃ RTTI ∧ ¬∃ throwing access path
   ∧ ∀ cljonic::Variant: is a component of the closed equality value domain — nestable inside `Collection` values, `Producer` values with stable parameters, `MapEntry`, and other `cljonic::Variant` values — and is subject to the same recursive component analysis as every other composite
   ∧ ∀ standard_library `std::variant`: is not a supported cljonic value type ∧ fails at compile time as an `equal` operand ∧ fails at compile time as a map key ∨ set element ∧ MAY be used only as an internal implementation detail of `cljonic::Variant`
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15, compound_by_design: true}
 
 λ REQ-CAP-012(x).
   ∀ cljonic::Variant capability: exposed as a cljonic free function ∧ backed by a `cljonic::Variant` member method, consistent with the `std::variant` capability set filtered by cljonic embedded constraints
@@ -409,7 +409,7 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
   ∧ ∀ producer_factory_free_function ∈ {`range`, `repeat`, `cycle`, `iterate`, `repeatedly`}: primary admission is expressed through its product-specific named `CapabilityConcept` (`RangeElement` and the factory's deduction/conversion admission under `REQ-FN-013I` for `range`; `NothrowCollectionElement` for `repeat`; `CljonicSource` for `cycle`; `IterateStep` for `iterate`; `RepeatedlyStep` for `repeatedly`) ∧ an argument outside the closed producer domain fails with one targeted `static_assert` naming the operation, the violated producer-admission rule, and the correct usage, replacing the compiler's list of rejected concept candidates
   ∧ ∀ class_template_gated_type_argument_rejected_by_deduction: governed by `REQ-DIAG-012` rather than excluded here — the class-template domain constraint keeps the type-level gate SFINAE-friendly, while the deduction path carries one targeted message
   rationale: maximally informative compile-time diagnostics are a global library goal that applies to every public free function, present and future; a single targeted diagnostic is more accurate to a reader than the compiler's list of rejected concept candidates, so a fallback is added wherever one can be formed and an explicit, justified exclusion is recorded wherever it cannot
-  {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
+  {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact, compound_by_design: true}
 
 λ REQ-DIAG-010(x).
   ∀ public_constructor whose source domain is closed and expressible through named constraints (for example a `Collection`'s direct source constructor, which admits only non-cljonic C++ range or view sources — `REQ-FN-027A`):
@@ -446,7 +446,7 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
   ∧ ¬∃ regression of the detectability contract (`REQ-DIAG-009`): an out-of-domain type argument still satisfies none of the admission concepts
   ∧ ∀ public_class_template whose type argument is not deducible from any constructor argument (`Variant`'s alternatives, `Repeatedly`'s element type): no admitted deduction exists, so every deduction is rejected and the redirect yields exactly one targeted `static_assert` that names the class template and states the supported construction form — name the arguments explicitly or use the named factory function — rather than a failed-deduction candidate list
   rationale: class template argument deduction reports an out-of-domain argument as a failed deduction with a candidate list — for `Cycle` even expanding standard-library iterator traits into the constraint text — naming the compiler's candidate set rather than the violated cljonic rule. The two goals are not a trade-off: a domain constraint keeps the type-level gate SFINAE-friendly, while a deduction guide constrained on the negated domain redirects exactly the rejected deduction to one targeted message
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-16, rationale_source: AI_inferred, rationale_approved_by: human, rationale_approved_at: 2026-10-17}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-16, rationale_source: AI_inferred, rationale_approved_by: human, rationale_approved_at: 2026-10-17, compound_by_design: true}
 
 ## Compile-Time Evaluation
 

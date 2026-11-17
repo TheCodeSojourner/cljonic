@@ -68,7 +68,7 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   ∧ ∀ typedef alias naming the same type: ¬∃ distinct conversion specialization solely because of the alias name
   ∧ ∀ conversion entry: API surface and destination approved ∧ source admission follows REQ-NUM-013 ∧ exactness and constant evaluation follow REQ-NUM-009 ∧ runtime result representation, preflight, and failure behavior follow REQ-NUM-010 and REQ-NUM-010A–010E ∧ loss policies follow REQ-NUM-012 ∧ an operation-level behavioral specification is required before implementation
   rationale: familiar native destinations and an explicit generic destination support application needs without globally configurable numeric aliases; count and index share the size destination type
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06, rationale_source: origin_artifact}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06, rationale_source: origin_artifact, compound_by_design: true}
 
 λ REQ-NUM-009(x).
   ∀ numeric conversion without an explicitly selected loss policy: exact by default ∧ succeeds only when the supplied value is exactly representable in the destination ∧ ¬∃ silent truncation, rounding, wrapping, or saturation
@@ -253,7 +253,7 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
     ∀ admitted_source_value_failure: behavior_under(REQ-NUM-009 ∧ REQ-NUM-010 ∧ REQ-NUM-010A–010E)
     ∀ implementation: requires(operation_level_behavioral_specification)
   rationale: low-level conversions preserve the native platform meaning of char independently of String character validity; negative char values are not silently reinterpreted as unsigned byte codes, and floating-to-character/byte conversion must expose the intermediate numeric policy and successful integer conversion
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-11, rationale_source: origin_artifact}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-11, rationale_source: origin_artifact, compound_by_design: true}
 
 λ REQ-NUM-014(x).
   ∀ `parse_float`: documents its accepted syntax, sign, decimal, exponent, infinity, NaN, range, rounding, and accuracy behavior
@@ -265,6 +265,61 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   ∧ ∀ runtime arithmetic operation: provides corresponding preflight predicates such as `can_add`, `can_subtract`, and `can_multiply` ∧ when the predicate is false, the operation returns its documented default ∧ leaves its inputs unchanged
   ∧ ∀ compile_time_known arithmetic overflow: rejected during constant evaluation
   {source: stakeholder_decided, decided_by: original_spec_author}
+
+λ REQ-NUM-015A(x).
+  ∀ checked_arithmetic_operation: admits (supported_integer ∧ supported_integer) ∨ (supported_floating ∧ supported_floating)
+  ∧ ∀ checked_arithmetic_operation: rejects (integer ∧ floating) ∨ (floating ∧ integer) ∨ unsupported_numeric_type ∨ Boolean ∨ character ∨ byte ∨ enum ∨ pointer ∨ user_defined_type at compile time
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-17, compound_by_design: true}
+
+λ REQ-NUM-015B(x).
+  ∀ admitted integer ∨ floating-point arithmetic operands: conversion to an arithmetic working type is permitted only when it preserves the operand's exact mathematical value
+  ∧ ∀ otherwise_lossy_conversion: rejected at compile time when detectable from the operand types ∨ reported as an unsuccessful operation when dependent on operand values
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-17, compound_by_design: true}
+
+λ REQ-NUM-015C(x).
+  ∀ checked_arithmetic_operation: rejects any result that would overflow ∨ underflow its result type
+  ∧ ∀ such failure: rejected during constant evaluation when compile-time known ∨ leaves the operands unchanged and follows the operation's documented runtime preflight and default-result contract when determined at runtime
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-17, compound_by_design: true}
+
+λ REQ-NUM-015D(x).
+  ∀ checked_arithmetic_operation with integer operands of one identical supported type: result_type ≡ operand_type
+  ∧ ∀ checked_arithmetic_operation with supported integer operands of different types: result_type ≡ the smallest supported built-in integer type whose complete value domain contains the complete value domains of both operand types
+  ∧ ∀ such mixed-type operation: the selected result type is determined at compile time solely from the operand types ∧ no value-dependent result type is selected
+  ∧ ∀ mixed integer pair with no supported lossless common type: rejected at compile time
+  ∧ ∀ mixed integer operation: neither operand is implicitly converted through a lossy common-type selection ∨ C++ usual arithmetic conversion
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-17, compound_by_design: true}
+
+λ REQ-NUM-015E(x).
+  ∀ checked_division with a divisor known to be zero during constant evaluation: rejected during compilation
+  ∧ ∀ checked_division with a runtime divisor equal to zero: returns result_type{} ∧ leaves its operands unchanged
+  ∧ ∀ corresponding_division_preflight: returns false for a zero runtime divisor
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-17, compound_by_design: true}
+
+λ REQ-NUM-015F(x).
+  ∀ `div` ∨ `quot`: integer quotient ≡ exact quotient truncated toward zero
+  ∧ ∀ `rem`: integer remainder has the dividend's sign ∧ dividend ≡ (`quot` × divisor) + remainder
+  ∧ ∀ `mod`: integer modulus uses the quotient rounded toward negative infinity ∧ modulus has the divisor's sign ∧ dividend ≡ (floor_quotient × divisor) + modulus
+  ∧ ∀ minimum signed integer dividend divided by negative one: checked overflow failure
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-17, compound_by_design: true}
+
+λ REQ-NUM-015G(x).
+  ∀ checked_floating_arithmetic_operation: admits operands of one identical supported binary floating-point type ∧ result_type ≡ operand_type
+  ∧ ∀ floating operands of different types: rejected at compile time
+  ∧ ∀ admitted finite normal ∨ representable_subnormal operand: ordinary finite binary floating arithmetic permitted, including the inherent rounding of the operation
+  ∧ ∀ result whose exact mathematical magnitude exceeds the result type's finite range: checked overflow failure
+  ∧ ∀ nonzero exact mathematical result that rounds to zero: checked underflow failure
+  ∧ ∀ NaN ∨ positive_infinity ∨ negative_infinity operand or result: checked failure
+  ∧ ∀ signed_zero result where the floating type supports signed zero: preserves its arithmetic sign
+  ∧ ∀ checked_floating_division with zero divisor: follows REQ-NUM-015E
+  ∧ ¬∃ requirement that ordinary arithmetic results be exactly representable beyond the source- and destination-type no-loss-conversion constraint
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-17, compound_by_design: true}
+
+λ REQ-NUM-015H(x).
+  ∀ runtime arithmetic operation with a defined checked_failure condition: provides the corresponding preflight ∧ accepted types and values are evaluated under the same contract
+  ∧ checked_preflight_domain: `can_add` for `add` ∨ `can_subtract` for `sub` ∨ `can_multiply` for `mult` ∨ `can_div` for `div` ∨ `can_quot` for `quot` ∨ `can_rem` for `rem` ∨ `can_mod` for `mod` ∨ `can_inc` for `inc` ∨ `can_dec` for `dec` ∨ `can_negate` for `negate` ∨ `can_bit_shift_left` for `bit_shift_left` ∨ `can_bit_shift_right` for `bit_shift_right` ∨ `can_unsigned_bit_shift_right` for `unsigned_bit_shift_right`
+  ∧ ∀ listed preflight: side-effect-free ∧ returns true exactly when its corresponding operation can produce its result without checked failure
+  ∧ ∀ `compare` ∨ `min` ∨ `max` ∨ `min_key` ∨ `max_key` ∨ `is_zero` ∨ `is_positive` ∨ `is_negative` ∨ `is_even` ∨ `is_odd` ∨ `bit_not` ∨ `bit_and` ∨ `bit_or` ∨ `bit_xor` ∨ `bit_and_not` ∨ `bit_clear` ∨ `bit_set` ∨ `bit_flip` ∨ `bit_test`: ¬∃ corresponding runtime preflight required because admitted operands have no remaining operation-specific checked failure
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-17, compound_by_design: true}
 
 λ REQ-NUM-016(x).
   ∃ permitted_path: wrapping and saturating arithmetic provided ∧ ∀ such_operation: separately named ∧ ¬∃ implicit behavior of the default arithmetic operations
@@ -321,4 +376,4 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
 ## Traceability and Related Requirements
 
 - **Downstream Artifact**: Numeric functions, checked arithmetic helpers, bitwise functions, and callable builder adapters (`partial`, `juxt`, `fnil`, `complement`, `apply`).
-- **Governed REQs**: `REQ-NUM-000`–`019`, `REQ-NUM-010A`–`010E`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`.
+- **Governed REQs**: `REQ-NUM-000`–`019`, `REQ-NUM-010A`–`010E`, `REQ-NUM-015A`–`015H`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`.
