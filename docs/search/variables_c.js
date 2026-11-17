@@ -1,7 +1,10 @@
 var searchData=
 [
-  ['value_0',['value',['../structcljonic_1_1_map_entry.html#a83603835c380c14d13c252cf99b11c23',1,'cljonic::MapEntry']]],
-  ['value_5fpreserving_5farithmetic_1',['value_preserving_arithmetic',['../namespacecljonic_1_1concepts__detail.html#a55c9cfb7b06cc54d0d765d496ee41a1b',1,'cljonic::concepts_detail']]],
-  ['value_5fpreserving_5farithmetic_3c_20to_2c_20from_20_3e_2',['value_preserving_arithmetic&lt; To, From &gt;',['../namespacecljonic_1_1concepts__detail.html#aa796bbc56f72bb7e87b9d53de2125440',1,'cljonic::concepts_detail']]],
-  ['valuetype_3',['ValueType',['../namespacecljonic_1_1concepts__detail.html#ab9fb80516a7a093c3cebc31ef2cb7bb3',1,'cljonic::concepts_detail']]]
+  ['significand_0',['significand',['../structcljonic_1_1core_1_1conversion__detail_1_1_binary_magnitude.html#ad9ced005f2d234552df6170e06220bff',1,'cljonic::core::conversion_detail::BinaryMagnitude']]],
+  ['sourceresultcapacity_1',['SourceResultCapacity',['../namespacecljonic_1_1concepts__detail.html#a5ac05bfee040e39ad5518f71860d60bc',1,'cljonic::concepts_detail']]],
+  ['static_5fextent_5ffits_5fv_2',['static_extent_fits_v',['../namespacecljonic_1_1concepts__detail.html#ac4bb744bda73962104f419d622a023f0',1,'cljonic::concepts_detail']]],
+  ['static_5fextent_5fv_3',['static_extent_v',['../namespacecljonic_1_1concepts__detail.html#a29e1da7a418720132814cc4045837614',1,'cljonic::concepts_detail']]],
+  ['string_5ffactory_5fliteral_5fexceeds_5fmaximum_5fv_4',['string_factory_literal_exceeds_maximum_v',['../namespacecljonic_1_1concepts__detail.html#afff1155dcd436302983eda6334ecbcca',1,'cljonic::concepts_detail']]],
+  ['string_5ffactory_5fliteral_5fv_5',['string_factory_literal_v',['../namespacecljonic_1_1concepts__detail.html#ad040d18e48767d08f266494d07163d36',1,'cljonic::concepts_detail']]],
+  ['succeeds_6',['succeeds',['../structcljonic_1_1core_1_1conversion__detail_1_1_result.html#a2b00ffe7de66370f01bb84ceb84796c7',1,'cljonic::core::conversion_detail::Result']]]
 ];

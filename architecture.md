@@ -43,7 +43,10 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | preserve_identity(x) → CopyOnModifyCollection(x) ∧ SentinelBasedAccess(x) ∧ ProbeFirstAccess(x) ∧ strict_resource_determinism(x)
 
 λ S5_identity(x). embedded_first(x) ∧ determinism_by_default(x) ∧ fixed_capacity_value_semantics(x)
-  | no_hidden_allocation(x) ∧ no_exceptions(x)
+  | cljonic_code(x) → ¬heap_allocation(x) ∧ ¬heap_deallocation(x) ∧ ¬throw_exceptions(x)
+  | user_code(x) → assume(¬heap_allocation(x) ∧ ¬heap_deallocation(x) ∧ ¬throw_exceptions(x))
+    ∧ application_obligation(x) ∧ human_governed(x) ∧ not_generally_mechanically_verifiable(x)
+    ∧ ¬claim(general_compile_time_verification_of_user_code(x))
   | canonical_vocabulary_governs(x)
 
 λ S5_failure(x). violate(NoHeapConstraint) ∨ violate(NoExceptionConstraint)
@@ -105,7 +108,8 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
 λ S5_authorized_effect_policy(x). public_operation(x) → require(DeterministicBehavior(x) ∧ ReferentialTransparency(x))
     unless(explicit_governing_contract_authorizes_effect(x))
   | authorized_effect(x) → limited_to(explicitly_declared_effect_scope(x))
-    ∧ ¬authorize(additional_effects(x) ∨ hidden_library_state(x) ∨ mutation_of_input_collection_storage(x))
+    ∧ ¬authorize(additional_effects(x) ∨ mutation_of_input_collection_storage(x))
+    ∧ (hidden_library_state(x) → forbidden_unless(explicitly_selected_ConversionDiagnosticMode_error_code(x)))
   | authorized_effect(x) → preserve(NoHeapConstraint(x) ∧ NoExceptionConstraint(x)
     ∧ SingleThreadedExecutionModel(x))
   | effect_authorization(x) → ¬imply(implemented(x) ∨ implementation_ready(x))
@@ -154,6 +158,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
 
 λ S3_quality(x). require(quality_gates(x))
   | quality_gates(x) → enforce(S5_change_policy(x))
+  | traces_to(S5_change_policy)
   | require(tests)
   | require(sanitizers_host_profiles)
   | require(clang_tidy)
@@ -193,23 +198,126 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | collection_storage_position(x) ≡ element ∨ map_key ∨ map_value
   | String(x) → apply(non_throwing_storage_and_destruction(x))
 
-λ S3_conversion_admission(source, destination). governed_by(REQ-CONV-001 ∧ REQ-CONV-002 ∧ REQ-CONV-003)
+λ S3_explicit_conversion_surface(x). governed_by(REQ-NUM-008 ∧ REQ-NUM-009 ∧ REQ-NUM-010 ∧ REQ-NUM-010A–010E ∧ REQ-NUM-012 ∧ REQ-NUM-013 ∧ REQ-NUM-017)
   | traces_to(S5_domain_and_conversion_safety)
-  | SafeImplicitConversion(source, destination) ≡ same_unqualified_type(source, destination)
-    ∨ (standard_arithmetic_conversion(source, destination) ∧ ValuePreservingConversion(source, destination)
-      ∧ ¬crosses(Boolean ∨ character ∨ enumeration domain))
-  | ValuePreservingConversion(source, destination) → preserve(entire_source_range ∧ precision ∧ floating_special_values)
-  | ¬SafeImplicitConversion(source, destination) → reject_at_argument_boundary
-  | NothrowElementConstruction(argument_expression, destination) ≡ SafeImplicitConversion(argument_expression, destination)
+  | implemented_core_surface(x) ≡ to_byte ∧ to_char ∧ to_count ∧ to_double ∧ to_float ∧ to_index ∧ to_int ∧ to_long
+    ∧ to_long_double ∧ to_long_long ∧ to_short ∧ to_size ∧ to_uint ∧ to_ulong ∧ to_ulong_long ∧ to_ushort ∧ to<T>
+  | named_destination(x) → native_Cpp_type_under(REQ-NUM-008) ∧ destination(to_count ∨ to_index ∨ to_size) ≡ std::size_t
+  | count_index_size_synonyms(x) → identical_behavior ∧ matching_preflights ∧ ¬implied_collection_specific_bounds_or_capacity
+  | generic_destination(to<T>) ≡ T ∧ require(defined_source_destination_contract) ∧ ¬arbitrary_cast_facility
+    ∧ admit(char ∨ std_byte ∨ supported_noncharacter_integer ∨ supported_binary_floating)
+    ∧ reject(bool ∨ character_except_char ∨ enum ∨ pointer ∨ user_defined) ∧ typedef_follows_underlying_type
+  | equivalent_named_and_generic_contracts(x) → identical(admission ∧ result ∧ failure_behavior)
+  | ¬required_external_application_config ∧ ¬globally_configured_destination_types
+  | default_conversion(x) → exact_for_supplied_value under REQ-NUM-009 ∧ ordinary_argument_admission_follows(REQ-CONV-001)
+  | explicit_conversion_source(x) → preserve_original_type_and_value_before_validation ∧ ¬implicit_conversion_to_destination
+  | numeric_conversion_matrix(x) → exact_default_for(integer_to_integer ∨ integer_to_float ∨ float_to_integer ∨ float_to_float)
+    ∧ truncate_only_for(float_to_integer) ∧ nearest_only_for(integer_to_float ∨ float_to_float)
+    ∧ reject_unsupported_policies_at_compile_time
+  | exact_integer_to_unsigned(x) → reject_negative_before_conversion ∧ require(nonnegative_value_representable) ∧ ¬modulo_wrap
+  | exact_float_to_integer(x) → check(finite ∧ integral ∧ mathematical_destination_range) before_conversion
+    ∧ ¬out_of_range_cast_as_safety_test ∧ diagnose_under(REQ-NUM-010C_precedence)
+  | truncate_float_to_integer(x) → check(finite ∧ truncated_toward_zero_value_in_destination_range) before_cast
+    ∧ admit(original_outside_integer_range_when_truncated_result_fits) ∧ ¬invalid_cast_as_safety_test
+  | explicit_loss_policy(x) → truncation_toward_zero_for_integer_destination ∨ nearest_for_floating_destination under REQ-NUM-012
+  | finite_source_magnitude_exceeds_destination_max(x) → floating_conversion_failure(out_of_range) for exact ∧ nearest
+  | nearest_halfway_tie(x) → even_least_significant_significand_digit ∧ ¬depend_on(ambient_rounding_mode)
+  | exact_subnormal(x) ∨ nearest_nonzero_subnormal(x) → permitted_when_destination_represents_result
+  | nearest_nonzero_source_rounds_to_zero(x) → conversion_failure(x) ∧ apply(actual_destination_representable_values)
+  | numeric_conversion_of(NaN ∨ positive_infinity ∨ negative_infinity) → conversion_failure ∧ includes_same_type_conversion
+    ∧ preserve(existing_nonconversion_storage_and_usage_contracts)
+  | floating_zero_to_floating(x) → preserve_sign_when_supported ∧ reject_negative_zero_if_destination_lacks_signed_zero
+  | floating_zero_to_integer(x) → integer_zero ∧ integer_zero_to_floating(x) → positive_zero
+  | supported_floating_conversion(x) → binary_radix ∧ target_environment_satisfies(approved_conversion_contract)
+    ∧ additional_generic_floating_type(x) → require(defined_and_satisfied_contract) ∧ nonbinary_floating_formats_unapproved
+    ∧ reject_unsupported_types_when_detectable ∧ document_undetectable_environmental_restrictions
+  | policy_selection(x) → optional_argument_after_value ∧ default(exact) ∧ same_argument_for_matching_preflight
+    ∧ distinct_scoped_compile_time_tags(cljonic::core::conversion::truncate, cljonic::core::conversion::nearest)
+    ∧ reject_unsupported_combinations_at_compile_time ∧ ¬require(public_runtime_enum_policy)
+  | loss_policy(x) → ¬wrapping ∧ ¬saturation ∧ reject_overflow ∧ selection_visible_at_call_site
+  | source_admission(x) → follow(REQ-NUM-013) ∧ distinguish(unsupported_source_type ∧ admitted_source_value_failure)
+  | ordinary_numeric_sources(x) ≡ builtin_integer_except(Boolean ∨ character) ∨ builtin_floating
+  | char_source_to_noncharacter_integer(x) → exact_default_only ∧ preserve(native_numeric_value ∧ platform_char_signedness)
+    ∧ check(destination_representability) before_cast ∧ negative_to_unsigned_failure(out_of_range) ∧ ¬parse_digit
+  | char_source_to_floating(x) ∨ other_character_source_to_numeric(x) → reject_at_compile_time
+    ∧ fixed_width_alias_of_character_type(x) → follow_underlying_type ∧ ¬distinguish_typedef_spelling
+  | generic_destination(signed_char ∨ unsigned_char ∨ aliases_of_those_types) → reject_at_compile_time
+    ∧ preserve_separate(to<char> ∧ to<std::byte>) ∧ admit(supported_noncharacter_integer_destinations)
+  | explicit_domain_boundaries(x) ≡ checked_integer_to_char ∨ unchanged_char_to_char ∨ checked_char_to_integer ∨ checked_integer_to_byte ∨ checked_char_to_byte
+  | low_level_character_conversion(x) → independent_of(String_character_validity) ∧ admit(NUL ∧ representable_non_ASCII)
+    ∧ preserve(existing_String_policy ∧ character_is_valid ∧ implicit_character_domain_rejection)
+  | character_destination(x) → accept_native_char_range_from(integer ∨ char ∨ std_byte) ∧ validate_before_cast
+    ∧ range(std::numeric_limits<char>::min()..std::numeric_limits<char>::max()) ∧ range_failure(out_of_range)
+    ∧ reject(floating ∨ Boolean ∨ other_character ∨ enum ∨ pointer ∨ user_defined) ∧ reject(truncate ∨ nearest)
+  | std_byte_source(x) → admit_only_for(std_byte ∨ character_destination) ∧ reject_ordinary_integer_and_floating_destinations
+  | byte_destination(x) → accept_integer_in(0..UCHAR_MAX) ∨ nonnegative_native_char ∨ unchanged_std_byte
+    ∧ negative_char_failure(out_of_range) ∧ ¬reinterpret_negative_char_as_unsigned_byte
+    ∧ reject(floating ∨ Boolean ∨ other_character ∨ enum ∨ pointer ∨ user_defined) ∧ reject(truncate ∨ nearest)
+  | same_type_conversion(x) → admitted_under_destination_contract ∧ exact_default_only ∧ reject_explicit_loss_policy_at_compile_time
+    ∧ determine_by(actual_Cpp_type_identity_not_alias_spelling_or_representation) ∧ floating_inputs_still_follow(non_finite ∧ signed_zero_validation)
+  | floating_source_to(char ∨ std::byte) → reject_even_with_loss_policy ∧ require(successful_explicit_integer_intermediate)
+  | parsing ∨ arbitrary_user_defined_conversion → ¬implicit_conversion_source
+  | runtime_conversion(x) → preflight_available(x) ∧ direct_destination_return(x) under REQ-NUM-010
+  | preflight_for(to_*(x)) ≡ can_to_*(x) ∧ preflight_for(to<T>(x)) ≡ can_to<T>(x)
+  | preflight(x, policy) → true iff corresponding_conversion_succeeds(x, policy) ∧ same(source_admission ∧ policies)
+    ∧ ¬throw ∧ ¬allocate ∧ ¬record_diagnostic ∧ ¬invoke_failure_handler
+  | false_preflight_followed_by_same_conversion(x, policy) → configured_failure_outcome ∧ diagnostic_uses_same_failed_conditions
+    ∧ applies_to(numeric ∧ character ∧ byte ∧ count_index_size_aliases) ∧ ¬require(caching)
+  | supported_conversion_and_preflight(x) → constant_expression_usable_when_inputs_and_environment_allow
+  | failed_conversion_required_constant_expression(x) → compile_failure ∧ ¬runtime_diagnostic ∧ ¬handler ∧ ¬fallback
+    ∧ narrow_exception_to(REQ-ERR-008_statically_known_overflow_rule) under REQ-NUM-009 ∧ REQ-NUM-010A ∧ REQ-NUM-010B
+  | failed_constant_preflight(x) → false ∧ ¬compile_failure_from_checked_value
+  | ¬required_constant_evaluation(x) → runtime_mode_applies_even_if_input_is_literal
+  | diagnostic_mode(x) → record_compact_static_error_code(x) ∧ call(application_provided_nonreturning_failure_handler) ∧ required_implementation_capability(x)
+  | failure_handler(x) ≡ cljonic::core::conversion_failure_handler() → application_definition_of_noreturn_noexcept_declaration
+    ∧ ¬library_default ∧ ¬runtime_registration
+    ∧ may_inspect(recorded_error_code) ∧ ¬return_to_conversion ∧ ¬throw ∧ ¬allocate ∧ ¬deallocate
+    ∧ compliance_is_application_responsibility ∧ verify_by_review_and_target_tests ∧ ¬claim_library_detects_violations
+  | normal_mode(x) → ¬require(handler_definition) ∧ missing_diagnostic_handler_with_reachable_failure_path → link_failure
+  | error_code(x) → scoped_enum(cljonic::core::ConversionError) ∧ one_library_managed_static_code_shared_across_translation_units
+    ∧ initial_value(none) ∧ set_before(handler) ∧ successful_conversions_and_preflights_leave_unchanged
+    ∧ debugger_or_crash_dump_inspectable_subject_to_target_and_build(x) ∧ ¬guarantee(reset_preserves_state)
+    ∧ documented_meaning(x) ∧ ¬runtime_message_construction_required
+  | conversion_error() → non_throwing_read_only_code ∧ normal_mode_returns(none) ∧ ¬reset_required
+  | normal_mode(x) → ¬diagnostic_state_storage ∧ ¬handler_reference ∧ ¬registration ∧ ¬diagnostic_initialization
+    ∧ ¬claim_zero_conversion_checking_or_executable_code_overhead
+  | error_category(x) ∈ {out_of_range, precision_loss, non_finite_input, underflow_to_zero, invalid_character, unsupported_signed_zero}
+    ∧ overlapping_failures_select_first(non_finite_input, invalid_character, unsupported_signed_zero, out_of_range, underflow_to_zero, precision_loss)
+    ∧ classify_under_selected_policy ∧ precedence_does_not_change_success ∧ compile_time_rejections_have_no_runtime_code
+  | application_selects(diagnostic_mode ∨ normal_mode) → compile_time_macro(CLJONIC_CONVERSION_DIAGNOSTICS) ∧ default(normal_mode) ∧ valid_values(0 ∨ 1)
+    ∧ identical_configuration_across_translation_units ∧ ¬required_external_config_file
+  | conversion_outcome(x) → default_returning_in_normal_mode ∧ document(nonreturning_diagnostic_failure_exception)
+    ∧ constant_evaluation_failure_is_separate_compile_time_rule ∧ conversion_preflight_is_boolean_predicate
+  | normal_mode_failure(x) → documented_destination_fallback(x)
+  | fallback(x) ≡ max_integral_destination ∨ max_finite_floating_destination ∨ all_bits_set_byte ∨ NUL_for_char under REQ-NUM-010A
+  | fallback(x) → ¬guaranteed_distinct_from_success(x) ∧ certainty_requires(preflight)
+    ∧ downstream_api_receives_ordinary_value(x) ∧ applies_own_checks ∧ ¬infer_prior_failure ∧ ¬hidden_failure_flag
+  | diagnostic_state(x) → governed_by(REQ-PLAT-012 ∧ REQ-PLAT-013) ∧ ¬required_synchronization
+  | conversion_diagnostic_mode(x) → narrow_exception_to(REQ-ERR-007 process_termination ∧ library_managed_error_state)
+    ∧ preserve(no_throw ∧ no_allocation ∧ all_other_safety_protections)
+  | incomplete_operation_level_behavior(x) → ¬implementation_ready(x)
+
+λ S3_conversion_admission(destination, source). governed_by(REQ-CONV-001 ∧ REQ-CONV-002 ∧ REQ-CONV-003)
+  | argument_order: admission_predicates are destination_first(destination, source) matching REQ-CONV-001 ∧ directional_conversion_uses(source → destination)
+  | traces_to(S5_domain_and_conversion_safety)
+  | SafeImplicitConversion(destination, source) ≡ same_unqualified_type(destination, source)
+    ∨ (standard_arithmetic_conversion(source, destination) ∧ ValuePreservingConversion(source → destination)
+      ∧ ¬crosses(integer ↔ floating ∨ Boolean ∨ character ∨ enumeration domain))
+  | ValuePreservingConversion(source → destination) → preserve(entire_source_range ∧ precision ∧ floating_special_values)
+  | integer_floating_domain_crossing(x) → reject_at_compile_time ∧ require_explicit_conversion_before_ordinary_call
+  | revised_admission(x) → type_based_only ∧ ¬add_general_runtime_value_checks ∧ preserve(operation_specific_checks_and_documented_exceptions)
+  | explicit_conversion_preflight(x) → use(explicit_conversion_source_and_policy_admission) under REQ-NUM-010 ∧ REQ-NUM-013
+  | ¬SafeImplicitConversion(destination, source) → reject_at_argument_boundary
+  | NothrowElementConstruction(destination, argument_expression) ≡ SafeImplicitConversion(destination, argument_expression)
     ∧ non_throwing_construction_from_actual_expression(argument_expression, destination)
     ∧ preserve_argument_cv_qualification_and_reference_category(argument_expression)
-  | argument_construction_gate_applies(x) → require(NothrowElementConstruction(argument_expression, destination))
-  | SafeImplicitConversion(source, destination) → ¬imply(non_throwing_construction_from_actual_expression(source, destination))
+  | argument_construction_gate_applies(x) → require(NothrowElementConstruction(destination, argument_expression))
+  | SafeImplicitConversion(destination, source) → ¬imply(non_throwing_construction_from_actual_expression(source, destination))
   | NothrowElementConstruction(x) → distinct_from(NothrowCollectionElement_storage_contract(x))
   | cross_type_user_defined_conversion ∨ cross_type_pointer_conversion → reject_unless_explicitly_specified
   | constructor ∨ member ∨ free_function ∨ preflight ∨ fallback ∨ variadic_operand → share(admission_rule)
   | source_import → check(actual_dereference_expression ∧ nothrow_traversal
-    ∧ NothrowElementConstruction(actual_dereference_expression, destination))
+    ∧ NothrowElementConstruction(destination, actual_dereference_expression))
   | finite_Repeat_or_Repeatedly_count → require(non_boolean_non_character_integral ∧ nonnegative_type_range_fits_size_t)
     ∧ admit(signed ∨ unsigned) ∧ trace_to(REQ-CONV-002E)
   | admitted_finite_producer_count(count) → normalize(count ≤ 0 ? 0 : count) before(unsigned_conversion)
@@ -247,6 +355,8 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
 λ S3_value_policy(x). PersistentValueSemantics(x) ∧ DeepCopyUpdate(x)
   | enforce(S5_authorized_effect_policy(x))
   | conditional_on(user_defined_types_obeying_applicable_purity_effect_and_allocation_contracts(x))
+  | user_code_effects(x) → limit_enforcement_to(statically_checkable_type_and_signature_constraints(x))
+    ∧ ¬claim(general_verification_of_allocation_or_exception_effects(x))
   | preserve_input_collection_values(x) ∧ return(OwningValue(x))
   | traces_to(S5_value_and_failure_semantics)
 
@@ -258,6 +368,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
 λ S3_result_contract(x). result_contract_rules(x) → active_for(all_public_operations)
   | approved_operation(x) → comply_with(result_contract_rules(x))
   | new_operation(x) → comply_with(S3_result_contract_policy ∧ S2_result_status_model)
+  | traces_to(S5_value_and_failure_semantics ∧ S5_resource_boundaries)
 
 λ S3_result_contract_policy(x). operation_result(x) → classify_as(CompleteResult ∨ BoundedResult ∨ BoundedPrefixResult ∨ DefaultReturningResult ∨ CheckedFailureResult ∨ ProducerOnlyResult)
   | traces_to(S5_value_and_failure_semantics ∧ S5_resource_boundaries)
@@ -276,6 +387,10 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | fits_into((Vector ∨ Queue)(destination) ∧ finite_source) → compare(source_count ≤ remaining_destination_capacity) ∧ avoid(unsigned_addition_overflow)
   | fits_into((Set ∨ Map)(destination) ∧ finite_source) → measure(capacity_needed_by_ordered_insertion_fold) ∧ account_for(existing_and_source_duplicates ∨ matching_keys)
   | fits_into(destination ∧ unbounded_producer) → return(false)
+  | finite_source(x) ∧ complete_consumption_exceeds_approved_traversal_bound(x)
+    → fits_into(destination, x) = false ∧ ¬inspect(unobservable_suffix(x))
+    ∧ applies_even_when(Set_duplicates ∨ Map_key_replacements avoid_capacity_growth)
+  | finite_source_capacity_preflight(x) → require(complete_consumption_within_approved_traversal_bound(x))
   | compile_time_known_capacity_or_representability_failure(x) → reject_at_compile_time(x) ∧ diagnostic_not_result_status(x)
   | synthesis_cap(x) → classify_as(CollectionMaximumElementCount)
   | effective_size(x) → authoritative_for(ProducerIteration ∧ ProducerMaterialization)
@@ -413,7 +528,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | vague_concept_name(x) → reject(x)
 
 λ S2_canonical_capabilities(x). public_capability_names(x) ≡ Indexed ∧ Lookup ∧ Seqable ∧ Associative ∧ Conjable
-  | Indexed(x) → ordered_access_by_non_boolean_non_character_integer_index(x) ∧ bounded_logical_index_domain(x)
+  | Indexed(x) → constant_time_non_traversing_access_by_non_boolean_non_character_integer_index(x) ∧ bounded_logical_index_domain(x)
     ∧ non_mutating_access(x) ∧ non_throwing_non_allocating_membership_predicate(x)
     ∧ negative_index_outside_domain_when_representable(x)
   | Lookup(x) → collection_defined_lookup_domain(x) ∧ non_mutating_access(x)
@@ -605,7 +720,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
 
 λ S2_dissoc_contract(x). dissoc(map, keys...) → require(CljonicMap(map))
   | zero_keys(x) → return(unchanged_map_copy(x))
-  | keys(x) → require(SafeImplicitConversion(each_key, Map::key_type))
+  | keys(x) → require(SafeImplicitConversion(Map::key_type, each_key))
     ∧ apply_left_to_right(x)
   | present_key(x) → return(new_map_without_entry_via_swap_and_remove(x))
   | absent_or_repeated_key(x) → no_op(x)
@@ -737,13 +852,13 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ constexpr(x) ∧ noexcept(x)
   | ordinary_value_pair(x) → require(identical_types(x) ∨ safe_widening_relation_in_either_direction(x))
     ∧ compare_in_wider_type(x) ∧ ¬∃ truncation_or_saturation(x)
-    ∧ sign_crossing_pair(x) ∨ boolean_pair(x) ∨ character_pair(x) ∨ enumeration_pair(x) ∨ pointer_pair(x)
-      ∨ user_defined_pair(x) → compile_time_rejection(x)
+    ∧ (sign_crossing_pair(x) ∨ cross_type_domain_crossing_pair(Boolean ∨ character ∨ enumeration ∨ user_defined)(x)
+      ∨ pointer_pair(x)) → compile_time_rejection(x)
     ∧ equality_remains_equivalence_relation(x) because(admitted_conversions_are_injective_on_values(x))
   | non_cljonic_scalar_operands(x) → compare_via(operator== (x))
     ∧ fallthrough_domain(x) ≡ closed_value_domain(
         arithmetic_scalars ∨ scoped_enumerations
-        ∨ aggregate_like_structs_with_nothrow_equality ∨ cljonic_variant_composites)
+        ∨ qualifying_opaque_user_defined_classes_with_nothrow_equality ∨ cljonic_variant_composites)
     ∧ unscoped_enumerations_and_pointers_excluded_from_fallthrough(x)
     ∧ standard_library_variant(x) → compile_time_rejection(x) ∧ at_any_depth(x)
       because(¬cljonic_value_type(x))
@@ -752,9 +867,11 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     because(equal_is_not_interop_surface(x))
   | floating_point_component(x) → compile_time_rejection(x) ∧ at_any_analyzable_depth(x)
     ∧ detectability_is_the_criterion(x) ∧ trace_to(REQ-NUM-019) ∧ ¬∃ silent_admission_of_detectable_comparison(x)
-    ∧ aggregate_boundary(x) → stop_recursion(x) ∧ defer_semantics_to_type_author(x)
+    ∧ AggregateEqualityBoundary(x) → stop_recursion(x) ∧ defer_semantics_to_type_author(x)
   | user_defined_class_type(x) ≡ aggregate_struct(x) ∨ non_aggregate_class(x)
     ∧ user_defined_class_type(x) with(nothrow_operator_equality(x)) → admit(x) ∧ ¬analyze_members(x)
+    ∧ unavailable_or_potentially_throwing_equality(x) → reject_from(StableEquality) ∧ compile_time_rejection(equality_use(x))
+    ∧ equality_rejection(x) → ¬prohibit_storage_when_independent_storage_contract_satisfied(x)
     ∧ internal_equality_semantics_belong_to(type_author(x)) ∧ trace_to(REQ-NUM-018)
     ∧ non_aggregate_class(x) → admit_on(NothrowEqualityComparable(x))
       ∧ require(the_stable_equality_and_nothrow_comparison_shared_with(map_key_admission(x) ∧ set_element_admission(x)))
@@ -766,7 +883,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
       ∧ mechanism(x) ≡ ¬nothrow_comparison(x) so(no_exclusion_list_is_required(x))
   | value_whose_equality_comparison_may_throw(x) → compile_time_rejection(x)
     because(noexcept_guarantee_cannot_be_violated(x))
-  | sequential_family(x) ≡ Vector ∨ Queue ∨ Cycle ∨ Iterate ∨ Range ∨ Repeat ∨ Repeatedly
+  | sequential_family(x) ≡ Vector ∨ Queue ∨ Cycle ∨ Iterate ∨ Range ∨ Repeat ∨ Repeatedly ∨ TakeWhile ∨ DropWhile
     ∧ sequential_family_pair(x) → compare(produced_sequence(x))
       ∧ require(identical_element_types(x) ∨ safe_widening_relation_in_either_direction(element_types(x)))
       ∧ compare_elements_in_wider_type(x)
@@ -824,20 +941,22 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | fits_into(destination, finite_source) ∧ (Set ∨ Map)(destination) → preserve(input_values) ∧ ¬share(realization_cache_with(into))
     ∧ allow(callback_effects_through_external_state) ∧ completeness_prediction_requires(same_values_on_subsequent_traversal)
   | fits_into(destination, unbounded_source) → return(false)
+  | fits_into(destination, finite_source) → require(complete_consumption_within_approved_traversal_bound(source))
+    ∧ otherwise_return(false) ∧ ¬inspect(unobservable_suffix(source))
+    ∧ applies_even_when(duplicates_or_replacements_consume_no_capacity)
 
-λ S2_into_function_contract(x). into(destination, source) → admit((CljonicVector ∨ CljonicSet ∨ CljonicMap ∨ CljonicQueue ∨ CljonicString)(destination) ∧ CljonicSource(source) ∧ MaterializableSource(destination, source))
+λ S2_into_function_contract(x). into(destination, source) → admit((CljonicVector ∨ CljonicSet ∨ CljonicMap ∨ CljonicQueue ∨ CljonicString)(destination) ∧ CljonicSource(source))
   | destination_domain(x) ≡ CljonicVector ∨ CljonicSet ∨ CljonicMap ∨ CljonicQueue ∨ CljonicString
     ∧ ¬admit(CljonicProducer ∨ external_destination)
-  | MaterializableSource(destination, source) → require(actual_source_reference_compatible_with(destination_insertion))
-    ∧ preserve(existing_safe_implicit_conversion_and_nothrow_construction_rules)
-    ∧ Map(destination) → require(compatible_nominal_MapEntry_values) ∧ ¬admit(arbitrary_pairs ∨ alternating_keys_and_values)
+  | ∀ source_element_reference ∈ source: require(NothrowElementConstruction(destination_insertion_type, source_element_reference))
+  | Map(destination) → require(compatible_nominal_MapEntry_values) ∧ ¬admit(arbitrary_pairs ∨ alternating_keys_and_values)
   | source_domain(x) → CljonicSource ∧ ¬admit(external_Cpp_ranges_or_views)
   | result(x) → updated_destination_typed_collection(x)
     ∧ fold(source_values_in_traversal_order, destination_insertion_semantics)
     ∧ preserve(destination ∧ source)
   | (Vector ∨ Queue)(destination) → append_after(existing_logical_contents) ∧ preserve(Queue_FIFO_order)
   | Set(destination) → insert_distinct_values ∧ duplicates_consume_no_capacity
-  | Map(destination) → associate(entry_key, entry_value) ∧ matching_keys_replace_values_without_capacity_growth
+  | Map(destination) → assoc(entry_key, entry_value) ∧ matching_keys_replace_values_without_capacity_growth
     ∧ later_matching_entry_wins
   | String(destination) → append(characters_in_traversal_order) ∧ preserve(valid_non_NUL_ASCII)
     ∧ runtime(invalid_character) → append('.') ∧ continue_traversal
@@ -859,7 +978,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
 
 λ S2_get_function_contract(x). get(collection, key[, fallback]) → admit(LookupCollection ∨ IndexedCollection)(collection)
   | LookupCollection(collection) → require(SafeImplicitConversion(collection_lookup_type, key))
-  | IndexedCollection(collection) → require(IntegerIndexType(key))
+  | IndexedCollection(collection) → require(non_boolean_non_character_integer_index(key))
   | return(collection(key[, fallback])) ∧ preserve(collection_specific_lookup_result_type)
   | omitted_fallback(x) → use(collection_default_lookup_result(x))
   | supplied_fallback(x) → require(SafeImplicitConversion(lookup_result_type, fallback))
@@ -962,6 +1081,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | has_rest(value) → return_exactly(has_next(value))
     ∧ preserve(has_next_domain ∧ preflight_behavior ∧ callback_timing_and_effects ∧ input_value_state ∧ diagnostics)
     ∧ forward_to(has_next) ∧ ¬independent_traversal ∧ no_heap ∧ noexcept ∧ constexpr
+    ∧ trace_to(REQ-FN-002A3)
   | has_first(collection) → require(collection ∈ {Vector, Map, Set, Queue, String})
     ∧ return(count(collection) > 0) ∧ semantically_independent_of(Map_or_Set_traversal_order)
   | has_first(producer) → require(producer_admitted_by_first)
@@ -971,6 +1091,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | has_first(MapEntry) → return(true) because(first(MapEntry) returns its key)
   | has_first → preserve(input_value_state ∧ no_heap ∧ noexcept ∧ constexpr)
     ∧ unsupported_input → reject_at_compile_time_with(targeted_diagnostic_naming(has_first ∧ supported_domains) ∧ REQ-DIAG-009)
+    ∧ trace_to(REQ-FN-002A8)
   | approved_adapter_tail_extension(x) → next(TakeWhile ∨ DropWhile) ∧ rest_delegates_to_next
     ∧ return(exact_input_producer_type_owning_source_predicate_and_compact_output_skip_offset)
     ∧ creation → ¬traverse ∧ ¬count ∧ ¬invoke_callbacks
@@ -1008,7 +1129,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ unsupported_input(rest) → reject_at_compile_time_with(targeted_diagnostic_naming(rest ∧ supported_domains) ∧ REQ-DIAG-009)
     ∧ classify_as(RequirementsBacked)
     ∧ trace_to(REQ-SEQ-001 ∧ REQ-SEQ-002 ∧ REQ-SEQ-002A ∧ REQ-SEQ-002B ∧ REQ-SEQ-003 ∧ REQ-SEQ-004 ∧ REQ-SEQ-005 ∧ REQ-SEQ-006 ∧ REQ-SEQ-007 ∧ REQ-SEQ-008 ∧ REQ-SEQ-009 ∧ REQ-SEQ-012 ∧ REQ-FN-002A4 ∧ REQ-FN-002A5 ∧ REQ-FN-002A6 ∧ REQ-FN-002A7)
-  | seq(value) → require(value ∈ {Vector, Map, Set, Queue, String} ∨ producer ∈ {Repeat, Range, Cycle, Iterate, Repeatedly})
+  | seq(value) → require(value ∈ {Vector, Map, Set, Queue, String} ∨ producer ∈ {Repeat, Range, Cycle, Iterate, Repeatedly, TakeWhile, DropWhile})
     ∧ return(owning_bounded_Vector(value) of logical_traversal_elements(value) in_traversal_order)
     ∧ Vector_input(x) → return(by_value_copy(x) with_same_element_type ∧ capacity)
     ∧ Map_input(x) → return(Vector<MapEntry<K,V>, N> of value_semantic_entries)
@@ -1037,7 +1158,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ typed_absence_and_failure_policy_is_declared(x) ∧ result_status_is_declared(x)
     ∧ bounded_owning_results_are_preferred(x) ∧ maps_and_sets_are_semantically_unordered(x)
     ∧ transducers_and_hidden_lazy_sequences_are_unsupported(x))
-  | contains(x) → admit((LookupCollection ∧ SafeImplicitConversion(key, declared_lookup_type)) ∨ (IndexedCollection ∧ non_boolean_non_character_integer_index))(x)
+  | contains(x) → admit((LookupCollection ∧ SafeImplicitConversion(declared_lookup_type, key)) ∨ (IndexedCollection ∧ non_boolean_non_character_integer_index))(x)
     ∧ support(Map ∨ Set ∨ Vector ∨ String)(x) ∧ ¬support(Range)(x)
   | fits_into(x) → govern(complete_producer_materialization(x))
   | can_conj(x) ∧ can_assoc(x) → govern(PreflightPredicate(x))
@@ -1106,14 +1227,17 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ narrowing_conversion(x) → reject_at_compile_time(x)
     ∧ domain_crossing(Boolean ∨ character ∨ enumeration ∨ pointer ∨ user_defined)(x) → reject_at_compile_time(x)
   | uninspectable_callback(generic_lambda ∨ templated_operator_call)(x) → admit_on(nothrow_invocability(x))
-  | arity(sources) = 1 → return(Vector<transform_result, effective_count(source₁)> of transform(source₁(i)) in_traversal_order)
+  | arity(sources) = 1 → return(Vector<transform_result, source_capacity_bound(source₁)> of transform results in_traversal_order)
   | arity(sources) = n > 1 → invoke(transform with one corresponding element from each source per_step)
     ∧ terminate(when_first_source_exhausted)
-    ∧ return(Vector<transform_result, min_over_sources(effective_count)> of successive transform results in_step_order)
-  | effective_count(source) ≡ collection(source) → count(source)
-    ∧ finite_producer(source) → count(source)
+    ∧ return(Vector<transform_result, min_over_sources(source_capacity_bound)> of successive transform results in_step_order)
+  | source_capacity_bound(source) ≡ collection(source) → declared_capacity(source)
+    ∧ producer(source) → configured_observable_traversal_cap
+    ∧ each_contribution_saturated_at(CollectionMaximumElementCount)
+  | effective_count(source) ≡ collection(source) ∨ finite_producer(source) → count(source)
     ∧ unbounded_producer(source) → observable_traversal_cap
     ∧ each_contribution_saturated_at(CollectionMaximumElementCount)
+  | runtime_mapped_count(x) → minimum_effective_source_count_subject_to_actual_traversal_exhaustion(x)
   | Map_source(x) ∨ Set_source(x) → traversal_order_semantically_unordered(x)
   | standard_library_range ∨ container ∨ non_cljonic_source ∨ throwing_callback ∨ unstorable_result → reject_at_compile_time_with(targeted_diagnostic_naming(map ∧ supported_domains) ∧ REQ-DIAG-009)
   | preserve(every_source_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
@@ -1145,7 +1269,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | preserve(identical_input ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating)
   | reject(the_same_unsupported_domains_and_predicate_forms)
     with(targeted_diagnostic_naming(filterv ∧ supported_domains) ∧ REQ-DIAG-009)
-  | classify_as(RequirementsBackedAlias) ∧ trace_to(REQ-FN-036 ∧ REQ-FN-035)
+  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-036 ∧ REQ-FN-035)
 
 λ S2_take_function_contract(x). take(count, source) → admit(CljonicSource(source) ∧ valid_take_count(count))(x)
   | valid_take_count(count) ≡ signed_or_unsigned_integer_except(Boolean ∨ character)
@@ -1279,7 +1403,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | always_terminates(x) ∧ ¬∃ early_termination_wrapper(x)
   | classify_as(CompleteResult) ∧ trace_to(REQ-FN-034)
 
-λ S2_disj_function_contract(x). disj(set, values...) → admit(CljonicSet(set) ∧ ∀ value: SafeImplicitConversion(value, Set::value_type))
+λ S2_disj_function_contract(x). disj(set, values...) → admit(CljonicSet(set) ∧ ∀ value: SafeImplicitConversion(Set::value_type, value))
   | arity(values) = 0 → return(unchanged_copy(set))
   | arity(values) > 0 → fold(left_to_right, Set::disj, set, values)
     ∧ absent_or_repeated_value → unchanged_accumulator
@@ -1295,293 +1419,6 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ report(deferred_obligations(x))
     ∧ ¬claim(implementation_backed(x) ∨ test_covered(x) ∨ converged(x))
     ∧ preserve(independently_approved_requirements_backed_api_scope(x))
-
-## Concept Architecture
-
-λ concept_architecture_intro(x). public_collection_type(x) ∨ primitive_free_function(x) → participate_in(two_level_concept_model(x))
-  | two_level_model(x) → govern(admission ∧ capability) ∧ ¬mix(admission ∨ capability)
-
-### Level 1: CollectionConcept (NominalCollectionRecognition)
-
-λ CollectionConcept_level(x). gate(type) → nominal_cljonic_identity(x) ≡ admission(ClosedNominalCollectionDomain) ∧ classification(CollectionKind)
-  | recognition(x) → cljonic_owned_traits(x) ∧ ¬structural_similarity(external_or_standard_container(x))
-  | nominal_pattern(x) → applies_to(CljonicVector ∧ CljonicMap ∧ CljonicSet ∧ CljonicQueue ∧ CljonicString)
-
-```cpp
-template<class Type>
-concept CljonicCollection = detail::is_cljonic_collection_v<Type>;
-
-template<class Type>
-concept CljonicVector =
-    CljonicCollection<Type> &&
-    (detail::collection_kind_of_v<Type> == detail::collection_kind::vector);
-```
-
-### Level 1B: CljonicProducer (ProducerConcept) and CljonicSource
-
-λ CljonicProducer_level(x). gate(type) → nominal_producer_identity(x) ≡ admission(producer_domain(x)) ∧ classification(ProducerKind)
-  | recognition(x) → cljonic_owned_traits(x) ∧ distinct_domain_from(ClosedNominalCollectionDomain(x))
-  | nominal_pattern(x) → applies_to(CljonicRange ∧ CljonicRepeat ∧ CljonicCycle ∧ CljonicIterate ∧ CljonicRepeatedly ∧ TakeWhile ∧ DropWhile)
-  | ConstInputRange(x) ≡ std::ranges::input_range<const x>
-  | NothrowConstInputRange(x) ≡ ConstInputRange(x) ∧ noexcept(begin ∧ end ∧ dereference ∧ increment ∧ sentinel_compare(x))
-  | CljonicSource(x) ≡ (CljonicCollection(x) ∨ CljonicProducer(x)) ∧ NothrowConstInputRange(x)
-  | materialization_operations(into ∧ preflight(fits_into)) → constrain_source_by(CljonicSource)
-  | producer_observation_api(x) → expose(member(is_finite))
-
-```cpp
-template<class Type>
-concept CljonicProducer = detail::is_cljonic_producer_v<Type>;
-
-template<class Type>
-concept CljonicRange =
-    CljonicProducer<Type> &&
-    (detail::producer_kind_of_v<Type> == detail::producer_kind::range);
-
-template<class Type>
-concept CljonicIterate =
-  CljonicProducer<Type> &&
-  (detail::producer_kind_of_v<Type> == detail::producer_kind::iterate);
-
-template<class Type>
-concept CljonicRepeatedly =
-  CljonicProducer<Type> &&
-  (detail::producer_kind_of_v<Type> == detail::producer_kind::repeatedly);
-
-template<class Type>
-concept CljonicSource =
-    (CljonicCollection<Type> || CljonicProducer<Type>) &&
-    NothrowConstInputRange<Type>;
-
-```
-
-### Level 1C: CljonicVariant (VariantConcept)
-
-λ CljonicVariant_level(x). gate(type) → nominal_variant_identity(x) ≡ admission(cljonic_variant_traits(x))
-  | recognition(x) → cljonic_owned_traits(x) ∧ ¬structural_similarity(std::variant(x))
-    ∧ std::variant(x) → ¬admit(x) because(¬cljonic_value_type(x))
-  | nominal_pattern(x) → applies_to(cljonic::Variant<Alternatives...>)
-  | component_recognition(x) → detail::is_cljonic_variant_v(x) ∧ recurse_into(alternatives(x))
-  | walker_mirroring(x) → mirror(contains_floating_point ∧ contains_callable ∧ contains_standard_range)(x)
-    ∧ nothrow_equality_recurses_over_alternatives(x)
-  | storage_admission(x) → NothrowCollectionElement(alternative(x))
-  | equality_admission(x) → ComparableVariantAlternative(alternative(x))
-
-```cpp
-template<class Type>
-concept CljonicVariant = detail::is_cljonic_variant_v<Type>;
-
-// Alternative admission is layered, mirroring the two-level value model:
-// storage admission admits an alternative for map values, vector elements,
-// and queue elements; equality admission additionally admits the
-// cljonic::Variant itself into equality positions.
-template<class Type>
-concept NothrowVariantAlternative = NothrowCollectionElement<Type>;
-
-template<class Type>
-concept ComparableVariantAlternative =
-    NothrowStableEqualityComparable<Type> && NothrowEqualityComparable<Type>;
-```
-
-### Level 2: CapabilityConcept (semantic capability gates)
-
-λ CapabilityConcept_level(x). require(admitted_collection(x)) → expose(semantic_capability(x)) to(participate_in(operation(x)))
-  | capability(x) → layered_on(CollectionConcept_admission(x))
-  | value_capabilities(x) → separate_from(structural_capabilities(x))
-
-λ producer_step_concepts(x). IterateStep(step) → require(copy_constructible(step) ∧ non_allocating(step)
-  ∧ accepts(element_type(x)) ∧ returns_exact(element_type(x)) ∧ nothrow_invocation(step))
-  | RepeatedlyStep(step) → require(copy_constructible(step) ∧ nullary(step)
-    ∧ returns_exact(element_type(x)) ∧ nothrow_invocation(step))
-    ∧ permit(non_const_call_operator(step))
-
-```cpp
-// Value capabilities (apply to element and key types)
-// StableEqualityComparable is recursive over composite components:
-// a composite admits stable equality only when every stored component
-// admits stable equality; callable components never admit stable equality.
-// A library-owned composite must additionally declare that the walkers
-// reach its components (`walker_coverage`), so an added composite that
-// skips the declaration fails here instead of silently admitting a
-// detectable floating-point comparison.
-template<class T>
-concept StableEqualityComparable =
-    std::equality_comparable<T> &&
-    !cljonic::concepts_detail::contains_floating_point_v<T> &&
-    !cljonic::concepts_detail::contains_callable_v<T> &&
-    cljonic::concepts_detail::walker_coverage_ok_v<T>;
-
-template<class T>
-concept TotallyOrdered = StableEqualityComparable<T> && std::totally_ordered<T>;
-
-// NothrowEqualityComparable refines StableEqualityComparable with a
-// non-throwing comparison so operations declared noexcept cannot terminate:
-// the type's own operator== must be noexcept, and a composite whose relational
-// operators are not themselves declared noexcept recurses over its stored
-// components (std::variant relational operators are one such case; the
-// cljonic::Variant declares its own noexcept == over alternatives whose == is
-// noexcept).
-template<class T>
-concept NothrowEqualityComparable =
-    StableEqualityComparable<T> &&
-    cljonic::concepts_detail::nothrow_equality_v<T>;
-
-// NothrowStableEqualityComparable is the map-key and set-element admission
-// contract: stable equality, nothrow storage, and a nothrow comparison. The
-// comparison requirement keeps a parameterized standard-library wrapper out of
-// key and element positions whatever it is instantiated with, because such a
-// wrapper declares no nothrow comparison and would otherwise hide an
-// unsupported component (a floating-point value, for example) from the
-// recursive walkers.
-template<class T>
-concept NothrowStableEqualityComparable =
-    StableEqualityComparable<T> &&
-    NothrowCollectionElement<T> &&
-    cljonic::concepts_detail::nothrow_equality_v<T>;
-```
-
-// Collection equality is conditional and component-wise: a collection
-// provides operator== exactly when its element/key/value types admit
-// stable equality, and comparison never traverses beyond its bounded
-// logical count.
-λ collection_equality(x). bounded_collection(x) && stable_equality_components(x)
-  → provide(operator== (x) with (Vector ∧ String ∧ Queue → order_sensitive(x))
-    ∧ (Map ∧ Set → order_insensitive(x)))
-  | ¬stable_equality_components(x) → omit(operator== (x))
-    ∧ usage_in_equality_position(x) → fail_at_compile_time(x)
-  | collection_equality(x) → recurse_into(nested_collections ∧
-    producers_with_stable_parameters ∧ composite_values)
-    ∧ never_traverse_beyond(bounded_logical_count)
-
-```cpp
-// SequenceableCollection is the current observation baseline; it does not imply
-// the independent, closed Seqable capability (REQ-CAP-014), which no type outside
-// the cljonic-owned collection family can declare. Emptiness is derived by the
-// is_empty free function from count(), not required as a collection member.
-template<class C>
-concept SequenceableCollection =
-    CljonicCollection<C> &&
-    requires(const C& c) {
-      { c.count() } noexcept -> std::same_as<std::size_t>;
-    };
-
-template<class C>
-concept IndexedCollection =
-    CljonicCollection<C> &&
-    requires(const C& c, std::size_t i) {
-      { c(i) };
-      { c.contains(i) } -> std::same_as<bool>;
-    };
-
-template<class C>
-concept LookupCollection =
-    CljonicCollection<C> &&
-    requires(const C& c) {
-      typename C::lookup_type;
-      { c(std::declval<const typename C::lookup_type&>()) };
-      { c.contains(std::declval<const typename C::lookup_type&>()) } -> std::same_as<bool>;
-    };
-
-template<class C>
-concept AssociativeCollection =
-    CljonicCollection<C> &&
-    requires(const C& c) {
-      typename C::key_type;
-      typename C::association_value_type;
-      { c.can_assoc(std::declval<const typename C::key_type&>(),
-                    std::declval<const typename C::association_value_type&>()) } -> std::same_as<bool>;
-      { c.assoc(std::declval<const typename C::key_type&>(),
-                std::declval<const typename C::association_value_type&>()) } -> std::same_as<C>;
-    };
-
-template<class C>
-concept ConjableCollection =
-    CljonicCollection<C> &&
-    requires(const C& c) {
-      typename C::value_type;
-      { c.conj(std::declval<const typename C::value_type&>()) } -> std::same_as<C>;
-      { c.can_conj(std::declval<const typename C::value_type&>()) } -> std::same_as<bool>;
-    };
-```
-
-### Level 2B: SequenceableProducer (producer baseline capability gate)
-
-λ SequenceableProducer_level(x). require(admitted_producer(x)) → expose(non_throwing_count(x)) to(participate_in(operation(x)))
-  | capability(x) → layered_on(CljonicProducer_admission(x))
-  | finite_producer_count(x) → exact_runtime_result_count(x)
-    except(finite_Range(x) → min(complete_cardinality(x), CollectionMaximumElementCount))
-  | unbounded_producer_count(x) → bounded_observable_traversal_cap(x) ∧ saturated_by(CollectionMaximumElementCount) ∧ ¬equivalent(complete_cardinality(x))
-  | current_producer_family(x) → provide(is_finite(x) ∧ const_begin_end_traversal_bounded_by_count(x))
-    ∧ family_guarantees(x) → ¬additional_checks_of(SequenceableProducer(x))
-  | ¬imply(IndexedProducer(x) ∨ LookupCollection(x)) because(no_callable_operator_parenthesis(x))
-
-```cpp
-template<class C>
-concept SequenceableProducer =
-    CljonicProducer<C> &&
-    requires(const C& c) {
-      { c.count() } noexcept -> std::same_as<std::size_t>;
-    };
-```
-
-### Level 2C: IndexedProducer (reserved producer positional-access gate)
-
-λ range_slice_contract(x). Range(x) → provide(x.contains(index))
-  ∧ x.contains(index) ↔ index < x.count()
-  ∧ ¬provide(contains(x, index) ∨ get(x, key) ∨ x(index))
-  ∧ ¬satisfy(Indexed ∨ IndexedProducer ∨ Lookup ∨ Associative)(x)
-  ∧ ¬provide(positional_value_retrieval(x))
-
-λ IndexedProducer_level(x). require(admitted_producer(x)) → expose(positional_value_retrieval(x) ∧ available_index_predicate(x)) to(participate_in(operation(x)))
-  | capability(x) → layered_on(CljonicProducer_admission(x))
-  | Range(x) → range_slice_contract(x)
-  | IndexedProducer(x) ≡ non_mutating_O1_positional_value_retrieval(x) ∧ available_index_predicate_over_same_bounded_domain(x)
-  | producer_contains(x) → bounded_observation_availability_only(x) ∧ ¬imply(positional_value_retrieval(x) ∨ IndexedProducer(x))
-  | IndexedProducer(x) ¬imply(CallableLookup(x)) because(Indexed_access_does_not_imply_invocability(x))
-  | ¬expose(callable_operator_parenthesis(x)) on(producer(x)) because(operator_parenthesis_reserved_for_CallableLookup_mirroring(x))
-  | positional_value_retrieval(x) → remain(deferred_future_work) until(Module5_nth_approved(x))
-  | current_producers(x) ≡ Range ∨ Repeat ∨ Cycle ∨ Iterate ∨ Repeatedly
-  | ∀ current_producer(x) → ¬satisfy(IndexedProducer(x))
-  | future_IndexedProducer(x) → require(explicit_positional_access_contract(x) ∧ matching_availability_predicate(x))
-
-### Concept naming, scoping, and evolution
-
-λ concept_guidelines_alignment(x). cpp_code(x) → follows(C++CoreGuidelines)
-  | concept_identifier(x) → type_level_predicate(x) ∧ pascal_case(x) ∧ governed_by(NL.17)
-  | function_identifier(x) → snake_case(x) ∧ namespace_identifier(x) → lowercase(x)
-  | nominal_concept(x) → keep(Cljonic_domain_prefix) because(names_closed_collection_domain(x))
-  | structural_or_value_capability_concept(x) → ¬require(Cljonic_prefix) because(gated_on_nominal_identity(x) ∧ scope_carried_by(suffix ∨ comparative_name))
-
-λ clojure_library_names(x).
-  clojure.core → cljonic::core
-  | clojure.set → cljonic::lib_set
-  | clojure.string → cljonic::lib_string
-  | ∀ core_function(x) → declare_in(cljonic::core) ∧ ¬declare_in(cljonic::)
-  | ∀ core_collection_type(x) → retain_in(cljonic::)
-  | set_algebra_identifier(x) → prepend(set_, snake_case(x)) when(x ∈ {union, intersection, difference})
-  | set_relation_predicate(x) → preserve(is_subset ∨ is_superset)
-
-λ concept_naming(x). CollectionConcept_names(x) → identify_nominal_identity(x)
-  | CapabilityConcept_names(x) → identify_semantic_capability(x)
-  | public_concept_names(x) → capability_oriented(x) ∧ reject(vague_names)
-  | concept_identifiers(x) → pascal_case(x) ∧ distinct_from_functions_and_namespaces(x)
-
-λ concept_scoping(x). nominal_and_capability_concepts(x) → live_in(cljonic::concepts)
-  | trait_mechanics(x) → hide_inside(cljonic::concepts_detail) ∨ detail
-  | standard_concepts(x) → prefer_at_public_api_boundary
-
-λ concept_storage_orthogonality(x). storage_admission(x) → not_imply(StableEquality ∨ TotalOrder ∨ other_capability)
-  | capability_required_by(operation) → constrain_at(public_api_boundary)
-
-λ concept_evolution(x). concepts_gate_free_functions(x)
-  | minimal_concept_requirements(x) → only_what_current_functions_need(x)
-  | future_requirements(x) → add_when_first_function_needs_them(x)
-  | introduce_concept(x) → require(tested_api_boundary(x)) ∧ specify(consumers_and_diagnostics(x))
-
-λ concept_member_naming(x). canonical_cardinality_member(x) ≡ count
-  | is_empty(value) ↔ count(value) == 0
-  | is_empty(x) → ¬require(collection_member_is_empty(x))
-  | member_lookup(x) ≡ operator()(key, fallback = default_result) ∧ contains
-  | index_bracket_lookup(x) → omitted_from_all_collections(x)
 
 ## S1 - Operations
 
@@ -1739,6 +1576,292 @@ concept SequenceableProducer =
 λ S1_pattern(x). architectural_pattern(x) ≡ functional_core_with_profile_gated_capabilities
   ∧ layered_bounded_value_collection_model
 
+## Cross-Cutting Concept Architecture (S3/S2)
+
+λ concept_architecture_intro(x). public_collection_type(x) ∨ primitive_free_function(x) → participate_in(two_level_concept_model(x))
+  | two_level_model(x) → govern(admission ∧ capability) ∧ ¬mix(admission ∨ capability)
+
+### Level 1: CollectionConcept (NominalCollectionRecognition)
+
+λ CollectionConcept_level(x). gate(type) → nominal_cljonic_identity(x) ≡ admission(ClosedNominalCollectionDomain) ∧ classification(CollectionKind)
+  | recognition(x) → cljonic_owned_traits(x) ∧ ¬structural_similarity(external_or_standard_container(x))
+  | nominal_pattern(x) → applies_to(CljonicVector ∧ CljonicMap ∧ CljonicSet ∧ CljonicQueue ∧ CljonicString)
+
+```cpp
+template<class Type>
+concept CljonicCollection = detail::is_cljonic_collection_v<Type>;
+
+template<class Type>
+concept CljonicVector =
+    CljonicCollection<Type> &&
+    (detail::collection_kind_of_v<Type> == detail::collection_kind::vector);
+```
+
+### Level 1B: CljonicProducer (ProducerConcept) and CljonicSource
+
+λ CljonicProducer_level(x). gate(type) → nominal_producer_identity(x) ≡ admission(producer_domain(x)) ∧ classification(ProducerKind)
+  | recognition(x) → cljonic_owned_traits(x) ∧ distinct_domain_from(ClosedNominalCollectionDomain(x))
+  | nominal_pattern(x) → applies_to(CljonicRange ∧ CljonicRepeat ∧ CljonicCycle ∧ CljonicIterate ∧ CljonicRepeatedly ∧ TakeWhile ∧ DropWhile)
+  | ConstInputRange(x) ≡ std::ranges::input_range<const x>
+  | NothrowConstInputRange(x) ≡ ConstInputRange(x) ∧ noexcept(begin ∧ end ∧ dereference ∧ increment ∧ sentinel_compare(x))
+  | CljonicSource(x) ≡ (CljonicCollection(x) ∨ CljonicProducer(x)) ∧ NothrowConstInputRange(x)
+  | materialization_operations(into ∧ preflight(fits_into)) → constrain_source_by(CljonicSource)
+  | producer_observation_api(x) → expose(member(is_finite))
+
+```cpp
+template<class Type>
+concept CljonicProducer = detail::is_cljonic_producer_v<Type>;
+
+template<class Type>
+concept CljonicRange =
+    CljonicProducer<Type> &&
+    (detail::producer_kind_of_v<Type> == detail::producer_kind::range);
+
+template<class Type>
+concept CljonicIterate =
+  CljonicProducer<Type> &&
+  (detail::producer_kind_of_v<Type> == detail::producer_kind::iterate);
+
+template<class Type>
+concept CljonicRepeatedly =
+  CljonicProducer<Type> &&
+  (detail::producer_kind_of_v<Type> == detail::producer_kind::repeatedly);
+
+template<class Type>
+concept CljonicSource =
+    (CljonicCollection<Type> || CljonicProducer<Type>) &&
+    NothrowConstInputRange<Type>;
+
+```
+
+### Level 1C: CljonicVariant (VariantConcept)
+
+λ CljonicVariant_level(x). gate(type) → nominal_variant_identity(x) ≡ admission(cljonic_variant_traits(x))
+  | recognition(x) → cljonic_owned_traits(x) ∧ ¬structural_similarity(std::variant(x))
+    ∧ std::variant(x) → ¬admit(x) because(¬cljonic_value_type(x))
+  | nominal_pattern(x) → applies_to(cljonic::Variant<Alternatives...>)
+  | component_recognition(x) → detail::is_cljonic_variant_v(x) ∧ recurse_into(alternatives(x))
+  | walker_mirroring(x) → mirror(contains_floating_point ∧ contains_callable ∧ contains_standard_range)(x)
+    ∧ nothrow_equality_recurses_over_alternatives(x)
+  | storage_admission(x) → NothrowCollectionElement(alternative(x))
+  | equality_admission(x) → ComparableVariantAlternative(alternative(x))
+
+```cpp
+template<class Type>
+concept CljonicVariant = detail::is_cljonic_variant_v<Type>;
+
+// Alternative admission is layered, mirroring the two-level value model:
+// storage admission admits an alternative for map values, vector elements,
+// and queue elements; equality admission additionally admits the
+// cljonic::Variant itself into equality positions.
+template<class Type>
+concept NothrowVariantAlternative = NothrowCollectionElement<Type>;
+
+template<class Type>
+concept ComparableVariantAlternative =
+    NothrowStableEqualityComparable<Type> && NothrowEqualityComparable<Type>;
+```
+
+### Level 2: CapabilityConcept (semantic capability gates)
+
+λ CapabilityConcept_level(x). require(admitted_collection(x)) → expose(semantic_capability(x)) to(participate_in(operation(x)))
+  | capability(x) → layered_on(CollectionConcept_admission(x))
+  | value_capabilities(x) → separate_from(structural_capabilities(x))
+
+λ producer_step_concepts(x). IterateStep(step) → require(copy_constructible(step) ∧ non_allocating(step)
+  ∧ accepts(element_type(x)) ∧ returns_exact(element_type(x)) ∧ nothrow_invocation(step))
+  | RepeatedlyStep(step) → require(copy_constructible(step) ∧ nullary(step)
+    ∧ returns_exact(element_type(x)) ∧ nothrow_invocation(step))
+    ∧ permit(non_const_call_operator(step))
+
+```cpp
+// Value capabilities (apply to element and key types)
+// StableEqualityComparable requires a non-throwing equality comparison.
+// It recursively checks library-analyzable composite components and stops at
+// opaque user-defined class boundaries under REQ-NUM-018. A non-throwing
+// operator== is trusted there, including when members contain floating point.
+// For analyzed composites, every stored component must admit stable equality;
+// callable components never admit stable equality. A library-owned composite
+// must additionally declare that the walkers reach its components
+// (`walker_coverage`), so an added composite that skips the declaration fails
+// here instead of silently admitting a detectable floating-point comparison.
+template<class T>
+concept StableEqualityComparable =
+    std::equality_comparable<T> &&
+    cljonic::concepts_detail::nothrow_equality_v<T> &&
+    !cljonic::concepts_detail::contains_floating_point_v<T> &&
+    !cljonic::concepts_detail::contains_callable_v<T> &&
+    cljonic::concepts_detail::walker_coverage_ok_v<T>;
+
+template<class T>
+concept TotallyOrdered = StableEqualityComparable<T> && std::totally_ordered<T>;
+
+// NothrowEqualityComparable retains an explicit non-throwing comparison
+// requirement for operations declared noexcept. StableEqualityComparable
+// already requires it; the named refinement preserves the API boundary.
+template<class T>
+concept NothrowEqualityComparable =
+    StableEqualityComparable<T> &&
+    cljonic::concepts_detail::nothrow_equality_v<T>;
+
+// NothrowStableEqualityComparable is the map-key and set-element admission
+// contract: stable equality, nothrow storage, and a nothrow comparison. The
+// comparison requirement keeps a parameterized standard-library wrapper out of
+// key and element positions whatever it is instantiated with, because such a
+// wrapper declares no nothrow comparison and would otherwise hide an
+// unsupported component (a floating-point value, for example) from the
+// recursive walkers.
+template<class T>
+concept NothrowStableEqualityComparable =
+    StableEqualityComparable<T> &&
+    NothrowCollectionElement<T> &&
+    cljonic::concepts_detail::nothrow_equality_v<T>;
+```
+
+// Collection equality is conditional and component-wise: a collection
+// provides operator== exactly when its element/key/value types admit
+// stable equality, and comparison never traverses beyond its bounded
+// logical count.
+λ collection_equality(x). bounded_collection(x) && stable_equality_components(x)
+  → provide(operator== (x) with (Vector ∧ String ∧ Queue → order_sensitive(x))
+    ∧ (Map ∧ Set → order_insensitive(x)))
+  | ¬stable_equality_components(x) → omit(operator== (x))
+    ∧ usage_in_equality_position(x) → fail_at_compile_time(x)
+  | collection_equality(x) → recurse_into(nested_collections ∧
+    producers_with_stable_parameters ∧ composite_values)
+    ∧ never_traverse_beyond(bounded_logical_count)
+
+```cpp
+// SequenceableCollection is the current observation baseline; it does not imply
+// the independent, closed Seqable capability (REQ-CAP-014), which no type outside
+// the cljonic-owned collection family can declare. Emptiness is derived by the
+// is_empty free function from count(), not required as a collection member.
+template<class C>
+concept SequenceableCollection =
+    CljonicCollection<C> &&
+    requires(const C& c) {
+      { c.count() } noexcept -> std::same_as<std::size_t>;
+    };
+
+template<class C>
+concept IndexedCollection =
+    CljonicCollection<C> &&
+    requires(const C& c, std::size_t i) {
+      { c(i) };
+      { c.contains(i) } -> std::same_as<bool>;
+    };
+
+template<class C>
+concept LookupCollection =
+    CljonicCollection<C> &&
+    requires(const C& c) {
+      typename C::lookup_type;
+      { c(std::declval<const typename C::lookup_type&>()) };
+      { c.contains(std::declval<const typename C::lookup_type&>()) } -> std::same_as<bool>;
+    };
+
+template<class C>
+concept AssociativeCollection =
+    CljonicCollection<C> &&
+    requires(const C& c) {
+      typename C::key_type;
+      typename C::association_value_type;
+      { c.can_assoc(std::declval<const typename C::key_type&>(),
+                    std::declval<const typename C::association_value_type&>()) } -> std::same_as<bool>;
+      { c.assoc(std::declval<const typename C::key_type&>(),
+                std::declval<const typename C::association_value_type&>()) } -> std::same_as<C>;
+    };
+
+template<class C>
+concept ConjableCollection =
+    CljonicCollection<C> &&
+    requires(const C& c) {
+      typename C::value_type;
+      { c.conj(std::declval<const typename C::value_type&>()) } -> std::same_as<C>;
+      { c.can_conj(std::declval<const typename C::value_type&>()) } -> std::same_as<bool>;
+    };
+```
+
+### Level 2B: SequenceableProducer (producer baseline capability gate)
+
+λ SequenceableProducer_level(x). require(admitted_producer(x)) → expose(non_throwing_count(x)) to(participate_in(operation(x)))
+  | capability(x) → layered_on(CljonicProducer_admission(x))
+  | finite_producer_count(x) → exact_runtime_result_count(x)
+    except(finite_Range(x) → min(complete_cardinality(x), CollectionMaximumElementCount))
+  | unbounded_producer_count(x) → bounded_observable_traversal_cap(x) ∧ saturated_by(CollectionMaximumElementCount) ∧ ¬equivalent(complete_cardinality(x))
+  | current_producer_family(x) → provide(is_finite(x) ∧ const_begin_end_traversal_bounded_by_count(x))
+    ∧ family_guarantees(x) → ¬additional_checks_of(SequenceableProducer(x))
+  | ¬imply(IndexedProducer(x) ∨ LookupCollection(x)) because(no_callable_operator_parenthesis(x))
+
+```cpp
+template<class C>
+concept SequenceableProducer =
+    CljonicProducer<C> &&
+    requires(const C& c) {
+      { c.count() } noexcept -> std::same_as<std::size_t>;
+    };
+```
+
+### Level 2C: IndexedProducer (reserved producer positional-access gate)
+
+λ range_slice_contract(x). Range(x) → provide(x.contains(index))
+  ∧ x.contains(index) ↔ index < x.count()
+  ∧ ¬provide(contains(x, index) ∨ get(x, key) ∨ x(index))
+  ∧ ¬satisfy(Indexed ∨ IndexedProducer ∨ Lookup ∨ Associative)(x)
+  ∧ ¬provide(positional_value_retrieval(x))
+
+λ IndexedProducer_level(x). require(admitted_producer(x)) → expose(positional_value_retrieval(x) ∧ available_index_predicate(x)) to(participate_in(operation(x)))
+  | capability(x) → layered_on(CljonicProducer_admission(x))
+  | Range(x) → range_slice_contract(x)
+  | IndexedProducer(x) ≡ non_mutating_O1_positional_value_retrieval(x) ∧ available_index_predicate_over_same_bounded_domain(x)
+  | producer_contains(x) → bounded_observation_availability_only(x) ∧ ¬imply(positional_value_retrieval(x) ∨ IndexedProducer(x))
+  | IndexedProducer(x) ¬imply(CallableLookup(x)) because(Indexed_access_does_not_imply_invocability(x))
+  | ¬expose(callable_operator_parenthesis(x)) on(producer(x)) because(operator_parenthesis_reserved_for_CallableLookup_mirroring(x))
+  | positional_value_retrieval(x) → remain(deferred_future_work) until(Module5_nth_approved(x))
+  | current_producers(x) ≡ Range ∨ Repeat ∨ Cycle ∨ Iterate ∨ Repeatedly ∨ TakeWhile ∨ DropWhile
+  | ∀ current_producer(x) → ¬satisfy(IndexedProducer(x))
+  | future_IndexedProducer(x) → require(explicit_positional_access_contract(x) ∧ matching_availability_predicate(x))
+
+### Concept naming, scoping, and evolution
+
+λ concept_guidelines_alignment(x). cpp_code(x) → follows(C++CoreGuidelines)
+  | concept_identifier(x) → type_level_predicate(x) ∧ pascal_case(x) ∧ governed_by(NL.17)
+  | function_identifier(x) → snake_case(x) ∧ namespace_identifier(x) → lowercase(x)
+  | nominal_concept(x) → keep(Cljonic_domain_prefix) because(names_closed_collection_domain(x))
+  | structural_or_value_capability_concept(x) → ¬require(Cljonic_prefix) because(gated_on_nominal_identity(x) ∧ scope_carried_by(suffix ∨ comparative_name))
+
+λ clojure_library_names(x).
+  clojure.core → cljonic::core
+  | clojure.set → cljonic::lib_set
+  | clojure.string → cljonic::lib_string
+  | ∀ core_function(x) → declare_in(cljonic::core) ∧ ¬declare_in(cljonic::)
+  | ∀ core_collection_type(x) → retain_in(cljonic::)
+  | set_algebra_identifier(x) → prepend(set_, snake_case(x)) when(x ∈ {union, intersection, difference})
+  | set_relation_predicate(x) → preserve(is_subset ∨ is_superset)
+
+λ concept_naming(x). CollectionConcept_names(x) → identify_nominal_identity(x)
+  | CapabilityConcept_names(x) → identify_semantic_capability(x)
+  | public_concept_names(x) → capability_oriented(x) ∧ reject(vague_names)
+  | concept_identifiers(x) → pascal_case(x) ∧ distinct_from_functions_and_namespaces(x)
+
+λ concept_scoping(x). nominal_and_capability_concepts(x) → live_in(cljonic::concepts)
+  | trait_mechanics(x) → hide_inside(cljonic::concepts_detail) ∨ detail
+  | standard_concepts(x) → prefer_at_public_api_boundary
+
+λ concept_storage_orthogonality(x). storage_admission(x) → not_imply(StableEquality ∨ TotalOrder ∨ other_capability)
+  | capability_required_by(operation) → constrain_at(public_api_boundary)
+
+λ concept_evolution(x). concepts_gate_free_functions(x)
+  | minimal_concept_requirements(x) → only_what_current_functions_need(x)
+  | future_requirements(x) → add_when_first_function_needs_them(x)
+  | introduce_concept(x) → require(tested_api_boundary(x)) ∧ specify(consumers_and_diagnostics(x))
+
+λ concept_member_naming(x). canonical_cardinality_member(x) ≡ count
+  | is_empty(value) ↔ count(value) == 0
+  | is_empty(x) → ¬require(collection_member_is_empty(x))
+  | member_lookup(x) ≡ operator()(key, fallback = default_result) ∧ contains
+  | index_bracket_lookup(x) → omitted_from_all_collections(x)
+
 ## Coherence Constraints (S5 → S1)
 
 λ coherence_identity(x). S1 ∧ S2 ∧ S3 ∧ S4 → must_preserve(S5_identity)
@@ -1766,6 +1889,6 @@ concept SequenceableProducer =
   | module6_numeric_authority(x) ≡ requirements/requirements-module-6.md → govern(checked_arithmetic ∧ callables)
   | module7_extended_domain_authority(x) ≡ requirements/requirements-module-7.md → govern(relations ∧ set_algebra ∧ regex ∧ Atom ∧ formatting ∧ KeywordEnumNameMapping)
 
-λ current_implementation_boundary(x). active_surface(x) ≡ Vector ∧ MapEntry ∧ Map ∧ Set ∧ Queue ∧ String ∧ Variant ∧ Range ∧ Repeat ∧ Cycle ∧ Iterate ∧ Repeatedly ∧ TakeWhile ∧ DropWhile ∧ primitive_free_functions ∧ map ∧ reduce ∧ filter ∧ filterv ∧ take ∧ drop ∧ take_while ∧ drop_while ∧ vector_factory ∧ hash_map_factory ∧ map_entry_factory ∧ set_factory ∧ queue_factory ∧ string_factory ∧ variant_factory ∧ into ∧ fits_into
+λ current_implementation_boundary(x). active_surface(x) ≡ Vector ∧ MapEntry ∧ Map ∧ Set ∧ Queue ∧ String ∧ Variant ∧ Range ∧ Repeat ∧ Cycle ∧ Iterate ∧ Repeatedly ∧ TakeWhile ∧ DropWhile ∧ primitive_free_functions ∧ explicit_conversions ∧ map ∧ reduce ∧ filter ∧ filterv ∧ take ∧ drop ∧ take_while ∧ drop_while ∧ vector_factory ∧ hash_map_factory ∧ map_entry_factory ∧ set_factory ∧ queue_factory ∧ string_factory ∧ variant_factory ∧ into ∧ fits_into
   | approved_but_unimplemented(algorithms_except(map ∧ reduce ∧ filter ∧ filterv ∧ take ∧ drop ∧ take_while ∧ drop_while) ∨ regexes) → remain_outside(active_surface(x))
   | approved_but_unimplemented(x) → require(specification_and_implementation_propagated(x)) before(active_surface_inclusion(x))

@@ -1,6 +1,8 @@
 # cljonic Requirements Index
 
-This document outlines the modular implementation roadmap for `cljonic`. To ensure clean architecture and testable boundaries, the requirements are organized into 7 dependency-ordered module files that together form the current requirements set, transcribed into nucleus lambda notation (`λ REQ-<DOMAIN>-NNN(x).`).
+This document outlines the modular requirements organization for `cljonic`. To ensure clean architecture and testable boundaries, the requirements are organized into 7 module files grouped by responsibility that together form the current requirements set, transcribed into nucleus lambda notation (`λ REQ-<DOMAIN>-NNN(x).`).
+
+Module order provides a general development progression, not a strict one-module-at-a-time implementation sequence. Implementation order follows the prerequisites of each approved feature. A reference to another module's requirement is an implementation dependency only when that feature requires the referenced behavior to exist first; definitional and boundary references are not.
 
 ## Domain Prefixes (Closed Set)
 
@@ -22,7 +24,7 @@ MUST ≡ ∀/¬ (required by constraint) | SHOULD ≡ ∧ preferred | MAY ≡ �
 
 1. **[requirements-module-1.md](requirements-module-1.md)** — *Foundation & Nominal Type System*
    - **Purpose**: Establishes core memory allocation invariants and nominal type recognition without depending on any collection logic.
-   - **Scope**: Zero heap allocation, a C++23 distribution using `HeaderOnlyDistribution`, single-threaded execution, value immutability, persistent semantics via deep copying, and closed collection domain rules (`REQ-PLAT-001`–`013`, `REQ-VAL-001`–`020`).
+   - **Scope**: Zero heap allocation, a C++23 distribution using `HeaderOnlyDistribution`, single-threaded execution, value immutability, persistent semantics via deep copying, and `ClosedNominalCollectionDomain` rules (`REQ-PLAT-001`–`013`, `REQ-VAL-001`–`020`).
 
 2. **[requirements-module-2.md](requirements-module-2.md)** — *Capability Concepts & Preflight Infrastructure*
    - **Purpose**: Defines the C++20 concept capability framework and non-throwing preflight result model.
@@ -31,8 +33,8 @@ MUST ≡ ∀/¬ (required by constraint) | SHOULD ≡ ∧ preferred | MAY ≡ �
 3. **[requirements-module-3.md](requirements-module-3.md)** — *Core Collection Types & Primitive Free Functions*
    - **Purpose**: Implements concrete, array-backed, bounded collection types and their primitive member and free-function operations.
    - **Active producer first access**: `REQ-FN-002A1` extends `first` to all cljonic producers, including predicate adapters and dependent Cycles, with only-needed evaluation and default results for empty or zero-cap observations. Existing collection and MapEntry support remains active and unchanged.
-   - **Active tail extension**: `REQ-FN-002A4` and `REQ-FN-002A6` define deferred exact-type TakeWhile/DropWhile tails and compact eager normalization for adapter-dependent Cycles, implemented after separate explicit approval and verification. `rest` and `has_next` follow the complete `next` producer domain.
-   - **Scope**: `Vector`, `MapEntry`, `Map`, `Set`, `Queue`, `String`, bounded array-backed storage, swap-and-remove mechanics, callable collection syntax (`v(idx)`, `m(key)`, `s(val)`), and current primitive free functions (`character_is_valid`, `count`, `get`, `is_empty`, `empty`, `first`, `has_first`, `next`, `has_next`, `has_rest`, `rest`, `conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`). `has_first` observes only enough of an admitted first-access input to establish presence, and is true for `MapEntry` because `first(MapEntry)` returns its key, under `REQ-FN-002A8`. `has_rest` is an exact forwarding alias for `has_next` under `REQ-FN-002A3`. `seq` converts collections and supported producers under `REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014`; `rest` delegates to `next` for collections and supported producers under `REQ-SEQ-001`–`009` and `REQ-SEQ-012` (`REQ-COLL-*`, `REQ-FN-001`–`008A`, `REQ-FN-002A4`–`002A8`, `REQ-FN-026`).
+   - **Active tail extension**: `REQ-FN-002A4` and `REQ-FN-002A6` define same-type TakeWhile/DropWhile tails using deferred output skipping and compact eager normalization for adapter-dependent Cycles, implemented after separate explicit approval and verification. `rest` and `has_next` follow the complete `next` producer domain.
+   - **Scope**: `Vector`, `MapEntry`, `Map`, `Set`, `Queue`, `String`, bounded array-backed storage, swap-and-remove mechanics, `CallableLookup` syntax (`v(idx)`, `m(key)`, `s(val)`), and current primitive free functions (`character_is_valid`, `count`, `get`, `is_empty`, `empty`, `first`, `has_first`, `next`, `has_next`, `has_rest`, `rest`, `conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`). `has_first` observes only enough of an admitted first-access input to establish presence, and is true for `MapEntry` because `first(MapEntry)` returns its key, under `REQ-FN-002A8`. `has_rest` is an exact forwarding alias for `has_next` under `REQ-FN-002A3`. `seq` converts collections and supported producers under `REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014`; `rest` delegates to `next` for collections and supported producers under `REQ-SEQ-001`–`009` and `REQ-SEQ-012` (`REQ-COLL-*`, `REQ-FN-001`–`008A`, `REQ-FN-002A4`–`002A8`, `REQ-FN-026`).
 
 4. **[requirements-module-4.md](requirements-module-4.md)** — *Sequence Producers & Materialization Pipeline*
    - **Purpose**: Adds explicit materialization, `Producer` values, and `StandardViewType` interoperability.
@@ -44,7 +46,7 @@ MUST ≡ ∀/¬ (required by constraint) | SHOULD ≡ ∧ preferred | MAY ≡ �
 
 6. **[requirements-module-6.md](requirements-module-6.md)** — *Numeric & Callable Convenience*
    - **Purpose**: Adds scalar arithmetic, bitwise math, conversion/parsing controls, and functional closure builders.
-   - **Scope**: Checked arithmetic with preflights (`can_add`, `can_subtract`, `can_multiply`), bitwise operations (`bit_and`, `bit_or`, `bit_shift_left`), raw floating-point stability restrictions, stored closure capabilities, and callable adapters (`partial`, `juxt`, `fnil`, `complement`, `apply`) (`REQ-NUM-000`–`017`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`).
+   - **Scope**: Checked arithmetic with preflights (`can_add`, `can_subtract`, `can_multiply`), bitwise operations (`bit_and`, `bit_or`, `bit_shift_left`), raw floating-point stability restrictions, stored closure capabilities, and callable adapters (`partial`, `juxt`, `fnil`, `complement`, `apply`) (`REQ-NUM-000`–`019`, `REQ-NUM-010A`–`010E`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`).
 
 7. **[requirements-module-7.md](requirements-module-7.md)** — *Specialized Value Domains & State*
    - **Purpose**: Implements higher-level domain conveniences and state built on top of lower modules.

@@ -26,6 +26,10 @@
 -- false value or original window end, without a count prepass. This extension
 -- is active after separate implementation approval and verification.
 
+-- Statically inspectable predicate parameters use mandatory safe conversions
+-- under REQ-CONV-001; integer/floating crossings are rejected even when the
+-- individual value is representable, so an explicit conversion is required.
+
 entity DropWhile {
     predicate_first_source_second_exact_two_arity: Boolean
     source_is_closed_cljonic_domain_including_adapters: Boolean
@@ -57,6 +61,7 @@ entity DropWhile {
     predicate_should_be_pure_and_must_not_allocate: Boolean
     predicate_nothrow_const_element_invocation_returns_exact_bool: Boolean
     inspectable_parameter_conversions_are_safe: Boolean
+    integer_floating_parameter_crossings_rejected: Boolean
     generic_predicate_uses_nothrow_exact_bool_fallback: Boolean
     fresh_predicate_state_per_traversal_no_shared_cache: Boolean
     preserves_owned_state_and_existing_authorized_external_effect_scope: Boolean
@@ -107,6 +112,7 @@ entity DropWhile {
     invariant PredicatePurityAndNoAllocation { this.predicate_should_be_pure_and_must_not_allocate = true }
     invariant PredicateNothrowConstElementExactBool { this.predicate_nothrow_const_element_invocation_returns_exact_bool = true }
     invariant InspectableParameterConversionsAreSafe { this.inspectable_parameter_conversions_are_safe = true }
+    invariant IntegerFloatingParameterCrossingsRejected { this.integer_floating_parameter_crossings_rejected = true }
     invariant GenericPredicateNothrowExactBoolFallback { this.generic_predicate_uses_nothrow_exact_bool_fallback = true }
     invariant FreshPredicateStateWithoutCache { this.fresh_predicate_state_per_traversal_no_shared_cache = true }
     invariant PreservesStateAndAuthorizedEffectScope { this.preserves_owned_state_and_existing_authorized_external_effect_scope = true }

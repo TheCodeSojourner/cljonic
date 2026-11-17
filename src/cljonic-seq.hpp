@@ -12,8 +12,9 @@ namespace cljonic::core {
 
 /** \anchor Seq
  * The \b seq free function returns the logical traversal elements of a `Vector`, `Map`, `Set`, `Queue`, or `String`
- * value, or of a supported \ref Range "Range", \ref Repeat "Repeat", \ref Cycle "Cycle", \ref Iterate "Iterate", or
- * \ref Repeatedly "Repeatedly" producer, as an owning, value-semantic \ref Vector "Vector" in traversal order.
+ * value, or of a supported \ref Range "Range", \ref Repeat "Repeat", \ref Cycle "Cycle", \ref Iterate "Iterate", \ref
+ * Repeatedly "Repeatedly", \ref TakeWhile "TakeWhile", or \ref DropWhile "DropWhile" producer, as an owning,
+ * value-semantic \ref Vector "Vector" in traversal order.
  *
  * A \ref Vector "Vector" input returns a by-value copy of itself. A \ref Map "Map" input yields a vector of
  * value-semantic \ref MapEntryFactory "map_entry" values. A \ref Set "Set" or \ref Queue "Queue" input yields a vector

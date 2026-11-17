@@ -101,15 +101,21 @@ document.addEventListener('DOMContentLoaded', codefold.init);
 <div id="doc-content">
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">cljonic-fits-into.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;<a class="el" href="cljonic-concepts_8hpp_source.html">cljonic-concepts.hpp</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="cljonic-producer-range_8hpp_source.html">cljonic-producer-range.hpp</a>&gt;</code><br />
 </div>
 <p><a href="cljonic-fits-into_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:cljonic_3A_3Aconcepts_5Fdetail_3A_3ARangeMaterializationAccess" id="r_cljonic_3A_3Aconcepts_5Fdetail_3A_3ARangeMaterializationAccess"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="structcljonic_1_1concepts__detail_1_1_range_materialization_access.html">cljonic::concepts_detail::RangeMaterializationAccess</a></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:cljonic" id="r_cljonic"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic.html">cljonic</a></td></tr>
@@ -118,8 +124,10 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a3a6d6bce426e95e6bb7791af65f35093" id="r_a3a6d6bce426e95e6bb7791af65f35093"><td class="memTemplParams" colspan="2">template&lt;concepts::CljonicSource Source&gt; </td></tr>
-<tr class="memitem:a3a6d6bce426e95e6bb7791af65f35093 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html#a3a6d6bce426e95e6bb7791af65f35093">cljonic::concepts_detail::materialization_source_is_finite</a> (const Source &amp;source) noexcept -&gt; bool</td></tr>
+<tr class="memitem:a1b3a58568224861cd589950db83748af" id="r_a1b3a58568224861cd589950db83748af"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
+<tr class="memitem:a1b3a58568224861cd589950db83748af template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html#a1b3a58568224861cd589950db83748af">cljonic::concepts_detail::materialization_source_is_fully_observable</a> (const <a class="el" href="classcljonic_1_1_range.html">Range</a>&lt; T &gt; &amp;source) noexcept -&gt; bool</td></tr>
+<tr class="memitem:ac6dfd805d0fe0db60839bd7742a365fd" id="r_ac6dfd805d0fe0db60839bd7742a365fd"><td class="memTemplParams" colspan="2">template&lt;concepts::CljonicSource Source&gt; </td></tr>
+<tr class="memitem:ac6dfd805d0fe0db60839bd7742a365fd template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html#ac6dfd805d0fe0db60839bd7742a365fd">cljonic::concepts_detail::materialization_source_is_fully_observable</a> (const Source &amp;source) noexcept -&gt; bool</td></tr>
 <tr class="memitem:a273085ed8b4964d4b21d2b30e9f2d260" id="r_a273085ed8b4964d4b21d2b30e9f2d260"><td class="memTemplParams" colspan="2">template&lt;typename Dest, typename Source&gt; <br />
 requires MaterializableSource&lt;Dest, Source&gt;</td></tr>
 <tr class="memitem:a273085ed8b4964d4b21d2b30e9f2d260 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1concepts__detail.html#a273085ed8b4964d4b21d2b30e9f2d260">cljonic::concepts_detail::source_fits_by_insertion</a> (const Dest &amp;destination, const Source &amp;source) noexcept -&gt; bool</td></tr>

@@ -7,22 +7,25 @@ This module establishes the C++20 concept capability framework, result status ou
 ## Implicit Conversion Policy
 
 λ REQ-CONV-001(x).
-  ∀ boundary ∈ {public_free_function, collection_ctor, producer_ctor, corresponding_member}, argument ∈ arguments(boundary): require(SafeImplicitConversion(destination_type(argument), type(argument)) ∧ operation_domain(boundary, argument))
-  ∧ SafeImplicitConversion(T, A) ≡ same(remove_cvref(T), remove_cvref(A)) ∨ ValuePreservingConversion(A → T)
-  ∧ ValuePreservingConversion(A → T) ≡ standard_arithmetic(A → T) ∧ preserves(∀ value ∈ domain(A): value ∧ meaning(value)) ∧ ¬crosses(Boolean ∨ character ∨ enum)
-  ∧ integral → integral: range(source) ⊆ range(destination)
-  ∧ integral → floating: radix_compatible ∧ sufficient(precision ∧ exponent_range)
+  ∀ ordinary boundary ∈ {public_free_function, collection_ctor, producer_ctor, corresponding_member}, argument ∈ arguments(boundary): require(SafeImplicitConversion(destination_type(argument), type(argument)) ∧ operation_domain(boundary, argument)) unless an explicitly governed exception applies
+  ∧ SafeImplicitConversion(T, A) ≡ same(remove_cvref(T), remove_cvref(A)) ∨ (ValuePreservingConversion(A → T) ∧ ¬crosses(integer ↔ floating ∨ Boolean ∨ character ∨ enum domain))
+  ∧ ValuePreservingConversion(A → T) ≡ standard_arithmetic(A → T) ∧ preserves(∀ value ∈ domain(A): value ∧ meaning(value)) ∧ ¬crosses(Boolean ∨ character ∨ enum domain)
+  ∧ integral → integral: range(source) ⊆ range(destination) ∧ preserve(existing_semantic_domain_restrictions)
   ∧ floating → floating: preserves(precision ∧ exponent_range ∧ infinity ∧ NaN ∧ subnormal_support)
-  ∧ floating → integral: reject
+  ∧ integer ↔ floating: reject implicit conversion at compile time even when all source values are representable ∧ intentional cross-domain conversion requires an explicit conversion before the ordinary call
+  ∧ explicit conversion functions and their preflights: receive the original source type and value without implicit conversion to the requested result type before validation ∧ follow REQ-NUM-008–013
+  ∧ this type-based admission change adds no general runtime value checking to ordinary APIs ∧ existing operation-specific checks and documented exceptions remain in force
   ∧ cross_type(user_defined ∨ pointer): reject unless explicitly_required(operation_exception)
   ∧ same_type(user_defined): retain(storage_constraints)
   ∧ potentially_lossy(source_type → destination_type): reject regardless(fits(particular_literal))
   ∧ intentional_conversion: explicit_before_call ∧ (¬established(representability) → checked_conversion)
   ∧ NothrowElementConstruction(T, argument) ≡ SafeImplicitConversion(T, type(argument)) ∧ noexcept(construct(T, actual_argument_expression))
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
+  rationale: human approved on 2026-11-06 requiring visible explicit conversion across integer and floating domains while retaining safe within-domain widening and existing operation-specific checks
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06, rationale_source: origin_artifact}
 
 λ REQ-CONV-002(x).
-  ∀ boundary ∈ {query, update, removal, preflight, fallback, ctor, materialization}, ∀ variadic_position: same(destination_domain) → same(SafeImplicitConversion)
+  ∀ ordinary boundary ∈ {query, update, removal, preflight, fallback, ctor, materialization}, ∀ variadic_position: same(destination_domain) → same(SafeImplicitConversion)
+  ∧ ∀ explicit conversion preflight: follows the same source admission and policy as its corresponding conversion under REQ-NUM-010 and REQ-NUM-013 rather than implicitly converting its source to the destination
   | refinements: `REQ-CONV-002A`–`002E`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
 
@@ -117,7 +120,7 @@ This module establishes the C++20 concept capability framework, result status ou
   ∀ supported map-key ∧ set-element domain: includes composite values formed by `cljonic::Variant` over scalar C++ literals, scoped enumerations, supported `Collection` values, supported `Producer` values whose stored parameters admit stable equality, and `MapEntry` values, subject to the storage, stable-equality, and component-recursion requirements of this module and Modules 3 and 4
   ∧ ∀ producer admitted as map key ∨ set element (directly ∨ as composite component): compares by producer parameter equality as governed by `REQ-FN-014B` — equality compares only the producer's bounded stored parameters ∧ ¬∃ traversal ∨ materialization of the produced sequence ∧ ¬∃ implication that equal parameters yield equal materialized sequences
   ∧ ∀ composite_value: satisfies the same admission contract as non-composite values — every stored component admits stable equality ∧ recursion applies to all nested components ∧ callable components are rejected because callables do not admit a stable value-equality comparison in the supported domain
-  ∧ ∀ `cljonic::Variant` used as map key ∨ set element: uses alternative-strict equality — two variant values are equal only when they hold the same alternative and that alternative's values compare equal ∧ variants holding different alternatives compare unequal even when the alternative values would compare conventionally equal
+  ∧ ∀ `cljonic::Variant` used as map key ∨ set element: uses `AlternativeStrictEquality` — two variant values are equal only when they hold the same alternative and that alternative's values compare equal ∧ variants holding different alternatives compare unequal even when the alternative values would compare conventionally equal
   ∧ ∀ composite_domain_extension: does not expand the closed cljonic vocabulary beyond the standard composition operator ∧ does not reproduce Clojure runtime features, cross-type numeric unification, or hash-based equality
   ∧ ∀ map key ∨ set element admission: the required `StableEquality` includes a non-throwing comparison operation, so key lookup, membership, insertion, and removal never call a comparison that can throw
   ∧ ∀ parameterized standard-library wrapper (`std::pair`, `std::optional`, `std::tuple`, `std::variant`) ∧ ∀ other wrapper whose stored types the library cannot analyze: rejected as a map key ∨ set element whatever it is instantiated with, because a floating-point or otherwise unsupported component could otherwise enter a key or element position behind the wrapper; the non-throwing-comparison requirement already excludes the standard-library wrappers, which declare no non-throwing comparison, so no separate exclusion list is required
@@ -163,9 +166,9 @@ This module establishes the C++20 concept capability framework, result status ou
 λ REQ-CAP-014(x).
   ∀ `Seqable` declaration: closed to external extension ∧ ¬∃ declaration mechanism by which a type outside the cljonic-owned collection family (`Vector`, `Map`, `Set`, `Queue`, `String`) confers `Seqable` on itself
   ∧ ∀ third-party type ∧ ∀ new type: must never be able to declare itself `Seqable`; the library provides no concept-specialization point, trait hook, adopter-supplied trait, or opt-in mechanism that confers the capability
-  ∧ ∀ structural similarity to a supported collection: does not confer `Seqable` ∧ never substitutes for cljonic-owned nominal admission (`REQ-CAP-009`, `REQ-COLL-001`)
+  ∧ ∀ structural similarity to a supported collection: does not confer `Seqable` ∧ never substitutes for cljonic-owned `NominalCollectionRecognition` (`REQ-CAP-009`, `REQ-COLL-001`)
   rationale: capability identity is library-owned; an external declaration point would let a type claim sequence semantics cljonic cannot guarantee, trace, or constrain at the public API boundary
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: AI_inferred}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07, rationale_source: origin_artifact, rationale_approved_by: human}
 
 ## Canonical Type, Result, and Status Model
 
@@ -179,7 +182,7 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
 - A `CheckedFailureResult` is a documented non-throwing, non-allocating result indicating that an operation could not complete successfully without violating the library's failure model.
 - A `Producer` is an explicit, parameter-owning value representing a sequence or materialization source, distinct from materialized results and borrowed views. Its ownership and lifetime contract is governed by `REQ-VAL-008`.
 - A `ProducerOnlyResult` is a public operation result whose value is a self-contained `Producer` rather than an owning materialized `Collection`. A `ProducerOnlyResult` owns producer parameters, does not own materialized result storage, and does not borrow source storage or hidden mutable state.
-- A `CompleteResult` is the full result of an operation as defined by the relevant requirement.
+- A `CompleteResult` is the result containing all outputs defined by the relevant operation requirement.
 - Result classification and documentation are governed by `REQ-ERR-009`–`010`; completion preflights by `REQ-BOUNDS-017` and `REQ-ERR-006`.
 - `StableEquality` and `TotalOrder` are capabilities independent of storage admission (`REQ-VAL-007`, `REQ-VAL-007A`).
 
@@ -249,7 +252,7 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
 
 λ REQ-BOUNDS-010B(x).
-  ∀ future traversal_work: defines the sequence behavior corresponding to `is_empty`
+  ∀ future `Traversal` operation: defines empty/nonempty behavior consistently with `is_empty` under `REQ-BOUNDS-010A`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
 
 λ REQ-BOUNDS-010C(x).
@@ -330,19 +333,23 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
 
 λ REQ-ERR-007(x).
   ∀ supported_cljonic_operation: defined for all its documented inputs
-  ∧ ∀ operation: ¬∃ (throw ∨ undefined_behavior ∨ out-of-bounds_storage_access ∨ unexpected_allocation ∨ silent_state_corruption ∨ process_termination ∨ dependence on hidden mutable error state)
-  ∧ ∀ runtime_detectable_unsuccessful_condition: uses the operation-specific documented mechanism — a preflight predicate with a default or bounded result, a checked result, or a `CompileTimeFailure` when the condition is knowable from the types or constant expressions
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  ∧ ∀ operation: ¬∃ (throw ∨ undefined_behavior ∨ out-of-bounds_storage_access ∨ unexpected_allocation ∨ silent_state_corruption ∨ process_termination ∨ dependence on hidden mutable error state), except the explicitly selected conversion diagnostic mode governed by REQ-NUM-010B–010E
+  ∧ conversion diagnostic mode exception: records an accessible library-managed static error code and invokes the specified non-returning handler ∧ ¬∃ relaxation of no-throw, no-allocation, or other safety protections
+  ∧ ∀ runtime_detectable_unsuccessful_condition: uses the operation-specific documented mechanism — a preflight predicate with a default or bounded result, a checked result, or a `CompileTimeFailure` when the condition is knowable from the types or constant expressions; conversion diagnostic mode follows REQ-NUM-010B–010E
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
 
 λ REQ-ERR-008(x).
   ∀ overflow_policy: operation-specific but follows one general contract — compile-time-known capacity or representability overflow rejected at compile time ∧ runtime-detectable overflow provides a non-throwing, non-allocating preflight predicate ∧ the corresponding operation leaves its input unchanged when the predicate is false ∧ returns its documented default or bounded result
-  ∧ ∀ context: `into` is the explicit partial-prefix exception and uses `fits_into` as specified elsewhere
+  ∧ ∀ explicit numeric conversion: narrow exception governed by REQ-NUM-009 and REQ-NUM-010A–010B — a failed conversion required to be a constant expression fails compilation; a call not required to be constant-evaluated follows its selected runtime mode even when its value is statically knowable
+  ∧ ∀ other operations: retain the general overflow contract ∧ ∀ context: `into` is the explicit partial-prefix exception and uses `fits_into` as specified elsewhere
   ∧ ∀ direct_source_constructor whose documented operation is bounded-prefix construction: not a complete materialization operation ∧ does not require a separate preflight predicate; complete source materialization remains governed by `into`, preflighted by `fits_into`
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-ERR-009(x).
   ∀ public_operation: declare(outcome_classification ∈ {complete, bounded_prefix, default_returning, checked_failure, ProducerOnlyResult}) ∧ classification_independent_of(value_kind)
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
+  ∧ ∀ explicit conversion: default_returning in normal mode ∧ document diagnostic-mode non-returning failure as the REQ-NUM-010B–010D exception ∧ constant-evaluation failure remains a separate compile-time rule
+  ∧ ∀ conversion preflight: Boolean predicate under REQ-NUM-010 ∧ ¬∃ new general result category for diagnostic mode
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
 
 λ REQ-ERR-010(x).
   ∀ public_operation: document(outcome_classification ∧ completion_preflight_if_any ∧ applicable_noncomplete_result_semantics)
@@ -359,7 +366,7 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-DIAG-003(x).
-  ∧ preferred: the library uses targeted `static_assert` diagnostics for context-dependent compile-time failures that cannot be expressed clearly through concepts or equivalent constraints
+  ∧ preferred: the library uses targeted `static_assert` diagnostics for context-dependent `CompileTimeFailure` outcomes that cannot be expressed clearly through concepts or equivalent constraints
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-DIAG-004(x).
@@ -383,12 +390,12 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
 
 λ REQ-DIAG-008(x).
   ∀ requirement_designator: globally unique ∧ stable after publication so that traceability survives requirement refinement
-  ∧ ∀ designator: form `REQ-<FAMILY>-<NUMBER>` with an optional uppercase alphabetic suffix reserved for a refinement of the immediately preceding numeric requirement
-  ∧ ∀ contiguous family-specific requirement list: requirements presented and referenced in numeric order, with a suffixed refinement immediately following its base requirement
-  ∧ ∃ permitted_path: thematic module sections group related requirements from different families ∧ requirements distributed across dependency-ordered modules
-  ∧ ∀ existing_designator: ¬∃ renumbering to fill gaps
+  ∧ ∀ designator: form `REQ-<FAMILY>-<NUMBER>` with an optional uppercase alphanumeric suffix ∧ suffix is an opaque disambiguator, not an ordering or hierarchy signal
+  ∧ ∀ designator allocation and presentation: follows the topical conventions declared in requirements-index.md ∧ number gaps and cross-module restarts are permitted ∧ ¬∃ requirement for globally monotone numbering or a uniform suffix pattern
+  ∧ ∃ permitted_path: thematic module sections group related requirements from different families ∧ requirements distributed across responsibility-grouped modules whose general progression does not mandate a strict one-module-at-a-time implementation order
+  ∧ ∀ existing_designator: ¬∃ renumbering to fill gaps or renaming approved suffix forms for stylistic consistency
   rationale: traceability must survive requirement refinement across downstream annotations
-  {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07, rationale_source: origin_artifact}
 
 λ REQ-DIAG-009(x).
   ∀ public_free_function, present ∨ added_in_future, whose supported domain is closed and expressible through named `CapabilityConcept`s (illustrative, non-narrowing examples: `equal`, `not_equal`, the producer factories `repeat`, `cycle`, `iterate`, and `repeatedly`, and the collection primitives `count`, `get`, `contains`, `conj`, `can_conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`, `is_empty`, `into`, and `fits_into`):
@@ -514,7 +521,7 @@ Explanatory definitions; binding obligations reside in the numbered clauses refe
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-VOCAB-011(x).
-  ∀ public_function considered during API-surface review: one explicit lifecycle classification ∈ {`candidate`, `deferred`, `excluded`, `requirements-backed`}
+  ∀ public_function considered during API-surface review: one explicit lifecycle classification ∈ {`CandidateStatus`, `DeferredStatus`, `ExcludedStatus`, `RequirementsBacked`}
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-VOCAB-012(x).

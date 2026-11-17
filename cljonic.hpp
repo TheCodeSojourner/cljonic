@@ -50,12 +50,18 @@
  * ## Core Functions
  *
  * Every Core function is declared in \c cljonic::core. Entries linked to documentation have implemented documentation.
- * Plain names are planned entries that are not yet implemented.
+ * Unlinked names include both planned functions and implemented functions without a dedicated cheatsheet link.
  *
  * - add, apply, \ref Assoc "assoc", assoc_in
  * - bit_and, bit_and_not, bit_clear, bit_flip, bit_not, bit_or, bit_set, bit_shift_left, bit_shift_right, bit_test,
  *   bit_xor, butlast
  * - can_add, \ref CanAssoc "can_assoc", \ref CanConj "can_conj", can_multiply, can_subtract,
+ *   \ref ExplicitConversions "can_to", \ref ExplicitConversions "can_to_byte", \ref ExplicitConversions "can_to_char",
+ *   \ref ExplicitConversions "can_to_count", \ref ExplicitConversions "can_to_double", \ref ExplicitConversions "can_to_float",
+ *   \ref ExplicitConversions "can_to_index", \ref ExplicitConversions "can_to_int", \ref ExplicitConversions "can_to_long",
+ *   \ref ExplicitConversions "can_to_long_double", \ref ExplicitConversions "can_to_long_long",
+ *   \ref ExplicitConversions "can_to_short", \ref ExplicitConversions "can_to_size", \ref ExplicitConversions "can_to_uint",
+ *   \ref ExplicitConversions "can_to_ulong", \ref ExplicitConversions "can_to_ulong_long", \ref ExplicitConversions "can_to_ushort",
  *   \ref CharacterIsValid "character_is_valid", comp, compare, complement, \ref Conj "conj", constantly,
  *   \ref Contains "contains", \ref Count "count", \ref Cycle "cycle"
  * - dec, dedupe, deref, \ref Disj "disj", \ref Dissoc "dissoc", distinct, div, \ref Drop "drop", drop_last, \ref DropWhile "drop_while"
@@ -82,11 +88,18 @@
  *   replace, replicate, reset, reset_vals, \ref Rest "rest", rseq
  * - second, select_keys, \ref Seq "seq", some, some_fn, sort, sort_by, split_at, split_with, str, \ref StringFactory "string",
  *   sub, subvec, swap, swap_vals
- * - \ref Take "take", take_last, take_nth, \ref TakeWhile "take_while", to_byte, to_char, to_double, to_float, to_int, to_long, to_short,
- *   tree_seq
+ * - \ref Take "take", take_last, take_nth, \ref TakeWhile "take_while", \ref ExplicitConversions "to",
+ *   \ref ExplicitConversions "to_byte", \ref ExplicitConversions "to_char", \ref ExplicitConversions "to_count",
+ *   \ref ExplicitConversions "to_double", \ref ExplicitConversions "to_float", \ref ExplicitConversions "to_index",
+ *   \ref ExplicitConversions "to_int", \ref ExplicitConversions "to_long", \ref ExplicitConversions "to_long_double",
+ *   \ref ExplicitConversions "to_long_long", \ref ExplicitConversions "to_short", \ref ExplicitConversions "to_size",
+ *   \ref ExplicitConversions "to_uint", \ref ExplicitConversions "to_ulong", \ref ExplicitConversions "to_ulong_long",
+ *   \ref ExplicitConversions "to_ushort", tree_seq
  * - unsigned_bit_shift_right, update, update_in, update_keys, update_vals
  * - vals, \ref VariantFactory "variant", variant_alternative, variant_size, vec, \ref cljonic::vector "vector", visit
  * - zipmap
+ *
+ * See \ref ExplicitConversions "Explicit conversions" for numeric, character, and byte conversion policies.
  *
  * ## Set Library Functions
  *
@@ -169,12 +182,11 @@ constexpr std::size_t CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE = CLJONIC_C
  *
  * \section conversion-automatic When numbers convert automatically
  *
- * You can pass a different numeric type when the conversion preserves every possible value of that type, not just the
- * value you happen to pass:
+ * You can pass a different numeric type within the same numeric domain when the conversion preserves every possible
+ * value of that type, not just the value you happen to pass:
  * - A \c short can become a \c long \c long without losing its value.
- * - A \c float can become a \c double without losing precision.
- * - An integer can become a floating-point number only if the destination can represent every value of the integer
- *   type exactly. Do not assume that a floating-point type can hold every integer just because it has a larger range.
+ * - A \c float can become a \c double without losing precision. Integer and floating-point types are separate domains:
+ * conversions between them are rejected in both directions, even when a particular value is representable.
  *
  * A conversion that could lose information is rejected at compile time, even for a literal that fits. For example,
  * passing an \c int to an operation expecting \c short is rejected even when the argument is \c 1. Floating-point
@@ -295,6 +307,7 @@ template <typename To, typename From>
     requires(std::is_arithmetic_v<To> && std::is_arithmetic_v<From>)
 inline constexpr bool value_preserving_arithmetic<To, From> =
     !std::same_as<To, bool> && !std::same_as<From, bool> && !CharacterType<To> && !CharacterType<From> &&
+    std::is_integral_v<To> == std::is_integral_v<From> &&
     std::numeric_limits<To>::radix == std::numeric_limits<From>::radix &&
     std::numeric_limits<To>::digits >= std::numeric_limits<From>::digits &&
     (std::is_floating_point_v<To> || (std::is_integral_v<From> && (std::is_signed_v<To> || !std::is_signed_v<From>))) &&
@@ -549,8 +562,9 @@ concept NothrowCollectionElement = CopyableElement<T> && std::destructible<T> &&
     { value = other } noexcept;
 };
 
-/** Admits identical types or value-preserving arithmetic conversions without
- *  crossing Boolean, character, enumeration, pointer, or user-defined domains. */
+/** Admits identical types or value-preserving arithmetic conversions within
+ *  the same integer or floating-point domain. Integer/floating crossings and
+ *  Boolean, character, enumeration, pointer, or user-defined domains are excluded. */
 template <typename T, typename Arg>
 concept SafeImplicitConversion =
     std::same_as<std::remove_cvref_t<T>, std::remove_cvref_t<Arg>> ||
@@ -566,7 +580,7 @@ concept NothrowElementConstruction = SafeImplicitConversion<T, Arg> && requires(
 // Value Capability Concepts
 // ============================================================================
 
-/** Requires stable value equality comparison, explicitly rejecting
+/** Requires non-throwing stable value equality comparison, explicitly rejecting
  *  floating-point types to prevent NaN/precision instabilities in map keys
  *  and set elements.
  *
@@ -577,19 +591,17 @@ concept NothrowElementConstruction = SafeImplicitConversion<T, Arg> && requires(
  *  that skips the declaration fails here instead of silently admitting a
  *  detectable floating-point comparison. */
 template <typename T>
-concept StableEqualityComparable = std::equality_comparable<T> && !concepts_detail::contains_floating_point_v<T> &&
+concept StableEqualityComparable = std::equality_comparable<T> && concepts_detail::nothrow_equality_v<T> &&
+                                   !concepts_detail::contains_floating_point_v<T> &&
                                    !concepts_detail::contains_callable_v<T> && concepts_detail::walker_coverage_ok_v<T>;
 
 /** Requires a strict total ordering layered on stable equality. */
 template <typename T>
 concept TotallyOrdered = StableEqualityComparable<T> && std::totally_ordered<T>;
 
-/** Requires stable equality whose comparison cannot throw, so operations
- *  declared \c noexcept (such as \c equal and \c not_equal) cannot terminate
- *  through a throwing \c operator==.
- *
- *  std::variant relational operators are not declared noexcept by the standard,
- *  so composites recurse over their alternatives. */
+/** Retains the explicit non-throwing equality constraint for operations declared
+ *  \c noexcept (such as \c equal and \c not_equal). Stable equality also requires
+ *  a non-throwing comparison. */
 template <typename T>
 concept NothrowEqualityComparable = StableEqualityComparable<T> && concepts_detail::nothrow_equality_v<T>;
 
@@ -4977,6 +4989,1014 @@ template <typename C, typename K>
 
 } // namespace cljonic::core
 // End cljonic-contains.hpp
+// Begin cljonic-core-conversions.hpp
+#pragma once
+
+#include <climits>
+#include <cmath>
+#include <concepts>
+#include <cstddef>
+#include <cstdint>
+#include <limits>
+#include <type_traits>
+#include <utility>
+
+/** \file cljonic-core-conversions.hpp
+ * \anchor ExplicitConversions
+ * Explicit numeric, character, and byte conversions.
+ *
+ * A conversion policy is an optional second argument that explicitly permits a particular kind of precision loss. For
+ * example, \c to_int(3.75, conversion::truncate) permits discarding the fractional part and returns 3. The available
+ * policies are \c cljonic::core::conversion::truncate and \c cljonic::core::conversion::nearest; their permitted
+ * conversion directions are described below. Matching preflights accept the same second argument, for example \c
+ * can_to_int(3.75, conversion::truncate) returns true because the truncated value, 3, fits in int.
+ *
+ * When only the value is supplied, as in \c to_int(3.0), a numeric conversion succeeds only if the destination can
+ * represent the supplied value exactly, without rounding, discarding a fractional part, or wrapping. This checks the
+ * particular value, not whether every value of its source type would fit:
+ * - **Integer-To-Integer:** the value must fit the destination's range; negative values cannot convert to unsigned
+ * types.
+ * - **Floating-To-Integer:** the value must be finite, have no fractional part, and fit the destination's range.
+ *   For example, \c to_int(3.0) succeeds, while \c can_to_int(3.5) returns false.
+ * - **Integer-To-Floating and Floating-To-Floating:** the destination must preserve the value without rounding.
+ *   For example, \c to_float(1.5) succeeds; on a float with 24 binary precision digits, \c can_to_float(16777217)
+ *   returns false because that integer cannot be represented exactly.
+ *
+ * NaN and infinity are rejected, including when source and destination have the same type. **Floating-To-Floating**
+ * conversions preserve the sign of zero when the destination supports it. For example, with an IEEE 754 float
+ * destination, \c to_float(-0.0) returns negative float zero, and \c std::signbit(to_float(-0.0)) returns true. If the
+ * destination cannot represent negative zero, converting negative zero fails. Both signs of floating zero convert to
+ * integer zero. Integer zero converts to positive floating zero. A failed exact conversion follows the failure
+ * behavior below; it does not silently choose a rounded result.
+ *
+ * Select \c conversion::truncate only for **Floating-To-Integer** truncation toward zero. Select \c
+ * conversion::nearest only for **Integer-To-Floating** or different-floating-type **Floating-To-Floating** conversion;
+ * it rounds to nearest with ties to even. Omit the policy for exact-same-type conversions and **Integer-To-Integer**
+ * conversions. Neither policy is accepted for character or byte conversions.
+ *
+ * The matching \c can_to* functions return true when the corresponding conversion would succeed, otherwise false, even
+ * during constant evaluation.
+ *
+ * Unsupported types or policy combinations fail compilation with a cljonic-specific error message naming the operation
+ * and explaining its permitted inputs and policies. This applies to both conversions and preflights: \c
+ * can_to_float('A') does not return false; like \c to_float('A'), it fails compilation because char sources are not
+ * supported for floating destinations. Likewise, \c to_int(3.5, conversion::nearest) fails compilation because nearest
+ * rounding is not supported for integer destinations; use \c conversion::truncate to deliberately discard the
+ * fractional part.
+ *
+ * **Supported Source and Destination Types**
+ *
+ * Here, "non-character integer" means short, int, long, long long, or their unsigned counterparts, including aliases
+ * such as std::size_t. Plain char has its own conversion rules below. In C++, char, signed char, and unsigned char are
+ * three distinct types: a platform where plain char is signed does not make it the type signed char.
+ *
+ * - **Non-Character Integer Destinations** (such as \c to_int and \c to_uint): accept non-character integers,
+ *   supported binary floating-point values, and plain char. Every successful result preserves the supplied value
+ *   unless an allowed floating-to-integer truncation policy is selected, and must fit the destination's range.
+ *   For a char source, omit the policy: \c to_int('A') returns its native numeric character code (65 on
+ *   ASCII-compatible systems), and \c to_int('\0') returns 0. This is not digit parsing: \c to_int('7') returns the
+ *   character code, not the number 7. Negative plain-char values remain negative when converted to a signed integer;
+ *   conversion to an unsigned integer fails rather than wrapping.
+ * - **Floating Destinations** (such as \c to_float): accept non-character integers and supported binary
+ *   floating-point values, but not char or std::byte.
+ * - **Plain Char and Byte Destinations** (\c to_char and \c to_byte): accept non-character integers, plain char,
+ *   and std::byte, subject to the value checks below; floating-point sources are not accepted.
+ *
+ * Bool, signed char, unsigned char, wchar_t, char8_t, char16_t, char32_t, application enums, pointers, and
+ * user-defined types are not supported as sources or destinations by these conversion APIs. This exclusion does not
+ * include plain char or std::byte, which are supported exactly as described above. Type aliases follow their
+ * underlying type; for example, std::uint8_t is unsupported when it aliases unsigned char.
+ *
+ * The \c to_char free function accepts non-character integers, char, or std::byte and checks the value against \c
+ * std::numeric_limits<char>::min() through \c std::numeric_limits<char>::max() before conversion. NUL and all
+ * representable non-ASCII values are allowed; every char source is returned unchanged. An out-of-range value fails
+ * rather than wrapping. The \c to_byte free function accepts non-character integers or plain char whose numeric value
+ * is in 0..UCHAR_MAX, including zero, and returns the corresponding std::byte. Negative char values fail rather than
+ * being reinterpreted as unsigned byte codes. A std::byte source is returned unchanged.
+ *
+ * These are low-level conversions, independent of cljonic's String character-validity policy. \c to_char(0) succeeds
+ * with NUL, but \ref CharacterIsValid "character_is_valid" still returns false for NUL, and String still enforces its
+ * non-NUL ASCII content range (1..127). Character and byte range failures use \c ConversionError::out_of_range.
+ * Matching preflights check the same input rules, and generic \c to<T> and \c can_to<T> follow the same rules for
+ * their selected destination.
+ *
+ * An invalid value of a supported type is different from an unsupported type or policy: \c can_to_int(3.5) compiles
+ * and returns false because exact conversion would discard a fractional part; \c to_int(3.5) follows the conversion
+ * failure behavior below.
+ *
+ * **Runtime Conversion Failure Modes**
+ *
+ * These conversion APIs have a compile-time configuration that selects what happens when a supported conversion fails
+ * its value checks at runtime. This is not a general cljonic build mode or a per-call rounding policy: it controls
+ * conversion failure handling only. Successful conversions and the input-validation rules are the same in both modes.
+ *
+ * - **Normal Mode (default):** leave \c CLJONIC_CONVERSION_DIAGNOSTICS undefined or define it as 0. A failed runtime
+ *   conversion returns a fallback: the destination's maximum integer value, maximum finite floating value,
+ *   all-bits-set std::byte, or NUL char. A fallback can also be a valid conversion result, so use the matching
+ *   \c can_to* preflight when failure must be distinguished from success. No diagnostic error is stored, and
+ *   \c cljonic::core::conversion_error() returns \c cljonic::core::ConversionError::none.
+ * - **Diagnostic Mode:** define \c CLJONIC_CONVERSION_DIAGNOSTICS as 1 before including cljonic, or use the compiler
+ *   definition \c -DCLJONIC_CONVERSION_DIAGNOSTICS=1. Use the same setting in every translation unit in the program.
+ *   Your application must define \c [[noreturn]] \c void \c cljonic::core::conversion_failure_handler() \c noexcept.
+ *   A failed runtime conversion records its \c cljonic::core::ConversionError, then calls this handler instead of
+ *   returning a fallback. The handler must not return or throw; the application decides how to stop execution.
+ *   The handler can inspect the recorded error through \c cljonic::core::conversion_error(). The library provides
+ *   no default handler or error-reset operation; successful conversions do not clear a recorded error.
+ *
+ * Other values of \c CLJONIC_CONVERSION_DIAGNOSTICS are rejected at compile time. In either mode, preflights return
+ * true or false without recording an error or invoking the handler; any previously recorded error is preserved.
+ * Unsupported source types, destinations, or policies still fail compilation in either mode.
+ *
+ * These modes apply only to runtime evaluation. If a failed conversion is required to be evaluated at compile time,
+ * for example in a constexpr variable initializer, compilation fails: no fallback is returned, no error is recorded,
+ * and no handler is called. A failed value preflight in a constant expression simply returns false. Supplying a
+ * literal argument alone does not require compile-time evaluation.
+ *
+ \b Examples
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+ using namespace cljonic;
+ using namespace cljonic::core;
+
+ int main() {
+   static_assert(to<double>(42) == 42.0);
+   static_assert(to_int(3.75, conversion::truncate) == 3);
+   static_assert(to_float(16777217, conversion::nearest) == 16777216.0F);
+   static_assert(to_char(65) == 'A');
+   static_assert(to_int('A') == static_cast<int>('A'));
+   static_assert(to_int('\0') == 0);
+   static_assert(to_char(0) == '\0');
+   static_assert(!can_to_int(3.75));
+
+   const double value = 12.0;
+   if (!can_to_int(value)) {
+     return 1;
+   }
+   return to_int(value) == 12 ? 0 : 1;
+ }
+ ~~~~~
+ *
+ * This separate diagnostic-mode program deliberately attempts an inexact conversion. Its application-defined handler
+ * checks the recorded error and stops the program with exit code 2 for precision loss, or 1 for another conversion
+ * error. The call never returns a fallback. For a multi-file application, enable the same diagnostic setting in every
+ * translation unit and define the handler in exactly one.
+ ~~~~~{.cpp}
+ #define CLJONIC_CONVERSION_DIAGNOSTICS 1
+ #include "cljonic.hpp"
+ #include <cstdlib>
+ using namespace cljonic;
+ using namespace cljonic::core;
+
+ namespace cljonic::core {
+ [[noreturn]] void conversion_failure_handler() noexcept {
+   if (conversion_error() == ConversionError::precision_loss) {
+     std::_Exit(2);
+   }
+   std::_Exit(1);
+ }
+ } // namespace cljonic::core
+
+ int main() {
+   const double measured_count = 3.75;
+   const int count = to_int(measured_count);
+   return count == 3 ? 0 : 1;
+ }
+ ~~~~~
+ */
+
+#ifndef CLJONIC_CONVERSION_DIAGNOSTICS
+#define CLJONIC_CONVERSION_DIAGNOSTICS 0
+#endif
+
+#if CLJONIC_CONVERSION_DIAGNOSTICS != 0 && CLJONIC_CONVERSION_DIAGNOSTICS != 1
+#error "cljonic: CLJONIC_CONVERSION_DIAGNOSTICS must be 0 or 1"
+#endif
+
+namespace cljonic::core {
+
+enum class ConversionError {
+    none,
+    non_finite_input,
+    invalid_character,
+    unsupported_signed_zero,
+    out_of_range,
+    underflow_to_zero,
+    precision_loss,
+};
+
+#if CLJONIC_CONVERSION_DIAGNOSTICS == 1
+namespace conversion_detail {
+inline ConversionError conversion_error_state = ConversionError::none;
+}
+
+[[noreturn]] void conversion_failure_handler() noexcept;
+#endif
+
+/** Return the last diagnostic conversion failure, or none in normal mode. */
+[[nodiscard]] constexpr auto conversion_error() noexcept -> ConversionError {
+#if CLJONIC_CONVERSION_DIAGNOSTICS == 1
+    return conversion_detail::conversion_error_state;
+#else
+    return ConversionError::none;
+#endif
+}
+
+namespace conversion {
+
+struct TruncateTag final {};
+struct NearestTag final {};
+
+inline constexpr TruncateTag truncate{};
+inline constexpr NearestTag nearest{};
+
+} // namespace conversion
+
+namespace conversion_detail {
+
+struct ExactTag final {};
+
+inline constexpr ExactTag exact{};
+
+template <typename T>
+using ValueType = std::remove_cvref_t<T>;
+
+template <typename T>
+inline constexpr bool is_character_v =
+    std::same_as<ValueType<T>, char> || std::same_as<ValueType<T>, signed char> ||
+    std::same_as<ValueType<T>, unsigned char> || std::same_as<ValueType<T>, wchar_t> ||
+    std::same_as<ValueType<T>, char8_t> || std::same_as<ValueType<T>, char16_t> || std::same_as<ValueType<T>, char32_t>;
+
+template <typename T>
+concept Integer = std::is_integral_v<ValueType<T>> && !std::same_as<ValueType<T>, bool> && !is_character_v<T>;
+
+template <typename T>
+concept Floating = std::is_floating_point_v<ValueType<T>> && std::numeric_limits<ValueType<T>>::radix == 2 &&
+                   std::numeric_limits<ValueType<T>>::has_infinity && std::numeric_limits<ValueType<T>>::has_quiet_NaN;
+
+template <typename T>
+concept Numeric = Integer<T> || Floating<T>;
+
+template <Floating T>
+struct BinaryMagnitude final {
+    T significand;
+    int exponent;
+};
+
+template <Floating T>
+[[nodiscard]] constexpr auto binary_magnitude(T value) noexcept -> BinaryMagnitude<T> {
+    int exponent{};
+    T scaled = value;
+    while (scaled >= T{2}) {
+        scaled /= T{2};
+        ++exponent;
+    }
+    while (scaled < T{1}) {
+        scaled *= T{2};
+        --exponent;
+    }
+    return {scaled, exponent};
+}
+
+template <typename T>
+concept NumericDestination =
+    Numeric<T> && !(std::same_as<ValueType<T>, signed char> || std::same_as<ValueType<T>, unsigned char>);
+
+template <typename Destination, typename SourceType>
+concept AdmittedSource =
+    (NumericDestination<Destination> && Numeric<SourceType>) ||
+    (Integer<Destination> && std::same_as<ValueType<SourceType>, char>) ||
+    ((std::same_as<ValueType<Destination>, char> || std::same_as<ValueType<Destination>, std::byte>) &&
+     (Integer<SourceType> || std::same_as<ValueType<SourceType>, char> ||
+      std::same_as<ValueType<SourceType>, std::byte>));
+
+template <typename Destination, typename SourceType, typename Policy>
+inline constexpr bool policy_admitted_v = [] {
+    using D = ValueType<Destination>;
+    using S = ValueType<SourceType>;
+
+    if constexpr (std::same_as<Policy, ExactTag>) {
+        return AdmittedSource<D, S>;
+    } else {
+        return AdmittedSource<D, S> && Numeric<D> && Numeric<S> && !std::same_as<D, S> &&
+               ((Integer<D> && Floating<S> && std::same_as<Policy, conversion::TruncateTag>) ||
+                (Floating<D> && std::same_as<Policy, conversion::NearestTag>));
+    }
+}();
+
+[[nodiscard]] constexpr auto power_of_two(int exponent) noexcept -> long double {
+    long double result = 1.0L;
+    for (int bit = 0; bit < exponent; ++bit) {
+        result *= 2.0L;
+    }
+    return result;
+}
+
+template <typename Destination, std::integral SourceType>
+[[nodiscard]] constexpr auto integer_in_range(SourceType value) noexcept -> bool {
+    using CharInteger = std::conditional_t<std::is_signed_v<char>, signed char, unsigned char>;
+    using RangeDestination = std::conditional_t<std::same_as<ValueType<Destination>, char>, CharInteger, Destination>;
+    using RangeSource = std::conditional_t<std::same_as<ValueType<SourceType>, char>, CharInteger, SourceType>;
+    return std::in_range<RangeDestination>(static_cast<RangeSource>(value));
+}
+
+template <typename T>
+[[nodiscard]] constexpr auto is_finite(T value) noexcept -> bool {
+    return value == value && value <= std::numeric_limits<T>::max() && value >= std::numeric_limits<T>::lowest();
+}
+
+template <typename T>
+[[nodiscard]] constexpr auto signed_magnitude(T value) noexcept -> std::uintmax_t {
+    using Unsigned = std::make_unsigned_t<T>;
+    const auto unsigned_value = static_cast<Unsigned>(value);
+    if constexpr (std::is_signed_v<T>) {
+        if (value < 0) {
+            return static_cast<std::uintmax_t>(Unsigned{0} - unsigned_value);
+        }
+    }
+    return static_cast<std::uintmax_t>(unsigned_value);
+}
+
+template <typename IntegerType>
+[[nodiscard]] constexpr auto compare_integer_values(IntegerType integer, IntegerType converted) noexcept -> int {
+    if (integer < converted) {
+        return -1;
+    }
+    if (integer > converted) {
+        return 1;
+    }
+    return 0;
+}
+
+template <typename IntegerType>
+[[nodiscard]] constexpr auto float_below_integer_lower_bound(long double candidate) noexcept -> bool {
+    using I = ValueType<IntegerType>;
+    const long double bound = power_of_two(std::numeric_limits<I>::digits);
+    if constexpr (std::is_signed_v<I>) {
+        return candidate < -bound;
+    }
+    return candidate < 0.0L;
+}
+
+template <typename IntegerType>
+[[nodiscard]] constexpr auto compare_float_to_integer_bounds(long double candidate) noexcept -> int {
+    using I = ValueType<IntegerType>;
+    if (candidate >= power_of_two(std::numeric_limits<I>::digits)) {
+        return -1;
+    }
+    return float_below_integer_lower_bound<I>(candidate) ? 1 : 0;
+}
+
+template <typename IntegerType, Floating FloatType>
+[[nodiscard]] constexpr auto compare_integer_to_float(IntegerType integer, FloatType floating) noexcept -> int {
+    const auto candidate = static_cast<long double>(floating);
+    const int bounds_comparison = compare_float_to_integer_bounds<IntegerType>(candidate);
+    if (bounds_comparison != 0) {
+        return bounds_comparison;
+    }
+    return compare_integer_values(integer, static_cast<ValueType<IntegerType>>(floating));
+}
+
+[[nodiscard]] constexpr auto unsigned_distance_from_bound(std::uintmax_t magnitude, int digits) noexcept
+    -> std::uintmax_t {
+    if (digits < std::numeric_limits<std::uintmax_t>::digits) {
+        return (std::uintmax_t{1} << static_cast<unsigned>(digits)) - magnitude;
+    }
+    const auto distance_minus_one = std::numeric_limits<std::uintmax_t>::max() - magnitude;
+    return distance_minus_one == std::numeric_limits<std::uintmax_t>::max() ? distance_minus_one
+                                                                            : distance_minus_one + 1U;
+}
+
+template <typename IntegerType>
+[[nodiscard]] constexpr auto distance_to_upper_bound(IntegerType integer) noexcept -> std::uintmax_t {
+    using I = ValueType<IntegerType>;
+    if constexpr (std::is_signed_v<I>) {
+        if (integer < 0) {
+            return std::numeric_limits<std::uintmax_t>::max();
+        }
+    }
+    return unsigned_distance_from_bound(signed_magnitude(integer), std::numeric_limits<I>::digits);
+}
+
+[[nodiscard]] constexpr auto unsigned_integer_distance(std::uintmax_t lhs, std::uintmax_t rhs) noexcept
+    -> std::uintmax_t {
+    return lhs > rhs ? lhs - rhs : rhs - lhs;
+}
+
+template <typename IntegerType>
+[[nodiscard]] constexpr auto distance_between_integers(IntegerType lhs, IntegerType rhs) noexcept -> std::uintmax_t {
+    using I = ValueType<IntegerType>;
+    if constexpr (std::is_signed_v<I>) {
+        const auto lhs_negative = lhs < 0;
+        const auto rhs_negative = rhs < 0;
+        const auto lhs_magnitude = signed_magnitude(lhs);
+        const auto rhs_magnitude = signed_magnitude(rhs);
+        if (lhs_negative != rhs_negative) {
+            return lhs_magnitude + rhs_magnitude;
+        }
+        return unsigned_integer_distance(lhs_magnitude, rhs_magnitude);
+    }
+    return unsigned_integer_distance(static_cast<std::uintmax_t>(lhs), static_cast<std::uintmax_t>(rhs));
+}
+
+template <typename IntegerType>
+[[nodiscard]] constexpr auto integer_candidate_below_range(long double candidate) noexcept -> bool {
+    using I = ValueType<IntegerType>;
+    if constexpr (std::is_signed_v<I>) {
+        return candidate < -power_of_two(std::numeric_limits<I>::digits);
+    }
+    return candidate < 0.0L;
+}
+
+template <typename IntegerType, Floating FloatType>
+[[nodiscard]] constexpr auto integer_distance(IntegerType integer, FloatType floating) noexcept -> std::uintmax_t {
+    using I = ValueType<IntegerType>;
+    const auto candidate = static_cast<long double>(floating);
+    const long double bound = power_of_two(std::numeric_limits<I>::digits);
+
+    if (candidate >= bound) {
+        return distance_to_upper_bound(integer);
+    }
+    if (integer_candidate_below_range<IntegerType>(candidate)) {
+        return std::numeric_limits<std::uintmax_t>::max();
+    }
+
+    return distance_between_integers(integer, static_cast<I>(floating));
+}
+
+template <Floating T>
+[[nodiscard]] constexpr auto binary_spacing(T value) noexcept -> T {
+    const auto magnitude = binary_magnitude(value);
+    T spacing{1};
+    const int shift = magnitude.exponent - (std::numeric_limits<T>::digits - 1);
+    for (int bit = 0; bit < shift; ++bit) {
+        spacing *= T{2};
+    }
+    for (int bit = 0; bit > shift; --bit) {
+        spacing /= T{2};
+    }
+    return spacing;
+}
+
+template <Floating T>
+[[nodiscard]] constexpr auto is_power_of_two(T value) noexcept -> bool {
+    return binary_magnitude(value).significand == T{1};
+}
+
+template <Floating T>
+[[nodiscard]] constexpr auto next_positive(T value) noexcept -> T {
+    if (value == std::numeric_limits<T>::max()) {
+        return std::numeric_limits<T>::infinity();
+    }
+    if (value < std::numeric_limits<T>::min()) {
+        if constexpr (std::numeric_limits<T>::has_denorm == std::denorm_present) {
+            return value + std::numeric_limits<T>::denorm_min();
+        } else {
+            return std::numeric_limits<T>::min();
+        }
+    }
+    return value + binary_spacing(value);
+}
+
+template <Floating T>
+[[nodiscard]] constexpr auto previous_positive(T value) noexcept -> T {
+    if (value <= std::numeric_limits<T>::min()) {
+        if constexpr (std::numeric_limits<T>::has_denorm == std::denorm_present) {
+            return value - std::numeric_limits<T>::denorm_min();
+        } else {
+            return T{0};
+        }
+    }
+    T spacing = binary_spacing(value);
+    if (is_power_of_two(value)) {
+        spacing /= T{2};
+    }
+    return value - spacing;
+}
+
+template <Floating T>
+[[nodiscard]] constexpr auto next_up(T value) noexcept -> T {
+    if (value < T{0}) {
+        return -previous_positive(-value);
+    }
+    if (value == T{0}) {
+        if constexpr (std::numeric_limits<T>::has_denorm == std::denorm_present) {
+            return std::numeric_limits<T>::denorm_min();
+        } else {
+            return std::numeric_limits<T>::min();
+        }
+    }
+    return next_positive(value);
+}
+
+template <Floating T>
+[[nodiscard]] constexpr auto next_down(T value) noexcept -> T {
+    if (value > T{0}) {
+        return previous_positive(value);
+    }
+    if (value == T{0}) {
+        if constexpr (std::numeric_limits<T>::has_denorm == std::denorm_present) {
+            return -std::numeric_limits<T>::denorm_min();
+        } else {
+            return -std::numeric_limits<T>::min();
+        }
+    }
+    return -next_positive(-value);
+}
+
+template <Floating T>
+[[nodiscard]] constexpr auto even_significand(T value) noexcept -> bool {
+    if (value == T{0}) {
+        return true;
+    }
+
+    const T magnitude = value < T{0} ? -value : value;
+    T adjacent = next_up(magnitude);
+    if (!is_finite(adjacent)) {
+        adjacent = previous_positive(magnitude);
+    }
+    const long double spacing = static_cast<long double>(adjacent) - static_cast<long double>(magnitude);
+    const long double significand = static_cast<long double>(magnitude) / spacing;
+    return std::fmod(significand, 2.0L) == 0.0L;
+}
+
+template <typename T>
+struct Result {
+    bool succeeds{};
+    T value{};
+    ConversionError error{ConversionError::none};
+};
+
+template <typename T>
+[[nodiscard]] constexpr auto success(T value) noexcept -> Result<T> {
+    return {true, value, ConversionError::none};
+}
+
+template <typename T>
+[[nodiscard]] constexpr auto failure(ConversionError error) noexcept -> Result<T> {
+    return {false, T{}, error};
+}
+
+template <Integer Destination>
+[[nodiscard]] constexpr auto exact_float_in_integer_range(long double value) noexcept -> bool {
+    const long double bound = power_of_two(std::numeric_limits<Destination>::digits);
+    if constexpr (std::is_signed_v<Destination>) {
+        return value >= -bound && value < bound;
+    }
+    return value >= 0.0L && value < bound;
+}
+
+[[nodiscard]] constexpr auto signed_truncated_value_in_range(long double value, long double bound) noexcept -> bool {
+    if (value >= bound) {
+        return false;
+    }
+    if (value >= -bound) {
+        return true;
+    }
+    return value + bound > -1.0L;
+}
+
+template <Integer Destination>
+[[nodiscard]] constexpr auto truncated_float_in_integer_range(long double value) noexcept -> bool {
+    const long double bound = power_of_two(std::numeric_limits<Destination>::digits);
+    if constexpr (std::is_signed_v<Destination>) {
+        return signed_truncated_value_in_range(value, bound);
+    }
+    return value > -1.0L && value < bound;
+}
+
+template <Floating T>
+struct FloatingBracket final {
+    T lower;
+    T upper;
+};
+
+template <Floating T>
+[[nodiscard]] constexpr auto integer_float_bracket(T candidate, int comparison) noexcept -> FloatingBracket<T> {
+    const T lower = comparison > 0 ? candidate : next_down(candidate);
+    const T upper = comparison < 0 ? candidate : next_up(candidate);
+    return {lower, upper};
+}
+
+template <Integer IntegerType, Floating FloatType>
+[[nodiscard]] constexpr auto nearest_integer_float(IntegerType source, FloatType lower, FloatType upper) noexcept
+    -> FloatType {
+    const auto lower_distance = integer_distance(source, lower);
+    const auto upper_distance = integer_distance(source, upper);
+    if (lower_distance < upper_distance) {
+        return lower;
+    }
+    if (upper_distance < lower_distance) {
+        return upper;
+    }
+    return even_significand(lower) ? lower : upper;
+}
+
+template <typename Destination, std::integral SourceType>
+[[nodiscard]] constexpr auto convert_integer_to_integer(SourceType source) noexcept -> Result<Destination> {
+    if (!integer_in_range<Destination>(source)) {
+        return failure<Destination>(ConversionError::out_of_range);
+    }
+    return success(static_cast<Destination>(source));
+}
+
+template <Floating Destination, Integer SourceType>
+[[nodiscard]] constexpr auto convert_integer_to_floating(SourceType source, ExactTag policy) noexcept
+    -> Result<Destination> {
+    static_cast<void>(policy);
+    const auto converted = static_cast<Destination>(source);
+    if (compare_integer_to_float(source, converted) != 0) {
+        return failure<Destination>(ConversionError::precision_loss);
+    }
+    return success(converted);
+}
+
+template <Floating Destination, Integer SourceType>
+[[nodiscard]] constexpr auto convert_integer_to_floating(SourceType source, conversion::NearestTag policy) noexcept
+    -> Result<Destination> {
+    static_cast<void>(policy);
+    const auto candidate = static_cast<Destination>(source);
+    const int comparison = compare_integer_to_float(source, candidate);
+    if (comparison == 0) {
+        return success(candidate);
+    }
+    const auto bracket = integer_float_bracket(candidate, comparison);
+    return success(nearest_integer_float(source, bracket.lower, bracket.upper));
+}
+
+template <Integer Destination, Floating SourceType>
+[[nodiscard]] constexpr auto convert_floating_to_integer(SourceType source, ExactTag policy) noexcept
+    -> Result<Destination> {
+    static_cast<void>(policy);
+    if (!is_finite(source)) {
+        return failure<Destination>(ConversionError::non_finite_input);
+    }
+
+    const auto value = static_cast<long double>(source);
+    if (!exact_float_in_integer_range<Destination>(value)) {
+        return failure<Destination>(ConversionError::out_of_range);
+    }
+    if (std::trunc(source) != source) {
+        return failure<Destination>(ConversionError::precision_loss);
+    }
+
+    const auto converted = static_cast<Destination>(source);
+    return success(converted);
+}
+
+template <Integer Destination, Floating SourceType>
+[[nodiscard]] constexpr auto convert_floating_to_integer(SourceType source, conversion::TruncateTag policy) noexcept
+    -> Result<Destination> {
+    static_cast<void>(policy);
+    if (!is_finite(source)) {
+        return failure<Destination>(ConversionError::non_finite_input);
+    }
+
+    const auto value = static_cast<long double>(source);
+    if (!truncated_float_in_integer_range<Destination>(value)) {
+        return failure<Destination>(ConversionError::out_of_range);
+    }
+    return success(static_cast<Destination>(source));
+}
+
+template <Floating Destination, Floating SourceType>
+[[nodiscard]] constexpr auto convert_floating_zero(SourceType source) noexcept -> Result<Destination> {
+    if constexpr (!std::signbit(-Destination{0})) {
+        if (std::signbit(source)) {
+            return failure<Destination>(ConversionError::unsupported_signed_zero);
+        }
+    }
+    return success(std::signbit(source) ? -Destination{0} : Destination{0});
+}
+
+template <Floating Destination>
+[[nodiscard]] constexpr auto floating_value_in_range(long double value) noexcept -> bool {
+    return value <= static_cast<long double>(std::numeric_limits<Destination>::max()) &&
+           value >= static_cast<long double>(std::numeric_limits<Destination>::lowest());
+}
+
+template <Floating Destination, Floating SourceType>
+[[nodiscard]] constexpr auto convert_nonzero_floating_exact(SourceType source, long double value) noexcept
+    -> Result<Destination> {
+    if (!floating_value_in_range<Destination>(value)) {
+        return failure<Destination>(ConversionError::out_of_range);
+    }
+    const auto converted = static_cast<Destination>(source);
+    if (static_cast<SourceType>(converted) != source) {
+        return failure<Destination>(ConversionError::precision_loss);
+    }
+    return success(converted);
+}
+
+template <Floating T>
+struct FloatingNeighbors final {
+    T lower;
+    T upper;
+    bool exact;
+};
+
+template <Floating Destination>
+[[nodiscard]] constexpr auto floating_neighbors(Destination candidate, long double value) noexcept
+    -> FloatingNeighbors<Destination> {
+    const auto rounded = static_cast<long double>(candidate);
+    if (rounded < value) {
+        return {candidate, next_up(candidate), false};
+    }
+    if (rounded > value) {
+        return {next_down(candidate), candidate, false};
+    }
+    return {candidate, candidate, true};
+}
+
+template <Floating Destination>
+[[nodiscard]] constexpr auto nearest_floating_value(Destination lower, Destination upper, long double value) noexcept
+    -> Destination {
+    const long double lower_distance = value - static_cast<long double>(lower);
+    const long double upper_distance = static_cast<long double>(upper) - value;
+    if (lower_distance < upper_distance) {
+        return lower;
+    }
+    if (upper_distance < lower_distance) {
+        return upper;
+    }
+    return even_significand(lower) ? lower : upper;
+}
+
+template <Floating Destination, Floating SourceType>
+[[nodiscard]] constexpr auto convert_nonzero_floating_nearest(SourceType source, long double value) noexcept
+    -> Result<Destination> {
+    if (!floating_value_in_range<Destination>(value)) {
+        return failure<Destination>(ConversionError::out_of_range);
+    }
+    const auto candidate = static_cast<Destination>(source);
+    const auto neighbors = floating_neighbors(candidate, value);
+    const auto nearest =
+        neighbors.exact ? neighbors.lower : nearest_floating_value(neighbors.lower, neighbors.upper, value);
+    if (nearest == Destination{0}) {
+        return failure<Destination>(ConversionError::underflow_to_zero);
+    }
+    return success(nearest);
+}
+
+template <Floating Destination, Floating SourceType>
+[[nodiscard]] constexpr auto convert_floating_to_floating(SourceType source, ExactTag policy) noexcept
+    -> Result<Destination> {
+    static_cast<void>(policy);
+    if (!is_finite(source)) {
+        return failure<Destination>(ConversionError::non_finite_input);
+    }
+    if (source == SourceType{0}) {
+        return convert_floating_zero<Destination>(source);
+    }
+    return convert_nonzero_floating_exact<Destination>(source, static_cast<long double>(source));
+}
+
+template <Floating Destination, Floating SourceType>
+[[nodiscard]] constexpr auto convert_floating_to_floating(SourceType source, conversion::NearestTag policy) noexcept
+    -> Result<Destination> {
+    static_cast<void>(policy);
+    if (!is_finite(source)) {
+        return failure<Destination>(ConversionError::non_finite_input);
+    }
+    if (source == SourceType{0}) {
+        return convert_floating_zero<Destination>(source);
+    }
+    return convert_nonzero_floating_nearest<Destination>(source, static_cast<long double>(source));
+}
+
+template <std::integral SourceType>
+[[nodiscard]] constexpr auto convert_integer_to_char(SourceType source) noexcept -> Result<char> {
+    return convert_integer_to_integer<char>(source);
+}
+
+template <typename SourceType>
+[[nodiscard]] constexpr auto convert_character_to_char(SourceType source) noexcept -> Result<char> {
+    if constexpr (std::same_as<ValueType<SourceType>, char>) {
+        return success(source);
+    } else {
+        return convert_integer_to_char(std::to_integer<unsigned int>(source));
+    }
+}
+
+template <std::integral SourceType>
+[[nodiscard]] constexpr auto convert_integer_to_byte(SourceType source) noexcept -> Result<std::byte> {
+    if constexpr (std::is_signed_v<SourceType>) {
+        if (source < 0) {
+            return failure<std::byte>(ConversionError::out_of_range);
+        }
+    }
+    if (static_cast<std::uintmax_t>(source) > UCHAR_MAX) {
+        return failure<std::byte>(ConversionError::out_of_range);
+    }
+    return success(static_cast<std::byte>(static_cast<unsigned char>(source)));
+}
+
+template <typename SourceType>
+[[nodiscard]] constexpr auto convert_character_to_byte(SourceType source) noexcept -> Result<std::byte> {
+    return convert_integer_to_byte(source);
+}
+
+template <typename SourceType>
+[[nodiscard]] constexpr auto convert_to_char(SourceType source) noexcept -> Result<char> {
+    if constexpr (Integer<SourceType>) {
+        return convert_integer_to_char(source);
+    } else {
+        return convert_character_to_char(source);
+    }
+}
+
+template <typename SourceType>
+[[nodiscard]] constexpr auto convert_to_byte(SourceType source) noexcept -> Result<std::byte> {
+    if constexpr (Integer<SourceType>) {
+        return convert_integer_to_byte(source);
+    } else if constexpr (std::same_as<ValueType<SourceType>, char>) {
+        return convert_character_to_byte(source);
+    } else {
+        return success(source);
+    }
+}
+
+template <typename Destination, typename SourceType>
+[[nodiscard]] constexpr auto convert_character_or_byte(SourceType source) noexcept -> Result<Destination> {
+    if constexpr (std::same_as<ValueType<Destination>, char>) {
+        return convert_to_char(source);
+    } else {
+        return convert_to_byte(source);
+    }
+}
+
+template <Integer Destination, typename SourceType, typename Policy>
+[[nodiscard]] constexpr auto convert_to_integer(SourceType source, Policy policy) noexcept -> Result<Destination> {
+    if constexpr (std::integral<SourceType>) {
+        return convert_integer_to_integer<Destination>(source);
+    } else {
+        return convert_floating_to_integer<Destination>(source, policy);
+    }
+}
+
+template <Floating Destination, typename SourceType, typename Policy>
+[[nodiscard]] constexpr auto convert_to_floating(SourceType source, Policy policy) noexcept -> Result<Destination> {
+    if constexpr (Integer<SourceType>) {
+        return convert_integer_to_floating<Destination>(source, policy);
+    } else {
+        return convert_floating_to_floating<Destination>(source, policy);
+    }
+}
+
+template <typename Destination, typename SourceType, typename Policy>
+[[nodiscard]] constexpr auto convert_numeric(SourceType source, Policy policy) noexcept -> Result<Destination> {
+    if constexpr (Integer<Destination>) {
+        return convert_to_integer<Destination>(source, policy);
+    } else {
+        return convert_to_floating<Destination>(source, policy);
+    }
+}
+
+template <typename Destination, typename SourceType, typename Policy>
+[[nodiscard]] constexpr auto convert(SourceType source, Policy policy) noexcept -> Result<ValueType<Destination>> {
+    using D = ValueType<Destination>;
+    if constexpr (std::same_as<D, char> || std::same_as<D, std::byte>) {
+        return convert_character_or_byte<D>(source);
+    } else {
+        return convert_numeric<D>(source, policy);
+    }
+}
+
+[[noreturn]] void reject_constant_conversion_failure() noexcept;
+
+template <typename T>
+[[nodiscard]] constexpr auto fallback() noexcept -> T {
+    if constexpr (std::same_as<T, char>) {
+        return '\0';
+    } else if constexpr (std::same_as<T, std::byte>) {
+        return static_cast<std::byte>(UCHAR_MAX);
+    } else {
+        return std::numeric_limits<T>::max();
+    }
+}
+
+inline auto runtime_failure(ConversionError error) noexcept -> void {
+#if CLJONIC_CONVERSION_DIAGNOSTICS == 1
+    conversion_detail::conversion_error_state = error;
+    conversion_failure_handler();
+#else
+    static_cast<void>(error);
+#endif
+}
+
+template <typename Destination, typename SourceType, typename Policy>
+[[nodiscard]] constexpr auto convert_or_fallback(SourceType source, Policy policy) noexcept -> ValueType<Destination> {
+    const auto result = convert<Destination>(source, policy);
+    if (result.succeeds) {
+        return result.value;
+    }
+
+    if consteval {
+        reject_constant_conversion_failure();
+    } else {
+        runtime_failure(result.error);
+        return fallback<ValueType<Destination>>();
+    }
+}
+
+template <typename Destination, typename SourceType, typename Policy>
+concept ValidConversion = AdmittedSource<Destination, SourceType> && policy_admitted_v<Destination, SourceType, Policy>;
+
+template <typename...>
+inline constexpr bool dependent_false = false;
+
+} // namespace conversion_detail
+
+template <typename Destination, typename SourceType, typename Policy = conversion_detail::ExactTag>
+    requires conversion_detail::ValidConversion<Destination, SourceType, Policy>
+[[nodiscard]] constexpr auto to(SourceType&& source, Policy policy = {}) noexcept
+    -> conversion_detail::ValueType<Destination> {
+    return conversion_detail::convert_or_fallback<Destination>(std::forward<SourceType>(source), policy);
+}
+
+template <typename Destination, typename SourceType, typename Policy = conversion_detail::ExactTag>
+    requires conversion_detail::ValidConversion<Destination, SourceType, Policy>
+[[nodiscard]] constexpr auto can_to(SourceType&& source, Policy policy = {}) noexcept -> bool {
+    return conversion_detail::convert<Destination>(std::forward<SourceType>(source), policy).succeeds;
+}
+
+template <typename Destination, typename SourceType, typename Policy = conversion_detail::ExactTag>
+    requires(!conversion_detail::ValidConversion<Destination, SourceType, Policy>)
+constexpr auto to([[maybe_unused]] SourceType&& source, [[maybe_unused]] Policy policy = {}) noexcept -> void {
+    static_assert(conversion_detail::dependent_false<Destination, SourceType, Policy>,
+                  "cljonic::to: expected a supported numeric, char, or std::byte destination and source. "
+                  "Numeric conversions exclude bool and character sources except plain char to integer; char and byte "
+                  "conversions accept only "
+                  "non-character integers, char, or std::byte. Use truncate only for floating-to-integer and nearest "
+                  "only for integer-to-floating or different floating types; otherwise omit the policy.");
+}
+
+template <typename Destination, typename SourceType, typename Policy = conversion_detail::ExactTag>
+    requires(!conversion_detail::ValidConversion<Destination, SourceType, Policy>)
+constexpr auto can_to([[maybe_unused]] SourceType&& source, [[maybe_unused]] Policy policy = {}) noexcept -> void {
+    static_assert(conversion_detail::dependent_false<Destination, SourceType, Policy>,
+                  "cljonic::can_to: expected the same supported destination, source, and policy as to<T>. "
+                  "Numeric conversions exclude bool and character sources except plain char to integer; char and byte "
+                  "conversions accept only "
+                  "non-character integers, char, or std::byte. Use truncate only for floating-to-integer and nearest "
+                  "only for integer-to-floating or different floating types; otherwise omit the policy.");
+}
+
+#define CLJONIC_NAMED_CONVERSION(name, destination, label, preflight_label)                                            \
+    template <typename SourceType, typename Policy = conversion_detail::ExactTag>                                      \
+        requires conversion_detail::ValidConversion<destination, SourceType, Policy>                                   \
+    [[nodiscard]] constexpr auto name(SourceType&& source, Policy policy = {}) noexcept -> destination {               \
+        return conversion_detail::convert_or_fallback<destination>(std::forward<SourceType>(source), policy);          \
+    }                                                                                                                  \
+    template <typename SourceType, typename Policy = conversion_detail::ExactTag>                                      \
+        requires conversion_detail::ValidConversion<destination, SourceType, Policy>                                   \
+    [[nodiscard]] constexpr auto can_##name(SourceType&& source, Policy policy = {}) noexcept -> bool {                \
+        return conversion_detail::convert<destination>(std::forward<SourceType>(source), policy).succeeds;             \
+    }                                                                                                                  \
+    template <typename SourceType, typename Policy = conversion_detail::ExactTag>                                      \
+        requires(!conversion_detail::ValidConversion<destination, SourceType, Policy>)                                 \
+    constexpr auto name([[maybe_unused]] SourceType&& source, [[maybe_unused]] Policy policy = {}) noexcept -> void {  \
+        static_assert(                                                                                                 \
+            conversion_detail::dependent_false<SourceType, Policy>,                                                    \
+            label "expected a source and policy supported by to<" #destination ">. "                                   \
+                  "Numeric conversions exclude bool and character sources except plain char to integer; char and "     \
+                  "byte conversions accept "                                                                           \
+                  "only non-character integers, char, or std::byte. Use truncate only for floating-to-integer "        \
+                  "and nearest only for integer-to-floating or different floating types; otherwise omit the policy."); \
+    }                                                                                                                  \
+    template <typename SourceType, typename Policy = conversion_detail::ExactTag>                                      \
+        requires(!conversion_detail::ValidConversion<destination, SourceType, Policy>)                                 \
+    constexpr auto can_##name([[maybe_unused]] SourceType&& source, [[maybe_unused]] Policy policy = {}) noexcept      \
+        -> void {                                                                                                      \
+        static_assert(                                                                                                 \
+            conversion_detail::dependent_false<SourceType, Policy>, preflight_label                                    \
+            "expected the same source and policy as " #name ". "                                                       \
+            "Numeric conversions exclude bool and character sources except plain char to integer; char and byte "      \
+            "conversions accept "                                                                                      \
+            "only non-character integers, char, or std::byte. Use truncate only for floating-to-integer "              \
+            "and nearest only for integer-to-floating or different floating types; otherwise omit the policy.");       \
+    }
+
+CLJONIC_NAMED_CONVERSION(to_byte, std::byte, "cljonic::to_byte: ", "cljonic::can_to_byte: ")
+CLJONIC_NAMED_CONVERSION(to_char, char, "cljonic::to_char: ", "cljonic::can_to_char: ")
+CLJONIC_NAMED_CONVERSION(to_count, std::size_t, "cljonic::to_count: ", "cljonic::can_to_count: ")
+CLJONIC_NAMED_CONVERSION(to_double, double, "cljonic::to_double: ", "cljonic::can_to_double: ")
+CLJONIC_NAMED_CONVERSION(to_float, float, "cljonic::to_float: ", "cljonic::can_to_float: ")
+CLJONIC_NAMED_CONVERSION(to_index, std::size_t, "cljonic::to_index: ", "cljonic::can_to_index: ")
+CLJONIC_NAMED_CONVERSION(to_int, int, "cljonic::to_int: ", "cljonic::can_to_int: ")
+CLJONIC_NAMED_CONVERSION(to_long, long, "cljonic::to_long: ", "cljonic::can_to_long: ")
+CLJONIC_NAMED_CONVERSION(to_long_double, long double, "cljonic::to_long_double: ", "cljonic::can_to_long_double: ")
+CLJONIC_NAMED_CONVERSION(to_long_long, long long, "cljonic::to_long_long: ", "cljonic::can_to_long_long: ")
+CLJONIC_NAMED_CONVERSION(to_short, short, "cljonic::to_short: ", "cljonic::can_to_short: ")
+CLJONIC_NAMED_CONVERSION(to_size, std::size_t, "cljonic::to_size: ", "cljonic::can_to_size: ")
+CLJONIC_NAMED_CONVERSION(to_uint, unsigned int, "cljonic::to_uint: ", "cljonic::can_to_uint: ")
+CLJONIC_NAMED_CONVERSION(to_ulong, unsigned long, "cljonic::to_ulong: ", "cljonic::can_to_ulong: ")
+CLJONIC_NAMED_CONVERSION(to_ulong_long, unsigned long long, "cljonic::to_ulong_long: ", "cljonic::can_to_ulong_long: ")
+CLJONIC_NAMED_CONVERSION(to_ushort, unsigned short, "cljonic::to_ushort: ", "cljonic::can_to_ushort: ")
+
+#undef CLJONIC_NAMED_CONVERSION
+
+} // namespace cljonic::core
+// End cljonic-core-conversions.hpp
 // Begin cljonic-count.hpp
 #pragma once
 
@@ -5306,7 +6326,8 @@ namespace cljonic::core {
  * The \b drop free function removes a requested prefix from one cljonic source and returns the remaining observable
  * elements as a bounded owning \ref Vector "Vector". Use \c drop(count, source) with a \ref Vector "Vector", \ref Map
  * "Map", \ref Set "Set", \ref Queue "Queue", or \ref String "String" collection, or a \ref Range "Range", \ref Repeat
- * "Repeat", \ref Cycle "Cycle", \ref Iterate "Iterate", or \ref Repeatedly "Repeatedly" producer.
+ * "Repeat", \ref Cycle "Cycle", \ref Iterate "Iterate", \ref Repeatedly "Repeatedly", \ref TakeWhile "TakeWhile", or
+ * \ref DropWhile "DropWhile" producer.
  *
  * Counts follow the \ref implicit-conversions "safe count conversion rules": signed or unsigned integers whose
  * nonnegative ranges fit std::size_t, excluding Boolean and character types. Zero or negative counts drop nothing. The
@@ -6205,13 +7226,433 @@ constexpr auto first([[maybe_unused]] const C& value) noexcept -> void {
 // Begin cljonic-fits-into.hpp
 #pragma once
 
+// Begin cljonic-producer-range.hpp
+#pragma once
+
+#include <concepts>
+#include <cstddef>
+#include <type_traits>
+#include <utility>
+
+
+namespace cljonic {
+
+namespace concepts_detail {
+
+struct RangeNextAccess;
+struct RangeMaterializationAccess;
+
+/** Internal tag (REQ-DIAG-012): selects the `Range` diagnostic specialization
+ *  during an out-of-domain class template argument deduction. It is never a
+ *  supported element type and is never produced by an admitted call. */
+struct RangeElementDomainViolation {};
+
+/** The `Range` class-template gate (REQ-DIAG-012): a valid `Range` element
+ *  domain, or the internal diagnostic tag used only to redirect a rejected
+ *  deduction. Keeping the valid domain first preserves soft, SFINAE-friendly
+ *  type-level rejection for an out-of-domain element type. */
+template <typename T>
+concept RangeClassArgument =
+    concepts::RangeElement<T> || std::same_as<std::remove_cvref_t<T>, RangeElementDomainViolation>;
+
+} // namespace concepts_detail
+
+/** \anchor Range
+ * A Range is a producer describing an arithmetic sequence from an inclusive \p start to an exclusive \p end by a fixed
+ * \p step, defaulting to start `0` and step `1`.
+ *
+ * Use \ref RangeFactory "range" to create a Range.
+ *
+ * A zero step repeats \p start indefinitely, taking precedence over otherwise-empty-range cases, including equal start
+ * and end. A nonzero step that moves away from \p end produces an empty range.
+ *
+ * Observation is bounded by its finite span or by \b CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE for a zero-step
+ * range, and it supports const C++ range traversal in both constant evaluation and runtime code. Values can be passed
+ * directly to cljonic operations that accept a source.
+ *
+ * Explicitly typed parameters follow the \ref implicit-conversions "safe implicit conversion rules".
+ *
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+ using namespace cljonic;
+ using namespace cljonic::core;
+ int main() {
+   // Default: start 0, end 0, step 1 (empty). CTAD cannot deduce from zero
+   // arguments.
+   [[maybe_unused]] constexpr auto empty = range<int>();
+
+   // Single argument is the exclusive end; start defaults to 0, step to 1.
+   [[maybe_unused]] constexpr auto to_five = range(5);
+
+   // Explicit start and end; step still defaults to 1.
+   [[maybe_unused]] constexpr auto two_to_five = range(2, 5);
+
+   // Explicit start, end, and step.
+   [[maybe_unused]] constexpr auto evens = range(0, 10, 2);
+
+   // A zero step repeats start indefinitely rather than being empty.
+   [[maybe_unused]] constexpr auto repeating = range(0, 5, 0);
+
+   // A billion elements exceeds the system's allowed maximum, so only that
+   // maximum number of elements is available.
+   [[maybe_unused]] constexpr auto huge = range(1000000000);
+
+   // -----------------------------------------------------------------------
+   // C++ interoperability: a Range supports const traversal.
+   // -----------------------------------------------------------------------
+   constexpr auto odds = range(1, 12, 2);
+   auto runtime_odds = range(-1, -11, -2);
+
+   // Use C++ interoperability to sum the values in a constexpr range
+   constexpr auto odds_sum = [odds] {
+     auto sum = 0;
+     for (const auto value : odds) {
+       sum += value;
+     }
+     return sum;
+   }();
+   static_assert(odds_sum == 36);
+
+   // Use C++ interoperability to sum the values in a runtime range
+   auto runtime_odds_sum = 0;
+   for (const auto value : runtime_odds) {
+     runtime_odds_sum += value;
+   }
+
+   return runtime_odds_sum == -25 ? 0 : 1;
+ }
+ ~~~~~
+ */
+template <concepts_detail::RangeClassArgument T>
+class Range {
+    friend struct concepts_detail::RangeNextAccess;
+    friend struct concepts_detail::RangeMaterializationAccess;
+
+  public:
+    using value_type = T;
+
+    /** A bounded, generating const iterator used for free-function observation;
+     *  it does not expose start/end/step parameters. */
+    class const_iterator {
+      public:
+        using value_type = T;
+        using difference_type = std::ptrdiff_t;
+
+        constexpr const_iterator() noexcept = default;
+
+        constexpr const_iterator(T current, std::size_t remaining, T step) noexcept
+            : current_(current), remaining_(remaining), step_(step) {
+        }
+
+        [[nodiscard]] constexpr auto operator*() const noexcept -> T {
+            return current_;
+        }
+
+        constexpr auto operator++() noexcept -> const_iterator& {
+            if (remaining_ > 1U) {
+                current_ = static_cast<T>(current_ + step_);
+            }
+            --remaining_;
+            return *this;
+        }
+
+        constexpr auto operator++(int) noexcept -> const_iterator {
+            auto previous = *this;
+            ++(*this);
+            return previous;
+        }
+
+        [[nodiscard]] friend constexpr auto operator==(const const_iterator& lhs, const const_iterator& rhs) noexcept
+            -> bool {
+            return lhs.remaining_ == rhs.remaining_;
+        }
+
+      private:
+        T current_{};
+        std::size_t remaining_{0U};
+        T step_{};
+    };
+
+    constexpr Range() noexcept : start_(T{0}), end_(T{0}), step_(T{1}) {
+    }
+
+    constexpr explicit Range(T end) noexcept : start_(T{0}), end_(end), step_(T{1}) {
+    }
+
+    constexpr Range(T start, T end) noexcept : start_(start), end_(end), step_(T{1}) {
+    }
+
+    constexpr Range(T start, T end, T step) noexcept : start_(start), end_(end), step_(step) {
+    }
+
+    template <typename End>
+        requires(!concepts::SafeImplicitConversion<T, End>)
+    explicit Range(End end) = delete;
+
+    template <typename Start, typename End>
+        requires(!concepts::SafeImplicitConversion<T, Start> || !concepts::SafeImplicitConversion<T, End>)
+    Range(Start start, End end) = delete;
+
+    template <typename Start, typename End, typename Step>
+        requires(!concepts::SafeImplicitConversion<T, Start> || !concepts::SafeImplicitConversion<T, End> ||
+                 !concepts::SafeImplicitConversion<T, Step>)
+    Range(Start start, End end, Step step) = delete;
+
+    /** Conservative observation count: the synthesis cap for a zero step, otherwise
+     *  the exact finite cardinality saturated at the synthesis cap. */
+    [[nodiscard]] constexpr auto count() const noexcept -> std::size_t {
+        return step_ == T{0} ? CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE : saturate(nonzero_step_extent());
+    }
+
+    /** Reports whether this Range has a finite complete result. */
+    [[nodiscard]] constexpr auto is_finite() const noexcept -> bool {
+        return step_ != T{0};
+    }
+
+    /** Index-in-range predicate over the available bounded prefix; O(1), no traversal. */
+    [[nodiscard]] constexpr auto contains(std::size_t index) const noexcept -> bool {
+        return index < count();
+    }
+
+    template <typename Index>
+        requires(!concepts::SafeImplicitConversion<std::size_t, Index>)
+    auto contains(Index index) const -> bool = delete;
+
+    /** Bounded generating iteration up to the effective size returned by count(). */
+    [[nodiscard]] constexpr auto begin() const noexcept -> const_iterator {
+        return const_iterator{start_, count(), step_};
+    }
+
+    [[nodiscard]] constexpr auto end() const noexcept -> const_iterator {
+        return const_iterator{T{}, 0U, T{}};
+    }
+
+    /** Producer parameter equality (REQ-FN-014B): compares only the stored
+     *  start/end/step parameters, never the produced sequence.
+     *
+     *  It is the only producer parameter-equality surface; the `equal` free function
+     *  instead compares bounded logical observations of the produced sequences. Two
+     *  Range values with different parameters compare unequal even when their
+     *  produced or observed sequences coincide (for example two zero-step ranges
+     *  with different endpoints both produce an infinite repetition of their
+     *  respective start values). O(1), no traversal, no allocation. */
+    [[nodiscard]] friend constexpr auto operator==(const Range& lhs, const Range& rhs) noexcept -> bool {
+        return lhs.start_ == rhs.start_ && lhs.end_ == rhs.end_ && lhs.step_ == rhs.step_;
+    }
+
+  private:
+    using ExtentType = std::make_unsigned_t<T>;
+
+    /** Caps an internal extent at the public observation maximum. */
+    [[nodiscard]] static constexpr auto saturate(ExtentType raw_count) noexcept -> std::size_t {
+        return raw_count > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE
+                   ? CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE
+                   : static_cast<std::size_t>(raw_count);
+    }
+
+    /** Converts a signed step to an unsigned magnitude without signed overflow. */
+    [[nodiscard]] static constexpr auto magnitude(T value) noexcept -> ExtentType {
+        const auto unsigned_value = static_cast<ExtentType>(value);
+        return value < T{0} ? ExtentType{0} - unsigned_value : unsigned_value;
+    }
+
+    /** Computes how many stepped positions fit inside an unsigned span. */
+    [[nodiscard]] constexpr auto extent_from_span(ExtentType span) const noexcept -> ExtentType {
+        const auto step = magnitude(step_);
+        return (span / step) + (span % step == ExtentType{0} ? ExtentType{0} : ExtentType{1});
+    }
+
+    /** Chooses the finite extent calculation after zero-step handling. */
+    [[nodiscard]] constexpr auto nonzero_step_extent() const noexcept -> ExtentType {
+        return step_ > T{0} ? ascending_extent() : descending_extent();
+    }
+
+    /** Computes the finite extent for a range moving upward. */
+    [[nodiscard]] constexpr auto ascending_extent() const noexcept -> ExtentType {
+        if (start_ >= end_) {
+            return ExtentType{0};
+        }
+        return extent_from_span(static_cast<ExtentType>(end_) - static_cast<ExtentType>(start_));
+    }
+
+    /** Computes the finite extent for a range moving downward. */
+    [[nodiscard]] constexpr auto descending_extent() const noexcept -> ExtentType {
+        if (end_ >= start_) {
+            return ExtentType{0};
+        }
+        return extent_from_span(static_cast<ExtentType>(start_) - static_cast<ExtentType>(end_));
+    }
+
+    T start_;
+    T end_;
+    T step_;
+};
+
+/** Diagnostic specialization (REQ-DIAG-012): reached only through the
+ *  redirecting deduction guides below, which select it for exactly the
+ *  out-of-domain class template argument deduction. Constructing it is always a
+ *  compile-time error whose single message names the class template, the
+ *  rejected argument type, and the violated domain rule. It is never a
+ *  supported construction target and exposes no usable state. */
+template <>
+class Range<concepts_detail::RangeElementDomainViolation> {
+  public:
+    template <typename... Args>
+    constexpr explicit Range([[maybe_unused]] Args&&... args) noexcept {
+        static_assert(concepts_detail::dependent_false<Args...>,
+                      "cljonic::Range: the element type must be a signed integral type. Every start, end, and step "
+                      "argument must be a signed integral value, because Range describes a signed arithmetic "
+                      "sequence whose span arithmetic requires a signed element type.");
+    }
+};
+
+/** Redirecting deduction guides (REQ-DIAG-012), one per supported arity. Each is
+ *  viable only for a rejected deduction, so an admitted deduction is never
+ *  affected. */
+template <typename T>
+    requires(!concepts::RangeElement<std::remove_cvref_t<T>>)
+Range(T) -> Range<concepts_detail::RangeElementDomainViolation>;
+
+template <typename Start, typename End>
+    requires(!(concepts::RangeElement<std::remove_cvref_t<Start>> && concepts::RangeElement<std::remove_cvref_t<End>>))
+Range(Start, End) -> Range<concepts_detail::RangeElementDomainViolation>;
+
+template <typename Start, typename End, typename Step>
+    requires(!(concepts::RangeElement<std::remove_cvref_t<Start>> && concepts::RangeElement<std::remove_cvref_t<End>> &&
+               concepts::RangeElement<std::remove_cvref_t<Step>>))
+Range(Start, End, Step) -> Range<concepts_detail::RangeElementDomainViolation>;
+
+namespace concepts_detail {
+
+struct DeducedRangeElementType {};
+
+template <typename RequestedElementType, typename... Args>
+struct range_factory_element_type {
+    using type = RequestedElementType;
+};
+
+template <typename First, typename... Rest>
+struct range_factory_element_type<DeducedRangeElementType, First, Rest...> {
+    using type = std::remove_cvref_t<First>;
+};
+
+template <typename RequestedElementType, typename... Args>
+using range_factory_element_t = range_factory_element_type<RequestedElementType, Args...>::type;
+
+template <typename RequestedElementType, typename... Args>
+concept RangeFactoryHasElementType =
+    sizeof...(Args) > 0U || !std::same_as<RequestedElementType, DeducedRangeElementType>;
+
+template <typename RequestedElementType, typename... Args>
+concept RangeFactoryArguments =
+    RangeFactoryHasElementType<RequestedElementType, Args...> &&
+    concepts::RangeElement<range_factory_element_t<RequestedElementType, Args...>> && sizeof...(Args) <= 3U &&
+    ((!std::same_as<RequestedElementType, DeducedRangeElementType> &&
+      (concepts::SafeImplicitConversion<RequestedElementType, Args> && ...)) ||
+     (std::same_as<RequestedElementType, DeducedRangeElementType> &&
+      (std::same_as<range_factory_element_t<RequestedElementType, Args...>, std::remove_cvref_t<Args>> && ...)));
+
+} // namespace concepts_detail
+
+/** \anchor RangeFactory
+ * The \b range free function API creates an owning \ref Range "Range" without materializing its results.
+ *
+ * Use `range(end)`, `range(start, end)`, or `range(start, end, step)` with arguments of the same signed integral type.
+ * Use `range<T>(...)` to select a signed integral element type under the \ref implicit-conversions "safe implicit
+ * conversion rules"; `range<T>()` creates the default empty range. An untyped empty call cannot deduce an element
+ * type. All forms preserve the equivalent constructor's defaults, zero-step repetition, exclusive endpoint, and
+ * observation bound, including \b CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE. Construction is non-throwing and
+ * non-allocating.
+ *
+~~~~~{.cpp}
+#include "cljonic.hpp"
+using namespace cljonic;
+using namespace cljonic::core;
+int main() {
+  constexpr auto empty = range<int>();
+  constexpr auto ascending = range(5);
+  constexpr auto descending = range(5, 0, -2);
+  constexpr auto widened = range<long>(0, 5, 2);
+  static_assert(is_empty(empty));
+  static_assert(
+      equal(into(vector<int, 5>(), ascending), vector(0, 1, 2, 3, 4)));
+  static_assert(equal(into(vector<int, 3>(), descending), vector(5, 3, 1)));
+  static_assert(equal(into(vector<long, 3>(), widened), vector(0L, 2L, 4L)));
+  auto end = 5;
+  const auto runtime_values = range(end);
+  return count(runtime_values) == 5U ? 0 : 1;
+}
+~~~~~
+ */
+} // namespace cljonic
+
+namespace cljonic::core {
+
+template <typename RequestedElementType = concepts_detail::DeducedRangeElementType, typename... Args>
+    requires concepts_detail::RangeFactoryArguments<RequestedElementType, Args...>
+[[nodiscard]] constexpr auto range(Args&&... args) noexcept
+    -> Range<concepts_detail::range_factory_element_t<RequestedElementType, Args...>> {
+    using ElementType = concepts_detail::range_factory_element_t<RequestedElementType, Args...>;
+    return Range<ElementType>{std::forward<Args>(args)...};
+}
+
+template <typename RequestedElementType = concepts_detail::DeducedRangeElementType, typename... Args>
+    requires(!concepts_detail::RangeFactoryArguments<RequestedElementType, Args...>)
+constexpr auto range([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
+                  "cljonic::range: use range(end), range(start, end), or range(start, end, step) with the same signed "
+                  "integral type for every argument. An empty call requires an explicit element type: range<T>(). "
+                  "With an explicit signed integral T, zero through three arguments must safely convert to T "
+                  "without loss of range or precision.");
+}
+
+} // namespace cljonic::core
+
+namespace cljonic::concepts_detail {
+
+template <typename T>
+struct producer_traits<Range<T>> {
+    static constexpr bool is_cljonic_producer = true;
+    static constexpr producer_kind kind = producer_kind::range;
+};
+
+template <typename T>
+struct contains_floating_point<Range<T>> : std::bool_constant<contains_floating_point_v<T>> {};
+
+template <typename T>
+struct contains_callable<Range<T>> : std::bool_constant<contains_callable_v<T>> {};
+
+template <typename T>
+struct contains_standard_range<Range<T>> : std::bool_constant<contains_standard_range_v<T>> {};
+
+// Nominal walker coverage (REQ-NUM-019): Range declares that the walkers reach its
+// element type.
+template <typename T>
+struct walker_coverage<Range<T>> {
+    static constexpr bool declared = true;
+};
+
+} // namespace cljonic::concepts_detail
+// End cljonic-producer-range.hpp
 
 namespace cljonic::core {} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 
+struct RangeMaterializationAccess {
+    template <typename T>
+    [[nodiscard]] static constexpr auto fully_observable(const Range<T>& source) noexcept -> bool {
+        return source.is_finite() && source.nonzero_step_extent() <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
+    }
+};
+
+template <typename T>
+[[nodiscard]] constexpr auto materialization_source_is_fully_observable(const Range<T>& source) noexcept -> bool {
+    return RangeMaterializationAccess::fully_observable(source);
+}
+
 template <concepts::CljonicSource Source>
-[[nodiscard]] constexpr auto materialization_source_is_finite(const Source& source) noexcept -> bool {
+[[nodiscard]] constexpr auto materialization_source_is_fully_observable(const Source& source) noexcept -> bool {
     if constexpr (concepts::CljonicProducer<Source>) {
         return source.is_finite();
     } else {
@@ -6250,8 +7691,10 @@ namespace cljonic::core {
  * finite source count to remaining capacity. Set and Map inspect values, accounting for duplicates and matching-key
  * updates in the destination and earlier source values. It returns `false` at the first insertion that needs
  * unavailable capacity, or `true` after the complete finite source is accepted. Every unbounded producer returns
- * `false`, even though its normal const traversal is capped. String compares finite source count to remaining
- * character capacity without evaluating character validity; invalid characters are normalized at runtime by `into`.
+ * `false`, even though its normal const traversal is capped. A finite Range whose complete cardinality exceeds its
+ * observation cap also returns `false`, without inspecting an unobservable suffix, even for Set or Map destinations. A
+ * Range exactly at the cap remains fully observable. String compares finite source count to remaining character
+ * capacity without evaluating character validity; invalid characters are normalized at runtime by `into`.
  *
  * Finite Set/Map preflight may evaluate producer callbacks. Preflight and `into` traverse independently, without
  * shared caching; callback effects through references or static storage may remain observable. The prediction applies
@@ -6307,7 +7750,7 @@ namespace cljonic::core {
 template <typename Dest, typename Source>
     requires concepts_detail::MaterializableSource<Dest, Source>
 [[nodiscard]] constexpr auto fits_into(const Dest& destination, const Source& source) noexcept -> bool {
-    if (!concepts_detail::materialization_source_is_finite(source)) {
+    if (!concepts_detail::materialization_source_is_fully_observable(source)) {
         return false;
     }
     if constexpr (concepts_detail::CountPreflightDestination<Dest>) {
@@ -7086,412 +8529,6 @@ struct walker_coverage<Iterate<T, Step>> {
 
 } // namespace cljonic::concepts_detail
 // End cljonic-producer-iterate.hpp
-// Begin cljonic-producer-range.hpp
-#pragma once
-
-#include <concepts>
-#include <cstddef>
-#include <type_traits>
-#include <utility>
-
-
-namespace cljonic {
-
-namespace concepts_detail {
-
-struct RangeNextAccess;
-
-/** Internal tag (REQ-DIAG-012): selects the `Range` diagnostic specialization
- *  during an out-of-domain class template argument deduction. It is never a
- *  supported element type and is never produced by an admitted call. */
-struct RangeElementDomainViolation {};
-
-/** The `Range` class-template gate (REQ-DIAG-012): a valid `Range` element
- *  domain, or the internal diagnostic tag used only to redirect a rejected
- *  deduction. Keeping the valid domain first preserves soft, SFINAE-friendly
- *  type-level rejection for an out-of-domain element type. */
-template <typename T>
-concept RangeClassArgument =
-    concepts::RangeElement<T> || std::same_as<std::remove_cvref_t<T>, RangeElementDomainViolation>;
-
-} // namespace concepts_detail
-
-/** \anchor Range
- * A Range is a producer describing an arithmetic sequence from an inclusive \p start to an exclusive \p end by a fixed
- * \p step, defaulting to start `0` and step `1`.
- *
- * Use \ref RangeFactory "range" to create a Range.
- *
- * A zero step repeats \p start indefinitely, taking precedence over otherwise-empty-range cases, including equal start
- * and end. A nonzero step that moves away from \p end produces an empty range.
- *
- * Observation is bounded by its finite span or by \b CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE for a zero-step
- * range, and it supports const C++ range traversal in both constant evaluation and runtime code. Values can be passed
- * directly to cljonic operations that accept a source.
- *
- * Explicitly typed parameters follow the \ref implicit-conversions "safe implicit conversion rules".
- *
- ~~~~~{.cpp}
- #include "cljonic.hpp"
- using namespace cljonic;
- using namespace cljonic::core;
- int main() {
-   // Default: start 0, end 0, step 1 (empty). CTAD cannot deduce from zero
-   // arguments.
-   [[maybe_unused]] constexpr auto empty = range<int>();
-
-   // Single argument is the exclusive end; start defaults to 0, step to 1.
-   [[maybe_unused]] constexpr auto to_five = range(5);
-
-   // Explicit start and end; step still defaults to 1.
-   [[maybe_unused]] constexpr auto two_to_five = range(2, 5);
-
-   // Explicit start, end, and step.
-   [[maybe_unused]] constexpr auto evens = range(0, 10, 2);
-
-   // A zero step repeats start indefinitely rather than being empty.
-   [[maybe_unused]] constexpr auto repeating = range(0, 5, 0);
-
-   // A billion elements exceeds the system's allowed maximum, so only that
-   // maximum number of elements is available.
-   [[maybe_unused]] constexpr auto huge = range(1000000000);
-
-   // -----------------------------------------------------------------------
-   // C++ interoperability: a Range supports const traversal.
-   // -----------------------------------------------------------------------
-   constexpr auto odds = range(1, 12, 2);
-   auto runtime_odds = range(-1, -11, -2);
-
-   // Use C++ interoperability to sum the values in a constexpr range
-   constexpr auto odds_sum = [odds] {
-     auto sum = 0;
-     for (const auto value : odds) {
-       sum += value;
-     }
-     return sum;
-   }();
-   static_assert(odds_sum == 36);
-
-   // Use C++ interoperability to sum the values in a runtime range
-   auto runtime_odds_sum = 0;
-   for (const auto value : runtime_odds) {
-     runtime_odds_sum += value;
-   }
-
-   return runtime_odds_sum == -25 ? 0 : 1;
- }
- ~~~~~
- */
-template <concepts_detail::RangeClassArgument T>
-class Range {
-    friend struct concepts_detail::RangeNextAccess;
-
-  public:
-    using value_type = T;
-
-    /** A bounded, generating const iterator used for free-function observation;
-     *  it does not expose start/end/step parameters. */
-    class const_iterator {
-      public:
-        using value_type = T;
-        using difference_type = std::ptrdiff_t;
-
-        constexpr const_iterator() noexcept = default;
-
-        constexpr const_iterator(T current, std::size_t remaining, T step) noexcept
-            : current_(current), remaining_(remaining), step_(step) {
-        }
-
-        [[nodiscard]] constexpr auto operator*() const noexcept -> T {
-            return current_;
-        }
-
-        constexpr auto operator++() noexcept -> const_iterator& {
-            if (remaining_ > 1U) {
-                current_ = static_cast<T>(current_ + step_);
-            }
-            --remaining_;
-            return *this;
-        }
-
-        constexpr auto operator++(int) noexcept -> const_iterator {
-            auto previous = *this;
-            ++(*this);
-            return previous;
-        }
-
-        [[nodiscard]] friend constexpr auto operator==(const const_iterator& lhs, const const_iterator& rhs) noexcept
-            -> bool {
-            return lhs.remaining_ == rhs.remaining_;
-        }
-
-      private:
-        T current_{};
-        std::size_t remaining_{0U};
-        T step_{};
-    };
-
-    constexpr Range() noexcept : start_(T{0}), end_(T{0}), step_(T{1}) {
-    }
-
-    constexpr explicit Range(T end) noexcept : start_(T{0}), end_(end), step_(T{1}) {
-    }
-
-    constexpr Range(T start, T end) noexcept : start_(start), end_(end), step_(T{1}) {
-    }
-
-    constexpr Range(T start, T end, T step) noexcept : start_(start), end_(end), step_(step) {
-    }
-
-    template <typename End>
-        requires(!concepts::SafeImplicitConversion<T, End>)
-    explicit Range(End end) = delete;
-
-    template <typename Start, typename End>
-        requires(!concepts::SafeImplicitConversion<T, Start> || !concepts::SafeImplicitConversion<T, End>)
-    Range(Start start, End end) = delete;
-
-    template <typename Start, typename End, typename Step>
-        requires(!concepts::SafeImplicitConversion<T, Start> || !concepts::SafeImplicitConversion<T, End> ||
-                 !concepts::SafeImplicitConversion<T, Step>)
-    Range(Start start, End end, Step step) = delete;
-
-    /** Conservative observation count: the synthesis cap for a zero step, otherwise
-     *  the exact finite cardinality saturated at the synthesis cap. */
-    [[nodiscard]] constexpr auto count() const noexcept -> std::size_t {
-        return step_ == T{0} ? CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE : saturate(nonzero_step_extent());
-    }
-
-    /** Reports whether this Range has a finite complete result. */
-    [[nodiscard]] constexpr auto is_finite() const noexcept -> bool {
-        return step_ != T{0};
-    }
-
-    /** Index-in-range predicate over the available bounded prefix; O(1), no traversal. */
-    [[nodiscard]] constexpr auto contains(std::size_t index) const noexcept -> bool {
-        return index < count();
-    }
-
-    template <typename Index>
-        requires(!concepts::SafeImplicitConversion<std::size_t, Index>)
-    auto contains(Index index) const -> bool = delete;
-
-    /** Bounded generating iteration up to the effective size returned by count(). */
-    [[nodiscard]] constexpr auto begin() const noexcept -> const_iterator {
-        return const_iterator{start_, count(), step_};
-    }
-
-    [[nodiscard]] constexpr auto end() const noexcept -> const_iterator {
-        return const_iterator{T{}, 0U, T{}};
-    }
-
-    /** Producer parameter equality (REQ-FN-014B): compares only the stored
-     *  start/end/step parameters, never the produced sequence.
-     *
-     *  It is the only producer parameter-equality surface; the `equal` free function
-     *  instead compares bounded logical observations of the produced sequences. Two
-     *  Range values with different parameters compare unequal even when their
-     *  produced or observed sequences coincide (for example two zero-step ranges
-     *  with different endpoints both produce an infinite repetition of their
-     *  respective start values). O(1), no traversal, no allocation. */
-    [[nodiscard]] friend constexpr auto operator==(const Range& lhs, const Range& rhs) noexcept -> bool {
-        return lhs.start_ == rhs.start_ && lhs.end_ == rhs.end_ && lhs.step_ == rhs.step_;
-    }
-
-  private:
-    using ExtentType = std::make_unsigned_t<T>;
-
-    /** Caps an internal extent at the public observation maximum. */
-    [[nodiscard]] static constexpr auto saturate(ExtentType raw_count) noexcept -> std::size_t {
-        return raw_count > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE
-                   ? CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE
-                   : static_cast<std::size_t>(raw_count);
-    }
-
-    /** Converts a signed step to an unsigned magnitude without signed overflow. */
-    [[nodiscard]] static constexpr auto magnitude(T value) noexcept -> ExtentType {
-        const auto unsigned_value = static_cast<ExtentType>(value);
-        return value < T{0} ? ExtentType{0} - unsigned_value : unsigned_value;
-    }
-
-    /** Computes how many stepped positions fit inside an unsigned span. */
-    [[nodiscard]] constexpr auto extent_from_span(ExtentType span) const noexcept -> ExtentType {
-        const auto step = magnitude(step_);
-        return (span / step) + (span % step == ExtentType{0} ? ExtentType{0} : ExtentType{1});
-    }
-
-    /** Chooses the finite extent calculation after zero-step handling. */
-    [[nodiscard]] constexpr auto nonzero_step_extent() const noexcept -> ExtentType {
-        return step_ > T{0} ? ascending_extent() : descending_extent();
-    }
-
-    /** Computes the finite extent for a range moving upward. */
-    [[nodiscard]] constexpr auto ascending_extent() const noexcept -> ExtentType {
-        if (start_ >= end_) {
-            return ExtentType{0};
-        }
-        return extent_from_span(static_cast<ExtentType>(end_) - static_cast<ExtentType>(start_));
-    }
-
-    /** Computes the finite extent for a range moving downward. */
-    [[nodiscard]] constexpr auto descending_extent() const noexcept -> ExtentType {
-        if (end_ >= start_) {
-            return ExtentType{0};
-        }
-        return extent_from_span(static_cast<ExtentType>(start_) - static_cast<ExtentType>(end_));
-    }
-
-    T start_;
-    T end_;
-    T step_;
-};
-
-/** Diagnostic specialization (REQ-DIAG-012): reached only through the
- *  redirecting deduction guides below, which select it for exactly the
- *  out-of-domain class template argument deduction. Constructing it is always a
- *  compile-time error whose single message names the class template, the
- *  rejected argument type, and the violated domain rule. It is never a
- *  supported construction target and exposes no usable state. */
-template <>
-class Range<concepts_detail::RangeElementDomainViolation> {
-  public:
-    template <typename... Args>
-    constexpr explicit Range([[maybe_unused]] Args&&... args) noexcept {
-        static_assert(concepts_detail::dependent_false<Args...>,
-                      "cljonic::Range: the element type must be a signed integral type. Every start, end, and step "
-                      "argument must be a signed integral value, because Range describes a signed arithmetic "
-                      "sequence whose span arithmetic requires a signed element type.");
-    }
-};
-
-/** Redirecting deduction guides (REQ-DIAG-012), one per supported arity. Each is
- *  viable only for a rejected deduction, so an admitted deduction is never
- *  affected. */
-template <typename T>
-    requires(!concepts::RangeElement<std::remove_cvref_t<T>>)
-Range(T) -> Range<concepts_detail::RangeElementDomainViolation>;
-
-template <typename Start, typename End>
-    requires(!(concepts::RangeElement<std::remove_cvref_t<Start>> && concepts::RangeElement<std::remove_cvref_t<End>>))
-Range(Start, End) -> Range<concepts_detail::RangeElementDomainViolation>;
-
-template <typename Start, typename End, typename Step>
-    requires(!(concepts::RangeElement<std::remove_cvref_t<Start>> && concepts::RangeElement<std::remove_cvref_t<End>> &&
-               concepts::RangeElement<std::remove_cvref_t<Step>>))
-Range(Start, End, Step) -> Range<concepts_detail::RangeElementDomainViolation>;
-
-namespace concepts_detail {
-
-struct DeducedRangeElementType {};
-
-template <typename RequestedElementType, typename... Args>
-struct range_factory_element_type {
-    using type = RequestedElementType;
-};
-
-template <typename First, typename... Rest>
-struct range_factory_element_type<DeducedRangeElementType, First, Rest...> {
-    using type = std::remove_cvref_t<First>;
-};
-
-template <typename RequestedElementType, typename... Args>
-using range_factory_element_t = range_factory_element_type<RequestedElementType, Args...>::type;
-
-template <typename RequestedElementType, typename... Args>
-concept RangeFactoryHasElementType =
-    sizeof...(Args) > 0U || !std::same_as<RequestedElementType, DeducedRangeElementType>;
-
-template <typename RequestedElementType, typename... Args>
-concept RangeFactoryArguments =
-    RangeFactoryHasElementType<RequestedElementType, Args...> &&
-    concepts::RangeElement<range_factory_element_t<RequestedElementType, Args...>> && sizeof...(Args) <= 3U &&
-    ((!std::same_as<RequestedElementType, DeducedRangeElementType> &&
-      (concepts::SafeImplicitConversion<RequestedElementType, Args> && ...)) ||
-     (std::same_as<RequestedElementType, DeducedRangeElementType> &&
-      (std::same_as<range_factory_element_t<RequestedElementType, Args...>, std::remove_cvref_t<Args>> && ...)));
-
-} // namespace concepts_detail
-
-/** \anchor RangeFactory
- * The \b range free function API creates an owning \ref Range "Range" without materializing its results.
- *
- * Use `range(end)`, `range(start, end)`, or `range(start, end, step)` with arguments of the same signed integral type.
- * Use `range<T>(...)` to select a signed integral element type under the \ref implicit-conversions "safe implicit
- * conversion rules"; `range<T>()` creates the default empty range. An untyped empty call cannot deduce an element
- * type. All forms preserve the equivalent constructor's defaults, zero-step repetition, exclusive endpoint, and
- * observation bound, including \b CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE. Construction is non-throwing and
- * non-allocating.
- *
-~~~~~{.cpp}
-#include "cljonic.hpp"
-using namespace cljonic;
-using namespace cljonic::core;
-int main() {
-  constexpr auto empty = range<int>();
-  constexpr auto ascending = range(5);
-  constexpr auto descending = range(5, 0, -2);
-  constexpr auto widened = range<long>(0, 5, 2);
-  static_assert(is_empty(empty));
-  static_assert(
-      equal(into(vector<int, 5>(), ascending), vector(0, 1, 2, 3, 4)));
-  static_assert(equal(into(vector<int, 3>(), descending), vector(5, 3, 1)));
-  static_assert(equal(into(vector<long, 3>(), widened), vector(0L, 2L, 4L)));
-  auto end = 5;
-  const auto runtime_values = range(end);
-  return count(runtime_values) == 5U ? 0 : 1;
-}
-~~~~~
- */
-} // namespace cljonic
-
-namespace cljonic::core {
-
-template <typename RequestedElementType = concepts_detail::DeducedRangeElementType, typename... Args>
-    requires concepts_detail::RangeFactoryArguments<RequestedElementType, Args...>
-[[nodiscard]] constexpr auto range(Args&&... args) noexcept
-    -> Range<concepts_detail::range_factory_element_t<RequestedElementType, Args...>> {
-    using ElementType = concepts_detail::range_factory_element_t<RequestedElementType, Args...>;
-    return Range<ElementType>{std::forward<Args>(args)...};
-}
-
-template <typename RequestedElementType = concepts_detail::DeducedRangeElementType, typename... Args>
-    requires(!concepts_detail::RangeFactoryArguments<RequestedElementType, Args...>)
-constexpr auto range([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedElementType, Args...>,
-                  "cljonic::range: use range(end), range(start, end), or range(start, end, step) with the same signed "
-                  "integral type for every argument. An empty call requires an explicit element type: range<T>(). "
-                  "With an explicit signed integral T, zero through three arguments must safely convert to T "
-                  "without loss of range or precision.");
-}
-
-} // namespace cljonic::core
-
-namespace cljonic::concepts_detail {
-
-template <typename T>
-struct producer_traits<Range<T>> {
-    static constexpr bool is_cljonic_producer = true;
-    static constexpr producer_kind kind = producer_kind::range;
-};
-
-template <typename T>
-struct contains_floating_point<Range<T>> : std::bool_constant<contains_floating_point_v<T>> {};
-
-template <typename T>
-struct contains_callable<Range<T>> : std::bool_constant<contains_callable_v<T>> {};
-
-template <typename T>
-struct contains_standard_range<Range<T>> : std::bool_constant<contains_standard_range_v<T>> {};
-
-// Nominal walker coverage (REQ-NUM-019): Range declares that the walkers reach its
-// element type.
-template <typename T>
-struct walker_coverage<Range<T>> {
-    static constexpr bool declared = true;
-};
-
-} // namespace cljonic::concepts_detail
-// End cljonic-producer-range.hpp
 // Begin cljonic-producer-repeat.hpp
 #pragma once
 
@@ -10132,8 +11169,9 @@ namespace cljonic::core {
 
 /** \anchor Seq
  * The \b seq free function returns the logical traversal elements of a `Vector`, `Map`, `Set`, `Queue`, or `String`
- * value, or of a supported \ref Range "Range", \ref Repeat "Repeat", \ref Cycle "Cycle", \ref Iterate "Iterate", or
- * \ref Repeatedly "Repeatedly" producer, as an owning, value-semantic \ref Vector "Vector" in traversal order.
+ * value, or of a supported \ref Range "Range", \ref Repeat "Repeat", \ref Cycle "Cycle", \ref Iterate "Iterate", \ref
+ * Repeatedly "Repeatedly", \ref TakeWhile "TakeWhile", or \ref DropWhile "DropWhile" producer, as an owning,
+ * value-semantic \ref Vector "Vector" in traversal order.
  *
  * A \ref Vector "Vector" input returns a by-value copy of itself. A \ref Map "Map" input yields a vector of
  * value-semantic \ref MapEntryFactory "map_entry" values. A \ref Set "Set" or \ref Queue "Queue" input yields a vector
@@ -10259,7 +11297,7 @@ namespace cljonic::core {
  * The \b take free function returns the first requested elements of one cljonic source as a bounded owning \ref Vector
  * "Vector". Use \c take(count, source) with a \ref Vector "Vector", \ref Map "Map", \ref Set "Set", \ref Queue
  * "Queue", or \ref String "String" collection, or a \ref Range "Range", \ref Repeat "Repeat", \ref Cycle "Cycle", \ref
- * Iterate "Iterate", or \ref Repeatedly "Repeatedly" producer.
+ * Iterate "Iterate", \ref Repeatedly "Repeatedly", \ref TakeWhile "TakeWhile", or \ref DropWhile "DropWhile" producer.
  *
  * Counts follow the \ref implicit-conversions "safe count conversion rules": signed or unsigned integers whose
  * nonnegative ranges fit std::size_t, excluding Boolean and character types. Zero or negative counts return an empty
@@ -10305,11 +11343,12 @@ template <typename Count, typename Source>
 [[nodiscard]] constexpr auto take(Count count, const Source& source) noexcept
     -> Vector<std::ranges::range_value_t<const Source>, concepts_detail::SourceResultCapacity<Source>> {
     constexpr auto capacity = concepts_detail::SourceResultCapacity<Source>;
-    const auto observed_count = std::min({concepts_detail::normalize_producer_count(count), source.count(), capacity});
+    const auto requested_count = std::min(concepts_detail::normalize_producer_count(count), capacity);
     Vector<std::ranges::range_value_t<const Source>, capacity> result{};
-    if (observed_count == 0) {
+    if (requested_count == 0) {
         return result;
     }
+    const auto observed_count = std::min(requested_count, source.count());
     auto iterator = source.begin();
     const auto end = source.end();
     for (std::size_t index = 0; iterator != end; ++index) {

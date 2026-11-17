@@ -40,6 +40,10 @@ FAILURE_CASES = {
         "(void)cljonic::core::map(cljonic_map_takes_int, cljonic::Vector<long, 2>{});"),
     "Map-narrowing-double-to-float": (
         "(void)cljonic::core::map(cljonic_map_takes_float, cljonic::Vector<double, 2>{});"),
+    "Map-domain-cross-int-to-double": (
+        "(void)cljonic::core::map(cljonic_map_takes_double, cljonic::Vector<int, 2>{});"),
+    "Map-domain-cross-double-to-int": (
+        "(void)cljonic::core::map(cljonic_map_takes_int, cljonic::Vector<double, 2>{});"),
     "Map-narrowing-second-position": (
         "(void)cljonic::core::map(cljonic_map_takes_int, cljonic::Vector<int, 2>{}, cljonic::Vector<long, 2>{});"),
     "Map-domain-cross-int-to-char": (
@@ -82,8 +86,12 @@ PASS_CASES = {
     # Value-preserving widening conversions are admitted.
     "Map-widening-int-to-long": (
         "(void)cljonic::core::map(cljonic_map_takes_long, cljonic::Vector<int, 2>{});"),
-    "Map-widening-int-to-double": (
-        "(void)cljonic::core::map(cljonic_map_takes_double, cljonic::Vector<int, 2>{});"),
+    "Map-widening-float-to-double": (
+        "(void)cljonic::core::map(cljonic_map_takes_double, cljonic::Vector<float, 2>{});"),
+    "Map-explicit-int-to-double": (
+        "constexpr auto converted = cljonic::core::map("
+        "[](int value) noexcept { return cljonic::core::to_double(value); }, cljonic::Vector<int, 2>{1, 2});"
+        "(void)cljonic::core::map(cljonic_map_takes_double, converted);"),
     "Map-exact-char-parameter": "(void)cljonic::core::map(cljonic_map_identity_char, cljonic::String<4>{});",
     # Uninspectable callables fall back to nothrow invocability.
     "Map-generic-lambda-fallback": (

@@ -1,13 +1,26 @@
 #pragma once
 
 #include <cljonic-concepts.hpp>
+#include <cljonic-producer-range.hpp>
 
 namespace cljonic::core {} // namespace cljonic::core
 
 namespace cljonic::concepts_detail {
 
+struct RangeMaterializationAccess {
+    template <typename T>
+    [[nodiscard]] static constexpr auto fully_observable(const Range<T>& source) noexcept -> bool {
+        return source.is_finite() && source.nonzero_step_extent() <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE;
+    }
+};
+
+template <typename T>
+[[nodiscard]] constexpr auto materialization_source_is_fully_observable(const Range<T>& source) noexcept -> bool {
+    return RangeMaterializationAccess::fully_observable(source);
+}
+
 template <concepts::CljonicSource Source>
-[[nodiscard]] constexpr auto materialization_source_is_finite(const Source& source) noexcept -> bool {
+[[nodiscard]] constexpr auto materialization_source_is_fully_observable(const Source& source) noexcept -> bool {
     if constexpr (concepts::CljonicProducer<Source>) {
         return source.is_finite();
     } else {
@@ -46,8 +59,10 @@ namespace cljonic::core {
  * finite source count to remaining capacity. Set and Map inspect values, accounting for duplicates and matching-key
  * updates in the destination and earlier source values. It returns `false` at the first insertion that needs
  * unavailable capacity, or `true` after the complete finite source is accepted. Every unbounded producer returns
- * `false`, even though its normal const traversal is capped. String compares finite source count to remaining
- * character capacity without evaluating character validity; invalid characters are normalized at runtime by `into`.
+ * `false`, even though its normal const traversal is capped. A finite Range whose complete cardinality exceeds its
+ * observation cap also returns `false`, without inspecting an unobservable suffix, even for Set or Map destinations. A
+ * Range exactly at the cap remains fully observable. String compares finite source count to remaining character
+ * capacity without evaluating character validity; invalid characters are normalized at runtime by `into`.
  *
  * Finite Set/Map preflight may evaluate producer callbacks. Preflight and `into` traverse independently, without
  * shared caching; callback effects through references or static storage may remain observable. The prediction applies
@@ -103,7 +118,7 @@ namespace cljonic::core {
 template <typename Dest, typename Source>
     requires concepts_detail::MaterializableSource<Dest, Source>
 [[nodiscard]] constexpr auto fits_into(const Dest& destination, const Source& source) noexcept -> bool {
-    if (!concepts_detail::materialization_source_is_finite(source)) {
+    if (!concepts_detail::materialization_source_is_fully_observable(source)) {
         return false;
     }
     if constexpr (concepts_detail::CountPreflightDestination<Dest>) {

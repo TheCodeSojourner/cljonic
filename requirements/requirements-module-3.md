@@ -2,7 +2,7 @@
 
 ## Purpose and Scope
 
-This module defines the concrete, array-backed, bounded collection types (`Vector`, `Map`, `Set`, `Queue`, `String`), their current primitive member and free-function operations, and callable lookup forms. `first`, `next`, `rest`, and the `has_first`, `has_next`, and `has_rest` preflights are active traversal operations; `rest` delegates to `next` for every input admitted by `next`, including supported producers. Sequence conversion remains approved future work. Module 3 provides the stored collection building blocks used across all higher-order algorithms.
+This module defines the concrete, array-backed, bounded collection types (`Vector`, `Map`, `Set`, `Queue`, `String`), their current primitive member and free-function operations, and callable lookup forms. `first`, `next`, `rest`, and the `has_first`, `has_next`, and `has_rest` preflights are active traversal operations; `rest` delegates to `next` for every input admitted by `next`, including supported producers. `Seq` (`seq`) is active under `REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014`. Module 3 provides the stored collection building blocks used across all higher-order algorithms.
 
 ## Collection Family Requirements
 
@@ -30,7 +30,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 
 λ REQ-COLL-004(x).
   ∀ context: the library provides a `Map` with key/value association, lookup, association, removal, membership, and count
-  ∧ ∀ (`Seq` ∧ traversal): `requirements-backed` through `REQ-SEQ-001`–`014`
+  ∧ ∀ (`Seq` ∧ traversal): `RequirementsBacked` through `REQ-SEQ-001`–`014`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-COLL-004A(x).
@@ -52,7 +52,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 
 λ REQ-COLL-005(x).
   ∀ context: the library provides a `Set` with membership, insertion, removal, and count
-  ∧ ∀ (`Seq` ∧ traversal): `requirements-backed` through `REQ-SEQ-001`–`014`
+  ∧ ∀ (`Seq` ∧ traversal): `RequirementsBacked` through `REQ-SEQ-001`–`014`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-COLL-005A(x).
@@ -67,7 +67,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 
 λ REQ-COLL-006(x).
   ∀ context: the library provides a `Queue` with insertion at the rear, removal at the front, peek, and count
-  ∧ ∀ (`Seq` ∧ traversal): `requirements-backed` through `REQ-SEQ-001`–`014`
+  ∧ ∀ (`Seq` ∧ traversal): `RequirementsBacked` through `REQ-SEQ-001`–`014`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-COLL-007(x).
@@ -77,7 +77,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 λ REQ-COLL-007A(x).
   ∃ permitted_path: `Capacity` is zero
   ∧ ∀ zero_capacity_collection: valid empty `OwningValue` ∧ reports `count() == 0` ∧ `is_empty(collection) == true` ∧ returns documented default or fallback values for access ∧ preserves its value when an insertion operation cannot add an element
-  ∧ ∀ future traversal_work: supports empty const traversal without accessing element storage, allocating, throwing, or invoking capacity-dependent arithmetic with zero as a divisor
+  ∧ ∀ future traversal operation for a zero-capacity collection: supports empty const traversal without accessing element storage, allocating, throwing, or invoking capacity-dependent arithmetic with zero as a divisor
   ∧ ∀ zero_capacity_collection: fails any compile-time construction that would require stored elements
   {source: stakeholder_decided, decided_by: original_spec_author}
 
@@ -195,7 +195,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 
 λ REQ-COLL-020B(x).
   ∀ context: the library models collection behavior using the Clojure-style capability definitions in `REQ-CAP-001` through `REQ-CAP-009`, `REQ-CAP-013`, and `REQ-CAP-014`, including `Indexed`, `Lookup`, `Seqable`, `Associative`, and `Conjable`, while preserving the bounded, non-allocating, value-semantic implementation model
-  ∧ ∀ `Seqable` capability ∧ its traversal operations: `requirements-backed` through `REQ-SEQ-001`–`014` ∧ closed to external declaration under `REQ-CAP-014`
+  ∧ ∀ `Seqable` capability ∧ its traversal operations: `RequirementsBacked` through `REQ-SEQ-001`–`014` ∧ closed to external declaration under `REQ-CAP-014`
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31}
 
 λ REQ-COLL-020C(x).
@@ -282,15 +282,15 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-15}
 
 λ REQ-COLL-020S(x).
-  ∀ context: the lifecycle classification is `requirements-backed` for `Indexed`, `Lookup`, `Associative`, and `Conjable`, and for `count`, `get`, `contains`, `conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`, `first`, `next`, and `has_next` over their supported collection and next-supported producer inputs
-  ∧ ∀ `rest`: lifecycle classification is `requirements-backed` over every input admitted by `next` under `REQ-SEQ-001`–`009` and `REQ-SEQ-012`
-  ∧ ∀ `seq`: `requirements-backed` over the input domain and semantics defined by `REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014` ∧ ∀ `Seqable`: remains a closed `CapabilityConcept` under the `ClosedCapability` rule that no type outside the cljonic-owned collection family may declare (`REQ-CAP-014`)
+  ∀ context: the lifecycle classification is `RequirementsBacked` for `Indexed`, `Lookup`, `Associative`, and `Conjable`, and for `count`, `get`, `contains`, `conj`, `assoc`, `can_assoc`, `dissoc`, `disj`, `peek`, `pop`, `first`, `next`, and `has_next` over their supported collection and next-supported producer inputs
+  ∧ ∀ `rest`: lifecycle classification is `RequirementsBacked` over every input admitted by `next` under `REQ-SEQ-001`–`009` and `REQ-SEQ-012`
+  ∧ ∀ `seq`: `RequirementsBacked` over the input domain and semantics defined by `REQ-SEQ-010`–`011` and `REQ-SEQ-013`–`014` ∧ ∀ `Seqable`: remains a closed `CapabilityConcept` under the `ClosedCapability` rule that no type outside the cljonic-owned collection family may declare (`REQ-CAP-014`)
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-COLL-020T(x).
-  ∀ context: the lifecycle classification is also `requirements-backed` for `is_empty` over its supported sequenceable collection and producer inputs, `empty`, `can_conj`, and the `full` predicate or equivalent capacity inspection over their supported bounded collection inputs
-  ∧ ∀ `not_empty`: `requirements-backed` active public free function over supported owning collection inputs, with owning-value behavior governed by `REQ-BOUNDS-010D` and `REQ-FN-026`
-  ∧ ∀ behavioral contracts for `into` ∧ `fits_into`: approved by Module 2 and Module 4 ∧ both operations are `requirements-backed` public free functions over `CljonicVector`, `CljonicSet`, `CljonicMap`, `CljonicQueue`, or `CljonicString` destinations and compatible `CljonicSource` sources under `REQ-FN-027`
+  ∀ context: the lifecycle classification is also `RequirementsBacked` for `is_empty` over its supported sequenceable collection and producer inputs, `empty`, `can_conj`, and the `full` predicate or equivalent capacity inspection over their supported bounded collection inputs
+  ∧ ∀ `not_empty`: `RequirementsBacked` active public free function over supported owning collection inputs, with owning-value behavior governed by `REQ-BOUNDS-010D` and `REQ-FN-026`
+  ∧ ∀ behavioral contracts for `into` ∧ `fits_into`: approved by Module 2 and Module 4 ∧ both operations are `RequirementsBacked` public free functions over `CljonicVector`, `CljonicSet`, `CljonicMap`, `CljonicQueue`, or `CljonicString` destinations and compatible `CljonicSource` sources under `REQ-FN-027`
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-COLL-020U(x).
@@ -362,7 +362,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
 
 ## Active Rest Remainder Operation
 
-`first`, `next`, and `rest` are current traversal APIs. The clauses in this section define the active `rest` contract. `rest` is an alias for `next` over the complete `next` input domain, including supported producers. Sequence conversion (`seq`) is defined in the following section.
+`first`, `next`, and `rest` are current traversal APIs. The clauses in this section define the active `rest` contract. `rest` is an alias for `next` over the complete `next` input domain, including supported producers. `Seq` (`seq`) is defined in the following section.
 
 λ REQ-SEQ-001(x).
   ∀ context: the library defines `Sequence` as a traversal behavior over immutable `Collection` and supported `Producer` values, not as a separate owning `Collection` type
@@ -421,7 +421,7 @@ This module defines the concrete, array-backed, bounded collection types (`Vecto
   ∧ ∀ `Map` `LogicalTraversalOrder`: semantically unordered
   {source: stakeholder_decided, decided_by: original_spec_author}
 
-## Sequence Conversion (Binding)
+## `Seq` (Binding)
 
 The clauses in this section define the active `seq` contract. The human approved full activation of `Seq` on 2026-10-30, promoting the former deferred clauses to binding status and extending the domain to the supported producers.
 
@@ -431,11 +431,11 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ `Set` input: the returned vector contains one element per stored element of the set
   ∧ ∀ `Queue` input: the returned vector preserves FIFO order
   ∧ ∀ `String` input: the returned vector's element type is `char` and it contains the string's characters in content order
-  ∧ ∀ supported producer input (`Repeat`, `Range`, `Cycle`, `Iterate`, `Repeatedly`): the returned vector materializes the producer's observable traversal, with result capacity `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE` ∧ a bounded producer contributes exactly `count(producer)` elements ∧ an unbounded producer contributes the full observation cap
+  ∧ ∀ supported producer input (`Repeat`, `Range`, `Cycle`, `Iterate`, `Repeatedly`, and the predicate adapters `TakeWhile` and `DropWhile` admitted by `REQ-FN-041`): the returned vector materializes the producer's observable traversal, with result capacity `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE` ∧ a bounded producer contributes exactly `count(producer)` elements ∧ an unbounded producer contributes the full observation cap
   ∧ ∀ result: uses bounded automatic or static storage ∧ ¬∃ (dynamic_allocation ∨ retained dependency on the source collection)
   ∧ ∀ map_entry_value ∧ external C++ range/view/array/container input: rejected at compile time with one targeted diagnostic naming `seq`
   ∧ ∀ `seq`: preserves the input ∧ `constexpr` ∧ `noexcept` ∧ non-mutating ∧ non-allocating ∧ ¬∃ RTTI
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-30}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07}
 
 λ REQ-SEQ-011(x).
   ∀ `Vector` returned by `seq`: independently valid ∧ uses bounded automatic or static storage ∧ ¬∃ (dynamic_allocation ∨ retained dependency on the source `Collection`)
@@ -457,7 +457,7 @@ The clauses in this section define the active `seq` contract. The human approved
 
 λ REQ-FN-002(x).
   ∀ context: the supported free-function vocabulary includes at least the functions listed in the API Vocabulary Inventories, subject to each entry's `LifecycleClassification` and the capabilities of each input
-  ∧ ∀ entry: only entries classified as `requirements-backed` constitute supported behavior
+  ∧ ∀ entry: only entries classified as `RequirementsBacked` constitute supported behavior
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 ### Sequence First Access (Binding)
@@ -514,7 +514,7 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ (`Map` ∧ `Set`): result does not depend on which element appears first in the unspecified `LogicalTraversalOrder`
   ∧ ∀ unsupported_input: fails compilation with one targeted diagnostic naming `has_next` and its supported collection and producer domains
   ∧ ∀ `has_rest(value)`: return exactly `has_next(value)` for the same supported collection and producer domains, with identical preflight behavior, callback timing/effects, input preservation, and `CompileTimeFailure` behavior; implement as a forwarding alias without an independent traversal
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-05, aligned_with: REQ-FN-002A4-002A7}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-05, aligned_with: REQ-FN-002A4, REQ-FN-002A5, REQ-FN-002A6, REQ-FN-002A7}
 
 ### Sequence First-Element Preflight (Binding)
 
@@ -641,13 +641,13 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ (pairs belonging to incompatible families ∨ pairs mixing a cljonic value with a non-cljonic value ∨ operands outside the supported stable-equality domain): fail at compile time
   ∧ ∀ ordinary_value_pair (two fallthrough-domain scalars ∨ aggregates ∨ `cljonic::Variant` composites) ∧ ∀ sequential_pair element position: the operand types are identical ∨ related by a value-preserving implicit conversion in at least one direction, and the comparison is made in the wider type, so every admitted pair is compared without truncation or saturation
   ∧ ∀ safe-conversion pairs: equality remains an equivalence relation (symmetric and transitive) because admitted conversions are injective on values ∧ ¬∃ implication that a narrower operand is re-typed, truncated, or saturated
-  ∧ ∀ sign-crossing (signed against unsigned) ∨ Boolean ∨ character ∨ enumeration ∨ pointer ∨ user-defined type pairs: never safely convertible and each rejected with `CompileTimeFailure`
+  ∧ ∀ cross-type pair involving sign-crossing (signed against unsigned) ∨ Boolean ∨ character ∨ enumeration ∨ pointer ∨ user-defined types: never safely convertible and rejected with `CompileTimeFailure` ∧ identical-type pairs remain subject to the existing equality-domain constraints
   ∧ ∀ `cljonic::Variant` alternative identity ∧ ∀ Map key and value identity ∧ ∀ Set element identity ∧ ∀ String content identity: identical types remain required ∧ ¬∃ leak of the safe-conversion rule into alternative-strict variant equality, so `Variant<int, long>{1}` remains unequal to `Variant<int, long>{1L}`
   ∧ ∀ sequential_comparison: equal ≡ same(observed_count ∧ ordered_elements) | compare_only(bounded_logical_observations) ∧ ¬claim(equality_beyond_observation_bound)
   ∧ ∀ sequential_comparison: order-sensitive ∧ lazy_elementwise ∧ ¬eager_materialization ∧ terminate(first_unequal_pair ∨ shorter_exhausted_logical_count)
   ∧ ∀ producer_operand: unbounded_complete_sequence → ¬reject_solely_for_unboundedness ∧ observe_only(configured_bounded_traversal)
   rationale: the human approved on 2026-10-31 admitting value-preserving implicit conversions — identical types, or a safe widening compared in the wider type — for ordinary value pairs and for sequential element positions; narrowing value relations are harmless because comparison happens after widening; this supersedes the earlier blanket cross-type numeric unification ban for `equal`, while Variant alternative identity, Map keys and values, Set elements, and String content keep the identical-type rule
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: origin_artifact, rationale_approved_by: human}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07, rationale_source: origin_artifact, rationale_approved_by: human}
 
 λ REQ-FN-002H(x).
   ∀ context: `not_equal` implements the canonical negation of general value equality as the counterpart of `equal` (`REQ-FN-002G`), in the three arities of Clojure's `not=`
@@ -656,9 +656,9 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ `not_equal(a, b, more...)`: holds exactly when at least one adjacent operand pair does not compare equal ∧ is the logical negation of the conjunctive `equal` variadic form
   ∧ ∀ adjacent pair in the variadic form ∧ the single unary operand: individually satisfies the same compile-time domain gating as `equal`, so an unsupported or mixed pair fails compilation regardless of position in the argument list
   ∧ ∀ context: `not_equal` is a named free-function operation distinct from the native `!=` operators defined by `REQ-COLL-021` and `REQ-FN-014B`
-  ∧ ∀ floating_point_value at any depth: rejected at compile time per `REQ-NUM-006` ∧ ¬∃ cross-type numeric unification under `REQ-NUM-002`, `REQ-NUM-006`, or the pinned `NumericEquality` vocabulary rule beyond the value-preserving conversion rule inherited from `equal` (`REQ-FN-002G`)
+  ∧ ∀ floating_point_value at any depth analyzable under `equal` (`REQ-FN-002G`): rejected at compile time per `REQ-NUM-006` ∧ inspection stops at the same user-defined-type boundary under `REQ-NUM-018`, without inspecting its members ∧ ¬∃ cross-type numeric unification under `REQ-NUM-002`, `REQ-NUM-006`, or the pinned `NumericEquality` vocabulary rule beyond the value-preserving conversion rule inherited from `equal` (`REQ-FN-002G`)
   ∧ ∀ `not_equal`: `constexpr` ∧ `noexcept` ∧ non-mutating ∧ non-allocating ∧ its supported domain, equality-family classification, recursion over nested values, and termination behavior are identical to `equal` (`REQ-FN-002G`) because it delegates to `equal` and negates the result
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07}
 
 λ REQ-FN-002M(x).
   ∀ `can_conj(collection, value)` defined for every `Conjable` collection (`Vector`, `Set`, `Map`, `Queue`, `String`): returns true when `conj` can produce its documented result without capacity failure
@@ -747,7 +747,7 @@ The clauses in this section define the active `seq` contract. The human approved
   ∧ ∀ one or more values: removes each value if present, applying removals from left to right ∧ an absent value is a no-op ∧ repeated values are permitted and subsequent removal of a now-absent value remains a no-op ∧ result is equivalent to sequential application of the existing Set removal operation
   ∧ ∀ arity: `constexpr` ∧ `noexcept` ∧ non-mutating ∧ non-allocating ∧ returns a `Collection` value ∧ preserves the source
   ∧ ∀ unsupported first-argument or value type: fails compilation with one targeted diagnostic naming `disj` and the violated Set/value-type domain (`REQ-DIAG-003`, `REQ-DIAG-009`)
-  rationale: Clojure_disj ≡ zero_arity_identity ∧ sequential_removal | safe_widening ∧ ¬narrowed_membership
+  rationale: Clojure `disj` is the zero-arity identity followed by sequential removal through the existing Set removal operation; the design admits safe widening of supplied values but never narrowed membership
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
 
 λ REQ-FN-002Y(x).
@@ -795,7 +795,7 @@ The clauses in this section define the active `seq` contract. The human approved
   {source: stakeholder_decided, decided_by: original_spec_author, rationale_source: origin_artifact}
 
 λ REQ-FN-026(x).
-  ∀ context: the core vocabulary includes `empty`, `is_empty`, and `not_empty` with the semantics defined by `REQ-BOUNDS-010A`
+  ∀ context: the core vocabulary includes `empty`, `is_empty`, and `not_empty` with semantics defined respectively by `REQ-BOUNDS-010C`, `REQ-BOUNDS-010A`, and `REQ-BOUNDS-010D`
   ∧ ∀ `empty`: produces an empty `OwningValue` of the same supported collection type as its input
   ∧ ∀ `is_empty`: returns a boolean predicate result
   ∧ ∀ `not_empty`: preserves the input collection type and capacity ∧ returns an owning copy of the input when nonempty or the corresponding empty value when empty

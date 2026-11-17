@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <string>
+#include <type_traits>
 #include <variant>
 
 #include "cljonic-test-api.hpp"
@@ -14,6 +15,17 @@ struct FloatAggregate {
     int tag;
 
     auto operator==(const FloatAggregate&) const noexcept -> bool = default;
+};
+
+class FloatClass {
+  public:
+    constexpr FloatClass() noexcept = default;
+    constexpr explicit FloatClass(double value) noexcept : value_(value) {
+    }
+    constexpr auto operator==(const FloatClass&) const noexcept -> bool = default;
+
+  private:
+    double value_{};
 };
 
 } // namespace
@@ -277,8 +289,8 @@ TEST_CASE("Recursive collection equality over variant and nested collections", "
     // variant-compile-fail gate.
 }
 
-TEST_CASE("Aggregate equality boundary is caller-owned", "[equality][aggregate]") {
-    TRACE_ID("invariant.CollectionEquality.AggregateBoundaryEqualityIsCallerOwned");
+TEST_CASE("Opaque class equality boundary is caller-owned", "[equality][aggregate]") {
+    TRACE_ID("invariant.CollectionEquality.OpaqueUserDefinedClassEqualityIsCallerOwned");
 
     using namespace cljonic::concepts;
 
@@ -298,4 +310,17 @@ TEST_CASE("Aggregate equality boundary is caller-owned", "[equality][aggregate]"
     // The aggregate is usable where stable equality is a storage requirement.
     constexpr cljonic::Set<FloatAggregate, 4> set{FloatAggregate{1.5, 1}};
     STATIC_REQUIRE(set.contains(FloatAggregate{1.5, 1}));
+
+    STATIC_REQUIRE_FALSE(std::is_aggregate_v<FloatClass>);
+    STATIC_REQUIRE(StableEqualityComparable<FloatClass>);
+    constexpr cljonic::Vector<FloatClass, 2> class_left{FloatClass{1.5}};
+    constexpr cljonic::Vector<FloatClass, 2> class_same{FloatClass{1.5}};
+    constexpr cljonic::Vector<FloatClass, 2> class_other{FloatClass{2.5}};
+    STATIC_REQUIRE(class_left == class_same);
+    STATIC_REQUIRE_FALSE(class_left == class_other);
+    constexpr cljonic::Set<FloatClass, 2> class_set{FloatClass{1.5}};
+    STATIC_REQUIRE(class_set.contains(FloatClass{1.5}));
+    STATIC_REQUIRE_FALSE(class_set.contains(FloatClass{2.5}));
+    CHECK(class_left == class_same);
+    CHECK_FALSE(class_left == class_other);
 }

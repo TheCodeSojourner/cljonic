@@ -75,6 +75,17 @@ static_assert([] {
     return calls == 0 && source.count() == 0 && tail.count() == 0;
 }());
 """,
+    "Predicate-adapters-do-not-invoke-callbacks": """\
+static_assert([] {
+    auto produced = 0;
+    auto tested = 0;
+    const auto source = cljonic::core::repeatedly([&produced]() noexcept { return ++produced; });
+    const auto prefix = cljonic::core::take_while([&tested](int) noexcept { ++tested; return true; }, source);
+    const auto suffix = cljonic::core::drop_while([&tested](int) noexcept { ++tested; return false; }, source);
+    return prefix.is_finite() && suffix.is_finite() && prefix.count() == 0U && produced == 0 && tested == 0 &&
+           suffix.count() == 0U && produced == 0 && tested == 0;
+}());
+""",
 }
 
 PREDICATE_CAP_CASE = """\
@@ -252,7 +263,12 @@ def main() -> int:
     for name, body in ZERO_CAP_PASS_CASES.items():
         zero_cap_compiler = [*compiler, "-DCLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT=0"]
         if not compile_case(
-            zero_cap_compiler, os.path.join(root, "src"), "cljonic-next.hpp", body, expect_success=True
+            zero_cap_compiler,
+            os.path.join(root, "src"),
+            "cljonic-producer-drop-while.hpp",
+            body,
+            preamble='#include "cljonic-producer-repeatedly.hpp"\n#include "cljonic-next.hpp"',
+            expect_success=True,
         ):
             failures.append(f"modular/{name}: zero-cap behavior failed to compile")
 

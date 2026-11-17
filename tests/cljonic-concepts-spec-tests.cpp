@@ -37,6 +37,17 @@ struct NoEqualityAggregate {
     double value;
 };
 
+class FloatClass {
+  public:
+    constexpr FloatClass() noexcept = default;
+    constexpr explicit FloatClass(double value) noexcept : value_(value) {
+    }
+    constexpr auto operator==(const FloatClass&) const noexcept -> bool = default;
+
+  private:
+    double value_{};
+};
+
 // Nominal walker-coverage gate probes: both types are nominally admitted
 // cljonic collections with non-throwing equality, so the only difference that
 // can make them non-`StableEqualityComparable` is the coverage declaration.
@@ -190,6 +201,63 @@ struct SizeEmptyLike {
     }
 };
 
+struct ThrowingCountLike {
+    [[nodiscard]] constexpr auto count() const -> std::size_t {
+        return 0;
+    }
+};
+
+struct IndexedWithoutCountLike {
+    [[nodiscard]] constexpr auto operator()(std::size_t) const noexcept -> int {
+        return 0;
+    }
+    [[nodiscard]] constexpr auto contains(std::size_t) const noexcept -> bool {
+        return false;
+    }
+};
+
+struct IndexedWithoutContainsLike {
+    [[nodiscard]] constexpr auto operator()(std::size_t) const noexcept -> int {
+        return 0;
+    }
+};
+
+struct LookupWithoutCountLike {
+    using lookup_type = int;
+
+    [[nodiscard]] constexpr auto operator()(const int&) const noexcept -> int {
+        return 0;
+    }
+    [[nodiscard]] constexpr auto contains(const int&) const noexcept -> bool {
+        return false;
+    }
+};
+
+struct LookupWithoutTypeLike {
+    [[nodiscard]] constexpr auto operator()(const int&) const noexcept -> int {
+        return 0;
+    }
+    [[nodiscard]] constexpr auto contains(const int&) const noexcept -> bool {
+        return false;
+    }
+};
+
+struct LookupWithoutCallLike {
+    using lookup_type = int;
+
+    [[nodiscard]] constexpr auto contains(const int&) const noexcept -> bool {
+        return false;
+    }
+};
+
+struct LookupWithoutContainsLike {
+    using lookup_type = int;
+
+    [[nodiscard]] constexpr auto operator()(const int&) const noexcept -> int {
+        return 0;
+    }
+};
+
 // Admitted collection using operator[] instead of operator()(size_t).
 // Verifies the indexed surface omits bracket lookup.
 struct BracketLike {
@@ -203,6 +271,179 @@ struct BracketLike {
     }
 };
 
+// AssociativeCollection member-isolation fixtures: each is admitted to the
+// nominal domain and is missing exactly one required member (or provides it
+// with the wrong shape), so its rejection isolates that requirement.
+struct AssocWithoutCountLike {
+    using key_type = int;
+    using association_value_type = int;
+
+    [[nodiscard]] constexpr auto can_assoc(const key_type&, const association_value_type&) const noexcept -> bool {
+        return true;
+    }
+    [[nodiscard]] constexpr auto assoc(const key_type&, const association_value_type&) const noexcept
+        -> AssocWithoutCountLike {
+        return {};
+    }
+};
+
+struct AssocWithoutKeyTypeLike {
+    using association_value_type = int;
+
+    [[nodiscard]] constexpr auto can_assoc(const int&, const association_value_type&) const noexcept -> bool {
+        return true;
+    }
+    [[nodiscard]] constexpr auto assoc(const int&, const association_value_type&) const noexcept
+        -> AssocWithoutKeyTypeLike {
+        return {};
+    }
+};
+
+struct AssocWithoutValueTypeLike {
+    using key_type = int;
+
+    [[nodiscard]] constexpr auto can_assoc(const key_type&, const int&) const noexcept -> bool {
+        return true;
+    }
+    [[nodiscard]] constexpr auto assoc(const key_type&, const int&) const noexcept -> AssocWithoutValueTypeLike {
+        return {};
+    }
+};
+
+struct AssocWithoutOperationLike {
+    using key_type = int;
+    using association_value_type = int;
+
+    [[nodiscard]] constexpr auto can_assoc(const key_type&, const association_value_type&) const noexcept -> bool {
+        return true;
+    }
+};
+
+struct AssocWithoutPreflightLike {
+    using key_type = int;
+    using association_value_type = int;
+
+    [[nodiscard]] constexpr auto assoc(const key_type&, const association_value_type&) const noexcept
+        -> AssocWithoutPreflightLike {
+        return {};
+    }
+};
+
+// assoc that cannot run on a const source: the concept requires immutable
+// (non-mutating) association.
+struct NonConstAssocOperationLike {
+    using key_type = int;
+    using association_value_type = int;
+
+    [[nodiscard]] constexpr auto can_assoc(const key_type&, const association_value_type&) const noexcept -> bool {
+        return true;
+    }
+    [[nodiscard]] auto assoc(const key_type&, const association_value_type&) noexcept -> NonConstAssocOperationLike {
+        return {};
+    }
+};
+
+// can_assoc that cannot run on a const source.
+struct NonConstAssocPreflightLike {
+    using key_type = int;
+    using association_value_type = int;
+
+    [[nodiscard]] auto can_assoc(const key_type&, const association_value_type&) noexcept -> bool {
+        return true;
+    }
+    [[nodiscard]] constexpr auto assoc(const key_type&, const association_value_type&) const noexcept
+        -> NonConstAssocPreflightLike {
+        return {};
+    }
+};
+
+// assoc returning a foreign collection: violates the same-as-source return.
+struct AssocReturningForeignLike {
+    using key_type = int;
+    using association_value_type = int;
+
+    [[nodiscard]] constexpr auto can_assoc(const key_type&, const association_value_type&) const noexcept -> bool {
+        return true;
+    }
+    [[nodiscard]] constexpr auto assoc(const key_type&, const association_value_type&) const noexcept -> MapLike {
+        return {};
+    }
+};
+
+// ConjableCollection member-isolation fixtures, same pattern as the
+// associative ones above.
+struct ConjWithoutCountLike {
+    using value_type = int;
+
+    [[nodiscard]] constexpr auto conj(const value_type&) const noexcept -> ConjWithoutCountLike {
+        return {};
+    }
+    [[nodiscard]] constexpr auto can_conj(const value_type&) const noexcept -> bool {
+        return true;
+    }
+};
+
+struct ConjWithoutValueTypeLike {
+    [[nodiscard]] constexpr auto conj(const int&) const noexcept -> ConjWithoutValueTypeLike {
+        return {};
+    }
+    [[nodiscard]] constexpr auto can_conj(const int&) const noexcept -> bool {
+        return true;
+    }
+};
+
+struct ConjWithoutOperationLike {
+    using value_type = int;
+
+    [[nodiscard]] constexpr auto can_conj(const value_type&) const noexcept -> bool {
+        return true;
+    }
+};
+
+struct ConjWithoutPreflightLike {
+    using value_type = int;
+
+    [[nodiscard]] constexpr auto conj(const value_type&) const noexcept -> ConjWithoutPreflightLike {
+        return {};
+    }
+};
+
+// conj that cannot run on a const source.
+struct NonConstConjOperationLike {
+    using value_type = int;
+
+    [[nodiscard]] constexpr auto can_conj(const value_type&) const noexcept -> bool {
+        return true;
+    }
+    [[nodiscard]] auto conj(const value_type&) noexcept -> NonConstConjOperationLike {
+        return {};
+    }
+};
+
+// can_conj that cannot run on a const source.
+struct NonConstConjPreflightLike {
+    using value_type = int;
+
+    [[nodiscard]] auto can_conj(const value_type&) noexcept -> bool {
+        return true;
+    }
+    [[nodiscard]] constexpr auto conj(const value_type&) const noexcept -> NonConstConjPreflightLike {
+        return {};
+    }
+};
+
+// conj returning a foreign collection: violates the same-as-source return.
+struct ConjReturningForeignLike {
+    using value_type = int;
+
+    [[nodiscard]] constexpr auto can_conj(const value_type&) const noexcept -> bool {
+        return true;
+    }
+    [[nodiscard]] constexpr auto conj(const value_type&) const noexcept -> VectorLike {
+        return {};
+    }
+};
+
 // Equality-only value type (no ordering relation).
 struct EqualityOnly {
     friend constexpr auto operator==(const EqualityOnly&, const EqualityOnly&) noexcept -> bool {
@@ -210,11 +451,30 @@ struct EqualityOnly {
     }
 };
 
-// Equality whose comparison is stable but may throw: admissible to
-// StableEqualityComparable, rejected by NothrowEqualityComparable.
 struct ThrowingEqualityOnly {
     friend auto operator==(const ThrowingEqualityOnly&, const ThrowingEqualityOnly&) -> bool {
         return true;
+    }
+};
+
+struct ImplicitNothrowEquality {
+    int value{};
+    auto operator==(const ImplicitNothrowEquality&) const -> bool = default;
+};
+
+class ThrowingClassEquality {
+  public:
+    auto operator==(const ThrowingClassEquality&) const noexcept(false) -> bool {
+        return true;
+    }
+};
+
+// Equality returning a non-boolean-testable value: std::equality_comparable
+// rejects it, isolating the bool-result requirement.
+struct NonBooleanEqualityLike {
+    friend constexpr auto operator==(const NonBooleanEqualityLike&, const NonBooleanEqualityLike&) noexcept
+        -> NonBooleanEqualityLike {
+        return {};
     }
 };
 
@@ -320,7 +580,139 @@ struct collection_traits<SizeEmptyLike> {
 };
 
 template <>
+struct collection_traits<ThrowingCountLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::vector;
+};
+
+template <>
+struct collection_traits<IndexedWithoutCountLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::vector;
+};
+
+template <>
+struct collection_traits<IndexedWithoutContainsLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::vector;
+};
+
+template <>
+struct collection_traits<LookupWithoutCountLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::map;
+};
+
+template <>
+struct collection_traits<LookupWithoutTypeLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::map;
+};
+
+template <>
+struct collection_traits<LookupWithoutCallLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::map;
+};
+
+template <>
 struct collection_traits<BracketLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::vector;
+};
+
+template <>
+struct collection_traits<LookupWithoutContainsLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::map;
+};
+
+template <>
+struct collection_traits<AssocWithoutCountLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::map;
+};
+
+template <>
+struct collection_traits<AssocWithoutKeyTypeLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::map;
+};
+
+template <>
+struct collection_traits<AssocWithoutValueTypeLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::map;
+};
+
+template <>
+struct collection_traits<AssocWithoutOperationLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::map;
+};
+
+template <>
+struct collection_traits<AssocWithoutPreflightLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::map;
+};
+
+template <>
+struct collection_traits<NonConstAssocOperationLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::map;
+};
+
+template <>
+struct collection_traits<NonConstAssocPreflightLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::map;
+};
+
+template <>
+struct collection_traits<AssocReturningForeignLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::map;
+};
+
+template <>
+struct collection_traits<ConjWithoutCountLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::vector;
+};
+
+template <>
+struct collection_traits<ConjWithoutValueTypeLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::vector;
+};
+
+template <>
+struct collection_traits<ConjWithoutOperationLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::vector;
+};
+
+template <>
+struct collection_traits<ConjWithoutPreflightLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::vector;
+};
+
+template <>
+struct collection_traits<NonConstConjOperationLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::vector;
+};
+
+template <>
+struct collection_traits<NonConstConjPreflightLike> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::vector;
+};
+
+template <>
+struct collection_traits<ConjReturningForeignLike> {
     static constexpr bool is_cljonic_collection = true;
     static constexpr collection_kind kind = collection_kind::vector;
 };
@@ -496,6 +888,7 @@ TEST_CASE("SequenceableCollection structural capability", "[concepts][collection
     STATIC_REQUIRE(SequenceableCollection<cljonic::Set<int, 4>>);
     STATIC_REQUIRE(SequenceableCollection<cljonic::Queue<int, 4>>);
     STATIC_REQUIRE(SequenceableCollection<cljonic::String<8>>);
+    STATIC_REQUIRE_FALSE(SequenceableCollection<ThrowingCountLike>);
 
     // LayeredOnNominalAdmission: a structurally identical external type is NOT
     // sequenceable because it is not admitted.
@@ -521,12 +914,16 @@ TEST_CASE("IndexedCollection structural capability", "[concepts][collection]") {
     STATIC_REQUIRE(IndexedCollection<VectorLike>);
     STATIC_REQUIRE(IndexedCollection<cljonic::Vector<int, 4>>);
     STATIC_REQUIRE(IndexedCollection<cljonic::String<8>>);
+    STATIC_REQUIRE(IndexedCollection<IndexedWithoutCountLike>);
+    STATIC_REQUIRE_FALSE(SequenceableCollection<IndexedWithoutCountLike>);
+    STATIC_REQUIRE_FALSE(LookupCollection<IndexedWithoutCountLike>);
 
     // RequiresCallableIndexedLookup + RequiresContainsPredicate: a nominal
     // collection without operator()(size_t)/contains is not indexed.
     STATIC_REQUIRE_FALSE(IndexedCollection<SetLike>);
     STATIC_REQUIRE_FALSE(IndexedCollection<cljonic::Set<EqualityOnly, 4>>);
     STATIC_REQUIRE_FALSE(IndexedCollection<cljonic::Queue<int, 4>>);
+    STATIC_REQUIRE_FALSE(IndexedCollection<IndexedWithoutContainsLike>);
 
     // operator[] is not sufficient; the surface requires operator()(size_t).
     STATIC_REQUIRE_FALSE(IndexedCollection<BracketLike>);
@@ -552,6 +949,13 @@ TEST_CASE("LookupCollection general lookup capability", "[concepts][collection]"
     STATIC_REQUIRE(LookupCollection<cljonic::Set<int, 4>>);
     STATIC_REQUIRE(LookupCollection<cljonic::Vector<int, 4>>);
     STATIC_REQUIRE(LookupCollection<cljonic::String<8>>);
+    STATIC_REQUIRE(LookupCollection<LookupWithoutCountLike>);
+    STATIC_REQUIRE_FALSE(SequenceableCollection<LookupWithoutCountLike>);
+    STATIC_REQUIRE_FALSE(LookupCollection<LookupWithoutTypeLike>);
+    STATIC_REQUIRE_FALSE(LookupCollection<LookupWithoutCallLike>);
+    // RequiresMembershipPredicate: lookup capability requires matching
+    // membership (contains) over the lookup domain.
+    STATIC_REQUIRE_FALSE(LookupCollection<LookupWithoutContainsLike>);
     STATIC_REQUIRE_FALSE(LookupCollection<cljonic::Queue<int, 4>>);
     STATIC_REQUIRE_FALSE(LookupCollection<ExternalLike>);
 }
@@ -585,6 +989,25 @@ TEST_CASE("AssociativeCollection structural capability", "[concepts][collection]
     STATIC_REQUIRE_FALSE(AssociativeCollection<SetLike>);
     STATIC_REQUIRE_FALSE(AssociativeCollection<cljonic::Set<int, 4>>);
     STATIC_REQUIRE_FALSE(AssociativeCollection<cljonic::Queue<int, 4>>);
+
+    // Sequence independence: association does not require sequence members.
+    STATIC_REQUIRE(AssociativeCollection<AssocWithoutCountLike>);
+    STATIC_REQUIRE_FALSE(SequenceableCollection<AssocWithoutCountLike>);
+
+    // RequiresKeyType/DefinesKeyType: the key alias is required.
+    STATIC_REQUIRE_FALSE(AssociativeCollection<AssocWithoutKeyTypeLike>);
+    // DefinesValueType: the association-value alias is required.
+    STATIC_REQUIRE_FALSE(AssociativeCollection<AssocWithoutValueTypeLike>);
+    // RequiresAssocOperation: assoc itself is required.
+    STATIC_REQUIRE_FALSE(AssociativeCollection<AssocWithoutOperationLike>);
+    // RequiresKeyValueCanAssocPreflight: can_assoc is required.
+    STATIC_REQUIRE_FALSE(AssociativeCollection<AssocWithoutPreflightLike>);
+    // ReturnsNewCollectionValue: assoc must return the source collection type.
+    STATIC_REQUIRE_FALSE(AssociativeCollection<AssocReturningForeignLike>);
+    // RequiresNonMutatingAssocOperation: assoc must run on a const source.
+    STATIC_REQUIRE_FALSE(AssociativeCollection<NonConstAssocOperationLike>);
+    // RequiresNonMutatingAssocPreflight: can_assoc must run on a const source.
+    STATIC_REQUIRE_FALSE(AssociativeCollection<NonConstAssocPreflightLike>);
 }
 
 // ============================================================================
@@ -613,6 +1036,23 @@ TEST_CASE("ConjableCollection structural capability", "[concepts][collection]") 
 
     // Non-collections are rejected.
     STATIC_REQUIRE_FALSE(ConjableCollection<int>);
+
+    // Sequence independence: conj does not require sequence members.
+    STATIC_REQUIRE(ConjableCollection<ConjWithoutCountLike>);
+    STATIC_REQUIRE_FALSE(SequenceableCollection<ConjWithoutCountLike>);
+
+    // DefinesValueType: the value alias is required.
+    STATIC_REQUIRE_FALSE(ConjableCollection<ConjWithoutValueTypeLike>);
+    // RequiresConjOperation: conj itself is required.
+    STATIC_REQUIRE_FALSE(ConjableCollection<ConjWithoutOperationLike>);
+    // RequiresCanConjPreflight: can_conj is required.
+    STATIC_REQUIRE_FALSE(ConjableCollection<ConjWithoutPreflightLike>);
+    // ReturnsNewCollectionValue: conj must return the source collection type.
+    STATIC_REQUIRE_FALSE(ConjableCollection<ConjReturningForeignLike>);
+    // RequiresNonMutatingConjOperation: conj must run on a const source.
+    STATIC_REQUIRE_FALSE(ConjableCollection<NonConstConjOperationLike>);
+    // RequiresNonMutatingConjPreflight: can_conj must run on a const source.
+    STATIC_REQUIRE_FALSE(ConjableCollection<NonConstConjPreflightLike>);
 }
 
 // ============================================================================
@@ -624,8 +1064,9 @@ TEST_CASE("StableEqualityComparable value capability", "[concepts][value]") {
 
     TRACE_ID("entity-fields.StableEqualityComparable");
     TRACE_ID("invariant.StableEqualityComparable.RequiresBoolEquality");
+    TRACE_ID("invariant.StableEqualityComparable.RequiresNonThrowingEquality");
     TRACE_ID("invariant.StableEqualityComparable.RejectsFloatingPoint");
-    TRACE_ID("invariant.StableEqualityComparable.AggregateBoundaryEqualityIsCallerOwned");
+    TRACE_ID("invariant.StableEqualityComparable.OpaqueUserDefinedClassEqualityIsCallerOwned");
 
     // RequiresBoolEquality.
     STATIC_REQUIRE(StableEqualityComparable<int>);
@@ -636,12 +1077,28 @@ TEST_CASE("StableEqualityComparable value capability", "[concepts][value]") {
     STATIC_REQUIRE_FALSE(StableEqualityComparable<float>);
     STATIC_REQUIRE_FALSE(StableEqualityComparable<double>);
 
-    // AggregateBoundaryEqualityIsCallerOwned (REQ-NUM-018): a user-defined
-    // aggregate is admitted on its own non-throwing operator==, so member-level
-    // floating-point analysis never happens and its semantics are the author's.
+    // REQ-NUM-018: opaque classes own their internal equality semantics.
+    STATIC_REQUIRE_FALSE(std::is_aggregate_v<FloatClass>);
+    STATIC_REQUIRE(StableEqualityComparable<FloatClass>);
+    STATIC_REQUIRE(StableEqualityComparable<cljonic::Vector<FloatClass, 2>>);
     STATIC_REQUIRE(StableEqualityComparable<FloatAggregate>);
     STATIC_REQUIRE(StableEqualityComparable<UserEqualityAggregate>);
     STATIC_REQUIRE_FALSE(StableEqualityComparable<NoEqualityAggregate>);
+
+    STATIC_REQUIRE(noexcept(ImplicitNothrowEquality{} == ImplicitNothrowEquality{}));
+    STATIC_REQUIRE(StableEqualityComparable<ImplicitNothrowEquality>);
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<ThrowingEqualityOnly>);
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<ThrowingClassEquality>);
+    // RequiresBoolEquality: a non-boolean-testable equality result is
+    // rejected by std::equality_comparable (int would be admitted, so the
+    // fixture returns a class with no conversion path to bool).
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<NonBooleanEqualityLike>);
+    STATIC_REQUIRE(NothrowCollectionElement<ThrowingEqualityOnly>);
+    STATIC_REQUIRE(NothrowCollectionElement<ThrowingClassEquality>);
+    STATIC_REQUIRE(cljonic::Vector<ThrowingEqualityOnly, 2>{}.count() == 0U);
+    STATIC_REQUIRE_FALSE(std::equality_comparable<cljonic::Vector<ThrowingEqualityOnly, 2>>);
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<cljonic::Vector<ThrowingEqualityOnly, 2>>);
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<cljonic::Repeat<ThrowingClassEquality>>);
 }
 
 TEST_CASE("Nominal walker coverage is gated", "[concepts][value][composite]") {
@@ -737,7 +1194,7 @@ TEST_CASE("NothrowStableEqualityComparable value capability", "[concepts][value]
     // RequiresNothrowComparison: a throwing comparison is rejected even when
     // storage is non-throwing, because key lookup and set membership would
     // otherwise be able to throw.
-    STATIC_REQUIRE(StableEqualityComparable<ThrowingEqualityOnly>);
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<ThrowingEqualityOnly>);
     STATIC_REQUIRE(NothrowCollectionElement<ThrowingEqualityOnly>);
     STATIC_REQUIRE_FALSE(NothrowStableEqualityComparable<ThrowingEqualityOnly>);
 
@@ -763,9 +1220,8 @@ TEST_CASE("NothrowEqualityComparable value capability", "[concepts][value]") {
     STATIC_REQUIRE(StableEqualityComparable<EqualityOnly>);
     STATIC_REQUIRE(NothrowEqualityComparable<EqualityOnly>);
 
-    // RequiresNothrowComparison: a comparison that may throw is rejected even
-    // though it is stable.
-    STATIC_REQUIRE(StableEqualityComparable<ThrowingEqualityOnly>);
+    // Potentially throwing equality is rejected by both concepts.
+    STATIC_REQUIRE_FALSE(StableEqualityComparable<ThrowingEqualityOnly>);
     STATIC_REQUIRE_FALSE(NothrowEqualityComparable<ThrowingEqualityOnly>);
 
     // RecursesOverVariantAlternatives: a cljonic::Variant declares its own

@@ -22,12 +22,11 @@
  *
  * \section conversion-automatic When numbers convert automatically
  *
- * You can pass a different numeric type when the conversion preserves every possible value of that type, not just the
- * value you happen to pass:
+ * You can pass a different numeric type within the same numeric domain when the conversion preserves every possible
+ * value of that type, not just the value you happen to pass:
  * - A \c short can become a \c long \c long without losing its value.
- * - A \c float can become a \c double without losing precision.
- * - An integer can become a floating-point number only if the destination can represent every value of the integer
- *   type exactly. Do not assume that a floating-point type can hold every integer just because it has a larger range.
+ * - A \c float can become a \c double without losing precision. Integer and floating-point types are separate domains:
+ * conversions between them are rejected in both directions, even when a particular value is representable.
  *
  * A conversion that could lose information is rejected at compile time, even for a literal that fits. For example,
  * passing an \c int to an operation expecting \c short is rejected even when the argument is \c 1. Floating-point
@@ -148,6 +147,7 @@ template <typename To, typename From>
     requires(std::is_arithmetic_v<To> && std::is_arithmetic_v<From>)
 inline constexpr bool value_preserving_arithmetic<To, From> =
     !std::same_as<To, bool> && !std::same_as<From, bool> && !CharacterType<To> && !CharacterType<From> &&
+    std::is_integral_v<To> == std::is_integral_v<From> &&
     std::numeric_limits<To>::radix == std::numeric_limits<From>::radix &&
     std::numeric_limits<To>::digits >= std::numeric_limits<From>::digits &&
     (std::is_floating_point_v<To> || (std::is_integral_v<From> && (std::is_signed_v<To> || !std::is_signed_v<From>))) &&
@@ -402,8 +402,9 @@ concept NothrowCollectionElement = CopyableElement<T> && std::destructible<T> &&
     { value = other } noexcept;
 };
 
-/** Admits identical types or value-preserving arithmetic conversions without
- *  crossing Boolean, character, enumeration, pointer, or user-defined domains. */
+/** Admits identical types or value-preserving arithmetic conversions within
+ *  the same integer or floating-point domain. Integer/floating crossings and
+ *  Boolean, character, enumeration, pointer, or user-defined domains are excluded. */
 template <typename T, typename Arg>
 concept SafeImplicitConversion =
     std::same_as<std::remove_cvref_t<T>, std::remove_cvref_t<Arg>> ||
@@ -419,7 +420,7 @@ concept NothrowElementConstruction = SafeImplicitConversion<T, Arg> && requires(
 // Value Capability Concepts
 // ============================================================================
 
-/** Requires stable value equality comparison, explicitly rejecting
+/** Requires non-throwing stable value equality comparison, explicitly rejecting
  *  floating-point types to prevent NaN/precision instabilities in map keys
  *  and set elements.
  *
@@ -430,19 +431,17 @@ concept NothrowElementConstruction = SafeImplicitConversion<T, Arg> && requires(
  *  that skips the declaration fails here instead of silently admitting a
  *  detectable floating-point comparison. */
 template <typename T>
-concept StableEqualityComparable = std::equality_comparable<T> && !concepts_detail::contains_floating_point_v<T> &&
+concept StableEqualityComparable = std::equality_comparable<T> && concepts_detail::nothrow_equality_v<T> &&
+                                   !concepts_detail::contains_floating_point_v<T> &&
                                    !concepts_detail::contains_callable_v<T> && concepts_detail::walker_coverage_ok_v<T>;
 
 /** Requires a strict total ordering layered on stable equality. */
 template <typename T>
 concept TotallyOrdered = StableEqualityComparable<T> && std::totally_ordered<T>;
 
-/** Requires stable equality whose comparison cannot throw, so operations
- *  declared \c noexcept (such as \c equal and \c not_equal) cannot terminate
- *  through a throwing \c operator==.
- *
- *  std::variant relational operators are not declared noexcept by the standard,
- *  so composites recurse over their alternatives. */
+/** Retains the explicit non-throwing equality constraint for operations declared
+ *  \c noexcept (such as \c equal and \c not_equal). Stable equality also requires
+ *  a non-throwing comparison. */
 template <typename T>
 concept NothrowEqualityComparable = StableEqualityComparable<T> && concepts_detail::nothrow_equality_v<T>;
 

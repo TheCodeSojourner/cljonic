@@ -141,8 +141,15 @@ TEST_CASE("Next returns the logical tail as the same collection kind with reduce
     STATIC_REQUIRE(count(set) == 3U);
     STATIC_REQUIRE(count(queue) == 3U);
     STATIC_REQUIRE(count(text) == 3U);
-    STATIC_REQUIRE((map.begin()[0] == MapEntry{1, 100}));
-    STATIC_REQUIRE(set.begin()[0] == 10);
+    STATIC_REQUIRE(map.contains(1));
+    STATIC_REQUIRE(map(1) == 100);
+    STATIC_REQUIRE(map.contains(2));
+    STATIC_REQUIRE(map(2) == 200);
+    STATIC_REQUIRE(map.contains(3));
+    STATIC_REQUIRE(map(3) == 300);
+    STATIC_REQUIRE(set.contains(10));
+    STATIC_REQUIRE(set.contains(20));
+    STATIC_REQUIRE(set.contains(30));
     STATIC_REQUIRE(queue.begin()[0] == 10);
     STATIC_REQUIRE(text(0) == 'A');
 

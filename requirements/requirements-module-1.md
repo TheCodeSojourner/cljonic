@@ -16,7 +16,10 @@ This module defines the foundational resource, memory, platform, value semantics
 
 λ REQ-PLAT-003(x).
   ¬∃ (heap ∨ RTTI ∨ exceptions ∨ hidden_global_initialization) ∈ library_dependencies
+  ∧ ∀ cljonic_code: ¬∃ (heap_allocation ∨ heap_deallocation ∨ throwing_exceptions)
+  ∧ ∀ user_code: assumed_to_neither_allocate_or_deallocate_on_the_heap_nor_throw; this is a hard application obligation, not a guarantee that cljonic can verify arbitrary user code
   {source: stakeholder_decided, decided_by: original_spec_author}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07}
 
 λ REQ-PLAT-004(x).
   ∀ collection_storage: requirements statically inspectable from the type or configuration

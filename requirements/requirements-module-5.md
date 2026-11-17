@@ -20,7 +20,7 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
   ∧ ∀ result: its `Capacity` is the compile-time minimum over sources of each source's observable-count bound, where a `Collection` contributes its `Capacity` ∧ any `Producer` contributes the configured observable traversal cap ∧ each contribution saturated at `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE` ∧ the statically derived capacity failing that bound: fails at compile time
   ∧ ∀ runtime mapped element count: the minimum of the sources' effective counts, where a collection contributes its element count ∧ a finite producer contributes its count ∧ an unbounded producer contributes the configured observable traversal cap
   ∧ ∀ callback `f`: copy-constructible ∧ invoked without throwing with one argument per source (a unary function over one source, a binary function over two sources, and so on) ∧ returns a storable element result satisfying the no-throwing element contract ∧ ∀ callback that can throw ∨ whose result cannot be stored: rejected at compile time
-  ∧ ∀ callback parameter position: the declared parameter type accepts the corresponding source element type only through a safe implicit conversion — an identical type ∨ a value-preserving arithmetic conversion per the implicit-conversion rules ∧ ∀ `LossyConversion` (for example `long` to `int` ∨ `double` to `float`) ∧ ∀ crossing into ∨ out of the Boolean, character, enumeration, pointer, or user-defined domains: rejected at compile time
+  ∧ ∀ callback parameter position: the declared parameter type accepts the corresponding source element type only through a safe implicit conversion — an identical type ∨ a permitted value-preserving arithmetic conversion under REQ-CONV-001, excluding integer/floating domain crossings ∧ ∀ `LossyConversion` (for example `long` to `int` ∨ `double` to `float`) ∧ ∀ crossing into ∨ out of the Boolean, character, enumeration, pointer, or user-defined domains: rejected at compile time
   ∧ ∀ callback whose parameter types are not statically inspectable (a generic lambda ∨ a templated `operator()`): the safe-conversion rule cannot be evaluated ∧ such a callback is admitted only when the per-position argument correspondence is nothrow-invocable, and the inspectable-parameter rule applies whenever the parameter types are statically known
   ∧ ∀ `Map` ∨ `Set` source: `LogicalTraversalOrder` is semantically unordered ∧ the mapped result order carries no semantic significance
   ∧ ∀ `map` operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ preserves every source value ∧ compile-time domain gating with targeted rejection diagnostics naming `map` and its supported domains
@@ -64,7 +64,7 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
   ∧ ∀ zero-capacity result: returns empty without invoking the predicate
   ∧ ∀ source element type: satisfies the nothrow element storage contract
   ∧ ∀ predicate: should be a pure function with no side effects ∧ copy-constructible ∧ invoked without throwing on a const source element ∧ returns exactly `bool`
-  ∧ ∀ predicate parameter type that is statically inspectable: accepts the source element only through a safe implicit conversion (an identical type ∨ a value-preserving arithmetic conversion) ∧ ∀ `LossyConversion` ∨ crossing into or out of the Boolean, character, enumeration, pointer, or user-defined domains: rejected at compile time
+  ∧ ∀ predicate parameter type that is statically inspectable: accepts the source element only through a safe implicit conversion (an identical type ∨ a permitted value-preserving arithmetic conversion under REQ-CONV-001, excluding integer/floating domain crossings) ∧ ∀ `LossyConversion` ∨ crossing into or out of the Boolean, character, enumeration, pointer, or user-defined domains: rejected at compile time
   ∧ ∀ predicate whose parameter types are not statically inspectable (a generic lambda ∨ templated `operator()`): admitted only when nothrow-invocable with a const source element and its result type is exactly `bool`
   ∧ ∀ `Map` ∨ `Set` source: `LogicalTraversalOrder` is semantically unordered ∧ result order has no semantic significance
   ∧ ∀ `filter` operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ preserves every source value ∧ compile-time domain gating with targeted rejection diagnostics naming `filter` and its supported domains
@@ -92,7 +92,7 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
   ∧ ∀ source element: satisfies the nothrow element storage contract ∧ no additional equality or ordering capability is required
   ∧ ∀ result: independently owning bounded prefix, with no nested result, absence sentinel, status wrapper, preflight predicate, or transducer-only arity
   ∧ ∀ MapEntry input ∨ external C++ range ∨ non-cljonic source ∨ invalid count type ∨ wrong arity: rejected at compile time with a targeted diagnostic naming `take` and its supported count/source domains
-  ∧ ∀ operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ preserves the source value ∧ no RTTI
+  ∧ ∀ operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ preserves the source value ∧ `NoRttiConstraint`
   rationale: the human approved activating `take(count, source)` on 2026-11-03 for all cljonic collections and producers, returning an owning Vector with source-bound capacity, reusing Repeat count admission and nonpositive normalization, and bounding oversized requests by the observable source count
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-03, rationale_source: origin_artifact}
 
@@ -109,7 +109,7 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
   ∧ ∀ source element: satisfies the nothrow element storage contract ∧ no additional equality or ordering capability is required
   ∧ ∀ result: independently owning suffix of the original `FiniteObservation` window, complete within that window but not a fresh observation of an unbounded producer ∧ no nested result, absence sentinel, status wrapper, preflight predicate, or transducer-only arity
   ∧ ∀ MapEntry input ∨ external C++ range ∨ non-cljonic source ∨ invalid count type ∨ wrong arity: rejected at compile time with a targeted diagnostic naming `drop` and its supported count/source domains
-  ∧ ∀ operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ preserves the source value ∧ no RTTI
+  ∧ ∀ operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ preserves the source value ∧ `NoRttiConstraint`
   rationale: the human approved the `drop(count, source)` contract on 2026-11-03 with a take-style owning Vector and runtime-independent source-bound capacity, original-window producer observation, and no traversal when the requested drop covers the observation-window count bound; this approved contract precedes public API publication, tests, and implementation
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-03, rationale_source: origin_artifact}
 
@@ -125,7 +125,7 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
   ∧ ∀ result: `is_finite()` returns `true` for the explicitly bounded adapter result, including when the underlying source is unbounded ∧ ¬∃ claim of observing the underlying unbounded source completely
   ∧ ∀ `count(result)`: performs a fresh bounded traversal and returns the exact number of yielded elements ∧ invokes the predicate and source callbacks according to that traversal ∧ preserves the stored source and predicate ∧ shares no cache with subsequent traversal
   ∧ ∀ predicate, ownership, storage, ordering, consumer admission, and rejected calls: follows `REQ-FN-041`
-  ∧ ∀ operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ no RTTI ∧ preserves input values under their existing authorized external-effect contracts
+  ∧ ∀ operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ `NoRttiConstraint` ∧ preserves input values under their existing authorized external-effect contracts
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-03, compound_by_design: true}
 
 λ REQ-FN-040(x).
@@ -141,7 +141,7 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
   ∧ ∀ result: `is_finite()` returns `true` for the explicitly bounded adapter result, including when the underlying source is unbounded ∧ ¬∃ claim of observing the underlying unbounded source completely
   ∧ ∀ `count(result)`: performs a fresh bounded traversal and returns the exact number of yielded elements ∧ invokes the predicate only through the first false element and source callbacks according to that traversal ∧ preserves the stored source and predicate ∧ shares no cache with subsequent traversal
   ∧ ∀ predicate, ownership, storage, ordering, consumer admission, and rejected calls: follows `REQ-FN-041`
-  ∧ ∀ operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ no RTTI ∧ preserves input values under their existing authorized external-effect contracts
+  ∧ ∀ operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ `NoRttiConstraint` ∧ preserves input values under their existing authorized external-effect contracts
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-03, compound_by_design: true}
 
 λ REQ-FN-041(x).
@@ -171,7 +171,7 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
   ∧ policies:
     1. ∀ operation: preserves input values ∧ ¬∃ introduction of side effects or hidden mutable state independently of pure callbacks
     2. ∀ operation ∈ {`distinct`, `dedupe`, `frequencies`, `sort`, `sort_by`} and similar: requires the applicable `StableEqualityComparable` or `TotallyOrdered` capability for their elements/keys
-    3. ∀ operation: produces bounded owning results when a useful finite capacity can be derived, or explicit producers when results are unbounded
+    3. ∀ operation whose approved contract returns a materialized collection: produces bounded owning results when a useful finite capacity can be derived ∧ ∀ operation whose approved contract returns an explicit producer: retains that producer result and is exempt from the owning-result rule, including the finite `TakeWhile` and `DropWhile` adapters under `REQ-FN-039` and `REQ-FN-040` ∧ ∀ operation whose results are unbounded: returns an explicit producer
     4. ∀ traversal over `Map` ∧ `Set`: treats `LogicalTraversalOrder` as semantically unordered
     5. ∀ (transducer-only arities ∧ hidden lazy-sequence machinery): unsupported
   {source: stakeholder_decided, decided_by: original_spec_author}

@@ -21,6 +21,7 @@ entity ProducerMaterialization {
     unbounded_source_does_not_fit_into_destination: Boolean
     unbounded_source_materializes_bounded_prefix: Boolean
     finite_source_materializes_complete_result_when_it_fits: Boolean
+    finite_source_exceeding_traversal_bound_does_not_fit: Boolean
     bounded_prefix_preserves_source_traversal_order: Boolean
     count_is_exact_for_materialized_collection: Boolean
     unbounded_producer_count_is_observable_traversal_cap: Boolean
@@ -113,6 +114,13 @@ entity ProducerMaterialization {
 
     invariant FiniteSourceMaterializesCompleteResultWhenItFits {
         this.finite_source_materializes_complete_result_when_it_fits = true
+    }
+
+    -- Complete materialization covers the entire finite result, not a capped observation. A finite
+    -- source whose complete consumption exceeds its approved traversal bound never fits, even into a
+    -- deduplicating Set or key-replacing Map, and no unobservable suffix is inspected.
+    invariant FiniteSourceExceedingTraversalBoundDoesNotFit {
+        this.finite_source_exceeding_traversal_bound_does_not_fit = true
     }
 
     -- The processed source prefix follows traversal order; Map and Set results remain semantically unordered.

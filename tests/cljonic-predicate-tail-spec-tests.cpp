@@ -54,16 +54,95 @@ TEST_CASE("Predicate tails own exact types and omit outputs within original boun
     STATIC_REQUIRE(first(next(take_while(below_three, drop_while(below_three, vector(1, 4, 2))))) == 0);
     STATIC_REQUIRE(first(next(drop_while(
                        below_three, take_while([](int n) noexcept { return n < 5; }, vector(1, 4, 2, 5, 1))))) == 2);
-    STATIC_REQUIRE(first(next(take_while([](auto) noexcept { return true; }, hash_map(1, 10, 2, 20)))) ==
-                   map_entry(2, 20));
+    constexpr auto map_tail = next(take_while([](auto) noexcept { return true; }, hash_map(1, 10, 2, 20)));
+    STATIC_REQUIRE(count(map_tail) == 1);
+    STATIC_REQUIRE(first(map_tail) == map_entry(1, 10) || first(map_tail) == map_entry(2, 20));
     STATIC_REQUIRE(first(rest(drop_while([](char c) noexcept { return c < 'b'; }, string("abc")))) == 'c');
     STATIC_REQUIRE(first(next(take_while(below_three, queue(1, 2, 4)))) == 2);
-    STATIC_REQUIRE(count(next(take_while([](auto) noexcept { return true; }, hash_set(1, 2)))) == 1);
+    constexpr auto set_tail = next(take_while([](auto) noexcept { return true; }, hash_set(1, 2)));
+    STATIC_REQUIRE(count(set_tail) == 1);
+    STATIC_REQUIRE(first(set_tail) == 1 || first(set_tail) == 2);
 
     auto source = vector(1, 2, 4);
     const auto owned = next(take_while(below_three, source));
     source = vector(8, 9, 10);
     REQUIRE(first(owned) == 2);
+}
+
+TEST_CASE("Predicate tails preserve unordered Map and Set source membership", "[next][rest][take-while][drop-while]") {
+    using namespace cljonic;
+    using namespace cljonic::core;
+
+    constexpr auto map_source = hash_map(1, 10, 2, 20);
+    constexpr auto map_prefix = take_while([](const auto&) noexcept { return true; }, map_source);
+    constexpr auto map_suffix = drop_while([](const auto&) noexcept { return false; }, map_source);
+    constexpr auto map_prefix_next = next(map_prefix);
+    constexpr auto map_prefix_rest = rest(map_prefix);
+    constexpr auto map_suffix_next = next(map_suffix);
+    constexpr auto map_suffix_rest = rest(map_suffix);
+    STATIC_REQUIRE(count(map_prefix_next) == 1U);
+    STATIC_REQUIRE(count(map_prefix_rest) == 1U);
+    STATIC_REQUIRE(count(map_suffix_next) == 1U);
+    STATIC_REQUIRE(count(map_suffix_rest) == 1U);
+    STATIC_REQUIRE((first(map_prefix_next) == map_entry(1, 10) || first(map_prefix_next) == map_entry(2, 20)));
+    STATIC_REQUIRE((first(map_prefix_rest) == map_entry(1, 10) || first(map_prefix_rest) == map_entry(2, 20)));
+    STATIC_REQUIRE((first(map_suffix_next) == map_entry(1, 10) || first(map_suffix_next) == map_entry(2, 20)));
+    STATIC_REQUIRE((first(map_suffix_rest) == map_entry(1, 10) || first(map_suffix_rest) == map_entry(2, 20)));
+
+    constexpr auto set_source = hash_set(1, 2);
+    constexpr auto set_prefix = take_while([](int) noexcept { return true; }, set_source);
+    constexpr auto set_suffix = drop_while([](int) noexcept { return false; }, set_source);
+    constexpr auto set_prefix_next = next(set_prefix);
+    constexpr auto set_prefix_rest = rest(set_prefix);
+    constexpr auto set_suffix_next = next(set_suffix);
+    constexpr auto set_suffix_rest = rest(set_suffix);
+    STATIC_REQUIRE(count(set_prefix_next) == 1U);
+    STATIC_REQUIRE(count(set_prefix_rest) == 1U);
+    STATIC_REQUIRE(count(set_suffix_next) == 1U);
+    STATIC_REQUIRE(count(set_suffix_rest) == 1U);
+    STATIC_REQUIRE((first(set_prefix_next) == 1 || first(set_prefix_next) == 2));
+    STATIC_REQUIRE((first(set_prefix_rest) == 1 || first(set_prefix_rest) == 2));
+    STATIC_REQUIRE((first(set_suffix_next) == 1 || first(set_suffix_next) == 2));
+    STATIC_REQUIRE((first(set_suffix_rest) == 1 || first(set_suffix_rest) == 2));
+
+    volatile int first_raw = 7;
+    const int first_value = first_raw;
+    const int second_value = first_value + 1;
+    const auto runtime_map_source = hash_map(first_value, first_value + 10, second_value, second_value + 10);
+    const auto runtime_map_prefix = take_while([](const auto&) noexcept { return true; }, runtime_map_source);
+    const auto runtime_map_suffix = drop_while([](const auto&) noexcept { return false; }, runtime_map_source);
+    const auto runtime_map_prefix_next = next(runtime_map_prefix);
+    const auto runtime_map_prefix_rest = rest(runtime_map_prefix);
+    const auto runtime_map_suffix_next = next(runtime_map_suffix);
+    const auto runtime_map_suffix_rest = rest(runtime_map_suffix);
+    REQUIRE(count(runtime_map_prefix_next) == 1U);
+    REQUIRE(count(runtime_map_prefix_rest) == 1U);
+    REQUIRE(count(runtime_map_suffix_next) == 1U);
+    REQUIRE(count(runtime_map_suffix_rest) == 1U);
+    REQUIRE((first(runtime_map_prefix_next) == map_entry(first_value, first_value + 10) ||
+             first(runtime_map_prefix_next) == map_entry(second_value, second_value + 10)));
+    REQUIRE((first(runtime_map_prefix_rest) == map_entry(first_value, first_value + 10) ||
+             first(runtime_map_prefix_rest) == map_entry(second_value, second_value + 10)));
+    REQUIRE((first(runtime_map_suffix_next) == map_entry(first_value, first_value + 10) ||
+             first(runtime_map_suffix_next) == map_entry(second_value, second_value + 10)));
+    REQUIRE((first(runtime_map_suffix_rest) == map_entry(first_value, first_value + 10) ||
+             first(runtime_map_suffix_rest) == map_entry(second_value, second_value + 10)));
+
+    const auto runtime_set_source = hash_set(first_value, second_value);
+    const auto runtime_set_prefix = take_while([](int) noexcept { return true; }, runtime_set_source);
+    const auto runtime_set_suffix = drop_while([](int) noexcept { return false; }, runtime_set_source);
+    const auto runtime_set_prefix_next = next(runtime_set_prefix);
+    const auto runtime_set_prefix_rest = rest(runtime_set_prefix);
+    const auto runtime_set_suffix_next = next(runtime_set_suffix);
+    const auto runtime_set_suffix_rest = rest(runtime_set_suffix);
+    REQUIRE(count(runtime_set_prefix_next) == 1U);
+    REQUIRE(count(runtime_set_prefix_rest) == 1U);
+    REQUIRE(count(runtime_set_suffix_next) == 1U);
+    REQUIRE(count(runtime_set_suffix_rest) == 1U);
+    REQUIRE((first(runtime_set_prefix_next) == first_value || first(runtime_set_prefix_next) == second_value));
+    REQUIRE((first(runtime_set_prefix_rest) == first_value || first(runtime_set_prefix_rest) == second_value));
+    REQUIRE((first(runtime_set_suffix_next) == first_value || first(runtime_set_suffix_next) == second_value));
+    REQUIRE((first(runtime_set_suffix_rest) == first_value || first(runtime_set_suffix_rest) == second_value));
 }
 
 TEST_CASE("Predicate tails defer callbacks and replay fresh owned traversal state",

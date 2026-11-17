@@ -35,7 +35,8 @@ namespace cljonic::core {
  * The \b drop free function removes a requested prefix from one cljonic source and returns the remaining observable
  * elements as a bounded owning \ref Vector "Vector". Use \c drop(count, source) with a \ref Vector "Vector", \ref Map
  * "Map", \ref Set "Set", \ref Queue "Queue", or \ref String "String" collection, or a \ref Range "Range", \ref Repeat
- * "Repeat", \ref Cycle "Cycle", \ref Iterate "Iterate", or \ref Repeatedly "Repeatedly" producer.
+ * "Repeat", \ref Cycle "Cycle", \ref Iterate "Iterate", \ref Repeatedly "Repeatedly", \ref TakeWhile "TakeWhile", or
+ * \ref DropWhile "DropWhile" producer.
  *
  * Counts follow the \ref implicit-conversions "safe count conversion rules": signed or unsigned integers whose
  * nonnegative ranges fit std::size_t, excluding Boolean and character types. Zero or negative counts drop nothing. The
