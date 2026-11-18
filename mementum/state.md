@@ -1,38 +1,42 @@
 ## Current Session State
 
-- last_session_id: 26833b79-4cdc-494b-8fe9-a3de34ecb226
-- current_timestamp: 2026-11-18T07:26:30-07:00
+- last_session_id: 9239d7e6-fcde-41bf-b05f-827a39f4f6b3
+- current_timestamp: 2026-11-18T16:23:33-07:00
 - session_complete: true
-- recover: Review the complete, uncommitted checked-arithmetic propagation before committing the product work. The requirements elicitation and downstream implementation are complete; no new implementation phase remains for `REQ-NUM-015A`–`015H`. The next human action is to review and commit the product diff in the desired commit grouping; do not resume the terminated `/gybis-spec-weed` audit unless explicitly commanded.
-- task: Elicited and refined the missing checked-arithmetic contracts, propagated them through requirements, vocabulary, architecture, a new Allium capability spec, focused tests, modular implementation, amalgamated header, diagnostics, traceability, and generated documentation. Added `REQ-NUM-015A`–`015H` for closed/lossless operand domains, static result types, checked overflow/underflow, zero-division fallback, Clojure-compatible `quot`/`rem`/`mod`, floating-edge behavior, and the complete preflight inventory. Marked cohesive arithmetic clauses `compound_by_design`, propagated canonical arithmetic vocabulary, added S5/S3/S2/S1 architecture rules, and implemented the approved checked arithmetic and bitwise first-pass family in `src/cljonic-arithmetic.hpp`.
+- recover: Review the complete, uncommitted numeric-convenience propagation before committing the product work. Requirements, downstream implementation/spec propagation, Doxygen API documentation, runnable samples, and no-heap probe coverage are complete. The next human action is to review and commit the product diff in the desired grouping; do not resume the terminated `/gybis-spec-weed` audit unless explicitly commanded.
+- task: Completed the Clojure-compatible `add`, `sub`, `mult`, and floating unary `div` upserts, documented each implemented numeric free-function API with its own Doxygen anchor and runnable sample, corrected Doxygen comment/declaration attachment, and added dedicated no-heap arithmetic coverage for both modular and single-header builds.
 - questions:
-  - No open semantic questions for `REQ-NUM-015A`–`015H`; the user selected Clojure-compatible `rem`/`mod`, value-initialized runtime fallback, lossless static result typing, and same-type floating arithmetic.
+  - No open semantic questions for approved `add`, `sub`, `mult`, or `div` upserts.
+  - Integer unary `div` remains rejected; unary floating `div(x)` returns `1/x`.
   - The product work remains uncommitted. The human must choose commit grouping and create or authorize the product commits.
 - decisions:
-  - Requirements remain binding and requirements/ itself is no longer modified by the final propagation phase.
+  - Requirements remain binding and requirements/ is not modified by termination work.
   - Integer operands admit a statically selected lossless common built-in integer type or reject; no lossy conversion or C++ usual mixed signed/unsigned conversion is permitted.
   - Same-type binary floating arithmetic is admitted with inherent operation rounding; mixed floating widths, nonfinite inputs/results, overflow, and nonzero underflow to zero are rejected by the checked contract.
   - Compile-time-known checked failures fail constant evaluation. Runtime failures return `result_type{}` and leave operands unchanged; preflight returns `false`.
   - `div`/`quot` truncate toward zero, `rem` has the dividend sign, and `mod` has the divisor sign.
-  - Architecture marks checked arithmetic active, matching the shipped modular header and generated amalgamated header.
+  - Each implemented numeric free API gets its own Doxygen anchor/comment block and runnable sample; `CheckedArithmetic` remains the shared contract reference.
+  - `inc`/`can_inc` and `dec`/`can_dec` use explicit declarations because macro-adjacent Doxygen comments attach ambiguously.
+  - Every public behavior change requires dedicated no-heap probe coverage in modular and single-header profiles.
 - synthesis:
-  - New terms `CheckedArithmeticOperation`, `ArithmeticOperandDomain`, `ArithmeticResultType`, and `IntegerDivisionSemantics` are canonical vocabulary.
-  - `specs/capabilities/checked-arithmetic.allium` has nine obligations; `tests/cljonic-checked-arithmetic-spec-tests.cpp` maps them with `TRACE_ID`s and concrete assertions.
-  - Arithmetic rejection overloads are registered as diagnostic fallbacks; the diagnostic registry, label gate, complexity, lint, and traceability include the new header.
-  - Doxygen now documents the checked arithmetic surface with zero warnings; 53 documentation examples compile.
+  - Canonical arithmetic terms remain `CheckedArithmeticOperation`, `ArithmeticOperandDomain`, `ArithmeticResultType`, and `IntegerDivisionSemantics`.
+  - The checked-arithmetic Allium specification and traceability cover the approved add/sub/mult/div surfaces.
+  - Individual Doxygen anchors cover 35 implemented numeric API/preflight names; every API anchor occurs exactly once in generated namespace HTML.
+  - The docs-example gate compiles 88 samples. `inc`/`dec` must use explicit declarations rather than macro-generated comment-adjacent declarations because Doxygen attachment is declaration-sensitive.
+  - The no-heap arithmetic probe covers arity upserts, preflights, division/remainder/modulus, integer steps, negate, bitwise operations, and shifts in both header profiles.
 - next:
-  1. Review the uncommitted diff across requirements, vocabulary, architecture, specs, source, tests, traceability, scripts, amalgamated header, and generated `docs/`.
+  1. Review the uncommitted diff across requirements, vocabulary, architecture, specs, source, tests, no-heap probes, traceability, scripts, amalgamated header, Doxygen comments/samples, and generated `docs/`.
   2. Commit or split the product propagation. Do not include this mementum-only termination commit in that product grouping.
-  3. If future numeric work is requested, distinguish newly approved operations from this first-pass checked arithmetic/bitwise implementation before adding behavior.
+  3. Future numeric work should distinguish min/max/key selection and remaining bitwise upserts from already approved arithmetic surfaces before adding behavior.
   4. Do not resume the historical `/gybis-spec-weed` audit without an explicit new human command.
 - validation:
-  - `make test`: 392/392 passed; focused modular and single-header arithmetic suites passed 116 assertions.
-  - `sanitizer-cli`: passed.
-  - `coverage-cli`: 100.0% lines.
-  - `traceability-spec-to-code`: passed; obligation snapshot includes the nine new arithmetic obligations.
-  - `no-heap`: passed.
-  - All compile-fail registries, `diagnostic-coverage`, `diagnostic-message-labels`, lint, complexity, requirements/vocabulary structure, Allium check/analyse, and `git diff --check` passed.
-  - `docs-examples`: 53 compiled; Doxygen completed with zero warnings.
+  - `make test`: passed for modular and single-header suites.
+  - `make no-heap`: passed; dedicated arithmetic probe exercises new arities and all numeric/bitwise families.
+  - `make docs`: passed with zero Doxygen warnings.
+  - `make docs-examples`: 88 samples compiled.
+  - `make lint-check` and `make core-cheatsheet-format`: passed.
+  - `traceability-spec-to-code`: passed.
+  - `git diff --check`: passed after generated HTML whitespace normalization.
 
 ## Previous Session State (2026-11-16)
 
