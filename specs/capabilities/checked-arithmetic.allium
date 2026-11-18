@@ -1,0 +1,75 @@
+-- allium: 3
+-- Checked numeric arithmetic governed by REQ-NUM-015A through REQ-NUM-015L,
+-- REQ-NUM-017, and REQ-FN-002N.
+-- Integer arithmetic is admitted only when its operand pair has a lossless
+-- statically selected integer working and result type. Floating arithmetic is
+-- same-type binary floating arithmetic. Mixed integer/floating, Boolean,
+-- character, byte, enum, pointer, and user-defined operands are rejected.
+-- Checked failures return the value-initialized result type at runtime and
+-- fail required constant evaluation. Preflights exactly predict operation
+-- success without side effects.
+
+entity CheckedArithmetic {
+    operand_domain_is_closed_and_lossless: Boolean
+    result_type_is_static_and_lossless: Boolean
+    overflow_and_underflow_are_checked: Boolean
+    zero_division_and_floating_failures_are_checked: Boolean
+    clojure_compatible_quot_rem_mod_semantics_are_enforced: Boolean
+    preflights_match_operations_without_side_effects: Boolean
+    operations_are_nonthrowing_nonallocating_and_constexpr_capable: Boolean
+    unsupported_types_and_policies_are_compile_time_rejected: Boolean
+    clojure_compatible_add_arities_are_enforced: Boolean
+    clojure_compatible_sub_arities_are_enforced: Boolean
+    clojure_compatible_mult_arities_are_enforced: Boolean
+    clojure_compatible_div_arities_are_enforced: Boolean
+
+    invariant OperandDomainIsClosedAndLossless {
+        this.operand_domain_is_closed_and_lossless = true
+    }
+
+    invariant ResultTypeIsStaticAndLossless {
+        this.result_type_is_static_and_lossless = true
+    }
+
+    invariant OverflowAndUnderflowAreChecked {
+        this.overflow_and_underflow_are_checked = true
+    }
+
+    invariant DivisionAndFloatingFailuresAreChecked {
+        this.zero_division_and_floating_failures_are_checked = true
+    }
+
+    invariant QuotRemModSemantics {
+        this.clojure_compatible_quot_rem_mod_semantics_are_enforced = true
+    }
+
+    invariant PreflightMatchesOperation {
+        this.preflights_match_operations_without_side_effects = true
+    }
+
+    invariant NoThrowNoHeapAndConstexpr {
+        this.operations_are_nonthrowing_nonallocating_and_constexpr_capable = true
+    }
+
+    invariant UnsupportedTypesAreRejected {
+        this.unsupported_types_and_policies_are_compile_time_rejected = true
+    }
+
+    invariant ClojureCompatibleAddArities {
+        this.clojure_compatible_add_arities_are_enforced = true
+    }
+
+    invariant ClojureCompatibleSubArities {
+        this.clojure_compatible_sub_arities_are_enforced = true
+    }
+
+    invariant ClojureCompatibleMultArities {
+        this.clojure_compatible_mult_arities_are_enforced = true
+    }
+
+    invariant ClojureCompatibleDivArities {
+        this.clojure_compatible_div_arities_are_enforced = true
+    }
+}
+
+actor ArithmeticCaller { identified_by: CheckedArithmetic }
