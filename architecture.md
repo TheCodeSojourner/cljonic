@@ -124,6 +124,30 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     unless(explicitly_specified_exception_with_checked_or_exact_domain_policy(x))
   | rationale: admission must not silently lose information or change an operation's meaning
 
+λ S5_checked_arithmetic_policy(x). CheckedArithmeticOperation(x) → preserve(ArithmeticOperandDomain ∧ ArithmeticResultType ∧ mathematical_failure_semantics)
+  | add(x) → support(add<T>() ∧ unary_add(x) ∧ binary_add(x,y) ∧ variadic_left_fold(x,y,&more))
+  | add<T>() → T{} ∧ require(explicit_supported_numeric_type(T))
+  | unary_add(x) → x
+  | variadic_add(x,y,&more) → single_static_lossless_common_type(types(x,y,&more)) ∧ left_fold_checked_addition
+  | sub(x) → unary_checked_negation(x) ∨ binary_checked_subtraction(x,y) ∨ variadic_left_fold_subtraction(x,y,&more)
+  | sub() → reject_compile_time
+  | can_subtract(x) → same_admission_and_arity_as(sub) ∧ true_iff_no_checked_failure
+  | mult(x) → support(mult<T>() ∧ unary_mult(x) ∧ binary_mult(x,y) ∧ variadic_left_fold_product(x,y,&more))
+  | mult<T>() → T{1} ∧ require(explicit_supported_numeric_type(T))
+  | unary_mult(x) → x
+  | binary_or_variadic_mult(x,y,&more) → single_static_lossless_common_type(types(x,y,&more)) ∧ left_fold_checked_multiplication
+  | can_multiply(x) → same_admission_and_arity_as(mult) ∧ true_iff_no_checked_failure
+  | div(x) → unary_floating_reciprocal(x) ∨ binary_checked_division(x,y) ∨ variadic_left_fold_division(x,y,&more)
+  | unary_div(x) → supported_floating_type(x) ∧ 1/x ∧ integer_x → reject_compile_time
+  | div() → reject_compile_time
+  | binary_or_variadic_div(x,y,&more) → single_static_lossless_common_type(types(x,y,&more)) ∧ left_fold_checked_division
+  | can_div(x) → same_admission_and_arity_as(div) ∧ true_iff_no_checked_failure
+  | operand_type_conversion(x) → lossless
+  | result_overflow(x) ∨ result_underflow(x) → checked_failure(x)
+  | IntegerDivisionSemantics(x) → Clojure_compatible_quot_rem_mod
+  | rationale: predictable arithmetic failures and sign semantics protect embedded determinism without silently changing values
+  | traces_to(REQ-NUM-015A ∧ REQ-NUM-015B ∧ REQ-NUM-015C ∧ REQ-NUM-015D ∧ REQ-NUM-015E ∧ REQ-NUM-015F ∧ REQ-NUM-015G ∧ REQ-NUM-015H ∧ REQ-NUM-015I ∧ REQ-NUM-015J ∧ REQ-NUM-015K ∧ REQ-NUM-015L)
+
 λ S5_value_and_failure_semantics(x). collection_update(x) → independently_valid_persistent_result(x)
   | owning_result(x) → independent_of_source_lifetime(x)
   | failure_or_incomplete_result(x) → explicit_predictable_policy(x) ∧ applicable_preflight_or_checked_outcome(x)
@@ -197,6 +221,19 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | storage_admission(x) → not_imply(StableEquality ∨ TotalOrder ∨ hashing ∨ parsing ∨ traversal)
   | collection_storage_position(x) ≡ element ∨ map_key ∨ map_value
   | String(x) → apply(non_throwing_storage_and_destruction(x))
+
+λ S3_checked_arithmetic_control(x). governed_by(REQ-NUM-015A–015L ∧ REQ-NUM-017 ∧ REQ-FN-002N)
+  | arithmetic_operand_admission(x) → (supported_integer × supported_integer) ∨ (same_supported_binary_floating × same_supported_binary_floating)
+    ∧ reject(integer_floating_crossing ∨ Boolean ∨ character ∨ byte ∨ enum ∨ pointer ∨ user_defined)
+  | integer_result_type(x) → select_smallest_supported_lossless_static_common_type(x) ∨ reject_compile_time(x)
+  | floating_result_type(x) ≡ identical_operand_type(x) ∧ mixed_floating_type(x) → reject_compile_time
+  | working_type_conversion(x) → preserve_exact_mathematical_operand_value(x)
+  | arithmetic_failure(x) → detect(overflow ∨ underflow ∨ division_by_zero ∨ NaN ∨ infinity)
+  | compile_time_known_arithmetic_failure(x) → reject_constant_evaluation(x)
+  | runtime_arithmetic_failure(x) → result_type{} ∧ unchanged_operands
+  | floating_arithmetic(x) → admit(inherent_binary_floating_rounding) ∧ reject(nonfinite ∨ overflow_to_infinity ∨ nonzero_underflow_to_zero)
+  | corresponding_preflight(x) → same_admission_and_failure_semantics(x) ∧ true_iff_operation_can_succeed
+  | traces_to(S5_checked_arithmetic_policy ∧ S5_domain_and_conversion_safety ∧ S5_value_and_failure_semantics)
 
 λ S3_explicit_conversion_surface(x). governed_by(REQ-NUM-008 ∧ REQ-NUM-009 ∧ REQ-NUM-010 ∧ REQ-NUM-010A–010E ∧ REQ-NUM-012 ∧ REQ-NUM-013 ∧ REQ-NUM-017)
   | traces_to(S5_domain_and_conversion_safety)
@@ -1403,6 +1440,33 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | always_terminates(x) ∧ ¬∃ early_termination_wrapper(x)
   | classify_as(CompleteResult) ∧ trace_to(REQ-FN-034)
 
+λ S2_checked_arithmetic_contract(x). CheckedArithmeticOperation(x)
+  | operation_family(x) ≡ add ∧ sub ∧ mult ∧ div ∧ quot ∧ rem ∧ mod ∧ inc ∧ dec ∧ negate
+    ∧ bit_not ∧ bit_and ∧ bit_or ∧ bit_xor ∧ bit_and_not ∧ bit_clear ∧ bit_set ∧ bit_flip ∧ bit_test
+    ∧ bit_shift_left ∧ bit_shift_right ∧ unsigned_bit_shift_right
+  | add(x) → arity(zero_explicit_type ∨ unary ∨ binary ∨ variadic)
+    ∧ zero_explicit_type → T{} ∧ unary → unchanged_value ∧ binary_or_variadic → checked_left_fold
+  | sub(x) → arity(unary ∨ binary ∨ variadic)
+    ∧ unary → checked_negation(x) ∧ binary_or_variadic → checked_left_fold_subtraction
+    ∧ sub() → reject_compile_time
+  | can_subtract(x) → same_admission_and_arity_as(sub) ∧ true_iff_checked_subtraction_succeeds
+  | mult(x) → arity(zero_explicit_type ∨ unary ∨ binary ∨ variadic)
+    ∧ zero_explicit_type → T{1} ∧ unary → unchanged_value ∧ binary_or_variadic → checked_left_fold_product
+  | can_multiply(x) → same_admission_and_arity_as(mult) ∧ true_iff_checked_multiplication_succeeds
+  | div(x) → arity(unary_floating ∨ binary ∨ variadic)
+    ∧ unary_floating → 1/x ∧ integer_unary → reject_compile_time
+    ∧ binary_or_variadic → checked_left_fold_division
+    ∧ div() → reject_compile_time
+  | can_div(x) → same_admission_and_arity_as(div) ∧ true_iff_checked_division_succeeds
+  | division_preflight(can_div ∨ can_quot ∨ can_rem ∨ can_mod) → reject_runtime_zero_divisor
+  | IntegerDivisionSemantics(x) → div ∧ quot truncate_toward_zero
+    ∧ rem_sign(dividend) ∧ mod_sign(divisor)
+  | preflight(x) → named_can_operation(x) for each operation with runtime checked failure
+  | compare ∧ min ∧ max ∧ min_key ∧ max_key ∧ numeric_predicates ∧ non_shifting_bitwise_operations
+    → ¬require_runtime_preflight when(admission_leaves_no_operation_specific_failure)
+  | approved_requirements(x) → require(operation_level_behavioral_specification) before(implementation_ready)
+  | traces_to(REQ-NUM-015A–015L ∧ REQ-NUM-017 ∧ REQ-FN-002N)
+
 λ S2_disj_function_contract(x). disj(set, values...) → admit(CljonicSet(set) ∧ ∀ value: SafeImplicitConversion(Set::value_type, value))
   | arity(values) = 0 → return(unchanged_copy(set))
   | arity(values) > 0 → fold(left_to_right, Set::disj, set, values)
@@ -1461,6 +1525,13 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   ∧ explicit_materialization_functions
   | required_callable_member_adapters(x) → permitted_when(explicitly_specified_and_behaviorally_equivalent(x))
   | optional_member_wrappers(x) ≡ non_canonical
+
+λ S1_checked_arithmetic_operations(x). active_implementation(x)
+  | specification_propagated(REQ-NUM-015A–015H)
+  | modular_header(x) → file(cljonic-arithmetic.hpp) ∧ amalgamated_distribution(x) ≡ generated_from(modular_header)
+  | focused_tests(x) → cover(operand_admission ∧ result_type_selection ∧ checked_failure ∧ division_semantics ∧ floating_edge_cases ∧ preflight_equivalence)
+  | public_documentation(x) → explain(checked_failure_fallback ∧ no_loss_conversion ∧ quotient_remainder_modulus_examples)
+  | traces_to(S2_checked_arithmetic_contract ∧ S3_checked_arithmetic_control)
 
 λ S1_collection_storage_and_algorithms(x). collection_storage(x) ≡ ContiguousStorage
   | MapEntry(x) → ContiguousStorage(x) ∧ value_semantics(x)
@@ -1889,6 +1960,6 @@ concept SequenceableProducer =
   | module6_numeric_authority(x) ≡ requirements/requirements-module-6.md → govern(checked_arithmetic ∧ callables)
   | module7_extended_domain_authority(x) ≡ requirements/requirements-module-7.md → govern(relations ∧ set_algebra ∧ regex ∧ Atom ∧ formatting ∧ KeywordEnumNameMapping)
 
-λ current_implementation_boundary(x). active_surface(x) ≡ Vector ∧ MapEntry ∧ Map ∧ Set ∧ Queue ∧ String ∧ Variant ∧ Range ∧ Repeat ∧ Cycle ∧ Iterate ∧ Repeatedly ∧ TakeWhile ∧ DropWhile ∧ primitive_free_functions ∧ explicit_conversions ∧ map ∧ reduce ∧ filter ∧ filterv ∧ take ∧ drop ∧ take_while ∧ drop_while ∧ vector_factory ∧ hash_map_factory ∧ map_entry_factory ∧ set_factory ∧ queue_factory ∧ string_factory ∧ variant_factory ∧ into ∧ fits_into
+λ current_implementation_boundary(x). active_surface(x) ≡ Vector ∧ MapEntry ∧ Map ∧ Set ∧ Queue ∧ String ∧ Variant ∧ Range ∧ Repeat ∧ Cycle ∧ Iterate ∧ Repeatedly ∧ TakeWhile ∧ DropWhile ∧ primitive_free_functions ∧ checked_arithmetic_operations ∧ explicit_conversions ∧ map ∧ reduce ∧ filter ∧ filterv ∧ take ∧ drop ∧ take_while ∧ drop_while ∧ vector_factory ∧ hash_map_factory ∧ map_entry_factory ∧ set_factory ∧ queue_factory ∧ string_factory ∧ variant_factory ∧ into ∧ fits_into
   | approved_but_unimplemented(algorithms_except(map ∧ reduce ∧ filter ∧ filterv ∧ take ∧ drop ∧ take_while ∧ drop_while) ∨ regexes) → remain_outside(active_surface(x))
   | approved_but_unimplemented(x) → require(specification_and_implementation_propagated(x)) before(active_surface_inclusion(x))
