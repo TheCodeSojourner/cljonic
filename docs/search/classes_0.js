@@ -12,5 +12,6 @@ var searchData=
   ['all_5fconj_5fvalues_5fadmissible_3c_20c_2c_20t_2c_20rest_2e_2e_2e_20_3e_9',['all_conj_values_admissible&lt; C, T, Rest... &gt;',['../structcljonic_1_1concepts__detail_1_1all__conj__values__admissible_3_01_c_00_01_t_00_01_rest_8_8_8_01_4.html',1,'cljonic::concepts_detail']]],
   ['all_5fdissoc_5fkeys_5fadmissible_10',['all_dissoc_keys_admissible',['../structcljonic_1_1concepts__detail_1_1all__dissoc__keys__admissible.html',1,'cljonic::concepts_detail']]],
   ['all_5fdissoc_5fkeys_5fadmissible_3c_20c_20_3e_11',['all_dissoc_keys_admissible&lt; C &gt;',['../structcljonic_1_1concepts__detail_1_1all__dissoc__keys__admissible_3_01_c_01_4.html',1,'cljonic::concepts_detail']]],
-  ['all_5fdissoc_5fkeys_5fadmissible_3c_20c_2c_20k_2c_20rest_2e_2e_2e_20_3e_12',['all_dissoc_keys_admissible&lt; C, K, Rest... &gt;',['../structcljonic_1_1concepts__detail_1_1all__dissoc__keys__admissible_3_01_c_00_01_k_00_01_rest_8_8_8_01_4.html',1,'cljonic::concepts_detail']]]
+  ['all_5fdissoc_5fkeys_5fadmissible_3c_20c_2c_20k_2c_20rest_2e_2e_2e_20_3e_12',['all_dissoc_keys_admissible&lt; C, K, Rest... &gt;',['../structcljonic_1_1concepts__detail_1_1all__dissoc__keys__admissible_3_01_c_00_01_k_00_01_rest_8_8_8_01_4.html',1,'cljonic::concepts_detail']]],
+  ['arithmetic_5fresult_13',['arithmetic_result',['../structcljonic_1_1core_1_1arithmetic__detail_1_1arithmetic__result.html',1,'cljonic::core::arithmetic_detail']]]
 ];

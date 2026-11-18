@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['walker_5fcoverage_5fdeclared_5fv_0',['walker_coverage_declared_v',['../namespacecljonic_1_1concepts__detail.html#abc2e283f4597b845ddc449fd8ad2e763',1,'cljonic::concepts_detail']]],
-  ['walker_5fcoverage_5fok_5fv_1',['walker_coverage_ok_v',['../namespacecljonic_1_1concepts__detail.html#a6c8771eeec10f3494eeef251f0cfe83a',1,'cljonic::concepts_detail']]]
+  ['value_0',['value',['../structcljonic_1_1core_1_1arithmetic__detail_1_1arithmetic__result.html#af274de89225cfe8bf5e77ec6a4aaa9d8',1,'cljonic::core::arithmetic_detail::arithmetic_result::value'],['../structcljonic_1_1core_1_1arithmetic__detail_1_1division__result__input.html#ada5f545ea21c1dba0fa60bade429bba8',1,'cljonic::core::arithmetic_detail::division_result_input::value'],['../structcljonic_1_1_map_entry.html#a83603835c380c14d13c252cf99b11c23',1,'cljonic::MapEntry::value'],['../structcljonic_1_1core_1_1conversion__detail_1_1_result.html#a5ddab871e0086bce720577b96c229abb',1,'cljonic::core::conversion_detail::Result::value']]],
+  ['value_5fpreserving_5farithmetic_1',['value_preserving_arithmetic',['../namespacecljonic_1_1concepts__detail.html#a55c9cfb7b06cc54d0d765d496ee41a1b',1,'cljonic::concepts_detail']]],
+  ['value_5fpreserving_5farithmetic_3c_20to_2c_20from_20_3e_2',['value_preserving_arithmetic&lt; To, From &gt;',['../namespacecljonic_1_1concepts__detail.html#aa796bbc56f72bb7e87b9d53de2125440',1,'cljonic::concepts_detail']]],
+  ['valuetype_3',['ValueType',['../namespacecljonic_1_1concepts__detail.html#ab9fb80516a7a093c3cebc31ef2cb7bb3',1,'cljonic::concepts_detail']]]
 ];

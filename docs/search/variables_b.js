@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['reduce_5fparameters_5fsafe_5fv_0',['reduce_parameters_safe_v',['../namespacecljonic_1_1concepts__detail.html#ab88696ee448750e90271f862b46ea934',1,'cljonic::concepts_detail']]],
-  ['reducerequiredparametercount_1',['ReduceRequiredParameterCount',['../namespacecljonic_1_1concepts__detail.html#ab3f077c21cea0bd15d5eb26942575617',1,'cljonic::concepts_detail']]]
+  ['policy_5fadmitted_5fv_0',['policy_admitted_v',['../namespacecljonic_1_1core_1_1conversion__detail.html#ab1d8fdba698b6f5ec1227cb215ec689c',1,'cljonic::core::conversion_detail']]],
+  ['producer_5fkind_5fof_5fv_1',['producer_kind_of_v',['../namespacecljonic_1_1concepts__detail.html#a9b6e0fa83ede71e749bff9da7c691ca7',1,'cljonic::concepts_detail']]]
 ];

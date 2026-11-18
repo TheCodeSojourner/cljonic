@@ -8,5 +8,6 @@ var searchData=
   ['queue_5ffactory_5felement_5ftype_3c_20deducedqueueelementtype_2c_20first_2c_20rest_2e_2e_2e_20_3e_5',['queue_factory_element_type&lt; DeducedQueueElementType, First, Rest... &gt;',['../structcljonic_1_1concepts__detail_1_1queue__factory__element__type_3_01_deduced_queue_element_tya8c165f244576e2f44b2c88eb98e986c.html',1,'cljonic::concepts_detail']]],
   ['queuefactoryarguments_6',['QueueFactoryArguments',['../conceptcljonic_1_1concepts__detail_1_1_queue_factory_arguments.html',1,'cljonic::concepts_detail']]],
   ['queuefactorycapacityarguments_7',['QueueFactoryCapacityArguments',['../conceptcljonic_1_1concepts__detail_1_1_queue_factory_capacity_arguments.html',1,'cljonic::concepts_detail']]],
-  ['queuefactoryhaselementtype_8',['QueueFactoryHasElementType',['../conceptcljonic_1_1concepts__detail_1_1_queue_factory_has_element_type.html',1,'cljonic::concepts_detail']]]
+  ['queuefactoryhaselementtype_8',['QueueFactoryHasElementType',['../conceptcljonic_1_1concepts__detail_1_1_queue_factory_has_element_type.html',1,'cljonic::concepts_detail']]],
+  ['quot_9',['quot',['../namespacecljonic_1_1core.html#adf211a10b8abaedbec0ed5895815073e',1,'cljonic::core']]]
 ];
