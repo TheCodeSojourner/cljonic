@@ -316,17 +316,68 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
 
 λ REQ-NUM-015H(x).
   ∀ runtime arithmetic operation with a defined checked_failure condition: provides the corresponding preflight ∧ accepted types and values are evaluated under the same contract
-  ∧ checked_preflight_domain: `can_add` for `add` ∨ `can_subtract` for `sub` ∨ `can_multiply` for `mult` ∨ `can_div` for `div` ∨ `can_quot` for `quot` ∨ `can_rem` for `rem` ∨ `can_mod` for `mod` ∨ `can_inc` for `inc` ∨ `can_dec` for `dec` ∨ `can_negate` for `negate` ∨ `can_bit_shift_left` for `bit_shift_left` ∨ `can_bit_shift_right` for `bit_shift_right` ∨ `can_unsigned_bit_shift_right` for `unsigned_bit_shift_right`
+  ∧ checked_preflight_domain: `can_add` for every admitted `add` arity ∨ `can_subtract` for every admitted `sub` arity ∨ `can_multiply` for every admitted `mult` arity ∨ `can_div` for every admitted `div` arity ∨ `can_quot` for `quot` ∨ `can_rem` for `rem` ∨ `can_mod` for `mod` ∨ `can_inc` for `inc` ∨ `can_dec` for `dec` ∨ `can_negate` for `negate` ∨ `can_bit_shift_left` for `bit_shift_left` ∨ `can_bit_shift_right` for `bit_shift_right` ∨ `can_unsigned_bit_shift_right` for `unsigned_bit_shift_right`
   ∧ ∀ listed preflight: side-effect-free ∧ returns true exactly when its corresponding operation can produce its result without checked failure
   ∧ ∀ `compare` ∨ `min` ∨ `max` ∨ `min_key` ∨ `max_key` ∨ `is_zero` ∨ `is_positive` ∨ `is_negative` ∨ `is_even` ∨ `is_odd` ∨ `bit_not` ∨ `bit_and` ∨ `bit_or` ∨ `bit_xor` ∨ `bit_and_not` ∨ `bit_clear` ∨ `bit_set` ∨ `bit_flip` ∨ `bit_test`: ¬∃ corresponding runtime preflight required because admitted operands have no remaining operation-specific checked failure
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-17, compound_by_design: true}
+
+λ REQ-NUM-015I(x).
+  ∀ `add`: provides the Clojure-compatible arities `add<T>()`, unary `add(x)`, binary `add(x, y)`, and variadic `add(x, y, & more)`
+  ∧ ∀ `add<T>()`: requires explicit supported numeric result type `T` ∧ returns `T{}`
+  ∧ ∀ unary `add(x)`: returns `x` unchanged ∧ admits only supported numeric operands under REQ-NUM-015A
+  ∧ ∀ binary ∨ variadic `add`: folds operands from left to right under the existing checked arithmetic result-type and failure contract
+  ∧ ∀ variadic `add`: selects one static lossless common result type from the complete operand type list ∧ performs no value-dependent result-type selection ∧ rejects the call when no supported lossless common integer type or identical supported floating type exists
+  ∧ ∀ binary ∨ variadic runtime checked_failure: leaves all operands unchanged ∧ returns the result type's value-initialized fallback
+  ∧ ∀ binary ∨ variadic compile-time-known checked_failure: rejected during constant evaluation
+  ∧ ∀ `can_add`: has the same operand domain and arity as `add` ∧ is side-effect-free ∧ is true exactly when `add` can produce its result without checked failure
+  rationale: Clojure's `+` identity, unary forwarding, and left-to-right variadic sum are represented by explicit C++ arities while preserving cljonic's lossless checked arithmetic policy
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-18, rationale_source: origin_artifact, compound_by_design: true}
+
+λ REQ-NUM-015J(x).
+  ∀ `sub`: provides the Clojure-compatible unary, binary, and variadic arities `sub(x)`, `sub(x, y)`, and `sub(x, y, & more)`
+  ∧ ∀ unary `sub(x)`: returns the checked negation of `x`
+  ∧ ∀ binary `sub(x, y)`: returns `x - y`
+  ∧ ∀ variadic `sub(x, y, & more)`: subtracts each later operand from the accumulator from left to right
+  ∧ ∀ `sub()`: rejected at compile time ∧ ¬∃ zero-argument subtraction identity
+  ∧ ∀ unary ∨ binary ∨ variadic `sub`: admits operands only under the existing checked arithmetic operand domain ∧ selects one static lossless common result type for the complete operand type list ∧ performs no value-dependent result-type selection
+  ∧ ∀ unary ∨ binary ∨ variadic runtime checked_failure: leaves all operands unchanged ∧ returns the result type's value-initialized fallback
+  ∧ ∀ unary ∨ binary ∨ variadic compile-time-known checked_failure: rejected during constant evaluation
+  ∧ ∀ `can_subtract`: has the same unary, binary, and variadic operand domain and arity as `sub` ∧ is side-effect-free ∧ is true exactly when `sub` can produce its result without checked failure
+  rationale: Clojure's `-` unary negation and left-to-right variadic subtraction are represented explicitly while preserving cljonic's lossless checked arithmetic policy
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-18, rationale_source: origin_artifact, compound_by_design: true}
+
+λ REQ-NUM-015K(x).
+  ∀ `mult`: provides the Clojure-compatible arities `mult<T>()`, unary `mult(x)`, binary `mult(x, y)`, and variadic `mult(x, y, & more)`
+  ∧ ∀ `mult<T>()`: requires explicit supported numeric result type `T` ∧ returns `T{1}`
+  ∧ ∀ unary `mult(x)`: returns `x` unchanged ∧ admits only supported numeric operands under REQ-NUM-015A
+  ∧ ∀ binary ∨ variadic `mult`: multiplies operands from left to right under the existing checked arithmetic result-type and failure contract
+  ∧ ∀ binary ∨ variadic `mult`: selects one static lossless common result type for the complete operand type list ∧ performs no value-dependent result-type selection ∧ rejects the call when no supported lossless common integer type or identical supported floating type exists
+  ∧ ∀ binary ∨ variadic runtime checked_failure: leaves all operands unchanged ∧ returns the result type's value-initialized fallback
+  ∧ ∀ binary ∨ variadic compile-time-known checked_failure: rejected during constant evaluation
+  ∧ ∀ `can_multiply`: has the same operand domain and arity as `mult` ∧ is side-effect-free ∧ is true exactly when `mult` can produce its result without checked failure
+  rationale: Clojure's `*` identity, unary forwarding, and left-to-right variadic product are represented explicitly while preserving cljonic's lossless checked arithmetic policy
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-18, rationale_source: origin_artifact, compound_by_design: true}
+
+λ REQ-NUM-015L(x).
+  ∀ `div`: provides unary, binary, and variadic arities `div(x)`, `div(x, y)`, and `div(x, y, & more)`
+  ∧ ∀ unary `div(x)`: admitted only for one supported binary floating-point type ∧ returns `1 / x` under REQ-NUM-015G ∧ integer unary `div(x)` is rejected at compile time
+  ∧ ∀ binary ∨ variadic `div`: divides operands from left to right under the existing checked arithmetic result-type and failure contract
+  ∧ ∀ binary ∨ variadic `div`: selects one static lossless common result type for the complete operand type list ∧ performs no value-dependent result-type selection
+  ∧ ∀ existing integer `div`: retains its approved fixed-width integer quotient semantics and static lossless integer result type ∧ rejects a mixed integer/floating or unsupported operand pair at compile time
+  ∧ ∀ binary ∨ variadic runtime checked_failure: leaves all operands unchanged ∧ returns the result type's value-initialized fallback
+  ∧ ∀ unary ∨ binary ∨ variadic compile-time-known checked_failure: rejected during constant evaluation
+  ∧ ∀ runtime zero divisor: binary ∨ variadic `div` returns the result type's value-initialized fallback ∧ matching preflight returns false
+  ∧ ∀ `div()`: rejected at compile time ∧ ¬∃ zero-argument division identity
+  ∧ ∀ `can_div`: has the same unary, binary, and variadic operand domain and arity as `div` ∧ is side-effect-free ∧ is true exactly when `div` can produce its result without checked failure
+  rationale: Clojure's unary reciprocal and left-to-right variadic division are represented without rational-type expansion; integer unary division is excluded because cljonic has fixed-width integer quotient semantics
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-18, rationale_source: origin_artifact, compound_by_design: true}
 
 λ REQ-NUM-016(x).
   ∃ permitted_path: wrapping and saturating arithmetic provided ∧ ∀ such_operation: separately named ∧ ¬∃ implicit behavior of the default arithmetic operations
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-NUM-017(x).
-  ∀ context: the first-pass numeric convenience family includes checked fixed-width arithmetic corresponding to `add`, `sub`, `mult`, `div`, `quot`, `rem`, and `mod`, with `can_add`, `can_subtract`, and `can_multiply` preflights; scalar comparison and selection corresponding to `compare`, `min`, `max`, `min_key`, and `max_key`; integer-step operations corresponding to `inc`, `dec`, and `negate`; constrained numeric predicates corresponding to `is_zero`, `is_positive`, `is_negative`, `is_even`, and `is_odd`; explicit conversions corresponding to `to_byte`, `to_char`, `to_count`, `to_double`, `to_float`, `to_index`, `to_int`, `to_long`, `to_long_double`, `to_long_long`, `to_short`, `to_size`, `to_uint`, `to_ulong`, `to_ulong_long`, `to_ushort`, and `to<T>` under REQ-NUM-008; and fixed-width bitwise operations `bit_not`, `bit_and`, `bit_or`, `bit_xor`, `bit_and_not`, `bit_clear`, `bit_set`, `bit_flip`, `bit_test`, `bit_shift_left`, `bit_shift_right`, and `unsigned_bit_shift_right`
+  ∀ context: the first-pass numeric convenience family includes checked fixed-width arithmetic corresponding to `add`, `sub`, `mult`, `div`, `quot`, `rem`, and `mod`, with Clojure-compatible `add` arities under REQ-NUM-015I, `sub` arities under REQ-NUM-015J, `mult` arities under REQ-NUM-015K, `div` arities under REQ-NUM-015L, and matching `can_add`, `can_subtract`, `can_multiply`, and `can_div` preflights; scalar comparison and selection corresponding to `compare`, `min`, `max`, `min_key`, and `max_key`; integer-step operations corresponding to `inc`, `dec`, and `negate`; constrained numeric predicates corresponding to `is_zero`, `is_positive`, `is_negative`, `is_even`, and `is_odd`; explicit conversions corresponding to `to_byte`, `to_char`, `to_count`, `to_double`, `to_float`, `to_index`, `to_int`, `to_long`, `to_long_double`, `to_long_long`, `to_short`, `to_size`, `to_uint`, `to_ulong`, `to_ulong_long`, `to_ushort`, and `to<T>` under REQ-NUM-008; and fixed-width bitwise operations `bit_not`, `bit_and`, `bit_or`, `bit_xor`, `bit_and_not`, `bit_clear`, `bit_set`, `bit_flip`, `bit_test`, `bit_shift_left`, `bit_shift_right`, and `unsigned_bit_shift_right`
   ∧ ∀ such_operation: obeys the applicable compile-time capability, representability, overflow, division-by-zero, shift-count, floating-point, and preflight requirements
   ∧ ∀ raw floating-point value: remains excluded from operations that require the stable equality, identity, or total-order capabilities defined by this document
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
@@ -355,9 +406,9 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07, rationale_source: origin_artifact, rationale_approved_by: human}
 
 λ REQ-FN-002N(x).
-  ∀ context: the supported free-function vocabulary includes `can_add`, `can_subtract`, and `can_multiply` for checked fixed-width arithmetic preflight
+  ∀ context: the supported free-function vocabulary includes `can_add` for every admitted `add` arity, `can_subtract` for every admitted `sub` arity, `can_multiply` for every admitted `mult` arity, and `can_div` for every admitted `div` arity for checked fixed-width arithmetic preflight
   ∧ ∀ corresponding arithmetic function: uses the documented checked default behavior ∧ ∀ wrapping ∨ saturating alternative: uses distinct names
-  {source: stakeholder_decided, decided_by: original_spec_author}
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-18}
 
 ## Stored Closures and Callable Convenience Family
 
@@ -376,4 +427,4 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
 ## Traceability and Related Requirements
 
 - **Downstream Artifact**: Numeric functions, checked arithmetic helpers, bitwise functions, and callable builder adapters (`partial`, `juxt`, `fnil`, `complement`, `apply`).
-- **Governed REQs**: `REQ-NUM-000`–`019`, `REQ-NUM-010A`–`010E`, `REQ-NUM-015A`–`015H`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`.
+- **Governed REQs**: `REQ-NUM-000`–`019`, `REQ-NUM-010A`–`010E`, `REQ-NUM-015A`–`015L`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`.

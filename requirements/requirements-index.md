@@ -46,7 +46,7 @@ MUST ≡ ∀/¬ (required by constraint) | SHOULD ≡ ∧ preferred | MAY ≡ �
 
 6. **[requirements-module-6.md](requirements-module-6.md)** — *Numeric & Callable Convenience*
    - **Purpose**: Adds scalar arithmetic, bitwise math, conversion/parsing controls, and functional closure builders.
-   - **Scope**: Checked arithmetic with preflights (`can_add`, `can_subtract`, `can_multiply`), bitwise operations (`bit_and`, `bit_or`, `bit_shift_left`), raw floating-point stability restrictions, stored closure capabilities, and callable adapters (`partial`, `juxt`, `fnil`, `complement`, `apply`) (`REQ-NUM-000`–`019`, `REQ-NUM-010A`–`010E`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`).
+   - **Scope**: Checked arithmetic with preflights (`can_add`, `can_subtract`, `can_multiply`, `can_div`), Clojure-compatible `add` arities including zero, unary, binary, and variadic summation, Clojure-compatible `sub` arities including unary negation and left-to-right binary/variadic subtraction, Clojure-compatible `mult` arities including typed one identity, unary, binary, and variadic multiplication, Clojure-compatible floating unary/left-to-right binary/variadic `div` arities, bitwise operations (`bit_and`, `bit_or`, `bit_shift_left`), raw floating-point stability restrictions, stored closure capabilities, and callable adapters (`partial`, `juxt`, `fnil`, `complement`, `apply`) (`REQ-NUM-000`–`019`, `REQ-NUM-010A`–`010E`, `REQ-NUM-015A`–`015L`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`).
 
 7. **[requirements-module-7.md](requirements-module-7.md)** — *Specialized Value Domains & State*
    - **Purpose**: Implements higher-level domain conveniences and state built on top of lower modules.
