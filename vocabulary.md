@@ -1,6 +1,6 @@
 ---
 created: 2026-08-05
-last_updated: 2026-11-11
+last_updated: 2026-11-17
 status: draft
 ---
 
@@ -1037,6 +1037,38 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Related:** DeterministicBehavior
 - **Usage:** Architecture, specification, implementation, tests, and documentation
 - **Examples:** When an arithmetic preflight such as `can_add` returns false, the corresponding default operation returns its documented default and leaves inputs unchanged; wrapping or saturation requires a separately named alternative.
+
+
+### CheckedArithmeticOperation
+- **Definition:** A numeric free-function operation whose operand admission, working type, result type, failure conditions, and matching preflight are explicit parts of its contract. Integer operands may combine only through a lossless statically selected integer working and result type. Floating operands must have one identical supported binary floating-point type. `add<T>()` returns `T{}`, unary `add(x)` returns `x`, binary `add(x,y)` sums, and variadic `add(x,y,& more)` folds left to right. `sub(x)` negates, `sub(x,y)` subtracts, and `sub(x,y,& more)` subtracts left to right; `sub()` is rejected. `mult<T>()` returns `T{1}`, unary `mult(x)` returns `x`, and binary or variadic `mult` multiply left to right. Unary `div(x)` is floating-only and returns `1/x`; binary and variadic `div` divide left to right, preserving integer fixed-width quotient semantics and floating checked division semantics. Binary and variadic forms use one static lossless common result type across the complete operand type list. A known checked failure fails constant evaluation; at runtime the operation returns the value-initialized fallback and leaves operands unchanged.
+- **Deprecated Synonyms:** checked numeric operation
+- **Related:** NumericPolicy, DeterministicOverflowPolicy, ArithmeticOperandDomain, ArithmeticResultType, PreflightPredicate
+- **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
+- **Examples:** `add` and `div` are checked arithmetic operations; runtime division by zero returns the result type's value-initialized value, while `can_div` returns false for that case.
+
+
+### ArithmeticOperandDomain
+- **Definition:** The compile-time set of type pairs admitted by CheckedArithmeticOperation. The approved domain admits supported integer with supported integer and identical supported binary floating-point with identical supported binary floating-point. Mixed integer/floating, Boolean, character, byte, enum, pointer, and user-defined operands are rejected.
+- **Deprecated Synonyms:** arithmetic input domain
+- **Related:** CheckedArithmeticOperation, NumericPolicy, DiscreteNumericType, SafeImplicitConversion
+- **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
+- **Examples:** `int` with `unsigned long` is admitted only when a lossless static common integer type exists; `float` with `double` is rejected.
+
+
+### ArithmeticResultType
+- **Definition:** The statically selected destination type of a CheckedArithmeticOperation. Identical integer operand types preserve that type; different integer operand types select the smallest supported built-in integer type containing both complete operand domains, or reject the call when none exists. Identical floating operands preserve their floating type. Runtime values do not select the result type.
+- **Deprecated Synonyms:** arithmetic output type
+- **Related:** CheckedArithmeticOperation, ArithmeticOperandDomain, DiscreteNumericType, DeterministicOverflowPolicy
+- **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
+- **Examples:** Same-type `short` addition returns `short`; mixed signed/unsigned arithmetic requires a compile-time result type whose complete domain contains both operand domains.
+
+
+### IntegerDivisionSemantics
+- **Definition:** The signed integer behavior of checked division operations. `div` and `quot` truncate the mathematical quotient toward zero. `rem` uses the truncated quotient and has the dividend's sign. `mod` uses the quotient rounded toward negative infinity and has the divisor's sign. Division by zero and the minimum signed integer divided by negative one are checked failures.
+- **Deprecated Synonyms:** integer division contract
+- **Related:** CheckedArithmeticOperation, DeterministicOverflowPolicy, ArithmeticResultType, PreflightPredicate
+- **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
+- **Examples:** `quot(-7, 3)` is `-2`, `rem(-7, 3)` is `-1`, and `mod(-7, 3)` is `2`.
 
 ## Result and Lifecycle Vocabulary
 
