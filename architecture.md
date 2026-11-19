@@ -1378,6 +1378,29 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | preserve(input_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
   | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-042 ∧ REQ-SEQ-022)
 
+λ S2_take_nth_function_contract(x). take_nth(stride, source) → admit(CljonicSource(source) ∧ valid_take_count(stride))(x)
+  | source_element_type(x) → require(NothrowCollectionElement(source_element_type))
+  | result_capacity(source) ≡ source_bound(source) from S2_take_function_contract
+  | observation_window(source) ≡ original_traversal_bounded_by(min(count(source), result_capacity(source)) ∧ actual_iterator_endpoint)
+  | normalized_stride(stride) ≤ 0 ∨ result_capacity(source) = 0 ∨ actual_empty_traversal → return(typed_empty_Vector_without_beginning_traversal_or_callbacks)
+  | return(Vector<source_element_type, result_capacity(source)> containing elements_at_zero_based_offsets(0, normalized_stride(stride), 2*normalized_stride(stride), ... within observation_window(source), logical_traversal(source)))
+    ∧ runtime_stride_does_not_change(result_type ∧ capacity)
+    ∧ normalized_stride(stride) = 1 → include(complete_observation_window)
+  | nonempty_result → traverse(original_window_once)
+    ∧ select(first_observed_element) ∧ select_every(normalized_stride(stride) offsets)
+    ∧ require(iterator_endpoint_check) ∧ ¬advance_past(actual_endpoint_or_window_bound)
+    ∧ Repeatedly → invoke(callback once_per_visited_value)
+    ∧ Iterate → invoke(step only_between_visited_values)
+    ∧ preserve(value_held_callback_state) ∧ referenced_or_static_callback_state_remains_shared
+  | Map_source → yield(MapEntry_values) ∧ String_source → yield(characters) ∧ Queue_source → preserve(FIFO_order)
+  | Map_source ∨ Set_source → preserve(semantically_unordered_traversal)
+  | result(x) → independently_owning_bounded_selected_value_Vector
+    ∧ ¬require(additional_equality_or_ordering_capability)
+    ∧ ¬∃(nested_result ∨ absence_sentinel ∨ status_wrapper ∨ preflight)
+  | invalid_stride ∨ unsupported_source ∨ wrong_arity → reject_at_compile_time_with(targeted_diagnostic_naming(take_nth ∧ stride_and_source_domains) ∧ REQ-DIAG-009)
+  | preserve(input_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
+  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-045 ∧ REQ-SEQ-022)
+
 λ S2_drop_last_function_contract(x). drop_last(count, source) → admit(CljonicSource(source) ∧ valid_take_count(count))(x)
   | source_element_type(x) → require(NothrowCollectionElement(source_element_type))
   | result_capacity(source) ≡ source_bound(source) from S2_take_function_contract
