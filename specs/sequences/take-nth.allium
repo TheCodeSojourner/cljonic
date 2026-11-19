@@ -1,0 +1,66 @@
+-- allium: 3
+
+-- REQ-FN-045 / REQ-SEQ-022: take_nth(n, source) returns elements at
+-- zero-based offsets 0, n, 2n, ... in the original bounded observation window.
+
+entity TakeNth {
+    minimum_arity: Integer
+    maximum_arity: Integer
+    stride_is_first_and_source_is_second: Boolean
+    all_cljonic_collections_and_producers_admitted: Boolean
+    stride_uses_repeat_integer_admission: Boolean
+    nonpositive_stride_normalizes_before_unsigned_conversion: Boolean
+    result_is_independently_owning_vector_of_source_elements: Boolean
+    collection_result_capacity_is_declared_capacity: Boolean
+    producer_result_capacity_is_observation_cap: Boolean
+    capacity_is_saturated_at_collection_maximum: Boolean
+    runtime_stride_does_not_change_result_type_or_capacity: Boolean
+    original_window_is_bounded_by_source_count_capacity_and_endpoint: Boolean
+    zero_based_offsets_begin_at_first_observed_element: Boolean
+    result_uses_every_stride_offset: Boolean
+    unit_stride_returns_complete_observation_window: Boolean
+    nonpositive_zero_capacity_and_empty_source_return_empty: Boolean
+    original_window_is_traversed_once: Boolean
+    no_advance_past_window_bound_or_actual_endpoint: Boolean
+    repeatedly_callback_once_per_visited_value: Boolean
+    iterate_steps_only_between_visited_values: Boolean
+    source_and_callback_state_preserved: Boolean
+    referenced_or_static_callback_state_remains_shared: Boolean
+    map_set_order_semantically_unordered: Boolean
+    queue_fifo_string_characters_and_map_entries_preserved: Boolean
+    nothrow_storage_without_additional_comparison_gate: Boolean
+    no_nested_result_absence_sentinel_status_or_preflight: Boolean
+    invalid_strides_sources_and_arities_have_targeted_diagnostics: Boolean
+    constexpr_noexcept_no_heap_no_rtti_nonmutating: Boolean
+
+    invariant MinimumArityIsTwo { this.minimum_arity = 2 }
+    invariant MaximumArityIsTwo { this.maximum_arity = 2 }
+    invariant StrideIsFirstAndSourceIsSecond { this.stride_is_first_and_source_is_second = true }
+    invariant AllCljonicCollectionsAndProducersAdmitted { this.all_cljonic_collections_and_producers_admitted = true }
+    invariant StrideUsesRepeatIntegerAdmission { this.stride_uses_repeat_integer_admission = true }
+    invariant NonpositiveStrideNormalizesBeforeUnsignedConversion { this.nonpositive_stride_normalizes_before_unsigned_conversion = true }
+    invariant ResultIsIndependentlyOwningVectorOfSourceElements { this.result_is_independently_owning_vector_of_source_elements = true }
+    invariant CollectionResultCapacityIsDeclaredCapacity { this.collection_result_capacity_is_declared_capacity = true }
+    invariant ProducerResultCapacityIsObservationCap { this.producer_result_capacity_is_observation_cap = true }
+    invariant CapacityIsSaturatedAtCollectionMaximum { this.capacity_is_saturated_at_collection_maximum = true }
+    invariant RuntimeStrideDoesNotChangeResultTypeOrCapacity { this.runtime_stride_does_not_change_result_type_or_capacity = true }
+    invariant OriginalWindowIsBoundedBySourceCountCapacityAndEndpoint { this.original_window_is_bounded_by_source_count_capacity_and_endpoint = true }
+    invariant ZeroBasedOffsetsBeginAtFirstObservedElement { this.zero_based_offsets_begin_at_first_observed_element = true }
+    invariant ResultUsesEveryStrideOffset { this.result_uses_every_stride_offset = true }
+    invariant UnitStrideReturnsCompleteObservationWindow { this.unit_stride_returns_complete_observation_window = true }
+    invariant NonpositiveZeroCapacityAndEmptySourceReturnEmpty { this.nonpositive_zero_capacity_and_empty_source_return_empty = true }
+    invariant OriginalWindowIsTraversedOnce { this.original_window_is_traversed_once = true }
+    invariant NoAdvancePastWindowBoundOrActualEndpoint { this.no_advance_past_window_bound_or_actual_endpoint = true }
+    invariant RepeatedlyCallbackOncePerVisitedValue { this.repeatedly_callback_once_per_visited_value = true }
+    invariant IterateStepsOnlyBetweenVisitedValues { this.iterate_steps_only_between_visited_values = true }
+    invariant SourceAndCallbackStatePreserved { this.source_and_callback_state_preserved = true }
+    invariant ReferencedOrStaticCallbackStateRemainsShared { this.referenced_or_static_callback_state_remains_shared = true }
+    invariant MapSetOrderSemanticallyUnordered { this.map_set_order_semantically_unordered = true }
+    invariant QueueFifoStringCharactersAndMapEntriesPreserved { this.queue_fifo_string_characters_and_map_entries_preserved = true }
+    invariant NothrowStorageWithoutAdditionalComparisonGate { this.nothrow_storage_without_additional_comparison_gate = true }
+    invariant NoNestedResultAbsenceSentinelStatusOrPreflight { this.no_nested_result_absence_sentinel_status_or_preflight = true }
+    invariant InvalidStridesSourcesAndAritiesHaveTargetedDiagnostics { this.invalid_strides_sources_and_arities_have_targeted_diagnostics = true }
+    invariant ConstexprNoexceptNoHeapNoRttiNonmutating { this.constexpr_noexcept_no_heap_no_rtti_nonmutating = true }
+}
+
+actor TakeNthOperator { identified_by: TakeNth }
