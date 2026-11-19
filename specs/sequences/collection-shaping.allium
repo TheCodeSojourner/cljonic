@@ -68,32 +68,6 @@ entity CollectionShapingTraversalPolicy {
     }
 }
 
-entity DropLast {
-    minimum_arity: Integer
-    maximum_arity: Integer
-    count_argument_position: Integer
-    source_argument_position: Integer
-    removes_final_requested_count: Boolean
-    returns_bounded_result: Boolean
-    preserves_source_order: Boolean
-    result_is_bounded_owning_collection: Boolean
-    result_capacity_is_source_capacity_bound: Boolean
-    failure_policy_is_typed: Boolean
-    preserves_input: Boolean
-
-    invariant MinimumArityIsTwo { this.minimum_arity = 2 }
-    invariant MaximumArityIsTwo { this.maximum_arity = 2 }
-    invariant CountIsFirstArgument { this.count_argument_position = 1 }
-    invariant SourceIsSecondArgument { this.source_argument_position = 2 }
-    invariant FinalCountRemovalIsDeclared { this.removes_final_requested_count = true }
-    invariant ReturnsBoundedResult { this.returns_bounded_result = true }
-    invariant SourceOrderIsPreserved { this.preserves_source_order = true }
-    invariant ResultIsBoundedOwningCollection { this.result_is_bounded_owning_collection = true }
-    invariant ResultCapacityIsSourceCapacityBound { this.result_capacity_is_source_capacity_bound = true }
-    invariant FailurePolicyIsTyped { this.failure_policy_is_typed = true }
-    invariant InputIsPreserved { this.preserves_input = true }
-}
-
 entity Keep {
     minimum_arity: Integer
     maximum_arity: Integer
