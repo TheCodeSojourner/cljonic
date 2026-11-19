@@ -1,5 +1,30 @@
 ## Current Session State
 
+- last_session_id: 5fac2e25-0764-4f3c-9fe7-c00e5ab57729
+- current_timestamp: 2026-11-19T14:26:56-07:00
+- session_complete: true
+- recover: The `butlast` API implementation and documentation are committed on branch `butlast`; only this Mementum closeout remains.
+- task: Implemented `butlast(source)` end-to-end across requirement, architecture, vocabulary, Allium, modular/single-header code, tests, no-heap probes, traceability, documentation, and coverage.
+- questions:
+  - No open contract question; the source domain and result semantics follow `REQ-FN-044`.
+  - The product and documentation commits are complete; only Mementum state was left to commit for closeout.
+- decisions:
+  - `REQ-FN-044` is binding for `butlast(source)`.
+  - `butlast(source)` admits all cljonic collections and supported producers, returns an independently owning source-element `Vector`, and removes only the final element of the original bounded observation window.
+  - Sources with fewer than two observable elements, zero capacity, or actual empty traversal return an empty typed `Vector` without callbacks.
+- synthesis:
+  - The dedicated spec is `specs/sequences/butlast.allium`.
+  - The implementation is `src/cljonic-butlast.hpp`, exposed through `src/cljonic-core.hpp` and `cljonic.hpp`.
+  - Focused modular/single-header tests pass 43 assertions; the full suite passes 418 tests.
+  - Allium check/analyse, no-heap, lint, complexity, documentation examples, requirements/vocabulary structure, strict traceability, and coverage pass.
+  - Coverage is 100.0%.
+  - Branch commits: `be5c8838`, `3f748ca8`, `70c0c7c1`, `3f3fdf8c`, and `f75dc3b2`.
+- next:
+  1. Select the next API operation only on explicit human direction.
+  2. Keep the terminated `/gybis-spec-weed` process inactive unless explicitly restarted.
+
+## Previous Session State (2026-11-19)
+
 - last_session_id: 3c80e263-7f07-4491-a8c1-168713fa0154
 - current_timestamp: 2026-11-19T13:34:18-07:00
 - session_complete: true
