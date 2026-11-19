@@ -1181,7 +1181,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ preserve(input ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
     ∧ classify_as(RequirementsBacked) ∧ trace_to(REQ-SEQ-010 ∧ REQ-SEQ-011 ∧ REQ-SEQ-013 ∧ REQ-SEQ-014 ∧ REQ-COLL-020F ∧ REQ-COLL-020S)
   | deferred_collection_shaping_traversal_family(x) ≡ take_nth
-    ∧ nth ∧ nthnext ∧ nthrest ∧ butlast ∧ map_indexed ∧ rseq ∧ second ∧ ffirst ∧ fnext
+    ∧ nth ∧ nthnext ∧ nthrest ∧ map_indexed ∧ rseq ∧ second ∧ ffirst ∧ fnext
     ∧ nfirst ∧ nnext ∧ some ∧ is_every ∧ not_any ∧ not_every ∧ distinct ∧ dedupe ∧ frequencies
     ∧ reductions ∧ split_at ∧ split_with ∧ mapcat ∧ interleave ∧ interpose ∧ partition ∧ partition_all
     ∧ partition_by ∧ partitionv ∧ partitionv_all ∧ group_by ∧ flatten ∧ tree_seq ∧ keep ∧ keep_indexed
