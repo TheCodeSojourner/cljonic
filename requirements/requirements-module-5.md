@@ -4,7 +4,7 @@
 
 This module records higher-order sequence transformation requirements and specifies the collection-shaping/traversal inventory. The free-function API `comp` is explicitly deferred; this does not defer the `cljonic::Map` collection type or its existing operations. The `map`, `reduce`, `filter`, `filterv`, `take`, and `drop` free functions are binding under `REQ-FN-032`, `REQ-FN-034`, `REQ-FN-035`, `REQ-FN-036`, `REQ-FN-037`, and `REQ-FN-038`; `filterv` is an alias of `filter`.
 
-The `take_while` and `drop_while` producers are active under binding `REQ-FN-039` and `REQ-FN-040`, with shared integration under `REQ-FN-041`. Each implementation was explicitly approved and independently verified; paired contract approval did not substitute for operation-level approval or verification.
+The `take_while` and `drop_while` producers are active under binding `REQ-FN-039` and `REQ-FN-040`, with shared integration under `REQ-FN-041`. The `take_last(count, source)` contract is binding under `REQ-FN-042`, but implementation, tests, and downstream specifications remain separate approval decisions. Each implementation was explicitly approved and independently verified; paired contract approval did not substitute for operation-level approval or verification.
 
 ## Deferred Higher-Order Free Functions (Non-binding)
 
@@ -163,6 +163,23 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
   ∧ ∀ lifecycle: contracts are binding but implementation approval and verification remain explicit and separate for `take_while` and `drop_while` ∧ no publication or implementation claim follows from contract approval
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-04, compound_by_design: true}
 
+λ REQ-FN-042(x).
+  ∀ `take_last(count, source)`: accepts a count followed by exactly one cljonic source (a Vector, Map, Set, Queue, or String collection, or a Range, Repeat, Cycle, Iterate, Repeatedly, TakeWhile, or DropWhile producer)
+  ∧ ∀ count: signed or unsigned integer type other than Boolean or character types, whose nonnegative type range fits `std::size_t` ∧ nonpositive counts normalize to zero before unsigned conversion ∧ positive counts are preserved without wrapping or truncation
+  ∧ ∀ result: bounded owning `Vector` with the source element type and compile-time capacity equal to the source's observable-count bound (`Collection`'s `Capacity` ∨ `Producer`'s configured observation cap), saturated at `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE` ∧ runtime count does not change the result type or capacity
+  ∧ ∀ observation window: original source traversal bounded by `source.count()` and result capacity, plus actual iterator exhaustion ∧ unbounded producers contribute the configured observation-cap window
+  ∧ ∀ result elements: up to `min(normalized count, observable window length)` elements from the end of that original window, as presented by source iteration ∧ zero or negative count yields no elements ∧ a count at least the window length yields the complete window ∧ oversized counts do not fail
+  ∧ ∀ zero count ∨ negative count ∨ zero result capacity ∨ actual empty traversal: return an empty typed Vector without beginning traversal or invoking producer callbacks
+  ∧ ∀ nonempty result: traverse the original window once ∧ never require a second producer observation or cache ∧ never advance beyond the actual endpoint or window bound
+  ∧ ∀ producer: callback timing follows its existing traversal contract ∧ Repeatedly invokes its callback once per visited value ∧ Iterate invokes its step only between visited values ∧ callback state stored by value is preserved in the source, while referenced or static callback state remains shared
+  ∧ ∀ `Map` ∨ `Set` source: `LogicalTraversalOrder` is semantically unordered ∧ `Queue` preserves FIFO order ∧ `String` yields characters ∧ `Map` yields value-semantic `MapEntry` elements
+  ∧ ∀ source element: satisfies the nothrow element storage contract ∧ no additional equality or ordering capability is required
+  ∧ ∀ result: independently owning bounded suffix with no nested result, absence sentinel, status wrapper, preflight predicate, or transducer-only arity
+  ∧ ∀ MapEntry input ∨ external C++ range ∨ non-cljonic source ∨ invalid count type ∨ wrong arity: rejected at compile time with a targeted diagnostic naming `take_last` and its supported count/source domains
+  ∧ ∀ operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ preserves the source value ∧ `NoRttiConstraint`
+  rationale: the stakeholder approved the binding `take_last(count, source)` contract on 2026-11-19 as the suffix counterpart to bounded take/drop behavior, with count-first safe count admission, source-bound owning-Vector capacity, no prepass or callback-free early empty, and producer observation limited to the original configured window
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-19, rationale_source: origin_artifact, compound_by_design: true}
+
 λ REQ-SEQ-022(x).
   ∀ context: the first-pass collection-shaping and traversal family includes bounded operations corresponding to `take`, `drop`, `take_while`, `drop_while`, `take_last`, `drop_last`, `take_nth`, `nth`, `nthnext`, `nthrest`, `butlast`, `map_indexed`, `rseq`, `second`, `ffirst`, `fnext`, `nfirst`, `nnext`, `some`, `is_every`, `not_any`, `not_every`, `distinct`, `dedupe`, `frequencies`, `reductions`, `split_at`, `split_with`, `mapcat`, `interleave`, `interpose`, `partition`, `partition_all`, `partition_by`, `partitionv`, `partitionv_all`, `group_by`, `flatten`, `tree_seq`, `keep`, `keep_indexed`, `remove`, `replace`, `mapv`, `filter`, `filterv`, `subvec`, `find`, `reduce`, `reduce_kv`, `sort`, and `sort_by`
   ∧ ∀ listed_operation: an individually named downstream behavioral specification exists before it is treated as implementation-ready
@@ -179,4 +196,4 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
 ## Traceability and Related Requirements
 
 - **Downstream Artifact**: Free-function templates for sequence shaping, slicing, filtering, mapping, grouping, and ordering.
-- **Governed REQs**: `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding), `REQ-FN-035` (binding), `REQ-FN-036` (binding alias), `REQ-FN-037` (binding), `REQ-FN-038` (binding), `REQ-FN-039` (binding, active), `REQ-FN-040` (binding, active), `REQ-FN-041` (binding integration contract), `REQ-SEQ-022`.
+- **Governed REQs**: `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding), `REQ-FN-035` (binding), `REQ-FN-036` (binding alias), `REQ-FN-037` (binding), `REQ-FN-038` (binding), `REQ-FN-039` (binding, active), `REQ-FN-040` (binding, active), `REQ-FN-041` (binding integration contract), `REQ-FN-042` (binding; implementation approval separate), `REQ-SEQ-022`.
