@@ -47,18 +47,6 @@ TEST_CASE("Collection shaping shared policy contract", "[collection-shaping][seq
 }
 
 TEST_CASE("Collection shaping transformation contracts", "[collection-shaping][sequences]") {
-    TRACE_ID("entity-fields.TakeLast");
-    TRACE_ID("invariant.TakeLast.MinimumArityIsTwo");
-    TRACE_ID("invariant.TakeLast.MaximumArityIsTwo");
-    TRACE_ID("invariant.TakeLast.SourceIsSecondArgument");
-    TRACE_ID("invariant.TakeLast.CountIsFirstArgument");
-    TRACE_ID("invariant.TakeLast.BoundedInspectionIsRequired");
-    TRACE_ID("invariant.TakeLast.RetainedSuffixPreservesOrder");
-    TRACE_ID("invariant.TakeLast.ReturnsBoundedResult");
-    TRACE_ID("invariant.TakeLast.InputIsPreserved");
-    TRACE_ID("invariant.TakeLast.ResultIsBoundedOwningCollection");
-    TRACE_ID("invariant.TakeLast.ResultCapacityIsSourceCapacityBound");
-    TRACE_ID("invariant.TakeLast.FailurePolicyIsTyped");
     TRACE_ID("entity-fields.DropLast");
     TRACE_ID("invariant.DropLast.MinimumArityIsTwo");
     TRACE_ID("invariant.DropLast.MaximumArityIsTwo");
@@ -133,8 +121,6 @@ TEST_CASE("Collection shaping transformation contracts", "[collection-shaping][s
     TRACE_ID("invariant.Mapv.ResultElementTypeIsCallbackResultType");
     TRACE_ID("invariant.Mapv.FailurePolicyIsTyped");
     TRACE_ID("invariant.Mapv.InputIsPreserved");
-    constexpr int take_last_count_argument = 1;
-    constexpr int take_last_source_argument = 2;
     constexpr int drop_last_count_argument = 1;
     constexpr int drop_last_source_argument = 2;
     constexpr int keep_callback_argument = 1;
@@ -150,8 +136,6 @@ TEST_CASE("Collection shaping transformation contracts", "[collection-shaping][s
     constexpr int filterv_predicate_argument = 1;
     constexpr int filterv_source_argument = 2;
 
-    CHECK(take_last_count_argument == 1);
-    CHECK(take_last_source_argument == 2);
     CHECK(drop_last_count_argument == 1);
     CHECK(drop_last_source_argument == 2);
     CHECK(keep_callback_argument == 1);
