@@ -1180,7 +1180,7 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ unsupported_input(seq) → reject_at_compile_time_with(targeted_diagnostic_naming(seq ∧ supported_domains) ∧ REQ-DIAG-009)
     ∧ preserve(input ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
     ∧ classify_as(RequirementsBacked) ∧ trace_to(REQ-SEQ-010 ∧ REQ-SEQ-011 ∧ REQ-SEQ-013 ∧ REQ-SEQ-014 ∧ REQ-COLL-020F ∧ REQ-COLL-020S)
-  | deferred_collection_shaping_traversal_family(x) ≡ take_last ∧ drop_last
+  | deferred_collection_shaping_traversal_family(x) ≡ drop_last
     ∧ take_nth ∧ nth ∧ nthnext ∧ nthrest ∧ butlast ∧ map_indexed ∧ rseq ∧ second ∧ ffirst ∧ fnext
     ∧ nfirst ∧ nnext ∧ some ∧ is_every ∧ not_any ∧ not_every ∧ distinct ∧ dedupe ∧ frequencies
     ∧ reductions ∧ split_at ∧ split_with ∧ mapcat ∧ interleave ∧ interpose ∧ partition ∧ partition_all
@@ -1354,6 +1354,29 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | invalid_count ∨ unsupported_source ∨ wrong_arity → reject_at_compile_time_with(targeted_diagnostic_naming(drop ∧ count_and_source_domains) ∧ REQ-DIAG-009)
   | preserve(input_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
   | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-038 ∧ REQ-SEQ-022)
+
+λ S2_take_last_function_contract(x). take_last(count, source) → admit(CljonicSource(source) ∧ valid_take_count(count))(x)
+  | source_element_type(x) → require(NothrowCollectionElement(source_element_type))
+  | result_capacity(source) ≡ source_bound(source) from S2_take_function_contract
+  | observation_window(source) ≡ original_traversal_bounded_by(min(count(source), result_capacity(source)) ∧ actual_iterator_endpoint)
+  | return(Vector<source_element_type, result_capacity(source)> of trailing_window(normalized_count, observation_window(source), logical_traversal(source)))
+    ∧ runtime_count_does_not_change(result_type ∧ capacity)
+    ∧ normalized_count ≤ 0 → return(typed_empty_Vector_without_beginning_traversal_or_callbacks)
+    ∧ normalized_count ≥ observation_window_count_bound → return(complete_observation_window)
+  | nonempty_result → traverse(original_window_once)
+    ∧ require(iterator_endpoint_check) ∧ ¬require(second_observation_or_cache)
+    ∧ ¬advance_past(actual_endpoint_or_window_bound)
+    ∧ Repeatedly → invoke(callback once_per_visited_value)
+    ∧ Iterate → invoke(step only_between_visited_values)
+    ∧ preserve(value_held_callback_state) ∧ referenced_or_static_callback_state_remains_shared
+  | Map_source → yield(MapEntry_values) ∧ String_source → yield(characters) ∧ Queue_source → preserve(FIFO_order)
+  | Map_source ∨ Set_source → preserve(semantically_unordered_traversal)
+  | result(x) → independently_owning_bounded_suffix
+    ∧ ¬require(additional_equality_or_ordering_capability)
+    ∧ ¬∃(nested_result ∨ absence_sentinel ∨ status_wrapper ∨ preflight)
+  | invalid_count ∨ unsupported_source ∨ wrong_arity → reject_at_compile_time_with(targeted_diagnostic_naming(take_last ∧ count_and_source_domains) ∧ REQ-DIAG-009)
+  | preserve(input_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
+  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-042 ∧ REQ-SEQ-022)
 
 λ S2_predicate_producer_contract(x). TakeWhile(x) ∨ DropWhile(x)
   | factory(predicate, source) → require(CljonicSource(source) ∧ NothrowCollectionElement(source_element_type)
