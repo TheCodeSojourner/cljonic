@@ -86,7 +86,7 @@
  *   replace, replicate, reset, reset_vals, \ref Rest "rest", rseq
  * - second, select_keys, \ref Seq "seq", some, some_fn, sort, sort_by, split_at, split_with, str, \ref StringFactory "string",
  *   \ref Sub "sub", subvec, swap, swap_vals
- * - \ref Take "take", take_last, take_nth, \ref TakeWhile "take_while", \ref ExplicitConversions "to",
+ * - \ref Take "take", \ref TakeLast "take_last", take_nth, \ref TakeWhile "take_while", \ref ExplicitConversions "to",
  *   \ref ExplicitConversions "to_byte", \ref ExplicitConversions "to_char", \ref ExplicitConversions "to_count",
  *   \ref ExplicitConversions "to_double", \ref ExplicitConversions "to_float", \ref ExplicitConversions "to_index",
  *   \ref ExplicitConversions "to_int", \ref ExplicitConversions "to_long", \ref ExplicitConversions "to_long_double",
@@ -182,6 +182,7 @@
 #include <cljonic-reduce.hpp>
 #include <cljonic-rest.hpp>
 #include <cljonic-seq.hpp>
+#include <cljonic-take-last.hpp>
 #include <cljonic-take.hpp>
 
 namespace cljonic::core {}
