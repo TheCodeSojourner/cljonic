@@ -7,7 +7,10 @@
 -- character, byte, enum, pointer, and user-defined operands are rejected.
 -- Checked failures return the value-initialized result type at runtime and
 -- fail required constant evaluation. Preflights exactly predict operation
--- success without side effects.
+-- success without side effects. The matching preflights are `can_add`,
+-- `can_sub`, `can_mult`, `can_div`, `can_quot`, `can_rem`, `can_mod`,
+-- `can_inc`, `can_dec`, `can_negate`, `can_bit_shift_left`,
+-- `can_bit_shift_right`, and `can_unsigned_bit_shift_right`.
 
 entity CheckedArithmetic {
     operand_domain_is_closed_and_lossless: Boolean
