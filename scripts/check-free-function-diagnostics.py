@@ -41,6 +41,7 @@ REGISTRY: dict[str, str] = {
     "cljonic-filter.hpp": "fallback",
     "cljonic-take.hpp": "fallback",
     "cljonic-take-last.hpp": "fallback",
+    "cljonic-take-nth.hpp": "fallback",
     "cljonic-drop.hpp": "fallback",
     "cljonic-drop-last.hpp": "fallback",
     "cljonic-not-equal.hpp": "fallback",
