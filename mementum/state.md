@@ -1,42 +1,36 @@
 ## Current Session State
 
-- last_session_id: 9239d7e6-fcde-41bf-b05f-827a39f4f6b3
-- current_timestamp: 2026-11-18T16:23:33-07:00
+- last_session_id: 1da99a92-cc0c-4738-9dad-1ca091771987
+- current_timestamp: 2026-11-19T10:24:07-07:00
 - session_complete: true
-- recover: Review the complete, uncommitted numeric-convenience propagation before committing the product work. Requirements, downstream implementation/spec propagation, Doxygen API documentation, runnable samples, and no-heap probe coverage are complete. The next human action is to review and commit the product diff in the desired grouping; do not resume the terminated `/gybis-spec-weed` audit unless explicitly commanded.
-- task: Completed the Clojure-compatible `add`, `sub`, `mult`, and floating unary `div` upserts, documented each implemented numeric free-function API with its own Doxygen anchor and runnable sample, corrected Doxygen comment/declaration attachment, and added dedicated no-heap arithmetic coverage for both modular and single-header builds.
+- recover: The checked-arithmetic API naming convention now mirrors operation names: `can_sub` pairs with `sub`, and `can_mult` pairs with `mult`. The propagation is implemented across requirements, architecture, Allium checked-arithmetic behavior commentary, source, the generated single header, tests, no-heap probes, and Doxygen. The product diff remains uncommitted and should be reviewed and committed in the human's preferred grouping.
+- task: Renamed arithmetic preflights `can_subtract` → `can_sub` and `can_multiply` → `can_mult`; clarified checked-arithmetic Doxygen fallback values and terminology; regenerated `cljonic.hpp` and docs; verified modular/single-header tests, no-heap gates, Doxygen generation, the standalone header probe, and Allium/spec traceability.
 - questions:
-  - No open semantic questions for approved `add`, `sub`, `mult`, or `div` upserts.
-  - Integer unary `div` remains rejected; unary floating `div(x)` returns `1/x`.
-  - The product work remains uncommitted. The human must choose commit grouping and create or authorize the product commits.
+  - No open naming or arithmetic semantic questions.
+  - The `/gybis-spec-weed` process remains explicitly terminated and must not resume without a new human command.
+  - Product changes remain uncommitted.
 - decisions:
-  - Requirements remain binding and requirements/ is not modified by termination work.
-  - Integer operands admit a statically selected lossless common built-in integer type or reject; no lossy conversion or C++ usual mixed signed/unsigned conversion is permitted.
-  - Same-type binary floating arithmetic is admitted with inherent operation rounding; mixed floating widths, nonfinite inputs/results, overflow, and nonzero underflow to zero are rejected by the checked contract.
-  - Compile-time-known checked failures fail constant evaluation. Runtime failures return `result_type{}` and leave operands unchanged; preflight returns `false`.
-  - `div`/`quot` truncate toward zero, `rem` has the dividend sign, and `mod` has the divisor sign.
-  - Each implemented numeric free API gets its own Doxygen anchor/comment block and runnable sample; `CheckedArithmetic` remains the shared contract reference.
-  - `inc`/`can_inc` and `dec`/`can_dec` use explicit declarations because macro-adjacent Doxygen comments attach ambiguously.
-  - Every public behavior change requires dedicated no-heap probe coverage in modular and single-header profiles.
+  - Preflight names mirror their paired operation names: `can_add`, `can_sub`, `can_mult`, `can_div`.
+  - Runtime arithmetic failures return the numeric value-initialized fallback, `0`, and leave operands unchanged.
+  - Individual API documentation repeats local runtime-failure behavior while retaining references to the shared `CheckedArithmetic` contract.
+  - `numerator` and `denominator` replace `dividend` and `divisor` in arithmetic documentation and implementation identifiers.
+  - `spec-to-code-traceability/spec-to-code-obligation-ids.snapshot.txt` remains unchanged because Allium comments do not create or change obligation IDs.
 - synthesis:
-  - Canonical arithmetic terms remain `CheckedArithmeticOperation`, `ArithmeticOperandDomain`, `ArithmeticResultType`, and `IntegerDivisionSemantics`.
-  - The checked-arithmetic Allium specification and traceability cover the approved add/sub/mult/div surfaces.
-  - Individual Doxygen anchors cover 35 implemented numeric API/preflight names; every API anchor occurs exactly once in generated namespace HTML.
-  - The docs-example gate compiles 88 samples. `inc`/`dec` must use explicit declarations rather than macro-generated comment-adjacent declarations because Doxygen attachment is declaration-sensitive.
-  - The no-heap arithmetic probe covers arity upserts, preflights, division/remainder/modulus, integer steps, negate, bitwise operations, and shifts in both header profiles.
+  - The formal arithmetic behavior remains consolidated in `specs/capabilities/checked-arithmetic.allium`; individual `add`, `sub`, `mult`, and `div` APIs do not have separate Allium entity files.
+  - The Allium behavior spec now explicitly lists `can_sub` and `can_mult` among its matching arithmetic preflights.
+  - The project-wide stale-name search found no `can_subtract` or `can_multiply` references in source, tests, requirements, architecture, vocabulary, specs, generated header, or docs.
 - next:
-  1. Review the uncommitted diff across requirements, vocabulary, architecture, specs, source, tests, no-heap probes, traceability, scripts, amalgamated header, Doxygen comments/samples, and generated `docs/`.
-  2. Commit or split the product propagation. Do not include this mementum-only termination commit in that product grouping.
-  3. Future numeric work should distinguish min/max/key selection and remaining bitwise upserts from already approved arithmetic surfaces before adding behavior.
-  4. Do not resume the historical `/gybis-spec-weed` audit without an explicit new human command.
+  1. Review and commit or split the uncommitted product propagation.
+  2. Keep `can_sub` and `can_mult` as the canonical public names in future arithmetic work.
+  3. Do not resume `/gybis-spec-weed` or change the obligation snapshot without an explicit human direction.
 - validation:
-  - `make test`: passed for modular and single-header suites.
-  - `make no-heap`: passed; dedicated arithmetic probe exercises new arities and all numeric/bitwise families.
-  - `make docs`: passed with zero Doxygen warnings.
-  - `make docs-examples`: 88 samples compiled.
-  - `make lint-check` and `make core-cheatsheet-format`: passed.
-  - `traceability-spec-to-code`: passed.
-  - `git diff --check`: passed after generated HTML whitespace normalization.
+  - `make test`: 402 tests passed.
+  - `make no-heap`: passed.
+  - `make docs`: passed.
+  - `make cljonic-test`: passed.
+  - `allium check specs/capabilities/checked-arithmetic.allium`: passed with no diagnostics or findings.
+  - `make traceability-spec-to-code`: passed.
+  - `git diff --check -- . ':(exclude)docs'`: passed.
 
 ## Previous Session State (2026-11-16)
 
