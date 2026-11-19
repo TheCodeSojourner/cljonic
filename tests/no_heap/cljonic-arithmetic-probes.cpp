@@ -12,8 +12,7 @@ namespace cljonic::no_heap::probes {
     const bool arities = add<int>() == 0 && add(1, 2, 3) == 6 && sub(7) == -7 && sub(10, 3, 2) == 5 &&
                          mult<int>() == 1 && mult(2, 3, 4) == 24 && div(2.0) == 0.5 && div(24, 3, 2) == 4;
 
-    const bool preflights =
-        can_add(1, 2, 3) && can_subtract(10, 3, 2) && can_multiply(2, 3, 4) && can_div(24.0, 3.0, 2.0);
+    const bool preflights = can_add(1, 2, 3) && can_sub(10, 3, 2) && can_mult(2, 3, 4) && can_div(24.0, 3.0, 2.0);
 
     const bool division =
         quot(-7, 3) == -2 && rem(-7, 3) == -1 && mod(-7, 3) == 2 && can_quot(-7, 3) && can_rem(-7, 3) && can_mod(-7, 3);

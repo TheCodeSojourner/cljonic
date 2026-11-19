@@ -77,12 +77,12 @@ TEST_CASE("Sub provides Clojure-compatible unary binary and variadic arities", "
     TRACE_ID("invariant.CheckedArithmetic.ResultTypeIsStaticAndLossless");
     TRACE_ID("invariant.CheckedArithmetic.OverflowAndUnderflowAreChecked");
 
-    using cljonic::core::can_subtract;
+    using cljonic::core::can_sub;
     using cljonic::core::sub;
 
     STATIC_REQUIRE(sub(7) == -7);
     STATIC_REQUIRE(sub(-7) == 7);
-    STATIC_REQUIRE_FALSE(can_subtract(std::numeric_limits<int>::lowest()));
+    STATIC_REQUIRE_FALSE(can_sub(std::numeric_limits<int>::lowest()));
     REQUIRE(sub(std::numeric_limits<int>::lowest()) == 0);
 
     STATIC_REQUIRE(sub(10, 3) == 7);
@@ -92,14 +92,14 @@ TEST_CASE("Sub provides Clojure-compatible unary binary and variadic arities", "
     STATIC_REQUIRE(sub(10.0, 3.0, 2.0) == 5.0);
     STATIC_REQUIRE(std::same_as<decltype(sub(10.0, 3.0, 2.0)), double>);
 
-    STATIC_REQUIRE(can_subtract(7));
-    STATIC_REQUIRE(can_subtract(10, 3));
-    STATIC_REQUIRE(can_subtract(10, 3, 2));
-    STATIC_REQUIRE(can_subtract(short{10}, int{3}, short{2}));
-    STATIC_REQUIRE(can_subtract(10.0, 3.0, 2.0));
-    STATIC_REQUIRE_FALSE(can_subtract(std::numeric_limits<int>::max(), -1, -1));
+    STATIC_REQUIRE(can_sub(7));
+    STATIC_REQUIRE(can_sub(10, 3));
+    STATIC_REQUIRE(can_sub(10, 3, 2));
+    STATIC_REQUIRE(can_sub(short{10}, int{3}, short{2}));
+    STATIC_REQUIRE(can_sub(10.0, 3.0, 2.0));
+    STATIC_REQUIRE_FALSE(can_sub(std::numeric_limits<int>::max(), -1, -1));
     REQUIRE(sub(std::numeric_limits<int>::lowest(), 1) == 0);
-    REQUIRE_FALSE(can_subtract(std::numeric_limits<double>::infinity(), 1.0, 1.0));
+    REQUIRE_FALSE(can_sub(std::numeric_limits<double>::infinity(), 1.0, 1.0));
     REQUIRE(sub(std::numeric_limits<double>::infinity(), 1.0, 1.0) == 0.0);
 }
 
@@ -110,7 +110,7 @@ TEST_CASE("Mult provides Clojure-compatible unary binary and variadic arities", 
     TRACE_ID("invariant.CheckedArithmetic.ResultTypeIsStaticAndLossless");
     TRACE_ID("invariant.CheckedArithmetic.OverflowAndUnderflowAreChecked");
 
-    using cljonic::core::can_multiply;
+    using cljonic::core::can_mult;
     using cljonic::core::mult;
 
     STATIC_REQUIRE(std::same_as<decltype(mult<int>()), int>);
@@ -125,16 +125,16 @@ TEST_CASE("Mult provides Clojure-compatible unary binary and variadic arities", 
     STATIC_REQUIRE(mult(2.0, 3.0, 4.0) == 24.0);
     STATIC_REQUIRE(std::same_as<decltype(mult(2.0, 3.0, 4.0)), double>);
 
-    STATIC_REQUIRE(can_multiply<int>());
-    STATIC_REQUIRE(can_multiply(7));
-    STATIC_REQUIRE(can_multiply(2, 3));
-    STATIC_REQUIRE(can_multiply(2, 3, 4));
-    STATIC_REQUIRE(can_multiply(short{2}, int{3}, short{4}));
-    STATIC_REQUIRE(can_multiply(2.0, 3.0, 4.0));
-    STATIC_REQUIRE_FALSE(can_multiply(std::numeric_limits<int>::max(), 2));
-    STATIC_REQUIRE_FALSE(can_multiply(std::numeric_limits<int>::max(), 2, 2));
+    STATIC_REQUIRE(can_mult<int>());
+    STATIC_REQUIRE(can_mult(7));
+    STATIC_REQUIRE(can_mult(2, 3));
+    STATIC_REQUIRE(can_mult(2, 3, 4));
+    STATIC_REQUIRE(can_mult(short{2}, int{3}, short{4}));
+    STATIC_REQUIRE(can_mult(2.0, 3.0, 4.0));
+    STATIC_REQUIRE_FALSE(can_mult(std::numeric_limits<int>::max(), 2));
+    STATIC_REQUIRE_FALSE(can_mult(std::numeric_limits<int>::max(), 2, 2));
     REQUIRE(mult(std::numeric_limits<int>::max(), 2) == 0);
-    REQUIRE_FALSE(can_multiply(std::numeric_limits<double>::infinity(), 1.0));
+    REQUIRE_FALSE(can_mult(std::numeric_limits<double>::infinity(), 1.0));
     REQUIRE(mult(std::numeric_limits<double>::infinity(), 1.0) == 0.0);
 }
 
@@ -176,9 +176,9 @@ TEST_CASE("Checked integer arithmetic predicts overflow and preserves its fallba
     using cljonic::core::can_add;
     using cljonic::core::can_dec;
     using cljonic::core::can_inc;
-    using cljonic::core::can_multiply;
+    using cljonic::core::can_mult;
     using cljonic::core::can_negate;
-    using cljonic::core::can_subtract;
+    using cljonic::core::can_sub;
     using cljonic::core::dec;
     using cljonic::core::inc;
     using cljonic::core::mult;
@@ -188,8 +188,8 @@ TEST_CASE("Checked integer arithmetic predicts overflow and preserves its fallba
     STATIC_REQUIRE(can_add(2, 3));
     STATIC_REQUIRE(add(2, 3) == 5);
     STATIC_REQUIRE_FALSE(can_add(std::numeric_limits<int>::max(), 1));
-    STATIC_REQUIRE_FALSE(can_subtract(std::numeric_limits<int>::lowest(), 1));
-    STATIC_REQUIRE_FALSE(can_multiply(std::numeric_limits<int>::max(), 2));
+    STATIC_REQUIRE_FALSE(can_sub(std::numeric_limits<int>::lowest(), 1));
+    STATIC_REQUIRE_FALSE(can_mult(std::numeric_limits<int>::max(), 2));
     REQUIRE(add(std::numeric_limits<int>::max(), 1) == 0);
     REQUIRE(sub(std::numeric_limits<int>::lowest(), 1) == 0);
     REQUIRE(mult(std::numeric_limits<int>::max(), 2) == 0);
@@ -249,7 +249,7 @@ TEST_CASE("Floating arithmetic rejects nonfinite overflow and underflow results"
     using cljonic::core::add;
     using cljonic::core::can_add;
     using cljonic::core::can_div;
-    using cljonic::core::can_multiply;
+    using cljonic::core::can_mult;
     using cljonic::core::div;
     using cljonic::core::mult;
 
@@ -257,7 +257,7 @@ TEST_CASE("Floating arithmetic rejects nonfinite overflow and underflow results"
     STATIC_REQUIRE(can_add(1.5, 2.5));
     STATIC_REQUIRE_FALSE(can_add(std::numeric_limits<double>::infinity(), 1.0));
     volatile double maximum = std::numeric_limits<double>::max();
-    REQUIRE_FALSE(can_multiply(maximum, 2.0));
+    REQUIRE_FALSE(can_mult(maximum, 2.0));
     STATIC_REQUIRE_FALSE(can_div(1.0, 0.0));
     REQUIRE(add(std::numeric_limits<double>::infinity(), 1.0) == 0.0);
     REQUIRE(mult(std::numeric_limits<double>::max(), 2.0) == 0.0);
@@ -265,7 +265,7 @@ TEST_CASE("Floating arithmetic rejects nonfinite overflow and underflow results"
 
     if constexpr (std::numeric_limits<double>::has_denorm != std::denorm_absent) {
         constexpr double tiny = std::numeric_limits<double>::denorm_min();
-        STATIC_REQUIRE_FALSE(can_multiply(tiny, 0.5));
+        STATIC_REQUIRE_FALSE(can_mult(tiny, 0.5));
         REQUIRE(mult(tiny, 0.5) == 0.0);
         STATIC_REQUIRE(can_div(tiny, tiny));
         STATIC_REQUIRE(div(tiny, tiny) == 1.0);
