@@ -50,5 +50,6 @@ var searchData=
   ['cljonic_2dreduce_2ehpp_47',['cljonic-reduce.hpp',['../cljonic-reduce_8hpp.html',1,'']]],
   ['cljonic_2drest_2ehpp_48',['cljonic-rest.hpp',['../cljonic-rest_8hpp.html',1,'']]],
   ['cljonic_2dseq_2ehpp_49',['cljonic-seq.hpp',['../cljonic-seq_8hpp.html',1,'']]],
-  ['cljonic_2dtake_2ehpp_50',['cljonic-take.hpp',['../cljonic-take_8hpp.html',1,'']]]
+  ['cljonic_2dtake_2dlast_2ehpp_50',['cljonic-take-last.hpp',['../cljonic-take-last_8hpp.html',1,'']]],
+  ['cljonic_2dtake_2ehpp_51',['cljonic-take.hpp',['../cljonic-take_8hpp.html',1,'']]]
 ];
