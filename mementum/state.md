@@ -1,36 +1,39 @@
 ## Current Session State
 
-- last_session_id: 1da99a92-cc0c-4738-9dad-1ca091771987
-- current_timestamp: 2026-11-19T10:24:07-07:00
+- last_session_id: 0f6d0129-72df-4f09-ad61-cc1e046f8b16
+- current_timestamp: 2026-11-19T12:03:38-07:00
 - session_complete: true
-- recover: The checked-arithmetic API naming convention now mirrors operation names: `can_sub` pairs with `sub`, and `can_mult` pairs with `mult`. The propagation is implemented across requirements, architecture, Allium checked-arithmetic behavior commentary, source, the generated single header, tests, no-heap probes, and Doxygen. The product diff remains uncommitted and should be reviewed and committed in the human's preferred grouping.
-- task: Renamed arithmetic preflights `can_subtract` → `can_sub` and `can_multiply` → `can_mult`; clarified checked-arithmetic Doxygen fallback values and terminology; regenerated `cljonic.hpp` and docs; verified modular/single-header tests, no-heap gates, Doxygen generation, the standalone header probe, and Allium/spec traceability.
+- recover: `take_last(count, source)` is implemented and committed as an end-to-end bounded collection-shaping API. The contract is in `REQ-FN-042`, with architecture, vocabulary, a dedicated Allium spec, modular/single-header implementation, ordinary tests, no-heap probes, traceability, generated umbrella-header docs, and Doxygen publication. The latest product/doc commits are `959b928f`, `fd698f1a`, and `d2e5fdde`; this `/gybis-fini` closeout writes only Mementum state.
+- task: Elicited `take_last` from requirement to implementation, replaced its deferred placeholder, clarified traversal-oriented suffix wording, added runtime Doxygen examples, resolved the complexity gate, and added dedicated modular/single-header no-heap probe coverage.
 - questions:
-  - No open naming or arithmetic semantic questions.
+  - No open `take_last` contract or implementation questions.
   - The `/gybis-spec-weed` process remains explicitly terminated and must not resume without a new human command.
-  - Product changes remain uncommitted.
+  - No product or documentation changes remain uncommitted.
 - decisions:
-  - Preflight names mirror their paired operation names: `can_add`, `can_sub`, `can_mult`, `can_div`.
-  - Runtime arithmetic failures return the numeric value-initialized fallback, `0`, and leave operands unchanged.
-  - Individual API documentation repeats local runtime-failure behavior while retaining references to the shared `CheckedArithmetic` contract.
-  - `numerator` and `denominator` replace `dividend` and `divisor` in arithmetic documentation and implementation identifiers.
-  - `spec-to-code-traceability/spec-to-code-obligation-ids.snapshot.txt` remains unchanged because Allium comments do not create or change obligation IDs.
+  - `take_last(count, source)` is count-first and admits the same cljonic source domain as `take`/`drop`.
+  - It returns up to the normalized count from the end of the original bounded logical traversal window, as presented by iteration.
+  - Map and Set logical traversal order remains semantically unordered.
+  - Zero, negative, zero-capacity, and actual-empty cases return an empty typed Vector without traversal or callbacks.
+  - Oversized counts return the complete original observation window.
+  - Public and formal wording avoids implying physical storage order.
 - synthesis:
-  - The formal arithmetic behavior remains consolidated in `specs/capabilities/checked-arithmetic.allium`; individual `add`, `sub`, `mult`, and `div` APIs do not have separate Allium entity files.
-  - The Allium behavior spec now explicitly lists `can_sub` and `can_mult` among its matching arithmetic preflights.
-  - The project-wide stale-name search found no `can_subtract` or `can_multiply` references in source, tests, requirements, architecture, vocabulary, specs, generated header, or docs.
+  - `REQ-FN-042` is binding and separate downstream implementation approval is complete.
+  - The dedicated spec is `specs/sequences/take-last.allium`.
+  - The implementation uses bounded source-window traversal helpers to keep `take_last` below the complexity threshold.
+  - The no-heap suite now has a dedicated TakeLast probe for collections, producers, callbacks, state preservation, and empty/oversized boundaries.
 - next:
-  1. Review and commit or split the uncommitted product propagation.
-  2. Keep `can_sub` and `can_mult` as the canonical public names in future arithmetic work.
+  1. Select the next remaining API work only on explicit human direction.
+  2. Keep the traversal-oriented TakeLast wording canonical in requirements, vocabulary, architecture, specs, tests, and Doxygen.
   3. Do not resume `/gybis-spec-weed` or change the obligation snapshot without an explicit human direction.
 - validation:
-  - `make test`: 402 tests passed.
-  - `make no-heap`: passed.
-  - `make docs`: passed.
-  - `make cljonic-test`: passed.
-  - `allium check specs/capabilities/checked-arithmetic.allium`: passed with no diagnostics or findings.
+  - `make test`: 408/408 tests passed.
+  - Focused TakeLast modular/single-header tests: 44 assertions passed in both builds.
+  - `make complexity-cli`: passed.
+  - `make no-heap`: passed for modular and single-header probes.
+  - `make docs` and `make docs-examples`: passed; 89 documentation examples compiled.
+  - Allium check/analyse for `take-last.allium`: passed with no diagnostics or findings.
   - `make traceability-spec-to-code`: passed.
-  - `git diff --check -- . ':(exclude)docs'`: passed.
+  - `make requirements-structure vocabulary-structure`: passed.
 
 ## Previous Session State (2026-11-16)
 
