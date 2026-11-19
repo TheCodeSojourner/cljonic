@@ -262,7 +262,7 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
 
 λ REQ-NUM-015(x).
   ∀ fixed_width_arithmetic: checked behavior by default
-  ∧ ∀ runtime arithmetic operation: provides corresponding preflight predicates such as `can_add`, `can_subtract`, and `can_multiply` ∧ when the predicate is false, the operation returns its documented default ∧ leaves its inputs unchanged
+  ∧ ∀ runtime arithmetic operation: provides corresponding preflight predicates such as `can_add`, `can_sub`, and `can_mult` ∧ when the predicate is false, the operation returns its documented default ∧ leaves its inputs unchanged
   ∧ ∀ compile_time_known arithmetic overflow: rejected during constant evaluation
   {source: stakeholder_decided, decided_by: original_spec_author}
 
@@ -316,7 +316,7 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
 
 λ REQ-NUM-015H(x).
   ∀ runtime arithmetic operation with a defined checked_failure condition: provides the corresponding preflight ∧ accepted types and values are evaluated under the same contract
-  ∧ checked_preflight_domain: `can_add` for every admitted `add` arity ∨ `can_subtract` for every admitted `sub` arity ∨ `can_multiply` for every admitted `mult` arity ∨ `can_div` for every admitted `div` arity ∨ `can_quot` for `quot` ∨ `can_rem` for `rem` ∨ `can_mod` for `mod` ∨ `can_inc` for `inc` ∨ `can_dec` for `dec` ∨ `can_negate` for `negate` ∨ `can_bit_shift_left` for `bit_shift_left` ∨ `can_bit_shift_right` for `bit_shift_right` ∨ `can_unsigned_bit_shift_right` for `unsigned_bit_shift_right`
+  ∧ checked_preflight_domain: `can_add` for every admitted `add` arity ∨ `can_sub` for every admitted `sub` arity ∨ `can_mult` for every admitted `mult` arity ∨ `can_div` for every admitted `div` arity ∨ `can_quot` for `quot` ∨ `can_rem` for `rem` ∨ `can_mod` for `mod` ∨ `can_inc` for `inc` ∨ `can_dec` for `dec` ∨ `can_negate` for `negate` ∨ `can_bit_shift_left` for `bit_shift_left` ∨ `can_bit_shift_right` for `bit_shift_right` ∨ `can_unsigned_bit_shift_right` for `unsigned_bit_shift_right`
   ∧ ∀ listed preflight: side-effect-free ∧ returns true exactly when its corresponding operation can produce its result without checked failure
   ∧ ∀ `compare` ∨ `min` ∨ `max` ∨ `min_key` ∨ `max_key` ∨ `is_zero` ∨ `is_positive` ∨ `is_negative` ∨ `is_even` ∨ `is_odd` ∨ `bit_not` ∨ `bit_and` ∨ `bit_or` ∨ `bit_xor` ∨ `bit_and_not` ∨ `bit_clear` ∨ `bit_set` ∨ `bit_flip` ∨ `bit_test`: ¬∃ corresponding runtime preflight required because admitted operands have no remaining operation-specific checked failure
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-17, compound_by_design: true}
@@ -342,7 +342,7 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   ∧ ∀ unary ∨ binary ∨ variadic `sub`: admits operands only under the existing checked arithmetic operand domain ∧ selects one static lossless common result type for the complete operand type list ∧ performs no value-dependent result-type selection
   ∧ ∀ unary ∨ binary ∨ variadic runtime checked_failure: leaves all operands unchanged ∧ returns the result type's value-initialized fallback
   ∧ ∀ unary ∨ binary ∨ variadic compile-time-known checked_failure: rejected during constant evaluation
-  ∧ ∀ `can_subtract`: has the same unary, binary, and variadic operand domain and arity as `sub` ∧ is side-effect-free ∧ is true exactly when `sub` can produce its result without checked failure
+  ∧ ∀ `can_sub`: has the same unary, binary, and variadic operand domain and arity as `sub` ∧ is side-effect-free ∧ is true exactly when `sub` can produce its result without checked failure
   rationale: Clojure's `-` unary negation and left-to-right variadic subtraction are represented explicitly while preserving cljonic's lossless checked arithmetic policy
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-18, rationale_source: origin_artifact, compound_by_design: true}
 
@@ -354,7 +354,7 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   ∧ ∀ binary ∨ variadic `mult`: selects one static lossless common result type for the complete operand type list ∧ performs no value-dependent result-type selection ∧ rejects the call when no supported lossless common integer type or identical supported floating type exists
   ∧ ∀ binary ∨ variadic runtime checked_failure: leaves all operands unchanged ∧ returns the result type's value-initialized fallback
   ∧ ∀ binary ∨ variadic compile-time-known checked_failure: rejected during constant evaluation
-  ∧ ∀ `can_multiply`: has the same operand domain and arity as `mult` ∧ is side-effect-free ∧ is true exactly when `mult` can produce its result without checked failure
+  ∧ ∀ `can_mult`: has the same operand domain and arity as `mult` ∧ is side-effect-free ∧ is true exactly when `mult` can produce its result without checked failure
   rationale: Clojure's `*` identity, unary forwarding, and left-to-right variadic product are represented explicitly while preserving cljonic's lossless checked arithmetic policy
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-18, rationale_source: origin_artifact, compound_by_design: true}
 
@@ -377,7 +377,7 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   {source: stakeholder_decided, decided_by: original_spec_author}
 
 λ REQ-NUM-017(x).
-  ∀ context: the first-pass numeric convenience family includes checked fixed-width arithmetic corresponding to `add`, `sub`, `mult`, `div`, `quot`, `rem`, and `mod`, with Clojure-compatible `add` arities under REQ-NUM-015I, `sub` arities under REQ-NUM-015J, `mult` arities under REQ-NUM-015K, `div` arities under REQ-NUM-015L, and matching `can_add`, `can_subtract`, `can_multiply`, and `can_div` preflights; scalar comparison and selection corresponding to `compare`, `min`, `max`, `min_key`, and `max_key`; integer-step operations corresponding to `inc`, `dec`, and `negate`; constrained numeric predicates corresponding to `is_zero`, `is_positive`, `is_negative`, `is_even`, and `is_odd`; explicit conversions corresponding to `to_byte`, `to_char`, `to_count`, `to_double`, `to_float`, `to_index`, `to_int`, `to_long`, `to_long_double`, `to_long_long`, `to_short`, `to_size`, `to_uint`, `to_ulong`, `to_ulong_long`, `to_ushort`, and `to<T>` under REQ-NUM-008; and fixed-width bitwise operations `bit_not`, `bit_and`, `bit_or`, `bit_xor`, `bit_and_not`, `bit_clear`, `bit_set`, `bit_flip`, `bit_test`, `bit_shift_left`, `bit_shift_right`, and `unsigned_bit_shift_right`
+  ∀ context: the first-pass numeric convenience family includes checked fixed-width arithmetic corresponding to `add`, `sub`, `mult`, `div`, `quot`, `rem`, and `mod`, with Clojure-compatible `add` arities under REQ-NUM-015I, `sub` arities under REQ-NUM-015J, `mult` arities under REQ-NUM-015K, `div` arities under REQ-NUM-015L, and matching `can_add`, `can_sub`, `can_mult`, and `can_div` preflights; scalar comparison and selection corresponding to `compare`, `min`, `max`, `min_key`, and `max_key`; integer-step operations corresponding to `inc`, `dec`, and `negate`; constrained numeric predicates corresponding to `is_zero`, `is_positive`, `is_negative`, `is_even`, and `is_odd`; explicit conversions corresponding to `to_byte`, `to_char`, `to_count`, `to_double`, `to_float`, `to_index`, `to_int`, `to_long`, `to_long_double`, `to_long_long`, `to_short`, `to_size`, `to_uint`, `to_ulong`, `to_ulong_long`, `to_ushort`, and `to<T>` under REQ-NUM-008; and fixed-width bitwise operations `bit_not`, `bit_and`, `bit_or`, `bit_xor`, `bit_and_not`, `bit_clear`, `bit_set`, `bit_flip`, `bit_test`, `bit_shift_left`, `bit_shift_right`, and `unsigned_bit_shift_right`
   ∧ ∀ such_operation: obeys the applicable compile-time capability, representability, overflow, division-by-zero, shift-count, floating-point, and preflight requirements
   ∧ ∀ raw floating-point value: remains excluded from operations that require the stable equality, identity, or total-order capabilities defined by this document
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-06}
@@ -406,7 +406,7 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-07, rationale_source: origin_artifact, rationale_approved_by: human}
 
 λ REQ-FN-002N(x).
-  ∀ context: the supported free-function vocabulary includes `can_add` for every admitted `add` arity, `can_subtract` for every admitted `sub` arity, `can_multiply` for every admitted `mult` arity, and `can_div` for every admitted `div` arity for checked fixed-width arithmetic preflight
+  ∀ context: the supported free-function vocabulary includes `can_add` for every admitted `add` arity, `can_sub` for every admitted `sub` arity, `can_mult` for every admitted `mult` arity, and `can_div` for every admitted `div` arity for checked fixed-width arithmetic preflight
   ∧ ∀ corresponding arithmetic function: uses the documented checked default behavior ∧ ∀ wrapping ∨ saturating alternative: uses distinct names
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-18}
 
