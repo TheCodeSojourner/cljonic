@@ -28,6 +28,7 @@ namespace cljonic::no_heap::probes {
 [[nodiscard]] auto take_probe() noexcept -> bool;
 [[nodiscard]] auto drop_probe() noexcept -> bool;
 [[nodiscard]] auto take_last_probe() noexcept -> bool;
+[[nodiscard]] auto drop_last_probe() noexcept -> bool;
 [[nodiscard]] auto take_while_probe() noexcept -> bool;
 [[nodiscard]] auto drop_while_probe() noexcept -> bool;
 [[nodiscard]] auto first_probe() noexcept -> bool;
