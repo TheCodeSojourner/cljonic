@@ -542,6 +542,8 @@ requires MaterializableSource&lt;Dest, Source&gt;</td></tr>
 <tr class="memitem:a3978410ee03a1ac6b5dc667f2a3c2ddb template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a3978410ee03a1ac6b5dc667f2a3c2ddb">copy_take_last_window</a> (const Source &amp;source, std::size_t observed_count, Window &amp;window) noexcept -&gt; void</td></tr>
 <tr class="memitem:abad08859464c54a33c7558560ce1b16c" id="r_abad08859464c54a33c7558560ce1b16c"><td class="memTemplParams" colspan="2">template&lt;typename Window, typename Result&gt; </td></tr>
 <tr class="memitem:abad08859464c54a33c7558560ce1b16c template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#abad08859464c54a33c7558560ce1b16c">copy_take_last_suffix</a> (const Window &amp;window, std::size_t requested_count, Result &amp;result) noexcept -&gt; void</td></tr>
+<tr class="memitem:a8b00c601f7a97a035b9d5877a9b93163" id="r_a8b00c601f7a97a035b9d5877a9b93163"><td class="memTemplParams" colspan="2">template&lt;typename Source, typename Result&gt; </td></tr>
+<tr class="memitem:a8b00c601f7a97a035b9d5877a9b93163 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a8b00c601f7a97a035b9d5877a9b93163">copy_take_nth_stride</a> (const Source &amp;source, std::size_t stride, Result &amp;result) noexcept -&gt; void</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -1505,6 +1507,44 @@ template&lt;typename Source, typename Window&gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="cljonic-take-last_8hpp_source.html#l00013">13</a> of file <a class="el" href="cljonic-take-last_8hpp_source.html">cljonic-take-last.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a8b00c601f7a97a035b9d5877a9b93163" name="a8b00c601f7a97a035b9d5877a9b93163"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b00c601f7a97a035b9d5877a9b93163">&#9670;&#160;</a></span>copy_take_nth_stride()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Source, typename Result&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::concepts_detail::copy_take_nth_stride </td>
+          <td>(</td>
+          <td class="paramtype">const Source &amp;</td>          <td class="paramname"><span class="paramname"><em>source</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t</td>          <td class="paramname"><span class="paramname"><em>stride</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Result &amp;</td>          <td class="paramname"><span class="paramname"><em>result</em></span>&#160;) -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-take-nth_8hpp_source.html#l00013">13</a> of file <a class="el" href="cljonic-take-nth_8hpp_source.html">cljonic-take-nth.hpp</a>.</p>
 
 </div>
 </div>
