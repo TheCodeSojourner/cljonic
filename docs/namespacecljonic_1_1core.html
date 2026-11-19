@@ -311,6 +311,15 @@ requires concepts::CljonicCollection&lt;C&gt;</td></tr>
 <tr class="memitem:afe2dbbfd7c2671abeb4d65d1229ce023" id="r_afe2dbbfd7c2671abeb4d65d1229ce023"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K1, typename V1, typename K2, typename V2, typename... Rest&gt; <br />
 requires concepts::CljonicCollection&lt;C&gt; &amp;&amp; (!<a class="el" href="namespacecljonic_1_1concepts__detail.html#a570dcc6213b05f494ff55d6be1497334">concepts_detail::all_assoc_pairs_admissible_v</a>&lt;C, K1, V1, K2, V2, Rest...&gt;)</td></tr>
 <tr class="memitem:afe2dbbfd7c2671abeb4d65d1229ce023 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#afe2dbbfd7c2671abeb4d65d1229ce023">assoc</a> (const C &amp;collection, const K1 &amp;key1, const V1 &amp;value1, const K2 &amp;key2, const V2 &amp;value2, const Rest &amp;... rest) noexcept -&gt; C</td></tr>
+<tr class="memitem:ad562923393f45db39de09a156daad07d" id="r_ad562923393f45db39de09a156daad07d"><td class="memTemplParams" colspan="2">template&lt;typename Source&gt; <br />
+requires concepts_detail::ButLastSourceArguments&lt;Source&gt;</td></tr>
+<tr class="memitem:ad562923393f45db39de09a156daad07d template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#ad562923393f45db39de09a156daad07d">butlast</a> (const Source &amp;source) noexcept -&gt; <a class="el" href="classcljonic_1_1_vector.html">Vector</a>&lt; std::ranges::range_value_t&lt; const Source &gt;, <a class="el" href="namespacecljonic_1_1concepts__detail.html#a5ac05bfee040e39ad5518f71860d60bc">concepts_detail::SourceResultCapacity</a>&lt; Source &gt; &gt;</td></tr>
+<tr class="memitem:a11408a286775d0e5c75a880f65d99e16" id="r_a11408a286775d0e5c75a880f65d99e16"><td class="memTemplParams" colspan="2">template&lt;typename Source&gt; <br />
+requires (!concepts_detail::ButLastSourceArguments&lt;Source&gt;)</td></tr>
+<tr class="memitem:a11408a286775d0e5c75a880f65d99e16 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a11408a286775d0e5c75a880f65d99e16">butlast</a> (const Source &amp;source) noexcept -&gt; void</td></tr>
+<tr class="memitem:a2552e3e965a29751dd6d156cfdf88f91" id="r_a2552e3e965a29751dd6d156cfdf88f91"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; <br />
+requires (sizeof...(Args) != 1)</td></tr>
+<tr class="memitem:a2552e3e965a29751dd6d156cfdf88f91 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a2552e3e965a29751dd6d156cfdf88f91">butlast</a> (const Args &amp;... args) noexcept -&gt; void</td></tr>
 <tr class="memitem:a1d6d0c26521719151bb4481bf0f65418" id="r_a1d6d0c26521719151bb4481bf0f65418"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K, typename V&gt; <br />
 requires concepts::AssociativeCollection&lt;C&gt; &amp;&amp; requires(const C&amp; collection, const K&amp; key, const V&amp; value) <br class="typebreak" />
 { { collection.can_assoc(key, value) } noexcept -&gt; std::same_as&lt;bool&gt;; }</td></tr>
@@ -1887,6 +1896,119 @@ requires arithmetic_detail::IntegerArithmeticPair&lt;Left, Right&gt;</div>
 
 </div>
 </div>
+<a id="a2552e3e965a29751dd6d156cfdf88f91" name="a2552e3e965a29751dd6d156cfdf88f91"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2552e3e965a29751dd6d156cfdf88f91">&#9670;&#160;</a></span>butlast() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Args&gt; <br />
+requires (sizeof...(Args) != 1)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::butlast </td>
+          <td>(</td>
+          <td class="paramtype">const Args &amp;...</td>          <td class="paramname"><span class="paramname"><em>args</em></span></td><td>)</td>
+          <td> -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-butlast_8hpp_source.html#l00104">104</a> of file <a class="el" href="cljonic-butlast_8hpp_source.html">cljonic-butlast.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ad562923393f45db39de09a156daad07d" name="ad562923393f45db39de09a156daad07d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad562923393f45db39de09a156daad07d">&#9670;&#160;</a></span>butlast() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Source&gt; <br />
+requires concepts_detail::ButLastSourceArguments&lt;Source&gt;</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::butlast </td>
+          <td>(</td>
+          <td class="paramtype">const Source &amp;</td>          <td class="paramname"><span class="paramname"><em>source</em></span></td><td>)</td>
+          <td> -&gt; <a class="el" href="classcljonic_1_1_vector.html">Vector</a>&lt; std::ranges::range_value_t&lt; const Source &gt;, <a class="el" href="namespacecljonic_1_1concepts__detail.html#a5ac05bfee040e39ad5518f71860d60bc">concepts_detail::SourceResultCapacity</a>&lt; Source &gt; &gt;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="anchor" id="ButLast"></a> The <b>butlast</b> free function removes the final element of one cljonic source's bounded observation window and returns all preceding elements as a bounded owning <a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vector</a>. Use <code>butlast(source)</code> with a <a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vector</a>, <a class="el" href="classcljonic_1_1_map.html#Map" title="Map">Map</a>, <a class="el" href="classcljonic_1_1_set.html#Set" title="Set">Set</a>, <a class="el" href="classcljonic_1_1_queue.html#Queue" title="Queue">Queue</a>, or <a class="el" href="classcljonic_1_1_string.html#String" title="String">String</a> collection, or a <a class="el" href="classcljonic_1_1_range.html#Range" title="Range">Range</a>, <a class="el" href="classcljonic_1_1_repeat.html#Repeat" title="Repeat">Repeat</a>, <a class="el" href="classcljonic_1_1_cycle.html#Cycle" title="Cycle">Cycle</a>, <a class="el" href="classcljonic_1_1_iterate.html#Iterate" title="Iterate">Iterate</a>, <a class="el" href="classcljonic_1_1_repeatedly.html#Repeatedly" title="Repeatedly">Repeatedly</a>, <a class="el" href="namespacecljonic.html#TakeWhile" title="TakeWhile">TakeWhile</a>, or <a class="el" href="namespacecljonic.html#DropWhile" title="DropWhile">DropWhile</a> producer.</p>
+<p>The result has the source element type and the source-bound result capacity. The original observation window is bounded by source count, result capacity, and actual traversal exhaustion. Sources with fewer than two observable elements and zero-capacity sources return empty typed vectors without callbacks.</p>
+<p>For <a class="el" href="classcljonic_1_1_map.html#Map" title="Map">Map</a> and <a class="el" href="classcljonic_1_1_set.html#Set" title="Set">Set</a> sources, logical traversal order is semantically unordered. <a class="el" href="classcljonic_1_1_queue.html">Queue</a> and <a class="el" href="classcljonic_1_1_string.html">String</a> order follow their collection traversal, and <a class="el" href="classcljonic_1_1_map.html">Map</a> yields value-semantic <a class="el" href="structcljonic_1_1_map_entry.html">MapEntry</a> elements.</p>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> values = <a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(1, 2, 3, 4);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> prefix = <a class="code hl_function" href="#ad562923393f45db39de09a156daad07d">butlast</a>(values);</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#ab7b1359706179af076032e9dad458516">equal</a>(prefix, <a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(1, 2, 3)));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#aefd25d10f4f6c107b858532a58ab3baf">is_empty</a>(<a class="code hl_function" href="#ad562923393f45db39de09a156daad07d">butlast</a>(<a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector&lt;int, 1&gt;</a>(1))));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#ab7b1359706179af076032e9dad458516">equal</a>(values, <a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(1, 2, 3, 4)));</div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> source = <a class="code hl_function" href="#a222b1d8ca6cab849b4c87b6b4b04f3e3">queue</a>(10, 20, 30);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> result = <a class="code hl_function" href="#ad562923393f45db39de09a156daad07d">butlast</a>(source);</div>
+<div class="line">  <span class="keywordflow">return</span> <a class="code hl_function" href="#ab7b1359706179af076032e9dad458516">equal</a>(result, <a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(10, 20)) &amp;&amp; <a class="code hl_function" href="#ab7b1359706179af076032e9dad458516">equal</a>(source, <a class="code hl_function" href="#a222b1d8ca6cab849b4c87b6b4b04f3e3">queue</a>(10, 20, 30)) ? 0</div>
+<div class="line">                                                                           : 1;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a222b1d8ca6cab849b4c87b6b4b04f3e3"><div class="ttname"><a href="#a222b1d8ca6cab849b4c87b6b4b04f3e3">cljonic::core::queue</a></div><div class="ttdeci">constexpr auto queue(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::queue_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Queue&lt; concepts_detail::queue_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-queue_8hpp_source.html#l00335">cljonic-collection-queue.hpp:335</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_ab7b1359706179af076032e9dad458516"><div class="ttname"><a href="#ab7b1359706179af076032e9dad458516">cljonic::core::equal</a></div><div class="ttdeci">constexpr auto equal(const Lhs &amp;lhs, const Rhs &amp;rhs) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-equal_8hpp_source.html#l00346">cljonic-equal.hpp:346</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_ad562923393f45db39de09a156daad07d"><div class="ttname"><a href="#ad562923393f45db39de09a156daad07d">cljonic::core::butlast</a></div><div class="ttdeci">constexpr auto butlast(const Source &amp;source) noexcept -&gt; Vector&lt; std::ranges::range_value_t&lt; const Source &gt;, concepts_detail::SourceResultCapacity&lt; Source &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-butlast_8hpp_source.html#l00073">cljonic-butlast.hpp:73</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_aefd25d10f4f6c107b858532a58ab3baf"><div class="ttname"><a href="#aefd25d10f4f6c107b858532a58ab3baf">cljonic::core::is_empty</a></div><div class="ttdeci">constexpr auto is_empty(const C &amp;collection) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-is-empty_8hpp_source.html#l00053">cljonic-is-empty.hpp:53</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-butlast_8hpp_source.html#l00073">73</a> of file <a class="el" href="cljonic-butlast_8hpp_source.html">cljonic-butlast.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a11408a286775d0e5c75a880f65d99e16" name="a11408a286775d0e5c75a880f65d99e16"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11408a286775d0e5c75a880f65d99e16">&#9670;&#160;</a></span>butlast() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Source&gt; <br />
+requires (!concepts_detail::ButLastSourceArguments&lt;Source&gt;)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::butlast </td>
+          <td>(</td>
+          <td class="paramtype">const Source &amp;</td>          <td class="paramname"><span class="paramname"><em>source</em></span></td><td>)</td>
+          <td> -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-butlast_8hpp_source.html#l00095">95</a> of file <a class="el" href="cljonic-butlast_8hpp_source.html">cljonic-butlast.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a91f4c8ca65831b085a667ef915e310ba" name="a91f4c8ca65831b085a667ef915e310ba"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a91f4c8ca65831b085a667ef915e310ba">&#9670;&#160;</a></span>can_add() <span class="overload">[1/4]</span></h2>
 
@@ -2588,7 +2710,6 @@ requires concepts::ConjableCollection&lt;C&gt;</div>
 <div class="line">  <span class="keywordflow">return</span> q_ok ? 0 : 1;</div>
 <div class="line">}</div>
 <div class="ttc" id="anamespacecljonic_1_1core_html_a193446da6568cd206c5787c201df0c4f"><div class="ttname"><a href="#a193446da6568cd206c5787c201df0c4f">cljonic::core::hash_set</a></div><div class="ttdeci">constexpr auto hash_set(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::hash_set_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Set&lt; concepts_detail::hash_set_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-set_8hpp_source.html#l00435">cljonic-collection-set.hpp:435</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_a222b1d8ca6cab849b4c87b6b4b04f3e3"><div class="ttname"><a href="#a222b1d8ca6cab849b4c87b6b4b04f3e3">cljonic::core::queue</a></div><div class="ttdeci">constexpr auto queue(Args &amp;&amp;... args) noexcept((concepts::NothrowElementConstruction&lt; concepts_detail::queue_factory_element_t&lt; RequestedElementType, Args... &gt;, Args &gt; &amp;&amp;...)) -&gt; Queue&lt; concepts_detail::queue_factory_element_t&lt; RequestedElementType, Args... &gt;, sizeof...(Args)&gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-queue_8hpp_source.html#l00335">cljonic-collection-queue.hpp:335</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1core_html_a411ea54ff367951c96228ba2fa8ddbf4"><div class="ttname"><a href="#a411ea54ff367951c96228ba2fa8ddbf4">cljonic::core::can_conj</a></div><div class="ttdeci">constexpr auto can_conj(const C &amp;collection) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-can-conj_8hpp_source.html#l00087">cljonic-can-conj.hpp:87</a></div></div>
 <div class="ttc" id="anamespacecljonic_1_1core_html_a9ad89b2da321b5072a628a8a836a1b7c"><div class="ttname"><a href="#a9ad89b2da321b5072a628a8a836a1b7c">cljonic::core::map_entry</a></div><div class="ttdeci">constexpr auto map_entry(Args &amp;&amp;... args) noexcept -&gt; MapEntry&lt; concepts_detail::map_entry_factory_key_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt;, concepts_detail::map_entry_factory_value_type_t&lt; RequestedKeyType, RequestedValueType, Args... &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-map-entry_8hpp_source.html#l00175">cljonic-collection-map-entry.hpp:175</a></div></div>
 </div><!-- fragment --> 
@@ -4473,8 +4594,6 @@ requires concepts_detail::DisjAdmissible&lt;C, Values...&gt;</div>
 <div class="line">  <span class="keywordflow">return</span> (!<a class="code hl_function" href="#afbe0149a87d079c21fa08548f2ad735a">contains</a>(s1_runtime, 99) &amp;&amp; <a class="code hl_function" href="#aefd25d10f4f6c107b858532a58ab3baf">is_empty</a>(s1_runtime)) ? 0 : 1;</div>
 <div class="line">}</div>
 <div class="ttc" id="anamespacecljonic_1_1core_html_a24adf59aa2749d023b6d7cfba720ad91"><div class="ttname"><a href="#a24adf59aa2749d023b6d7cfba720ad91">cljonic::core::disj</a></div><div class="ttdeci">constexpr auto disj(const C &amp;collection, const Values &amp;... values) noexcept -&gt; C</div><div class="ttdef"><b>Definition</b> <a href="cljonic-disj_8hpp_source.html#l00055">cljonic-disj.hpp:55</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_ab7b1359706179af076032e9dad458516"><div class="ttname"><a href="#ab7b1359706179af076032e9dad458516">cljonic::core::equal</a></div><div class="ttdeci">constexpr auto equal(const Lhs &amp;lhs, const Rhs &amp;rhs) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-equal_8hpp_source.html#l00346">cljonic-equal.hpp:346</a></div></div>
-<div class="ttc" id="anamespacecljonic_1_1core_html_aefd25d10f4f6c107b858532a58ab3baf"><div class="ttname"><a href="#aefd25d10f4f6c107b858532a58ab3baf">cljonic::core::is_empty</a></div><div class="ttdeci">constexpr auto is_empty(const C &amp;collection) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-is-empty_8hpp_source.html#l00053">cljonic-is-empty.hpp:53</a></div></div>
 </div><!-- fragment --> 
 <p class="definition">Definition at line <a class="el" href="cljonic-disj_8hpp_source.html#l00055">55</a> of file <a class="el" href="cljonic-disj_8hpp_source.html">cljonic-disj.hpp</a>.</p>
 
