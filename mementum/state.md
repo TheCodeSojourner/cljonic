@@ -1,5 +1,38 @@
 ## Current Session State
 
+- last_session_id: a5424c01-26a1-4bdf-9432-da6e4e498472
+- current_timestamp: 2026-11-19T16:06:29-07:00
+- session_complete: true
+- recover: `take_nth(n, source)` is implemented on branch `take_nth`; the requirement, architecture, vocabulary, Allium spec, implementation, tests, no-heap probes, umbrella header, Doxygen docs, and traceability snapshot are updated but remain uncommitted pending the normal human commit decision.
+- task: Approved and implemented the count-first `take_nth(n, source)` collection-shaping API under `REQ-FN-045`.
+- questions:
+  - No open contract or implementation question.
+  - Product/spec/test/documentation changes remain uncommitted for the human commit decision.
+- decisions:
+  - `take_nth(n, source)` selects offsets `0, n, 2n, ...` in the original bounded observation window.
+  - Positive unit stride returns the complete window; nonpositive stride and empty or zero-capacity sources return an empty typed `Vector`.
+  - Result capacity follows the collection declared capacity or producer observation bound.
+- synthesis:
+  - Binding requirement: `REQ-FN-045`.
+  - Architecture: `S2_take_nth_function_contract`.
+  - Dedicated spec: `specs/sequences/take-nth.allium`.
+  - Implementation: `src/cljonic-take-nth.hpp`, exposed through `src/cljonic-core.hpp` and `cljonic.hpp`.
+- next:
+  1. Review the `take_nth` branch diff.
+  2. Commit product, spec, test, documentation, and traceability changes only under the human's commit decision.
+- validation:
+  - `make test`: passed for modular and single-header suites.
+  - `make diagnostic-coverage`: passed after registering `cljonic-take-nth.hpp` as `fallback`.
+  - `make compile-fail`: passed, 54 groups.
+  - `make no-heap`: passed.
+  - `make lint-check LINT_FILE=src/cljonic-take-nth.hpp`: passed.
+  - `make complexity-cli COMPLEXITY_PATH=src/cljonic-take-nth.hpp`: passed.
+  - Allium check/analyse for `take-nth.allium`: passed.
+  - `make traceability-spec-to-code`: passed.
+  - `make docs-examples`: 92 examples passed.
+  - `make docs`: passed.
+  - Focused coverage for `cljonic-take-nth.hpp`: 100.0%.
+
 - last_session_id: 5fac2e25-0764-4f3c-9fe7-c00e5ab57729
 - current_timestamp: 2026-11-19T14:26:56-07:00
 - session_complete: true
