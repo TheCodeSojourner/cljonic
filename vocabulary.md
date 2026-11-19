@@ -1,6 +1,6 @@
 ---
 created: 2026-08-05
-last_updated: 2026-11-17
+last_updated: 2026-11-19
 status: draft
 ---
 
@@ -965,6 +965,14 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Related:** Take, Vector, Map, Set, Queue, String, Range, Repeat, Cycle, Iterate, Repeatedly, CljonicSource, BoundedResult, Traversal
 - **Usage:** Requirements, architecture, specification, tests, implementation, and documentation
 - **Examples:** `drop(2, vector(1, 2, 3))` returns `Vector<int, 3>` containing `3`; `drop(-1, source)` retains the original observable window; dropping three values from an unbounded producer with observation cap 100 retains 97 values, not 100.
+
+
+### TakeLast
+- **Definition:** The trailing-window free function `take_last(count, source)` accepts count first and exactly one cljonic source. It reuses counted `Repeat` integer admission and normalizes nonpositive counts to zero before unsigned conversion. It returns an independently owning bounded `Vector` of the source element type, with collection declared capacity or producer observation-capacity, saturated at the collection maximum. The runtime count does not change the result type or capacity. It returns up to the normalized count of elements from the end of the original bounded observation window, as presented by iteration, or the complete window when the count exceeds or equals its length. Zero, negative, zero-capacity, and actual-empty cases return a typed empty Vector without traversal or callbacks. Producers are observed once within the original window, with existing callback timing and callback-state preservation. Map and Set logical traversal order is semantically unordered; Queue is FIFO, String yields characters, and Map yields MapEntry values. Unsupported sources, invalid counts, wrong arities, and MapEntry inputs are rejected with targeted compile-time diagnostics. The operation is `constexpr`, non-throwing, non-allocating, non-mutating, and uses no RTTI.
+- **Deprecated Synonyms:** None
+- **Related:** Take, Drop, Vector, Map, Set, Queue, String, Range, Repeat, Cycle, Iterate, Repeatedly, TakeWhile, DropWhile, CljonicSource, BoundedResult, Traversal
+- **Usage:** Requirements and future architecture, specification, tests, implementation, and documentation
+- **Examples:** `take_last(2, vector(1, 2, 3))` returns `Vector<int, 3>` containing `2, 3`; `take_last(0, source)` is empty; `take_last(100, source)` returns the complete observable window.
 
 
 ### TakeWhile
