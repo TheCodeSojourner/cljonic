@@ -1,5 +1,30 @@
 ## Current Session State
 
+- last_session_id: 3c80e263-7f07-4491-a8c1-168713fa0154
+- current_timestamp: 2026-11-19T13:34:18-07:00
+- session_complete: true
+- recover: Review and commit the `drop_last` branch only after the human approves the operation-level change and commit scope.
+- task: Elucidated and implemented `drop_last(count, source)` across requirements, architecture, vocabulary, Allium, modular/single-header code, ordinary tests, no-heap probes, traceability, amalgamation, documentation examples, and diagnostic-coverage propagation.
+- questions:
+  - No open `drop_last` contract or implementation question.
+  - The product and documentation changes remain uncommitted; commit scope requires explicit human approval.
+  - The `/gybis-spec-weed` process remains terminated and must not resume without a new human command.
+- decisions:
+  - `REQ-FN-043` is binding; its implementation is complete and independently verified.
+  - `drop_last(count, source)` removes the normalized final count from the original bounded traversal window and returns the retained prefix as an owning source-element `Vector`.
+  - Nonpositive counts retain the complete observation window; counts covering the window bound or zero capacity return empty without traversal/callbacks.
+  - `Cycle` observation remains the configured cycle window, not one pass of the owned source.
+- synthesis:
+  - The dedicated spec is `specs/sequences/drop-last.allium`.
+  - The implementation is `src/cljonic-drop-last.hpp`, exposed through `src/cljonic-core.hpp` and `cljonic.hpp`.
+  - `make test` passed 414/414, `make no-heap` passed, Allium check/analyse passed, 90 documentation examples passed, strict traceability passed, and `_git-checks` passed 54 compile-fail groups.
+- next:
+  1. Review the `drop_last` branch diff.
+  2. Obtain explicit human approval for the operation-level commit scope.
+  3. Commit product, spec, test, documentation, and any intended Doxygen publication changes only with the approved scope.
+
+## Previous Session State (2026-11-19)
+
 - last_session_id: 0f6d0129-72df-4f09-ad61-cc1e046f8b16
 - current_timestamp: 2026-11-19T12:03:38-07:00
 - session_complete: true
