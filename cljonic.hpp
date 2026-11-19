@@ -59,8 +59,8 @@
  * - \ref CanAdd "can_add", \ref CanAssoc "can_assoc", \ref CanBitShiftLeft "can_bit_shift_left",
  *   \ref CanBitShiftRight "can_bit_shift_right", \ref CanConj "can_conj", \ref CanDec "can_dec",
  *   \ref CanDiv "can_div", \ref CanInc "can_inc", \ref CanMod "can_mod",
- *   \ref CanMultiply "can_multiply", \ref CanNegate "can_negate", \ref CanQuot "can_quot",
- *   \ref CanRem "can_rem", \ref CanSubtract "can_subtract",
+ *   \ref CanMult "can_mult", \ref CanNegate "can_negate", \ref CanQuot "can_quot",
+ *   \ref CanRem "can_rem", \ref CanSub "can_sub",
  *   \ref ExplicitConversions "can_to", \ref ExplicitConversions "can_to_byte", \ref ExplicitConversions "can_to_char",
  *   \ref ExplicitConversions "can_to_count", \ref ExplicitConversions "can_to_double", \ref ExplicitConversions "can_to_float",
  *   \ref ExplicitConversions "can_to_index", \ref ExplicitConversions "can_to_int", \ref ExplicitConversions "can_to_long",
@@ -160,19 +160,21 @@
  * \anchor CheckedArithmetic
  * Checked fixed-width numeric free functions.
  *
- * Arithmetic arguments are admitted without implicit loss: integer operands use a statically selected built-in integer
- * type that contains both operand domains; floating operands must have the same supported binary floating type.
- * Boolean, character, byte, enum, pointer, user-defined, and mixed integer/floating operand pairs are rejected.
- * Integer and floating arithmetic reject overflow, underflow, division by zero, and non-finite results.
+ * Arithmetic operands are accepted only when converting or combining them cannot silently lose data: at compile time,
+ * integer operands determine a shared return type that can represent every value from both operand types; floating
+ * operands must have exactly the same supported floating type, and that type is used as the return type. Boolean,
+ * character, byte, enum, pointer, user-defined, and mixed integer/floating operand pairs are rejected. Integer and
+ * floating arithmetic reject overflow, underflow, division by zero, and non-finite results.
  *
- * Every operation with a runtime failure condition has a matching \c can_* preflight. A false preflight and the
- * corresponding failure return the value-initialized result type from the operation, leaving its operands unchanged. A
- * failure in required constant evaluation rejects the expression.
+ * Every operation with a runtime failure condition has a matching \c can_* preflight. A false preflight or a runtime
+ * failure returns the value-initialized result type, leaving the operands unchanged. For a numeric result type, this
+ * value is \c 0. A failure in required constant evaluation rejects the expression.
  *
  * Integer division follows Clojure-compatible semantics:
  * - \c div and \c quot truncate toward zero.
- * - \c rem has the dividend's sign.
- * - \c mod uses floor division and has the divisor's sign.
+ * - \c rem has the numerator's sign.
+ * - \c mod divides and rounds the quotient toward negative infinity, producing a remainder with the denominator's
+ *   sign.
  *
  * For example, \c quot(-7, 3) returns -2, \c rem(-7, 3) returns -1, and \c mod(-7, 3) returns 2. The bitwise
  * operations preserve fixed-width representation; shifts outside the value width and overflowing left shifts fail
@@ -182,14 +184,18 @@
  * y) adds two operands, and variadic \c add(x, y, &more) folds from left to right. \c can_add provides the
  * corresponding preflight for the same arities.
  *
- * \c sub provides unary checked negation, binary subtraction, and left-to-right variadic subtraction. \c sub() is
- * rejected. \c can_subtract provides the matching preflight for the unary, binary, and variadic forms.
+ * \c sub provides unary checked negation \c sub(x), which returns the negated value of \c x; binary subtraction \c
+ * sub(x,y), which returns \c x minus \c y; and left-to-right variadic subtraction \c sub(x,y,&more), which folds the
+ * operands from left to right. \c sub() is rejected. \c can_sub provides the matching preflight for the unary, binary,
+ * and variadic forms.
  *
- * \c mult provides \c mult<T>() as a typed one identity, unary identity, binary multiplication, and left-to-right
- * variadic multiplication. Binary and variadic operands share one static lossless common result type.
+ * \c mult provides a typed one identity \c mult<T>(), which returns the value \c T{1}; unary identity \c mult(x),
+ * which returns \c x; binary multiplication \c mult(x,y), which returns the product; and left-to-right variadic
+ * multiplication \c mult(x,y,&more), which folds the operands from left to right.
  *
- * \c div provides a floating unary reciprocal, binary division, and left-to-right variadic division. Unary integer
- * division is rejected. \c can_div provides the matching side-effect-free preflight.
+ * \c div provides a unary floating reciprocal \c div(x), which returns \c 1/x; binary division \c div(x,y), which
+ * returns \c x divided by \c y; and left-to-right variadic division \c div(x,y,&more), which folds the operands from
+ * left to right. Unary integer division is rejected. \c can_div provides the matching side-effect-free preflight.
  */
 
 namespace cljonic::core {
@@ -458,7 +464,7 @@ template <std::floating_point T>
 
 template <std::floating_point T>
 struct division_result_input {
-    T dividend;
+    T numerator;
     T value;
 };
 
@@ -468,7 +474,7 @@ template <std::floating_point T>
         return failure<T>();
     }
     if (input.value == T{}) {
-        if (input.dividend != T{}) {
+        if (input.numerator != T{}) {
             return failure<T>();
         }
     }
@@ -587,7 +593,7 @@ template <typename R, typename... Args>
 }
 
 template <typename R, typename... Args>
-[[nodiscard]] constexpr auto can_subtract_pack_values(Args... args) noexcept -> bool {
+[[nodiscard]] constexpr auto can_sub_pack_values(Args... args) noexcept -> bool {
     return sub_pack_values<R>(args...).succeeds;
 }
 
@@ -611,7 +617,7 @@ template <typename R, typename... Args>
 }
 
 template <typename R, typename... Args>
-[[nodiscard]] constexpr auto can_multiply_pack_values(Args... args) noexcept -> bool {
+[[nodiscard]] constexpr auto can_mult_pack_values(Args... args) noexcept -> bool {
     return mult_pack_values<R>(args...).succeeds;
 }
 
@@ -760,9 +766,10 @@ inline constexpr bool dependent_false = false;
 /** \anchor Add
  * The \b add free function provides Clojure-compatible checked addition.
  *
- * It accepts \c add<T>() for the typed zero identity, unary \c add(x), binary \c add(x,y), and variadic \c
- * add(x,y,&more). Binary and variadic operands use one static lossless common result type. Integer overflow and
- * floating overflow, underflow, or nonfinite failures follow \ref CheckedArithmetic.
+ * \c add<T>() returns \c T{} as the typed zero identity. Unary \c add(x) returns \c x. Binary \c add(x,y) returns the
+ * sum of \c x and \c y. Variadic \c add(x,y,&more) returns the left-to-right sum of all operands. Integer overflow and
+ * floating overflow, underflow, or nonfinite failures follow \ref CheckedArithmetic. In those runtime failure cases,
+ * \c add returns \c 0.
  *
  * \b Examples
  *
@@ -786,7 +793,8 @@ template <typename T>
 
 /** \anchor CanAdd
  * The \b can_add preflight reports whether the matching \ref Add "add" call can succeed without checked arithmetic
- * failure. It supports the same typed-zero, unary, binary, and variadic forms and is side-effect-free.
+ * failure. It supports \c can_add<T>(), \c can_add(x), \c can_add(x,y), and \c can_add(x,y,&more). It is
+ * side-effect-free and returns \c true when the matching \c add call can succeed.
  *
  * \b Examples
  *
@@ -852,9 +860,10 @@ template <typename First, typename Second, typename Third, typename... Rest>
 /** \anchor Sub
  * The \b sub free function provides Clojure-compatible checked subtraction.
  *
- * Unary \c sub(x) returns checked negation. Binary \c sub(x,y) subtracts \c y from \c x. Variadic \c sub(x,y,&more)
- * subtracts left to right. There is no zero-argument identity. Binary and variadic operands use one static lossless
- * common result type.
+ * Unary \c sub(x) returns the checked negation of \c x. Binary \c sub(x,y) returns \c x minus \c y. Variadic \c
+ * sub(x,y,&more) returns the left-to-right subtraction of all operands. There is no zero-argument form. Overflow,
+ * underflow, and other checked failures follow \ref CheckedArithmetic. In those runtime failure cases, \c sub returns
+ * \c 0.
  *
  * \b Examples
  *
@@ -877,9 +886,10 @@ template <typename T>
     return arithmetic_detail::result_or_fallback(arithmetic_detail::negate_value(static_cast<U>(value)));
 }
 
-/** \anchor CanSubtract
- * The \b can_subtract preflight reports whether the matching \ref Sub "sub" call can succeed without checked
- * arithmetic failure.
+/** \anchor CanSub
+ * The \b can_sub preflight reports whether the matching \ref Sub "sub" call can succeed without checked arithmetic
+ * failure. It supports \c can_sub(x), \c can_sub(x,y), and \c can_sub(x,y,&more). It is side-effect-free and returns
+ * \c true when the matching \c sub call can succeed.
  *
  * \b Examples
  *
@@ -889,14 +899,14 @@ using namespace cljonic;
 using namespace cljonic::core;
 
 int main() {
-  static_assert(can_subtract(10, 3));
-  return can_subtract(10, 3) ? 0 : 1;
+  static_assert(can_sub(10, 3));
+  return can_sub(10, 3) ? 0 : 1;
 }
 ~~~~~
  */
 template <typename T>
     requires arithmetic_detail::SupportedInteger<T> || arithmetic_detail::SupportedFloating<T>
-[[nodiscard]] constexpr auto can_subtract(T value) noexcept -> bool {
+[[nodiscard]] constexpr auto can_sub(T value) noexcept -> bool {
     using U = std::remove_cvref_t<T>;
     return arithmetic_detail::negate_value(static_cast<U>(value)).succeeds;
 }
@@ -910,7 +920,7 @@ template <typename Left, typename Right>
 
 template <typename Left, typename Right>
     requires arithmetic_detail::ArithmeticPair<Left, Right>
-[[nodiscard]] constexpr auto can_subtract(Left left, Right right) noexcept -> bool {
+[[nodiscard]] constexpr auto can_sub(Left left, Right right) noexcept -> bool {
     return arithmetic_detail::evaluate(left, right,
                                        [](auto a, auto b) { return arithmetic_detail::subtract_values(a, b); })
         .succeeds;
@@ -926,17 +936,17 @@ template <typename First, typename Second, typename Third, typename... Rest>
 
 template <typename First, typename Second, typename Third, typename... Rest>
     requires arithmetic_detail::ArithmeticPack<First, Second, Third, Rest...>
-[[nodiscard]] constexpr auto can_subtract(First first, Second second, Third third, Rest... rest) noexcept -> bool {
+[[nodiscard]] constexpr auto can_sub(First first, Second second, Third third, Rest... rest) noexcept -> bool {
     using R = arithmetic_detail::arithmetic_pack_result_t<First, Second, Third, Rest...>;
-    return arithmetic_detail::can_subtract_pack_values<R>(first, second, third, rest...);
+    return arithmetic_detail::can_sub_pack_values<R>(first, second, third, rest...);
 }
 
 /** \anchor Mult
  * The \b mult free function provides Clojure-compatible checked multiplication.
  *
- * It accepts \c mult<T>() for the typed one identity, unary \c mult(x), binary \c mult(x,y), and variadic \c
- * mult(x,y,&more). Binary and variadic operands use one static lossless common result type. Overflow and floating
- * failure follow \ref CheckedArithmetic.
+ * \c mult<T>() returns \c T{1} as the typed one identity. Unary \c mult(x) returns \c x. Binary \c mult(x,y) returns
+ * the product of \c x and \c y. Variadic \c mult(x,y,&more) returns the left-to-right product of all operands.
+ * Overflow and floating failure follow \ref CheckedArithmetic. In those runtime failure cases, \c mult returns \c 0.
  *
  * \b Examples
  *
@@ -958,9 +968,10 @@ template <typename T>
     return std::remove_cvref_t<T>{1};
 }
 
-/** \anchor CanMultiply
- * The \b can_multiply preflight reports whether the matching \ref Mult "mult" call can succeed without checked
- * arithmetic failure.
+/** \anchor CanMult
+ * The \b can_mult preflight reports whether the matching \ref Mult "mult" call can succeed without checked arithmetic
+ * failure. It supports \c can_mult<T>(), \c can_mult(x), \c can_mult(x,y), and \c can_mult(x,y,&more). It is
+ * side-effect-free and returns \c true when the matching \c mult call can succeed.
  *
  * \b Examples
  *
@@ -970,14 +981,14 @@ using namespace cljonic;
 using namespace cljonic::core;
 
 int main() {
-  static_assert(can_multiply(2, 3, 4));
-  return can_multiply(2, 3) ? 0 : 1;
+  static_assert(can_mult(2, 3, 4));
+  return can_mult(2, 3) ? 0 : 1;
 }
 ~~~~~
  */
 template <typename T>
     requires arithmetic_detail::SupportedInteger<T> || arithmetic_detail::SupportedFloating<T>
-[[nodiscard]] constexpr auto can_multiply() noexcept -> bool {
+[[nodiscard]] constexpr auto can_mult() noexcept -> bool {
     return true;
 }
 
@@ -989,7 +1000,7 @@ template <typename T>
 
 template <typename T>
     requires arithmetic_detail::SupportedInteger<T> || arithmetic_detail::SupportedFloating<T>
-[[nodiscard]] constexpr auto can_multiply(T value) noexcept -> bool {
+[[nodiscard]] constexpr auto can_mult(T value) noexcept -> bool {
     (void)value;
     return true;
 }
@@ -1003,7 +1014,7 @@ template <typename Left, typename Right>
 
 template <typename Left, typename Right>
     requires arithmetic_detail::ArithmeticPair<Left, Right>
-[[nodiscard]] constexpr auto can_multiply(Left left, Right right) noexcept -> bool {
+[[nodiscard]] constexpr auto can_mult(Left left, Right right) noexcept -> bool {
     return arithmetic_detail::evaluate(left, right,
                                        [](auto a, auto b) { return arithmetic_detail::multiply_values(a, b); })
         .succeeds;
@@ -1019,17 +1030,18 @@ template <typename First, typename Second, typename Third, typename... Rest>
 
 template <typename First, typename Second, typename Third, typename... Rest>
     requires arithmetic_detail::ArithmeticPack<First, Second, Third, Rest...>
-[[nodiscard]] constexpr auto can_multiply(First first, Second second, Third third, Rest... rest) noexcept -> bool {
+[[nodiscard]] constexpr auto can_mult(First first, Second second, Third third, Rest... rest) noexcept -> bool {
     using R = arithmetic_detail::arithmetic_pack_result_t<First, Second, Third, Rest...>;
-    return arithmetic_detail::can_multiply_pack_values<R>(first, second, third, rest...);
+    return arithmetic_detail::can_mult_pack_values<R>(first, second, third, rest...);
 }
 
 /** \anchor Div
  * The \b div free function provides checked division.
  *
- * Unary floating \c div(x) returns \c 1/x; integer unary division is rejected. Binary and variadic forms divide left
- * to right. Integer division follows fixed-width truncate-toward-zero semantics; floating division follows \ref
- * CheckedArithmetic. Binary and variadic operands use one static lossless common result type.
+ * Unary floating \c div(x) returns \c 1/x; unary integer division is rejected. Binary \c div(x,y) returns \c x divided
+ * by \c y. Variadic \c div(x,y,&more) returns the left-to-right quotient of all operands. Integer division follows
+ * fixed-width truncate-toward-zero semantics; floating division follows \ref CheckedArithmetic. Division by zero, the
+ * smallest-integer divided by negative one, and other runtime failures return \c 0.
  *
  * \b Examples
  *
@@ -1054,7 +1066,8 @@ template <arithmetic_detail::SupportedFloating T>
 
 /** \anchor CanDiv
  * The \b can_div preflight reports whether the matching \ref Div "div" call can succeed without checked arithmetic
- * failure.
+ * failure. It supports \c can_div(x) for floating values, \c can_div(x,y), and \c can_div(x,y,&more). Unary integer
+ * division is rejected. It is side-effect-free and returns \c true when the matching \c div call can succeed.
  *
  * \b Examples
  *
@@ -1107,7 +1120,8 @@ template <typename First, typename Second, typename Third, typename... Rest>
 
 /** \anchor Quot
  * The \b quot free function returns the integer quotient truncated toward zero. It is checked for division by zero and
- * minimum-integer divided by negative one.
+ * the case where the smallest representable integer is divided by negative one, because that quotient would exceed the
+ * integer type's range. If either condition occurs, \c quot returns \c 0 at runtime.
  *
  * \b Examples
  *
@@ -1151,7 +1165,8 @@ template <typename Left, typename Right>
 }
 
 /** \anchor Rem
- * The \b rem free function returns the integer remainder with the dividend's sign.
+ * The \b rem free function returns the integer remainder with the numerator's sign. Division by zero or the
+ * smallest-integer divided by negative one is a runtime failure that returns \c 0.
  *
  * \b Examples
  *
@@ -1199,7 +1214,8 @@ template <typename Left, typename Right>
 
 /** \anchor Mod
  * The \b mod free function returns the integer modulus. Its quotient is rounded toward negative infinity and the
- * result has the divisor's sign.
+ * result has the denominator's sign. Division by zero or the smallest-integer divided by negative one is a runtime
+ * failure that returns \c 0.
  *
  * \b Examples
  *
@@ -1246,7 +1262,8 @@ template <typename Left, typename Right>
 }
 
 /** \anchor Inc
- * The \b inc free function returns the checked increment of one supported integer.
+ * The \b inc free function returns the checked increment of one supported integer. Incrementing the largest
+ * representable integer is a runtime failure that returns \c 0.
  *
  * \b Examples
  *
@@ -1290,7 +1307,8 @@ template <arithmetic_detail::SupportedInteger T>
 }
 
 /** \anchor Dec
- * The \b dec free function returns the checked decrement of one supported integer.
+ * The \b dec free function returns the checked decrement of one supported integer. Decrementing the smallest
+ * representable integer is a runtime failure that returns \c 0.
  *
  * \b Examples
  *
@@ -1334,7 +1352,8 @@ template <arithmetic_detail::SupportedInteger T>
 }
 
 /** \anchor Negate
- * The \b negate free function returns checked negation for an integer or supported binary floating-point value.
+ * The \b negate free function returns checked negation for an integer or floating-point value. Negating the smallest
+ * representable integer or a nonfinite floating-point value is a runtime failure that returns \c 0.
  *
  * \b Examples
  *
@@ -1379,7 +1398,8 @@ template <typename T>
 }
 
 /** \anchor BitShiftLeft
- * The \b bit_shift_left free function performs a checked fixed-width left shift.
+ * The \b bit_shift_left free function performs a checked fixed-width left shift. A negative or too-large count, or a
+ * result that exceeds the fixed-width integer range, is a runtime failure that returns \c 0.
  *
  * \b Examples
  *
@@ -1425,7 +1445,8 @@ template <typename T, typename Count>
 }
 
 /** \anchor BitShiftRight
- * The \b bit_shift_right free function performs a checked arithmetic right shift.
+ * The \b bit_shift_right free function performs a checked arithmetic right shift. A negative or too-large count is a
+ * runtime failure that returns \c 0.
  *
  * \b Examples
  *
@@ -1472,7 +1493,8 @@ template <typename T, typename Count>
 }
 
 /** \anchor UnsignedBitShiftRight
- * The \b unsigned_bit_shift_right free function performs a logical fixed-width right shift.
+ * The \b unsigned_bit_shift_right free function performs a logical fixed-width right shift. A negative or too-large
+ * count is a runtime failure that returns \c 0.
  *
  * \b Examples
  *
@@ -1651,7 +1673,8 @@ template <typename Left, typename Right>
 }
 
 /** \anchor BitClear
- * The \b bit_clear free function clears one bit index in a supported integer.
+ * The \b bit_clear free function clears one bit index in a supported integer. An invalid or too-large bit index is a
+ * runtime failure that returns \c 0.
  *
  * \b Examples
  *
@@ -1677,7 +1700,8 @@ template <typename T, typename Count>
 }
 
 /** \anchor BitSet
- * The \b bit_set free function sets one bit index in a supported integer.
+ * The \b bit_set free function sets one bit index in a supported integer. An invalid or too-large bit index is a
+ * runtime failure that returns \c 0.
  *
  * \b Examples
  *
@@ -1703,7 +1727,8 @@ template <typename T, typename Count>
 }
 
 /** \anchor BitFlip
- * The \b bit_flip free function flips one bit index in a supported integer.
+ * The \b bit_flip free function flips one bit index in a supported integer. An invalid or too-large bit index is a
+ * runtime failure that returns \c 0.
  *
  * \b Examples
  *
@@ -1729,7 +1754,8 @@ template <typename T, typename Count>
 }
 
 /** \anchor BitTest
- * The \b bit_test free function reports whether one bit index is set in a supported integer.
+ * The \b bit_test free function reports whether one bit index is set in a supported integer. An invalid or too-large
+ * bit index returns \c false.
  *
  * \b Examples
  *
@@ -1794,9 +1820,9 @@ constexpr auto sub([[maybe_unused]] T value) noexcept -> void {
 
 template <typename T>
     requires(!arithmetic_detail::SupportedInteger<T> && !arithmetic_detail::SupportedFloating<T>)
-constexpr auto can_subtract([[maybe_unused]] T value) noexcept -> void {
+constexpr auto can_sub([[maybe_unused]] T value) noexcept -> void {
     static_assert(arithmetic_detail::dependent_false<T>,
-                  "cljonic::can_subtract: unary negation requires one supported integer or floating-point value.");
+                  "cljonic::can_sub: unary negation requires one supported integer or floating-point value.");
 }
 
 template <typename T>
@@ -1809,9 +1835,9 @@ constexpr auto mult() noexcept -> void {
 
 template <typename T>
     requires(!arithmetic_detail::SupportedInteger<T> && !arithmetic_detail::SupportedFloating<T>)
-constexpr auto can_multiply() noexcept -> void {
+constexpr auto can_mult() noexcept -> void {
     static_assert(arithmetic_detail::dependent_false<T>,
-                  "cljonic::can_multiply: the zero-argument form requires an explicit supported integer or "
+                  "cljonic::can_mult: the zero-argument form requires an explicit supported integer or "
                   "floating-point type.");
 }
 
@@ -1824,10 +1850,9 @@ constexpr auto mult([[maybe_unused]] T value) noexcept -> void {
 
 template <typename T>
     requires(!arithmetic_detail::SupportedInteger<T> && !arithmetic_detail::SupportedFloating<T>)
-constexpr auto can_multiply([[maybe_unused]] T value) noexcept -> void {
-    static_assert(
-        arithmetic_detail::dependent_false<T>,
-        "cljonic::can_multiply: unary multiplication requires one supported integer or floating-point value.");
+constexpr auto can_mult([[maybe_unused]] T value) noexcept -> void {
+    static_assert(arithmetic_detail::dependent_false<T>,
+                  "cljonic::can_mult: unary multiplication requires one supported integer or floating-point value.");
 }
 
 template <typename T>
@@ -1872,10 +1897,10 @@ constexpr auto sub([[maybe_unused]] First first, [[maybe_unused]] Second second,
 
 template <typename First, typename Second, typename Third, typename... Rest>
     requires(!arithmetic_detail::ArithmeticPack<First, Second, Third, Rest...>)
-constexpr auto can_subtract([[maybe_unused]] First first, [[maybe_unused]] Second second, [[maybe_unused]] Third third,
-                            [[maybe_unused]] Rest... rest) noexcept -> void {
+constexpr auto can_sub([[maybe_unused]] First first, [[maybe_unused]] Second second, [[maybe_unused]] Third third,
+                       [[maybe_unused]] Rest... rest) noexcept -> void {
     static_assert(arithmetic_detail::dependent_false<First, Second, Third, Rest...>,
-                  "cljonic::can_subtract: variadic operands require the same operand pack as sub.");
+                  "cljonic::can_sub: variadic operands require the same operand pack as sub.");
 }
 
 template <typename First, typename Second, typename Third, typename... Rest>
@@ -1890,10 +1915,10 @@ constexpr auto mult([[maybe_unused]] First first, [[maybe_unused]] Second second
 
 template <typename First, typename Second, typename Third, typename... Rest>
     requires(!arithmetic_detail::ArithmeticPack<First, Second, Third, Rest...>)
-constexpr auto can_multiply([[maybe_unused]] First first, [[maybe_unused]] Second second, [[maybe_unused]] Third third,
-                            [[maybe_unused]] Rest... rest) noexcept -> void {
+constexpr auto can_mult([[maybe_unused]] First first, [[maybe_unused]] Second second, [[maybe_unused]] Third third,
+                        [[maybe_unused]] Rest... rest) noexcept -> void {
     static_assert(arithmetic_detail::dependent_false<First, Second, Third, Rest...>,
-                  "cljonic::can_multiply: variadic operands require the same operand pack as mult.");
+                  "cljonic::can_mult: variadic operands require the same operand pack as mult.");
 }
 
 template <typename First, typename Second, typename Third, typename... Rest>
@@ -1929,14 +1954,13 @@ CLJONIC_BINARY_ARITHMETIC_FALLBACK(
     sub, ArithmeticPair,
     "cljonic::sub: expected two supported integer types with a lossless common type, or two "
     "values of the same supported floating type.")
-CLJONIC_BINARY_ARITHMETIC_FALLBACK(can_subtract, ArithmeticPair,
-                                   "cljonic::can_subtract: expected the same operand pair as sub.")
+CLJONIC_BINARY_ARITHMETIC_FALLBACK(can_sub, ArithmeticPair, "cljonic::can_sub: expected the same operand pair as sub.")
 CLJONIC_BINARY_ARITHMETIC_FALLBACK(
     mult, ArithmeticPair,
     "cljonic::mult: expected two supported integer types with a lossless common type, or two "
     "values of the same supported floating type.")
-CLJONIC_BINARY_ARITHMETIC_FALLBACK(can_multiply, ArithmeticPair,
-                                   "cljonic::can_multiply: expected the same operand pair as mult.")
+CLJONIC_BINARY_ARITHMETIC_FALLBACK(can_mult, ArithmeticPair,
+                                   "cljonic::can_mult: expected the same operand pair as mult.")
 CLJONIC_BINARY_ARITHMETIC_FALLBACK(
     div, ArithmeticPair,
     "cljonic::div: expected two supported integer types with a lossless common type, or two "
