@@ -51,6 +51,7 @@ var searchData=
   ['nothrowstableequalitycomparable_48',['NothrowStableEqualityComparable',['../conceptcljonic_1_1concepts_1_1_nothrow_stable_equality_comparable.html',1,'cljonic::concepts']]],
   ['nothrowvariantalternative_49',['NothrowVariantAlternative',['../conceptcljonic_1_1concepts_1_1_nothrow_variant_alternative.html',1,'cljonic::concepts']]],
   ['numbers_20convert_20automatically_50',['When numbers convert automatically',['../implicit-conversions.html#conversion-automatic',1,'']]],
-  ['numeric_51',['Numeric',['../conceptcljonic_1_1core_1_1conversion__detail_1_1_numeric.html',1,'cljonic::core::conversion_detail']]],
-  ['numericdestination_52',['NumericDestination',['../conceptcljonic_1_1core_1_1conversion__detail_1_1_numeric_destination.html',1,'cljonic::core::conversion_detail']]]
+  ['numerator_51',['numerator',['../structcljonic_1_1core_1_1arithmetic__detail_1_1division__result__input.html#a767967554e9105502b4d09e2c17fad7e',1,'cljonic::core::arithmetic_detail::division_result_input']]],
+  ['numeric_52',['Numeric',['../conceptcljonic_1_1core_1_1conversion__detail_1_1_numeric.html',1,'cljonic::core::conversion_detail']]],
+  ['numericdestination_53',['NumericDestination',['../conceptcljonic_1_1core_1_1conversion__detail_1_1_numeric_destination.html',1,'cljonic::core::conversion_detail']]]
 ];
