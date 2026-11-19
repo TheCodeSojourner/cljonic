@@ -614,6 +614,15 @@ requires (!concepts::CljonicMap&lt;C&gt;)</td></tr>
 <tr class="memitem:acf4a747b9d48982fa255e8e91431defe" id="r_acf4a747b9d48982fa255e8e91431defe"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K1, typename K2, typename... Rest&gt; <br />
 requires concepts::CljonicMap&lt;C&gt; &amp;&amp; (!<a class="el" href="namespacecljonic_1_1concepts__detail.html#a62dcbd5e44e518bd16ca2489a0ab8c22">concepts_detail::all_dissoc_keys_admissible_v</a>&lt;C, K1, K2, Rest...&gt;)</td></tr>
 <tr class="memitem:acf4a747b9d48982fa255e8e91431defe template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#acf4a747b9d48982fa255e8e91431defe">dissoc</a> (const C &amp;collection, const K1 &amp;key1, const K2 &amp;key2, const Rest &amp;... rest) noexcept -&gt; C</td></tr>
+<tr class="memitem:a3a367350cbd1764bc98a20cd82f646f2" id="r_a3a367350cbd1764bc98a20cd82f646f2"><td class="memTemplParams" colspan="2">template&lt;typename Count, typename Source&gt; <br />
+requires concepts_detail::CountedSourceArguments&lt;Count, Source&gt;</td></tr>
+<tr class="memitem:a3a367350cbd1764bc98a20cd82f646f2 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a3a367350cbd1764bc98a20cd82f646f2">drop_last</a> (Count count, const Source &amp;source) noexcept -&gt; <a class="el" href="classcljonic_1_1_vector.html">Vector</a>&lt; std::ranges::range_value_t&lt; const Source &gt;, <a class="el" href="namespacecljonic_1_1concepts__detail.html#a5ac05bfee040e39ad5518f71860d60bc">concepts_detail::SourceResultCapacity</a>&lt; Source &gt; &gt;</td></tr>
+<tr class="memitem:ae0ffe165fa4b4e2a6b62b27372c797f3" id="r_ae0ffe165fa4b4e2a6b62b27372c797f3"><td class="memTemplParams" colspan="2">template&lt;typename Count, typename Source&gt; <br />
+requires (!concepts_detail::CountedSourceArguments&lt;Count, Source&gt;)</td></tr>
+<tr class="memitem:ae0ffe165fa4b4e2a6b62b27372c797f3 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#ae0ffe165fa4b4e2a6b62b27372c797f3">drop_last</a> (Count count, const Source &amp;source) noexcept -&gt; void</td></tr>
+<tr class="memitem:ab4d6d6602c01e38c4df73625fa65b4f1" id="r_ab4d6d6602c01e38c4df73625fa65b4f1"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; <br />
+requires (sizeof...(Args) != 2)</td></tr>
+<tr class="memitem:ab4d6d6602c01e38c4df73625fa65b4f1 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#ab4d6d6602c01e38c4df73625fa65b4f1">drop_last</a> (const Args &amp;... args) noexcept -&gt; void</td></tr>
 <tr class="memitem:a250ae62e4b110d27f164c7f3ac6c6051" id="r_a250ae62e4b110d27f164c7f3ac6c6051"><td class="memTemplParams" colspan="2">template&lt;typename Count, typename Source&gt; <br />
 requires concepts_detail::CountedSourceArguments&lt;Count, Source&gt;</td></tr>
 <tr class="memitem:a250ae62e4b110d27f164c7f3ac6c6051 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a250ae62e4b110d27f164c7f3ac6c6051">drop</a> (Count count, const Source &amp;source) noexcept -&gt; <a class="el" href="classcljonic_1_1_vector.html">Vector</a>&lt; std::ranges::range_value_t&lt; const Source &gt;, <a class="el" href="namespacecljonic_1_1concepts__detail.html#a5ac05bfee040e39ad5518f71860d60bc">concepts_detail::SourceResultCapacity</a>&lt; Source &gt; &gt;</td></tr>
@@ -5037,6 +5046,131 @@ requires (!concepts_detail::CountedSourceArguments&lt;Count, Source&gt;)</div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="cljonic-drop_8hpp_source.html#l00101">101</a> of file <a class="el" href="cljonic-drop_8hpp_source.html">cljonic-drop.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ab4d6d6602c01e38c4df73625fa65b4f1" name="ab4d6d6602c01e38c4df73625fa65b4f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4d6d6602c01e38c4df73625fa65b4f1">&#9670;&#160;</a></span>drop_last() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Args&gt; <br />
+requires (sizeof...(Args) != 2)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::drop_last </td>
+          <td>(</td>
+          <td class="paramtype">const Args &amp;...</td>          <td class="paramname"><span class="paramname"><em>args</em></span></td><td>)</td>
+          <td> -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-drop-last_8hpp_source.html#l00117">117</a> of file <a class="el" href="cljonic-drop-last_8hpp_source.html">cljonic-drop-last.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a3a367350cbd1764bc98a20cd82f646f2" name="a3a367350cbd1764bc98a20cd82f646f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a367350cbd1764bc98a20cd82f646f2">&#9670;&#160;</a></span>drop_last() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Count, typename Source&gt; <br />
+requires concepts_detail::CountedSourceArguments&lt;Count, Source&gt;</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::drop_last </td>
+          <td>(</td>
+          <td class="paramtype">Count</td>          <td class="paramname"><span class="paramname"><em>count</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Source &amp;</td>          <td class="paramname"><span class="paramname"><em>source</em></span>&#160;) -&gt; <a class="el" href="classcljonic_1_1_vector.html">Vector</a>&lt; std::ranges::range_value_t&lt; const Source &gt;, <a class="el" href="namespacecljonic_1_1concepts__detail.html#a5ac05bfee040e39ad5518f71860d60bc">concepts_detail::SourceResultCapacity</a>&lt; Source &gt; &gt;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="anchor" id="DropLast"></a> The <b>drop_last</b> free function removes the requested final elements from one cljonic source and returns the remaining prefix as a bounded owning <a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vector</a>. Use <code>drop_last(count, source)</code> with a <a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vector</a>, <a class="el" href="classcljonic_1_1_map.html#Map" title="Map">Map</a>, <a class="el" href="classcljonic_1_1_set.html#Set" title="Set">Set</a>, <a class="el" href="classcljonic_1_1_queue.html#Queue" title="Queue">Queue</a>, or <a class="el" href="classcljonic_1_1_string.html#String" title="String">String</a> collection, or a <a class="el" href="classcljonic_1_1_range.html#Range" title="Range">Range</a>, <a class="el" href="classcljonic_1_1_repeat.html#Repeat" title="Repeat">Repeat</a>, <a class="el" href="classcljonic_1_1_cycle.html#Cycle" title="Cycle">Cycle</a>, <a class="el" href="classcljonic_1_1_iterate.html#Iterate" title="Iterate">Iterate</a>, <a class="el" href="classcljonic_1_1_repeatedly.html#Repeatedly" title="Repeatedly">Repeatedly</a>, <a class="el" href="namespacecljonic.html#TakeWhile" title="TakeWhile">TakeWhile</a>, or <a class="el" href="namespacecljonic.html#DropWhile" title="DropWhile">DropWhile</a> producer.</p>
+<p>Counts follow the <a class="el" href="implicit-conversions.html" title="Safe implicit conversions">safe count conversion rules</a>: signed or unsigned integers whose nonnegative ranges fit std::size_t, excluding Boolean and character types. Zero or negative counts retain the complete original observation window. The result has the source element type and the source-bound result capacity, independent of the runtime count.</p>
+<p>The result retains the prefix that remains after removing the normalized count from the end of the original bounded observation window, as presented by source iteration. A count at least the observation-window bound returns an empty typed vector without traversal or callbacks. Empty and zero-capacity sources also return empty vectors without callbacks. For <a class="el" href="classcljonic_1_1_map.html#Map" title="Map">Map</a> and <a class="el" href="classcljonic_1_1_set.html#Set" title="Set">Set</a> sources, logical traversal order is semantically unordered.</p>
+<p>The source and callback state are preserved according to existing cljonic traversal rules.</p>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> values = <a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(1, 2, 3, 4);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> prefix = <a class="code hl_function" href="#a3a367350cbd1764bc98a20cd82f646f2">drop_last</a>(2, values);</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#ab7b1359706179af076032e9dad458516">equal</a>(prefix, <a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(1, 2)));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#ab7b1359706179af076032e9dad458516">equal</a>(<a class="code hl_function" href="#a3a367350cbd1764bc98a20cd82f646f2">drop_last</a>(0, values), values));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#aefd25d10f4f6c107b858532a58ab3baf">is_empty</a>(<a class="code hl_function" href="#a3a367350cbd1764bc98a20cd82f646f2">drop_last</a>(100, values)));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#ab7b1359706179af076032e9dad458516">equal</a>(values, <a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(1, 2, 3, 4)));</div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> requested = 2;</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> source = <a class="code hl_function" href="#a222b1d8ca6cab849b4c87b6b4b04f3e3">queue</a>(10, 20, 30, 40);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_prefix = <a class="code hl_function" href="#a3a367350cbd1764bc98a20cd82f646f2">drop_last</a>(requested, source);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> generated = <a class="code hl_function" href="#a3a367350cbd1764bc98a20cd82f646f2">drop_last</a>(requested, <a class="code hl_function" href="#a10bb37017fb997694418fdc5cc328afe">range</a>(1, 5));</div>
+<div class="line">  <span class="keywordflow">return</span> <a class="code hl_function" href="#ab7b1359706179af076032e9dad458516">equal</a>(runtime_prefix, <a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(10, 20)) &amp;&amp;</div>
+<div class="line">                 <a class="code hl_function" href="#ab7b1359706179af076032e9dad458516">equal</a>(generated, <a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(1, 2)) &amp;&amp;</div>
+<div class="line">                 <a class="code hl_function" href="#ab7b1359706179af076032e9dad458516">equal</a>(source, <a class="code hl_function" href="#a222b1d8ca6cab849b4c87b6b4b04f3e3">queue</a>(10, 20, 30, 40))</div>
+<div class="line">             ? 0</div>
+<div class="line">             : 1;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a3a367350cbd1764bc98a20cd82f646f2"><div class="ttname"><a href="#a3a367350cbd1764bc98a20cd82f646f2">cljonic::core::drop_last</a></div><div class="ttdeci">constexpr auto drop_last(Count count, const Source &amp;source) noexcept -&gt; Vector&lt; std::ranges::range_value_t&lt; const Source &gt;, concepts_detail::SourceResultCapacity&lt; Source &gt; &gt;</div><div class="ttdef"><b>Definition</b> <a href="cljonic-drop-last_8hpp_source.html#l00083">cljonic-drop-last.hpp:83</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-drop-last_8hpp_source.html#l00083">83</a> of file <a class="el" href="cljonic-drop-last_8hpp_source.html">cljonic-drop-last.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ae0ffe165fa4b4e2a6b62b27372c797f3" name="ae0ffe165fa4b4e2a6b62b27372c797f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0ffe165fa4b4e2a6b62b27372c797f3">&#9670;&#160;</a></span>drop_last() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Count, typename Source&gt; <br />
+requires (!concepts_detail::CountedSourceArguments&lt;Count, Source&gt;)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::drop_last </td>
+          <td>(</td>
+          <td class="paramtype">Count</td>          <td class="paramname"><span class="paramname"><em>count</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Source &amp;</td>          <td class="paramname"><span class="paramname"><em>source</em></span>&#160;) -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-drop-last_8hpp_source.html#l00106">106</a> of file <a class="el" href="cljonic-drop-last_8hpp_source.html">cljonic-drop-last.hpp</a>.</p>
 
 </div>
 </div>

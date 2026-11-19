@@ -487,6 +487,10 @@ Functions</h2></td></tr>
 <tr class="memitem:a039a85f3c6de2bd4f9718600b07ae8b4 template"><td class="memItemLeft">constexpr void&#160;</td><td class="memItemRight"><a class="el" href="#a039a85f3c6de2bd4f9718600b07ae8b4">fold_dissoc_keys_into</a> (C &amp;result) noexcept</td></tr>
 <tr class="memitem:a36db1cb962823291250b17046365c1a9" id="r_a36db1cb962823291250b17046365c1a9"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K, typename... Rest&gt; </td></tr>
 <tr class="memitem:a36db1cb962823291250b17046365c1a9 template"><td class="memItemLeft">constexpr void&#160;</td><td class="memItemRight"><a class="el" href="#a36db1cb962823291250b17046365c1a9">fold_dissoc_keys_into</a> (C &amp;result, const K &amp;key, const Rest &amp;... rest) noexcept</td></tr>
+<tr class="memitem:a72f0ff1075e9feb8fd11e460324cc2c0" id="r_a72f0ff1075e9feb8fd11e460324cc2c0"><td class="memTemplParams" colspan="2">template&lt;typename Source, typename Window&gt; </td></tr>
+<tr class="memitem:a72f0ff1075e9feb8fd11e460324cc2c0 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a72f0ff1075e9feb8fd11e460324cc2c0">copy_drop_last_window</a> (const Source &amp;source, std::size_t observed_count, Window &amp;window) noexcept -&gt; void</td></tr>
+<tr class="memitem:a57e2e919a1c807732e9657d5111d482b" id="r_a57e2e919a1c807732e9657d5111d482b"><td class="memTemplParams" colspan="2">template&lt;typename Window, typename Result&gt; </td></tr>
+<tr class="memitem:a57e2e919a1c807732e9657d5111d482b template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a57e2e919a1c807732e9657d5111d482b">copy_drop_last_prefix</a> (const Window &amp;window, std::size_t requested_count, Result &amp;result) noexcept -&gt; void</td></tr>
 <tr class="memitem:ace0e30486247690ae5e2f84b10840d2b" id="r_ace0e30486247690ae5e2f84b10840d2b"><td class="memTemplParams" colspan="2">template&lt;typename Source, typename Result&gt; </td></tr>
 <tr class="memitem:ace0e30486247690ae5e2f84b10840d2b template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#ace0e30486247690ae5e2f84b10840d2b">copy_drop_suffix</a> (const Source &amp;source, std::size_t observed_count, Result &amp;result, std::size_t skipped_count) noexcept -&gt; void</td></tr>
 <tr class="memitem:aa5211efa94af71b323cf0a5e407e0564" id="r_aa5211efa94af71b323cf0a5e407e0564"><td class="memTemplParams" colspan="2">template&lt;typename Lhs, typename Rhs&gt; </td></tr>
@@ -1230,6 +1234,82 @@ template&lt;typename C, typename V, typename... Rest&gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="cljonic-can-conj_8hpp_source.html#l00023">23</a> of file <a class="el" href="cljonic-can-conj_8hpp_source.html">cljonic-can-conj.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a57e2e919a1c807732e9657d5111d482b" name="a57e2e919a1c807732e9657d5111d482b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57e2e919a1c807732e9657d5111d482b">&#9670;&#160;</a></span>copy_drop_last_prefix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Window, typename Result&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::concepts_detail::copy_drop_last_prefix </td>
+          <td>(</td>
+          <td class="paramtype">const Window &amp;</td>          <td class="paramname"><span class="paramname"><em>window</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t</td>          <td class="paramname"><span class="paramname"><em>requested_count</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Result &amp;</td>          <td class="paramname"><span class="paramname"><em>result</em></span>&#160;) -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-drop-last_8hpp_source.html#l00024">24</a> of file <a class="el" href="cljonic-drop-last_8hpp_source.html">cljonic-drop-last.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a72f0ff1075e9feb8fd11e460324cc2c0" name="a72f0ff1075e9feb8fd11e460324cc2c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72f0ff1075e9feb8fd11e460324cc2c0">&#9670;&#160;</a></span>copy_drop_last_window()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Source, typename Window&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::concepts_detail::copy_drop_last_window </td>
+          <td>(</td>
+          <td class="paramtype">const Source &amp;</td>          <td class="paramname"><span class="paramname"><em>source</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t</td>          <td class="paramname"><span class="paramname"><em>observed_count</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Window &amp;</td>          <td class="paramname"><span class="paramname"><em>window</em></span>&#160;) -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-drop-last_8hpp_source.html#l00013">13</a> of file <a class="el" href="cljonic-drop-last_8hpp_source.html">cljonic-drop-last.hpp</a>.</p>
 
 </div>
 </div>
