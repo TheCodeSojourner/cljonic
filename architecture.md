@@ -131,12 +131,12 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | variadic_add(x,y,&more) → single_static_lossless_common_type(types(x,y,&more)) ∧ left_fold_checked_addition
   | sub(x) → unary_checked_negation(x) ∨ binary_checked_subtraction(x,y) ∨ variadic_left_fold_subtraction(x,y,&more)
   | sub() → reject_compile_time
-  | can_subtract(x) → same_admission_and_arity_as(sub) ∧ true_iff_no_checked_failure
+  | can_sub(x) → same_admission_and_arity_as(sub) ∧ true_iff_no_checked_failure
   | mult(x) → support(mult<T>() ∧ unary_mult(x) ∧ binary_mult(x,y) ∧ variadic_left_fold_product(x,y,&more))
   | mult<T>() → T{1} ∧ require(explicit_supported_numeric_type(T))
   | unary_mult(x) → x
   | binary_or_variadic_mult(x,y,&more) → single_static_lossless_common_type(types(x,y,&more)) ∧ left_fold_checked_multiplication
-  | can_multiply(x) → same_admission_and_arity_as(mult) ∧ true_iff_no_checked_failure
+  | can_mult(x) → same_admission_and_arity_as(mult) ∧ true_iff_no_checked_failure
   | div(x) → unary_floating_reciprocal(x) ∨ binary_checked_division(x,y) ∨ variadic_left_fold_division(x,y,&more)
   | unary_div(x) → supported_floating_type(x) ∧ 1/x ∧ integer_x → reject_compile_time
   | div() → reject_compile_time
@@ -1449,10 +1449,10 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | sub(x) → arity(unary ∨ binary ∨ variadic)
     ∧ unary → checked_negation(x) ∧ binary_or_variadic → checked_left_fold_subtraction
     ∧ sub() → reject_compile_time
-  | can_subtract(x) → same_admission_and_arity_as(sub) ∧ true_iff_checked_subtraction_succeeds
+  | can_sub(x) → same_admission_and_arity_as(sub) ∧ true_iff_checked_subtraction_succeeds
   | mult(x) → arity(zero_explicit_type ∨ unary ∨ binary ∨ variadic)
     ∧ zero_explicit_type → T{1} ∧ unary → unchanged_value ∧ binary_or_variadic → checked_left_fold_product
-  | can_multiply(x) → same_admission_and_arity_as(mult) ∧ true_iff_checked_multiplication_succeeds
+  | can_mult(x) → same_admission_and_arity_as(mult) ∧ true_iff_checked_multiplication_succeeds
   | div(x) → arity(unary_floating ∨ binary ∨ variadic)
     ∧ unary_floating → 1/x ∧ integer_unary → reject_compile_time
     ∧ binary_or_variadic → checked_left_fold_division
