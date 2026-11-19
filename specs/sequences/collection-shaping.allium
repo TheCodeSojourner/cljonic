@@ -68,33 +68,6 @@ entity CollectionShapingTraversalPolicy {
     }
 }
 
--- Each operation is individually named for REQ-SEQ-022 traceability.
-entity TakeLast {
-    minimum_arity: Integer
-    maximum_arity: Integer
-    source_argument_position: Integer
-    count_argument_position: Integer
-    requires_bounded_source_inspection: Boolean
-    preserves_source_order_in_retained_suffix: Boolean
-    returns_bounded_result: Boolean
-    result_is_bounded_owning_collection: Boolean
-    result_capacity_is_source_capacity_bound: Boolean
-    failure_policy_is_typed: Boolean
-    preserves_input: Boolean
-
-    invariant MinimumArityIsTwo { this.minimum_arity = 2 }
-    invariant MaximumArityIsTwo { this.maximum_arity = 2 }
-    invariant SourceIsSecondArgument { this.source_argument_position = 2 }
-    invariant CountIsFirstArgument { this.count_argument_position = 1 }
-    invariant BoundedInspectionIsRequired { this.requires_bounded_source_inspection = true }
-    invariant RetainedSuffixPreservesOrder { this.preserves_source_order_in_retained_suffix = true }
-    invariant ReturnsBoundedResult { this.returns_bounded_result = true }
-    invariant ResultIsBoundedOwningCollection { this.result_is_bounded_owning_collection = true }
-    invariant ResultCapacityIsSourceCapacityBound { this.result_capacity_is_source_capacity_bound = true }
-    invariant FailurePolicyIsTyped { this.failure_policy_is_typed = true }
-    invariant InputIsPreserved { this.preserves_input = true }
-}
-
 entity DropLast {
     minimum_arity: Integer
     maximum_arity: Integer
@@ -1213,7 +1186,6 @@ entity TreeSeq {
 
 actor CollectionShapingTraversalPolicyOperator { identified_by: CollectionShapingTraversalPolicy }
 actor TakeOperator { identified_by: Take }
-actor TakeLastOperator { identified_by: TakeLast }
 actor DropLastOperator { identified_by: DropLast }
 actor TakeNthOperator { identified_by: TakeNth }
 actor NthOperator { identified_by: Nth }
