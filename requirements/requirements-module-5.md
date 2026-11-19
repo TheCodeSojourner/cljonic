@@ -4,7 +4,7 @@
 
 This module records higher-order sequence transformation requirements and specifies the collection-shaping/traversal inventory. The free-function API `comp` is explicitly deferred; this does not defer the `cljonic::Map` collection type or its existing operations. The `map`, `reduce`, `filter`, `filterv`, `take`, and `drop` free functions are binding under `REQ-FN-032`, `REQ-FN-034`, `REQ-FN-035`, `REQ-FN-036`, `REQ-FN-037`, and `REQ-FN-038`; `filterv` is an alias of `filter`.
 
-The `take_while` and `drop_while` producers are active under binding `REQ-FN-039` and `REQ-FN-040`, with shared integration under `REQ-FN-041`. The `take_last(count, source)` contract is binding under `REQ-FN-042`, but implementation, tests, and downstream specifications remain separate approval decisions. Each implementation was explicitly approved and independently verified; paired contract approval did not substitute for operation-level approval or verification.
+The `take_while` and `drop_while` producers are active under binding `REQ-FN-039` and `REQ-FN-040`, with shared integration under `REQ-FN-041`. The `take_last(count, source)` contract is binding under `REQ-FN-042`, `drop_last(count, source)` under `REQ-FN-043`, `butlast(source)` under `REQ-FN-044`, and `take_nth(n, source)` under `REQ-FN-045`; implementation, tests, and downstream specifications remain separate approval decisions. Each implementation was explicitly approved and independently verified; paired contract approval did not substitute for operation-level approval or verification.
 
 ## Deferred Higher-Order Free Functions (Non-binding)
 
@@ -216,6 +216,23 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
   rationale: `butlast` is the bounded, owning Clojure-style prefix operation for removing only the final element of the original observation window
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-19, rationale_source: origin_artifact}
 
+λ REQ-FN-045(x).
+  ∀ `take_nth(n, source)`: accepts a stride followed by exactly one cljonic source (a Vector, Map, Set, Queue, or String collection, or a Range, Repeat, Cycle, Iterate, Repeatedly, TakeWhile, or DropWhile producer)
+  ∧ ∀ stride: signed or unsigned integer type other than Boolean or character types, whose nonnegative type range fits `std::size_t` ∧ nonpositive strides normalize to zero before unsigned conversion
+  ∧ ∀ result: bounded owning `Vector` with the source element type and compile-time capacity equal to the source's observable-count bound (`Collection`'s `Capacity` ∨ `Producer`'s configured observation cap), saturated at `CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE` ∧ runtime stride does not change the result type or capacity
+  ∧ ∀ observation window: original source traversal bounded by `source.count()` and result capacity, plus actual iterator exhaustion ∧ unbounded producers contribute the configured observation-cap window
+  ∧ ∀ result elements: the elements at zero-based offsets `0, n, 2n, ...` in the original window, as presented by source iteration ∧ stride `n == 1` returns the complete window
+  ∧ ∀ nonpositive stride ∨ zero result capacity ∨ actual empty traversal: return an empty typed Vector without beginning traversal or invoking producer callbacks
+  ∧ ∀ nonempty result: traverse the original window once ∧ never advance beyond the actual endpoint or window bound ∧ select offsets by a single traversal index
+  ∧ ∀ producer: callback timing follows its existing traversal contract ∧ Repeatedly invokes its callback once per visited value ∧ Iterate invokes its step only between visited values ∧ callback state stored by value is preserved in the source, while referenced or static callback state remains shared
+  ∧ ∀ `Map` ∨ `Set` source: `LogicalTraversalOrder` is semantically unordered ∧ `Queue` preserves FIFO order ∧ `String` yields characters ∧ `Map` yields value-semantic `MapEntry` elements
+  ∧ ∀ source element: satisfies the nothrow element storage contract ∧ no additional equality or ordering capability is required
+  ∧ ∀ result: independently owning bounded selected-value Vector with no nested result, absence sentinel, status wrapper, preflight predicate, or transducer-only arity
+  ∧ ∀ MapEntry input ∨ external C++ range ∨ non-cljonic source ∨ invalid stride type ∨ wrong arity: rejected at compile time with a targeted diagnostic naming `take_nth` and its supported stride/source domains
+  ∧ ∀ operation: constexpr ∧ non-throwing ∧ non-allocating ∧ non-mutating ∧ preserves the source value ∧ `NoRttiConstraint`
+  rationale: the stakeholder approved `take_nth(n, source)` as the count-first strided member of the bounded collection-shaping family, selecting the first observed element and every following `n`th offset while preserving the original observation window
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-19, rationale_source: origin_artifact, compound_by_design: true}
+
 λ REQ-SEQ-022(x).
   ∀ context: the first-pass collection-shaping and traversal family includes bounded operations corresponding to `take`, `drop`, `take_while`, `drop_while`, `take_last`, `drop_last`, `take_nth`, `nth`, `nthnext`, `nthrest`, `butlast`, `map_indexed`, `rseq`, `second`, `ffirst`, `fnext`, `nfirst`, `nnext`, `some`, `is_every`, `not_any`, `not_every`, `distinct`, `dedupe`, `frequencies`, `reductions`, `split_at`, `split_with`, `mapcat`, `interleave`, `interpose`, `partition`, `partition_all`, `partition_by`, `partitionv`, `partitionv_all`, `group_by`, `flatten`, `tree_seq`, `keep`, `keep_indexed`, `remove`, `replace`, `mapv`, `filter`, `filterv`, `subvec`, `find`, `reduce`, `reduce_kv`, `sort`, and `sort_by`
   ∧ ∀ listed_operation: an individually named downstream behavioral specification exists before it is treated as implementation-ready
@@ -232,4 +249,4 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
 ## Traceability and Related Requirements
 
 - **Downstream Artifact**: Free-function templates for sequence shaping, slicing, filtering, mapping, grouping, and ordering.
-- **Governed REQs**: `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding), `REQ-FN-035` (binding), `REQ-FN-036` (binding alias), `REQ-FN-037` (binding), `REQ-FN-038` (binding), `REQ-FN-039` (binding, active), `REQ-FN-040` (binding, active), `REQ-FN-041` (binding integration contract), `REQ-FN-042` (binding; implementation approval separate), `REQ-FN-043` (binding; implementation approval separate), `REQ-FN-044` (binding; implementation approval separate), `REQ-SEQ-022`.
+- **Governed REQs**: `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding), `REQ-FN-035` (binding), `REQ-FN-036` (binding alias), `REQ-FN-037` (binding), `REQ-FN-038` (binding), `REQ-FN-039` (binding, active), `REQ-FN-040` (binding, active), `REQ-FN-041` (binding integration contract), `REQ-FN-042` (binding; implementation approval separate), `REQ-FN-043` (binding; implementation approval separate), `REQ-FN-044` (binding; implementation approval separate), `REQ-FN-045` (binding; implementation approval separate), `REQ-SEQ-022`.
