@@ -15,7 +15,7 @@ producers `Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`, `TakeWhile`, and
 collection forms, and factories. The active free-function surface includes
 primitive operations such as `first`, `has_first`, `next`, `has_next`,
 `has_rest`, and `rest`; higher-order operations `map`, `reduce`, `filter`,
-`filterv`, `take`, `drop`, `take_while`, and `drop_while`; and producer
+`filterv`, `take`, `drop`, `take_while`, `drop_while`, `take_last`, `drop_last`, and `butlast`; and producer
 materialization through `into`, preflighted by `fits_into`. Sequence conversion (`seq`) converts
 collections and supported producers to bounded `Vector` values under
 `REQ-SEQ-010`. Const range traversal and read-only C++ interoperability are
