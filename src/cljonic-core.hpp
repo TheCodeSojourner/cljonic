@@ -60,7 +60,7 @@
  *   \ref CharacterIsValid "character_is_valid", comp, compare, complement, \ref Conj "conj", constantly,
  *   \ref Contains "contains", \ref Count "count", \ref Cycle "cycle"
  * - \ref Dec "dec", dedupe, deref, \ref Disj "disj", \ref Dissoc "dissoc", distinct,
- *   \ref Div "div", \ref Drop "drop", drop_last, \ref DropWhile "drop_while"
+ *   \ref Div "div", \ref Drop "drop", \ref DropLast "drop_last", \ref DropWhile "drop_while"
  * - emplace, \ref Empty "empty", \ref Equal "equal", every_pred
  * - ffirst, \ref FilterFunction "filter", \ref FiltervFunction "filterv", find, \ref First "first",
  *   \ref FitsInto "fits_into", fits_print, flatten, fnext, fnil, frequencies
@@ -154,6 +154,7 @@
 #include <cljonic-count.hpp>
 #include <cljonic-disj.hpp>
 #include <cljonic-dissoc.hpp>
+#include <cljonic-drop-last.hpp>
 #include <cljonic-drop.hpp>
 #include <cljonic-empty.hpp>
 #include <cljonic-equal.hpp>
