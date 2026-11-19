@@ -1,0 +1,61 @@
+-- allium: 3
+
+-- REQ-FN-044 / REQ-SEQ-022: butlast(source) excludes only the final element
+-- of the original bounded traversal window and returns all preceding elements
+-- as an independently owning Vector.
+
+entity ButLast {
+    minimum_arity: Integer
+    maximum_arity: Integer
+    source_is_the_only_argument: Boolean
+    all_cljonic_collections_and_producers_admitted: Boolean
+    result_is_independently_owning_vector_of_source_elements: Boolean
+    collection_result_capacity_is_declared_capacity: Boolean
+    producer_result_capacity_is_observation_cap: Boolean
+    capacity_is_saturated_at_collection_maximum: Boolean
+    original_window_is_bounded_by_source_count_capacity_and_endpoint: Boolean
+    final_element_is_removed_from_original_window: Boolean
+    one_and_zero_element_windows_return_empty: Boolean
+    actual_empty_source_including_cycle_returns_empty_without_callbacks: Boolean
+    original_window_is_traversed_once: Boolean
+    no_second_observation_or_traversal_cache: Boolean
+    no_advance_past_window_bound_or_actual_endpoint: Boolean
+    repeatedly_callback_once_per_visited_value: Boolean
+    iterate_steps_only_between_visited_values: Boolean
+    source_and_callback_state_preserved: Boolean
+    referenced_or_static_callback_state_remains_shared: Boolean
+    map_set_order_semantically_unordered: Boolean
+    queue_fifo_string_characters_and_map_entries_preserved: Boolean
+    nothrow_storage_without_additional_comparison_gate: Boolean
+    no_nested_result_absence_sentinel_status_or_preflight: Boolean
+    invalid_sources_and_arities_have_targeted_diagnostics: Boolean
+    constexpr_noexcept_no_heap_no_rtti_nonmutating: Boolean
+
+    invariant MinimumArityIsOne { this.minimum_arity = 1 }
+    invariant MaximumArityIsOne { this.maximum_arity = 1 }
+    invariant SourceIsTheOnlyArgument { this.source_is_the_only_argument = true }
+    invariant AllCljonicCollectionsAndProducersAdmitted { this.all_cljonic_collections_and_producers_admitted = true }
+    invariant ResultIsIndependentlyOwningVectorOfSourceElements { this.result_is_independently_owning_vector_of_source_elements = true }
+    invariant CollectionResultCapacityIsDeclaredCapacity { this.collection_result_capacity_is_declared_capacity = true }
+    invariant ProducerResultCapacityIsObservationCap { this.producer_result_capacity_is_observation_cap = true }
+    invariant CapacityIsSaturatedAtCollectionMaximum { this.capacity_is_saturated_at_collection_maximum = true }
+    invariant OriginalWindowIsBoundedBySourceCountCapacityAndEndpoint { this.original_window_is_bounded_by_source_count_capacity_and_endpoint = true }
+    invariant FinalElementIsRemovedFromOriginalWindow { this.final_element_is_removed_from_original_window = true }
+    invariant OneAndZeroElementWindowsReturnEmpty { this.one_and_zero_element_windows_return_empty = true }
+    invariant ActualEmptySourceIncludingCycleReturnsEmptyWithoutCallbacks { this.actual_empty_source_including_cycle_returns_empty_without_callbacks = true }
+    invariant OriginalWindowIsTraversedOnce { this.original_window_is_traversed_once = true }
+    invariant NoSecondObservationOrTraversalCache { this.no_second_observation_or_traversal_cache = true }
+    invariant NoAdvancePastWindowBoundOrActualEndpoint { this.no_advance_past_window_bound_or_actual_endpoint = true }
+    invariant RepeatedlyCallbackOncePerVisitedValue { this.repeatedly_callback_once_per_visited_value = true }
+    invariant IterateStepsOnlyBetweenVisitedValues { this.iterate_steps_only_between_visited_values = true }
+    invariant SourceAndCallbackStatePreserved { this.source_and_callback_state_preserved = true }
+    invariant ReferencedOrStaticCallbackStateRemainsShared { this.referenced_or_static_callback_state_remains_shared = true }
+    invariant MapSetOrderSemanticallyUnordered { this.map_set_order_semantically_unordered = true }
+    invariant QueueFifoStringCharactersAndMapEntriesPreserved { this.queue_fifo_string_characters_and_map_entries_preserved = true }
+    invariant NothrowStorageWithoutAdditionalComparisonGate { this.nothrow_storage_without_additional_comparison_gate = true }
+    invariant NoNestedResultAbsenceSentinelStatusOrPreflight { this.no_nested_result_absence_sentinel_status_or_preflight = true }
+    invariant InvalidSourcesAndAritiesHaveTargetedDiagnostics { this.invalid_sources_and_arities_have_targeted_diagnostics = true }
+    invariant ConstexprNoexceptNoHeapNoRttiNonmutating { this.constexpr_noexcept_no_heap_no_rtti_nonmutating = true }
+}
+
+actor ButLastOperator { identified_by: ButLast }
