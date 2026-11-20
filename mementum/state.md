@@ -3,11 +3,11 @@
 - last_session_id: a5424c01-26a1-4bdf-9432-da6e4e498472
 - current_timestamp: 2026-11-19T16:06:29-07:00
 - session_complete: true
-- recover: `take_nth(n, source)` is implemented on branch `take_nth`; the requirement, architecture, vocabulary, Allium spec, implementation, tests, no-heap probes, umbrella header, Doxygen docs, and traceability snapshot are updated but remain uncommitted pending the normal human commit decision.
+- recover: `take_nth(n, source)` under `REQ-FN-045` is complete: the requirement, architecture, vocabulary, Allium spec, implementation, tests, no-heap probes, umbrella header, Doxygen docs, traceability snapshot, and this state entry are committed and pushed on `main` (commits 234cae67 through 241149fc, 2026-11-19). No separate `take_nth` branch exists and nothing remains uncommitted.
 - task: Approved and implemented the count-first `take_nth(n, source)` collection-shaping API under `REQ-FN-045`.
 - questions:
   - No open contract or implementation question.
-  - Product/spec/test/documentation changes remain uncommitted for the human commit decision.
+  - No product, spec, test, or documentation changes remain uncommitted; the earlier pending-commit note was superseded by the 2026-11-19 commits on `main`.
 - decisions:
   - `take_nth(n, source)` selects offsets `0, n, 2n, ...` in the original bounded observation window.
   - Positive unit stride returns the complete window; nonpositive stride and empty or zero-capacity sources return an empty typed `Vector`.
@@ -18,8 +18,8 @@
   - Dedicated spec: `specs/sequences/take-nth.allium`.
   - Implementation: `src/cljonic-take-nth.hpp`, exposed through `src/cljonic-core.hpp` and `cljonic.hpp`.
 - next:
-  1. Review the `take_nth` branch diff.
-  2. Commit product, spec, test, documentation, and traceability changes only under the human's commit decision.
+  1. Select the next API operation only on explicit human direction.
+  2. Keep the terminated `/gybis-spec-weed` process inactive unless explicitly restarted.
 - validation:
   - `make test`: passed for modular and single-header suites.
   - `make diagnostic-coverage`: passed after registering `cljonic-take-nth.hpp` as `fallback`.
