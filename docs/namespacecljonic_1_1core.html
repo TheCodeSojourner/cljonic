@@ -751,6 +751,15 @@ requires concepts::SequenceableCollection&lt;C&gt; || concepts::SequenceableProd
 <tr class="memitem:ae80e43851f3376a467a4e0eb974adc48" id="r_ae80e43851f3376a467a4e0eb974adc48"><td class="memTemplParams" colspan="2">template&lt;typename C&gt; <br />
 requires (!concepts::SequenceableCollection&lt;C&gt; &amp;&amp; !concepts::SequenceableProducer&lt;C&gt;)</td></tr>
 <tr class="memitem:ae80e43851f3376a467a4e0eb974adc48 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#ae80e43851f3376a467a4e0eb974adc48">is_empty</a> (const C &amp;collection) noexcept -&gt; void</td></tr>
+<tr class="memitem:ab1d97fba1732b5b8dc775c317177a081" id="r_ab1d97fba1732b5b8dc775c317177a081"><td class="memTemplParams" colspan="2">template&lt;typename KeyType, typename ValueType&gt; </td></tr>
+<tr class="memitem:ab1d97fba1732b5b8dc775c317177a081 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#ab1d97fba1732b5b8dc775c317177a081">last</a> (const <a class="el" href="structcljonic_1_1_map_entry.html">MapEntry</a>&lt; KeyType, ValueType &gt; &amp;entry) noexcept -&gt; ValueType</td></tr>
+<tr class="memitem:a80f434681c9daa3efa51bba82559b5cb" id="r_a80f434681c9daa3efa51bba82559b5cb"><td class="memTemplParams" colspan="2">template&lt;concepts::SequenceableCollection C&gt; </td></tr>
+<tr class="memitem:a80f434681c9daa3efa51bba82559b5cb template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a80f434681c9daa3efa51bba82559b5cb">last</a> (const C &amp;collection) noexcept -&gt; C::value_type</td></tr>
+<tr class="memitem:af08c520bd837764fe9c20c07f3f256d0" id="r_af08c520bd837764fe9c20c07f3f256d0"><td class="memTemplParams" colspan="2">template&lt;concepts::CljonicProducer P&gt; </td></tr>
+<tr class="memitem:af08c520bd837764fe9c20c07f3f256d0 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#af08c520bd837764fe9c20c07f3f256d0">last</a> (const P &amp;producer) noexcept -&gt; P::value_type</td></tr>
+<tr class="memitem:a3e604d86953fbd5b33ef0005334719ed" id="r_a3e604d86953fbd5b33ef0005334719ed"><td class="memTemplParams" colspan="2">template&lt;typename C&gt; <br />
+requires (!concepts::SequenceableCollection&lt;C&gt; &amp;&amp; !concepts::CljonicProducer&lt;C&gt; &amp;&amp; !<a class="el" href="namespacecljonic_1_1concepts__detail.html#a3889b714b08533483ca70718c5f1d55c">concepts_detail::is_cljonic_map_entry_v</a>&lt;C&gt;)</td></tr>
+<tr class="memitem:a3e604d86953fbd5b33ef0005334719ed template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a3e604d86953fbd5b33ef0005334719ed">last</a> (const C &amp;value) noexcept -&gt; void</td></tr>
 <tr class="memitem:afffebdb7c4aed74fb782f1b796d9c1c4" id="r_afffebdb7c4aed74fb782f1b796d9c1c4"><td class="memTemplParams" colspan="2">template&lt;typename F, typename... Sources&gt; <br />
 requires concepts_detail::MapCallable&lt;F, Sources...&gt;</td></tr>
 <tr class="memitem:afffebdb7c4aed74fb782f1b796d9c1c4 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#afffebdb7c4aed74fb782f1b796d9c1c4">map</a> (const F &amp;function, const Sources &amp;... sources) noexcept -&gt; <a class="el" href="classcljonic_1_1_vector.html">Vector</a>&lt; <a class="el" href="namespacecljonic_1_1concepts__detail.html#acd03078ebbd961d98d7a20eccc2fec71">concepts_detail::MapResultType</a>&lt; F, Sources... &gt;, <a class="el" href="namespacecljonic_1_1concepts__detail.html#a7170435d41687410eef0a49fdcd5be4c">concepts_detail::MapResultCapacity</a>&lt; Sources... &gt; &gt;</td></tr>
@@ -7890,6 +7899,163 @@ requires concepts::NothrowCollectionElement&lt;std::remove_cvref_t&lt;T&gt;&gt; 
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="cljonic-producer-iterate_8hpp_source.html#l00204">204</a> of file <a class="el" href="cljonic-producer-iterate_8hpp_source.html">cljonic-producer-iterate.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a80f434681c9daa3efa51bba82559b5cb" name="a80f434681c9daa3efa51bba82559b5cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80f434681c9daa3efa51bba82559b5cb">&#9670;&#160;</a></span>last() <span class="overload">[1/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;concepts::SequenceableCollection C&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::last </td>
+          <td>(</td>
+          <td class="paramtype">const C &amp;</td>          <td class="paramname"><span class="paramname"><em>collection</em></span></td><td>)</td>
+          <td> -&gt; C::value_type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the last logical element of a <a class="el" href="classcljonic_1_1_vector.html">Vector</a>, <a class="el" href="classcljonic_1_1_map.html">Map</a>, <a class="el" href="classcljonic_1_1_set.html">Set</a>, <a class="el" href="classcljonic_1_1_queue.html">Queue</a>, or <a class="el" href="classcljonic_1_1_string.html">String</a> value. </p>
+
+<p class="definition">Definition at line <a class="el" href="cljonic-last_8hpp_source.html#l00068">68</a> of file <a class="el" href="cljonic-last_8hpp_source.html">cljonic-last.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a3e604d86953fbd5b33ef0005334719ed" name="a3e604d86953fbd5b33ef0005334719ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e604d86953fbd5b33ef0005334719ed">&#9670;&#160;</a></span>last() <span class="overload">[2/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename C&gt; <br />
+requires (!concepts::SequenceableCollection&lt;C&gt; &amp;&amp; !concepts::CljonicProducer&lt;C&gt; &amp;&amp; !<a class="el" href="namespacecljonic_1_1concepts__detail.html#a3889b714b08533483ca70718c5f1d55c">concepts_detail::is_cljonic_map_entry_v</a>&lt;C&gt;)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::last </td>
+          <td>(</td>
+          <td class="paramtype">const C &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
+          <td> -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-last_8hpp_source.html#l00107">107</a> of file <a class="el" href="cljonic-last_8hpp_source.html">cljonic-last.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ab1d97fba1732b5b8dc775c317177a081" name="ab1d97fba1732b5b8dc775c317177a081"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1d97fba1732b5b8dc775c317177a081">&#9670;&#160;</a></span>last() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename KeyType, typename ValueType&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::last </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structcljonic_1_1_map_entry.html">MapEntry</a>&lt; KeyType, ValueType &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>entry</em></span></td><td>)</td>
+          <td> -&gt; ValueType</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="anchor" id="Last"></a> The <b>last</b> free function returns the last logical element of a <span class="tt"><a class="el" href="classcljonic_1_1_vector.html">Vector</a></span>, <span class="tt"><a class="el" href="classcljonic_1_1_map.html">Map</a></span>, <span class="tt"><a class="el" href="classcljonic_1_1_set.html">Set</a></span>, <span class="tt"><a class="el" href="classcljonic_1_1_queue.html">Queue</a></span>, or <span class="tt"><a class="el" href="classcljonic_1_1_string.html">String</a></span> value or any cljonic producer, or the value of a <a class="el" href="#MapEntryFactory" title="MapEntryFactory">map_entry</a> value.</p>
+<p><span class="tt"><a class="el" href="classcljonic_1_1_vector.html">Vector</a></span> and <span class="tt"><a class="el" href="classcljonic_1_1_string.html">String</a></span> yield the element at the final logical index, <span class="tt"><a class="el" href="classcljonic_1_1_queue.html">Queue</a></span> yields its final FIFO element without removal, <span class="tt"><a class="el" href="classcljonic_1_1_map.html">Map</a></span> yields one value-semantic <a class="el" href="#MapEntryFactory" title="MapEntryFactory">map_entry</a> value, and <span class="tt"><a class="el" href="classcljonic_1_1_set.html">Set</a></span> yields one stored element. <span class="tt"><a class="el" href="classcljonic_1_1_map.html">Map</a></span> and <span class="tt"><a class="el" href="classcljonic_1_1_set.html">Set</a></span> traversal order is not semantically significant. An empty collection or producer observation yields its element type's default value. A producer yielding map entries returns a whole entry, not its value.</p>
+<p>Producer access evaluates only what is needed to reach the final observable element, without counting or materializing the sequence first. A <span class="tt"><a class="el" href="#a9baef11bdc8537c36d11e6d2a7edfe77">drop_while</a></span> producer may examine its entire bounded matching prefix. Each call starts a fresh traversal; source and predicate callbacks may run again. A zero observation limit invokes no callbacks.</p>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">  <span class="comment">// Compile-time demonstration.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> v_const = <a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(10, 20, 30);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> e_const = <a class="code hl_function" href="#a9ad89b2da321b5072a628a8a836a1b7c">map_entry</a>(1, 100);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> numbers = <a class="code hl_function" href="#a10bb37017fb997694418fdc5cc328afe">range</a>(7, 10);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> suffix =</div>
+<div class="line">      <a class="code hl_function" href="#a9baef11bdc8537c36d11e6d2a7edfe77">drop_while</a>([](<span class="keywordtype">int</span> n) <span class="keyword">noexcept</span> { <span class="keywordflow">return</span> n &lt; 3; }, <a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(1, 2, 4));</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> <a class="code hl_function" href="#ad17861689674830cc7fb660fd3044601">empty</a> = <a class="code hl_function" href="#a4ebeaa5d9bef8520af2e09e8d5aada70">repeat</a>(0, 7);</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#ab1d97fba1732b5b8dc775c317177a081">last</a>(v_const) == 30);</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#ab1d97fba1732b5b8dc775c317177a081">last</a>(e_const) == 100);</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#ab1d97fba1732b5b8dc775c317177a081">last</a>(numbers) == 9);</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#ab1d97fba1732b5b8dc775c317177a081">last</a>(suffix) == 4);</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#ab1d97fba1732b5b8dc775c317177a081">last</a>(<a class="code hl_function" href="#a9891c05cf464593f376cf0519e143b7d">cycle</a>(suffix)) == 4);</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#ab1d97fba1732b5b8dc775c317177a081">last</a>(<a class="code hl_function" href="#ad17861689674830cc7fb660fd3044601">empty</a>) == 0);</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#a664e4ba8bc8fbc1a64e75a0dd9cec633">count</a>(v_const) == 3);</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// Runtime demonstration.</span></div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> value = 100;</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> values = <a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(value, 200);</div>
+<div class="line">  <span class="keywordtype">int</span> calls = 0;</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> generated = <a class="code hl_function" href="#aec4589540b2582e483d0e62998c84947">repeatedly</a>(4, [&amp;calls, value]() <span class="keyword">noexcept</span> {</div>
+<div class="line">    ++calls;</div>
+<div class="line">    <span class="keywordflow">return</span> value;</div>
+<div class="line">  });</div>
+<div class="line"> </div>
+<div class="line">  <span class="keywordflow">return</span> (<a class="code hl_function" href="#ab1d97fba1732b5b8dc775c317177a081">last</a>(values) == 200 &amp;&amp; <a class="code hl_function" href="#a664e4ba8bc8fbc1a64e75a0dd9cec633">count</a>(values) == 2 &amp;&amp;</div>
+<div class="line">          <a class="code hl_function" href="#ab1d97fba1732b5b8dc775c317177a081">last</a>(generated) == value &amp;&amp; calls == 4 &amp;&amp; <a class="code hl_function" href="#ab1d97fba1732b5b8dc775c317177a081">last</a>(<a class="code hl_function" href="#ad17861689674830cc7fb660fd3044601">empty</a>) == 0)</div>
+<div class="line">             ? 0</div>
+<div class="line">             : 1;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_ab1d97fba1732b5b8dc775c317177a081"><div class="ttname"><a href="#ab1d97fba1732b5b8dc775c317177a081">cljonic::core::last</a></div><div class="ttdeci">constexpr auto last(const MapEntry&lt; KeyType, ValueType &gt; &amp;entry) noexcept -&gt; ValueType</div><div class="ttdef"><b>Definition</b> <a href="cljonic-last_8hpp_source.html#l00062">cljonic-last.hpp:62</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-last_8hpp_source.html#l00062">62</a> of file <a class="el" href="cljonic-last_8hpp_source.html">cljonic-last.hpp</a>.</p>
+
+</div>
+</div>
+<a id="af08c520bd837764fe9c20c07f3f256d0" name="af08c520bd837764fe9c20c07f3f256d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af08c520bd837764fe9c20c07f3f256d0">&#9670;&#160;</a></span>last() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;concepts::CljonicProducer P&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::last </td>
+          <td>(</td>
+          <td class="paramtype">const P &amp;</td>          <td class="paramname"><span class="paramname"><em>producer</em></span></td><td>)</td>
+          <td> -&gt; P::value_type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the last observable producer element, or its default value when empty. </p>
+
+<p class="definition">Definition at line <a class="el" href="cljonic-last_8hpp_source.html#l00085">85</a> of file <a class="el" href="cljonic-last_8hpp_source.html">cljonic-last.hpp</a>.</p>
 
 </div>
 </div>
