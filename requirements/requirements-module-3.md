@@ -587,7 +587,7 @@ The clauses in this section define the active `seq` contract. The human approved
 
 ### Map and Entry Sequence Access (Deferred, Non-binding)
 
-> **Deferred future work — non-binding.** `REQ-FN-002A`–`002B` record future map/entry behavior for `last`, `key`, and `val`; they do not establish current API support.
+> **Deferred future work — non-binding.** `REQ-FN-002A`–`002B` record future map/entry behavior for `last`, `key`, and `val`; the `last` portion is promoted into binding `REQ-FN-046`, and `key` and `val` remain deferred with no current API support.
 
 λ REQ-FN-002A(x).
   ∀ map_entry_value: `last` returns its value ∧ `key` returns its key ∧ `val` returns its value

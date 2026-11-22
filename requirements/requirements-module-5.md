@@ -233,8 +233,35 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
   rationale: the stakeholder approved `take_nth(n, source)` as the count-first strided member of the bounded collection-shaping family, selecting the first observed element and every following `n`th offset while preserving the original observation window
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-19, rationale_source: origin_artifact, compound_by_design: true}
 
+λ REQ-FN-046(x).
+  ∀ `last(source)`: accepts exactly one cljonic source (a Vector, Map, Set, Queue, or String collection, a `MapEntry` value, or a Range, Repeat, Cycle, Iterate, Repeatedly, TakeWhile, or DropWhile producer, including nested adapters and Cycles over admitted sources)
+  ∧ ∀ `Vector` ∧ `String`: `last` returns the logical element at the final index without removal
+  ∧ ∀ `Queue`: `last` returns the final element in the Queue's FIFO traversal order without removal
+  ∧ ∀ `Set`: `last` MAY return one stored element as presented by the implementation's `LogicalTraversalOrder` ∧ ∀ caller: ¬∃ reliance on which element is returned because the `Set`'s `LogicalTraversalOrder` is semantically unordered
+  ∧ ∀ nonempty_map: `last` returns one value-semantic `MapEntry` value from the `Map`'s `LogicalTraversalOrder` ∧ ∀ caller: ¬∃ reliance on which entry is returned because the `Map`'s `LogicalTraversalOrder` is semantically unordered
+  ∧ ∀ map_entry_value: `last` returns its value
+  ∧ ∀ composition: `last(first(map))` returns the value
+  ∧ ∀ empty_sequenceable_collection: `last` returns the input's `DefaultElement`
+  ∧ ∀ producer: `last` admits `Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`, `TakeWhile`, and `DropWhile` and returns an owning copy of the final element in the producer's observable logical traversal
+  ∧ ∀ producer element type: preserves that type ∧ a yielded `MapEntry` is returned whole rather than projected to its value ∧ ¬∃ additional element equality, ordering, or producer default-construction or assignment requirement
+  ∧ ∀ empty producer observation: returns the element type's `DefaultElement`, including when the bounded adapter window yields no element or a Cycle's source traversal is empty
+  ∧ ∀ producer at observation cap zero: returns `DefaultElement` without starting source traversal or invoking source or predicate callbacks
+  ∧ ∀ producer observation: respects the original capped source window, any smaller source window, and actual traversal exhaustion ∧ skipping never replenishes that budget
+  ∧ ∀ producer last access: evaluates the entire observable window exactly once, tracking the final observed element ∧ ¬∃ preliminary exact-count traversal, materialization, cached result, or second producer observation ∧ never advances beyond the actual endpoint or window bound
+  ∧ ∀ `TakeWhile` last access: evaluates its predicate in order, stopping at the first false candidate or window exhaustion, and returns the final candidate for which the predicate was true
+  ∧ ∀ `DropWhile` last access: scans the entire matching prefix within the original window and returns the final observed element of the remaining window
+  ∧ ∀ `Cycle` last access: traverses its configured observation window from the Cycle's current logical starting position under the existing restart policy ∧ ¬∃ source exact-count prepass or window restart beyond that policy
+  ∧ ∀ producer: callback timing follows its existing traversal contract ∧ Repeatedly invokes its callback once per visited value ∧ Iterate invokes its step only between visited values ∧ callback state stored by value is preserved in the source, while referenced or static callback state remains shared
+  ∧ ∀ repeated `last` calls: starts a fresh traversal under the source's existing traversal-copy rules ∧ ¬∃ cross-call cache ∧ preserves stored value-held state ∧ effects through references or static storage remain shared only as permitted by the underlying callback/source contract
+  ∧ ∀ result: independently owning single value with no nested result, absence sentinel, status wrapper, preflight predicate, or transducer-only arity
+  ∧ ∀ `last`: preserves the input ∧ `constexpr` ∧ `noexcept` ∧ non-mutating ∧ non-allocating ∧ `NoRttiConstraint`
+  ∧ ∀ unsupported_input, including external ranges, containers, arrays, and scalars, ∨ wrong arity: fails compilation with one targeted diagnostic naming `last` and its supported collection, `MapEntry`, and producer domains
+  ∧ ∀ lifecycle: the contract is binding ∧ implementation approval and verification remain explicit and separate ∧ no publication or implementation claim follows from contract approval
+  rationale: the stakeholder approved `last(source)` as the single-element counterpart of `butlast` and `take_last(1, source)` within the bounded collection-shaping family, promoting the deferred map/entry access drafts (`REQ-FN-002A`–`002B`) into this binding contract while `key` and `val` remain deferred
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-20, rationale_source: origin_artifact, compound_by_design: true}
+
 λ REQ-SEQ-022(x).
-  ∀ context: the first-pass collection-shaping and traversal family includes bounded operations corresponding to `take`, `drop`, `take_while`, `drop_while`, `take_last`, `drop_last`, `take_nth`, `nth`, `nthnext`, `nthrest`, `butlast`, `map_indexed`, `rseq`, `second`, `ffirst`, `fnext`, `nfirst`, `nnext`, `some`, `is_every`, `not_any`, `not_every`, `distinct`, `dedupe`, `frequencies`, `reductions`, `split_at`, `split_with`, `mapcat`, `interleave`, `interpose`, `partition`, `partition_all`, `partition_by`, `partitionv`, `partitionv_all`, `group_by`, `flatten`, `tree_seq`, `keep`, `keep_indexed`, `remove`, `replace`, `mapv`, `filter`, `filterv`, `subvec`, `find`, `reduce`, `reduce_kv`, `sort`, and `sort_by`
+  ∀ context: the first-pass collection-shaping and traversal family includes bounded operations corresponding to `take`, `drop`, `take_while`, `drop_while`, `take_last`, `drop_last`, `take_nth`, `nth`, `nthnext`, `nthrest`, `butlast`, `last`, `map_indexed`, `rseq`, `second`, `ffirst`, `fnext`, `nfirst`, `nnext`, `some`, `is_every`, `not_any`, `not_every`, `distinct`, `dedupe`, `frequencies`, `reductions`, `split_at`, `split_with`, `mapcat`, `interleave`, `interpose`, `partition`, `partition_all`, `partition_by`, `partitionv`, `partitionv_all`, `group_by`, `flatten`, `tree_seq`, `keep`, `keep_indexed`, `remove`, `replace`, `mapv`, `filter`, `filterv`, `subvec`, `find`, `reduce`, `reduce_kv`, `sort`, and `sort_by`
   ∧ ∀ listed_operation: an individually named downstream behavioral specification exists before it is treated as implementation-ready
   ∧ ∀ specification: defines the operation's public arity and argument roles, callback contract where applicable, termination rule, equality and ordering capabilities, nested-result representation, producer behavior, result capacity derivation, typed-absence behavior, failure/preflight behavior, and complete-versus-bounded-result classification
   ∧ ∀ operation_level_contract: ¬∃ inference only from this inventory
@@ -249,4 +276,4 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
 ## Traceability and Related Requirements
 
 - **Downstream Artifact**: Free-function templates for sequence shaping, slicing, filtering, mapping, grouping, and ordering.
-- **Governed REQs**: `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding), `REQ-FN-035` (binding), `REQ-FN-036` (binding alias), `REQ-FN-037` (binding), `REQ-FN-038` (binding), `REQ-FN-039` (binding, active), `REQ-FN-040` (binding, active), `REQ-FN-041` (binding integration contract), `REQ-FN-042` (binding; implementation approval separate), `REQ-FN-043` (binding; implementation approval separate), `REQ-FN-044` (binding; implementation approval separate), `REQ-FN-045` (binding; implementation approval separate), `REQ-SEQ-022`.
+- **Governed REQs**: `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding), `REQ-FN-035` (binding), `REQ-FN-036` (binding alias), `REQ-FN-037` (binding), `REQ-FN-038` (binding), `REQ-FN-039` (binding, active), `REQ-FN-040` (binding, active), `REQ-FN-041` (binding integration contract), `REQ-FN-042` (binding; implementation approval separate), `REQ-FN-043` (binding; implementation approval separate), `REQ-FN-044` (binding; implementation approval separate), `REQ-FN-045` (binding; implementation approval separate), `REQ-FN-046` (binding; implementation approval separate), `REQ-SEQ-022`.
