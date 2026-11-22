@@ -1,6 +1,6 @@
 ---
 created: 2026-08-05
-last_updated: 2026-11-19
+last_updated: 2026-11-20
 status: draft
 ---
 
@@ -15,7 +15,7 @@ producers `Range`, `Repeat`, `Cycle`, `Iterate`, `Repeatedly`, `TakeWhile`, and
 collection forms, and factories. The active free-function surface includes
 primitive operations such as `first`, `has_first`, `next`, `has_next`,
 `has_rest`, and `rest`; higher-order operations `map`, `reduce`, `filter`,
-`filterv`, `take`, `drop`, `take_while`, `drop_while`, `take_last`, `drop_last`, and `butlast`; and producer
+`filterv`, `take`, `drop`, `take_while`, `drop_while`, `take_last`, `drop_last`, `butlast`, and `last`; and producer
 materialization through `into`, preflighted by `fits_into`. Sequence conversion (`seq`) converts
 collections and supported producers to bounded `Vector` values under
 `REQ-SEQ-010`. Const range traversal and read-only C++ interoperability are
@@ -876,6 +876,14 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Related:** Sequence, SequenceableCollection, Producer, HasFirst, TakeWhile, DropWhile, Cycle, Traversal, LogicalTraversalOrder, MapEntry, DefaultElement, Peek
 - **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
 - **Examples:** `first(vector<int, 4>(10, 20))` is `10`; `first(Queue<int, 4>{5, 6})` is `5`; `first(MapEntry<int, int>{1, 100})` is `1`; `first(vector<int, 4>())` is the default `int` value.
+
+
+### Last
+- **Definition:** The free function that returns the final logical element of a cljonic collection, producer, or `MapEntry`. `Vector` and `String` yield the element at the final index without removal, `Queue` yields the final element in FIFO traversal order without removal, `Map` yields one value-semantic `MapEntry`, and `Set` yields one stored element; `Map` and `Set` traversal order is not semantically significant. A `MapEntry` input yields its value, so `last(first(map))` returns the value. An empty sequenceable collection yields its `DefaultElement`. Producer access returns an owning copy of the final observable element from any cljonic producer, including nested predicate adapters and Cycles over them; yielded MapEntry values remain whole entries. Producer last access traverses the entire observable window exactly once to reach the final element, without an exact-count prepass, materialization, cached result, second observation, or advancement beyond the window; TakeWhile stops at its first false candidate or window exhaustion, DropWhile scans its entire bounded matching prefix, and Cycle follows its current logical starting position and existing restart policy. Empty or zero-cap producer observations yield the element type's `DefaultElement`; zero cap starts no traversal or callbacks. Each call uses fresh traversal under existing callback-state rules; authorized external effects may repeat. Producer and MapEntry support are active after separate explicit implementation approval and verification; existing collection behavior is unchanged. Unsupported sources and wrong arities are rejected with targeted compile-time diagnostics. The operation is `constexpr`, non-throwing, non-allocating, non-mutating, and uses no RTTI.
+- **Deprecated Synonyms:** last element, final element
+- **Related:** First, TakeLast, DropLast, Sequence, SequenceableCollection, Producer, TakeWhile, DropWhile, Cycle, Traversal, LogicalTraversalOrder, MapEntry, DefaultElement, Peek
+- **Usage:** Requirements, architecture, specifications, tests, implementation, and documentation
+- **Examples:** `last(vector<int, 4>(10, 20, 30))` is `30`; `last(Queue<int, 4>{5, 6})` is `6`; `last(MapEntry<int, int>{1, 100})` is `100`; `last(vector<int, 4>())` is the default `int` value.
 
 
 ### NotEmpty
