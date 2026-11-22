@@ -1,5 +1,53 @@
 ## Current Session State
 
+- last_session_id: cf87169d-6fe2-4f2b-83f8-51cd6f646f91
+- current_timestamp: 2026-11-22T07:55:52-07:00
+- session_complete: true
+- recover: Human review of all layers (requirement, vocabulary, architecture, spec, tests, implementation), the two Phase 7 test fixes, the mainpage cheatsheet `\ref Last "last"` entry in `src/cljonic-core.hpp` plus the regenerated `cljonic.hpp`, and the seven no-heap probe gap closures from the two completeness-audit rounds; then the code commit decision. Code commits remain human-owned and were NOT performed; only the `mementum/` memory commit was made by `/gybis-fini` (session cf87169d).
+- task: Implement `last(source)` under `REQ-FN-046` following the approved 8-phase plan (requirement -> vocabulary -> architecture + arch-check -> spec -> tests -> implementation -> gates -> docs/closeout), pausing for human approval between layers. COMPLETE through Phase 8 including the mainpage cheatsheet entry (fixed after the human caught the omission); additionally re-audited end-to-end by `/cljonic-api-complete last free function api` with a contract-derived 35-row evidence table, an executed Doxygen example, and two rounds of runtime no-heap probe strengthening (seven gap closures total); session then closed by `/gybis-fini` (state encoded, memory committed). Awaiting human review of all layers and the code commit decision.
+- questions:
+  - Layer approvals pending (human unavailable): confirm Phase 1 `REQ-FN-046`, Phase 2 vocabulary entry, Phase 3 architecture rule, Phase 4 spec, Phase 5 tests, Phase 6 implementation - especially `last(map)` returning one value-semantic `MapEntry` (whole entry, mirroring `first`).
+  - Plan deviation to adjudicate: no new compile-fail group for `last` was added; the rejection overload's static_assert is exercised only via `STATIC_REQUIRE_FALSE(HasAdmittedLast<int>)`. If the human wants a compile-fail group, add `last` to the Makefile compile-fail targets following the first group.
+  - Surfaced signals (pre-existing, not fixed): `butlast` has no vocabulary entry and no S2 architecture rule despite being implemented; `take_nth` is stale in the `deferred_collection_shaping_traversal_family` list (commit d3ea269e added its rule but did not remove it from the list).
+  - New synthesis page `mementum/knowledge/no-heap-probe-derivation.md` was created by `/gybis-fini` p2 and rode along in the memory commit; confirm, revise, or revert it. The a5424c01 state.md correction below is now committed by that same memory commit, which resolves the earlier uncommitted-correction signal.
+- decisions:
+  - `last(source)` result is a single owning value copy of the source element type; absence returns `DefaultElement` (static empty or cap-zero without traversal; empty traversal after callback timing).
+  - `MapEntry` is admitted for `last` (returns its value) per the promoted `REQ-FN-002A`/`002B` drafts, unlike `butlast`'s compile-time rejection.
+  - Producers are traversed once across the full observable window (no early stop, no caching, no second observation).
+  - `take_while` semantics confirmed by the gate: the window excludes the first false candidate, so `last(take_while(...))` is the final true candidate; the exhaustion case (`all true`) yields the final element.
+  - Runtime no-heap evidence must be derived from the contract, not from the existing tests: the audit added `take_while`/`drop_while` producer families, a referenced-callback-state case, and a no-`operator==` element type to `tests/no_heap/cljonic-last-probes.cpp` because obligations covering them were otherwise unprobed. The no-`operator==` element is a local `struct Element` whose default member initializer makes the empty-observation default observable without any equality operator.
+  - A producer that yields `MapEntry` values keeps the whole entry: `last(repeat(2, map_entry(1,10)))` is `MapEntry<int,int>{1,10}`, because the MapEntry->value projection is applied at top level only (a `MapEntry` produced by an inner producer is an ordinary element). The projection is exercised through `last(first(hash_map(5,50))) == 50`.
+  - Input preservation is asserted per source family, not only for vector/map/set: the Queue case binds a named local and asserts both `last(queue_source) == 3` and `equal(queue_source, queue(1,2,3))`, which is what makes "returns the final FIFO element without removal" observable rather than merely asserted.
+  - Boundary obligations whose value alone would pass vacuously are accompanied by a side-effect counter: the zero-cap case asserts `zero_calls == 0` alongside `zero_cap == 0`, so "no traversal" is proven rather than inferred from the default value.
+  - `/gybis-fini` p2 synthesis: the recurring no-heap probe gap classes were crystallized into a new `Reference` knowledge page `mementum/knowledge/no-heap-probe-derivation.md` (derive rows from the contract; family coverage, callback-state distinction, no-`operator==` element types, whole-vs-projection, side-effect counters for vacuous boundaries, per-family input preservation).
+- next:
+  1. Human review of all layers (requirement, vocabulary, architecture, spec, tests, implementation), the two Phase 7 test fixes, the mainpage cheatsheet `\ref Last "last"` entry in `src/cljonic-core.hpp` plus the regenerated `cljonic.hpp`, and the seven no-heap probe gap closures from the two completeness-audit rounds; then the code commit decision. Code commits remain human-owned and were NOT performed; only the `mementum/` memory commit was made by `/gybis-fini` (session cf87169d).
+  2. Adjudicate the compile-fail-group deviation: either approve its absence or request the `last` compile-fail group.
+  3. Adjudicate the pre-existing signals (butlast vocabulary/S2 rule gap; take_nth stale deferral) before or with the code commit.
+  4. Note the deviation from the default HTML-deferral preference: `make docs` was run this session because the human explicitly asked about the rendered cheatsheet; the HTML in `docs/` is therefore regenerated and current, not deferred.
+  5. Review the synthesis knowledge page `mementum/knowledge/no-heap-probe-derivation.md` and either keep or revert it.
+- validation:
+  - /gybis-arch-check: PASS (startup gates, structure, coherence, policy enforcement, constraints).
+  - allium check + analyse on specs/sequences/last.allium: clean.
+  - make trace-id-check SPEC=specs/sequences/last.allium TESTS="tests/cljonic-last-spec-tests.cpp": PASS 35/35 obligations.
+  - make traceability-spec-to-code-update-snapshot: ok.
+  - make test: PASS 430/430 tests (includes cljonic-last-spec-tests.cpp in both modular and single-header TUs).
+  - make no-heap: ok (last_probe compiled, ran, no heap symbols).
+  - make diagnostic-coverage: ok (cljonic-last.hpp fallback entry registered).
+  - make core-cheatsheet-format: ok (L line now `\ref Last "last", less, less_equal`; same-letter + ASCII-order rules pass).
+  - make docs: ok (Doxygen resolves `\ref Last` → namespacecljonic_1_1core.html#Last; `last` listed in docs/index.html).
+  - make cljonic: ok (cljonic.hpp regenerated with the cheatsheet change).
+  - make docs-examples: ok (compiled=93; target `cljonic-last-example-1.cpp` freshly extracted this invocation). Compile-only — treated as insufficient alone.
+  - Link + execute of the extracted example (`build/docs-examples/cljonic-last-example-1.cpp` → `/tmp/cljonic-last-example`): no warnings under `-Wall -Wextra`, exit 0.
+  - make no-heap (re-run after the final probe edit): ok; `./build/cljonic_no_heap_probe` exit 0 and `./build/cljonic_single_header_no_heap_probe` exit 0; both binaries newer than `tests/no_heap/cljonic-last-probes.cpp`.
+  - make upsert-gate-fast (re-run after the final probe edit): ok (requirements-structure clauses=379, vocabulary-structure terms=220, audit/lint/complexity/diagnostic-coverage/diagnostic-message-labels/traceability-spec-to-code/no-heap all ok).
+  - make trace-id-check SPEC=specs/sequences/last.allium TESTS="tests/cljonic-last-spec-tests.cpp": obligations=35 traces=35.
+  - make no-heap (re-run after the second probe-strengthening round, five further gap closures): ok; `./build/cljonic_no_heap_probe` exit 0 and `./build/cljonic_single_header_no_heap_probe` exit 0; both binaries newer than `tests/no_heap/cljonic-last-probes.cpp`.
+  - make upsert-gate-fast (re-run after the second probe-strengthening round): ok.
+  - Docs freshness: `docs/index.html` newer than every file under `src/` (`find src -newer docs/index.html` empty).
+  - `/gybis-fini` p1-p3: state.md upserted in place (block 1 only; the historical a5424c01 block is preserved verbatim); p2 synthesized `mementum/knowledge/no-heap-probe-derivation.md`.
+  - `/gybis-fini` p4: `git add mementum/` + `git commit -m "session: cf87169d-6fe2-4f2b-83f8-51cd6f646f91 - Implement last(source) under REQ-FN-046"` (memory commit only; no code, docs, or generated outputs staged).
+
 - last_session_id: a5424c01-26a1-4bdf-9432-da6e4e498472
 - current_timestamp: 2026-11-19T16:06:29-07:00
 - session_complete: true
