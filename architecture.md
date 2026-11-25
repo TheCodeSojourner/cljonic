@@ -125,28 +125,10 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | rationale: admission must not silently lose information or change an operation's meaning
 
 λ S5_checked_arithmetic_policy(x). CheckedArithmeticOperation(x) → preserve(ArithmeticOperandDomain ∧ ArithmeticResultType ∧ mathematical_failure_semantics)
-  | add(x) → support(add<T>() ∧ unary_add(x) ∧ binary_add(x,y) ∧ variadic_left_fold(x,y,&more))
-  | add<T>() → T{} ∧ require(explicit_supported_numeric_type(T))
-  | unary_add(x) → x
-  | variadic_add(x,y,&more) → single_static_lossless_common_type(types(x,y,&more)) ∧ left_fold_checked_addition
-  | sub(x) → unary_checked_negation(x) ∨ binary_checked_subtraction(x,y) ∨ variadic_left_fold_subtraction(x,y,&more)
-  | sub() → reject_compile_time
-  | can_sub(x) → same_admission_and_arity_as(sub) ∧ true_iff_no_checked_failure
-  | mult(x) → support(mult<T>() ∧ unary_mult(x) ∧ binary_mult(x,y) ∧ variadic_left_fold_product(x,y,&more))
-  | mult<T>() → T{1} ∧ require(explicit_supported_numeric_type(T))
-  | unary_mult(x) → x
-  | binary_or_variadic_mult(x,y,&more) → single_static_lossless_common_type(types(x,y,&more)) ∧ left_fold_checked_multiplication
-  | can_mult(x) → same_admission_and_arity_as(mult) ∧ true_iff_no_checked_failure
-  | div(x) → unary_floating_reciprocal(x) ∨ binary_checked_division(x,y) ∨ variadic_left_fold_division(x,y,&more)
-  | unary_div(x) → supported_floating_type(x) ∧ 1/x ∧ integer_x → reject_compile_time
-  | div() → reject_compile_time
-  | binary_or_variadic_div(x,y,&more) → single_static_lossless_common_type(types(x,y,&more)) ∧ left_fold_checked_division
-  | can_div(x) → same_admission_and_arity_as(div) ∧ true_iff_no_checked_failure
-  | operand_type_conversion(x) → lossless
-  | result_overflow(x) ∨ result_underflow(x) → checked_failure(x)
-  | IntegerDivisionSemantics(x) → Clojure_compatible_quot_rem_mod
-  | rationale: predictable arithmetic failures and sign semantics protect embedded determinism without silently changing values
-  | traces_to(REQ-NUM-015A ∧ REQ-NUM-015B ∧ REQ-NUM-015C ∧ REQ-NUM-015D ∧ REQ-NUM-015E ∧ REQ-NUM-015F ∧ REQ-NUM-015G ∧ REQ-NUM-015H ∧ REQ-NUM-015I ∧ REQ-NUM-015J ∧ REQ-NUM-015K ∧ REQ-NUM-015L)
+  | policy_boundary(x) → keep_checked_arithmetic_behavior_authoritative_in_requirements_and_specs)
+  | responsibility(x) → implement_failures_without_silent_overflow_underflow_or_domain_crossing)
+  | rationale: predictable arithmetic failures and sign semantics protect embedded determinism)
+  | traces_to(REQ-NUM-015A–REQ-NUM-015L)
 
 λ S5_value_and_failure_semantics(x). collection_update(x) → independently_valid_persistent_result(x)
   | owning_result(x) → independent_of_source_lifetime(x)
@@ -236,135 +218,16 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | traces_to(S5_checked_arithmetic_policy ∧ S5_domain_and_conversion_safety ∧ S5_value_and_failure_semantics)
 
 λ S3_explicit_conversion_surface(x). governed_by(REQ-NUM-008 ∧ REQ-NUM-009 ∧ REQ-NUM-010 ∧ REQ-NUM-010A–010E ∧ REQ-NUM-012 ∧ REQ-NUM-013 ∧ REQ-NUM-017)
+  | mechanism(x) → centralize(named_destination_admission, loss_policy_selection, preflight_agreement, and diagnostic_mode_configuration)
+  | responsibility(x) → share(numeric_character_byte_conversion_policy_across_free_functions_and_preflights)
+  | component_boundary(x) → preserve(application_selected_diagnostic_handler_boundary_and_library_managed_error_code_boundary)
   | traces_to(S5_domain_and_conversion_safety)
-  | implemented_core_surface(x) ≡ to_byte ∧ to_char ∧ to_count ∧ to_double ∧ to_float ∧ to_index ∧ to_int ∧ to_long
-    ∧ to_long_double ∧ to_long_long ∧ to_short ∧ to_size ∧ to_uint ∧ to_ulong ∧ to_ulong_long ∧ to_ushort ∧ to<T>
-  | named_destination(x) → native_Cpp_type_under(REQ-NUM-008) ∧ destination(to_count ∨ to_index ∨ to_size) ≡ std::size_t
-  | count_index_size_synonyms(x) → identical_behavior ∧ matching_preflights ∧ ¬implied_collection_specific_bounds_or_capacity
-  | generic_destination(to<T>) ≡ T ∧ require(defined_source_destination_contract) ∧ ¬arbitrary_cast_facility
-    ∧ admit(char ∨ std_byte ∨ supported_noncharacter_integer ∨ supported_binary_floating)
-    ∧ reject(bool ∨ character_except_char ∨ enum ∨ pointer ∨ user_defined) ∧ typedef_follows_underlying_type
-  | equivalent_named_and_generic_contracts(x) → identical(admission ∧ result ∧ failure_behavior)
-  | ¬required_external_application_config ∧ ¬globally_configured_destination_types
-  | default_conversion(x) → exact_for_supplied_value under REQ-NUM-009 ∧ ordinary_argument_admission_follows(REQ-CONV-001)
-  | explicit_conversion_source(x) → preserve_original_type_and_value_before_validation ∧ ¬implicit_conversion_to_destination
-  | numeric_conversion_matrix(x) → exact_default_for(integer_to_integer ∨ integer_to_float ∨ float_to_integer ∨ float_to_float)
-    ∧ truncate_only_for(float_to_integer) ∧ nearest_only_for(integer_to_float ∨ float_to_float)
-    ∧ reject_unsupported_policies_at_compile_time
-  | exact_integer_to_unsigned(x) → reject_negative_before_conversion ∧ require(nonnegative_value_representable) ∧ ¬modulo_wrap
-  | exact_float_to_integer(x) → check(finite ∧ integral ∧ mathematical_destination_range) before_conversion
-    ∧ ¬out_of_range_cast_as_safety_test ∧ diagnose_under(REQ-NUM-010C_precedence)
-  | truncate_float_to_integer(x) → check(finite ∧ truncated_toward_zero_value_in_destination_range) before_cast
-    ∧ admit(original_outside_integer_range_when_truncated_result_fits) ∧ ¬invalid_cast_as_safety_test
-  | explicit_loss_policy(x) → truncation_toward_zero_for_integer_destination ∨ nearest_for_floating_destination under REQ-NUM-012
-  | finite_source_magnitude_exceeds_destination_max(x) → floating_conversion_failure(out_of_range) for exact ∧ nearest
-  | nearest_halfway_tie(x) → even_least_significant_significand_digit ∧ ¬depend_on(ambient_rounding_mode)
-  | exact_subnormal(x) ∨ nearest_nonzero_subnormal(x) → permitted_when_destination_represents_result
-  | nearest_nonzero_source_rounds_to_zero(x) → conversion_failure(x) ∧ apply(actual_destination_representable_values)
-  | numeric_conversion_of(NaN ∨ positive_infinity ∨ negative_infinity) → conversion_failure ∧ includes_same_type_conversion
-    ∧ preserve(existing_nonconversion_storage_and_usage_contracts)
-  | floating_zero_to_floating(x) → preserve_sign_when_supported ∧ reject_negative_zero_if_destination_lacks_signed_zero
-  | floating_zero_to_integer(x) → integer_zero ∧ integer_zero_to_floating(x) → positive_zero
-  | supported_floating_conversion(x) → binary_radix ∧ target_environment_satisfies(approved_conversion_contract)
-    ∧ additional_generic_floating_type(x) → require(defined_and_satisfied_contract) ∧ nonbinary_floating_formats_unapproved
-    ∧ reject_unsupported_types_when_detectable ∧ document_undetectable_environmental_restrictions
-  | policy_selection(x) → optional_argument_after_value ∧ default(exact) ∧ same_argument_for_matching_preflight
-    ∧ distinct_scoped_compile_time_tags(cljonic::core::conversion::truncate, cljonic::core::conversion::nearest)
-    ∧ reject_unsupported_combinations_at_compile_time ∧ ¬require(public_runtime_enum_policy)
-  | loss_policy(x) → ¬wrapping ∧ ¬saturation ∧ reject_overflow ∧ selection_visible_at_call_site
-  | source_admission(x) → follow(REQ-NUM-013) ∧ distinguish(unsupported_source_type ∧ admitted_source_value_failure)
-  | ordinary_numeric_sources(x) ≡ builtin_integer_except(Boolean ∨ character) ∨ builtin_floating
-  | char_source_to_noncharacter_integer(x) → exact_default_only ∧ preserve(native_numeric_value ∧ platform_char_signedness)
-    ∧ check(destination_representability) before_cast ∧ negative_to_unsigned_failure(out_of_range) ∧ ¬parse_digit
-  | char_source_to_floating(x) ∨ other_character_source_to_numeric(x) → reject_at_compile_time
-    ∧ fixed_width_alias_of_character_type(x) → follow_underlying_type ∧ ¬distinguish_typedef_spelling
-  | generic_destination(signed_char ∨ unsigned_char ∨ aliases_of_those_types) → reject_at_compile_time
-    ∧ preserve_separate(to<char> ∧ to<std::byte>) ∧ admit(supported_noncharacter_integer_destinations)
-  | explicit_domain_boundaries(x) ≡ checked_integer_to_char ∨ unchanged_char_to_char ∨ checked_char_to_integer ∨ checked_integer_to_byte ∨ checked_char_to_byte
-  | low_level_character_conversion(x) → independent_of(String_character_validity) ∧ admit(NUL ∧ representable_non_ASCII)
-    ∧ preserve(existing_String_policy ∧ character_is_valid ∧ implicit_character_domain_rejection)
-  | character_destination(x) → accept_native_char_range_from(integer ∨ char ∨ std_byte) ∧ validate_before_cast
-    ∧ range(std::numeric_limits<char>::min()..std::numeric_limits<char>::max()) ∧ range_failure(out_of_range)
-    ∧ reject(floating ∨ Boolean ∨ other_character ∨ enum ∨ pointer ∨ user_defined) ∧ reject(truncate ∨ nearest)
-  | std_byte_source(x) → admit_only_for(std_byte ∨ character_destination) ∧ reject_ordinary_integer_and_floating_destinations
-  | byte_destination(x) → accept_integer_in(0..UCHAR_MAX) ∨ nonnegative_native_char ∨ unchanged_std_byte
-    ∧ negative_char_failure(out_of_range) ∧ ¬reinterpret_negative_char_as_unsigned_byte
-    ∧ reject(floating ∨ Boolean ∨ other_character ∨ enum ∨ pointer ∨ user_defined) ∧ reject(truncate ∨ nearest)
-  | same_type_conversion(x) → admitted_under_destination_contract ∧ exact_default_only ∧ reject_explicit_loss_policy_at_compile_time
-    ∧ determine_by(actual_Cpp_type_identity_not_alias_spelling_or_representation) ∧ floating_inputs_still_follow(non_finite ∧ signed_zero_validation)
-  | floating_source_to(char ∨ std::byte) → reject_even_with_loss_policy ∧ require(successful_explicit_integer_intermediate)
-  | parsing ∨ arbitrary_user_defined_conversion → ¬implicit_conversion_source
-  | runtime_conversion(x) → preflight_available(x) ∧ direct_destination_return(x) under REQ-NUM-010
-  | preflight_for(to_*(x)) ≡ can_to_*(x) ∧ preflight_for(to<T>(x)) ≡ can_to<T>(x)
-  | preflight(x, policy) → true iff corresponding_conversion_succeeds(x, policy) ∧ same(source_admission ∧ policies)
-    ∧ ¬throw ∧ ¬allocate ∧ ¬record_diagnostic ∧ ¬invoke_failure_handler
-  | false_preflight_followed_by_same_conversion(x, policy) → configured_failure_outcome ∧ diagnostic_uses_same_failed_conditions
-    ∧ applies_to(numeric ∧ character ∧ byte ∧ count_index_size_aliases) ∧ ¬require(caching)
-  | supported_conversion_and_preflight(x) → constant_expression_usable_when_inputs_and_environment_allow
-  | failed_conversion_required_constant_expression(x) → compile_failure ∧ ¬runtime_diagnostic ∧ ¬handler ∧ ¬fallback
-    ∧ narrow_exception_to(REQ-ERR-008_statically_known_overflow_rule) under REQ-NUM-009 ∧ REQ-NUM-010A ∧ REQ-NUM-010B
-  | failed_constant_preflight(x) → false ∧ ¬compile_failure_from_checked_value
-  | ¬required_constant_evaluation(x) → runtime_mode_applies_even_if_input_is_literal
-  | diagnostic_mode(x) → record_compact_static_error_code(x) ∧ call(application_provided_nonreturning_failure_handler) ∧ required_implementation_capability(x)
-  | failure_handler(x) ≡ cljonic::core::conversion_failure_handler() → application_definition_of_noreturn_noexcept_declaration
-    ∧ ¬library_default ∧ ¬runtime_registration
-    ∧ may_inspect(recorded_error_code) ∧ ¬return_to_conversion ∧ ¬throw ∧ ¬allocate ∧ ¬deallocate
-    ∧ compliance_is_application_responsibility ∧ verify_by_review_and_target_tests ∧ ¬claim_library_detects_violations
-  | normal_mode(x) → ¬require(handler_definition) ∧ missing_diagnostic_handler_with_reachable_failure_path → link_failure
-  | error_code(x) → scoped_enum(cljonic::core::ConversionError) ∧ one_library_managed_static_code_shared_across_translation_units
-    ∧ initial_value(none) ∧ set_before(handler) ∧ successful_conversions_and_preflights_leave_unchanged
-    ∧ debugger_or_crash_dump_inspectable_subject_to_target_and_build(x) ∧ ¬guarantee(reset_preserves_state)
-    ∧ documented_meaning(x) ∧ ¬runtime_message_construction_required
-  | conversion_error() → non_throwing_read_only_code ∧ normal_mode_returns(none) ∧ ¬reset_required
-  | normal_mode(x) → ¬diagnostic_state_storage ∧ ¬handler_reference ∧ ¬registration ∧ ¬diagnostic_initialization
-    ∧ ¬claim_zero_conversion_checking_or_executable_code_overhead
-  | error_category(x) ∈ {out_of_range, precision_loss, non_finite_input, underflow_to_zero, invalid_character, unsupported_signed_zero}
-    ∧ overlapping_failures_select_first(non_finite_input, invalid_character, unsupported_signed_zero, out_of_range, underflow_to_zero, precision_loss)
-    ∧ classify_under_selected_policy ∧ precedence_does_not_change_success ∧ compile_time_rejections_have_no_runtime_code
-  | application_selects(diagnostic_mode ∨ normal_mode) → compile_time_macro(CLJONIC_CONVERSION_DIAGNOSTICS) ∧ default(normal_mode) ∧ valid_values(0 ∨ 1)
-    ∧ identical_configuration_across_translation_units ∧ ¬required_external_config_file
-  | conversion_outcome(x) → default_returning_in_normal_mode ∧ document(nonreturning_diagnostic_failure_exception)
-    ∧ constant_evaluation_failure_is_separate_compile_time_rule ∧ conversion_preflight_is_boolean_predicate
-  | normal_mode_failure(x) → documented_destination_fallback(x)
-  | fallback(x) ≡ max_integral_destination ∨ max_finite_floating_destination ∨ all_bits_set_byte ∨ NUL_for_char under REQ-NUM-010A
-  | fallback(x) → ¬guaranteed_distinct_from_success(x) ∧ certainty_requires(preflight)
-    ∧ downstream_api_receives_ordinary_value(x) ∧ applies_own_checks ∧ ¬infer_prior_failure ∧ ¬hidden_failure_flag
-  | diagnostic_state(x) → governed_by(REQ-PLAT-012 ∧ REQ-PLAT-013) ∧ ¬required_synchronization
-  | conversion_diagnostic_mode(x) → narrow_exception_to(REQ-ERR-007 process_termination ∧ library_managed_error_state)
-    ∧ preserve(no_throw ∧ no_allocation ∧ all_other_safety_protections)
-  | incomplete_operation_level_behavior(x) → ¬implementation_ready(x)
 
 λ S3_conversion_admission(destination, source). governed_by(REQ-CONV-001 ∧ REQ-CONV-002 ∧ REQ-CONV-003)
-  | argument_order: admission_predicates are destination_first(destination, source) matching REQ-CONV-001 ∧ directional_conversion_uses(source → destination)
+  | mechanism(x) → centralize(type_admission_and_element_construction_gates_at_conversion_boundaries)
+  | responsibility(x) → share_one_safe_conversion_and_checked_normalization_service_across_public_admission_paths)
+  | component_boundary(x) → keep_operation_specific_failure_and_diagnostic_policy_in_requirements_and_specs)
   | traces_to(S5_domain_and_conversion_safety)
-  | SafeImplicitConversion(destination, source) ≡ same_unqualified_type(destination, source)
-    ∨ (standard_arithmetic_conversion(source, destination) ∧ ValuePreservingConversion(source → destination)
-      ∧ ¬crosses(integer ↔ floating ∨ Boolean ∨ character ∨ enumeration domain))
-  | ValuePreservingConversion(source → destination) → preserve(entire_source_range ∧ precision ∧ floating_special_values)
-  | integer_floating_domain_crossing(x) → reject_at_compile_time ∧ require_explicit_conversion_before_ordinary_call
-  | revised_admission(x) → type_based_only ∧ ¬add_general_runtime_value_checks ∧ preserve(operation_specific_checks_and_documented_exceptions)
-  | explicit_conversion_preflight(x) → use(explicit_conversion_source_and_policy_admission) under REQ-NUM-010 ∧ REQ-NUM-013
-  | ¬SafeImplicitConversion(destination, source) → reject_at_argument_boundary
-  | NothrowElementConstruction(destination, argument_expression) ≡ SafeImplicitConversion(destination, argument_expression)
-    ∧ non_throwing_construction_from_actual_expression(argument_expression, destination)
-    ∧ preserve_argument_cv_qualification_and_reference_category(argument_expression)
-  | argument_construction_gate_applies(x) → require(NothrowElementConstruction(destination, argument_expression))
-  | SafeImplicitConversion(destination, source) → ¬imply(non_throwing_construction_from_actual_expression(source, destination))
-  | NothrowElementConstruction(x) → distinct_from(NothrowCollectionElement_storage_contract(x))
-  | cross_type_user_defined_conversion ∨ cross_type_pointer_conversion → reject_unless_explicitly_specified
-  | constructor ∨ member ∨ free_function ∨ preflight ∨ fallback ∨ variadic_operand → share(admission_rule)
-  | source_import → check(actual_dereference_expression ∧ nothrow_traversal
-    ∧ NothrowElementConstruction(destination, actual_dereference_expression))
-  | finite_Repeat_or_Repeatedly_count → require(non_boolean_non_character_integral ∧ nonnegative_type_range_fits_size_t)
-    ∧ admit(signed ∨ unsigned) ∧ trace_to(REQ-CONV-002E)
-  | admitted_finite_producer_count(count) → normalize(count ≤ 0 ? 0 : count) before(unsigned_conversion)
-    ∧ preserve_exact_positive_count ∧ ¬wrap ∧ ¬truncate
-  | MapEntry → constrained_key_value_construction ∧ preserve(default_construction ∧ value_semantics)
-  | CheckedNormalization(argument, destination) → check_representability_before_conversion(argument, destination)
-    ∧ (unrepresentable(argument, destination) → use(documented_failure_outcome(argument, destination)))
-  | checked_exception → Vector_String_index_normalization ∨ character_is_valid
-  | semantic_exception → String_text_import ∨ exact_Variant_alternative ∨ exact_MapEntry
-    ∨ exact_producer_source_callback ∨ existing_equality_domain
 
 λ S3_string_character_validity(character). valid(character) ≡ character ≠ NUL
   ∧ unsigned_byte_value(character) ≤ 0x7F
@@ -444,50 +307,16 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | vocabulary_consistency_gate(x) → enforce(canonical_vocabulary_governs) ∧ traces_to(S5_identity)
   | vocabulary_consistency_gate_fails(x) → reject_change(x)
 
-λ S3_rejection_diagnostic(x). (public_free_function(x) ∨ public_source_constructor(x)) ∧ closed_domain(x)
-    ∧ present_or_added_in_future(x)
-    ∧ expressible_through_named_capability_concepts(x)
-  → require(concept_based_primary_admission(x))
+λ S3_rejection_diagnostic(x). governed_by(REQ-DIAG-001 ∧ REQ-DIAG-003 ∧ REQ-DIAG-009 ∧ REQ-DIAG-010)
+  | mechanism(x) → use(concept_based_admission_overloads_and_instantiation_dependent_diagnostic_redirects)
+  | responsibility(x) → keep_public_rejection_language_user_facing_and_stable_across_closed_domains)
+  | component_boundary(x) → centralize(diagnostic_coverage_gate_for_free_functions_and_source_constructors)
   | traces_to(S5_domain_and_conversion_safety ∧ S5_value_and_failure_semantics)
-  | diagnostic_overload(x) → provide(one_per_supported_arity(x))
-    ∧ constrained_on(negation_of_admission_gate(x))
-    ∧ never_returns_a_value(x) ∧ ¬supported_call_target(x)
-  | diagnostic_overload_message(x) → identify(operation ∧ rejected_operand_types ∧ violated_domain_rule(x))
-    ∧ state_meaning_and_constraint(x) ∧ use(user_facing_language(x)) ∧ ¬use(capability_concept_jargon(x))
-    ∧ ¬depend_on(compiler_specific_wording(x))
-  | diagnostic_overload(x) → instantiation_dependent_static_assert(x)
-    ∧ mechanism(dependent_false_helper(x))
-  | domain_support_detection(x) → use(named_admission_concepts ∧ admissible_predicates(x))
-    ∧ ¬use(callability_detection(x))
-    ∧ callability_of_rejected_argument(x) → ¬supported_interface(x)
-  | whenever_possible(x) → require(diagnostic_overload(x)) where(a_distinct_overload_viable_only_for_rejected_calls(x))
-    ∧ otherwise → require(documented_exclusion(x) recorded_in(requirement ∧ function_header(x)))
-  | forward_binding(x) → bind(every_future_public_free_function(x))
-    ∧ ¬(admitted_gated(x) ∧ fallback_taught(x) ∨ ExcludedStatus(x)) → conformance_defect(x)
-    ∧ conformance_defect(x) → surface_by(diagnostic_coverage_gate(x))
-  | applies_to(all_public_free_functions_with_closed_domain ∧ collection_source_constructors)(x)
-  | illustrative_examples(x) ≡ equal ∧ not_equal ∧ producer_factory_functions ∧ collection_primitives
-  | collection_primitives(x) ≡ count ∧ get ∧ contains ∧ conj ∧ can_conj ∧ assoc ∧ can_assoc
-    ∧ dissoc ∧ disj ∧ peek ∧ pop ∧ empty ∧ is_empty ∧ first ∧ into ∧ fits_into
-  | collection_primitives(x) → ¬narrow(universal_obligation(x))
-  | producer_factory_functions(x) ≡ range ∧ repeat ∧ cycle ∧ iterate ∧ repeatedly ∧ take_while ∧ drop_while
-  | source_constructor_rejection(x) → name(collection ∧ violated_source_construction_rule) ∧ optionally_identify(enclosure_form when applicable) ∧ ¬recommend(materialization ∨ into ∨ fits_into)
-  | producer_factory_rejection(x) → name(operation ∧ violated_producer_admission_rule(x)) ∧ state_correct_usage(x)
-  | class_template_type_argument_rejection(x) → governed_by(S3_class_template_deduction_diagnostic(x)) ∧ not_exempted_here(x)
-  | rejection_diagnostic(x) → trace_to(REQ-DIAG-009 ∧ REQ-DIAG-010 ∧ REQ-DIAG-001 ∧ REQ-DIAG-003)
 
 λ S3_class_template_deduction_diagnostic(x). public_class_template(x) ∧ closed_type_argument_domain(x)
-    ∧ present_or_added_in_future(x) ∧ expressible_through_named_capability_concepts(x)
-  → require(named_capability_concept_constraint(x))
-    ∧ constraint_evaluated_before_any_constructor(x)
-    ∧ ¬∃ replace_constraint_with(class_body_static_assert(x) ∨ unconstrained_primary_template(x))
-    ∧ ¬∃ break(domain_support_detection(x))
-  | out_of_domain_deduction(x) → require(diagnostic_redirect(x))
-    ∧ mechanism(constrained_deduction_guide_on(negation_of_domain_rule(x)) ∧ provided_for(every_supported_arity(x)))
-    ∧ redirect_to(internal_diagnostic_specialization(x))
-    ∧ ¬present_on(admitted_deduction(x))
-  | internal_diagnostic_specialization(x) → carries(exactly_one_targeted_static_assert(x))
-    ∧ mechanism(dependent_false_helper(x))
+  | mechanism(x) → route_rejected_deduction_through_one_constrained_diagnostic_redirect_pattern)
+  | responsibility(x) → keep_closed_template_admission_and_user_facing_diagnostic_behavior_consistent)
+  | component_boundary(x) → isolate_diagnostic_specializations_from_admitted_primary_deduction)
     ∧ internal(x) ∧ ¬supported_construction_target(x) ∧ emits_message_only(x)
   | diagnostic_message(x) → identify(class_template ∧ rejected_argument_types ∧ violated_domain_rule(x))
     ∧ use(user_facing_language(x)) ∧ ¬depend_on(compiler_specific_wording(x))
@@ -596,127 +425,45 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ sequence_requirements_are_implementation_backed_through(seq ∧ REQ-SEQ-010) ∧ trace_to(REQ-CAP-014)
   | capability_matrix(x) → govern(public_concepts ∧ free_function_constraints ∧ documentation_names)
 
-λ S2_vector_factory_contract(x). vector(args...) → construct(owning_Vector_from_individual_arguments_in_order(x))
-  | vector(first, rest...) → element_type(unqualified_type(first)) ∧ capacity(argument_count)
-  | vector<T>(args...) → element_type(T) ∧ capacity(argument_count)
-    ∧ empty_argument_pack(x) → return(empty_Vector<T, 0>)
-  | vector<T, Capacity>(args...) → return(Vector<T, Capacity>)
-    ∧ require(argument_count ≤ Capacity ≤ CollectionMaximumElementCount)
-    ∧ empty_argument_pack(x) → return(empty_Vector<T, Capacity>)
-  | require(NothrowCollectionElement(element_type(x))
-    ∧ ∀ argument: NothrowElementConstruction(element_type(x), argument)
-    ∧ argument_count ≤ CollectionMaximumElementCount)
-    ∧ reuse(S3_conversion_admission)
-  | untyped_empty_call(x) ∨ invalid_element_or_argument(x) ∨ invalid_capacity(x)
-    → compile_time_rejection(x) ∧ targeted_operation_diagnostic(x)
-  | cljonic_collection_or_producer_argument(x) → one_element(x) ∧ ¬materialize_argument_elements(x)
-  | external_cpp_range_or_view_import(x) → use(Vector_source_constructor(x)) ∧ ¬factory_source_import(x)
-  | constexpr ∧ noexcept ∧ non_allocating ∧ independently_owning_result
-    ∧ preserve(lvalue_arguments) ∧ permit(move_from_rvalue_arguments)
-  | trace_to(REQ-FN-029A) ∧ realize(S5_vector_creation_policy)
+λ S2_vector_factory_contract(x). vector(args...) → coordinate_owning_Vector_construction_and_type_deduction
+  | mechanism(x) → share_capacity_argument_construction_and_nothrow_element_admission_services)
+  | responsibility(x) → preserve_one_factory_surface_and_copy_or_move_owning_result_boundary)
+  | traces_to(REQ-FN-029A) ∧ realize(S5_vector_creation_policy)
 
 λ S2_hash_map_factory_contract(x). hash_map(k1, v1, ...) → construct(owning_Map_by_associating_alternating_key_value_pairs_in_order(x))
-  | hash_map(k1, v1, rest...) → key_type(unqualified_type(k1)) ∧ value_type(unqualified_type(v1)) ∧ capacity(pair_count)
-  | hash_map<K, V>(pairs...) → key_type(K) ∧ value_type(V) ∧ capacity(pair_count) ∧ require(pair_count ≥ 1)
-  | hash_map<K, V, Capacity>(pairs...) → return(Map<K, V, Capacity>)
-    ∧ require(pair_count ≤ Capacity ≤ CollectionMaximumElementCount)
-    ∧ empty_argument_pack(x) → return(empty_Map<K, V, Capacity>)
-  | require(Map_key_and_value_element_requirements(K, V)
-    ∧ ∀ key_or_value_argument: NothrowElementConstruction(declared_type(x), argument)
-    ∧ pair_count ≤ CollectionMaximumElementCount)
-    ∧ reuse(S3_conversion_admission)
-  | odd_argument_count(x) ∨ untyped_or_capacityless_empty_call(x) ∨ invalid_element_or_argument(x) ∨ invalid_capacity(x)
-    → compile_time_rejection(x) ∧ targeted_operation_diagnostic(x)
-  | duplicate_key(x) → later_value_replaces_earlier(x)
-  | constexpr ∧ noexcept ∧ non_allocating ∧ independently_owning_result
+  | mechanism(x) → coordinate_type_deduction_capacity_validation_and_alternating_key_value_insertion)
+  | responsibility(x) → preserve_one_factory_surface_and_copy_on_associate_result_boundary)
+  | trace_to(REQ-FN-029D) ∧ realize(S5_map_creation_policy)
   | trace_to(REQ-FN-029D) ∧ realize(S5_map_creation_policy)
 
 λ S2_variant_factory_contract(x). variant<Alternatives...>() → construct(default_Variant_with_first_alternative_active(x))
-  | variant<Alternatives...>(value) → construct(Variant_by_existing_exact_alternative_rule(x))
-  | preserve(explicit_alternative_types ∧ existing_Variant_construction_semantics)
-  | constexpr ∧ noexcept ∧ non_allocating
+  | mechanism(x) → coordinate_explicit_alternative_deduction_with_variant_storage_admission)
+  | responsibility(x) → preserve_closed_variant_type_identity_and_non_allocating_result_boundary)
   | trace_to(REQ-CAP-012A) ∧ realize(S5_variant_creation_policy)
 
 λ S2_set_factory_contract(x). hash_set(args...) → construct(owning_Set_from_individual_arguments_in_order(x))
-  | hash_set(first, rest...) → element_type(unqualified_type(first)) ∧ capacity(argument_count)
-  | hash_set<T>(args...) → element_type(T) ∧ capacity(argument_count) ∧ require(argument_count ≥ 1)
-  | hash_set<T, Capacity>(args...) → return(Set<T, Capacity>)
-    ∧ require(argument_count ≤ Capacity ≤ CollectionMaximumElementCount)
-    ∧ empty_argument_pack(x) → return(empty_Set<T, Capacity>)
-  | require(Set_element_requirements(element_type(x))
-    ∧ ∀ argument: NothrowElementConstruction(element_type(x), argument)
-    ∧ argument_count ≤ CollectionMaximumElementCount)
-    ∧ reuse(S3_conversion_admission)
-  | untyped_empty_call(x) ∨ invalid_element_or_argument(x) ∨ invalid_capacity(x)
-    → compile_time_rejection(x) ∧ targeted_operation_diagnostic(x)
-  | duplicate_element(x) → runtime_construction_deduplicates(x)
-    ∧ constant_evaluated_duplicate_construction(x) → inherit_Set_compile_time_rejection(x)
-    ∧ deduced_capacity(argument_count(x)) ∧ ¬spare_capacity_from_deduplication(x)
-  | cljonic_collection_or_producer_argument(x) → one_element(x) ∧ ¬materialize_argument_elements(x)
-  | external_cpp_range_or_view_import(x) → use(Set_source_constructor(x)) ∧ ¬factory_source_import(x)
-  | constexpr ∧ noexcept ∧ non_allocating ∧ independently_owning_result
+  | mechanism(x) → coordinate_type_deduction_capacity_bounds_and_set_deduplication)
+  | responsibility(x) → preserve_one_factory_surface_and_independent_owning_result_boundary)
   | trace_to(REQ-FN-029F) ∧ realize(S5_set_creation_policy)
 
 λ S2_queue_factory_contract(x). queue(args...) → construct(owning_Queue_from_individual_arguments_in_Fifo_order(x))
-  | queue(first, rest...) → element_type(unqualified_type(first)) ∧ capacity(argument_count)
-  | queue<T>(args...) → element_type(T) ∧ capacity(argument_count) ∧ require(argument_count ≥ 1)
-  | queue<T>() → return(empty_Queue<T, 0>) ∧ realize(typed_empty_construction)
-  | queue<T, Capacity>(args...) → return(Queue<T, Capacity>)
-    ∧ require(argument_count ≤ Capacity ≤ CollectionMaximumElementCount)
-    ∧ empty_argument_pack(x) → return(empty_Queue<T, Capacity>)
-  | require(Queue_element_requirements(element_type(x))
-    ∧ ∀ argument: NothrowElementConstruction(element_type(x), argument)
-    ∧ argument_count ≤ CollectionMaximumElementCount)
-    ∧ reuse(S3_conversion_admission)
-  | argument_order(x) → first_argument_is_queue_front(x) ∧ Fifo_construction_folds_over_conj(x)
-  | untyped_empty_call(x) ∨ invalid_element_or_argument(x) ∨ invalid_capacity(x)
-    → compile_time_rejection(x) ∧ targeted_operation_diagnostic(x)
-  | cljonic_collection_or_producer_argument(x) → one_element(x) ∧ ¬materialize_argument_elements(x)
-  | external_cpp_range_or_view_import(x) → use(Queue_source_constructor(x)) ∧ ¬factory_source_import(x)
-  | constexpr ∧ noexcept ∧ non_allocating ∧ independently_owning_result
+  | mechanism(x) → coordinate_type_deduction_capacity_bounds_and_FIFO_construction_order)
+  | responsibility(x) → preserve_one_factory_surface_and_independent_owning_result_boundary)
   | trace_to(REQ-FN-029G) ∧ realize(S5_queue_creation_policy)
 
 λ S2_string_factory_contract(x). string(text_source) → construct(owning_String_from_text_source(x))
-  | string(literal) → capacity(content_length(literal)) ∧ return(String<content_length>)
-  | string<Capacity>(args...) → return(String<Capacity>)
-    ∧ require(content_length(args) ≤ Capacity ≤ CollectionMaximumElementCount)
-    ∧ empty_argument_pack(x) → return(empty_String<Capacity>)
-  | string<Capacity>(string_view_or_char_range_source) → use(String_source_construction(x))
-    ∧ dynamic_extent(x) → copy_bounded_prefix(x)
-    ∧ static_extent(x) > Capacity → compile_time_rejection(x)
-  | require(byte_validity(String_contracts(x)) ∧ ∀ byte: NothrowElementConstruction(char, byte))
-  | untyped_empty_call(x) → compile_time_rejection(x) ∧ targeted_operation_diagnostic(x)
-  | variadic_individual_character_form(x) ∨ spare_capacity_form_beyond_import(x) → ¬admit(x)
-  | string_view_or_char_range_import(x) → use(String_source_construction(x)) ∧ ¬factory_materialization_beyond_text_sources(x)
-  | constexpr ∧ noexcept ∧ non_allocating ∧ independently_owning_result
+  | mechanism(x) → coordinate_text_source_admission_capacity_and_bounded_string_import)
+  | responsibility(x) → preserve_one_factory_surface_and_independent_owning_text_result_boundary)
   | trace_to(REQ-FN-029H) ∧ realize(S5_string_creation_policy)
 
 λ S2_map_entry_factory_contract(x). map_entry(key, value) → construct(owning_MapEntry_from_one_key_and_one_value(x))
-  | map_entry(key, value) → key_type(unqualified_type(key)) ∧ value_type(unqualified_type(value))
-  | map_entry<K, V>(key, value) → return(MapEntry<K, V>)
-  | require(MapEntry_key_and_value_element_requirements(K, V)
-    ∧ ∀ key_or_value_argument: NothrowElementConstruction(declared_type(x), argument))
-    ∧ reuse(S3_conversion_admission)
-  | arity_other_than_two(x) ∨ invalid_element_or_argument(x)
-    → compile_time_rejection(x) ∧ targeted_operation_diagnostic(x)
-  | capacity_parameter(x) ∨ spare_capacity_form(x) → ¬admit(x)
-  | constexpr ∧ noexcept ∧ non_allocating ∧ value_semantic_result
+  | mechanism(x) → coordinate_key_value_type_deduction_and_nothrow_owning_construction)
   | trace_to(REQ-FN-029E) ∧ realize(S5_map_entry_creation_policy)
 
-λ S2_range_factory_contract(x). RangeFactory(x) → construct(independently_owning_Range_parameters(x))
-  | range(end) ∨ range(start, end) ∨ range(start, end, step)
-    → require(all_arguments_same_unqualified_signed_integral_type(T)) ∧ return(Range<T>)
-  | range<T>(args...) → require(RangeElement(T) ∧ zero_to_three_arguments
-      ∧ ∀ argument: safe_conversion_under_existing_Range_constructor_rules(argument, T)) ∧ return(Range<T>)
-  | range<T>() → construct(empty_Range(start=0 ∧ end=0 ∧ step=1))
-  | equivalent_constructor(x) → preserve(defaults ∧ exclusive_endpoint ∧ zero_step_precedence
-      ∧ empty_range_behavior ∧ finite_cardinality_saturation ∧ observation_cap)
-  | untyped_empty_call(x) ∨ unsupported_arity(x) ∨ invalid_type_or_conversion(x)
-    → compile_time_rejection(x) ∧ targeted_operation_diagnostic(x)
-  | implicit_common_type_promotion(x) ∨ silent_narrowing(x) → ¬admit(x)
-  | constexpr ∧ noexcept ∧ non_allocating ∧ preserve_inputs ∧ ¬materialize_result_storage
-  | trace_to(REQ-FN-013I ∧ REQ-FN-012 ∧ REQ-FN-013 ∧ REQ-DIAG-009)
-    ∧ realize(S5_range_and_repeat_creation_policy)
+λ S2_range_factory_contract(x). RangeFactory(x) → coordinate(type_deduction, constructor_defaults, and range_parameter_ownership)
+  | mechanism(x) → reuse(Range_construction_rules_and_observation_cap_across_typed_untyped_factories)
+  | responsibility(x) → target(one_compile_time_diagnostic_surface_and_one_public_factory_surface)
+  | traces_to(REQ-FN-013I ∧ REQ-FN-012 ∧ REQ-FN-013 ∧ REQ-DIAG-009)
 
 λ S2_repeat_factory_contract(x). repeat(value) → construct(unbounded_Repeat_owning_value_copy(x))
   | repeat(count, value) → construct(finite_Repeat_owning_value_copy_with_normalized_count(x))
@@ -821,125 +568,26 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
     ∧ ¬cross_type_numeric_unification(x) ∧ ¬hash_based_equality(x)
   | composite_domain(x) → trace_to(REQ-CAP-010 ∧ REQ-CAP-011)
 
-λ S2_variant_value(x). cljonic::Variant<Alternatives...> ≡ nominal cljonic composite value
-  | ∀ alternative(x) → require(NothrowCollectionElement(x))
-    ∧ storage_admissible_as(map_value ∨ vector_element ∨ queue_element)(x)
-    ∧ (floating_point_alternative(x) ∨ callable_alternative(x)) → storage_admissible(x) ∧ ¬equality_admissible(x)
-  | cljonic::Variant(x) → provide(operator== (x) ∧ equal(x))
-      only_when(∀ alternative: ComparableVariantAlternative(alternative))
-    ∧ ¬equality_admissible(x) → omit(operator== (x))
-      ∧ equality_position_usage(x) → compile_time_rejection(x)
-  | cljonic::Variant(x) → provide(ordering_operators(x)) only_when(∀ alternative: TotallyOrdered(alternative))
-  | variant_value_equality(x) → alternative_strict(x) ∧ same_alternative(x)
-    ∧ ¬cross_type_numeric_unification(x) ∧ ¬hash_based_equality(x)
-  | cljonic::Variant(x) → ¬∃ valueless_state(x) ∧ ¬∃ valueless_by_exception(x) ∧ ¬∃ throwing_access_path(x)
-    because(every_alternative_is_nothrow_storable(x))
-  | variant_operation(x) → constexpr(x) ∧ noexcept(x) ∧ non_allocating(x) ∧ ¬rtti(x)
-    ∧ const_operation(x) → non_mutating(x)
-  | cljonic::Variant(x) → recurse_into_components(x) ∧ nestable(x) ∧ closed_value_domain_component(x)
-  | variant_free_function_api(x) ≡ {index, holds, get, get_if, emplace, swap, visit, variant_size, variant_alternative}
-    ∧ classify_as(RequirementsBacked)
-    ∧ requirements_approval_alone(x) → ¬imply(implemented(x) ∨ implementation_ready(x))
-    ∧ ∀ api(x) → free_function(x) ∧ backed_by_member_method(x)
-    ∧ access ∨ rebinding(x) → non_throwing(x) ∧ ¬∃ bad_variant_access(x) ∧ rebinding_leaves_no_valueless_state(x)
-    ∧ ¬provide(valueless_by_exception ∨ exception_based_get ∨ multi_variant_visit)(x)
-    ∧ single_alternative_deduction_guide(x)
-  | standard_library_variant(x) → ¬cljonic_value_type(x)
-    ∧ reject_as_equal_operand(x) ∧ reject_as_map_key_or_set_element(x)
-    ∧ permitted_as_internal_implementation_detail_of(cljonic::Variant)(x)
-  | component_recognition(x) → nominal_trait(cljonic_variant_traits)(x)
-    ∧ mirror_float_callable_and_standard_range_walkers(x)
+λ S2_variant_value(x). cljonic::Variant<Alternatives...> → component_of(CompositeValueDomain)
+  | mechanism(x) → enforce(nominal_alternative_admission, capability_gated_equality_and_ordering, and closed_component_recognition)
+  | responsibility(x) → coordinate_variant_storage_with_collection_storage_and_composite_equality_policy)
+  | component_boundary(x) → preserve_no_valueless_no_exception_variant_access_boundary)
   | variant_value(x) → trace_to(REQ-CAP-011 ∧ REQ-CAP-012)
 
 λ S2_collection_equality(x). bounded_collection(x) ∧ stable_equality_components(x)
-  → provide(operator== (x)) ∧ constexpr ∧ noexcept ∧ non_mutating ∧ non_allocating
-  | Vector(x) ∨ String(x) ∨ Queue(x) → order_sensitive(x)
-    ∧ equal_when(equal_logical_count ∧ equal_elements_in_logical_order)
-  | Map(x) ∨ Set(x) → order_insensitive(x)
-    ∧ equal_when(equal_logical_count ∧ every_logical_entry_or_element_matches_under_stable_equality)
-  | ¬stable_equality_components(x) → omit(operator== (x))
-    ∧ equality_position_usage(x) → compile_time_rejection(x)
-  | collection_equality(x) → recurse_into(nested_collections ∧ producers_with_stable_parameters ∧ composite_values)
-    ∧ never_traverse_beyond(bounded_logical_count)
-  | collection_equality(x) → ¬imply(cross_type_numeric_unification ∨ hash_based_equality)
+  | mechanism(x) → centralize_capability_gated_collection_equality_across_bounded_collection_kinds)
+  | responsibility(x) → preserve_order_sensitive_and_semantically_unordered_comparison_boundaries)
     ∧ trace_to(REQ-COLL-021)
 
 λ S2_producer_parameter_equality(x). producer(x) ∧ every_stored_component_admits_stable_equality(x)
-  → provide(operator== (x)) ∧ ¬∃ provide(separate_named_comparison_function(x))
-    ∧ both_with(producer_parameter_equality_semantics(x))
-    ∧ constexpr ∧ noexcept ∧ non_mutating ∧ non_allocating ∧ o1_stored_parameters(x)
-  | Range(x) → compare(stored(start_ ∧ end_ ∧ step_))
-  | Repeat(x) → compare(stored(value_ ∧ count_ ∧ is_finite_))
-  | Cycle(x) → compare(stored(owned_source_ ∧ count_ ∧ is_finite_ ∧ starting_offset_))
-    ∧ recurse_into_parameters(owned_source_)
-  | callable_parameter(x) → omit(operator== (x))
-  | producer_parameter_equality(x) → never_traverse_produced_sequence(x)
-    ∧ ¬imply(sequence_equality(x))
-    ∧ distinct_parameters(x) → unequal_even_when_sequences_coincide(x)
-    ∧ equal_parameters(x) ∧ qualifies(x) → map_key ∨ set_element_admission(x)
+  | mechanism(x) → separate_producer_parameter_equality_from_produced_sequence_equality)
+  | responsibility(x) → keep_callable_parameters_out_of_stable_equality_and_container_admission)
     ∧ trace_to(REQ-FN-014B ∧ REQ-CAP-010 ∧ REQ-SEQ-016)
 
-λ S2_general_equality_function(x). equal(lhs, rhs) ≡ named_general_value_equality(x)
-  | equal_arity(x) ≡ three_clojure_arities(unary ∨ binary ∨ variadic)
-    ∧ unary_form(x) → admit(single_supported_domain_operand(x)) ∧ return(true)
-    ∧ variadic_form(x) → conjoin(adjacent_pair_equality(x)) ∧ evaluate_left_to_right(x)
-      ∧ short_circuit_on_first_unequal_pair(x)
-    ∧ ∀adjacent_pair(x) ∧ ∀unary_operand(x) → satisfy(compile_time_domain_gating(x))
-  | equal(x) → distinct_from(operator== (x)) ∧ scoped_to(supported_stable_equality_domain(x))
-    ∧ constexpr(x) ∧ noexcept(x)
-  | ordinary_value_pair(x) → require(identical_types(x) ∨ safe_widening_relation_in_either_direction(x))
-    ∧ compare_in_wider_type(x) ∧ ¬∃ truncation_or_saturation(x)
-    ∧ (sign_crossing_pair(x) ∨ cross_type_domain_crossing_pair(Boolean ∨ character ∨ enumeration ∨ user_defined)(x)
-      ∨ pointer_pair(x)) → compile_time_rejection(x)
-    ∧ equality_remains_equivalence_relation(x) because(admitted_conversions_are_injective_on_values(x))
-  | non_cljonic_scalar_operands(x) → compare_via(operator== (x))
-    ∧ fallthrough_domain(x) ≡ closed_value_domain(
-        arithmetic_scalars ∨ scoped_enumerations
-        ∨ qualifying_opaque_user_defined_classes_with_nothrow_equality ∨ cljonic_variant_composites)
-    ∧ unscoped_enumerations_and_pointers_excluded_from_fallthrough(x)
-    ∧ standard_library_variant(x) → compile_time_rejection(x) ∧ at_any_depth(x)
-      because(¬cljonic_value_type(x))
-  | standard_range_or_container_type(x) → compile_time_rejection(x) ∧ at_any_depth(x)
-    ∧ standard_range_stored_component(x) → compile_time_rejection(x)
-    because(equal_is_not_interop_surface(x))
-  | floating_point_component(x) → compile_time_rejection(x) ∧ at_any_analyzable_depth(x)
-    ∧ detectability_is_the_criterion(x) ∧ trace_to(REQ-NUM-019) ∧ ¬∃ silent_admission_of_detectable_comparison(x)
-    ∧ AggregateEqualityBoundary(x) → stop_recursion(x) ∧ defer_semantics_to_type_author(x)
-  | user_defined_class_type(x) ≡ aggregate_struct(x) ∨ non_aggregate_class(x)
-    ∧ user_defined_class_type(x) with(nothrow_operator_equality(x)) → admit(x) ∧ ¬analyze_members(x)
-    ∧ unavailable_or_potentially_throwing_equality(x) → reject_from(StableEquality) ∧ compile_time_rejection(equality_use(x))
-    ∧ equality_rejection(x) → ¬prohibit_storage_when_independent_storage_contract_satisfied(x)
-    ∧ internal_equality_semantics_belong_to(type_author(x)) ∧ trace_to(REQ-NUM-018)
-    ∧ non_aggregate_class(x) → admit_on(NothrowEqualityComparable(x))
-      ∧ require(the_stable_equality_and_nothrow_comparison_shared_with(map_key_admission(x) ∧ set_element_admission(x)))
-      ∧ storage_contract_additionally_requires(nothrow_copy_construction(x) ∧ nothrow_copy_assignment(x))
-        which_equal_does_not_need(x) because(equal_never_copies_an_operand(x))
-    ∧ parameterized_standard_wrapper(x) (`std::pair` ∨ `std::optional` ∨ `std::tuple` ∨ `std::variant`)
-      → compile_time_rejection(x) ∧ regardless_of_instantiation(x)
-      because(inner_types_are_not_analyzable(x) ∧ floating_point_could_be_smuggled_in(x))
-      ∧ mechanism(x) ≡ ¬nothrow_comparison(x) so(no_exclusion_list_is_required(x))
-  | value_whose_equality_comparison_may_throw(x) → compile_time_rejection(x)
-    because(noexcept_guarantee_cannot_be_violated(x))
-  | sequential_family(x) ≡ Vector ∨ Queue ∨ Cycle ∨ Iterate ∨ Range ∨ Repeat ∨ Repeatedly ∨ TakeWhile ∨ DropWhile
-    ∧ sequential_family_pair(x) → compare(produced_sequence(x))
-      ∧ require(identical_element_types(x) ∨ safe_widening_relation_in_either_direction(element_types(x)))
-      ∧ compare_elements_in_wider_type(x)
-    ∧ equal_when(equal_observed_counts(x) ∧ equal_observed_elements_in_logical_order(x))
-    ∧ compare_order_sensitive(x) ∧ lazy_element_wise(x) ∧ early_exit_on_first_difference(x)
-    ∧ each_unbounded_operand(x) → use(configured_observable_traversal_cap(x))
-      ∧ regardless_of(other_operand_finite_or_unbounded(x))
-    ∧ every_call_terminates(x) ∧ ¬claim(equality_beyond_observed_bounds(x))
-  | identical_type_identity(x) ≡ Map key_and_value_types(x) ∨ Set element_type(x) ∨ String content(x)
-    ∨ cljonic_variant_alternative_identity(x)
-    ∧ identical_type_identity(x) → require(identical_types(x)) ∧ ¬∃ safe_conversion_leak(x)
-  | Map(x) → comparable_only_to(Map) | Set(x) → comparable_only_to(Set) | String(x) → comparable_only_to(String)
-  | incompatible_family_pair(x) ∨ mixed_cljonic_non_cljonic_pair(x) → compile_time_rejection(x)
-  | nested_producer_component(x) → compare_via(producer_parameter_equality(x))
-    ∧ ¬traverse(produced_elements(x))
-    ∧ recursion_requirements(REQ-SEQ-017)_unchanged(x)
-  | native_producer_operator_equality(x) → ¬imply(produced_sequence_equality(x))
-  | equal_operation(x) → classify_as(RequirementsBacked)
-    ∧ trace_to(REQ-FN-002G ∧ REQ-FN-002E)
+λ S2_general_equality_function(x). equal(lhs, rhs) → coordinate(named_general_equality_across_supported_domains)
+  | mechanism(x) → reuse(stable_equality_implementation_and_left_to_right_pair_conjunction)
+  | responsibility(x) → preserve(operator_equality_distinction_and_compile_time_domain_gating)
+  | traces_to(REQ-FN-002E ∧ REQ-FN-002G ∧ REQ-NUM-018 ∧ REQ-NUM-019 ∧ REQ-SEQ-017)
 
 λ S2_not_equal_function(x). not_equal(lhs, rhs) ≡ named_general_value_inequality(x)
   | not_equal_arity(x) ≡ three_clojure_arities(unary ∨ binary ∨ variadic)
@@ -1024,183 +672,31 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | classify_as(RequirementsBacked) ∧ trace_to(REQ-COLL-020R ∧ REQ-COLL-020Y)
 
 λ S2_not_empty_function_contract(x). not_empty(collection) → admit(SequenceableCollection)(collection)
-  | nonempty(collection) → return(independent_owning_copy(collection))
-  | empty(collection) → return(empty_owning_value(type(collection)))
-  | preserve(collection_type ∧ capacity ∧ input_value)
-  | unsupported_input(x) → reject_at_compile_time_with(targeted_diagnostic ∧ REQ-DIAG-009)
-  | constexpr ∧ noexcept ∧ non_mutating ∧ non_allocating
+  | mechanism(x) → coordinate_empty_and_nonempty_collection_copy_paths_at_the_sequence_boundary)
+  | responsibility(x) → preserve_independent_owning_result_and_collection_type_capacity)
   | classify_as(RequirementsBacked) ∧ trace_to(REQ-BOUNDS-010D ∧ REQ-FN-026)
 
-λ S2_peek_function_contract(x). peek(collection) → admit(CljonicVector ∨ CljonicQueue)(collection)
-  | nonempty(Vector) → return(last_logical_element)
-  | nonempty(Queue) → return(front_logical_element)
-  | empty(collection) → return(value_type_default_value(collection))
-  | preserve(input_collection_value(x)) ∧ return_by_value(x)
-  | unsupported_collection(x) → reject_at_compile_time_with(targeted_diagnostic ∧ REQ-DIAG-009)
-  | peek_operation(x) → constexpr ∧ noexcept ∧ non_mutating ∧ non_allocating
-  | classify_as(RequirementsBacked) ∧ trace_to(REQ-COLL-020Z)
+λ S2_peek_function_contract(x). peek(collection) → coordinate_non_mutating_front_or_last_observation
+  | mechanism(x) → dispatch_by_collection_specific_logical_access_rule)
+  | responsibility(x) → preserve_source_value_no_heap_no_exception_observation_boundary)
+  | traces_to(REQ-COLL-020Z ∧ REQ-DIAG-009)
 
-λ S2_pop_function_contract(x). pop(collection) → admit(CljonicVector ∨ CljonicQueue)(collection)
-  | nonempty(Vector) → return(copy_with_last_logical_element_removed)
-  | nonempty(Queue) → return(copy_with_front_logical_element_removed)
-  | empty(collection) → return(unchanged_collection_value)
-  | preserve(collection_type ∧ capacity ∧ logical_order_of_retained_elements ∧ input_collection_value(x))
-  | unsupported_collection(x) → reject_at_compile_time_with(targeted_diagnostic ∧ REQ-DIAG-009)
-  | pop_operation(x) → constexpr ∧ noexcept ∧ non_mutating ∧ non_allocating
-  | classify_as(RequirementsBacked) ∧ trace_to(REQ-COLL-020AA ∧ REQ-COLL-022)
+λ S2_pop_function_contract(x). pop(collection) → coordinate_copy_on_remove_across_supported_stack_sources
+  | mechanism(x) → dispatch_by_Vector_last_or_Queue_front_logical_policy)
+  | responsibility(x) → preserve_source_capacity_type_order_and_independent_result_boundary)
+  | traces_to(REQ-COLL-020AA ∧ REQ-COLL-022 ∧ REQ-DIAG-009)
 
 λ S2_vector_stack_methods(x). Vector.peek() → return(last_logical_element ∨ value_type_default_value_if_empty)
-  ∧ Vector.pop() → return(copy_with_last_logical_element_removed ∨ unchanged_copy_if_empty)
-  | free_functions(peek(vector) ∧ pop(vector)) → preserve(Vector_member_semantics)
-  | constexpr ∧ noexcept ∧ non_mutating ∧ non_allocating ∧ preserve(Vector_type ∧ capacity)
+  | mechanism(x) → align_Vector_member_and_free_function_stack_observation_mechanisms)
+  | responsibility(x) → preserve_last_element_semantics_and_copy_on_pop_boundary)
   | classify_as(RequirementsBacked) ∧ trace_to(REQ-COLL-022)
 
-λ S2_operation_vocabulary(x). canonical_collection_operations(x) ≡ is_empty ∧ empty ∧ not_empty ∧ first ∧ has_first ∧ next ∧ has_next ∧ has_rest ∧ rest
-  ∧ full ∧ contains ∧ fits_into ∧ into ∧ count
-    ∧ get ∧ conj ∧ assoc ∧ dissoc ∧ disj ∧ peek ∧ pop ∧ can_conj ∧ can_assoc
-  | requirements_backed_operations(x) ≡ is_empty ∧ empty ∧ not_empty ∧ first ∧ has_first ∧ next ∧ has_next ∧ has_rest ∧ rest ∧ seq ∧ contains ∧ count ∧ fits_into ∧ into
-    ∧ get ∧ conj ∧ assoc ∧ dissoc ∧ disj ∧ peek ∧ pop ∧ can_conj ∧ can_assoc
-  | bounded_insertion_capacity_inspection(x) ≡ full ∨ equivalent_capacity_inspection
-  | requirements_backed_operations(x) → classify_as(RequirementsBacked)
-  | bounded_insertion_capacity_inspection(x) → classify_as(RequirementsBacked)
-  | is_empty(value) → admit(SequenceableCollection ∨ SequenceableProducer) ∧ return(count(value) == 0)
-    ∧ non_throwing ∧ non_allocating ∧ provide(targeted_rejection_diagnostic(¬(SequenceableCollection ∨ SequenceableProducer)))
-  | next(collection) → require(SequenceableCollection(collection) ∧ ConstRangeTraversal(collection)
-    ∧ collection ∈ {Vector, Map, Set, Queue, String})
-    ∧ return(owning_value_of_collection_kind(collection) with_capacity(capacity(collection) == 0 ? 0 : capacity(collection) - 1) of logical_tail(collection))
-    ∧ empty_or_singleton_input(collection) → return(empty_value_of_result_type(collection))
-    ∧ preserve(input(collection) ∧ logical_traversal_order(collection) ∧ no_heap ∧ noexcept ∧ constexpr)
-    ∧ map_entry_representation(Map) ∧ semantically_unordered(Map ∨ Set) ∧ preserve_FIFO_order(Queue)
-    ∧ unsupported_input(next) → reject_at_compile_time_with(targeted_diagnostic_naming(next ∧ supported_domains) ∧ REQ-DIAG-009)
-  | next(producer) → require(producer ∈ {Repeat, Range, Cycle, Iterate, Repeatedly, TakeWhile, DropWhile})
-    ∧ return(owning_producer_value_of_same_producer_kind(producer) containing every logical element after the first of the producer's logical result)
-    ∧ finite_counted_Repeat(producer) → return(finite_Repeat of same value with_count(max(count(producer) - 1, 0)))
-    ∧ unbounded_Repeat(producer) → return(unbounded_Repeat of same value with unchanged observation policy)
-    ∧ zero_step_Range(producer) → return(unbounded_Range with same start ∧ end ∧ step ∧ observation_cap)
-    ∧ empty_nonzero_step_Range(producer) → return(Range with original start ∧ end ∧ step)
-    ∧ singleton_nonzero_step_Range(producer) → return(empty_Range(start = original_end ∧ end = original_end ∧ step = original_step))
-      ∧ ¬compute(original_start + original_step)
-    ∧ multi_element_nonzero_step_Range(producer) → return(Range(start = original_start + original_step ∧ end = original_end ∧ step = original_step))
-    ∧ Cycle_with_nonempty_finite_source(producer) → advance(starting_offset by one modulo source_count_observation)
-      ∧ finite_Range_source → use(saturated_source_count) ∧ ¬invoke(source_callbacks)
-    ∧ Cycle_with_empty_finite_source(producer) → preserve(empty_observation)
-      ∧ existing_non_adapter_source → preserve(existing_callback_timing)
-    ∧ Cycle_with_unbounded_source(producer) → replace(owned_source with next(owned_source)) ∧ reset(starting_offset)
-      ∧ follow(callback_timing_of_next(owned_source))
-    ∧ nonempty_Iterate(producer) → invoke(step exactly once) ∧ use(step_result as returned_initial_value) ∧ preserve(observation_cap)
-    ∧ zero_observation_cap_Iterate(producer) → preserve(producer) ∧ ¬invoke(step)
-    ∧ nonempty_finite_Repeatedly(producer) → invoke(copy(stored_step) exactly once) ∧ discard(produced_value)
-      ∧ store(advanced_step_copy in returned_producer) ∧ decrement(count by one)
-    ∧ nonempty_unbounded_Repeatedly(producer) → invoke(copy(stored_step) exactly once) ∧ discard(produced_value)
-      ∧ store(advanced_step_copy in returned_producer) ∧ preserve(observation_cap)
-    ∧ empty_Repeatedly(producer) → preserve(producer) ∧ ¬invoke(step)
-    ∧ value_held_Repeatedly_state → advance(only_returned_producer) ∧ preserve(input_producer)
-    ∧ referenced_or_static_Repeatedly_state → effects_occur_when(next_is_called) ∧ remain_shared
-    ∧ repeated_next(producer) → ¬exhaust(logically_unbounded_producer)
-    ∧ next(Cycle_with_finite_source) → preserve(source_value)
-      ∧ existing_non_adapter_source → preserve(existing_callback_timing)
-    ∧ ∀ result: independently_owning ∧ self_contained ∧ value_semantic ∧ ¬implicit_materialization
-    ∧ preserve(input_producer_value ∧ logical_generation_order(producer) ∧ no_heap ∧ noexcept ∧ constexpr)
-    ∧ coherent_with(count ∧ is_finite ∧ is_empty ∧ into ∧ fits_into)(producer_tail_result)
-    ∧ unsupported_input(next) → reject_at_compile_time_with(targeted_diagnostic_naming(next ∧ supported_domains) ∧ REQ-DIAG-009)
-    ∧ require(Cycle_source ∈ {collection, producer_with_admitted_next})
-    ∧ classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-002A4 ∧ REQ-FN-002A5 ∧ REQ-FN-002A6 ∧ REQ-FN-002A7 ∧ REQ-FN-013E ∧ REQ-FN-013F ∧ REQ-FN-013G ∧ REQ-FN-013H)
-  | has_next(collection) → require(SequenceableCollection(collection) ∧ ConstRangeTraversal(collection)
-    ∧ collection ∈ {Vector, Map, Set, Queue, String})
-    ∧ return(count(collection) > 1)
-    ∧ equivalent_to(nonempty(logical_tail(collection))) ∧ ¬construct(next_result(collection))
-  | has_next(producer) → require(producer_admitted_by_next)
-    ∧ return(nonempty(first_observable_element(next(producer))))
-    ∧ construct(next_result(producer)) ∧ do_not_count_entire_result
-    ∧ callback_invocations_follow(next ∧ first_element_observation)(producer)
-  | has_next → preserve(input_value_state ∧ no_heap ∧ noexcept ∧ constexpr)
-    ∧ unsupported_input → reject_at_compile_time_with(targeted_diagnostic_naming(has_next ∧ supported_collection_and_producer_domains) ∧ REQ-DIAG-009)
-  | has_rest(value) → return_exactly(has_next(value))
-    ∧ preserve(has_next_domain ∧ preflight_behavior ∧ callback_timing_and_effects ∧ input_value_state ∧ diagnostics)
-    ∧ forward_to(has_next) ∧ ¬independent_traversal ∧ no_heap ∧ noexcept ∧ constexpr
-    ∧ trace_to(REQ-FN-002A3)
-  | has_first(collection) → require(collection ∈ {Vector, Map, Set, Queue, String})
-    ∧ return(count(collection) > 0) ∧ semantically_independent_of(Map_or_Set_traversal_order)
-  | has_first(producer) → require(producer_admitted_by_first)
-    ∧ return(nonempty(first_observable_element(producer))) ∧ evaluate_only_until(element_found_or_absence_established)
-    ∧ ¬count_exactly ∧ ¬materialize ∧ callback_invocations_follow(first_observation)
-    ∧ zero_observation_cap → return(false) ∧ ¬traverse ∧ ¬invoke(source_or_predicate_callbacks)
-  | has_first(MapEntry) → return(true) because(first(MapEntry) returns its key)
-  | has_first → preserve(input_value_state ∧ no_heap ∧ noexcept ∧ constexpr)
-    ∧ unsupported_input → reject_at_compile_time_with(targeted_diagnostic_naming(has_first ∧ supported_domains) ∧ REQ-DIAG-009)
-    ∧ trace_to(REQ-FN-002A8)
-  | approved_adapter_tail_extension(x) → next(TakeWhile ∨ DropWhile) ∧ rest_delegates_to_next
-    ∧ return(exact_input_producer_type_owning_source_predicate_and_compact_output_skip_offset)
-    ∧ creation → ¬traverse ∧ ¬count ∧ ¬invoke_callbacks
-    ∧ repeated_tail_creation → saturate(offset_at_observation_cap_without_overflow)
-    ∧ observation → fresh_original_adapter_traversal_then_omit_output_elements
-    ∧ preserve(original_capped_window ∧ smaller_source_windows ∧ nested_boundaries ∧ actual_endpoint)
-    ∧ ¬replenish(budget_after_source_skip_or_output_omission)
-    ∧ DropWhile → ¬reapply_prefix_predicate_to_retained_suffix
-    ∧ TakeWhile → ¬resume_beyond_original_false_boundary
-    ∧ empty_or_exhausted → finite_empty_observation
-    ∧ captured_predicates → ¬require(default_construction ∨ assignment_merely_for_tail)
-    ∧ ¬introduce(public_wrapper ∨ materialization ∨ borrowed_iterator_storage ∨ cap_proportional_metadata)
-    ∧ idiomatic_callbacks_should_be_pure ∧ replay_cost_is_primarily_runtime
-    ∧ preserve(existing_authorized_impure_source_effect_scope ∧ stored_value_held_state) ∧ ¬snapshot_guarantee
-    ∧ zero_cap → ¬traverse ∧ ¬invoke_callbacks
-    ∧ classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-002A4 ∧ REQ-FN-041)
-  | approved_adapter_dependent_Cycle_tail_extension(x) → recursively_admit(adapter_sources_and_nested_Cycles)
-    ∧ finite_adapter_source → eagerly_determine(exact_bounded_source_output_length_during_next)
-    ∧ permit(source_and_predicate_callbacks_under_existing_effect_rules)
-    ∧ nonempty → normalize(compact_ordinary_offset_modulo_length_before_overflow_safe_increment)
-    ∧ retain(complete_owned_source ∧ exact_Cycle_type ∧ unbounded_observation_policy)
-    ∧ ¬replace(finite_source_with_its_shortened_tail)
-    ∧ empty → preserve(empty_observation) ∧ zero_cap → ¬traverse ∧ ¬invoke_callbacks
-    ∧ unbounded_source_including_nested_Cycle → next(owned_source) ∧ reset(offset)
-    ∧ ¬introduce(large_counters ∨ remainder_tables ∨ cap_proportional_metadata ∨ allocation ∨ materialization)
-    ∧ predictions_require(equivalent_outputs_across_count_and_observation) ∧ ¬snapshot_guarantee
-    ∧ observation → preserve(only_needed_evaluation_without_count_prepass) under(S2_first_function_contract)
-    ∧ preserve(existing_non_adapter_Cycle_behavior ∧ has_next_next_supported_producer_domain)
-    ∧ classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-002A6 ∧ REQ-FN-013G)
-  | approved_tail_extensions → separate_explicit_implementation_approval_and_verification = satisfied
-  | rest(value) → require(next(value) is supported)
-    ∧ return(exactly_next(value))
-    ∧ preserve(value ∧ next_result_type ∧ tail_contents ∧ producer_observation_policy ∧ callback_timing_and_effects)
-    ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating
-    ∧ unsupported_input(rest) → reject_at_compile_time_with(targeted_diagnostic_naming(rest ∧ supported_domains) ∧ REQ-DIAG-009)
-    ∧ classify_as(RequirementsBacked)
-    ∧ trace_to(REQ-SEQ-001 ∧ REQ-SEQ-002 ∧ REQ-SEQ-002A ∧ REQ-SEQ-002B ∧ REQ-SEQ-003 ∧ REQ-SEQ-004 ∧ REQ-SEQ-005 ∧ REQ-SEQ-006 ∧ REQ-SEQ-007 ∧ REQ-SEQ-008 ∧ REQ-SEQ-009 ∧ REQ-SEQ-012 ∧ REQ-FN-002A4 ∧ REQ-FN-002A5 ∧ REQ-FN-002A6 ∧ REQ-FN-002A7)
-  | seq(value) → require(value ∈ {Vector, Map, Set, Queue, String} ∨ producer ∈ {Repeat, Range, Cycle, Iterate, Repeatedly, TakeWhile, DropWhile})
-    ∧ return(owning_bounded_Vector(value) of logical_traversal_elements(value) in_traversal_order)
-    ∧ Vector_input(x) → return(by_value_copy(x) with_same_element_type ∧ capacity)
-    ∧ Map_input(x) → return(Vector<MapEntry<K,V>, N> of value_semantic_entries)
-    ∧ Set_input(x) → return(Vector<T, N> of stored_elements)
-    ∧ Queue_input(x) → return(Vector<T, N> preserving_fifo_order)
-    ∧ String_input(x) → return(Vector<char, N> of content_characters)
-    ∧ producer_input(x) → return(Vector<value_type, CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE>
-      of observable_traversal) ∧ bounded_producer(x) → contribute(count(x)) ∧ unbounded_producer(x) → contribute(observation_cap)
-    ∧ result(x) → independently_valid ∧ bounded_automatic_or_static_storage ∧ ¬∃(dynamic_allocation ∨ retained_source_dependency)
-    ∧ map_entry_input(x) → reject_at_compile_time_with(targeted_diagnostic_naming(seq ∧ supported_domains) ∧ REQ-DIAG-009)
-    ∧ unsupported_input(seq) → reject_at_compile_time_with(targeted_diagnostic_naming(seq ∧ supported_domains) ∧ REQ-DIAG-009)
-    ∧ preserve(input ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
-    ∧ classify_as(RequirementsBacked) ∧ trace_to(REQ-SEQ-010 ∧ REQ-SEQ-011 ∧ REQ-SEQ-013 ∧ REQ-SEQ-014 ∧ REQ-COLL-020F ∧ REQ-COLL-020S)
-  | deferred_collection_shaping_traversal_family(x) ≡ take_nth
-    ∧ nth ∧ nthnext ∧ nthrest ∧ map_indexed ∧ rseq ∧ second ∧ ffirst ∧ fnext
-    ∧ nfirst ∧ nnext ∧ some ∧ is_every ∧ not_any ∧ not_every ∧ distinct ∧ dedupe ∧ frequencies
-    ∧ reductions ∧ split_at ∧ split_with ∧ mapcat ∧ interleave ∧ interpose ∧ partition ∧ partition_all
-    ∧ partition_by ∧ partitionv ∧ partitionv_all ∧ group_by ∧ flatten ∧ tree_seq ∧ keep ∧ keep_indexed
-    ∧ remove ∧ replace ∧ mapv ∧ subvec ∧ find ∧ reduce_kv ∧ sort ∧ sort_by
+λ S2_operation_vocabulary(x). canonical_collection_operations(x) ∧ requirements_backed_operations(x)
+  | mechanism(x) → centralize_operation_naming_admission_and_header_taxonomy)
+  | responsibility(x) → preserve_canonical_vocabulary_and_requirements_backed_lifecycle_boundaries)
+  | deferred_collection_shaping_traversal_family(x) ≡ nth ∧ nthnext ∧ nthrest ∧ map_indexed ∧ rseq ∧ remaining_deferred_operations
   | deferred_collection_shaping_traversal_family(x) → remain_outside(current_collection_api(x))
-  | deferred_collection_shaping_traversal_family(x) → require(individually_named_behavioral_specification(x))
-  | deferred_collection_shaping_traversal_family(x) → require(preserves_input_values(x)
-    ∧ callbacks_are_pure_and_non_allocating(x) ∧ termination_policy_is_declared(x)
-    ∧ equality_and_ordering_gates_are_declared(x) ∧ nested_result_representation_is_declared(x)
-    ∧ producer_behavior_is_declared(x) ∧ result_capacity_policy_is_declared(x)
-    ∧ typed_absence_and_failure_policy_is_declared(x) ∧ result_status_is_declared(x)
-    ∧ bounded_owning_results_are_preferred(x) ∧ maps_and_sets_are_semantically_unordered(x)
-    ∧ transducers_and_hidden_lazy_sequences_are_unsupported(x))
-  | contains(x) → admit((LookupCollection ∧ SafeImplicitConversion(declared_lookup_type, key)) ∨ (IndexedCollection ∧ non_boolean_non_character_integer_index))(x)
-    ∧ support(Map ∨ Set ∨ Vector ∨ String)(x) ∧ ¬support(Range)(x)
-  | fits_into(x) → govern(complete_producer_materialization(x))
-  | can_conj(x) ∧ can_assoc(x) → govern(PreflightPredicate(x))
-  | future_operation(x) → require(explicit_requirement_and_specification(x))
-  | preserve(clojure_like_names_and_semantics_by_default(x))
+  | traces_to(REQ-SEQ-022 ∧ REQ-DIAG-009)
 
 λ S2_count_function_contract(x). count(value) → admit(SequenceableCollection ∨ SequenceableProducer)(x)
   | SequenceableCollection(x) → return(exact_logical_element_count(x))
@@ -1224,288 +720,60 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | empty_operation(x) → constexpr ∧ noexcept ∧ non_mutating ∧ non_allocating
   | rejected_input(x) → provide(targeted_rejection_diagnostic(x))
 
-λ S2_first_function_contract(x). first(value) → admit(SequenceableCollection(value) ∨ CljonicProducer(value) ∨ MapEntry(value))(x)
-  | Vector(value) ∨ String(value) → return(logical_element_at_index_zero(value))
-  | Queue(value) → return(front_element_without_removal(value))
-  | Map(value) → return(one_value_semantic_map_entry(value))
-  | Set(value) → return(one_stored_element(value))
-  | MapEntry(value) → return(entry_key(value))
-  | empty_sequenceable_collection(value) → return(DefaultElement(value))
-  | producer(value) → return(owning_copy_of_first_observable_element(value)) ∧ preserve(element_type(value))
-    ∧ yielded_MapEntry → return(whole_entry_not_key_projection)
-    ∧ ¬require(additional_element_equality ∨ ordering ∨ producer_default_construction ∨ producer_assignment)
-  | empty_producer_observation(value) → return(DefaultElement(element_type(value)))
-  | producer(value) ∧ zero_observation_cap → return(DefaultElement(element_type(value)))
-    ∧ ¬start(source_traversal) ∧ ¬invoke(source_or_predicate_callbacks)
-  | producer_first_access → respect(original_capped_window ∧ smaller_source_window ∧ actual_endpoint)
-    ∧ evaluate_only_until(first_element_found_or_absence_established)
-    ∧ ¬perform(preliminary_exact_count_traversal ∨ materialization ∨ advancement_after_first_result)
-    ∧ ¬replenish(window_after_skip)
-  | nonempty_Iterate_observation → return(initial_value) ∧ ¬invoke(step)
-  | nonempty_Repeatedly_observation → invoke(callback_once_using_existing_fresh_traversal_state)
-  | TakeWhile → test(only_first_source_candidate_if_present) ∧ return(candidate_if_true_else_DefaultElement)
-  | DropWhile → permit(scanning_entire_matching_prefix_within_original_window)
-    ∧ return(first_false_value_or_DefaultElement) ∧ ¬advance_after(first_false_value)
-  | Cycle_including_nested_or_adapter_source → preserve(current_logical_starting_position ∧ existing_restart_policy)
-    ∧ obey(only_needed_evaluation) ∧ ¬perform(source_exact_count_prepass) ∧ ¬extend(tail_api_admission)
-  | repeated_producer_first_access → fresh_traversal_under_existing_source_copy_rules ∧ ¬cache
-    ∧ preserve(stored_value_held_state) ∧ retain_only(existing_authorized_referenced_or_static_effects)
-  | Map(value) ∨ Set(value) → ¬imply_semantic_significance_of_traversal_order(value)
-  | preserves(input_value(x))
-  | first_operation(x) → constexpr ∧ noexcept ∧ non_mutating ∧ non_allocating
-  | rejected_input(x) → provide(targeted_rejection_diagnostic_naming(first ∧ supported_domains))
-  | existing_collection_and_MapEntry_surface → classify_as(RequirementsBacked)
-  | producer_extension → classify_as(RequirementsBacked)
-    ∧ explicitly_approved_and_independently_verified ∧ trace_to(REQ-FN-002A1)
+λ S2_first_function_contract(x). first(value) → coordinate_one_needed_first_access_across_collections_producers_and_MapEntry
+  | mechanism(x) → use_one_pass_source_window_and_first_element_presence_preflight_internals)
+  | responsibility(x) → preserve_producer_state_copy_rules_and_collection_specific_projection_boundary)
+  | traces_to(REQ-FN-002A1 ∧ REQ-DIAG-009)
 
-λ S2_map_function_contract(x). map(transform, sources...) → admit(∀ source: CljonicSource(source) ∧ ∀ n ≥ 1: arity(sources) = n ∧ callable_transform(x))(x)
-  | callable_transform(x) → require(copy_constructible(x) ∧ nothrow_invocation_with_one_argument_per_source(x) ∧ storable_nothrow_result(x))
-  | callable_parameter_position(x) → require(SafeImplicitConversion(declared_parameter_type, corresponding_source_element_type))
-    ∧ narrowing_conversion(x) → reject_at_compile_time(x)
-    ∧ domain_crossing(Boolean ∨ character ∨ enumeration ∨ pointer ∨ user_defined)(x) → reject_at_compile_time(x)
-  | uninspectable_callback(generic_lambda ∨ templated_operator_call)(x) → admit_on(nothrow_invocability(x))
-  | arity(sources) = 1 → return(Vector<transform_result, source_capacity_bound(source₁)> of transform results in_traversal_order)
-  | arity(sources) = n > 1 → invoke(transform with one corresponding element from each source per_step)
-    ∧ terminate(when_first_source_exhausted)
-    ∧ return(Vector<transform_result, min_over_sources(source_capacity_bound)> of successive transform results in_step_order)
-  | source_capacity_bound(source) ≡ collection(source) → declared_capacity(source)
-    ∧ producer(source) → configured_observable_traversal_cap
-    ∧ each_contribution_saturated_at(CollectionMaximumElementCount)
-  | effective_count(source) ≡ collection(source) ∨ finite_producer(source) → count(source)
-    ∧ unbounded_producer(source) → observable_traversal_cap
-    ∧ each_contribution_saturated_at(CollectionMaximumElementCount)
-  | runtime_mapped_count(x) → minimum_effective_source_count_subject_to_actual_traversal_exhaustion(x)
-  | Map_source(x) ∨ Set_source(x) → traversal_order_semantically_unordered(x)
-  | standard_library_range ∨ container ∨ non_cljonic_source ∨ throwing_callback ∨ unstorable_result → reject_at_compile_time_with(targeted_diagnostic_naming(map ∧ supported_domains) ∧ REQ-DIAG-009)
-  | preserve(every_source_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
-  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-032)
+λ S2_map_function_contract(x). map(transform, sources...) → coordinate_multi_source_transform_traversal_and_materialization
+  | mechanism(x) → share(source_admission_callback_storage_and_capacity_bound_services)
+  | responsibility(x) → terminate_one_step_at_first_source_exhaustion_and_preserve_source_values)
+  | traces_to(REQ-FN-032 ∧ REQ-DIAG-009)
 
-λ S2_filter_function_contract(x). filter(predicate, source) → admit(CljonicSource(source) ∧ filter_predicate(predicate, source_element_type))(x)
-  | filter_predicate(predicate, element) → require(copy_constructible(predicate) ∧ nothrow_invocable(predicate, const_element) ∧ result_type(predicate) = bool)
-    ∧ preferred(pure_function_with_no_side_effects(predicate))
-  | inspectable_parameter(predicate) → require(SafeImplicitConversion(declared_parameter_type, source_element_type))
-    ∧ narrowing_conversion(x) ∨ domain_crossing(Boolean ∨ character ∨ enumeration ∨ pointer ∨ user_defined)(x) → reject_at_compile_time(x)
-  | uninspectable_predicate(generic_lambda ∨ templated_operator_call) → admit_on(nothrow_invocability(const_element) ∧ result_type = bool)
-  | source_element_type(x) → require(NothrowCollectionElement(source_element_type))
-  | source_capacity_bound(source) ≡ CljonicCollection(source) → source.declared_capacity
-    ∧ CljonicProducer(source) → configured_observable_traversal_cap
-    ∧ capacity_bound_saturated_at(CollectionMaximumElementCount)
-  | result(x) → Vector<source_element_type, source_capacity_bound(source)>
-  | traversal(x) → evaluate_once_per_visited_element(predicate, source_element)
-    ∧ append_when(predicate_result = true) ∧ terminate(when_source_exhausted)
-    ∧ capacity_equals_source_bound → admit_every_observed_element ∧ ¬∃(separate_result_full_termination)
-    ∧ zero_capacity(source) → return(empty_result_without_predicate_invocation)
-  | Map_source(x) ∨ Set_source(x) → traversal_order_semantically_unordered(x)
-  | standard_library_range ∨ container ∨ non_cljonic_source ∨ throwing_predicate ∨ result_type(predicate) ≠ bool → reject_at_compile_time_with(targeted_diagnostic_naming(filter ∧ supported_domains) ∧ REQ-DIAG-009)
-  | preserve(input_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
-  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-035)
+λ S2_filter_function_contract(x). filter(predicate, source) → coordinate_predicate_admission_and_filtered_materialization
+  | mechanism(x) → share(predicate_inspection_source_bound_and_output_capacity_services)
+  | responsibility(x) → evaluate_and_append_through_one_original_source_observation)
+  | traces_to(REQ-FN-035 ∧ REQ-DIAG-009)
 
-λ S2_filterv_alias_contract(x). filterv(predicate, source) ≡ filter(predicate, source)
-  | require(identical_arity ∧ identical_argument_roles ∧ identical_cljonic_source_and_predicate_admission)
-  | return(exactly_same_result_type ∧ capacity ∧ logical_values ∧ traversal ∧ ordering ∧ empty_source_behavior)
-  | preserve(identical_input ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating)
-  | reject(the_same_unsupported_domains_and_predicate_forms)
-    with(targeted_diagnostic_naming(filterv ∧ supported_domains) ∧ REQ-DIAG-009)
-  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-036 ∧ REQ-FN-035)
+λ S2_filterv_alias_contract(x). filterv(predicate, source) → delegation_boundary_for_filter
+  | mechanism(x) → delegate_alias_arguments_and_preserve_result_capacity_and_traversal_pipeline)
+  | responsibility(x) → maintain_one_contract_surface_for_filter_and_filterv)
+  | traces_to(REQ-FN-036 ∧ REQ-FN-035 ∧ REQ-DIAG-009)
 
-λ S2_take_function_contract(x). take(count, source) → admit(CljonicSource(source) ∧ valid_take_count(count))(x)
-  | valid_take_count(count) ≡ signed_or_unsigned_integer_except(Boolean ∨ character)
-    ∧ nonnegative_type_range_fits(std::size_t) ∧ normalize_before_unsigned_conversion(count ≤ 0 ? 0 : count)
-  | source_element_type(x) → require(NothrowCollectionElement(source_element_type))
-  | source_bound(source) ≡ CljonicCollection(source) → declared_capacity(source)
-    ∧ CljonicProducer(source) → configured_observable_traversal_cap
-    ∧ saturate_at(CollectionMaximumElementCount)
-  | return(Vector<source_element_type, source_bound(source)> of first(min(normalized_count, observable_traversal_length(source), source_bound(source))) traversal_elements)
-    ∧ runtime_count_does_not_change(result_type ∧ capacity) ∧ oversized_request → return(all_observable_elements)
-    ∧ count(source)_is_upper_bound ∧ require(iterator_endpoint_check)
-  | traversal(x) → ¬advance_past(last_returned_element)
-    ∧ nonpositive_count ∨ zero_capacity → return(typed_empty_Vector_without_beginning_traversal)
-    ∧ empty_source_including_Cycle → return(typed_empty_Vector_without_callback_invocation)
-    ∧ Iterate → invoke(step only_between_returned_elements)
-    ∧ Repeatedly → invoke(step exactly_once_per_returned_element)
-    ∧ preserve(value_held_callback_state) ∧ referenced_or_static_callback_state_remains_shared
-  | Map_source → yield(MapEntry_values) ∧ String_source → yield(characters) ∧ Queue_source → preserve(FIFO_order)
-  | Map_source ∨ Set_source → preserve(semantically_unordered_traversal)
-  | result(x) → independently_owning_bounded_prefix ∧ ¬∃(nested_result ∨ absence_sentinel ∨ status_wrapper ∨ preflight)
-  | invalid_count ∨ unsupported_source ∨ wrong_arity → reject_at_compile_time_with(targeted_diagnostic_naming(take ∧ count_and_source_domains) ∧ REQ-DIAG-009)
-  | preserve(input_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
-  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-037 ∧ REQ-SEQ-022)
+λ S2_take_function_contract(x). take(count, source) → coordinate_bounded_prefix_materialization
+  | mechanism(x) → share(SourceBound_normalization_iterator_exhaustion_and_output_Vector_construction)
+  | responsibility(x) → stop_at_requested_prefix_or_original_source_window_endpoint)
+  | traces_to(REQ-FN-037 ∧ REQ-SEQ-022 ∧ REQ-DIAG-009)
 
-λ S2_drop_function_contract(x). drop(count, source) → admit(CljonicSource(source) ∧ valid_take_count(count))(x)
-  | source_element_type(x) → require(NothrowCollectionElement(source_element_type))
-  | result_capacity(source) ≡ source_bound(source) from S2_take_function_contract
-  | observation_window(source) ≡ original_traversal_bounded_by(min(count(source), result_capacity(source)) ∧ actual_iterator_endpoint)
-  | return(Vector<source_element_type, result_capacity(source)> of suffix_after(normalized_count, observation_window(source)))
-    ∧ runtime_count_does_not_change(result_type ∧ capacity)
-    ∧ nonpositive_count → retain(entire_original_observation_window)
-    ∧ ¬fresh_producer_observation_window_after_skip
-  | normalized_count ≥ observation_window_count_bound ∨ zero_capacity → return(typed_empty_Vector_without_beginning_traversal_or_callbacks)
-  | empty_source_including_Cycle → return(typed_empty_Vector_without_callbacks)
-  | nonempty_result → traverse(skipped_prefix ∧ retained_suffix in_one_original_window)
-    ∧ require(iterator_endpoint_check) ∧ ¬advance_past(final_required_value)
-    ∧ Repeatedly → invoke(callback once_per_visited_value_including_skipped_values)
-    ∧ Iterate → invoke(step only_between_visited_values)
-    ∧ preserve(value_held_callback_state) ∧ referenced_or_static_callback_state_remains_shared
-  | Map_source → yield(MapEntry_values) ∧ String_source → yield(characters) ∧ Queue_source → preserve(FIFO_order)
-  | Map_source ∨ Set_source → preserve(semantically_unordered_traversal)
-  | result(x) → independently_owning_suffix_complete_within_original_window
-    ∧ ¬require(additional_equality_or_ordering_capability)
-    ∧ ¬∃(nested_result ∨ absence_sentinel ∨ status_wrapper ∨ preflight)
-  | invalid_count ∨ unsupported_source ∨ wrong_arity → reject_at_compile_time_with(targeted_diagnostic_naming(drop ∧ count_and_source_domains) ∧ REQ-DIAG-009)
-  | preserve(input_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
-  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-038 ∧ REQ-SEQ-022)
+λ S2_drop_function_contract(x). drop(count, source) → coordinate_original_window_skip_and_suffix_materialization
+  | mechanism(x) → reuse(SourceBound_and_one_window_traversal_services)
+  | responsibility(x) → retain_suffix_without_fresh_producer_observation)
+  | traces_to(REQ-FN-038 ∧ REQ-SEQ-022 ∧ REQ-DIAG-009)
 
-λ S2_take_last_function_contract(x). take_last(count, source) → admit(CljonicSource(source) ∧ valid_take_count(count))(x)
-  | source_element_type(x) → require(NothrowCollectionElement(source_element_type))
-  | result_capacity(source) ≡ source_bound(source) from S2_take_function_contract
-  | observation_window(source) ≡ original_traversal_bounded_by(min(count(source), result_capacity(source)) ∧ actual_iterator_endpoint)
-  | return(Vector<source_element_type, result_capacity(source)> of trailing_window(normalized_count, observation_window(source), logical_traversal(source)))
-    ∧ runtime_count_does_not_change(result_type ∧ capacity)
-    ∧ normalized_count ≤ 0 → return(typed_empty_Vector_without_beginning_traversal_or_callbacks)
-    ∧ normalized_count ≥ observation_window_count_bound → return(complete_observation_window)
-  | nonempty_result → traverse(original_window_once)
-    ∧ require(iterator_endpoint_check) ∧ ¬require(second_observation_or_cache)
-    ∧ ¬advance_past(actual_endpoint_or_window_bound)
-    ∧ Repeatedly → invoke(callback once_per_visited_value)
-    ∧ Iterate → invoke(step only_between_visited_values)
-    ∧ preserve(value_held_callback_state) ∧ referenced_or_static_callback_state_remains_shared
-  | Map_source → yield(MapEntry_values) ∧ String_source → yield(characters) ∧ Queue_source → preserve(FIFO_order)
-  | Map_source ∨ Set_source → preserve(semantically_unordered_traversal)
-  | result(x) → independently_owning_bounded_suffix
-    ∧ ¬require(additional_equality_or_ordering_capability)
-    ∧ ¬∃(nested_result ∨ absence_sentinel ∨ status_wrapper ∨ preflight)
-  | invalid_count ∨ unsupported_source ∨ wrong_arity → reject_at_compile_time_with(targeted_diagnostic_naming(take_last ∧ count_and_source_domains) ∧ REQ-DIAG-009)
-  | preserve(input_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
-  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-042 ∧ REQ-SEQ-022)
+λ S2_take_last_function_contract(x). take_last(count, source) → coordinate_bounded_suffix_selection
+  | mechanism(x) → reuse_one_window_traversal_and_bounded_Vector_capacity_services)
+  | responsibility(x) → retain_only_the_original_window_trailing_selection)
+  | traces_to(REQ-FN-042 ∧ REQ-SEQ-022 ∧ REQ-DIAG-009)
 
-λ S2_take_nth_function_contract(x). take_nth(stride, source) → admit(CljonicSource(source) ∧ valid_take_count(stride))(x)
-  | source_element_type(x) → require(NothrowCollectionElement(source_element_type))
-  | result_capacity(source) ≡ source_bound(source) from S2_take_function_contract
-  | observation_window(source) ≡ original_traversal_bounded_by(min(count(source), result_capacity(source)) ∧ actual_iterator_endpoint)
-  | normalized_stride(stride) ≤ 0 ∨ result_capacity(source) = 0 ∨ actual_empty_traversal → return(typed_empty_Vector_without_beginning_traversal_or_callbacks)
-  | return(Vector<source_element_type, result_capacity(source)> containing elements_at_zero_based_offsets(0, normalized_stride(stride), 2*normalized_stride(stride), ... within observation_window(source), logical_traversal(source)))
-    ∧ runtime_stride_does_not_change(result_type ∧ capacity)
-    ∧ normalized_stride(stride) = 1 → include(complete_observation_window)
-  | nonempty_result → traverse(original_window_once)
-    ∧ select(first_observed_element) ∧ select_every(normalized_stride(stride) offsets)
-    ∧ require(iterator_endpoint_check) ∧ ¬advance_past(actual_endpoint_or_window_bound)
-    ∧ Repeatedly → invoke(callback once_per_visited_value)
-    ∧ Iterate → invoke(step only_between_visited_values)
-    ∧ preserve(value_held_callback_state) ∧ referenced_or_static_callback_state_remains_shared
-  | Map_source → yield(MapEntry_values) ∧ String_source → yield(characters) ∧ Queue_source → preserve(FIFO_order)
-  | Map_source ∨ Set_source → preserve(semantically_unordered_traversal)
-  | result(x) → independently_owning_bounded_selected_value_Vector
-    ∧ ¬require(additional_equality_or_ordering_capability)
-    ∧ ¬∃(nested_result ∨ absence_sentinel ∨ status_wrapper ∨ preflight)
-  | invalid_stride ∨ unsupported_source ∨ wrong_arity → reject_at_compile_time_with(targeted_diagnostic_naming(take_nth ∧ stride_and_source_domains) ∧ REQ-DIAG-009)
-  | preserve(input_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
-  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-045 ∧ REQ-SEQ-022)
+λ S2_take_nth_function_contract(x). take_nth(stride, source) → coordinate_stride_selection_across_one_source_window
+  | mechanism(x) → share_offset_selection_with_bounded_Vector_materialization)
+  | responsibility(x) → preserve_original_window_endpoint_callback_and_source_state_rules)
+  | traces_to(REQ-FN-045 ∧ REQ-SEQ-022 ∧ REQ-DIAG-009)
 
-λ S2_drop_last_function_contract(x). drop_last(count, source) → admit(CljonicSource(source) ∧ valid_take_count(count))(x)
-  | source_element_type(x) → require(NothrowCollectionElement(source_element_type))
-  | result_capacity(source) ≡ source_bound(source) from S2_take_function_contract
-  | observation_window(source) ≡ original_traversal_bounded_by(min(count(source), result_capacity(source)) ∧ actual_iterator_endpoint)
-  | return(Vector<source_element_type, result_capacity(source)> of all_window_elements_before_final_suffix(normalized_count, observation_window(source), logical_traversal(source)))
-    ∧ runtime_count_does_not_change(result_type ∧ capacity)
-    ∧ normalized_count ≤ 0 → retain(complete_observation_window)
-    ∧ normalized_count ≥ observation_window_count_bound → return(typed_empty_Vector_without_beginning_traversal_or_callbacks)
-  | zero_result_capacity ∨ actual_empty_traversal → return(typed_empty_Vector_without_beginning_traversal_or_callbacks)
-  | nonempty_retained_result → traverse(original_window_once)
-    ∧ visit_retained_prefix_and_visit_or_exclude_final_suffix_in_same_window
-    ∧ require(iterator_endpoint_check) ∧ ¬require(second_observation_or_cache)
-    ∧ ¬advance_past(actual_endpoint_or_window_bound)
-    ∧ Repeatedly → invoke(callback once_per_visited_value)
-    ∧ Iterate → invoke(step only_between_visited_values)
-    ∧ preserve(value_held_callback_state) ∧ referenced_or_static_callback_state_remains_shared
-  | Map_source → yield(MapEntry_values) ∧ String_source → yield(characters) ∧ Queue_source → preserve(FIFO_order)
-  | Map_source ∨ Set_source → preserve(semantically_unordered_traversal)
-  | result(x) → independently_owning_bounded_prefix
-    ∧ ¬require(additional_equality_or_ordering_capability)
-    ∧ ¬∃(nested_result ∨ absence_sentinel ∨ status_wrapper ∨ preflight)
-  | invalid_count ∨ unsupported_source ∨ wrong_arity → reject_at_compile_time_with(targeted_diagnostic_naming(drop_last ∧ count_and_source_domains) ∧ REQ-DIAG-009)
-  | preserve(input_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
-  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-043 ∧ REQ-SEQ-022)
+λ S2_drop_last_function_contract(x). drop_last(count, source) → coordinate_original_window_prefix_retention
+  | mechanism(x) → share_suffix_exclusion_with_bounded_prefix_materialization)
+  | responsibility(x) → avoid_second_traversal_or_result_cache)
+  | traces_to(REQ-FN-043 ∧ REQ-SEQ-022 ∧ REQ-DIAG-009)
 
-λ S2_last_function_contract(x). last(source) → admit(SequenceableCollection(source) ∨ CljonicProducer(source) ∨ MapEntry(source))(x)
-  | Vector(source) ∨ String(source) → return(logical_element_at_final_index(source))
-  | Queue(source) → return(final_FIFO_element_without_removal(source))
-  | Map(source) → return(one_value_semantic_map_entry(source))
-  | Set(source) → return(one_stored_element(source))
-  | MapEntry(source) → return(entry_value(source))
-  | last(first(map)) → return(the_map_entry_value)
-  | empty_sequenceable_collection(source) → return(DefaultElement(source))
-  | producer(source) → return(owning_copy_of_final_observable_element(source)) ∧ preserve(element_type(source))
-    ∧ yielded_MapEntry → return(whole_entry_not_value_projection)
-    ∧ ¬require(additional_element_equality ∨ ordering ∨ producer_default_construction ∨ producer_assignment)
-  | empty_producer_observation(source) → return(DefaultElement(element_type(source)))
-  | producer(source) ∧ zero_observation_cap → return(DefaultElement(element_type(source)))
-    ∧ ¬start(source_traversal) ∧ ¬invoke(source_or_predicate_callbacks)
-  | producer_last_access → respect(original_capped_window ∧ smaller_source_window ∧ actual_endpoint)
-    ∧ traverse(entire_observable_window_exactly_once_tracking_final_observed_element)
-    ∧ ¬perform(preliminary_exact_count_traversal ∨ materialization ∨ cached_result ∨ second_observation)
-    ∧ ¬advance_past(actual_endpoint_or_window_bound) ∧ ¬replenish(window_after_skip)
-  | TakeWhile → evaluate(predicate_in_order) ∧ stop_at(first_false_candidate_or_window_exhaustion)
-    ∧ return(final_true_candidate_else_DefaultElement)
-  | DropWhile → scan(entire_matching_prefix_within_original_window)
-    ∧ return(final_observed_element_of_remaining_window)
-  | Cycle_including_nested_or_adapter_source → preserve(current_logical_starting_position ∧ existing_restart_policy)
-    ∧ ¬perform(source_exact_count_prepass) ∧ ¬restart(window_beyond_existing_policy)
-  | Repeatedly → invoke(callback once_per_visited_value)
-  | Iterate → invoke(step only_between_visited_values)
-  | preserve(value_held_callback_state) ∧ referenced_or_static_callback_state_remains_shared
-  | repeated_producer_last_access → fresh_traversal_under_existing_source_copy_rules ∧ ¬cache
-    ∧ preserve(stored_value_held_state) ∧ retain_only(existing_authorized_referenced_or_static_effects)
-  | Map(source) ∨ Set(source) → ¬imply_semantic_significance_of_traversal_order(source)
-  | result(x) → independently_owning_single_value
-    ∧ ¬require(additional_equality_or_ordering_capability)
-    ∧ ¬∃(nested_result ∨ absence_sentinel ∨ status_wrapper ∨ preflight ∨ transducer_only_arity)
-  | unsupported_source ∨ wrong_arity → reject_at_compile_time_with(targeted_diagnostic_naming(last ∧ collection_MapEntry_and_producer_domains) ∧ REQ-DIAG-009)
-  | preserve(input_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
-  | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-046 ∧ REQ-SEQ-022)
+λ S2_last_function_contract(x). last(source) → coordinate_one_result_last_access_across_collections_MapEntry_and_producers
+  | mechanism(x) → use_one_window_final_tracking_and_source_specific_projection_services)
+  | responsibility(x) → preserve_no_prepass_no_cache_and_no_input_mutation_boundaries)
+  | traces_to(REQ-FN-046 ∧ REQ-SEQ-022 ∧ REQ-DIAG-009)
 
 λ S2_predicate_producer_contract(x). TakeWhile(x) ∨ DropWhile(x)
-  | factory(predicate, source) → require(CljonicSource(source) ∧ NothrowCollectionElement(source_element_type)
-    ∧ nothrow_copy_constructible(source) ∧ nothrow_copy_constructible(predicate))
-  | predicate_admission(x) ≡ filter_predicate(predicate, source_element_type) from S2_filter_function_contract
-    with(exact_bool_result ∧ safe_inspectable_parameter_conversions ∧ generic_nothrow_invocation_fallback)
-  | construction(x) → own(source ∧ predicate) ∧ ¬evaluate(predicate ∨ source_callbacks)
-    ∧ ¬∃(borrowed_source_storage ∨ materialized_result_cache ∨ result_capacity_template_parameter ∨ transducer_only_arity)
-  | traversal(x) → copy(stored_predicate) ∧ use(source_existing_traversal_state_copy_semantics)
-    ∧ preserve(stored_value_held_state) ∧ authorized_referenced_or_static_effects_remain_shared
-  | observation_window(x) ≡ original_source_traversal_limited_by(CollectionMaximumElementCount ∧ actual_source_endpoint)
-    ∧ respect(smaller_source_window) ∧ ¬require(preliminary_exact_count_pass_for_adapter_traversal)
-    ∧ ¬advance_beyond(final_window_value) ∧ ¬replenish(window_after_skip)
-  | empty_source_traversal ∨ zero_observation_cap → ¬invoke(predicate ∨ source_callbacks)
-  | consumer_stops_early → ¬perform(further_traversal_without_explicit_observation)
-  | result(x) → explicit_finite_producer_of(source_element_type) ∧ is_finite(x) = true
-    ∧ ¬claim(complete_underlying_unbounded_source)
-  | count(x) → exact_cardinality_by_independent_bounded_traversal ∧ ¬cache
-    ∧ permit(repeated_predicate_and_source_callbacks_when_count_precedes_consumption)
-  | default_construction ∨ assignment ∨ collection_element_storage → conditional_on(existing_nothrow_storage_capabilities)
-    ∧ captured_predicate_without_default_or_assignment → ¬reject(factory_on_that_basis)
-  | producer_parameter_equality ∨ Map_key_or_Set_element_admission → reject(callable_owned_component)
-  | equal ∨ not_equal → compare(bounded_logical_observations_in_sequential_equality_family)
-    under(existing_element_comparison_and_safe_conversion_rules)
-  | source_consumers(map ∧ reduce ∧ filter ∧ filterv ∧ take ∧ drop ∧ cycle ∧ seq ∧ into ∧ fits_into)
-    → admit(TakeWhile ∧ DropWhile) ∧ preserve(existing_type_behavior)
-  | count ∧ is_empty → admit(TakeWhile ∧ DropWhile) ∧ preserve(is_empty(value) = (count(value) == 0))
-  | first → admit(TakeWhile ∧ DropWhile ∧ Cycle_over_adapters) under(S2_first_function_contract)
-    ∧ producer_extension_explicitly_approved_and_independently_verified
-  | has_first → admit(all_supported_collections ∧ all_producers_admitted_by_first ∧ MapEntry)
-    ∧ producer_result(nonempty(first_observable_element(producer)))
-    ∧ producer_callbacks_follow(first_element_observation) ∧ no_count_prepass ∧ no_materialization
-  | fits_into → retain(finite_exact_count_preflight_for_Vector_Queue_String ∧ insertion_sensitive_preflight_for_Map_Set)
-    ∧ prediction_requires(equivalent_values_across_independent_traversals)
-  | next ∨ rest → approved_adapter_tail_extension ∨ approved_adapter_dependent_Cycle_tail_extension
-    ∧ separate_explicit_implementation_approval_and_verification = satisfied
-  | has_next → admit(all_supported_collections ∧ all_producers_admitted_by_next)
-    ∧ collection_result(count(collection) > 1) ∧ producer_result(nonempty(first_observable_element(next(producer))))
-    ∧ producer_callbacks_follow(next ∧ first_element_observation)
-  | has_rest(value) → exact_alias_of(has_next(value))
-  | Map_source → yield(MapEntry) ∧ String_source → yield(characters) ∧ Queue_source → preserve(FIFO_order)
-  | Map_source ∨ Set_source → prefix_suffix_membership_and_order_depend_on(semantically_unordered_traversal)
-  | invalid_source ∨ predicate ∨ arity → targeted_compile_time_diagnostic_naming(operation ∧ supported_domains)
-  | preserve(no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
+  | mechanism(x) → coordinate_owned_source_and_predicate_admission_with_fresh_bounded_traversal)
+  | responsibility(x) → preserve_adapter_state_copy_effect_scope_and_consumer_integration_boundary)
+  | component_boundary(x) → keep_take_while_and_drop_while_boundary_rules_in_requirements_and_specs)
   | classify_as(RequirementsBacked) ∧ trace_to(REQ-FN-041)
 
 λ S2_take_while_producer_contract(x). take_while(predicate, source) → S2_predicate_producer_contract(TakeWhile)(x)
@@ -1526,54 +794,16 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | require(separate_drop_while_implementation_approval_and_verification)
   | trace_to(REQ-FN-040 ∧ REQ-FN-041 ∧ REQ-SEQ-022)
 
-λ S2_reduce_function_contract(x). reduce(f, source) ∨ reduce(f, initial, source) → admit(CljonicSource(source) ∧ reducing_function(f) ∧ accumulator_contract(x))(x)
-  | reducing_function(f) → require(copy_constructible(f) ∧ nothrow_invocation(f, accumulator, element) ∧ result_type(f) = accumulator_type(x))
-  | accumulator_contract(x) → require(NothrowCollectionElement(accumulator_type(x)))
-  | accumulator_type(x) ≡ inspectable_signature(f) → first_declared_parameter_type(f)
-    ∧ ¬inspectable_signature(f) → initial_value_type(x) ∧ arity(x) = 3
-  | ¬inspectable_signature(f) ∧ arity(x) = 2 → reject_at_compile_time(with targeted_diagnostic_requiring_explicit_initial_value)
-  | consumed_argument_position(x) → require(SafeImplicitConversion(declared_parameter_type, argument_type))
-    ∧ narrowing_conversion(x) → reject_at_compile_time(x)
-    ∧ domain_crossing(Boolean ∨ character ∨ enumeration ∨ pointer ∨ user_defined)(x) → reject_at_compile_time(x)
-  | ¬inspectable_signature(f) ∧ arity(x) = 3 → admit_on(nothrow_invocability(accumulator, element))
-  | arity(x) = 3 → require(SafeImplicitConversion(accumulator_type(x), initial_value_type(x)))
-  | observed_count(source) ≡ count(source) saturated_at(CollectionMaximumElementCount)
-    ∧ unbounded_producer(source) → observed_count(source) = observable_traversal_cap
-  | arity(x) = 2 ∧ observed_count(source) ≥ 1 → require(SafeImplicitConversion(accumulator_type(x), source_element_type)) ∧ seed(accumulator, first_element_in_traversal_order) ∧ fold(left_to_right, f, remaining_elements)
-  | arity(x) = 2 ∧ observed_count(source) = 0 → return(DefaultElement(accumulator_type(x)))
-  | arity(x) = 3 → seed(accumulator, initial) ∧ fold(left_to_right, f, every_observed_element)
-  | Map_source(x) ∨ Set_source(x) → traversal_order_semantically_unordered(x)
-  | standard_library_range ∨ container ∨ non_cljonic_source ∨ throwing_function ∨ unstorable_accumulator → reject_at_compile_time_with(targeted_diagnostic_naming(reduce ∧ supported_domains) ∧ REQ-DIAG-009)
-  | preserve(every_source_value ∧ no_heap ∧ noexcept ∧ constexpr ∧ non_mutating ∧ ¬RTTI)
-  | always_terminates(x) ∧ ¬∃ early_termination_wrapper(x)
-  | classify_as(CompleteResult) ∧ trace_to(REQ-FN-034)
+λ S2_reduce_function_contract(x). reduce(f, source) → coordinate_left_fold_across_supported_source_windows
+  | mechanism(x) → share(callable_signature_accumulator_and_source_bound_services)
+  | responsibility(x) → fold_one_original_observation_and_preserve_complete_result_semantics)
+  | traces_to(REQ-FN-034 ∧ REQ-DIAG-009)
 
 λ S2_checked_arithmetic_contract(x). CheckedArithmeticOperation(x)
-  | operation_family(x) ≡ add ∧ sub ∧ mult ∧ div ∧ quot ∧ rem ∧ mod ∧ inc ∧ dec ∧ negate
-    ∧ bit_not ∧ bit_and ∧ bit_or ∧ bit_xor ∧ bit_and_not ∧ bit_clear ∧ bit_set ∧ bit_flip ∧ bit_test
-    ∧ bit_shift_left ∧ bit_shift_right ∧ unsigned_bit_shift_right
-  | add(x) → arity(zero_explicit_type ∨ unary ∨ binary ∨ variadic)
-    ∧ zero_explicit_type → T{} ∧ unary → unchanged_value ∧ binary_or_variadic → checked_left_fold
-  | sub(x) → arity(unary ∨ binary ∨ variadic)
-    ∧ unary → checked_negation(x) ∧ binary_or_variadic → checked_left_fold_subtraction
-    ∧ sub() → reject_compile_time
-  | can_sub(x) → same_admission_and_arity_as(sub) ∧ true_iff_checked_subtraction_succeeds
-  | mult(x) → arity(zero_explicit_type ∨ unary ∨ binary ∨ variadic)
-    ∧ zero_explicit_type → T{1} ∧ unary → unchanged_value ∧ binary_or_variadic → checked_left_fold_product
-  | can_mult(x) → same_admission_and_arity_as(mult) ∧ true_iff_checked_multiplication_succeeds
-  | div(x) → arity(unary_floating ∨ binary ∨ variadic)
-    ∧ unary_floating → 1/x ∧ integer_unary → reject_compile_time
-    ∧ binary_or_variadic → checked_left_fold_division
-    ∧ div() → reject_compile_time
-  | can_div(x) → same_admission_and_arity_as(div) ∧ true_iff_checked_division_succeeds
-  | division_preflight(can_div ∨ can_quot ∨ can_rem ∨ can_mod) → reject_runtime_zero_divisor
-  | IntegerDivisionSemantics(x) → div ∧ quot truncate_toward_zero
-    ∧ rem_sign(dividend) ∧ mod_sign(divisor)
-  | preflight(x) → named_can_operation(x) for each operation with runtime checked failure
-  | compare ∧ min ∧ max ∧ min_key ∧ max_key ∧ numeric_predicates ∧ non_shifting_bitwise_operations
-    → ¬require_runtime_preflight when(admission_leaves_no_operation_specific_failure)
-  | approved_requirements(x) → require(operation_level_behavioral_specification) before(implementation_ready)
-  | traces_to(REQ-NUM-015A–015L ∧ REQ-NUM-017 ∧ REQ-FN-002N)
+  | mechanism(x) → share_operand_admission_result_type_and_checked_failure_services_across_arithmetic_operations)
+  | responsibility(x) → preserve_left_fold_ordering_and_preflight_agreement_for_named_operations)
+  | component_boundary(x) → keep_operation_specific_arity_and_overflow_rules_in_requirements_and_specs)
+  | traces_to(REQ-NUM-015A–REQ-NUM-015L ∧ REQ-NUM-017 ∧ REQ-FN-002N)
 
 λ S2_disj_function_contract(x). disj(set, values...) → admit(CljonicSet(set) ∧ ∀ value: SafeImplicitConversion(Set::value_type, value))
   | arity(values) = 0 → return(unchanged_copy(set))
@@ -1644,7 +874,8 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
 λ S1_collection_storage_and_algorithms(x). collection_storage(x) ≡ ContiguousStorage
   | MapEntry(x) → ContiguousStorage(x) ∧ value_semantics(x)
     ∧ owns(key_field(x) ∧ value_field(x)) ∧ supports(named_field_observation(x))
-    ∧ semantic_free_function_access(key ∨ val ∨ last)(x) → remain(deferred_future_work)
+    ∧ semantic_free_function_access(key ∨ val)(x) → remain(deferred_future_work)
+    ∧ semantic_free_function_access(last)(x) → active_under(REQ-FN-046)
     ∧ semantic_free_function_access(first)(x) → return(entry_key(x))
     ∧ fixed_two_element_sequence_behavior(x) → first_is_key ∧ value_is_value ∧ count_two ∧ seq_rejects_map_entry_input
   | search_algorithm(x) ≡ LinearScan
@@ -1847,54 +1078,11 @@ concept ComparableVariantAlternative =
   | capability(x) → layered_on(CollectionConcept_admission(x))
   | value_capabilities(x) → separate_from(structural_capabilities(x))
 
-λ producer_step_concepts(x). IterateStep(step) → require(copy_constructible(step) ∧ non_allocating(step)
-  ∧ accepts(element_type(x)) ∧ returns_exact(element_type(x)) ∧ nothrow_invocation(step))
-  | RepeatedlyStep(step) → require(copy_constructible(step) ∧ nullary(step)
-    ∧ returns_exact(element_type(x)) ∧ nothrow_invocation(step))
-    ∧ permit(non_const_call_operator(step))
+λ producer_step_concepts(x). coordinate(IterateStep ∧ RepeatedlyStep)
+  | mechanism(x) → define_copyable_nothrow_step_admission_and_result_type_boundaries)
+  | responsibility(x) → keep_callback_effect_and_element_type_rules_in_requirements_and_specs)
+  | trace_to(REQ-NUM-018)
 
-```cpp
-// Value capabilities (apply to element and key types)
-// StableEqualityComparable requires a non-throwing equality comparison.
-// It recursively checks library-analyzable composite components and stops at
-// opaque user-defined class boundaries under REQ-NUM-018. A non-throwing
-// operator== is trusted there, including when members contain floating point.
-// For analyzed composites, every stored component must admit stable equality;
-// callable components never admit stable equality. A library-owned composite
-// must additionally declare that the walkers reach its components
-// (`walker_coverage`), so an added composite that skips the declaration fails
-// here instead of silently admitting a detectable floating-point comparison.
-template<class T>
-concept StableEqualityComparable =
-    std::equality_comparable<T> &&
-    cljonic::concepts_detail::nothrow_equality_v<T> &&
-    !cljonic::concepts_detail::contains_floating_point_v<T> &&
-    !cljonic::concepts_detail::contains_callable_v<T> &&
-    cljonic::concepts_detail::walker_coverage_ok_v<T>;
-
-template<class T>
-concept TotallyOrdered = StableEqualityComparable<T> && std::totally_ordered<T>;
-
-// NothrowEqualityComparable retains an explicit non-throwing comparison
-// requirement for operations declared noexcept. StableEqualityComparable
-// already requires it; the named refinement preserves the API boundary.
-template<class T>
-concept NothrowEqualityComparable =
-    StableEqualityComparable<T> &&
-    cljonic::concepts_detail::nothrow_equality_v<T>;
-
-// NothrowStableEqualityComparable is the map-key and set-element admission
-// contract: stable equality, nothrow storage, and a nothrow comparison. The
-// comparison requirement keeps a parameterized standard-library wrapper out of
-// key and element positions whatever it is instantiated with, because such a
-// wrapper declares no nothrow comparison and would otherwise hide an
-// unsupported component (a floating-point value, for example) from the
-// recursive walkers.
-template<class T>
-concept NothrowStableEqualityComparable =
-    StableEqualityComparable<T> &&
-    NothrowCollectionElement<T> &&
-    cljonic::concepts_detail::nothrow_equality_v<T>;
 ```
 
 // Collection equality is conditional and component-wise: a collection
@@ -1996,7 +1184,7 @@ concept SequenceableProducer =
   | producer_contains(x) → bounded_observation_availability_only(x) ∧ ¬imply(positional_value_retrieval(x) ∨ IndexedProducer(x))
   | IndexedProducer(x) ¬imply(CallableLookup(x)) because(Indexed_access_does_not_imply_invocability(x))
   | ¬expose(callable_operator_parenthesis(x)) on(producer(x)) because(operator_parenthesis_reserved_for_CallableLookup_mirroring(x))
-  | positional_value_retrieval(x) → remain(deferred_future_work) until(Module5_nth_approved(x))
+  | positional_value_retrieval(x) → supported_by(take_nth_under(REQ-FN-045)) ∧ reserved_for(future_nth_position_api)
   | current_producers(x) ≡ Range ∨ Repeat ∨ Cycle ∨ Iterate ∨ Repeatedly ∨ TakeWhile ∨ DropWhile
   | ∀ current_producer(x) → ¬satisfy(IndexedProducer(x))
   | future_IndexedProducer(x) → require(explicit_positional_access_contract(x) ∧ matching_availability_predicate(x))
