@@ -1,5 +1,30 @@
 ## Current Session State
 
+- last_session_id: 37a9ddf7-683d-4fbf-9467-e7ba40c5ebb8
+- current_timestamp: 2026-11-25T14:10:24-07:00
+- session_complete: true
+- recover: The three cljonic-* skills were reviewed against updated Gybis contracts, upserted with startup, evidence, routing, ledger, and scope controls, validated, merged from gybis-arch-update into main, and the feature branch was deleted.
+- task: Analyze and upsert cljonic-api-complete, cljonic-api-converge, and cljonic-full-converge-auto against the updated Gybis skills, then merge the resulting branch into main.
+- questions:
+  - No unresolved project, skill-contract, validation, merge, or branch-deletion question remains.
+- decisions:
+  - The custom skill upserts were limited to the three cljonic-* skill files.
+  - Internal gybis-skill-contract-check/SKILL.md was not changed.
+  - cljonic-api-complete and cljonic-api-converge now require Gybis startup manifests, normalized Allium obligation evidence, explicit Gybis owner routing, and snapshot-aware validation ledgers.
+  - cljonic-full-converge-auto now has mechanical adjacent-weed write scopes, snapshot-aware validation records, and no automatic strict/full-gate escalation.
+  - gybis-arch-update was fast-forward merged into main and deleted.
+- next:
+  1. Push main when the human is ready.
+  2. Continue project or API work only on explicit human direction.
+- validation:
+  - `make audit-scripts`: PASS.
+  - `make upsert-gate-fast`: PASS.
+  - `git diff --check`: PASS.
+  - Merge: `gybis-arch-update` fast-forwarded into main.
+  - Branch deletion: `gybis-arch-update` deleted.
+  - Current branch: `main`; local branch is 7 commits ahead of origin/main.
+  - Working tree is clean before this Mementum closeout.
+
 - last_session_id: 035ce8ab-cbe6-4da8-8118-cbfc1ceb1242
 - current_timestamp: 2026-11-25T13:45:40-07:00
 - session_complete: true
