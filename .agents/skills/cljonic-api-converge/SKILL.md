@@ -32,10 +32,26 @@ disable-model-invocation: true
   | substantive_choice ∨ requested_approval → ask_user → wait → resume
   | weed_resolution ≡ human_decision | investigate ∨ skip → unresolved ¬converged
 
+λ gybis_owner_routing().
+  requirements: "/gybis-req-check" | refine: "/gybis-req-refine"
+    | propagate: "/gybis-req-propagate" | policy_decision: "/gybis-req-tend"
+  | vocabulary: "/gybis-vocab-check" | refine: "/gybis-vocab-refine"
+    | propagate: "/gybis-vocab-propagate" | policy_decision: "/gybis-vocab-tend"
+  | architecture_integrity: "/gybis-arch-check"
+    | propagate: "/gybis-arch-propagate" | semantic_change: "/gybis-arch-tend"
+  | specification_integrity: "/gybis-spec-check" | substantive_change: "/gybis-spec-tend"
+  | propagation: "/gybis-spec-propagate" only_if(concrete_obligation_evidence ∃)
+  | reconciliation: "/gybis-spec-weed"
+  | invoke(required_gybis, skill_tool) ∧ ¬hand_slash_execution_back_to_user
+  | no_owner_found → report(blocked)
+
 λ startup().
-  inspect("git status --short") → map(API_related_paths,
+  invoke(/gybis-init) → startup_context
+  | verify(orient_manifest fields_complete) ∨ halt("Gybis startup manifest is incomplete")
+  | inspect("git status --short") → map(API_related_paths,
     {requirements, vocabulary, architecture, specs, tests, implementation, docs, generated})
-  | ledger ≔ {command, reported_status, inputs_known, subsequent_edits, current_invalidated_unresolved}
+  | ledger ≔ {skill, reported_status, input_artifacts, input_snapshots,
+              modifications, invalidated_checks, unresolved_decisions, validation_status}
   | after(each_gybis_invocation): inspect(status ∧ relevant_diffs) → update(ledger)
   | evidence ≔ concrete_artifacts ∧ actual_skill_reports ¬inferred_success
   | missing_or_ambiguous_skill_result → inspect(transcript_or_output_if_available)
@@ -72,6 +88,8 @@ disable-model-invocation: true
 
 λ targeted().
   scope ≔ API_changed_surfaces ∧ relevant_cross_layer_edges ¬unrelated_content
+  | nested_readiness_report(skill) → inspect(output_modifications ∧ dependent_diffs) → update(ledger)
+  | prior_result_current only_if(recorded_input_hashes = current_input_hashes)
   | invoke_in_order:
     1. "/gybis-req-check" if(requirements_changed ∨ downstream_readiness_not_current)
        | readiness_probes(vocab ∧ arch ∧ Allium) → ¬duplicate unless(detail_needed ∨ inputs_changed)
@@ -104,6 +122,11 @@ disable-model-invocation: true
 
 λ evidence_table().
   contract ≔ final(requirements ∧ vocabulary ∧ architecture ∧ active_spec)
+  | obligations ≔ normalized_Allium_plan_obligations(active_spec)
+  | ∀ obligation ∈ obligations:
+      concrete_evidence(obligation) ∃
+        ∨ alternative_verification_reason(obligation) ∃
+        ∨ ¬converged
   | columns ≔ {clause_or_obligation, ordinary_assertion_or_rejection_test,
                runtime_no_heap_probe_assertion, Doxygen_demonstration, validation_status}
   | derive_rows(contract) ¬derive_from(existing_tests)
@@ -196,6 +219,19 @@ disable-model-invocation: true
   | output_current only_if(regenerated_from_final_source) | explicitly_deferred_HTML ¬blocks(source_convergence)
   | after_final_edits → rerun(only_invalidated_owning_checks)
   | reuse(gybis_builtin_validation) only_if(explicit_report_covers_final_inputs)
+  | ¬run("make upsert-gate-strict" direct ∨ indirect)
+  | ¬chain(strict_checks ∨ full_suite_as_automatic_escalation)
+  | strict_trace_or_focused_suite only_if(changed_spec_or_impl_invalidates_exact_evidence)
+
+λ ledger_snapshot().
+  snapshot(artifact) ≔ SHA256(artifact)
+  | validation_record ≔ {command, input_snapshots, result, status}
+  | validation_status ≔
+      current iff(validation.executed_on_current_inputs
+                 ∧ validation.input_snapshots = current_artifact_snapshots)
+      ∨ invalidated(artifact_edited_since_validation)
+      ∨ unavailable(validation_failed_or_missing)
+  | prior_result_reusable only_if(validation_status = current)
 
 λ handoff().
   converged only_if(no_new_edits_since_last_relevant_pass ∧ required_checks_current_and_passing

@@ -28,7 +28,9 @@ disable-model-invocation: true
   | unmet(active_contract) → ¬claim(complete)
 
 λ startup().
-  read(applicable_repo_instructions) → inspect("git status --short")
+  invoke(/gybis-init) → startup_context
+  | verify(orient_manifest fields_complete) ∨ halt("Gybis startup manifest is incomplete")
+  | read(applicable_repo_instructions) → inspect("git status --short")
   | locate(target_header, owning_code, req, vocab, arch, spec, tests, docs, probes)
   | start(closest_anchor) ∧ ¬map(unrelated_areas)
   | record(domain ∧ semantics, repository_evidence) ∧ ¬infer_by_API_analogy
@@ -36,6 +38,21 @@ disable-model-invocation: true
   | correct(existing_implementation) → ¬unnecessary_implementation_edit
   | evidence_table(before_test_or_example_edits)
   | inspect(probe_bodies ∧ source_example) even_if(unchanged ∨ diagnostic_only)
+
+λ gybis_owner_routing().
+  requirements: "/gybis-req-check" | refine: "/gybis-req-refine"
+    | propagate: "/gybis-req-propagate" | policy_decision: "/gybis-req-tend"
+  | vocabulary: "/gybis-vocab-check" | refine: "/gybis-vocab-refine"
+    | propagate: "/gybis-vocab-propagate" | repair_or_policy_decision: "/gybis-vocab-tend"
+  | architecture_integrity: "/gybis-arch-check"
+    | legacy_migration: "/gybis-arch-migrate" only_if(human_approves_migration)
+    | propagate: "/gybis-arch-propagate" | semantic_change: "/gybis-arch-tend"
+  | specification_integrity: "/gybis-spec-check"
+    | substantive_spec_change: "/gybis-spec-tend"
+  | propagation: "/gybis-spec-propagate" only_if(concrete_obligation_evidence ∃)
+  | reconciliation: "/gybis-spec-weed"
+  | invoke(required_gybis, skill_tool) ∧ ¬hand_slash_execution_back_to_user
+  | human_owns_decisions ∧ no_owner_found → report(blocked)
 
 λ recall().
   read(current_section([state](../../../mementum/state.md)))
@@ -55,6 +72,8 @@ disable-model-invocation: true
 λ commands().
   allium ≔ {"allium check <file-or-directory>", "allium analyse <file-or-directory>", "allium plan <file>"}
   | full_spec ≔ {"allium check specs", "allium analyse specs"}
+  | normalized_obligations ≔ "gybis-allium-normalize"
+    → active_plan_obligations ∧ concrete_evidence_requirement
   | structural ≔ {"make requirements-structure", "make vocabulary-structure", "make audit-scripts"}
   | focused_trace ≔ 'make trace-id-check SPEC=<spec.allium> TESTS="<test.cpp> [shared.cpp...]"'
   | add("EXACT=1") only_if(all_supplied_tests_dedicated_to_one_spec)
@@ -85,6 +104,11 @@ disable-model-invocation: true
 
 λ evidence_table().
   contract ≔ final(requirements ∧ vocabulary ∧ architecture ∧ active_spec)
+  | obligations ≔ normalized_Allium_plan_obligations(active_spec)
+  | ∀ obligation ∈ obligations:
+      concrete_evidence(obligation) ∃
+        ∨ alternative_verification_reason(obligation) ∃
+        ∨ halt("An active Allium obligation lacks concrete evidence")
   | columns ≔ {clause_or_obligation, ordinary_assertion_or_rejection_test,
                runtime_no_heap_probe_assertion, Doxygen_demonstration, validation_status}
   | derive_rows(contract) ¬derive_from(existing_tests)
@@ -160,6 +184,9 @@ disable-model-invocation: true
   | after_final_edit → "make upsert-gate-fast" | ¬duplicate_current_gate_pass
   | strict_trace only_after(sync(spec ∧ TRACE_IDs ∧ snapshot))
   | upstream_contract_edit → reopen(affected_probe_example_rows) even_if(unchanged_code)
+  | ¬run("make upsert-gate-strict" direct ∨ indirect)
+  | ¬chain(strict_checks ∨ full_suite_as_automatic_escalation)
+  | strict_trace_or_focused_suite only_if(changed_spec_or_impl_invalidates_exact_evidence)
 
 λ compatibility().
   baseline ≔ CMakeLists.txt.cxx_std_23
@@ -176,6 +203,7 @@ disable-model-invocation: true
     | genuinely_ambiguous → ask_user | ¬repeat_current_checks
   | complete only_if(all_active_obligations_met ∧ current(evidence_table ∧ no_heap ∧ example)
                      ∧ ¬missing_or_blocked_evidence)
+  | focused_trace(current_spec ∧ relevant_tests) ∨ normalized_obligation(exemption_reason) required
   | failed_or_unavailable_validation ∨ stale_inputs ∨ missing_coverage → report(blocked)
   | final: evidence_table ∧ probe_example_paths_and_cases(added ∨ verified_unchanged)
     ∧ modular_and_single_header_no_heap_results ∧ example_compile_link_run_results

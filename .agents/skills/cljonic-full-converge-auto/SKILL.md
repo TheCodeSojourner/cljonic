@@ -15,6 +15,9 @@ disable-model-invocation: true
 
 λ authority().
   invocation ≡ standing_preapproval(run_listed_passes ∧ owning_skill_recommended_repairs)
+  | standing_preapproval ≡ only(identity_preserving ∧ documented_scope ∧ nonnormative)
+  | normative_change ∨ stakeholder_decision ∨ unresolved_owner_conflict
+    → ledger(UNRESOLVED, evidence) ∧ skip_repair
   | repair_allowed only_if(within_owning_documented_scope ∧ identity_preserving ∧ ¬normative_change)
   | forbid(ask_user ∨ approval_pause) during_run
   | preapproval_replaces(owning_skill_question_gates) ¬expands(repair_scope)
@@ -36,8 +39,11 @@ disable-model-invocation: true
   | gate_policy_applies_to(invoked_skills) ∧ ¬automatic_strict_or_full_escalation_at_handoff
 
 λ startup().
-  inspect("git status --short") → record(preexisting_baseline)
+  invoke(/gybis-init) → startup_context
+  | verify(orient_manifest fields_complete) ∨ halt("Gybis startup manifest is incomplete")
+  | inspect("git status --short") → record(preexisting_baseline)
   | map(artifacts, {requirements, vocabulary, architecture, specs, tests, implementation, docs, generated})
+  | ledger_start ≔ {skill, reported_status, input_artifacts, modifications, invalidated_checks, unresolved_decisions}
   | ledger_start → recall()
   | after(each_skill_invocation ∨ edit): inspect(status ∧ relevant_diffs) → ledger_update
   | resume_after_context_loss → reread(status ∧ relevant_diffs)
@@ -82,15 +88,31 @@ disable-model-invocation: true
     1. "/gybis-req-weed": requirements → vocabulary_only
        | findings ≔ {REQ_undefined_term, REQ_non_canonical_term}
        | ¬requirement_to_arch_spec_test_coverage_in_this_pass
+       | terms outside_scope({requirements/, vocabulary.md}) → ledger(UNRESOLVED, evidence) ∧ continue
     2. "/gybis-vocab-weed": vocabulary → architecture_only
        | noncanonical_spellings ∧ undefined_domain_terms ∧ missing_canonical_arch_terms
+       | mutations outside_scope({vocabulary.md, architecture.md}) → ledger(UNRESOLVED, evidence) ∧ continue
     3. "/gybis-arch-weed": architecture → specifications_only
        | active_spec_entities_reflected_or_refined_by_arch ∧ ¬spec_contradicts_arch_principle
+       | mutations outside_scope({architecture.md, specs/}) → ledger(UNRESOLVED, evidence) ∧ continue
     4. "/gybis-spec-weed": specifications → implementation_and_tests_only
        | obligation_test_coverage ∧ targeted_diagnostics ∧ no_heap_probes ∧ runtime_behavior
        | ¬reopen(architecture_to_code_findings)
+       | mutations outside_scope({specs/, tests/, implementation}) → ledger(UNRESOLVED, evidence) ∧ continue
   | ∀ finding → decision_policy() → permitted_repair → owning_validation()
   | comparison_scope ≡ only_next_downstream_edge ¬all_downstream_artifacts
+
+λ adjacent_weed_tool_guard(pass, tool, path).
+  pass = "req_vocab" ∧ (tool = read(path) ∨ tool = write(path))
+    → allow(tool) only_if(path ∈ {requirements/, vocabulary.md})
+  | pass = "vocab_arch" ∧ (tool = read(path) ∨ tool = write(path))
+    → allow(tool) only_if(path ∈ {vocabulary.md, architecture.md})
+  | pass = "arch_specs" ∧ (tool = read(path) ∨ tool = write(path))
+    → allow(tool) only_if(path ∈ {architecture.md, specs/})
+  | pass = "specs_tests_code" ∧ (tool = read(path) ∨ tool = write(path))
+    → allow(tool) only_if(path ∈ {specs/, tests/, implementation})
+  | otherwise → deny(write(path))
+  | pre_tool_check(pass, tool, path) = allowed(path) ∨ halt("Adjacent-weed write scope denied")
 
 λ decision_policy(finding).
   precedence ≔ requirements > vocabulary > architecture > specifications > tests > implementation
@@ -132,6 +154,11 @@ disable-model-invocation: true
   | table_columns ≔ {API_clause_obligation, ordinary_assertion_or_rejection_test,
                      runtime_no_heap_probe_assertion, Doxygen_demonstration, validation_status}
   | derive(final_req_vocab_arch_active_spec) ¬existing_test_inventory
+  | derive(normalized_Allium_plan_obligations) → concrete_obligation_rows
+  | ∀ obligation ∈ concrete_obligation_rows:
+      concrete_assertion_or_observation(obligation) ∃
+        ∨ applicable_alternative_verification_reason(obligation) ∃
+        ∨ ledger(UNRESOLVED, obligation_evidence)
   | cover(admitted_domains, results, applicable_empty_missing_full_capacity_boundaries,
           conversions, input_preservation, resources)
   | nonapplicable → reason | deficient → permitted_repair ∨ UNRESOLVED(evidence)
@@ -188,6 +215,9 @@ disable-model-invocation: true
   | ¬automatic_full_test_suite ∧ ¬recreate_strict_gate_by_chaining_checks
   | reuse(current_focused_check_or_fast_gate_evidence) ¬duplicate unless(later_edit_invalidates)
   | ¬run("make git")
+  | ¬run("make upsert-gate-strict" direct ∨ indirect)
+  | ¬chain(strict_checks ∨ full_suite_as_automatic_escalation)
+  | strict_trace_or_focused_suite only_if(changed_spec_or_impl_invalidates_exact_evidence)
 
 λ invalidation(changed).
   req → requirements_check ∧ all_requirements_downstream_comparisons
@@ -205,6 +235,10 @@ disable-model-invocation: true
 λ termination().
   converged ≡ no_edits_since_last_relevant_pass ∧ all_required_checks_current_and_passing
               ∧ evidence_table_satisfied ∧ unresolved_set_empty
+  | changed_specification → focused_TRACE_ID_check ∧ traceability_spec_to_code current
+  | changed_compile_fail_input → matching_compile_fail_target current
+  | changed_public_header → modular_and_single_header_tests ∧ no_heap ∧ docs_examples
+  | final_gate ≔ "make upsert-gate-fast" current_after_final_edit
   | finding_outside_authority → record_evidence ∧ continue(other_permitted_work)
   | exhausted(permitted_repairs) ∧ (failed_gate ∨ unresolved ∨ unavailable_required_validation)
       → status(BLOCKED) ∧ specific_artifact_evidence_and_next_owning_command ∧ finish
@@ -215,6 +249,16 @@ disable-model-invocation: true
 
 λ ledger().
   update_after(each_invocation ∨ edit) | concise ∧ copy_pasteable
+  | snapshot(artifact) ≔ SHA256(artifact)
+  | validation_record ≔ {command, input_snapshots, result, status}
+  | validation_status ≔
+      result_current(validation) iff(validation.command = executed_on_current_inputs
+                                   ∧ validation.input_snapshots = current_artifact_snapshots)
+      ∨ invalidated(artifact_edited_since_validation)
+      ∨ unavailable(validation_failed_or_missing)
+  | prior_result_reusable only_if(validation_status = current)
+  | invalidate(check) iff(check.input_artifact ∈ subsequent_edits)
+  | rerun(only_checks_in_invalidated_set)
 
 ```text
 WORKFLOW=full-converge-auto
@@ -223,6 +267,8 @@ LAST_COMMAND_STATUS=
 COMPLETED=
 MODIFIED_PATHS=
 CURRENT_VALIDATIONS=
+VALIDATION_INPUT_SNAPSHOTS=
+VALIDATION_STATUS=
 NO_HEAP_EVIDENCE=
 DOXYGEN_EXAMPLE_EVIDENCE=
 INVALIDATED=
