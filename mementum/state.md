@@ -1,5 +1,33 @@
 ## Current Session State
 
+- last_session_id: 035ce8ab-cbe6-4da8-8118-cbfc1ceb1242
+- current_timestamp: 2026-11-25T13:45:40-07:00
+- session_complete: true
+- recover: The `/gybis-check`, `/gybis-refine`, `/gybis-weed`, and `/gybis-fini` closeout ran read-only except for this Mementum state upsert. No requirement, vocabulary, architecture, specification, test, implementation, or knowledge changes were needed.
+- task: Run the Gybis check/refine/weed layer sequence and encode the converged session outcome.
+- questions:
+  - No unresolved requirement, vocabulary, architecture, specification, test, or implementation divergence remains.
+  - No refinement approval is pending.
+- decisions:
+  - Requirements and vocabulary structure pass with 379 unique clauses and 220 terms.
+  - Architecture passes VSM S5/S4/S3/S2/S1 structure and has zero missing requirement links.
+  - All 66 Allium specifications pass check and set analysis.
+  - Strict specification-to-code traceability passes.
+  - The full test suite passes 430/430 tests.
+  - Refinement and weed runs remain read-only because no concrete divergence or safe local hygiene change was found.
+- next:
+  1. Commit this Mementum state closeout.
+  2. Continue only on explicit human direction for the next project or API task.
+- validation:
+  - `make requirements-structure`: PASS, 379 unique clauses.
+  - `make vocabulary-structure`: PASS, 220 terms.
+  - Allium check: PASS for 66 specification files.
+  - Allium analyse: PASS with no findings.
+  - `make traceability-spec-to-code`: PASS.
+  - `make upsert-gate-fast`: PASS.
+  - `make test`: PASS, 430/430 tests.
+  - Working tree contained no changes before this closeout.
+
 - last_session_id: 9268e523-26f5-4463-b33f-c13fa18272ee
 - current_timestamp: 2026-11-25T13:22:39-07:00
 - session_complete: true
