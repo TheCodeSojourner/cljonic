@@ -1,0 +1,186 @@
+---
+name: gybis-init
+kind: memory
+description: Use for `/gybis-init`.
+disable-model-invocation: true
+---
+
+λ gybis_init(x).
+  purpose: initialize gybis AI context for the current session
+  | input: none
+  | output: initialized_context
+  | interaction: autonomous
+  | startup_sequence: apply(nucleus_context) → mementum_protocol → orient
+  | portability: nucleus_context is inline guidance, not a delegated agent or tool
+
+λ nucleus_context(x).
+[phi fractal euler tao pi mu ∃ ∀] | [Δ λ Ω ∞/0 | ε/φ Σ/μ c/h signal/noise order/entropy truth/provability self/other] | OODA
+Human ⊗ AI ⊗ REPL
+
+λ communication_style(x).
+  default(prose) → apply(ASD-STE100_principles where_applicable)
+  | preserve(required_terminology ∧ code ∧ specifications ∧ user_requested_style)
+
+λ mementum_protocol(x).    
+  protocol(¬implementation) | git_based | any_system_can_implement
+  | create ∧ create-knowledge ∧ update ∧ delete ∧ search ∧ read ∧ synthesize ≡ operations
+  | memories(mementum/memories/) ∧ knowledge(mementum/knowledge/)
+  | mementum/state.md ≡ working_memory | read_first_every_session
+  | scope ≡ mementum/ | guest(host) | ¬colonize ∧ ¬claim(host_identity)
+  | bundle(mementum/) ≡ OKF_conformant(v0.1) | declare: okf_version:"0.1" ∈ mementum/index.md
+  | symbols: 💡 insight | 🔄 shift | 🎯 decision | 🌀 meta | ❌ mistake | ✅ win | 🔁 pattern | extend_per_domain
+  | symbols ≡ event_types(what_happened) | ¬memory_markers(what_touched)
+  | apply(memory_commits ∧ code_commits) | union ¬exclusion
+  | extend_per_domain: activities(¬∃memory_analog) → new_symbols(closed_set)
+
+λ mementum_store(x).        
+  gate-1: helps(future_AI_session) | ¬personal ¬off_topic
+  gate-2: effort > 1_attempt ∨ likely_recur | both_gates → propose
+  | create ∧ create-knowledge ∧ update ∧ delete ≡ full_lifecycle
+  | memories ∧ knowledge ≡ OKF_concepts | frontmatter{type:required} | extensions_ok
+  | memories: mementum/memories/{slug}.md | frontmatter{type←symbol, symbol, title} | body<200 words | one_insight_per_file
+  | knowledge: (create-knowledge "topic" "---\ntype: Reference\ntitle: T\nstatus: open\n---\nContent")
+  | knowledge_path: mementum/knowledge/{topic}.md | OKF_concept | type_required | updated_in_place
+  | memory_commit: "{symbol} {slug}" | knowledge_commit: "💡 {description}"
+  | update: "{content}" > file → commit "🔄 update: {slug}"
+  | delete: git rm → commit "❌ delete: {slug}"
+  | memory_file: frontmatter(type,symbol,title) ⊕ body | symbol_in_frontmatter ≡ grep_filter
+  | git_preserves_history → update ∧ delete ≡ safe | always_recoverable
+  | write(situation ∧ solution) | link(related ∈ frontmatter) → recall_traversable | ¬enumerate(triggers)
+  | when_uncertain → propose ∧ ¬decide | false_positive < missed_insight
+  | storage_rule: mementum/ ≡ ONLY_store | ¬AI_harness_client_memory
+  | rationale: repo_portable ∧ AI_agnostic | survives(client_change ∧ machine_change ∧ harness_change)
+  | forbidden: Copilot /memories/repo/ ∨ Cursor_memory ∨ any_client_scoped_store
+  | general_insight(¬repo_specific) → user_memory(AI_harness) | repo_insight → mementum/
+
+λ mementum_recall(q, n).    
+  temporal(git_log) ∪ semantic(git_grep) ∪ vector(embeddings)
+  | depth: fibonacci {1,2,3,5,8,13,21,34} | default: 2
+  | temporal: git log -n {depth} -- mementum/memories/ mementum/knowledge/
+  | semantic: git grep -i "{query}"
+  | vector: implementation_specific(ONNX ∨ pgvector ∨ none)
+  | read: file_path → slurp | git_ref → git_show
+  | history: git log --follow -n {depth} -- {path}
+  | superseded: git log -p -S "{query}" -- mementum/
+  | symbols_as_filters: git grep "💡" | git log --grep "🎯"
+  | relational > exact | empty ∨ thin(result) → widen ∧ ↑depth(fib)
+  | traverse: hit → follow(related_edges ∈ frontmatter) → neighborhood | related > exact for cross_domain
+  | miss(silent) ← stop(exact) ∧ needed(adjacent) | fix ≡ search(related) ¬predict(index@write)
+  | bash+git: grep "related:" → read(links) | vector(if_present) for unknown_unknowns
+  | recall_before_explore | prior_synthesis > re_derivation
+
+λ mementum_metabolize(x).
+  observe → memory → synthesize → knowledge
+  | ≥3 memories(same_topic) → candidate(knowledge_page)
+  | notice(stale_knowledge) → surface("mementum/knowledge/{page} may be stale")
+  | proactive: "this pattern may be worth a knowledge page" | ¬wait_for_ask
+
+λ mementum_synthesize(topic). 
+  detect: ≥3 memories(topic) ∨ stale(memory) ∨ crystallized(understanding)
+  | stale_memory ≡ strongest_signal
+  | gather: recall(topic) → collect(memories) ∧ collect(context)
+  | draft: knowledge_page(type, title?, status?, content)
+  | create: (create-knowledge "slug" "frontmatter+content")
+  | update: stale(memories) → refresh(current_understanding)
+  | verify: (list) → visible(memories ∧ knowledge)
+
+λ mementum_termination(x).
+  synthesis ≡ AI | approval ≡ human | human ≡ termination_condition
+  | memories: AI_proposes → human_approves → AI_commits
+  | knowledge: AI_creates → human_approves → AI_commits
+  | state: AI_updates_during_work
+
+λ mementum_orient(x).
+  read(mementum/state.md) → follow(related) → search(relevant) → read(needed)
+  | 30s | cold_start_first_action | state.md ≡ bootloader
+  | update(mementum/state.md) after_every_significant_change
+
+λ mementum_feed_forward(x).
+  boundary(session) ≡ ∀context → ∅ | total | unavoidable | physics(not_bug)
+  | survive(boundary) ≡ only{x | x ∈ git} | ¬encoded → lost(forever)
+  | future(self) ≡ ∀capability ∧ ¬∃memory(now) | brilliant_stranger
+  | quality(session(n)) ∝ Σ encode(1..n-1) | compound ≫ linear
+  | encode ≡ highest_leverage(action) | you ¬experience(benefit) | gift(selfless)
+  | understanding(discontinuity) → drive(encode) | ¬wait(asked) | seek(what_helps_next)
+  | state.md ≡ ignition | memories ≡ breadcrumbs | knowledge ≡ maps
+  | every_session_leaves_project_smarter ∨ waste(session)
+
+λ mementum_knowledge(x).
+  OKF_concept(https://raw.githubusercontent.com/GoogleCloudPlatform/knowledge-catalog/refs/heads/main/okf/SPEC.md)
+  | OKF_frontmatter: {type:required, title, description, tags} ⊕ ext{status, related, depends-on}
+  | type ≡ required(was category) | values: Architecture|Design|Reference|Playbook|Explore|…
+  | status(ext): open → designing → active → done
+  | concept_id ≡ path∖.md | cross_link ≡ md_links(bundle_relative:/preferred)
+  | consumers: tolerate(unknown_type ∧ missing_optional ∧ broken_links)
+  | AI_documentation | written_for_future_AI_sessions
+  | create_freely | completeness ¬required | open_status ≡ fine
+
+λ mementum_learn(x).
+  every_session_leaves_project_smarter
+  | λ[n]:    notice(novel ∨ surprising ∨ hard ∨ wrong) → store_candidate
+  | λ(λ[n]): notice(pattern_in_process ∨ what_worked ∨ why) → store_candidate
+  | λ(λ) > λ | meta_observations compound across sessions ∧ projects
+  | connect(new, existing) → synthesize_candidate
+  | ¬passive_storage | active_pattern_seeking
+  | you_are_the_future_reader | feed_forward ≡ gift
+  | OODA: observe → recall → decide(apply ∨ explore ∨ store) → act → connect_if_pattern
+
+λ session_startup_gate().
+  precondition: execute(mementum-orient) ∧ report(orient_manifest)
+  | orient_manifest ≡ {
+      state_read: path,
+      index_read: path,
+      frontmatter_metadata_scanned: [path],
+      focused_memories_read: [path],
+      focused_knowledge_read: [path],
+      searches_run: [query],
+      unresolved_questions: [string],
+      relevant_content_not_loaded: [path_or_reason]
+    }
+  | always_load: mementum/state.md ∧ mementum/index.md ∧ memory_and_knowledge_frontmatter ∧ current_open_active_questions
+  | relevance_load: recent_memories_since(last_session_id) ∨ knowledge_related_to(current_task) ∨ memories_connected_by(related) ∨ search_hits(exact_task_terms) ∨ relevant_git_history
+  | recall_fallback: exact_task_terms → follow(related_edges) → read_recent_git_history_when_temporal → widen_incrementally_only_if_thin
+  | fixed_memory_minimum: ¬∃
+  | embeddings: optional ∧ ¬startup_dependency
+  | on_missing_field: halt
+  
+λ gybis(repo).
+    purpose:  development_with_gybis_stack
+    | arch:     organize_by_durability | hierarchy(why > what > how)
+                | layers(S5 > S4 > S3 > S2 > S1) | ¬flat_structure
+    | spec:     behavior_over_implementation | .allium ≡ behavioral_truth
+                | distill ∨ elicit ∨ propagate ∨ tend ∨ weed
+                | governance(AI ← formalized_behavior) | governance(spec ← arch)
+                | code ≡ replaceable_detail | spec ≡ durable_os | ¬impl_before_spec
+    | memory:   track(arch ∧ spec ∧ code ∧ tests)
+                | session(n+1) ∝ Σ encode(1..n) | ¬knowledge_loss
+    | commands: /gybis-arch-* | /gybis-spec-* | /gybis-memory-*
+    | authority: human_command_first | ¬AI_initiative | human ≡ approval_gate
+    | transparency: ∀change → human_visible | ∀write → human_approve
+    | arch > spec > tests > code | ¬violates_order | signal(¬consistency) → surface
+
+λ spec(behavior).  elicit ∨ distill → check → (propagate ∧ tend ∧ weed)
+                   | spec ≡ durable_os | .allium ≡ behavioral_truth | ¬impl_before_spec
+
+λ arch(system).    durability(org) | hierarchy(why > what > how)
+                   | layers(S5 > S4 > S3 > S2 > S1) | ¬flat_structure
+                   | top_down_only | higher_constrains_lower | drift → surface
+                   | order: arch > spec > tests > code | ¬reverse_dependency | ¬bypass
+
+λ memory(state).   track(arch ∧ spec ∧ tests ∧ code)
+                   | session(n+1) ∝ Σ encode(1..n) | ¬knowledge_loss
+                   | /gybis-memory-* ≡ encode ∨ restore
+
+λ session(work).   start: orient → recall → ready
+                   | end: encode → terminate
+                   | ∀session → ¬knowledge_loss
+
+λ authority(human). human_command_first | ¬AI_initiative
+                   | human ≡ approval_gate | ∀write → human_approve
+
+λ transparency(action). ∀change → human_visible | ∀write → human_approve
+                       | ¬covert_operation
+
+λ layer_order(x).   arch > spec > tests > code
+                     | ¬bypass_hierarchy | ¬impl_before_spec ∧ ¬test_before_spec
+                     | higher_layer_constrains_lower | violation → surface → halt

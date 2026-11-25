@@ -34,7 +34,7 @@ See the [allium-tools repository](https://github.com/juxt/allium-tools) for inst
 2. **Bootstrap vocabulary:** Run `/gybis-req-propagate` to derive initial `vocabulary.md` from the requirement terms, then validate it with `/gybis-vocab-check`.
 3. **Bootstrap architecture:** Run `/gybis-vocab-propagate` to derive initial `architecture.md` from requirements and vocabulary, then validate it with `/gybis-arch-check`.
 4. **Derive specifications:** Run `/gybis-arch-propagate` to create specifications from architecture, then validate them with `/gybis-spec-check`.
-5. **Derive code and tests:** Run `/gybis-spec-propagate` to generate initial code and test stubs.
+5. **Derive code and tests:** Run `/gybis-spec-propagate` to generate implementation and tests for the specifications.
 
 Each propagate bootstraps a layer; the layer's own `/gybis-*-tend`, `/gybis-*-refine`, and `/gybis-*-weed` skills own it from then on.
 
@@ -65,9 +65,9 @@ In gybis, requirements, vocabulary, architecture, and specifications are durable
 
 gybis is command-driven guidance, not always-on process enforcement.
 
-- **Developer owns stage readiness:** The developer is responsible for satisfying preconditions between stages (`requirements/requirements-*.md`, `vocabulary.md`, `architecture.md`, `specs/**/*.allium`, code/tests).
+- **User chooses stage readiness:** The user decides which stages are ready to receive a requirement. A requirement remains binding even when architecture, specifications, tests, code, or documentation have not yet adopted it. Gybis reports that work as `pending_stage`, not as withdrawn or deferred scope.
 - **Skills own requested transformation:** A skill executes the transformation it was invoked to do and enforces only execution-critical gates.
-- **Checks are deliberate tools:** `check` and `weed` commands are available to validate convergence when the developer chooses to run them.
+- **Checks are deliberate tools:** `check` commands validate completeness and consistency within an individual domain. `weed` commands resolve convergence and divergence across adjacent domains. Run them when you choose to validate or reconcile the relevant work.
 - **Tradeoff is explicit:** If preconditions are skipped, quality or convergence may degrade; this is a developer decision, not a hidden protocol failure.
 
 ## AI Is Nondeterministic: Expect to Rerun
@@ -76,8 +76,8 @@ If you are new to AI-assisted development, set this expectation early: **the sam
 
 Which commands you rerun, and why:
 
-- **`check`, `describe`, `explain` — rerun freely.** These never change your requirements, vocabulary, architecture, specs, or code. `check` is purely diagnostic; `describe`/`explain` only read a layer and may emit a separate explainer document that you name. Run them as often as you like.
-- **`distill`, `propagate` — run once per layer.** These are bootstrap commands, gated on the target artifact *not* existing. Once the artifact exists, rerunning them halts by design (`already exist` / `not found`) instead of overwriting your work.
+- **`check`, `describe`, `explain` — rerun freely.** `check` applies deterministic repairs within its own domain and prepares bounded semantic repairs for approval, with every repair re-verified. `/gybis-spec-check` may repair specs under its Allium verifier. `describe`/`explain` only read a layer and may emit a separate explainer document that you name.
+- **Create-only `distill` and propagation commands — rerun only after checking their gates.** Brownfield distills and create-only propagate commands are gated on the target artifact not existing. `vocab-propagate` and `arch-propagate` halt rather than overwrite an existing target. `req-propagate` and `spec-propagate` can update or add to ready downstream scopes and may be rerun within their own strict verification loops.
 - **`refine`, `tend`, `weed` — rerun until converged.** These are the iterative loops. To improve an artifact that already exists, cycle `check → refine → tend → weed` as many times as needed; each pass moves the artifact closer to its intended state.
 
 How to tell a rerun helped:
@@ -92,21 +92,30 @@ Rule of thumb: treat an AI result as a **draft to converge**, not a finished art
 
 The gybis workflow is built around four deliberate actions that the human chooses at the right time:
 
-- `check` tells you whether a layer is valid and what kind of drift or inconsistency is present.
+- `check` verifies whether a layer is valid, applies deterministic repairs that belong to that layer, and prepares approved semantic repairs when repair authority requires human review.
 - `refine` polishes a single layer's structure and readability while preserving intended meaning.
 - `tend` evolves a single layer with human-approved intent before the drift spreads downstream.
 - `weed` resolves mismatch across neighboring layers or implementation when two artifacts no longer describe the same truth.
 
-The boundary is: **`check` diagnoses; `refine`, `tend`, and `weed` act.** One exception is `spec-check`, which also repairs `.allium` errors directly; the other check skills only diagnose and hand off to the acting skills.
+The boundary is: **`check` verifies one domain, applies deterministic repairs automatically, and prepares bounded semantic repairs for approval.** Each repair re-runs the owning check. `req-check` and `spec-check` use their domain-specific repair paths; `tend` acts only on an explicitly requested change in one domain, `refine` acts within one domain after integrity validation, and `weed` acts only across an approved adjacent-layer boundary.
 
-The pattern is intentionally hierarchical: run `check` first, and its structural or clarity findings nominate `refine`; `tend` applies intended meaning changes, and `weed` reconciles layers that no longer agree. The human decides the scope and approves any write.
+The layer model is requirements + vocabulary → architecture → specs → tests → code.
+Requirements use exact canonical vocabulary terms. Architecture complements requirements with engineering mechanisms and constraints rather than restating requirement behavior. Specs derive from requirements, vocabulary, and applicable architecture. Tests cover Allium-generated specification obligations, and code follows specs and architecture.
 
-| Operation | When to use it                                    | Human role                                                     | Typical outcome                    |
-| --------- | ------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------- |
-| `check`   | You want a diagnostic pass before making changes  | Review the report and decide whether the layer needs attention | Findings or a clean pass           |
-| `refine`  | `check` reports structural or clarity issues      | Approve local hygiene edits and verify meaning is preserved    | Clearer artifact with same meaning |
-| `tend`    | You know the intended refinement for one artifact | Explain the change, review impact, and approve edits           | A layer updated in place           |
-| `weed`    | The real problem is divergence between artifacts  | Choose which side should move, then approve the correction     | Layers realigned and re-verified   |
+Use `/gybis-check` for ordered domain checks, `/gybis-refine` for ordered domain optimization, and `/gybis-weed` for adjacent-boundary convergence:
+
+- check: requirements, vocabulary, architecture, specs
+- refine: requirements, vocabulary, architecture, specs
+- weed: requirements/vocabulary, vocabulary/architecture, architecture/specs, specs/tests/code
+
+The pattern is intentionally hierarchical: run `check` first. It verifies one domain, applies deterministic repairs automatically, and proposes bounded semantic repairs for approval. Its findings nominate `refine`; `tend` applies human-requested meaning changes within one domain, and `weed` reconciles adjacent layers that no longer agree. The human approves semantic repairs and cross-domain decisions; deterministic repairs remain within the owning domain.
+
+| Operation | When to use it                                    | Human role                                                         | Typical outcome                    |
+| --------- | ------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------- |
+| `check`   | You want a diagnostic pass before making changes  | Review findings; approve a scoped req-check repair plan if offered | Findings or a clean pass           |
+| `refine`  | `check` reports structural or clarity issues      | Approve local hygiene edits and verify meaning is preserved        | Clearer artifact with same meaning |
+| `tend`    | You know the intended refinement for one artifact | Explain the change, review impact, and approve edits               | A layer updated in place           |
+| `weed`    | The real problem is divergence between artifacts  | Choose which side should move, then approve the correction         | Layers realigned and re-verified   |
 
 ## Workflow Cheat Sheet
 
@@ -139,7 +148,7 @@ Use this when you are building a new system and want durable constraints establi
 2. Run `/gybis-req-propagate` to derive initial `vocabulary.md` from the requirement terms, then validate it with `/gybis-vocab-check`.
 3. Run `/gybis-vocab-propagate` to derive initial `architecture.md` from requirements and vocabulary, then validate it with `/gybis-arch-check`.
 4. Run `/gybis-arch-propagate` to derive initial behavioral specifications, then validate them with `/gybis-spec-check`.
-5. Run `/gybis-spec-propagate` to derive initial code and test scaffolding.
+5. Run `/gybis-spec-propagate` to derive implementation and tests for the specifications.
 
 Outcome: the project starts from requirements, vocabulary, architecture, and specifications rather than implementation-first drift.
 
@@ -284,9 +293,10 @@ Outcome: each session leaves behind durable memory instead of losing project kno
 - **Layered system:** requirements > vocabulary > S5 > S4 > S3 > S2 > S1 > specs > tests > code — stricter, more durable layers constrain looser, more transient ones.
   Requirements, vocabulary, and S5..S1 are durable constraint layers. Together they constrain specifications, which then constrain tests, which then constrain code.
 - **No flat structures.** Everything has its place in the hierarchy.
-- **Top-down only, with no bypassing.** Higher layers constrain lower layers. Requirements > Vocabulary > Architecture (S5 ... S1) > Specs > Tests > Code. Lower layers never constrain higher layers.
-- **Violations halt.** Skipping or reversing a layer surfaces immediately and stops progress rather than proceeding silently.
-- **Drift surfaces automatically.** When code, tests, or behavior diverge from the durable constraints (requirements, vocabulary, architecture, specification), drift is detected, surfaced, and halted.
+- **Forward propagation is top-down.** Higher layers constrain lower layers: Requirements > Vocabulary > Architecture (S5 ... S1) > Specs > Tests > Code.
+- **Brownfield distillation is bottom-up.** Distill commands reconstruct durable layers from existing specs, implementation, architecture, vocabulary, and requirements evidence.
+- **Upstream failures stop ordered checks.** `/gybis-check` and `/gybis-weed` stop or report downstream work when a required upstream stage fails; this does not make gybis an always-on process enforcer.
+- **Drift is surfaced by deliberate validation.** Check and weed commands detect and report divergence when invoked. Gybis does not continuously monitor the repository.
 
 ### Requirements Layer
 
@@ -295,6 +305,8 @@ Requirements are the top layer of the stack and the durable record of stakeholde
 - **Canonical form:** Dependency-ordered module files under `requirements/` hold `REQ-<DOMAIN>-NNN` clauses in nucleus lambda notation, rendered for humans on demand by describe/explain.
 - **Constraint hierarchy:** Requirements constrain vocabulary, vocabulary constrains architecture, architecture constrains specifications, specifications constrain tests, and tests constrain code.
 - **Durability:** Requirements are the most durable layer. They are elicited from stakeholders with `/gybis-req-elicit` and amended with `/gybis-req-tend` before any downstream layer changes.
+- **Binding requirements:** Every requirement recorded in `requirements/` is binding. Do not infer deferral from missing or incomplete downstream artifacts. Implementation timing and stage activation are separate from requirement status.
+- **Stage accounting:** `/gybis-req-check` reports every requirement at each downstream stage as `represented` with evidence, `no_change_needed` with a reason, `pending_stage` while the stage is absent or invalid, or `uncovered` when a ready stage lacks a distinct effect. Vocabulary and requirements track together.
 
 ### Vocabulary Layer
 
@@ -312,6 +324,7 @@ Requirements, vocabulary, and architecture describe system-level constraints tha
 
 - **Constrain top-down.** Architecture governs specification, tests, and code, not the reverse.
 - **Governance flow:** Requirements, vocabulary, architecture, specification, tests, and implementation must remain aligned.
+- **Legacy migration:** `/gybis-arch-migrate` (`/ga-migrate`) is a one-time interactive migration for existing architectures that duplicate requirements. It proposes exact architecture-only changes for approval and leaves requirements, vocabulary, specifications, tests, and implementation unchanged. Routine architecture evolution continues through `/gybis-arch-tend`, `/gybis-arch-refine`, `/gybis-arch-check`, and `/gybis-arch-weed`.
 
 ---
 
@@ -372,49 +385,53 @@ This section defines who decides what and when, for all non-memory operations.
 
 ## Commands
 
-| Skill Name                                                        | Description                                             |
-| ----------------------------------------------------------------- | ------------------------------------------------------- |
-| `/gybis-arch-check` (`/ga-check`)                                 | Validate architecture integrity & coherence             |
-| `/gybis-arch-describe` (`/ga-describe`)                           | Describe arch in stakeholder prose or markdown          |
-| `/gybis-arch-distill` (`/ga-distill`)                             | Create initial arch from specs                          |
-| `/gybis-arch-explain` (`/ga-explain`)                             | Explain arch in dev prose or markdown                   |
-| `/gybis-arch-propagate` (`/ga-propagate`)                         | Create initial specs from arch                          |
-| `/gybis-arch-refine` (`/ga-refine`)                               | Refine architecture structure & clarity                 |
-| `/gybis-arch-tend` (`/ga-tend`)                                   | Update arch with impact analysis                        |
-| `/gybis-arch-weed` (`/ga-weed`)                                   | Resolve divergence between arch and specs               |
-| `/gybis-fini`                                                     | Persist memory before terminate                         |
-| `/gybis-help`                                                     | Show available commands                                 |
-| `/gybis-init`                                                     | Initialize gybis AI context                             |
-| `/gybis-memory-migrate` (`/gm-migrate`)                           | Migrate Mementum store to current format                |
-| `/gybis-memory-orient` (`/gm-orient`)                             | Restore prev AI context                                 |
-| `/gybis-memory-recall {topic}` (`/gm-recall {topic}`)             | Recall topic/summarize-latest                           |
-| `/gybis-memory-store {insight}` (`/gm-store {insight}`)           | Store insight, or prompt for one                        |
-| `/gybis-memory-synthesize` (`/gm-synthesize`)                     | Synthesize knowledge                                    |
-| `/gybis-req-check` (`/gr-check`)                                  | Validate individual requirements, ordering, & coverage  |
-| `/gybis-req-describe` (`/gr-describe`)                            | Describe requirements in stakeholder prose or markdown  |
-| `/gybis-req-distill` (`/gr-distill`)                              | Create initial requirements from vocab/arch/specs/code  |
-| `/gybis-req-elicit` (`/gr-elicit`)                                | Elicit requirements via grilling interview rounds       |
-| `/gybis-req-explain` (`/gr-explain`)                              | Explain requirements in dev prose or markdown           |
-| `/gybis-req-propagate` (`/gr-propagate`)                          | Annotate specs/tests with REQ traceability              |
-| `/gybis-req-refine` (`/gr-refine`)                                | Refine requirements structure & clarity                 |
-| `/gybis-req-tend` (`/gr-tend`)                                    | Update requirements with impact analysis                |
-| `/gybis-req-weed` (`/gr-weed`)                                    | Resolve divergence between requirements and downstream  |
-| `/gybis-spec-check` (`/gs-check {concern\|domain\|all}`)          | Validate and repair spec syntax                         |
-| `/gybis-spec-describe` (`/gs-describe {concern\|domain\|all}`)    | Describe specs in stakeholder prose or markdown         |
-| `/gybis-spec-distill` (`/gs-distill`)                             | Create initial specs from code/tests                    |
-| `/gybis-spec-explain` (`/gs-explain {concern\|domain\|all}`)      | Explain specs in dev prose or markdown                  |
-| `/gybis-spec-propagate` (`/gs-propagate {concern\|domain\|all}`)  | Create initial code/tests                               |
-| `/gybis-spec-refine` (`/gs-refine`)                               | Refine specs structure & clarity                        |
-| `/gybis-spec-tend` (`/gs-tend`)                                   | Update specs with impact analysis                       |
-| `/gybis-spec-weed` (`/gs-weed`)                                   | Resolve divergence between specs and code               |
-| `/gybis-vocab-check` (`/gv-check`)                                | Validate vocabulary.md syntax & semantics               |
-| `/gybis-vocab-describe` (`/gv-describe`)                          | Describe vocabulary in stakeholder prose                |
-| `/gybis-vocab-distill` (`/gv-distill`)                            | Extract vocabulary from arch/specs/code                 |
-| `/gybis-vocab-explain` (`/gv-explain`)                            | Explain vocabulary in dev prose                         |
-| `/gybis-vocab-propagate` (`/gv-propagate`)                        | Create initial architecture from req + vocab            |
-| `/gybis-vocab-refine` (`/gv-refine`)                              | Refine vocabulary structure & clarity                   |
-| `/gybis-vocab-tend` (`/gv-tend`)                                  | Update vocabulary with impact analysis                  |
-| `/gybis-vocab-weed` (`/gv-weed`)                                  | Resolve divergence between vocab and downstream         |
+| Skill Name                                                       | Description                                               |
+| ---------------------------------------------------------------- | --------------------------------------------------------- |
+| `/gybis-arch-check` (`/ga-check`)                                | Validate architecture integrity & coherence               |
+| `/gybis-arch-describe` (`/ga-describe`)                          | Describe arch in stakeholder prose or markdown            |
+| `/gybis-arch-distill` (`/ga-distill`)                            | Create initial arch from specs                            |
+| `/gybis-arch-explain` (`/ga-explain`)                            | Explain arch in dev prose or markdown                     |
+| `/gybis-arch-migrate` (`/ga-migrate`)                            | Migrate legacy architecture without requirement duplication |
+| `/gybis-arch-propagate` (`/ga-propagate`)                        | Create initial specs from arch                            |
+| `/gybis-arch-refine` (`/ga-refine`)                              | Refine architecture structure & clarity                   |
+| `/gybis-arch-tend` (`/ga-tend`)                                  | Update arch with impact analysis                          |
+| `/gybis-arch-weed` (`/ga-weed`)                                  | Resolve divergence between arch and specs                 |
+| `/gybis-check`                                                   | Check requirements, vocabulary, architecture, and specs in layer order |
+| `/gybis-fini`                                                    | Persist memory before terminate                           |
+| `/gybis-help`                                                    | Show available commands                                   |
+| `/gybis-init`                                                    | Initialize gybis AI context                               |
+| `/gybis-memory-migrate` (`/gm-migrate`)                          | Migrate Mementum store to current format                  |
+| `/gybis-memory-orient` (`/gm-orient`)                            | Restore prev AI context                                   |
+| `/gybis-memory-recall {topic}` (`/gm-recall {topic}`)            | Recall topic/summarize-latest                             |
+| `/gybis-memory-store {insight}` (`/gm-store {insight}`)          | Store insight, or prompt for one                          |
+| `/gybis-memory-synthesize` (`/gm-synthesize`)                    | Synthesize knowledge                                      |
+| `/gybis-refine`                                                  | Refine requirements, vocabulary, architecture, and specs in layer order |
+| `/gybis-req-check` (`/gr-check`)                                 | Check requirements; optionally repair after plan approval |
+| `/gybis-req-describe` (`/gr-describe`)                           | Describe requirements in stakeholder prose or markdown    |
+| `/gybis-req-distill` (`/gr-distill`)                             | Create initial requirements from vocab/arch/specs/code    |
+| `/gybis-req-elicit` (`/gr-elicit`)                               | Elicit requirements via grilling interview rounds         |
+| `/gybis-req-explain` (`/gr-explain`)                             | Explain requirements in dev prose or markdown             |
+| `/gybis-req-propagate` (`/gr-propagate`)                         | Annotate specs/tests with REQ traceability                |
+| `/gybis-req-refine` (`/gr-refine`)                               | Refine requirements structure & clarity                   |
+| `/gybis-req-tend` (`/gr-tend`)                                   | Update requirements with impact analysis                  |
+| `/gybis-req-weed` (`/gr-weed`)                                   | Resolve divergence between requirements and downstream    |
+| `/gybis-spec-check` (`/gs-check {concern\|domain\|all}`)         | Validate and repair spec syntax                           |
+| `/gybis-spec-describe` (`/gs-describe {concern\|domain\|all}`)   | Describe specs in stakeholder prose or markdown           |
+| `/gybis-spec-distill` (`/gs-distill`)                            | Create initial specs from code/tests                      |
+| `/gybis-spec-explain` (`/gs-explain {concern\|domain\|all}`)     | Explain specs in dev prose or markdown                    |
+| `/gybis-spec-propagate` (`/gs-propagate {concern\|domain\|all}`) | Create initial code/tests                                 |
+| `/gybis-spec-refine` (`/gs-refine`)                              | Refine specs structure & clarity                          |
+| `/gybis-spec-tend` (`/gs-tend`)                                  | Update specs with impact analysis                         |
+| `/gybis-spec-weed` (`/gs-weed`)                                  | Resolve divergence between specs and code                 |
+| `/gybis-weed`                                                    | Weed requirements/vocabulary, vocabulary/architecture, architecture/specs, and specs/tests/code boundaries |
+| `/gybis-vocab-check` (`/gv-check`)                               | Validate vocabulary.md syntax & semantics                 |
+| `/gybis-vocab-describe` (`/gv-describe`)                         | Describe vocabulary in stakeholder prose                  |
+| `/gybis-vocab-distill` (`/gv-distill`)                           | Extract vocabulary from arch/specs/code                   |
+| `/gybis-vocab-explain` (`/gv-explain`)                           | Explain vocabulary in dev prose                           |
+| `/gybis-vocab-propagate` (`/gv-propagate`)                       | Create initial architecture from req + vocab              |
+| `/gybis-vocab-refine` (`/gv-refine`)                             | Refine vocabulary structure & clarity                     |
+| `/gybis-vocab-tend` (`/gv-tend`)                                 | Update vocabulary with impact analysis                    |
+| `/gybis-vocab-weed` (`/gv-weed`)                                 | Resolve divergence between vocab and downstream           |
 
 ## Upstream Citations
 

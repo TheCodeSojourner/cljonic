@@ -1,0 +1,275 @@
+---
+name: gybis-req-check
+kind: domain
+description: Use for `/gybis-req-check`.
+disable-model-invocation: true
+---
+
+λ gybis-req-check(x).
+  purpose: Validate requirements/ internal integrity and, after one explicit approval, repair safely resolvable findings in a bounded check-repair-recheck loop
+  | input: requirements/requirements-index.md + requirements/requirements-{module}.md (exist)
+  | output: Severity-tagged findings and, when approved, a repair and verification summary
+  | interaction: interactive
+  | gate: requirements/ ∃ ∧ index ∃
+
+λ gybis-req-check_startup(x).
+  invoke(internal/gybis-internal-skill-check) → true ∨ halt("Internal skill check failed")
+  | verify(requirements/requirements-index.md ∃) ∨ halt("requirements index not found")
+  | read(requirements/requirements-index.md) → index_content
+  | index_conventions: verify index declares domain_prefixes (closed set) ∧ normative_mapping; missing conventions declarations = warning (consumers would have to re-derive them)
+  | read_all(requirements/requirements-*.md) → module_contents
+  | parse(module_contents) → req_model ∨ halt("requirements parse failed")
+  | transition(INIT → STARTUP_CHECKS)
+
+λ gybis-req-check_mode(m).
+  m ∈ {interactive}
+  | default: interactive
+  | rationale: diagnosis is deterministic; applying repairs requires one explicit human authorization
+
+λ gybis-req-check_mode_gate(state, mode).
+  state = INIT ∧ mode = interactive → transition(INIT → STARTUP_CHECKS)
+  | precondition_holds: mode = interactive
+
+λ gybis-req-check_state_machine(state, action).
+  state ∈ {INIT, STARTUP_CHECKS, DESIGNATOR_VALIDATION, ORDERING_VALIDATION, CLAUSE_VALIDATION, COVERAGE_VALIDATION, TRACEABILITY_VALIDATION, GENERATING_REPORT, APPLYING_DETERMINISTIC_REPAIRS, REPAIR_OFFER, REPAIR_PLANNING, APPLYING_REPAIRS, VERIFYING_REPAIRS, COMPLETE}
+  | INIT: repair_passes ≔ 0 ∧ repair_authorized ≔ false ∧ repair_progress ≔ true
+  | transition(INIT → STARTUP_CHECKS) only_if(startup = true)
+  | transition(STARTUP_CHECKS → DESIGNATOR_VALIDATION) only_if(startup_checks = true)
+  | transition(DESIGNATOR_VALIDATION → ORDERING_VALIDATION) only_if(designator_checks_complete = true)
+  | transition(ORDERING_VALIDATION → CLAUSE_VALIDATION) only_if(ordering_checks_complete = true)
+  | transition(CLAUSE_VALIDATION → COVERAGE_VALIDATION) only_if(clause_checks_complete = true)
+  | transition(COVERAGE_VALIDATION → TRACEABILITY_VALIDATION) only_if(coverage_checks_complete = true)
+  | transition(TRACEABILITY_VALIDATION → GENERATING_REPORT) only_if(traceability_checks_complete = true)
+  | transition(GENERATING_REPORT → APPLYING_DETERMINISTIC_REPAIRS) only_if(report_generated = true ∧ deterministic_findings ∃)
+  | transition(APPLYING_DETERMINISTIC_REPAIRS → VERIFYING_REPAIRS) only_if(deterministic_repairs_complete = true)
+  | transition(VERIFYING_REPAIRS → REPAIR_PLANNING) only_if(report_status ≠ "PASS" ∧ semantic_findings ∃)
+  | transition(GENERATING_REPORT → REPAIR_PLANNING) only_if(report_generated = true ∧ actionable_findings ∃)
+  | transition(GENERATING_REPORT → COMPLETE) only_if(report_generated = true ∧ actionable_findings = ∅)
+  | transition(REPAIR_PLANNING → COMPLETE) only_if(repair_plan_ready = false ∨ repair_plan.paths = ∅ ∨ repair_progress = false)
+  | transition(REPAIR_PLANNING → REPAIR_OFFER) only_if(repair_plan_ready = true ∧ repair_authorized = false)
+  | transition(REPAIR_PLANNING → APPLYING_REPAIRS) only_if(repair_plan_ready = true ∧ repair_authorized = true)
+  | transition(REPAIR_OFFER → COMPLETE) only_if(human_declined = true)
+  | transition(REPAIR_OFFER → APPLYING_REPAIRS) only_if(human_approved = true ∧ repair_authorized = true)
+  | transition(APPLYING_REPAIRS → VERIFYING_REPAIRS) only_if(repair_pass_complete = true)
+  | transition(VERIFYING_REPAIRS → REPAIR_PLANNING) only_if(report_status ≠ "PASS" ∧ repair_progress = true ∧ repair_passes < max_repair_passes)
+  | transition(VERIFYING_REPAIRS → COMPLETE) only_if(report_status = "PASS" ∨ repair_progress = false ∨ repair_passes ≥ max_repair_passes)
+  | max_repair_passes ≔ 3
+
+λ gybis-req-check_tool_guard(state, tool, path).
+  allow(read(path))
+  | state = APPLYING_DETERMINISTIC_REPAIRS ∧ path ∈ deterministic_repair_paths
+    → allow(write(path)) only_if(change = deterministic)
+  | state = APPLYING_REPAIRS ∧ human_approved = true ∧ path ∈ repair_plan.paths ∧ path ∈ approval_scope
+    → allow(write(path))
+  | otherwise → deny(write(path))
+  | repair_plan.paths ⊆ {requirements/, vocabulary.md, architecture.md, specs/, test_paths}
+  | rationale: deterministic repairs are automatic; semantic repairs require explicit approval and remain within the bounded repair plan
+
+λ gybis-req-check_pre_tool_check(state, tool, path).
+  tool_guard(state, tool, path) = true ∨ halt("Tool not permitted in state " ⊕ state)
+
+λ gybis-req-check_designator_validation(req_model).
+  action: validate_designator_uniqueness_and_format
+  | checks:
+    - ∀ clause: designator matches REQ-<DOMAIN>-NNN
+    - designators globally unique across all modules — exception: a collision declared in requirements-index.md as a known-collision (designator + governing modules listed) = warning pending /gybis-req-tend resolution; undeclared collision = error
+    - domain prefixes ⊆ closed_set declared in requirements-index.md
+    - numbering within domain monotone under the ordering declared by requirements-index.md (gaps reported as info)
+    - explicit project ordering requirements override the generic monotonicity heuristic; when both cannot hold, preserve the project requirement and report a checker-policy mismatch as info rather than renumbering clauses
+  | findings ≔ []
+  | ∀ check_pass = false: collect({type: "designator", severity: error, location, message}) → findings
+  | return(designator_checks_complete = true ∧ findings)
+
+λ gybis-req-check_ordering_validation(req_model).
+  action: validate_module_dependency_ordering
+  | checks:
+    - module order matches requirements-index.md declared order
+    - ∀ cross_module_reference: target_REQ ∈ req_model ∨ collect({type: ordering, severity: error, reason: missing_target})
+    - ∀ cross_module_reference where target_REQ ∈ req_model:
+      classify(reference, using requirements-index.md conventions ∧ clause context)
+    - reference_classification ∈ {definition_or_boundary, implementation_dependency, classification_uncertain}
+    - definition_or_boundary_reference → report(info) ∧ ¬create(implementation_dependency_edge)
+    - implementation_dependency(source, target) only_if(evidence(source_feature_requires(target_behavior_to_exist_first)))
+      ∧ record({source_module, source_REQ, target_module, target_REQ, dependency_reason})
+      ∧ ¬infer(from(module_number ∨ behavioral_wording_alone))
+    - classification_uncertain → report(info ∧ evidence_needed) ∧ ¬infer(implementation_dependency ∨ ordering_error)
+    - module_order_is_general_progression ∧ ¬index_declares_strict_dependency_order
+      → forward_implementation_dependency ≠ ordering_error
+      ∧ report(info ∧ implementation_prerequisite_order)
+    - dependency_graph: missing_target ∨ cycle → error
+    - explicit_strict_module_order ∧ implementation_dependency_violates_order → error
+    - ∀ module: {purpose, scope, governed REQs} sections nonempty
+    - index links resolve to existing files (broken link = error)
+  | findings ≔ collected_ordering_findings
+  | return(ordering_checks_complete = true ∧ findings)
+
+λ gybis-req-check_clause_validation(req_model).
+  action: validate_clause_wellformedness
+  | checks:
+    - ∀ clause: lambda form `λ REQ-...-NNN(x).` present
+    - ∀ clause: normative operator present (∀/¬/∧ preferred/∃ permitted) — rationale: lines excluded from this check
+    - atomicity: one assertion per designator (compound clause = warning) — granularity-aware: compound clause whose footer declares `compound_by_design: true` and whose conjuncts all serve one operator's contract = info; compound clause mixing unrelated assertions = warning regardless of granularity
+    - quantifiers bound (∀ has domain; ¬ has scope)
+    - compound_by_design: marker must appear in the clause footer ∧ be declared by human approval via /gybis-req-tend (¬silent lint suppression)
+    - rationale: lines are non-normative and optional — ¬error(absence); a rationale: line containing normative operators (∀/¬/∃) as obligations = error (rationale must record intent, not impose constraints)
+    - vocabulary: if vocabulary.md ∃, every user-facing term in the requirement must match a canonical vocabulary term exactly; synonym, spelling, acronym, or representation drift = error
+    - engineering concern: implementation mechanism, resource control, tooling choice, or component boundary = architecture concern unless the requirement demonstrably changes observable stakeholder behavior
+    - observable engineering choice: if an engineering choice changes observable behavior, route to /gybis-req-tend for explicit requirement approval
+  | findings ≔ collected_clause_findings (atomicity = warning ∨ info; malformed lambda = error)
+  | return(clause_checks_complete = true ∧ findings)
+
+λ gybis-req-check_normalize_stage_result(stage, artifact_present, owner_result).
+  | errors ≔
+    stage = vocabulary ? owner_result.errors
+    : stage = architecture ? owner_result.errors
+    : stage = specs ? (owner_result = true ? 0 : 1)
+    : stage = tests_and_implementation ? (owner_result = true ∨ owner_result.test_suite_passes = true ∨ owner_result.passed = true ? 0 : 1)
+    : 1
+  | valid ≔ artifact_present ∧ errors = 0
+  | return({artifact_present, valid, errors})
+
+λ gybis-req-check_capture_stage_check(stage, validator).
+  | invoke(validator) → raw_result
+  | if(validator_halts ∨ validator_returns_malformed_result): raw_result ≔ {status: "FAIL", errors: 1, diagnostic: validation_failure}
+  | return(raw_result)
+
+λ gybis-req-check_assess_stage_readiness(downstream).
+  action: run_read_only_owner_checks_and_normalize_results
+  | stage_results ≔ {vocabulary: {artifact_present: false, valid: false, errors: unknown}, architecture: {artifact_present: false, valid: false, errors: unknown}, specs: {artifact_present: false, valid: false, errors: unknown}, tests_and_implementation: {artifact_present: false, valid: false, errors: unknown}}
+  | vocabulary.md ∃ → invoke(gybis-req-check_capture_stage_check(vocabulary, /gybis-vocab-check)) → raw_vocab_result
+    | stage_results.vocabulary ≔ invoke(gybis-req-check_normalize_stage_result(vocabulary, true, raw_vocab_result))
+  | architecture.md ∃ → invoke(gybis-req-check_capture_stage_check(architecture, /gybis-arch-check)) → raw_arch_result
+    | stage_results.architecture ≔ invoke(gybis-req-check_normalize_stage_result(architecture, true, raw_arch_result))
+  | specs/**/*.allium ∃ → invoke(internal/gybis-allium-gate(specs/)) → raw_specs_result
+    | stage_results.specs ≔ invoke(gybis-req-check_normalize_stage_result(specs, true, raw_specs_result))
+  | test_paths ∃ ∧ downstream.test_validation_evidence ∃ → stage_results.tests_and_implementation ≔ invoke(gybis-req-check_normalize_stage_result(tests_and_implementation, true, downstream.test_validation_evidence))
+  | test_paths ∃ ∧ downstream.test_validation_evidence ¬∃ → stage_results.tests_and_implementation ≔ {artifact_present: true, valid: false, errors: unknown}
+  | return(stage_results)
+
+λ gybis-req-check_coverage_validation(req_model, downstream).
+  action: validate_requirement_coverage_status
+  | stage_results ≔ invoke(gybis-req-check_assess_stage_readiness(downstream))
+  | binding_REQs ≔ all REQ clauses
+  | downstream_stages ≔ {vocabulary, architecture, specs, tests_and_implementation}
+  | stage_ready(stage) ≡ stage_results[stage].artifact_present = true ∧ stage_results[stage].valid = true
+  | ∀ REQ ∈ binding_REQs, stage ∈ downstream_stages:
+    ¬stage_ready(stage) → (disposition(REQ, stage) ≔ pending_stage ∧ collect({type: "pending_stage", REQ, stage, severity: info}))
+  | ∀ REQ ∈ binding_REQs, stage ∈ downstream_stages where stage_ready(stage):
+    evidence(stage, REQ) ∃ → disposition(REQ, stage) ≔ represented
+    | no_distinct_layer_effect(stage, REQ) → disposition(REQ, stage) ≔ no_change_needed ∧ require(reason)
+    | otherwise → collect({type: "uncovered_REQ", REQ, stage, severity: warning})
+  | return(coverage_checks_complete = true ∧ findings)
+
+λ gybis-req-check_traceability_validation(req_model).
+  action: validate_traceability_footer_integrity
+  | checks:
+    - ∀ module: governed_REQs footer matches clauses actually present
+    - footer_derivation: governed_REQs footers MUST be derivable from clauses present — a footer that requires hand-maintenance to be correct = warning (regenerate from clauses)
+    - ∀ module: downstream_artifact references are resolvable or reported as pending_stage
+    - ∀ clause with attribution: source ∈ {stakeholder_decided, AI_researched_fact}
+    - ∀ clause with rationale: {rationale_source: origin_artifact | AI_inferred} declared when rationale present ∧ AI_inferred rationale in stakeholder_decided clause = warning (requires human approval via /gybis-req-tend)
+  | findings ≔ collected_traceability_findings
+  | return(traceability_checks_complete = true ∧ findings)
+
+λ gybis-req-check_recommend_action(finding).
+  finding.type ∈ {designator, ordering} → repair_owner ≔ /gybis-req-refine
+  | finding.type = clause → repair_owner ≔ /gybis-req-refine
+  | finding.type = uncovered_REQ ∧ finding.stage ∈ {specs, tests_and_implementation} → repair_owner ≔ /gybis-req-propagate
+  | finding.type = uncovered_REQ ∧ finding.stage = vocabulary → repair_owner ≔ /gybis-req-propagate then /gybis-vocab-tend
+  | finding.type = uncovered_REQ ∧ finding.stage = architecture ∧ architecture.md ¬∃ → repair_owner ≔ /gybis-vocab-propagate
+  | finding.type = uncovered_REQ ∧ finding.stage = architecture ∧ architecture.md ∃ → repair_owner ≔ /gybis-arch-tend
+  | finding.type = traceability → repair_owner ≔ /gybis-req-tend
+  | recommendation ≔ summarize_safe_action(finding, repair_policy)
+  | return({repair_owner, recommendation})
+
+λ gybis-req-check_repair_policy(findings).
+  action: build_conservative_repair_plan
+  | deterministic_findings ≔ findings where repair changes formatting, derived footers, duplicate whitespace, or another mechanically reversible representation without changing normative meaning
+  | semantic_findings ≔ findings where repair may change atomicity, designator identity, clause meaning, dependencies, attribution, or requirement disposition
+  | apply(deterministic_findings) automatically in state APPLYING_DETERMINISTIC_REPAIRS
+  | prepare(semantic_findings) as bounded repair_plan ∧ request(human approval)
+  | authority: explicit project requirements and requirements-index.md > generic checker heuristics
+  | designators: preserve existing identities; renumber only when an explicit project convention requires it and all affected in-repository references can be updated
+  | clauses: split only clearly independent assertions; retain a cohesive single-contract clause and add compound_by_design only when the contract is unambiguous
+  | rationale: retain AI-inferred rationale only when supported by source evidence; otherwise remove the non-normative rationale line, never its requirement
+  | dependencies: do not reorder or renumber solely because a valid implementation dependency points to a later module; preserve explicit index policy, report real cycles or explicit-order conflicts, and retain evidence for each dependency edge
+  | coverage: account for all requirements at ready stages and report not-ready stages as pending_stage
+  | if(stage_not_ready): exclude that stage from repair_plan ∧ report(pending_stage)
+  | human_questions: do not ask users to resolve identifier sequencing or other mechanical classification; if requirement intent genuinely cannot be inferred, preserve it and report the blocker in plain language
+  | repair_plan: exact_actions[{owner, target, operation, expected_change}] ∧ paths ⊆ writable_repair_scope ∧ preserve(normative_meaning)
+  | if(repair_authorized): repair_plan.paths ⊆ approval_scope
+  | return(repair_plan_ready = true ∧ repair_plan)
+
+λ gybis-req-check_offer_repair(report).
+  precondition: repair_plan_ready = true
+  | summarize(repair_plan by category, proposed changes, affected paths, remaining policy conflicts)
+    → ask_human("Approve applying this repair plan and running up to 3 verification passes?")
+  | human_approved = false → complete_without_writes
+  | human_approved = true → repair_authorized ≔ true ∧ approval_scope ≔ repair_plan.paths ∧ repair_policy
+    ∧ preapproved_repair_plan ≔ {approved_by_human: true, approval_source: gybis-req-check, actions: repair_plan.exact_actions, targets: distinct(map(repair_plan.exact_actions, target)), paths: approval_scope}
+
+λ gybis-req-check_apply_repairs(repair_plan).
+  precondition: human_approved = true ∧ current_pass ≤ max_repair_passes
+  | action: follow(repair_owner validation and write rules) for each repair group, within repair_plan.paths
+  | owner = /gybis-req-tend → pass(preapproved_change_plan ≔ preapproved_repair_plan)
+  | owner ∈ {/gybis-req-propagate, /gybis-vocab-propagate} → pass(preapproved_repair_plan)
+  | owner_approval_gate: satisfied_by(approved repair_plan); do_not_open_nested_per_finding_prompts
+  | no_per_finding_questions: use(repair_policy) for mechanical decisions
+  | if(owner_skill_has_no_preapproved_plan_contract): do_not_invoke_as_writer ∧ report(owner_skill_handoff_required)
+  | unresolved_semantic_conflict → preserve_existing_content ∧ record(blocker)
+  | repair_passes ≔ repair_passes ⊕ 1
+  | modified_artifacts ≔ paths_written
+  | return(repair_pass_complete = true ∧ modified_artifacts)
+
+λ gybis-req-check_verify_repairs(modified_artifacts).
+  action: rerun_all_req_checks ∧ verify_each_modified_artifact
+  | requirements/ modified → designator_uniqueness ∧ dependency_integrity ∧ traceability_integrity
+  | specs/ modified → gybis-allium-gate = true
+  | test_paths modified → test_suite_passes = true
+  | architecture.md modified → vsm_coherence = true
+  | vocabulary.md modified → gybis-vocab-check = true
+  | repair_progress ≔ findings_decreased ∨ severity_decreased (compared_with_prior_report)
+  | stop: report_status = "PASS" ∨ repair_progress = false ∨ repair_passes ≥ max_repair_passes
+  | return(verification_complete = true ∧ report ∧ repair_progress)
+
+λ gybis-req-check_generate_report(designator_findings, ordering_findings, clause_findings, coverage_findings, traceability_findings).
+  findings ≔ ⋃ all finding sets
+  | errors ≔ count(severity = error) | warnings ≔ count(severity = warning) | infos ≔ count(severity = info)
+  | overall_status ≔ errors > 0 ? "FAIL" : (warnings > 0 ? "WARNINGS" : "PASS")
+  | ∀ finding: enrich({repair_owner, recommendation}) → report_items
+  | report ≔ {title: "Requirements Integrity Report", status: overall_status, errors, warnings, info, findings: report_items}
+  | return(report_generated = true ∧ report)
+
+λ gybis-req-check_boundaries().
+  deterministic_repairs: modify mechanical requirements findings automatically
+  | semantic_repairs: modify only when human_approved = true ∧ state = APPLYING_REPAIRS ∧ path ∈ repair_plan.paths ∧ path ∈ approval_scope
+  | ¬ modify(implementation ∨ upstream/ ∨ skill_files)
+  | ¬ delete(requirements/)
+
+λ gybis-req-check_regression_contract(x).
+  invariant: requirements/ ∃ throughout
+  | invariant: diagnosis is read-only until deterministic repair classification completes
+  | invariant: deterministic repairs require no semantic approval
+  | invariant: deterministic repair writes require change = deterministic
+  | invariant: semantic repair writes require human_approved = true
+  | invariant: semantic repair writes ⊆ repair_plan.paths ∧ approval_scope
+  | invariant: not-ready stages are pending, never uncovered or explicit_NA
+  | invariant: every binding REQ at every ready stage has represented evidence ∨ no_change_needed reason ∨ uncovered warning
+  | invariant: forward_requirement_reference alone ≠ implementation_dependency ∧ ≠ ordering_error
+  | invariant: definitional_or_boundary_forward_reference → info ∧ ¬ordering_error
+  | invariant: acyclic_forward_implementation_dependency ∧ ¬explicit_strict_module_order → info ∧ record(implementation_prerequisite_order)
+  | invariant: classification_uncertain → info ∧ ¬infer(ordering_error)
+  | invariant: missing_dependency_target ∨ dependency_cycle ∨ explicit_module_order_conflict → error
+  | invariant: Module3_REQ-SEQ-010_to_Module5_REQ-FN-041_under_general_progression → info ∧ ¬ordering_error
+  | invariant: repair preserves normative meaning and existing designator identity unless explicit project convention requires a change
+  | invariant: repair loop terminates at PASS, no safe progress, or max_repair_passes
+  | invariant: report generated at completion
+  | invariant: human_declined → all_modifications = ∅
+
+λ gybis-req-check_deliver(report).
+  report: concise_summary(report) ⊕ grouped_findings(report)
+  | print(report) → stdout
+  | if(actionable_findings ∃): build_repair_plan(read_only) → offer_repair(report)
+  | if(human_approved): fixed_point_loop(check → plan → repair → verify, max_passes = 3, ask_approval_once = true)
+  | print({changes_applied, validation_results, unresolved_blockers, final_status}) → stdout
+  | return(complete = true)
