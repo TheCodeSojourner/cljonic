@@ -1,5 +1,31 @@
 ## Current Session State
 
+- last_session_id: 9268e523-26f5-4463-b33f-c13fa18272ee
+- current_timestamp: 2026-11-25T13:22:39-07:00
+- session_complete: true
+- recover: The upserted `/gybis-arch-migrate` skill was rerun repeatedly from scratch. A complete fixed-point migration found no remaining stakeholder requirement duplication and no stale `take_nth` deferred scope. The approved architecture migration and skill contract upsert are committed on branch `gybis-arch-update` (commits da800e79 and ff844767). Only this Mementum state closeout remains.
+- task: Upgrade and execute `/gybis-arch-migrate` for complete requirement-versus-architecture duplicate detection, then migrate `architecture.md` to retain mechanisms and responsibilities while removing normative restatement.
+- questions:
+  - No open migration question; fixed-point rerun reported `NO_DUPLICATION_FOUND`.
+  - No remaining architecture or requirement-layer conflict was found by the final high-confidence comparison.
+- decisions:
+  - The skill upsert requires complete requirement-clause and architecture-span coverage before `NO_DUPLICATION_FOUND`.
+  - Clean reruns stop and report no duplication without mutating files.
+  - Duplication findings present a before/after architecture upsert and require exactly one human yes/no approval.
+  - Approved migration changes are limited to `architecture.md`; the skill contract change remains in `.agents/skills/gybis-arch-migrate/SKILL.md`.
+  - The migration preserves S5/S4/S3/S2/S1 hierarchy, valid requirement links, mechanisms, responsibilities, protocols, resource controls, and component boundaries.
+- next:
+  1. Commit this Mementum state closeout.
+  2. Review or merge branch `gybis-arch-update` separately; this closeout does not authorize additional code or requirement changes.
+- validation:
+  - Startup reference and internal skill checks passed.
+  - All 379 requirement clauses and 155 architecture entries were scanned; 60 architecture entries with requirement links were compared.
+  - Final rerun returned zero high-confidence duplicate hits and zero invalid requirement links.
+  - VSM section structure passed.
+  - Stale `take_nth` deferred scope check passed.
+  - Architecture SHA-256 after migration: `c6114e71fc45239904e8cb4ddac6fbfbb0043f29b330e4e42a44c83b926e6922`.
+  - Migration commits: `da800e79` for architecture upserts and `ff844767` for complete-scan/`NO_DUPLICATION_FOUND` skill contract.
+
 - last_session_id: cf87169d-6fe2-4f2b-83f8-51cd6f646f91
 - current_timestamp: 2026-11-22T07:55:52-07:00
 - session_complete: true
