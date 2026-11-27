@@ -36,6 +36,7 @@ COMPILE_FAIL_TARGETS = \
 	filter-compile-fail \
 	not-equal-compile-fail \
 	assoc-compile-fail \
+	assoc-in-compile-fail \
 	can-assoc-compile-fail \
 	primitive-compile-fail \
 	can-conj-compile-fail \
@@ -59,7 +60,7 @@ GIT_INDEPENDENT_CHECKS = lint-check complexity-cli header-guards diagnostic-cove
 .PHONY: compile-fail compile-fail-registry
 .PHONY: distclean
 .PHONY: _git-preflight _git-prepare _git-checks _git-sanitizer _git-coverage _git-no-heap _git-probe
-.PHONY: help all test clean configure coverage coverage-cli sanitizer sanitizer-cli complexity complexity-cli format format-doc-samples core-cheatsheet-format docs-examples lint no-heap-src single-threaded-src no-heap-symbols no-heap range-compile-fail variant-compile-fail equal-compile-fail map-compile-fail reduce-compile-fail filter-compile-fail not-equal-compile-fail assoc-compile-fail can-assoc-compile-fail can-conj-compile-fail conj-compile-fail character-is-valid-compile-fail primitive-compile-fail source-construction-compile-fail producer-compile-fail ctad-compile-fail vector-factory-compile-fail hash-map-factory-compile-fail map-entry-factory-compile-fail hash-set-factory-compile-fail queue-factory-compile-fail string-factory-compile-fail header-guards diagnostic-coverage diagnostic-message-labels requirements-structure vocabulary-structure audit-scripts trace-id-check _traceability-obligation-ids-current _traceability-test-ids-current traceability-spec-to-code traceability-spec-to-code-update-snapshot traceability-category-report upsert-fast upsert-gate-fast upsert-gate upsert-gate-strict docs git validate cljonic cljonic-test
+.PHONY: help all test clean configure coverage coverage-cli sanitizer sanitizer-cli complexity complexity-cli format format-doc-samples core-cheatsheet-format docs-examples lint no-heap-src single-threaded-src no-heap-symbols no-heap range-compile-fail variant-compile-fail equal-compile-fail map-compile-fail reduce-compile-fail filter-compile-fail not-equal-compile-fail assoc-compile-fail assoc-in-compile-fail can-assoc-compile-fail can-conj-compile-fail conj-compile-fail character-is-valid-compile-fail primitive-compile-fail source-construction-compile-fail producer-compile-fail ctad-compile-fail vector-factory-compile-fail hash-map-factory-compile-fail map-entry-factory-compile-fail hash-set-factory-compile-fail queue-factory-compile-fail string-factory-compile-fail header-guards diagnostic-coverage diagnostic-message-labels requirements-structure vocabulary-structure audit-scripts trace-id-check _traceability-obligation-ids-current _traceability-test-ids-current traceability-spec-to-code traceability-spec-to-code-update-snapshot traceability-category-report upsert-fast upsert-gate-fast upsert-gate upsert-gate-strict docs git validate cljonic cljonic-test
 
 help:
 	@printf '%-12s %s\n' 'all' 'Incremental parallel build and test run'
@@ -235,6 +236,9 @@ filter-compile-fail: cljonic scripts/check-filter-compile-failures.py
 
 assoc-compile-fail: cljonic scripts/check-assoc-compile-failures.py
 	@python3 scripts/check-assoc-compile-failures.py
+
+assoc-in-compile-fail: cljonic scripts/check-assoc-in-compile-failures.py
+	@python3 scripts/check-assoc-in-compile-failures.py
 
 can-assoc-compile-fail: cljonic scripts/check-can-assoc-compile-failures.py
 	@python3 scripts/check-can-assoc-compile-failures.py
