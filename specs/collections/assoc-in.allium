@@ -1,0 +1,40 @@
+-- allium: 3
+
+-- REQ-FN-029B: assoc_in and can_assoc_in perform nested Map/Vector updates
+-- using exact declared Map/Vector types and a separate bounded path Vector.
+
+entity AssocIn {
+    root_is_map_or_vector: Boolean
+    path_is_vector: Boolean
+    path_is_nonempty: Boolean
+    path_element_is_exact: Boolean
+    intermediate_values_are_associative: Boolean
+    missing_map_key_creates_declared_intermediate: Boolean
+    vector_existing_index_replaces: Boolean
+    vector_append_index_appends_when_capacity_remains: Boolean
+    invalid_runtime_path_returns_original_root: Boolean
+    invalid_runtime_path_can_assoc_in_returns_false: Boolean
+    compile_time_invalid_surface_has_targeted_diagnostic: Boolean
+    can_assoc_in_is_cumulative: Boolean
+    result_is_distinct_root_value: Boolean
+    source_is_preserved: Boolean
+    constexpr_noexcept_no_heap_no_rtti: Boolean
+
+    invariant RootIsMapOrVector { this.root_is_map_or_vector = true }
+    invariant PathIsVector { this.path_is_vector = true }
+    invariant PathIsNonempty { this.path_is_nonempty = true }
+    invariant PathElementIsExact { this.path_element_is_exact = true }
+    invariant IntermediateValuesAreAssociative { this.intermediate_values_are_associative = true }
+    invariant MissingMapKeyCreatesDeclaredIntermediate { this.missing_map_key_creates_declared_intermediate = true }
+    invariant VectorExistingIndexReplaces { this.vector_existing_index_replaces = true }
+    invariant VectorAppendIndexAppendsWhenCapacityRemains { this.vector_append_index_appends_when_capacity_remains = true }
+    invariant InvalidRuntimePathReturnsOriginalRoot { this.invalid_runtime_path_returns_original_root = true }
+    invariant InvalidRuntimePathCanAssocInReturnsFalse { this.invalid_runtime_path_can_assoc_in_returns_false = true }
+    invariant CompileTimeInvalidSurfaceHasTargetedDiagnostic { this.compile_time_invalid_surface_has_targeted_diagnostic = true }
+    invariant CanAssocInIsCumulative { this.can_assoc_in_is_cumulative = true }
+    invariant ResultIsDistinctRootValue { this.result_is_distinct_root_value = true }
+    invariant SourceIsPreserved { this.source_is_preserved = true }
+    invariant ConstexprNoexceptNoHeapNoRtti { this.constexpr_noexcept_no_heap_no_rtti = true }
+}
+
+actor AssocInOperator { identified_by: AssocIn }
