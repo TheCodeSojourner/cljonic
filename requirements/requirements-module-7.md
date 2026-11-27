@@ -169,6 +169,25 @@ This module specifies specialized domain conveniences built on top of lower modu
   ∧ ∀ untyped zero-argument `vector()`: rejected because the element type cannot be deduced
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-22, compound_by_design: true}
 
+λ REQ-FN-029B(x).
+  ∀ `assoc_in(collection, path, value)` ∧ `can_assoc_in(collection, path, value)`: support a copy-on-associate update through exact `Map` and `Vector` shapes, with one path element addressing the root and additional elements addressing nested values
+  ∧ `collection`: accepted only as a root `Map` or `Vector` ∧ each intermediate value: accepted only when it is an associative `Map` or `Vector`
+  ∧ `path`: exactly one `Vector<PathElement, PathCapacity>` value ∧ PathElement: exact and safe for each level's Map-key or Vector-index domain
+  ∧ `value`: must safely construct in the final associative collection's stored association value type
+  ∧ empty_path: rejected at compile time for both `assoc_in` and `can_assoc_in`
+  ∧ compile-time invalid root, path container, path element, intermediate type, or final value: rejected with a targeted diagnostic naming `assoc_in` or `can_assoc_in`
+  ∧ runtime invalid Map key, Vector index, or capacity: returns the original root unchanged for `assoc_in` ∧ returns `false` for `can_assoc_in`
+  ∧ runtime negative Vector index, index beyond the append position, or append at full capacity: unchanged for `assoc_in` ∧ false for `can_assoc_in`
+  ∧ existing Vector index: replaces the nested value or final element ∧ logical-count index: appends only when capacity remains
+  ∧ missing Map key: creates the declared intermediate `Map` or `Vector` value for a nested update ∧ missing key at a final association uses ordinary `assoc` insertion policy
+  ∧ an intermediate Map or Vector: updated by the remaining path through the same copy-on-associate and capacity rules
+  ∧ cumulative preflight: `can_assoc_in` evaluates every path level and final association against the state produced by earlier successful levels ∧ returns true only when every level succeeds
+  ∧ source: preserved unchanged ∧ result: a distinct bounded root value of the root collection type ∧ no mutation, heap allocation, exceptions, RTTI, or hidden state
+  ∧ path: consumed as a bounded `Vector` and does not mutate or materialize the source collection
+  ∧ operation: constexpr ∧ non-throwing ∧ non-allocating ∧ result capacity remains the root collection and declared nested collection capacities
+  rationale: assoc_in mirrors Clojure's nested associative update while preserving cljonic's exact, bounded Map/Vector value model and assoc/can_assoc policies
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-25, rationale_source: origin_artifact, compound_by_design: true}
+
 ## String Factory
 
 λ REQ-FN-029H(x).
