@@ -292,6 +292,16 @@ requires arithmetic_detail::SupportedInteger&lt;T&gt; &amp;&amp; arithmetic_deta
 <tr class="memitem:a516d40b3619dda90f69537bff81a079e" id="r_a516d40b3619dda90f69537bff81a079e"><td class="memTemplParams" colspan="2">template&lt;typename T, typename Count&gt; <br />
 requires arithmetic_detail::SupportedInteger&lt;T&gt; &amp;&amp; arithmetic_detail::ShiftCount&lt;Count&gt;</td></tr>
 <tr class="memitem:a516d40b3619dda90f69537bff81a079e template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a516d40b3619dda90f69537bff81a079e">bit_test</a> (T value, Count index) noexcept -&gt; bool</td></tr>
+<tr class="memitem:a53c5b95a0b758c568563533af208fd35" id="r_a53c5b95a0b758c568563533af208fd35"><td class="memTemplParams" colspan="2">template&lt;typename C, typename P, std::size_t PathCapacity, typename V&gt; <br />
+requires (<a class="el" href="conceptcljonic_1_1concepts__detail_1_1_assoc_in_root_and_path_element_admissible.html">cljonic::concepts_detail::AssocInRootAndPathElementAdmissible</a>&lt;C, P&gt; &amp;&amp;<br class="typebreak" />
+ <a class="el" href="namespacecljonic_1_1concepts__detail.html#a322b58e707f93d65c0b97ccdbe96f413">cljonic::concepts_detail::assoc_in_terminal_value_admissible_v</a>&lt;C, V&gt; &amp;&amp; PathCapacity &gt; 0)</td></tr>
+<tr class="memitem:a53c5b95a0b758c568563533af208fd35 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a53c5b95a0b758c568563533af208fd35">assoc_in</a> (const C &amp;collection, const <a class="el" href="classcljonic_1_1_vector.html">cljonic::Vector</a>&lt; P, PathCapacity &gt; &amp;path, const V &amp;value) noexcept -&gt; C</td></tr>
+<tr class="memitem:af1e1adbab6191ff965f39b1d327eb93c" id="r_af1e1adbab6191ff965f39b1d327eb93c"><td class="memTemplParams" colspan="2">template&lt;typename C, typename P, std::size_t PathCapacity, typename V&gt; <br />
+requires (!<a class="el" href="conceptcljonic_1_1concepts__detail_1_1_assoc_in_root_and_path_element_admissible.html">cljonic::concepts_detail::AssocInRootAndPathElementAdmissible</a>&lt;C, P&gt; ||<br class="typebreak" />
+ !<a class="el" href="namespacecljonic_1_1concepts__detail.html#a322b58e707f93d65c0b97ccdbe96f413">cljonic::concepts_detail::assoc_in_terminal_value_admissible_v</a>&lt;C, V&gt; || PathCapacity == 0)</td></tr>
+<tr class="memitem:af1e1adbab6191ff965f39b1d327eb93c template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#af1e1adbab6191ff965f39b1d327eb93c">assoc_in</a> (const C &amp;collection, const <a class="el" href="classcljonic_1_1_vector.html">cljonic::Vector</a>&lt; P, PathCapacity &gt; &amp;path, const V &amp;value) noexcept -&gt; void</td></tr>
+<tr class="memitem:a6229f43f9f69dab60f2fa1cde1c440c1" id="r_a6229f43f9f69dab60f2fa1cde1c440c1"><td class="memTemplParams" colspan="2">template&lt;typename C, typename P, typename V&gt; </td></tr>
+<tr class="memitem:a6229f43f9f69dab60f2fa1cde1c440c1 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a6229f43f9f69dab60f2fa1cde1c440c1">assoc_in</a> (const C &amp;collection, const P &amp;path, const V &amp;value) noexcept -&gt; void requires(!<a class="el" href="namespacecljonic_1_1concepts__detail.html#a73f7ff005d9e039617b5e5cebc565db1">cljonic::concepts_detail::is_cljonic_collection_v</a>&lt; P &gt;)</td></tr>
 <tr class="memitem:aa56bb1bbd8f7afd3d7381f4fcd59d1d0" id="r_aa56bb1bbd8f7afd3d7381f4fcd59d1d0"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K, typename V&gt; <br />
 requires concepts::AssociativeCollection&lt;C&gt; &amp;&amp; requires(const C&amp; collection, const K&amp; key, const V&amp; value) { { collection.assoc(key,<br class="typebreak" />
  value) } noexcept -&gt; std::same_as&lt;C&gt;; }</td></tr>
@@ -320,6 +330,16 @@ requires (!concepts_detail::ButLastSourceArguments&lt;Source&gt;)</td></tr>
 <tr class="memitem:a2552e3e965a29751dd6d156cfdf88f91" id="r_a2552e3e965a29751dd6d156cfdf88f91"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; <br />
 requires (sizeof...(Args) != 1)</td></tr>
 <tr class="memitem:a2552e3e965a29751dd6d156cfdf88f91 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a2552e3e965a29751dd6d156cfdf88f91">butlast</a> (const Args &amp;... args) noexcept -&gt; void</td></tr>
+<tr class="memitem:aafdcd49c0158a5abb8cc9eb9e92928fd" id="r_aafdcd49c0158a5abb8cc9eb9e92928fd"><td class="memTemplParams" colspan="2">template&lt;typename C, typename P, std::size_t PathCapacity, typename V&gt; <br />
+requires (<a class="el" href="conceptcljonic_1_1concepts__detail_1_1_assoc_in_root_and_path_element_admissible.html">cljonic::concepts_detail::AssocInRootAndPathElementAdmissible</a>&lt;C, P&gt; &amp;&amp;<br class="typebreak" />
+ <a class="el" href="namespacecljonic_1_1concepts__detail.html#a322b58e707f93d65c0b97ccdbe96f413">cljonic::concepts_detail::assoc_in_terminal_value_admissible_v</a>&lt;C, V&gt; &amp;&amp; PathCapacity &gt; 0)</td></tr>
+<tr class="memitem:aafdcd49c0158a5abb8cc9eb9e92928fd template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#aafdcd49c0158a5abb8cc9eb9e92928fd">can_assoc_in</a> (const C &amp;collection, const <a class="el" href="classcljonic_1_1_vector.html">cljonic::Vector</a>&lt; P, PathCapacity &gt; &amp;path, const V &amp;value) noexcept -&gt; bool</td></tr>
+<tr class="memitem:a8b96eefcb7bea2ef6ad6ebe5b8987836" id="r_a8b96eefcb7bea2ef6ad6ebe5b8987836"><td class="memTemplParams" colspan="2">template&lt;typename C, typename P, std::size_t PathCapacity, typename V&gt; <br />
+requires (!<a class="el" href="conceptcljonic_1_1concepts__detail_1_1_assoc_in_root_and_path_element_admissible.html">cljonic::concepts_detail::AssocInRootAndPathElementAdmissible</a>&lt;C, P&gt; ||<br class="typebreak" />
+ !<a class="el" href="namespacecljonic_1_1concepts__detail.html#a322b58e707f93d65c0b97ccdbe96f413">cljonic::concepts_detail::assoc_in_terminal_value_admissible_v</a>&lt;C, V&gt; || PathCapacity == 0)</td></tr>
+<tr class="memitem:a8b96eefcb7bea2ef6ad6ebe5b8987836 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a8b96eefcb7bea2ef6ad6ebe5b8987836">can_assoc_in</a> (const C &amp;collection, const <a class="el" href="classcljonic_1_1_vector.html">cljonic::Vector</a>&lt; P, PathCapacity &gt; &amp;path, const V &amp;value) noexcept -&gt; bool</td></tr>
+<tr class="memitem:af4a9f679601adf1bacb8fa578fc79665" id="r_af4a9f679601adf1bacb8fa578fc79665"><td class="memTemplParams" colspan="2">template&lt;typename C, typename P, typename V&gt; </td></tr>
+<tr class="memitem:af4a9f679601adf1bacb8fa578fc79665 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#af4a9f679601adf1bacb8fa578fc79665">can_assoc_in</a> (const C &amp;collection, const P &amp;path, const V &amp;value) noexcept -&gt; bool requires(!<a class="el" href="namespacecljonic_1_1concepts__detail.html#a73f7ff005d9e039617b5e5cebc565db1">cljonic::concepts_detail::is_cljonic_collection_v</a>&lt; P &gt;)</td></tr>
 <tr class="memitem:a1d6d0c26521719151bb4481bf0f65418" id="r_a1d6d0c26521719151bb4481bf0f65418"><td class="memTemplParams" colspan="2">template&lt;typename C, typename K, typename V&gt; <br />
 requires concepts::AssociativeCollection&lt;C&gt; &amp;&amp; requires(const C&amp; collection, const K&amp; key, const V&amp; value) <br class="typebreak" />
 { { collection.can_assoc(key, value) } noexcept -&gt; std::same_as&lt;bool&gt;; }</td></tr>
@@ -1419,6 +1439,229 @@ requires concepts::AssociativeCollection&lt;C&gt; &amp;&amp; <a class="el" href=
 <p>Variadic <span class="tt"><a class="el" href="#aa56bb1bbd8f7afd3d7381f4fcd59d1d0">assoc</a></span>: applies two or more key-value pairs left to right. Each pair is admitted (or rejected at compile time) under the same collection-specific key/value domain as the single-pair form; a pair that cannot be applied at full capacity is a no-op and the remaining pairs still apply. </p>
 
 <p class="definition">Definition at line <a class="el" href="cljonic-assoc_8hpp_source.html#l00125">125</a> of file <a class="el" href="cljonic-assoc_8hpp_source.html">cljonic-assoc.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a53c5b95a0b758c568563533af208fd35" name="a53c5b95a0b758c568563533af208fd35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53c5b95a0b758c568563533af208fd35">&#9670;&#160;</a></span>assoc_in() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename C, typename P, std::size_t PathCapacity, typename V&gt; <br />
+requires (<a class="el" href="conceptcljonic_1_1concepts__detail_1_1_assoc_in_root_and_path_element_admissible.html">cljonic::concepts_detail::AssocInRootAndPathElementAdmissible</a>&lt;C, P&gt; &amp;&amp;<br class="typebreak" />
+ <a class="el" href="namespacecljonic_1_1concepts__detail.html#a322b58e707f93d65c0b97ccdbe96f413">cljonic::concepts_detail::assoc_in_terminal_value_admissible_v</a>&lt;C, V&gt; &amp;&amp; PathCapacity &gt; 0)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::assoc_in </td>
+          <td>(</td>
+          <td class="paramtype">const C &amp;</td>          <td class="paramname"><span class="paramname"><em>collection</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcljonic_1_1_vector.html">cljonic::Vector</a>&lt; P, PathCapacity &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const V &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;) -&gt; C</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="anchor" id="AssocIn"></a> The <b>assoc_in</b> free function updates a <a class="el" href="classcljonic_1_1_map.html#Map" title="Map">Map</a> or <a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vector</a> through a path without mutating the source. Supply exactly one path <a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vector</a> followed by the final value. One path element performs the corresponding root-level association; multiple path elements update nested exact <a class="el" href="classcljonic_1_1_map.html#Map" title="Map">Map</a> or <a class="el" href="classcljonic_1_1_vector.html#Vector" title="Vector">Vector</a> shapes.</p>
+<p>A <a class="el" href="classcljonic_1_1_map.html">Map</a> path element is a key; a <a class="el" href="classcljonic_1_1_vector.html">Vector</a> path element is an integer index. Existing <a class="el" href="classcljonic_1_1_vector.html">Vector</a> indexes replace nested values and the logical count appends when capacity remains. Missing intermediate <a class="el" href="classcljonic_1_1_map.html">Map</a> keys create the declared <a class="el" href="classcljonic_1_1_map.html">Map</a> or <a class="el" href="classcljonic_1_1_vector.html">Vector</a> value type. A runtime-invalid key, index, or capacity leaves the original root unchanged.</p>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using </span>RootMap = <a class="code hl_class" href="classcljonic_1_1_map.html">Map&lt;int, int, 4&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>RootMapPath = <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;int, 1&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>InnerMap = <a class="code hl_class" href="classcljonic_1_1_map.html">Map&lt;int, int, 4&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>MapToInnerMap = <a class="code hl_class" href="classcljonic_1_1_map.html">Map&lt;int, InnerMap, 4&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>NestedMapPath = <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;int, 2&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>InnerVector = <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;int, 4&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>MapToInnerVector = <a class="code hl_class" href="classcljonic_1_1_map.html">Map&lt;int, InnerVector, 4&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>RootVector = <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;int, 4&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>VectorIndexPath = <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;int, 1&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>NestedVector = <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;InnerVector, 2&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>NestedVectorPath = <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;int, 2&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>FullMap = <a class="code hl_class" href="classcljonic_1_1_map.html">Map&lt;int, int, 1&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>FullVector = <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;int, 2&gt;</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">  <span class="comment">// A one-element Map path associates the root Map.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> root_map = <a class="code hl_function" href="#a53c5b95a0b758c568563533af208fd35">assoc_in</a>(RootMap{}, RootMapPath{1}, 42);</div>
+<div class="line">  <span class="keyword">static_assert</span>(root_map(1) == 42);</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// A one-element Vector path replaces an existing root index.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> root_vector =</div>
+<div class="line">      <a class="code hl_function" href="#a53c5b95a0b758c568563533af208fd35">assoc_in</a>(RootVector{10, 20}, VectorIndexPath{1}, 99);</div>
+<div class="line">  <span class="keyword">static_assert</span>(root_vector(0) == 10);</div>
+<div class="line">  <span class="keyword">static_assert</span>(root_vector(1) == 99);</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// The logical-count index appends when root Vector capacity remains.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> appended_vector =</div>
+<div class="line">      <a class="code hl_function" href="#a53c5b95a0b758c568563533af208fd35">assoc_in</a>(RootVector{10, 20}, VectorIndexPath{2}, 30);</div>
+<div class="line">  <span class="keyword">static_assert</span>(appended_vector(2) == 30);</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// Nested Map updates descend through the exact declared InnerMap type.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> nested_map_root = MapToInnerMap{};</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> nested_map =</div>
+<div class="line">      <a class="code hl_function" href="#a53c5b95a0b758c568563533af208fd35">assoc_in</a>(nested_map_root, NestedMapPath{1, 2}, 42);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> nested_inner_map = nested_map(1);</div>
+<div class="line">  <span class="keyword">static_assert</span>(nested_inner_map(2) == 42);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> original_inner_map = nested_map_root(1);</div>
+<div class="line">  <span class="keyword">static_assert</span>(original_inner_map(2) == 0);</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// A missing Map key can create a declared InnerMap.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> missing_inner_map_root = MapToInnerMap{};</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> missing_inner_map =</div>
+<div class="line">      <a class="code hl_function" href="#a53c5b95a0b758c568563533af208fd35">assoc_in</a>(missing_inner_map_root, NestedMapPath{1, 2}, 42);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> missing_inner_map_value = missing_inner_map(1);</div>
+<div class="line">  <span class="keyword">static_assert</span>(missing_inner_map_value(2) == 42);</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// A missing Map key can create a declared InnerVector.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> nested_vector_root = MapToInnerVector{};</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> nested_vector =</div>
+<div class="line">      <a class="code hl_function" href="#a53c5b95a0b758c568563533af208fd35">assoc_in</a>(nested_vector_root, NestedMapPath{1, 0}, 42);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> nested_inner_vector = nested_vector(1);</div>
+<div class="line">  <span class="keyword">static_assert</span>(nested_inner_vector(0) == 42);</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// Existing nested Vector indexes replace values.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> nested_vector_root_values =</div>
+<div class="line">      NestedVector{InnerVector{1, 2}, InnerVector{3, 4}};</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> nested_vector_replaced =</div>
+<div class="line">      <a class="code hl_function" href="#a53c5b95a0b758c568563533af208fd35">assoc_in</a>(nested_vector_root_values, NestedVectorPath{1, 0}, 42);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> replaced_inner_vector = nested_vector_replaced(1);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> original_inner_vector = nested_vector_root_values(1);</div>
+<div class="line">  <span class="keyword">static_assert</span>(replaced_inner_vector(0) == 42);</div>
+<div class="line">  <span class="keyword">static_assert</span>(original_inner_vector(0) == 3);</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// Runtime Map and Vector associations use normal replacement and append.</span></div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_map = <a class="code hl_function" href="#aa56bb1bbd8f7afd3d7381f4fcd59d1d0">assoc</a>(RootMap{}, 1, 10);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_map_updated = <a class="code hl_function" href="#a53c5b95a0b758c568563533af208fd35">assoc_in</a>(runtime_map, RootMapPath{1}, 42);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_vector = RootVector{10, 20};</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_vector_replaced =</div>
+<div class="line">      <a class="code hl_function" href="#a53c5b95a0b758c568563533af208fd35">assoc_in</a>(runtime_vector, VectorIndexPath{1}, 99);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_vector_appended =</div>
+<div class="line">      <a class="code hl_function" href="#a53c5b95a0b758c568563533af208fd35">assoc_in</a>(runtime_vector, VectorIndexPath{2}, 30);</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// Invalid Map keys and Vector indexes leave the source unchanged.</span></div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> full_map = <a class="code hl_function" href="#aa56bb1bbd8f7afd3d7381f4fcd59d1d0">assoc</a>(FullMap{}, 1, 10);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> invalid_full_map_key = <a class="code hl_function" href="#a53c5b95a0b758c568563533af208fd35">assoc_in</a>(full_map, RootMapPath{2}, 20);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> invalid_full_map_unchanged =</div>
+<div class="line">      invalid_full_map_key(2) == 0 &amp;&amp; invalid_full_map_key(1) == 10;</div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> full_vector = FullVector{10, 20};</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> invalid_negative_index =</div>
+<div class="line">      <a class="code hl_function" href="#a53c5b95a0b758c568563533af208fd35">assoc_in</a>(full_vector, VectorIndexPath{-1}, 99);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> invalid_past_end = <a class="code hl_function" href="#a53c5b95a0b758c568563533af208fd35">assoc_in</a>(full_vector, VectorIndexPath{3}, 99);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> invalid_full_append =</div>
+<div class="line">      <a class="code hl_function" href="#a53c5b95a0b758c568563533af208fd35">assoc_in</a>(full_vector, VectorIndexPath{2}, 99);</div>
+<div class="line"> </div>
+<div class="line">  <span class="keywordflow">return</span> runtime_map_updated(1) == 42 &amp;&amp; runtime_vector_replaced(1) == 99 &amp;&amp;</div>
+<div class="line">                 runtime_vector_appended(2) == 30 &amp;&amp;</div>
+<div class="line">                 invalid_full_map_unchanged &amp;&amp;</div>
+<div class="line">                 invalid_negative_index(0) == 10 &amp;&amp;</div>
+<div class="line">                 invalid_negative_index(1) == 20 &amp;&amp; invalid_past_end(0) == 10 &amp;&amp;</div>
+<div class="line">                 invalid_past_end(1) == 20 &amp;&amp; invalid_full_append(0) == 10 &amp;&amp;</div>
+<div class="line">                 invalid_full_append(1) == 20 &amp;&amp; full_vector(0) == 10 &amp;&amp;</div>
+<div class="line">                 full_vector(1) == 20</div>
+<div class="line">             ? 0</div>
+<div class="line">             : 1;</div>
+<div class="line">}</div>
+<div class="ttc" id="aclasscljonic_1_1_map_html"><div class="ttname"><a href="classcljonic_1_1_map.html">cljonic::Map</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-map_8hpp_source.html#l00140">cljonic-collection-map.hpp:140</a></div></div>
+<div class="ttc" id="aclasscljonic_1_1_vector_html"><div class="ttname"><a href="classcljonic_1_1_vector.html">cljonic::Vector</a></div><div class="ttdef"><b>Definition</b> <a href="cljonic-collection-vector_8hpp_source.html#l00149">cljonic-collection-vector.hpp:149</a></div></div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a53c5b95a0b758c568563533af208fd35"><div class="ttname"><a href="#a53c5b95a0b758c568563533af208fd35">cljonic::core::assoc_in</a></div><div class="ttdeci">constexpr auto assoc_in(const C &amp;collection, const cljonic::Vector&lt; P, PathCapacity &gt; &amp;path, const V &amp;value) noexcept -&gt; C</div><div class="ttdef"><b>Definition</b> <a href="cljonic-assoc-in_8hpp_source.html#l00262">cljonic-assoc-in.hpp:262</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-assoc-in_8hpp_source.html#l00262">262</a> of file <a class="el" href="cljonic-assoc-in_8hpp_source.html">cljonic-assoc-in.hpp</a>.</p>
+
+</div>
+</div>
+<a id="af1e1adbab6191ff965f39b1d327eb93c" name="af1e1adbab6191ff965f39b1d327eb93c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1e1adbab6191ff965f39b1d327eb93c">&#9670;&#160;</a></span>assoc_in() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename C, typename P, std::size_t PathCapacity, typename V&gt; <br />
+requires (!<a class="el" href="conceptcljonic_1_1concepts__detail_1_1_assoc_in_root_and_path_element_admissible.html">cljonic::concepts_detail::AssocInRootAndPathElementAdmissible</a>&lt;C, P&gt; ||<br class="typebreak" />
+ !<a class="el" href="namespacecljonic_1_1concepts__detail.html#a322b58e707f93d65c0b97ccdbe96f413">cljonic::concepts_detail::assoc_in_terminal_value_admissible_v</a>&lt;C, V&gt; || PathCapacity == 0)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::assoc_in </td>
+          <td>(</td>
+          <td class="paramtype">const C &amp;</td>          <td class="paramname"><span class="paramname"><em>collection</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcljonic_1_1_vector.html">cljonic::Vector</a>&lt; P, PathCapacity &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const V &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;) -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-assoc-in_8hpp_source.html#l00273">273</a> of file <a class="el" href="cljonic-assoc-in_8hpp_source.html">cljonic-assoc-in.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a6229f43f9f69dab60f2fa1cde1c440c1" name="a6229f43f9f69dab60f2fa1cde1c440c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6229f43f9f69dab60f2fa1cde1c440c1">&#9670;&#160;</a></span>assoc_in() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename C, typename P, typename V&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::assoc_in </td>
+          <td>(</td>
+          <td class="paramtype">const C &amp;</td>          <td class="paramname"><span class="paramname"><em>collection</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const P &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const V &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;) -&gt; void requires(!<a class="el" href="namespacecljonic_1_1concepts__detail.html#a73f7ff005d9e039617b5e5cebc565db1">cljonic::concepts_detail::is_cljonic_collection_v</a>&lt; P &gt;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-assoc-in_8hpp_source.html#l00282">282</a> of file <a class="el" href="cljonic-assoc-in_8hpp_source.html">cljonic-assoc-in.hpp</a>.</p>
 
 </div>
 </div>
@@ -2550,6 +2793,187 @@ requires concepts::AssociativeCollection&lt;C&gt; &amp;&amp; (sizeof...(Rest) % 
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="cljonic-can-assoc_8hpp_source.html#l00105">105</a> of file <a class="el" href="cljonic-can-assoc_8hpp_source.html">cljonic-can-assoc.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a8b96eefcb7bea2ef6ad6ebe5b8987836" name="a8b96eefcb7bea2ef6ad6ebe5b8987836"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b96eefcb7bea2ef6ad6ebe5b8987836">&#9670;&#160;</a></span>can_assoc_in() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename C, typename P, std::size_t PathCapacity, typename V&gt; <br />
+requires (!<a class="el" href="conceptcljonic_1_1concepts__detail_1_1_assoc_in_root_and_path_element_admissible.html">cljonic::concepts_detail::AssocInRootAndPathElementAdmissible</a>&lt;C, P&gt; ||<br class="typebreak" />
+ !<a class="el" href="namespacecljonic_1_1concepts__detail.html#a322b58e707f93d65c0b97ccdbe96f413">cljonic::concepts_detail::assoc_in_terminal_value_admissible_v</a>&lt;C, V&gt; || PathCapacity == 0)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::can_assoc_in </td>
+          <td>(</td>
+          <td class="paramtype">const C &amp;</td>          <td class="paramname"><span class="paramname"><em>collection</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcljonic_1_1_vector.html">cljonic::Vector</a>&lt; P, PathCapacity &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const V &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;) -&gt; bool</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-can-assoc-in_8hpp_source.html#l00219">219</a> of file <a class="el" href="cljonic-can-assoc-in_8hpp_source.html">cljonic-can-assoc-in.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aafdcd49c0158a5abb8cc9eb9e92928fd" name="aafdcd49c0158a5abb8cc9eb9e92928fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafdcd49c0158a5abb8cc9eb9e92928fd">&#9670;&#160;</a></span>can_assoc_in() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename C, typename P, std::size_t PathCapacity, typename V&gt; <br />
+requires (<a class="el" href="conceptcljonic_1_1concepts__detail_1_1_assoc_in_root_and_path_element_admissible.html">cljonic::concepts_detail::AssocInRootAndPathElementAdmissible</a>&lt;C, P&gt; &amp;&amp;<br class="typebreak" />
+ <a class="el" href="namespacecljonic_1_1concepts__detail.html#a322b58e707f93d65c0b97ccdbe96f413">cljonic::concepts_detail::assoc_in_terminal_value_admissible_v</a>&lt;C, V&gt; &amp;&amp; PathCapacity &gt; 0)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::can_assoc_in </td>
+          <td>(</td>
+          <td class="paramtype">const C &amp;</td>          <td class="paramname"><span class="paramname"><em>collection</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcljonic_1_1_vector.html">cljonic::Vector</a>&lt; P, PathCapacity &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const V &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;) -&gt; bool</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="anchor" id="CanAssocIn"></a> The <b>can_assoc_in</b> free function reports whether one <a class="el" href="#AssocIn" title="AssocIn">assoc_in</a> path can be applied cumulatively. One path element can preflight a root-level <a class="el" href="classcljonic_1_1_map.html">Map</a> or <a class="el" href="classcljonic_1_1_vector.html">Vector</a> association. Additional path elements preflight nested exact Map/Vector values. It checks every key, index, capacity, and final value against the state produced by earlier levels. It returns false for an invalid runtime path or full capacity and never mutates the source.</p>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using </span>RootMap = <a class="code hl_class" href="classcljonic_1_1_map.html">Map&lt;int, int, 4&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>RootMapPath = <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;int, 1&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>InnerMap = <a class="code hl_class" href="classcljonic_1_1_map.html">Map&lt;int, int, 4&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>MapToInnerMap = <a class="code hl_class" href="classcljonic_1_1_map.html">Map&lt;int, InnerMap, 4&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>NestedMapPath = <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;int, 2&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>InnerVector = <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;int, 4&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>MapToInnerVector = <a class="code hl_class" href="classcljonic_1_1_map.html">Map&lt;int, InnerVector, 4&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>RootVector = <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;int, 4&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>VectorIndexPath = <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;int, 1&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>FullMap = <a class="code hl_class" href="classcljonic_1_1_map.html">Map&lt;int, int, 1&gt;</a>;</div>
+<div class="line"><span class="keyword">using </span>FullVector = <a class="code hl_class" href="classcljonic_1_1_vector.html">Vector&lt;int, 2&gt;</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">  <span class="comment">// A one-element Map path preflights the root Map.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> root_map = RootMap{};</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#aafdcd49c0158a5abb8cc9eb9e92928fd">can_assoc_in</a>(root_map, RootMapPath{1}, 42));</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// Nested Map and nested Vector paths preflight their exact intermediate</span></div>
+<div class="line">  <span class="comment">// shapes.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> nested_map_root = MapToInnerMap{};</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#aafdcd49c0158a5abb8cc9eb9e92928fd">can_assoc_in</a>(nested_map_root, NestedMapPath{1, 2}, 42));</div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> nested_vector_root = MapToInnerVector{};</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#aafdcd49c0158a5abb8cc9eb9e92928fd">can_assoc_in</a>(nested_vector_root, NestedMapPath{1, 0}, 42));</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// Existing Vector indexes can replace, and the logical-count index can</span></div>
+<div class="line">  <span class="comment">// append.</span></div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> root_vector = RootVector{10, 20};</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#aafdcd49c0158a5abb8cc9eb9e92928fd">can_assoc_in</a>(root_vector, VectorIndexPath{1}, 99));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#aafdcd49c0158a5abb8cc9eb9e92928fd">can_assoc_in</a>(root_vector, VectorIndexPath{2}, 30));</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// Runtime normal replacement and append preflights succeed.</span></div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_map = <a class="code hl_function" href="#aa56bb1bbd8f7afd3d7381f4fcd59d1d0">assoc</a>(RootMap{}, 1, 10);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_map_ok = <a class="code hl_function" href="#aafdcd49c0158a5abb8cc9eb9e92928fd">can_assoc_in</a>(runtime_map, RootMapPath{1}, 42);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_vector = RootVector{10, 20};</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_replace_ok =</div>
+<div class="line">      <a class="code hl_function" href="#aafdcd49c0158a5abb8cc9eb9e92928fd">can_assoc_in</a>(runtime_vector, VectorIndexPath{1}, 99);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_append_ok =</div>
+<div class="line">      <a class="code hl_function" href="#aafdcd49c0158a5abb8cc9eb9e92928fd">can_assoc_in</a>(runtime_vector, VectorIndexPath{2}, 30);</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// Runtime invalid Map/Vector paths fail preflight.</span></div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> full_map = <a class="code hl_function" href="#aa56bb1bbd8f7afd3d7381f4fcd59d1d0">assoc</a>(FullMap{}, 1, 10);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> full_vector = FullVector{10, 20};</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> invalid_full_map_key = <a class="code hl_function" href="#aafdcd49c0158a5abb8cc9eb9e92928fd">can_assoc_in</a>(full_map, RootMapPath{2}, 20);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> invalid_negative_index =</div>
+<div class="line">      <a class="code hl_function" href="#aafdcd49c0158a5abb8cc9eb9e92928fd">can_assoc_in</a>(full_vector, VectorIndexPath{-1}, 99);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> invalid_past_end =</div>
+<div class="line">      <a class="code hl_function" href="#aafdcd49c0158a5abb8cc9eb9e92928fd">can_assoc_in</a>(full_vector, VectorIndexPath{3}, 99);</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> invalid_full_append =</div>
+<div class="line">      <a class="code hl_function" href="#aafdcd49c0158a5abb8cc9eb9e92928fd">can_assoc_in</a>(full_vector, VectorIndexPath{2}, 99);</div>
+<div class="line"> </div>
+<div class="line">  <span class="keywordflow">return</span> runtime_map_ok &amp;&amp; runtime_replace_ok &amp;&amp; runtime_append_ok &amp;&amp;</div>
+<div class="line">                 !invalid_full_map_key &amp;&amp; !invalid_negative_index &amp;&amp;</div>
+<div class="line">                 !invalid_past_end &amp;&amp; !invalid_full_append</div>
+<div class="line">             ? 0</div>
+<div class="line">             : 1;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_aafdcd49c0158a5abb8cc9eb9e92928fd"><div class="ttname"><a href="#aafdcd49c0158a5abb8cc9eb9e92928fd">cljonic::core::can_assoc_in</a></div><div class="ttdeci">constexpr auto can_assoc_in(const C &amp;collection, const cljonic::Vector&lt; P, PathCapacity &gt; &amp;path, const V &amp;value) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-can-assoc-in_8hpp_source.html#l00208">cljonic-can-assoc-in.hpp:208</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-can-assoc-in_8hpp_source.html#l00208">208</a> of file <a class="el" href="cljonic-can-assoc-in_8hpp_source.html">cljonic-can-assoc-in.hpp</a>.</p>
+
+</div>
+</div>
+<a id="af4a9f679601adf1bacb8fa578fc79665" name="af4a9f679601adf1bacb8fa578fc79665"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4a9f679601adf1bacb8fa578fc79665">&#9670;&#160;</a></span>can_assoc_in() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename C, typename P, typename V&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::can_assoc_in </td>
+          <td>(</td>
+          <td class="paramtype">const C &amp;</td>          <td class="paramname"><span class="paramname"><em>collection</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const P &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const V &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;) -&gt; bool requires(!<a class="el" href="namespacecljonic_1_1concepts__detail.html#a73f7ff005d9e039617b5e5cebc565db1">cljonic::concepts_detail::is_cljonic_collection_v</a>&lt; P &gt;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-can-assoc-in_8hpp_source.html#l00229">229</a> of file <a class="el" href="cljonic-can-assoc-in_8hpp_source.html">cljonic-can-assoc-in.hpp</a>.</p>
 
 </div>
 </div>

@@ -13,5 +13,8 @@ var searchData=
   ['all_5fdissoc_5fkeys_5fadmissible_10',['all_dissoc_keys_admissible',['../structcljonic_1_1concepts__detail_1_1all__dissoc__keys__admissible.html',1,'cljonic::concepts_detail']]],
   ['all_5fdissoc_5fkeys_5fadmissible_3c_20c_20_3e_11',['all_dissoc_keys_admissible&lt; C &gt;',['../structcljonic_1_1concepts__detail_1_1all__dissoc__keys__admissible_3_01_c_01_4.html',1,'cljonic::concepts_detail']]],
   ['all_5fdissoc_5fkeys_5fadmissible_3c_20c_2c_20k_2c_20rest_2e_2e_2e_20_3e_12',['all_dissoc_keys_admissible&lt; C, K, Rest... &gt;',['../structcljonic_1_1concepts__detail_1_1all__dissoc__keys__admissible_3_01_c_00_01_k_00_01_rest_8_8_8_01_4.html',1,'cljonic::concepts_detail']]],
-  ['arithmetic_5fresult_13',['arithmetic_result',['../structcljonic_1_1core_1_1arithmetic__detail_1_1arithmetic__result.html',1,'cljonic::core::arithmetic_detail']]]
+  ['arithmetic_5fresult_13',['arithmetic_result',['../structcljonic_1_1core_1_1arithmetic__detail_1_1arithmetic__result.html',1,'cljonic::core::arithmetic_detail']]],
+  ['assoc_5fin_5fterminal_5fvalue_5fadmissible_14',['assoc_in_terminal_value_admissible',['../structcljonic_1_1concepts__detail_1_1assoc__in__terminal__value__admissible.html',1,'cljonic::concepts_detail']]],
+  ['assoc_5fin_5fterminal_5fvalue_5fadmissible_3c_20cljonic_3a_3amap_3c_20k_2c_20m_2c_20n_20_3e_2c_20v_20_3e_15',['assoc_in_terminal_value_admissible&lt; cljonic::Map&lt; K, M, N &gt;, V &gt;',['../structcljonic_1_1concepts__detail_1_1assoc__in__terminal__value__admissible_3_01cljonic_1_1_map_2e92eeb0952ec3197fbbd22be9d636c7.html',1,'cljonic::concepts_detail']]],
+  ['assoc_5fin_5fterminal_5fvalue_5fadmissible_3c_20cljonic_3a_3avector_3c_20t_2c_20n_20_3e_2c_20v_20_3e_16',['assoc_in_terminal_value_admissible&lt; cljonic::Vector&lt; T, N &gt;, V &gt;',['../structcljonic_1_1concepts__detail_1_1assoc__in__terminal__value__admissible_3_01cljonic_1_1_vect05a35a1a8985b3fe1a868804eac103ff.html',1,'cljonic::concepts_detail']]]
 ];
