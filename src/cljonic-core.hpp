@@ -41,11 +41,11 @@
  * Every Core function is declared in \c cljonic::core. Entries linked to documentation have implemented documentation.
  * Unlinked names include both planned functions and implemented functions without a dedicated cheatsheet link.
  *
- * - \ref Add "add", apply, \ref Assoc "assoc", assoc_in
+ * - \ref Add "add", apply, \ref Assoc "assoc", \ref AssocIn "assoc_in"
  * - \ref BitAnd "bit_and", \ref BitAndNot "bit_and_not", \ref BitClear "bit_clear", \ref BitFlip "bit_flip",
  *   \ref BitNot "bit_not", \ref BitOr "bit_or", \ref BitSet "bit_set", \ref BitShiftLeft "bit_shift_left",
  *   \ref BitShiftRight "bit_shift_right", \ref BitTest "bit_test", \ref BitXor "bit_xor", \ref ButLast "butlast"
- * - \ref CanAdd "can_add", \ref CanAssoc "can_assoc", \ref CanBitShiftLeft "can_bit_shift_left",
+ * - \ref CanAdd "can_add", \ref CanAssoc "can_assoc", \ref CanAssocIn "can_assoc_in", \ref CanBitShiftLeft "can_bit_shift_left",
  *   \ref CanBitShiftRight "can_bit_shift_right", \ref CanConj "can_conj", \ref CanDec "can_dec",
  *   \ref CanDiv "can_div", \ref CanInc "can_inc", \ref CanMod "can_mod",
  *   \ref CanMult "can_mult", \ref CanNegate "can_negate", \ref CanQuot "can_quot",
@@ -136,8 +136,10 @@
  */
 
 #include <cljonic-arithmetic.hpp>
+#include <cljonic-assoc-in.hpp>
 #include <cljonic-assoc.hpp>
 #include <cljonic-butlast.hpp>
+#include <cljonic-can-assoc-in.hpp>
 #include <cljonic-can-assoc.hpp>
 #include <cljonic-can-conj.hpp>
 #include <cljonic-character-is-valid.hpp>

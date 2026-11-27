@@ -52,11 +52,11 @@
  * Every Core function is declared in \c cljonic::core. Entries linked to documentation have implemented documentation.
  * Unlinked names include both planned functions and implemented functions without a dedicated cheatsheet link.
  *
- * - \ref Add "add", apply, \ref Assoc "assoc", assoc_in
+ * - \ref Add "add", apply, \ref Assoc "assoc", \ref AssocIn "assoc_in"
  * - \ref BitAnd "bit_and", \ref BitAndNot "bit_and_not", \ref BitClear "bit_clear", \ref BitFlip "bit_flip",
  *   \ref BitNot "bit_not", \ref BitOr "bit_or", \ref BitSet "bit_set", \ref BitShiftLeft "bit_shift_left",
  *   \ref BitShiftRight "bit_shift_right", \ref BitTest "bit_test", \ref BitXor "bit_xor", \ref ButLast "butlast"
- * - \ref CanAdd "can_add", \ref CanAssoc "can_assoc", \ref CanBitShiftLeft "can_bit_shift_left",
+ * - \ref CanAdd "can_add", \ref CanAssoc "can_assoc", \ref CanAssocIn "can_assoc_in", \ref CanBitShiftLeft "can_bit_shift_left",
  *   \ref CanBitShiftRight "can_bit_shift_right", \ref CanConj "can_conj", \ref CanDec "can_dec",
  *   \ref CanDiv "can_div", \ref CanInc "can_inc", \ref CanMod "can_mod",
  *   \ref CanMult "can_mult", \ref CanNegate "can_negate", \ref CanQuot "can_quot",
@@ -2048,6 +2048,11 @@ CLJONIC_SHIFT_FALLBACK(bit_test)
 
 } // namespace cljonic::core
 // End cljonic-arithmetic.hpp
+// Begin cljonic-assoc-in.hpp
+#pragma once
+
+#include <cstddef>
+
 // Begin cljonic-assoc.hpp
 #pragma once
 
@@ -3013,13 +3018,801 @@ template <typename C, typename K1, typename V1, typename K2, typename V2, typena
 
 } // namespace cljonic::core
 // End cljonic-assoc.hpp
-// Begin cljonic-butlast.hpp
+// Begin cljonic-collection-map.hpp
 #pragma once
 
-#include <algorithm>
+#include <array>
 #include <cstddef>
 #include <ranges>
+#include <span>
+#include <tuple>
+#include <utility>
 
+// Begin cljonic-collection-map-entry.hpp
+#pragma once
+
+#include <type_traits>
+#include <utility>
+
+
+namespace cljonic {
+
+/** \anchor MapEntry
+ * A MapEntry is a value-semantic pair representing a single key-value association. Its fields are public, but MapEntry
+ * is not a C++ aggregate.
+ *
+ * Use the \ref MapEntryFactory "map_entry" factory as the idiomatic creation surface at runtime or during constant
+ * evaluation. A MapEntry is a fixed pair, so the factory has no capacity parameter.
+ *
+ * Keys must support reliable, non-throwing equality comparison and non-throwing storage operations. Values must have a
+ * default value and be copyable, assignable, and destructible without throwing, so the entry remains safe to copy and
+ * update in bounded collections. Keys and values may themselves be cljonic collections or producers, including nested
+ * cljonic composites, provided they satisfy their respective constraints.
+ *
+ * Key and value construction follows the \ref implicit-conversions "safe implicit conversion rules".
+ *
+ * \b Examples
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+ using namespace cljonic;
+ using namespace cljonic::core;
+
+ int main() {
+   // Compile-time demonstration.
+   constexpr auto m_const = hash_map(1, 100, 2, 200);
+   static_assert(first(m_const) == map_entry(1, 100) ||
+                 first(m_const) == map_entry(2, 200));
+
+   // Explicit key and value types are available when deduction is not wanted.
+   constexpr auto e_explicit = map_entry<long, long>(1, 100);
+
+   // Runtime demonstration: a Map is created with hash_map and its entries,
+   // each a MapEntry value, can be traversed, compared, and added.
+   const auto m_runtime = hash_map<int, int, 4>(1, 100, 2, 200);
+
+   auto value_sum = 0;
+   for (const auto &entry : m_runtime) {
+     value_sum += entry.value;
+   }
+
+   const auto m_fuller = conj(m_runtime, map_entry(3, 300));
+
+   return (value_sum == 300 && m_fuller(3) == 300 && e_explicit.key == 1) ? 0
+                                                                          : 1;
+ }
+ ~~~~~
+ */
+template <concepts::NothrowStableEqualityComparable KeyType, concepts::NothrowCollectionElement ValueType>
+struct MapEntry {
+    using key_type = KeyType;
+    using value_type = ValueType;
+    using mapped_type = ValueType;
+
+    KeyType key{};
+    ValueType value{};
+
+    constexpr MapEntry() noexcept = default;
+
+    template <typename Key>
+        requires concepts::NothrowElementConstruction<KeyType, Key>
+    constexpr explicit MapEntry(Key&& entry_key) noexcept : key(std::forward<Key>(entry_key)) {
+    }
+
+    template <typename Key, typename Value>
+        requires concepts::NothrowElementConstruction<KeyType, Key> &&
+                     concepts::NothrowElementConstruction<ValueType, Value>
+    constexpr MapEntry(Key&& entry_key, Value&& entry_value) noexcept
+        : key(std::forward<Key>(entry_key)), value(std::forward<Value>(entry_value)) {
+    }
+
+    [[nodiscard]] constexpr auto operator==(const MapEntry& other) const noexcept -> bool
+        requires concepts::StableEqualityComparable<KeyType> && concepts::StableEqualityComparable<ValueType>
+    {
+        return key == other.key && value == other.value;
+    }
+};
+
+template <typename Key, typename Value>
+MapEntry(Key, Value) -> MapEntry<Key, Value>;
+
+} // namespace cljonic
+
+namespace cljonic::concepts_detail {
+
+template <typename KeyType, typename ValueType>
+inline constexpr bool is_cljonic_map_entry_v<cljonic::MapEntry<KeyType, ValueType>> = true;
+
+// MapEntry inherits the recursive component analysis of the closed cljonic
+// value domain: it admits stable equality only when both its key and value
+// components admit stable equality (REQ-CAP-010).
+template <typename KeyType, typename ValueType>
+struct contains_floating_point<cljonic::MapEntry<KeyType, ValueType>>
+    : std::bool_constant<contains_floating_point_v<KeyType> || contains_floating_point_v<ValueType>> {};
+
+template <typename KeyType, typename ValueType>
+struct contains_callable<cljonic::MapEntry<KeyType, ValueType>>
+    : std::bool_constant<contains_callable_v<KeyType> || contains_callable_v<ValueType>> {};
+
+template <typename KeyType, typename ValueType>
+struct contains_standard_range<cljonic::MapEntry<KeyType, ValueType>>
+    : std::bool_constant<contains_standard_range_v<KeyType> || contains_standard_range_v<ValueType>> {};
+
+// Nominal walker coverage (REQ-NUM-019): MapEntry declares that the walkers reach
+// both its key and value types.
+template <typename KeyType, typename ValueType>
+struct walker_coverage<cljonic::MapEntry<KeyType, ValueType>> {
+    static constexpr bool declared = true;
+};
+
+struct DeducedMapEntryKeyType {};
+struct DeducedMapEntryValueType {};
+
+template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
+struct map_entry_factory_types {
+    using key_type = RequestedKeyType;
+    using value_type = RequestedValueType;
+};
+
+template <typename KeyArgument, typename ValueArgument>
+struct map_entry_factory_types<DeducedMapEntryKeyType, DeducedMapEntryValueType, KeyArgument, ValueArgument> {
+    using key_type = std::remove_cvref_t<KeyArgument>;
+    using value_type = std::remove_cvref_t<ValueArgument>;
+};
+
+template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
+using map_entry_factory_key_type_t = map_entry_factory_types<RequestedKeyType, RequestedValueType, Args...>::key_type;
+
+template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
+using map_entry_factory_value_type_t =
+    map_entry_factory_types<RequestedKeyType, RequestedValueType, Args...>::value_type;
+
+template <typename KeyType, typename ValueType, typename... Args>
+struct map_entry_factory_arguments_are_nothrow : std::false_type {};
+
+template <typename KeyType, typename ValueType, typename KeyArgument, typename ValueArgument>
+struct map_entry_factory_arguments_are_nothrow<KeyType, ValueType, KeyArgument, ValueArgument>
+    : std::bool_constant<concepts::NothrowElementConstruction<KeyType, KeyArgument> &&
+                         concepts::NothrowElementConstruction<ValueType, ValueArgument>> {};
+
+template <typename KeyType, typename ValueType>
+concept MapEntryFactoryElementTypes =
+    concepts::NothrowStableEqualityComparable<KeyType> && concepts::NothrowCollectionElement<ValueType>;
+
+template <typename KeyType, typename ValueType, typename... Args>
+concept MapEntryFactoryArguments = map_entry_factory_arguments_are_nothrow<KeyType, ValueType, Args...>::value;
+
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
+
+/** \anchor MapEntryFactory
+ * Creates a \ref MapEntry "MapEntry" from exactly one key and one value.
+ *
+ * Deduced calls use the unqualified types of the key and value arguments. Explicit types use \c map_entry<Key,
+ * Value>(...). A MapEntry is a fixed pair, so unlike the collection factories there is no capacity parameter and no
+ * spare-capacity form.
+ */
+template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
+          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
+    requires(
+        concepts_detail::MapEntryFactoryElementTypes<
+            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
+        sizeof...(Args) == 2U &&
+        concepts_detail::MapEntryFactoryArguments<
+            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...>)
+[[nodiscard]] constexpr auto map_entry(Args&&... args) noexcept
+    -> MapEntry<concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+                concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> {
+    using KeyType = concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>;
+    using ValueType = concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>;
+    return MapEntry<KeyType, ValueType>{std::forward<Args>(args)...};
+}
+
+template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
+          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
+    requires(sizeof...(Args) != 2U)
+constexpr auto map_entry([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
+                  "cljonic::map_entry: requires exactly one key argument and one value argument.");
+}
+
+template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
+          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
+    requires(sizeof...(Args) == 2U &&
+             !concepts_detail::MapEntryFactoryElementTypes<
+                 concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+                 concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>>)
+constexpr auto map_entry([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
+                  "cljonic::map_entry: key and value types must satisfy MapEntry element requirements.");
+}
+
+template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
+          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
+    requires(
+        sizeof...(Args) == 2U &&
+        concepts_detail::MapEntryFactoryElementTypes<
+            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
+        !concepts_detail::MapEntryFactoryArguments<
+            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...>)
+constexpr auto map_entry([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
+                  "cljonic::map_entry: the key and value must safely construct their declared types without "
+                  "throwing.");
+}
+
+} // namespace cljonic::core
+// End cljonic-collection-map-entry.hpp
+
+namespace cljonic {
+
+/** \anchor Map
+ * A Map is a bounded, associative collection that maps unique keys to values and provides callable lookup with
+ * optional fallback values. Other operations use the library's free-function API.
+ *
+ * The \c hash_map factory is the idiomatic way to create Map values, at runtime or during constant evaluation. It
+ * accepts alternating keys and values, and a later duplicate key replaces the earlier value. Use \c hash_map(k, v,
+ * ...) to infer the key type, value type, and capacity, \c hash_map<K, V>(k, v, ...) to select the key and value
+ * types, or \c hash_map<K, V, Capacity>(k, v, ...) to provide an explicit capacity, including for an empty map. \c
+ * Map<K, V, Capacity> remains the value's type.
+ *
+ * Direct construction is useful when importing a C++ range or view: its entries are copied into the Map. A cljonic
+ * collection or producer is not a constructor source.
+ *
+ * Construction with more entries than the available capacity is rejected at compile time. Construction from entries
+ * requires the exact declared entry type. Keys, mapped values, and fallbacks follow the \ref implicit-conversions
+ * "safe implicit conversion rules".
+ *
+ \b Examples
+ ~~~~~{.cpp}
+ #include "cljonic.hpp"
+ using namespace cljonic;
+ using namespace cljonic::core;
+
+ struct Key {
+   int id;
+   friend constexpr bool operator==(const Key &, const Key &) noexcept = default;
+ };
+
+ struct Value {
+   int amount = 0;
+   friend constexpr bool operator==(const Value &,
+                                    const Value &) noexcept = default;
+ };
+
+ using AccountEntry = MapEntry<Key, Value>;
+ using AccountMap = Map<Key, Value, 2>;
+
+ int main() {
+   // The factory is the idiomatic way to create maps. It accepts
+   // alternating keys and values.
+   constexpr auto factory_map = hash_map(Key{1}, Value{10}, Key{2}, Value{20});
+   static_assert(factory_map(Key{2}).amount == 20);
+
+   // Explicit key, value, and capacity types create an empty Map with room
+   // for later associations.
+   constexpr auto reserved = hash_map<Key, Value, 4>();
+
+   // Missing `reserved(Key{1})` returns the fallback value
+   static_assert(reserved(Key{1}).amount == 0);
+
+   // The factory also works with runtime values.
+   const auto runtime_amount = 40;
+   const auto runtime_factory = hash_map(Key{4}, Value{runtime_amount});
+
+   // Runtime CTAD deduces Map<Key, Value, 1> from the map_entry value.
+   auto runtime = hash_map(Key{3}, Value{30});
+   const auto present = runtime(Key{3});
+   const auto missing = runtime(Key{4}, Value{77});
+
+   // A standard view pipeline can use an existing Map as its source and
+   // Construct another Map from the transformed entries.
+   const auto copied_view =
+       runtime | std::views::transform([](const AccountEntry &entry) noexcept {
+         return map_entry(entry.key, Value{entry.value.amount * 2});
+       });
+   const auto from_pipeline = AccountMap{copied_view};
+
+   // A named map type and its named entry type make the intended value model
+   // explicit. A later duplicate key replaces the earlier value (i.e., the
+   // right-most value associated with a duplicate key).
+   constexpr auto literal =
+       hash_map<Key, Value, 2>(Key{1}, Value{10}, Key{1}, Value{20});
+
+   // A Map is callable for present-key lookup and missing-key fallback.
+   static_assert(literal(Key{1}).amount == 20);
+   static_assert(literal(Key{2}).amount == 0);
+   static_assert(literal(Key{2}, Value{99}).amount == 99);
+
+   // ---------------------------------------------------------------------------
+   // C++ interoperability: a Map supports const traversal and exposes a
+   // non-owning std::span view. Range/view sources are copied into owned
+   // storage, retaining only the bounded prefix that fits the capacity.
+   // ---------------------------------------------------------------------------
+   static constexpr AccountEntry source_entries[] = {
+       map_entry(Key{10}, Value{100}), map_entry(Key{20}, Value{200})};
+   constexpr auto source_span = std::span{source_entries};
+   constexpr auto from_span = AccountMap{source_span};
+   static_assert(from_span(Key{10}).amount == 100);
+   static_assert(from_span(Key{20}).amount == 200);
+
+   constexpr auto from_span_ctad = Map{source_span};
+   static_assert(from_span_ctad(Key{10}).amount == 100);
+   static_assert(from_span_ctad.view().size() == 2);
+
+   // Constructing a Map from a runtime C++ array/span
+   AccountEntry runtime_buffer[] = {map_entry(Key{100}, Value{1000}),
+                                    map_entry(Key{200}, Value{2000})};
+   const auto runtime_from_span =
+       Map<Key, Value, 4>{std::span<const AccountEntry>{runtime_buffer, 2}};
+
+   // Use C++ interoperability to sum the values in a map.
+   auto value_sum = 0;
+   for (const auto &entry : runtime) {
+     value_sum += entry.value.amount;
+   }
+
+   const auto runtime_view = runtime.view();
+
+   return (present.amount == 30 && missing.amount == 77 && value_sum == 30 &&
+           runtime_view.size() == 1 && runtime_view[0].value.amount == 30 &&
+           factory_map(Key{1}).amount == 10 &&
+           runtime_factory(Key{4}).amount == 40 &&
+           from_span(Key{10}).amount == 100 &&
+           from_pipeline(Key{3}).amount == 60 &&
+           runtime_from_span(Key{100}).amount == 1000)
+              ? 0
+              : 1;
+ }
+ ~~~~~
+ */
+template <concepts::NothrowStableEqualityComparable KeyType, concepts::NothrowCollectionElement ValueType,
+          std::size_t CapacityValue>
+    requires(!concepts_detail::is_std_variant_v<KeyType>)
+class Map {
+  public:
+    using key_type = KeyType;
+    using lookup_type = key_type;
+    using mapped_type = ValueType;
+    using association_value_type = ValueType;
+    using value_type = MapEntry<KeyType, ValueType>;
+
+    static_assert(
+        CapacityValue <= cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE,
+        "cljonic::Map: CapacityValue exceeds "
+        "CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT=" CLJONIC_STRINGIFY(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT));
+
+    template <typename... Args>
+    explicit(sizeof...(Args) ==
+             1) constexpr Map(Args&&... args) noexcept((concepts::NothrowElementConstruction<value_type, Args> &&
+                                                        ...)) {
+        static_assert(sizeof...(Args) <= CapacityValue, "cljonic::Map: initializer count exceeds Map CapacityValue");
+        static_assert(((std::same_as<std::remove_cvref_t<Args>, value_type> &&
+                        concepts::NothrowElementConstruction<value_type, Args>) &&
+                       ...),
+                      "cljonic::Map: constructor requires all arguments to construct "
+                      "the exact MapEntry type without throwing");
+
+        ((*this = assoc_entry(value_type{std::forward<Args>(args)})), ...);
+    }
+
+    // A cljonic collection or producer is not a SourceConstruction source
+    // (REQ-FN-027A); materialize it via into, preflighted by fits_into.
+    template <std::ranges::input_range SourceRange>
+        requires(!concepts_detail::is_cljonic_collection_v<SourceRange> &&
+                 !concepts_detail::is_cljonic_producer_v<SourceRange> &&
+                 !std::same_as<std::remove_cvref_t<SourceRange>, value_type>)
+    explicit constexpr Map(SourceRange&& source) noexcept(
+        (concepts::NothrowRangeConstruction<value_type, SourceRange>)) {
+        static_assert(concepts::NothrowRangeConstruction<value_type, SourceRange>,
+                      "cljonic::Map: range/view constructor requires each source element to construct "
+                      "the exact MapEntry type and requires non-throwing traversal");
+        static_assert(concepts_detail::static_extent_fits_v<SourceRange, CapacityValue>,
+                      "cljonic::Map: static-extent range source exceeds Map CapacityValue");
+
+        std::size_t copy_count = 0;
+        for (auto&& item : std::forward<SourceRange>(source)) {
+            if (copy_count++ >= CapacityValue) {
+                break;
+            }
+            *this = assoc_entry(value_type{std::forward<decltype(item)>(item)});
+        }
+    }
+
+    // Diagnostic fallback (REQ-DIAG-010): a cljonic collection or producer is
+    // not a SourceConstruction source. This overload exists only to explain the
+    // rejection -- it produces no value and is never a supported call target.
+    template <typename SourceValue>
+        requires((concepts_detail::is_cljonic_collection_v<SourceValue> ||
+                  concepts_detail::is_cljonic_producer_v<SourceValue>) &&
+                 !std::same_as<std::remove_cvref_t<SourceValue>, value_type>)
+    explicit constexpr Map([[maybe_unused]] SourceValue&& source) noexcept {
+        static_assert(concepts_detail::dependent_false<SourceValue>,
+                      "cljonic::Map: you cannot construct a Map from a cljonic collection or producer. A Map is built "
+                      "from MapEntry elements, or from a non-cljonic C++ range or view.");
+    }
+
+    [[nodiscard]] static constexpr auto capacity() noexcept -> std::size_t {
+        return CapacityValue;
+    }
+
+    [[nodiscard]] constexpr auto count() const noexcept -> std::size_t {
+        return logical_size_;
+    }
+
+    [[nodiscard]] constexpr auto operator==(const Map& other) const noexcept -> bool
+        requires concepts::StableEqualityComparable<KeyType> && concepts::StableEqualityComparable<ValueType>
+    {
+        if (logical_size_ != other.logical_size_) {
+            return false;
+        }
+        for (std::size_t i = 0; i < logical_size_; ++i) {
+            if (!matches_entry(other, i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    [[nodiscard]] constexpr auto contains(const KeyType& key) const noexcept -> bool {
+        return find_index(key) < logical_size_;
+    }
+
+    [[nodiscard]] constexpr auto operator()(const KeyType& key, const ValueType& fallback = ValueType{}) const noexcept
+        -> ValueType {
+        const auto idx = find_index(key);
+        return (idx < logical_size_) ? entries_[idx].value : fallback;
+    }
+
+    [[nodiscard]] constexpr auto can_assoc(const KeyType& key, [[maybe_unused]] const ValueType& value) const noexcept
+        -> bool {
+        return contains(key) || (logical_size_ < CapacityValue);
+    }
+
+    [[nodiscard]] constexpr auto assoc(const KeyType& key, const ValueType& value) const noexcept -> Map {
+        Map result = *this;
+        const auto idx = result.find_index(key);
+        if (idx < result.logical_size_) {
+            result.entries_[idx].value = value;
+        } else if (result.logical_size_ < CapacityValue) {
+            result.entries_[result.logical_size_] = value_type{key, value};
+            ++result.logical_size_;
+        }
+        return result;
+    }
+
+    /** Returns true when the entry's key is present or the map has room for one
+     *  more entry. */
+    [[nodiscard]] constexpr auto can_conj(const value_type& entry) const noexcept -> bool {
+        return contains(entry.key) || (logical_size_ < CapacityValue);
+    }
+
+    /** Associates the entry's key with its value on a copy: an existing key
+     *  replaces its value without increasing count; an absent key is added only
+     *  when capacity remains. Returns an unchanged copy when full. */
+    [[nodiscard]] constexpr auto conj(const value_type& entry) const noexcept -> Map {
+        return assoc(entry.key, entry.value);
+    }
+
+    [[nodiscard]] constexpr auto dissoc(const KeyType& key) const noexcept -> Map {
+        Map result = *this;
+        const auto idx = result.find_index(key);
+        if (idx < result.logical_size_) {
+            if (idx + 1U < result.logical_size_) {
+                result.entries_[idx] = result.entries_[result.logical_size_ - 1U];
+            }
+            --result.logical_size_;
+        }
+        return result;
+    }
+
+    [[nodiscard]] constexpr auto begin() const noexcept -> const value_type* {
+        return entries_.data();
+    }
+
+    [[nodiscard]] constexpr auto end() const noexcept -> const value_type* {
+        return entries_.data() + logical_size_;
+    }
+
+    [[nodiscard]] constexpr auto view() const noexcept -> std::span<const value_type> {
+        return {entries_.data(), logical_size_};
+    }
+
+    template <typename Key>
+        requires(!concepts::SafeImplicitConversion<KeyType, Key>)
+    auto contains(const Key& key) const -> bool = delete;
+
+    template <typename Key, typename Fallback = ValueType>
+        requires(!concepts::SafeImplicitConversion<KeyType, Key> ||
+                 !concepts::SafeImplicitConversion<ValueType, Fallback>)
+    auto operator()(const Key& key, const Fallback& fallback = Fallback{}) const -> ValueType = delete;
+
+    template <typename Key, typename Value>
+        requires(!concepts::SafeImplicitConversion<KeyType, Key> || !concepts::SafeImplicitConversion<ValueType, Value>)
+    auto can_assoc(const Key& key, const Value& value) const -> bool = delete;
+
+    template <typename Key, typename Value>
+        requires(!concepts::SafeImplicitConversion<KeyType, Key> || !concepts::SafeImplicitConversion<ValueType, Value>)
+    auto assoc(const Key& key, const Value& value) const -> Map = delete;
+
+    template <typename Entry>
+        requires(!std::same_as<std::remove_cvref_t<Entry>, value_type>)
+    auto can_conj(const Entry& entry) const -> bool = delete;
+
+    template <typename Entry>
+        requires(!std::same_as<std::remove_cvref_t<Entry>, value_type>)
+    auto conj(const Entry& entry) const -> Map = delete;
+
+    template <typename Key>
+        requires(!concepts::SafeImplicitConversion<KeyType, Key>)
+    auto dissoc(const Key& key) const -> Map = delete;
+
+  private:
+    [[nodiscard]] constexpr auto find_index(const KeyType& key) const noexcept -> std::size_t {
+        for (std::size_t i = 0; i < logical_size_; ++i) {
+            if (entries_[i].key == key) {
+                return i;
+            }
+        }
+        return logical_size_;
+    }
+
+    [[nodiscard]] constexpr auto matches_entry(const Map& other, std::size_t index) const noexcept -> bool {
+        const auto idx = other.find_index(entries_[index].key);
+        if (idx >= other.logical_size_) {
+            return false;
+        }
+        return entries_[index].value == other.entries_[idx].value;
+    }
+
+    [[nodiscard]] constexpr auto assoc_entry(const value_type& entry) const noexcept -> Map {
+        return assoc(entry.key, entry.value);
+    }
+
+    std::array<value_type, CapacityValue> entries_{};
+    std::size_t logical_size_{0};
+};
+
+template <typename KeyType, typename ValueType, typename... Rest>
+Map(MapEntry<KeyType, ValueType>, Rest...) -> Map<KeyType, ValueType, 1 + sizeof...(Rest)>;
+
+template <typename KeyType, typename ValueType, std::size_t Extent>
+    requires(Extent != std::dynamic_extent)
+Map(std::span<const MapEntry<KeyType, ValueType>, Extent>) -> Map<KeyType, ValueType, Extent>;
+
+template <typename KeyType, typename ValueType, std::size_t Extent>
+    requires(Extent != std::dynamic_extent)
+Map(std::span<MapEntry<KeyType, ValueType>, Extent>) -> Map<KeyType, ValueType, Extent>;
+
+namespace concepts_detail {
+
+struct DeducedHashMapKeyType {};
+struct DeducedHashMapValueType {};
+
+template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
+struct hash_map_factory_types {
+    using key_type = RequestedKeyType;
+    using value_type = RequestedValueType;
+};
+
+template <typename FirstKey, typename FirstValue, typename... Rest>
+struct hash_map_factory_types<DeducedHashMapKeyType, DeducedHashMapValueType, FirstKey, FirstValue, Rest...> {
+    using key_type = std::remove_cvref_t<FirstKey>;
+    using value_type = std::remove_cvref_t<FirstValue>;
+};
+
+template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
+using hash_map_factory_key_type_t = hash_map_factory_types<RequestedKeyType, RequestedValueType, Args...>::key_type;
+
+template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
+using hash_map_factory_value_type_t = hash_map_factory_types<RequestedKeyType, RequestedValueType, Args...>::value_type;
+
+template <typename KeyType, typename ValueType, typename Tuple, std::size_t... PairIndices>
+[[nodiscard]] consteval auto
+hash_map_factory_pairs_are_nothrow([[maybe_unused]] std::index_sequence<PairIndices...> indices) noexcept -> bool {
+    return (concepts::NothrowElementConstruction<KeyType, std::tuple_element_t<2U * PairIndices, Tuple>> && ...) &&
+           (concepts::NothrowElementConstruction<ValueType, std::tuple_element_t<(2U * PairIndices) + 1U, Tuple>> &&
+            ...);
+}
+
+template <typename KeyType, typename ValueType, typename... Args>
+[[nodiscard]] consteval auto hash_map_factory_arguments_are_nothrow() noexcept -> bool {
+    return hash_map_factory_pairs_are_nothrow<KeyType, ValueType, std::tuple<Args...>>(
+        std::make_index_sequence<sizeof...(Args) / 2U>{});
+}
+
+template <typename KeyType, typename ValueType, typename... Args>
+concept HashMapFactoryPairArguments = sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
+                                      hash_map_factory_arguments_are_nothrow<KeyType, ValueType, Args...>();
+
+template <typename KeyType, typename ValueType>
+concept HashMapFactoryElementTypes = concepts::NothrowStableEqualityComparable<KeyType> &&
+                                     concepts::NothrowCollectionElement<ValueType> && !is_std_variant_v<KeyType>;
+
+template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
+concept HashMapFactoryCapacityArguments =
+    HashMapFactoryElementTypes<KeyType, ValueType> && Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
+    sizeof...(Args) % 2U == 0U && sizeof...(Args) / 2U <= Capacity &&
+    sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
+    (sizeof...(Args) == 0U || HashMapFactoryPairArguments<KeyType, ValueType, Args...>);
+
+template <typename KeyType, typename ValueType, std::size_t Capacity>
+[[nodiscard]] constexpr auto build_hash_map_factory_result(Map<KeyType, ValueType, Capacity> result) noexcept
+    -> Map<KeyType, ValueType, Capacity> {
+    return result;
+}
+
+template <typename KeyType, typename ValueType, std::size_t Capacity, typename KeyArgument, typename ValueArgument,
+          typename... Rest>
+[[nodiscard]] constexpr auto build_hash_map_factory_result(Map<KeyType, ValueType, Capacity> result, KeyArgument&& key,
+                                                           ValueArgument&& value, Rest&&... rest) noexcept
+    -> Map<KeyType, ValueType, Capacity> {
+    return build_hash_map_factory_result(
+        result.assoc(std::forward<KeyArgument>(key), std::forward<ValueArgument>(value)), std::forward<Rest>(rest)...);
+}
+
+} // namespace concepts_detail
+
+} // namespace cljonic
+
+namespace cljonic::core {
+
+/** \anchor HashMapFactory
+ * Creates a bounded \ref Map "Map" from alternating key/value arguments.
+ *
+ * Deduced calls use the first pair's unqualified types and have capacity equal to their pair count. Explicit types use
+ * \c hash_map<Key, Value>(...); explicit capacity uses \c hash_map<Key, Value, Capacity>(...), including for an empty
+ * map.
+ */
+template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
+          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
+    requires(
+        concepts_detail::HashMapFactoryElementTypes<
+            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
+        concepts_detail::HashMapFactoryPairArguments<
+            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...> &&
+        sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
+[[nodiscard]] constexpr auto hash_map(Args&&... args) noexcept
+    -> Map<concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+           concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>,
+           sizeof...(Args) / 2U> {
+    using KeyType = concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>;
+    using ValueType = concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>;
+    return concepts_detail::build_hash_map_factory_result<KeyType, ValueType, sizeof...(Args) / 2U>(
+        Map<KeyType, ValueType, sizeof...(Args) / 2U>{}, std::forward<Args>(args)...);
+}
+
+template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
+          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
+    requires(sizeof...(Args) == 0U || sizeof...(Args) % 2U != 0U)
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
+                  "cljonic::hash_map: empty calls require explicit key, value, and capacity types; nonempty calls "
+                  "require complete alternating key/value pairs.");
+}
+
+template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
+          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
+    requires(sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
+             !concepts_detail::HashMapFactoryElementTypes<
+                 concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+                 concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>>)
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
+                  "cljonic::hash_map: key and value types must satisfy Map element requirements.");
+}
+
+template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
+          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
+    requires(sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
+             concepts_detail::HashMapFactoryElementTypes<
+                 concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+                 concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
+             sizeof...(Args) / 2U > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
+                  "cljonic::hash_map: pair count exceeds CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
+}
+
+template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
+          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
+    requires(
+        sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
+        concepts_detail::HashMapFactoryElementTypes<
+            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
+        sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
+        !concepts_detail::HashMapFactoryPairArguments<
+            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
+            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...>)
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
+                  "cljonic::hash_map: every key and value must safely construct its declared type without "
+                  "throwing.");
+}
+
+/** Creates a bounded Map with explicit capacity, including an empty Map. */
+template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
+    requires concepts_detail::HashMapFactoryCapacityArguments<KeyType, ValueType, Capacity, Args...>
+[[nodiscard]] constexpr auto hash_map(Args&&... args) noexcept -> Map<KeyType, ValueType, Capacity> {
+    return concepts_detail::build_hash_map_factory_result<KeyType, ValueType, Capacity>(
+        Map<KeyType, ValueType, Capacity>{}, std::forward<Args>(args)...);
+}
+
+template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
+    requires(!concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType>)
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
+                  "cljonic::hash_map: key and value types must satisfy Map element requirements.");
+}
+
+template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
+    requires(concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType> &&
+             Capacity > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
+                  "cljonic::hash_map: capacity exceeds CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
+}
+
+template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
+    requires(concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType> &&
+             Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
+             (sizeof...(Args) % 2U != 0U || sizeof...(Args) / 2U > Capacity))
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
+                  "cljonic::hash_map: arguments must be complete key/value pairs and fit within the selected "
+                  "capacity.");
+}
+
+template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
+    requires(concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType> &&
+             Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE && sizeof...(Args) % 2U == 0U &&
+             sizeof...(Args) / 2U <= Capacity &&
+             sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE && sizeof...(Args) > 0U &&
+             !concepts_detail::HashMapFactoryPairArguments<KeyType, ValueType, Args...>)
+constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
+    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
+                  "cljonic::hash_map: every key and value must safely construct its declared type without "
+                  "throwing.");
+}
+
+} // namespace cljonic::core
+
+namespace cljonic::concepts_detail {
+
+template <typename KeyType, typename ValueType, std::size_t CapacityValue>
+struct collection_traits<Map<KeyType, ValueType, CapacityValue>> {
+    static constexpr bool is_cljonic_collection = true;
+    static constexpr collection_kind kind = collection_kind::map;
+};
+
+template <typename KeyType, typename ValueType, std::size_t CapacityValue>
+struct contains_floating_point<Map<KeyType, ValueType, CapacityValue>>
+    : std::bool_constant<contains_floating_point_v<KeyType> || contains_floating_point_v<ValueType>> {};
+
+template <typename KeyType, typename ValueType, std::size_t CapacityValue>
+struct contains_callable<Map<KeyType, ValueType, CapacityValue>>
+    : std::bool_constant<contains_callable_v<KeyType> || contains_callable_v<ValueType>> {};
+
+template <typename KeyType, typename ValueType, std::size_t CapacityValue>
+struct contains_standard_range<Map<KeyType, ValueType, CapacityValue>>
+    : std::bool_constant<contains_standard_range_v<KeyType> || contains_standard_range_v<ValueType>> {};
+
+// Nominal walker coverage (REQ-NUM-019): Map declares that the walkers reach both
+// its key and value types.
+template <typename KeyType, typename ValueType, std::size_t CapacityValue>
+struct walker_coverage<Map<KeyType, ValueType, CapacityValue>> {
+    static constexpr bool declared = true;
+};
+
+} // namespace cljonic::concepts_detail
+// End cljonic-collection-map.hpp
 // Begin cljonic-collection-vector.hpp
 #pragma once
 
@@ -3524,6 +4317,296 @@ struct walker_coverage<Vector<ElementType, CapacityValue>> {
 
 namespace cljonic::concepts_detail {
 
+template <typename C, typename P>
+concept AssocInRootAndPathElementAdmissible =
+    is_cljonic_collection_v<C> &&
+    (collection_kind_of_v<C> == collection_kind::map || collection_kind_of_v<C> == collection_kind::vector) &&
+    ((collection_kind_of_v<C> == collection_kind::map && concepts::SafeImplicitConversion<typename C::key_type, P>) ||
+     (collection_kind_of_v<C> == collection_kind::vector && IntegerIndexType<P>));
+
+template <typename C, typename V>
+struct assoc_in_terminal_value_admissible : std::false_type {};
+
+template <typename K, typename M, std::size_t N, typename V>
+struct assoc_in_terminal_value_admissible<cljonic::Map<K, M, N>, V>
+    : std::bool_constant<concepts::SafeImplicitConversion<M, V> ||
+                         ((collection_kind_of_v<M> == collection_kind::map ||
+                           collection_kind_of_v<M> == collection_kind::vector) &&
+                          assoc_in_terminal_value_admissible<M, V>::value)> {};
+
+template <typename T, std::size_t N, typename V>
+struct assoc_in_terminal_value_admissible<cljonic::Vector<T, N>, V>
+    : std::bool_constant<concepts::SafeImplicitConversion<T, V> ||
+                         ((collection_kind_of_v<T> == collection_kind::map ||
+                           collection_kind_of_v<T> == collection_kind::vector) &&
+                          assoc_in_terminal_value_admissible<T, V>::value)> {};
+
+template <typename C, typename V>
+inline constexpr bool assoc_in_terminal_value_admissible_v =
+    assoc_in_terminal_value_admissible<std::remove_cvref_t<C>, std::remove_cvref_t<V>>::value;
+
+template <typename C, typename P, typename V, std::size_t PathCapacity>
+constexpr auto assoc_in_at(const C& collection, const cljonic::Vector<P, PathCapacity>& path, std::size_t index,
+                           const V& value) -> C;
+
+template <typename C, typename V>
+constexpr auto assoc_in_map_final_at(const C& collection, const typename C::key_type& key, const V& value) -> C {
+    if constexpr (requires(const C& c, const C::key_type& k, const V& v) {
+                      { c.assoc(k, v) } noexcept -> std::same_as<C>;
+                  }) {
+        return cljonic::core::assoc(collection, key, value);
+    }
+    return collection; // LCOV_EXCL_LINE
+}
+
+template <typename C, typename V, typename P, std::size_t PathCapacity>
+constexpr auto assoc_in_map_intermediate_at(const C& collection, const typename C::key_type& key,
+                                            const cljonic::Vector<P, PathCapacity>& path, std::size_t index,
+                                            const V& value) -> C {
+    using MappedType = C::mapped_type;
+    MappedType nested{};
+    if (collection.contains(key)) {
+        nested = collection(key);
+    }
+    if constexpr (collection_kind_of_v<MappedType> == collection_kind::map ||
+                  collection_kind_of_v<MappedType> == collection_kind::vector) {
+        nested = assoc_in_at<MappedType, P, V, PathCapacity>(nested, path, index + 1, value);
+        return cljonic::core::assoc(collection, key, nested);
+    }
+    return collection;
+}
+
+template <typename C, typename V, typename P, std::size_t PathCapacity>
+constexpr auto assoc_in_vector_final_at(const C& collection, std::size_t position, const V& value) -> C {
+    if constexpr (requires(const C& c, const std::size_t& i, const V& v) {
+                      { c.assoc(i, v) } noexcept -> std::same_as<C>;
+                  }) {
+        return cljonic::core::assoc(collection, position, value);
+    }
+    return collection;
+}
+
+template <typename C, typename V, typename P, std::size_t PathCapacity>
+constexpr auto assoc_in_vector_intermediate_at(const C& collection, std::size_t position,
+                                               const cljonic::Vector<P, PathCapacity>& path, std::size_t index,
+                                               const V& value) -> C {
+    using ElementType = C::value_type;
+    ElementType nested{};
+    if (position < collection.count()) {
+        nested = collection(position);
+    }
+    if constexpr (collection_kind_of_v<ElementType> == collection_kind::map ||
+                  collection_kind_of_v<ElementType> == collection_kind::vector) {
+        nested = assoc_in_at<ElementType, P, V, PathCapacity>(nested, path, index + 1, value);
+        return cljonic::core::assoc(collection, position, nested);
+    }
+    return collection;
+}
+
+template <typename C, typename P, typename V, std::size_t PathCapacity>
+constexpr auto assoc_in_map_at(const C& collection, const cljonic::Vector<P, PathCapacity>& path, std::size_t index,
+                               const V& value) -> C {
+    static_assert(concepts::SafeImplicitConversion<typename C::key_type, P>,
+                  "cljonic::assoc_in: a Map path element must safely convert to the Map key type.");
+    typename C::key_type key = path(index);
+    if (index + 1 == path.count()) {
+        return assoc_in_map_final_at<C, V>(collection, key, value);
+    }
+    return assoc_in_map_intermediate_at<C, V, P, PathCapacity>(collection, key, path, index, value);
+}
+
+template <typename C, typename P, typename V, std::size_t PathCapacity>
+constexpr auto assoc_in_vector_at(const C& collection, const cljonic::Vector<P, PathCapacity>& path, std::size_t index,
+                                  const V& value) -> C {
+    static_assert(IntegerIndexType<P>,
+                  "cljonic::assoc_in: a Vector path element must be a non-boolean, non-character integer.");
+    const auto normalized = try_normalize_index(path(index));
+    if (!normalized || *normalized > collection.count()) {
+        return collection;
+    }
+    if (index + 1 == path.count()) {
+        return assoc_in_vector_final_at<C, V, P, PathCapacity>(collection, *normalized, value);
+    }
+    return assoc_in_vector_intermediate_at<C, V, P, PathCapacity>(collection, *normalized, path, index, value);
+}
+
+template <typename C, typename P, typename V, std::size_t PathCapacity>
+constexpr auto assoc_in_at(const C& collection, const cljonic::Vector<P, PathCapacity>& path, std::size_t index,
+                           const V& value) -> C {
+    if (index >= path.count()) {
+        return collection;
+    }
+    if constexpr (collection_kind_of_v<C> == collection_kind::map) {
+        return assoc_in_map_at<C, P, V, PathCapacity>(collection, path, index, value);
+    } else if constexpr (collection_kind_of_v<C> == collection_kind::vector) {
+        return assoc_in_vector_at<C, P, V, PathCapacity>(collection, path, index, value);
+    } else {
+        static_assert(dependent_false<C>,
+                      "cljonic::assoc_in: the root and every intermediate collection must be a Map or Vector.");
+    }
+}
+
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
+
+/** \anchor AssocIn
+ * The \b assoc_in free function updates a \ref Map "Map" or \ref Vector "Vector" through a path without mutating the
+ * source. Supply exactly one path \ref Vector "Vector" followed by the final value. One path element performs the
+ * corresponding root-level association; multiple path elements update nested exact \ref Map "Map" or \ref Vector
+ * "Vector" shapes.
+ *
+ * A Map path element is a key; a Vector path element is an integer index. Existing Vector indexes replace nested
+ * values and the logical count appends when capacity remains. Missing intermediate Map keys create the declared Map or
+ * Vector value type. A runtime-invalid key, index, or capacity leaves the original root unchanged.
+ *
+\b Examples
+~~~~~{.cpp}
+#include "cljonic.hpp"
+using namespace cljonic;
+using namespace cljonic::core;
+
+using RootMap = Map<int, int, 4>;
+using RootMapPath = Vector<int, 1>;
+using InnerMap = Map<int, int, 4>;
+using MapToInnerMap = Map<int, InnerMap, 4>;
+using NestedMapPath = Vector<int, 2>;
+using InnerVector = Vector<int, 4>;
+using MapToInnerVector = Map<int, InnerVector, 4>;
+using RootVector = Vector<int, 4>;
+using VectorIndexPath = Vector<int, 1>;
+using NestedVector = Vector<InnerVector, 2>;
+using NestedVectorPath = Vector<int, 2>;
+using FullMap = Map<int, int, 1>;
+using FullVector = Vector<int, 2>;
+
+int main() {
+  // A one-element Map path associates the root Map.
+  constexpr auto root_map = assoc_in(RootMap{}, RootMapPath{1}, 42);
+  static_assert(root_map(1) == 42);
+
+  // A one-element Vector path replaces an existing root index.
+  constexpr auto root_vector =
+      assoc_in(RootVector{10, 20}, VectorIndexPath{1}, 99);
+  static_assert(root_vector(0) == 10);
+  static_assert(root_vector(1) == 99);
+
+  // The logical-count index appends when root Vector capacity remains.
+  constexpr auto appended_vector =
+      assoc_in(RootVector{10, 20}, VectorIndexPath{2}, 30);
+  static_assert(appended_vector(2) == 30);
+
+  // Nested Map updates descend through the exact declared InnerMap type.
+  constexpr auto nested_map_root = MapToInnerMap{};
+  constexpr auto nested_map =
+      assoc_in(nested_map_root, NestedMapPath{1, 2}, 42);
+  constexpr auto nested_inner_map = nested_map(1);
+  static_assert(nested_inner_map(2) == 42);
+  constexpr auto original_inner_map = nested_map_root(1);
+  static_assert(original_inner_map(2) == 0);
+
+  // A missing Map key can create a declared InnerMap.
+  constexpr auto missing_inner_map_root = MapToInnerMap{};
+  constexpr auto missing_inner_map =
+      assoc_in(missing_inner_map_root, NestedMapPath{1, 2}, 42);
+  constexpr auto missing_inner_map_value = missing_inner_map(1);
+  static_assert(missing_inner_map_value(2) == 42);
+
+  // A missing Map key can create a declared InnerVector.
+  constexpr auto nested_vector_root = MapToInnerVector{};
+  constexpr auto nested_vector =
+      assoc_in(nested_vector_root, NestedMapPath{1, 0}, 42);
+  constexpr auto nested_inner_vector = nested_vector(1);
+  static_assert(nested_inner_vector(0) == 42);
+
+  // Existing nested Vector indexes replace values.
+  constexpr auto nested_vector_root_values =
+      NestedVector{InnerVector{1, 2}, InnerVector{3, 4}};
+  constexpr auto nested_vector_replaced =
+      assoc_in(nested_vector_root_values, NestedVectorPath{1, 0}, 42);
+  constexpr auto replaced_inner_vector = nested_vector_replaced(1);
+  constexpr auto original_inner_vector = nested_vector_root_values(1);
+  static_assert(replaced_inner_vector(0) == 42);
+  static_assert(original_inner_vector(0) == 3);
+
+  // Runtime Map and Vector associations use normal replacement and append.
+  const auto runtime_map = assoc(RootMap{}, 1, 10);
+  const auto runtime_map_updated = assoc_in(runtime_map, RootMapPath{1}, 42);
+  const auto runtime_vector = RootVector{10, 20};
+  const auto runtime_vector_replaced =
+      assoc_in(runtime_vector, VectorIndexPath{1}, 99);
+  const auto runtime_vector_appended =
+      assoc_in(runtime_vector, VectorIndexPath{2}, 30);
+
+  // Invalid Map keys and Vector indexes leave the source unchanged.
+  const auto full_map = assoc(FullMap{}, 1, 10);
+  const auto invalid_full_map_key = assoc_in(full_map, RootMapPath{2}, 20);
+  const auto invalid_full_map_unchanged =
+      invalid_full_map_key(2) == 0 && invalid_full_map_key(1) == 10;
+
+  const auto full_vector = FullVector{10, 20};
+  const auto invalid_negative_index =
+      assoc_in(full_vector, VectorIndexPath{-1}, 99);
+  const auto invalid_past_end = assoc_in(full_vector, VectorIndexPath{3}, 99);
+  const auto invalid_full_append =
+      assoc_in(full_vector, VectorIndexPath{2}, 99);
+
+  return runtime_map_updated(1) == 42 && runtime_vector_replaced(1) == 99 &&
+                 runtime_vector_appended(2) == 30 &&
+                 invalid_full_map_unchanged &&
+                 invalid_negative_index(0) == 10 &&
+                 invalid_negative_index(1) == 20 && invalid_past_end(0) == 10 &&
+                 invalid_past_end(1) == 20 && invalid_full_append(0) == 10 &&
+                 invalid_full_append(1) == 20 && full_vector(0) == 10 &&
+                 full_vector(1) == 20
+             ? 0
+             : 1;
+}
+~~~~~
+ */
+template <typename C, typename P, std::size_t PathCapacity, typename V>
+    requires(cljonic::concepts_detail::AssocInRootAndPathElementAdmissible<C, P> &&
+             cljonic::concepts_detail::assoc_in_terminal_value_admissible_v<C, V> && PathCapacity > 0)
+[[nodiscard]] constexpr auto assoc_in(const C& collection, const cljonic::Vector<P, PathCapacity>& path,
+                                      const V& value) noexcept -> C {
+    if (path.count() == 0) {
+        return collection;
+    }
+    return cljonic::concepts_detail::assoc_in_at<C, P, V, PathCapacity>(collection, path, 0, value);
+}
+
+template <typename C, typename P, std::size_t PathCapacity, typename V>
+    requires(!cljonic::concepts_detail::AssocInRootAndPathElementAdmissible<C, P> ||
+             !cljonic::concepts_detail::assoc_in_terminal_value_admissible_v<C, V> || PathCapacity == 0)
+constexpr auto assoc_in([[maybe_unused]] const C& collection,
+                        [[maybe_unused]] const cljonic::Vector<P, PathCapacity>& path,
+                        [[maybe_unused]] const V& value) noexcept -> void {
+    static_assert(cljonic::concepts_detail::dependent_false<C, P, V>,
+                  "cljonic::assoc_in: expected a Map or Vector root, a nonempty Vector path, exact path elements, and "
+                  "a safely admissible final value.");
+}
+
+template <typename C, typename P, typename V>
+constexpr auto assoc_in([[maybe_unused]] const C& collection, [[maybe_unused]] const P& path,
+                        [[maybe_unused]] const V& value) noexcept -> void
+    requires(!cljonic::concepts_detail::is_cljonic_collection_v<P>)
+{
+    static_assert(cljonic::concepts_detail::dependent_false<C, P, V>,
+                  "cljonic::assoc_in: path must be exactly one cljonic::Vector.");
+}
+
+} // namespace cljonic::core
+// End cljonic-assoc-in.hpp
+// Begin cljonic-butlast.hpp
+#pragma once
+
+#include <algorithm>
+#include <cstddef>
+#include <ranges>
+
+
+namespace cljonic::concepts_detail {
+
 template <typename Source>
 concept ButLastSourceArguments =
     concepts::CljonicSource<Source> && concepts::NothrowCollectionElement<std::ranges::range_value_t<const Source>>;
@@ -3624,6 +4707,11 @@ constexpr auto butlast([[maybe_unused]] const Args&... args) noexcept -> void {
 
 } // namespace cljonic::core
 // End cljonic-butlast.hpp
+// Begin cljonic-can-assoc-in.hpp
+#pragma once
+
+#include <cstddef>
+
 // Begin cljonic-can-assoc.hpp
 #pragma once
 
@@ -3806,6 +4894,238 @@ template <typename C, typename... Arguments>
 
 } // namespace cljonic::core
 // End cljonic-can-assoc.hpp
+
+namespace cljonic::concepts_detail {
+
+template <typename C, typename P, typename V, std::size_t PathCapacity>
+constexpr auto can_assoc_in_at(const C& collection, const cljonic::Vector<P, PathCapacity>& path, std::size_t index,
+                               const V& value) -> bool;
+
+template <typename C, typename V>
+constexpr auto can_assoc_in_map_final_at(const C& collection, const typename C::key_type& key, const V& value) -> bool {
+    if constexpr (requires(const C& c, const C::key_type& k, const V& v) {
+                      { c.can_assoc(k, v) } noexcept -> std::same_as<bool>;
+                  }) {
+        return collection.can_assoc(key, value);
+    }
+    return false; // LCOV_EXCL_LINE
+}
+
+template <typename C, typename V, typename P, std::size_t PathCapacity>
+constexpr auto can_assoc_in_map_nested(const C& collection, const typename C::key_type& key) {
+    using MappedType = C::mapped_type;
+    if (collection.contains(key)) {
+        return collection(key);
+    }
+    return MappedType{};
+}
+
+template <typename C, typename V, typename P, std::size_t PathCapacity>
+constexpr auto can_assoc_in_map_intermediate_at(const C& collection, const typename C::key_type& key,
+                                                const cljonic::Vector<P, PathCapacity>& path, std::size_t index,
+                                                const V& value) -> bool {
+    using MappedType = C::mapped_type;
+    MappedType nested = can_assoc_in_map_nested<C, V, P, PathCapacity>(collection, key);
+    if constexpr (collection_kind_of_v<MappedType> == collection_kind::map ||
+                  collection_kind_of_v<MappedType> == collection_kind::vector) {
+        if (!can_assoc_in_at<MappedType, P, V, PathCapacity>(nested, path, index + 1, value)) {
+            return false;
+        }
+        const auto updated = assoc_in_at<MappedType, P, V, PathCapacity>(nested, path, index + 1, value);
+        return collection.can_assoc(key, updated);
+    }
+    return false;
+}
+
+template <typename C, typename V, typename P, std::size_t PathCapacity>
+constexpr auto can_assoc_in_vector_final_at(const C& collection, std::size_t position, const V& value) -> bool {
+    if constexpr (requires(const C& c, const std::size_t& i, const V& v) {
+                      { c.can_assoc(i, v) } noexcept -> std::same_as<bool>;
+                  }) {
+        return collection.can_assoc(position, value);
+    }
+    return false;
+}
+
+template <typename C, typename V, typename P, std::size_t PathCapacity>
+constexpr auto can_assoc_in_vector_nested(const C& collection, std::size_t position) {
+    using ElementType = C::value_type;
+    if (position < collection.count()) {
+        return collection(position);
+    }
+    return ElementType{};
+}
+
+template <typename C, typename V, typename P, std::size_t PathCapacity>
+constexpr auto can_assoc_in_vector_intermediate_at(const C& collection, std::size_t position,
+                                                   const cljonic::Vector<P, PathCapacity>& path, std::size_t index,
+                                                   const V& value) -> bool {
+    using ElementType = C::value_type;
+    ElementType nested = can_assoc_in_vector_nested<C, V, P, PathCapacity>(collection, position);
+    if constexpr (collection_kind_of_v<ElementType> == collection_kind::map ||
+                  collection_kind_of_v<ElementType> == collection_kind::vector) {
+        if (!can_assoc_in_at<ElementType, P, V, PathCapacity>(nested, path, index + 1, value)) {
+            return false;
+        }
+        const auto updated = assoc_in_at<ElementType, P, V, PathCapacity>(nested, path, index + 1, value);
+        return collection.can_assoc(position, updated);
+    }
+    return false;
+}
+
+template <typename C, typename P, typename V, std::size_t PathCapacity>
+constexpr auto can_assoc_in_map_at(const C& collection, const cljonic::Vector<P, PathCapacity>& path, std::size_t index,
+                                   const V& value) -> bool {
+    static_assert(concepts::SafeImplicitConversion<typename C::key_type, P>,
+                  "cljonic::can_assoc_in: a Map path element must safely convert to the Map key type.");
+    typename C::key_type key = path(index);
+    if (index + 1 == path.count()) {
+        return can_assoc_in_map_final_at<C, V>(collection, key, value);
+    }
+    return can_assoc_in_map_intermediate_at<C, V, P, PathCapacity>(collection, key, path, index, value);
+}
+
+template <typename C, typename P, typename V, std::size_t PathCapacity>
+constexpr auto can_assoc_in_vector_at(const C& collection, const cljonic::Vector<P, PathCapacity>& path,
+                                      std::size_t index, const V& value) -> bool {
+    static_assert(IntegerIndexType<P>,
+                  "cljonic::can_assoc_in: a Vector path element must be a non-boolean, non-character integer.");
+    const auto normalized = try_normalize_index(path(index));
+    if (!normalized || *normalized > collection.count()) {
+        return false;
+    }
+    if (index + 1 == path.count()) {
+        return can_assoc_in_vector_final_at<C, V, P, PathCapacity>(collection, *normalized, value);
+    }
+    return can_assoc_in_vector_intermediate_at<C, V, P, PathCapacity>(collection, *normalized, path, index, value);
+}
+
+template <typename C, typename P, typename V, std::size_t PathCapacity>
+constexpr auto can_assoc_in_at(const C& collection, const cljonic::Vector<P, PathCapacity>& path, std::size_t index,
+                               const V& value) -> bool {
+    if (index >= path.count()) {
+        return false;
+    }
+    if constexpr (collection_kind_of_v<C> == collection_kind::map) {
+        return can_assoc_in_map_at<C, P, V, PathCapacity>(collection, path, index, value);
+    } else if constexpr (collection_kind_of_v<C> == collection_kind::vector) {
+        return can_assoc_in_vector_at<C, P, V, PathCapacity>(collection, path, index, value);
+    } else {
+        static_assert(dependent_false<C>,
+                      "cljonic::can_assoc_in: the root and every intermediate collection must be a Map or Vector.");
+    }
+}
+
+} // namespace cljonic::concepts_detail
+
+namespace cljonic::core {
+
+/** \anchor CanAssocIn
+ * The \b can_assoc_in free function reports whether one \ref AssocIn "assoc_in" path can be applied cumulatively. One
+ * path element can preflight a root-level Map or Vector association. Additional path elements preflight nested exact
+ * Map/Vector values. It checks every key, index, capacity, and final value against the state produced by earlier
+ * levels. It returns false for an invalid runtime path or full capacity and never mutates the source.
+ *
+\b Examples
+~~~~~{.cpp}
+#include "cljonic.hpp"
+using namespace cljonic;
+using namespace cljonic::core;
+
+using RootMap = Map<int, int, 4>;
+using RootMapPath = Vector<int, 1>;
+using InnerMap = Map<int, int, 4>;
+using MapToInnerMap = Map<int, InnerMap, 4>;
+using NestedMapPath = Vector<int, 2>;
+using InnerVector = Vector<int, 4>;
+using MapToInnerVector = Map<int, InnerVector, 4>;
+using RootVector = Vector<int, 4>;
+using VectorIndexPath = Vector<int, 1>;
+using FullMap = Map<int, int, 1>;
+using FullVector = Vector<int, 2>;
+
+int main() {
+  // A one-element Map path preflights the root Map.
+  constexpr auto root_map = RootMap{};
+  static_assert(can_assoc_in(root_map, RootMapPath{1}, 42));
+
+  // Nested Map and nested Vector paths preflight their exact intermediate
+  // shapes.
+  constexpr auto nested_map_root = MapToInnerMap{};
+  static_assert(can_assoc_in(nested_map_root, NestedMapPath{1, 2}, 42));
+
+  constexpr auto nested_vector_root = MapToInnerVector{};
+  static_assert(can_assoc_in(nested_vector_root, NestedMapPath{1, 0}, 42));
+
+  // Existing Vector indexes can replace, and the logical-count index can
+  // append.
+  constexpr auto root_vector = RootVector{10, 20};
+  static_assert(can_assoc_in(root_vector, VectorIndexPath{1}, 99));
+  static_assert(can_assoc_in(root_vector, VectorIndexPath{2}, 30));
+
+  // Runtime normal replacement and append preflights succeed.
+  const auto runtime_map = assoc(RootMap{}, 1, 10);
+  const auto runtime_map_ok = can_assoc_in(runtime_map, RootMapPath{1}, 42);
+  const auto runtime_vector = RootVector{10, 20};
+  const auto runtime_replace_ok =
+      can_assoc_in(runtime_vector, VectorIndexPath{1}, 99);
+  const auto runtime_append_ok =
+      can_assoc_in(runtime_vector, VectorIndexPath{2}, 30);
+
+  // Runtime invalid Map/Vector paths fail preflight.
+  const auto full_map = assoc(FullMap{}, 1, 10);
+  const auto full_vector = FullVector{10, 20};
+  const auto invalid_full_map_key = can_assoc_in(full_map, RootMapPath{2}, 20);
+  const auto invalid_negative_index =
+      can_assoc_in(full_vector, VectorIndexPath{-1}, 99);
+  const auto invalid_past_end =
+      can_assoc_in(full_vector, VectorIndexPath{3}, 99);
+  const auto invalid_full_append =
+      can_assoc_in(full_vector, VectorIndexPath{2}, 99);
+
+  return runtime_map_ok && runtime_replace_ok && runtime_append_ok &&
+                 !invalid_full_map_key && !invalid_negative_index &&
+                 !invalid_past_end && !invalid_full_append
+             ? 0
+             : 1;
+}
+~~~~~
+ */
+template <typename C, typename P, std::size_t PathCapacity, typename V>
+    requires(cljonic::concepts_detail::AssocInRootAndPathElementAdmissible<C, P> &&
+             cljonic::concepts_detail::assoc_in_terminal_value_admissible_v<C, V> && PathCapacity > 0)
+[[nodiscard]] constexpr auto can_assoc_in(const C& collection, const cljonic::Vector<P, PathCapacity>& path,
+                                          const V& value) noexcept -> bool {
+    if (path.count() == 0) {
+        return false;
+    }
+    return cljonic::concepts_detail::can_assoc_in_at<C, P, V, PathCapacity>(collection, path, 0, value);
+}
+
+template <typename C, typename P, std::size_t PathCapacity, typename V>
+    requires(!cljonic::concepts_detail::AssocInRootAndPathElementAdmissible<C, P> ||
+             !cljonic::concepts_detail::assoc_in_terminal_value_admissible_v<C, V> || PathCapacity == 0)
+constexpr auto can_assoc_in([[maybe_unused]] const C& collection,
+                            [[maybe_unused]] const cljonic::Vector<P, PathCapacity>& path,
+                            [[maybe_unused]] const V& value) noexcept -> bool {
+    static_assert(cljonic::concepts_detail::dependent_false<C, P, V>,
+                  "cljonic::can_assoc_in: expected a Map or Vector root, a nonempty Vector path, exact path elements, "
+                  "and a safely admissible final value.");
+    return false;
+}
+
+template <typename C, typename P, typename V>
+constexpr auto can_assoc_in([[maybe_unused]] const C& collection, [[maybe_unused]] const P& path,
+                            [[maybe_unused]] const V& value) noexcept -> bool
+    requires(!cljonic::concepts_detail::is_cljonic_collection_v<P>)
+{
+    static_assert(cljonic::concepts_detail::dependent_false<C, P, V>,
+                  "cljonic::can_assoc_in: path must be exactly one cljonic::Vector.");
+    return false;
+}
+
+} // namespace cljonic::core
+// End cljonic-can-assoc-in.hpp
 // Begin cljonic-can-conj.hpp
 #pragma once
 
@@ -4633,801 +5953,6 @@ template <typename T>
 
 } // namespace cljonic::core
 // End cljonic-character-is-valid.hpp
-// Begin cljonic-collection-map.hpp
-#pragma once
-
-#include <array>
-#include <cstddef>
-#include <ranges>
-#include <span>
-#include <tuple>
-#include <utility>
-
-// Begin cljonic-collection-map-entry.hpp
-#pragma once
-
-#include <type_traits>
-#include <utility>
-
-
-namespace cljonic {
-
-/** \anchor MapEntry
- * A MapEntry is a value-semantic pair representing a single key-value association. Its fields are public, but MapEntry
- * is not a C++ aggregate.
- *
- * Use the \ref MapEntryFactory "map_entry" factory as the idiomatic creation surface at runtime or during constant
- * evaluation. A MapEntry is a fixed pair, so the factory has no capacity parameter.
- *
- * Keys must support reliable, non-throwing equality comparison and non-throwing storage operations. Values must have a
- * default value and be copyable, assignable, and destructible without throwing, so the entry remains safe to copy and
- * update in bounded collections. Keys and values may themselves be cljonic collections or producers, including nested
- * cljonic composites, provided they satisfy their respective constraints.
- *
- * Key and value construction follows the \ref implicit-conversions "safe implicit conversion rules".
- *
- * \b Examples
- ~~~~~{.cpp}
- #include "cljonic.hpp"
- using namespace cljonic;
- using namespace cljonic::core;
-
- int main() {
-   // Compile-time demonstration.
-   constexpr auto m_const = hash_map(1, 100, 2, 200);
-   static_assert(first(m_const) == map_entry(1, 100) ||
-                 first(m_const) == map_entry(2, 200));
-
-   // Explicit key and value types are available when deduction is not wanted.
-   constexpr auto e_explicit = map_entry<long, long>(1, 100);
-
-   // Runtime demonstration: a Map is created with hash_map and its entries,
-   // each a MapEntry value, can be traversed, compared, and added.
-   const auto m_runtime = hash_map<int, int, 4>(1, 100, 2, 200);
-
-   auto value_sum = 0;
-   for (const auto &entry : m_runtime) {
-     value_sum += entry.value;
-   }
-
-   const auto m_fuller = conj(m_runtime, map_entry(3, 300));
-
-   return (value_sum == 300 && m_fuller(3) == 300 && e_explicit.key == 1) ? 0
-                                                                          : 1;
- }
- ~~~~~
- */
-template <concepts::NothrowStableEqualityComparable KeyType, concepts::NothrowCollectionElement ValueType>
-struct MapEntry {
-    using key_type = KeyType;
-    using value_type = ValueType;
-    using mapped_type = ValueType;
-
-    KeyType key{};
-    ValueType value{};
-
-    constexpr MapEntry() noexcept = default;
-
-    template <typename Key>
-        requires concepts::NothrowElementConstruction<KeyType, Key>
-    constexpr explicit MapEntry(Key&& entry_key) noexcept : key(std::forward<Key>(entry_key)) {
-    }
-
-    template <typename Key, typename Value>
-        requires concepts::NothrowElementConstruction<KeyType, Key> &&
-                     concepts::NothrowElementConstruction<ValueType, Value>
-    constexpr MapEntry(Key&& entry_key, Value&& entry_value) noexcept
-        : key(std::forward<Key>(entry_key)), value(std::forward<Value>(entry_value)) {
-    }
-
-    [[nodiscard]] constexpr auto operator==(const MapEntry& other) const noexcept -> bool
-        requires concepts::StableEqualityComparable<KeyType> && concepts::StableEqualityComparable<ValueType>
-    {
-        return key == other.key && value == other.value;
-    }
-};
-
-template <typename Key, typename Value>
-MapEntry(Key, Value) -> MapEntry<Key, Value>;
-
-} // namespace cljonic
-
-namespace cljonic::concepts_detail {
-
-template <typename KeyType, typename ValueType>
-inline constexpr bool is_cljonic_map_entry_v<cljonic::MapEntry<KeyType, ValueType>> = true;
-
-// MapEntry inherits the recursive component analysis of the closed cljonic
-// value domain: it admits stable equality only when both its key and value
-// components admit stable equality (REQ-CAP-010).
-template <typename KeyType, typename ValueType>
-struct contains_floating_point<cljonic::MapEntry<KeyType, ValueType>>
-    : std::bool_constant<contains_floating_point_v<KeyType> || contains_floating_point_v<ValueType>> {};
-
-template <typename KeyType, typename ValueType>
-struct contains_callable<cljonic::MapEntry<KeyType, ValueType>>
-    : std::bool_constant<contains_callable_v<KeyType> || contains_callable_v<ValueType>> {};
-
-template <typename KeyType, typename ValueType>
-struct contains_standard_range<cljonic::MapEntry<KeyType, ValueType>>
-    : std::bool_constant<contains_standard_range_v<KeyType> || contains_standard_range_v<ValueType>> {};
-
-// Nominal walker coverage (REQ-NUM-019): MapEntry declares that the walkers reach
-// both its key and value types.
-template <typename KeyType, typename ValueType>
-struct walker_coverage<cljonic::MapEntry<KeyType, ValueType>> {
-    static constexpr bool declared = true;
-};
-
-struct DeducedMapEntryKeyType {};
-struct DeducedMapEntryValueType {};
-
-template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
-struct map_entry_factory_types {
-    using key_type = RequestedKeyType;
-    using value_type = RequestedValueType;
-};
-
-template <typename KeyArgument, typename ValueArgument>
-struct map_entry_factory_types<DeducedMapEntryKeyType, DeducedMapEntryValueType, KeyArgument, ValueArgument> {
-    using key_type = std::remove_cvref_t<KeyArgument>;
-    using value_type = std::remove_cvref_t<ValueArgument>;
-};
-
-template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
-using map_entry_factory_key_type_t = map_entry_factory_types<RequestedKeyType, RequestedValueType, Args...>::key_type;
-
-template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
-using map_entry_factory_value_type_t =
-    map_entry_factory_types<RequestedKeyType, RequestedValueType, Args...>::value_type;
-
-template <typename KeyType, typename ValueType, typename... Args>
-struct map_entry_factory_arguments_are_nothrow : std::false_type {};
-
-template <typename KeyType, typename ValueType, typename KeyArgument, typename ValueArgument>
-struct map_entry_factory_arguments_are_nothrow<KeyType, ValueType, KeyArgument, ValueArgument>
-    : std::bool_constant<concepts::NothrowElementConstruction<KeyType, KeyArgument> &&
-                         concepts::NothrowElementConstruction<ValueType, ValueArgument>> {};
-
-template <typename KeyType, typename ValueType>
-concept MapEntryFactoryElementTypes =
-    concepts::NothrowStableEqualityComparable<KeyType> && concepts::NothrowCollectionElement<ValueType>;
-
-template <typename KeyType, typename ValueType, typename... Args>
-concept MapEntryFactoryArguments = map_entry_factory_arguments_are_nothrow<KeyType, ValueType, Args...>::value;
-
-} // namespace cljonic::concepts_detail
-
-namespace cljonic::core {
-
-/** \anchor MapEntryFactory
- * Creates a \ref MapEntry "MapEntry" from exactly one key and one value.
- *
- * Deduced calls use the unqualified types of the key and value arguments. Explicit types use \c map_entry<Key,
- * Value>(...). A MapEntry is a fixed pair, so unlike the collection factories there is no capacity parameter and no
- * spare-capacity form.
- */
-template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
-          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
-    requires(
-        concepts_detail::MapEntryFactoryElementTypes<
-            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
-        sizeof...(Args) == 2U &&
-        concepts_detail::MapEntryFactoryArguments<
-            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...>)
-[[nodiscard]] constexpr auto map_entry(Args&&... args) noexcept
-    -> MapEntry<concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-                concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> {
-    using KeyType = concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>;
-    using ValueType = concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>;
-    return MapEntry<KeyType, ValueType>{std::forward<Args>(args)...};
-}
-
-template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
-          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
-    requires(sizeof...(Args) != 2U)
-constexpr auto map_entry([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
-                  "cljonic::map_entry: requires exactly one key argument and one value argument.");
-}
-
-template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
-          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
-    requires(sizeof...(Args) == 2U &&
-             !concepts_detail::MapEntryFactoryElementTypes<
-                 concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-                 concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>>)
-constexpr auto map_entry([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
-                  "cljonic::map_entry: key and value types must satisfy MapEntry element requirements.");
-}
-
-template <typename RequestedKeyType = concepts_detail::DeducedMapEntryKeyType,
-          typename RequestedValueType = concepts_detail::DeducedMapEntryValueType, typename... Args>
-    requires(
-        sizeof...(Args) == 2U &&
-        concepts_detail::MapEntryFactoryElementTypes<
-            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
-        !concepts_detail::MapEntryFactoryArguments<
-            concepts_detail::map_entry_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::map_entry_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...>)
-constexpr auto map_entry([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
-                  "cljonic::map_entry: the key and value must safely construct their declared types without "
-                  "throwing.");
-}
-
-} // namespace cljonic::core
-// End cljonic-collection-map-entry.hpp
-
-namespace cljonic {
-
-/** \anchor Map
- * A Map is a bounded, associative collection that maps unique keys to values and provides callable lookup with
- * optional fallback values. Other operations use the library's free-function API.
- *
- * The \c hash_map factory is the idiomatic way to create Map values, at runtime or during constant evaluation. It
- * accepts alternating keys and values, and a later duplicate key replaces the earlier value. Use \c hash_map(k, v,
- * ...) to infer the key type, value type, and capacity, \c hash_map<K, V>(k, v, ...) to select the key and value
- * types, or \c hash_map<K, V, Capacity>(k, v, ...) to provide an explicit capacity, including for an empty map. \c
- * Map<K, V, Capacity> remains the value's type.
- *
- * Direct construction is useful when importing a C++ range or view: its entries are copied into the Map. A cljonic
- * collection or producer is not a constructor source.
- *
- * Construction with more entries than the available capacity is rejected at compile time. Construction from entries
- * requires the exact declared entry type. Keys, mapped values, and fallbacks follow the \ref implicit-conversions
- * "safe implicit conversion rules".
- *
- \b Examples
- ~~~~~{.cpp}
- #include "cljonic.hpp"
- using namespace cljonic;
- using namespace cljonic::core;
-
- struct Key {
-   int id;
-   friend constexpr bool operator==(const Key &, const Key &) noexcept = default;
- };
-
- struct Value {
-   int amount = 0;
-   friend constexpr bool operator==(const Value &,
-                                    const Value &) noexcept = default;
- };
-
- using AccountEntry = MapEntry<Key, Value>;
- using AccountMap = Map<Key, Value, 2>;
-
- int main() {
-   // The factory is the idiomatic way to create maps. It accepts
-   // alternating keys and values.
-   constexpr auto factory_map = hash_map(Key{1}, Value{10}, Key{2}, Value{20});
-   static_assert(factory_map(Key{2}).amount == 20);
-
-   // Explicit key, value, and capacity types create an empty Map with room
-   // for later associations.
-   constexpr auto reserved = hash_map<Key, Value, 4>();
-
-   // Missing `reserved(Key{1})` returns the fallback value
-   static_assert(reserved(Key{1}).amount == 0);
-
-   // The factory also works with runtime values.
-   const auto runtime_amount = 40;
-   const auto runtime_factory = hash_map(Key{4}, Value{runtime_amount});
-
-   // Runtime CTAD deduces Map<Key, Value, 1> from the map_entry value.
-   auto runtime = hash_map(Key{3}, Value{30});
-   const auto present = runtime(Key{3});
-   const auto missing = runtime(Key{4}, Value{77});
-
-   // A standard view pipeline can use an existing Map as its source and
-   // Construct another Map from the transformed entries.
-   const auto copied_view =
-       runtime | std::views::transform([](const AccountEntry &entry) noexcept {
-         return map_entry(entry.key, Value{entry.value.amount * 2});
-       });
-   const auto from_pipeline = AccountMap{copied_view};
-
-   // A named map type and its named entry type make the intended value model
-   // explicit. A later duplicate key replaces the earlier value (i.e., the
-   // right-most value associated with a duplicate key).
-   constexpr auto literal =
-       hash_map<Key, Value, 2>(Key{1}, Value{10}, Key{1}, Value{20});
-
-   // A Map is callable for present-key lookup and missing-key fallback.
-   static_assert(literal(Key{1}).amount == 20);
-   static_assert(literal(Key{2}).amount == 0);
-   static_assert(literal(Key{2}, Value{99}).amount == 99);
-
-   // ---------------------------------------------------------------------------
-   // C++ interoperability: a Map supports const traversal and exposes a
-   // non-owning std::span view. Range/view sources are copied into owned
-   // storage, retaining only the bounded prefix that fits the capacity.
-   // ---------------------------------------------------------------------------
-   static constexpr AccountEntry source_entries[] = {
-       map_entry(Key{10}, Value{100}), map_entry(Key{20}, Value{200})};
-   constexpr auto source_span = std::span{source_entries};
-   constexpr auto from_span = AccountMap{source_span};
-   static_assert(from_span(Key{10}).amount == 100);
-   static_assert(from_span(Key{20}).amount == 200);
-
-   constexpr auto from_span_ctad = Map{source_span};
-   static_assert(from_span_ctad(Key{10}).amount == 100);
-   static_assert(from_span_ctad.view().size() == 2);
-
-   // Constructing a Map from a runtime C++ array/span
-   AccountEntry runtime_buffer[] = {map_entry(Key{100}, Value{1000}),
-                                    map_entry(Key{200}, Value{2000})};
-   const auto runtime_from_span =
-       Map<Key, Value, 4>{std::span<const AccountEntry>{runtime_buffer, 2}};
-
-   // Use C++ interoperability to sum the values in a map.
-   auto value_sum = 0;
-   for (const auto &entry : runtime) {
-     value_sum += entry.value.amount;
-   }
-
-   const auto runtime_view = runtime.view();
-
-   return (present.amount == 30 && missing.amount == 77 && value_sum == 30 &&
-           runtime_view.size() == 1 && runtime_view[0].value.amount == 30 &&
-           factory_map(Key{1}).amount == 10 &&
-           runtime_factory(Key{4}).amount == 40 &&
-           from_span(Key{10}).amount == 100 &&
-           from_pipeline(Key{3}).amount == 60 &&
-           runtime_from_span(Key{100}).amount == 1000)
-              ? 0
-              : 1;
- }
- ~~~~~
- */
-template <concepts::NothrowStableEqualityComparable KeyType, concepts::NothrowCollectionElement ValueType,
-          std::size_t CapacityValue>
-    requires(!concepts_detail::is_std_variant_v<KeyType>)
-class Map {
-  public:
-    using key_type = KeyType;
-    using lookup_type = key_type;
-    using mapped_type = ValueType;
-    using association_value_type = ValueType;
-    using value_type = MapEntry<KeyType, ValueType>;
-
-    static_assert(
-        CapacityValue <= cljonic::CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE,
-        "cljonic::Map: CapacityValue exceeds "
-        "CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT=" CLJONIC_STRINGIFY(CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT));
-
-    template <typename... Args>
-    explicit(sizeof...(Args) ==
-             1) constexpr Map(Args&&... args) noexcept((concepts::NothrowElementConstruction<value_type, Args> &&
-                                                        ...)) {
-        static_assert(sizeof...(Args) <= CapacityValue, "cljonic::Map: initializer count exceeds Map CapacityValue");
-        static_assert(((std::same_as<std::remove_cvref_t<Args>, value_type> &&
-                        concepts::NothrowElementConstruction<value_type, Args>) &&
-                       ...),
-                      "cljonic::Map: constructor requires all arguments to construct "
-                      "the exact MapEntry type without throwing");
-
-        ((*this = assoc_entry(value_type{std::forward<Args>(args)})), ...);
-    }
-
-    // A cljonic collection or producer is not a SourceConstruction source
-    // (REQ-FN-027A); materialize it via into, preflighted by fits_into.
-    template <std::ranges::input_range SourceRange>
-        requires(!concepts_detail::is_cljonic_collection_v<SourceRange> &&
-                 !concepts_detail::is_cljonic_producer_v<SourceRange> &&
-                 !std::same_as<std::remove_cvref_t<SourceRange>, value_type>)
-    explicit constexpr Map(SourceRange&& source) noexcept(
-        (concepts::NothrowRangeConstruction<value_type, SourceRange>)) {
-        static_assert(concepts::NothrowRangeConstruction<value_type, SourceRange>,
-                      "cljonic::Map: range/view constructor requires each source element to construct "
-                      "the exact MapEntry type and requires non-throwing traversal");
-        static_assert(concepts_detail::static_extent_fits_v<SourceRange, CapacityValue>,
-                      "cljonic::Map: static-extent range source exceeds Map CapacityValue");
-
-        std::size_t copy_count = 0;
-        for (auto&& item : std::forward<SourceRange>(source)) {
-            if (copy_count++ >= CapacityValue) {
-                break;
-            }
-            *this = assoc_entry(value_type{std::forward<decltype(item)>(item)});
-        }
-    }
-
-    // Diagnostic fallback (REQ-DIAG-010): a cljonic collection or producer is
-    // not a SourceConstruction source. This overload exists only to explain the
-    // rejection -- it produces no value and is never a supported call target.
-    template <typename SourceValue>
-        requires((concepts_detail::is_cljonic_collection_v<SourceValue> ||
-                  concepts_detail::is_cljonic_producer_v<SourceValue>) &&
-                 !std::same_as<std::remove_cvref_t<SourceValue>, value_type>)
-    explicit constexpr Map([[maybe_unused]] SourceValue&& source) noexcept {
-        static_assert(concepts_detail::dependent_false<SourceValue>,
-                      "cljonic::Map: you cannot construct a Map from a cljonic collection or producer. A Map is built "
-                      "from MapEntry elements, or from a non-cljonic C++ range or view.");
-    }
-
-    [[nodiscard]] static constexpr auto capacity() noexcept -> std::size_t {
-        return CapacityValue;
-    }
-
-    [[nodiscard]] constexpr auto count() const noexcept -> std::size_t {
-        return logical_size_;
-    }
-
-    [[nodiscard]] constexpr auto operator==(const Map& other) const noexcept -> bool
-        requires concepts::StableEqualityComparable<KeyType> && concepts::StableEqualityComparable<ValueType>
-    {
-        if (logical_size_ != other.logical_size_) {
-            return false;
-        }
-        for (std::size_t i = 0; i < logical_size_; ++i) {
-            if (!matches_entry(other, i)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    [[nodiscard]] constexpr auto contains(const KeyType& key) const noexcept -> bool {
-        return find_index(key) < logical_size_;
-    }
-
-    [[nodiscard]] constexpr auto operator()(const KeyType& key, const ValueType& fallback = ValueType{}) const noexcept
-        -> ValueType {
-        const auto idx = find_index(key);
-        return (idx < logical_size_) ? entries_[idx].value : fallback;
-    }
-
-    [[nodiscard]] constexpr auto can_assoc(const KeyType& key, [[maybe_unused]] const ValueType& value) const noexcept
-        -> bool {
-        return contains(key) || (logical_size_ < CapacityValue);
-    }
-
-    [[nodiscard]] constexpr auto assoc(const KeyType& key, const ValueType& value) const noexcept -> Map {
-        Map result = *this;
-        const auto idx = result.find_index(key);
-        if (idx < result.logical_size_) {
-            result.entries_[idx].value = value;
-        } else if (result.logical_size_ < CapacityValue) {
-            result.entries_[result.logical_size_] = value_type{key, value};
-            ++result.logical_size_;
-        }
-        return result;
-    }
-
-    /** Returns true when the entry's key is present or the map has room for one
-     *  more entry. */
-    [[nodiscard]] constexpr auto can_conj(const value_type& entry) const noexcept -> bool {
-        return contains(entry.key) || (logical_size_ < CapacityValue);
-    }
-
-    /** Associates the entry's key with its value on a copy: an existing key
-     *  replaces its value without increasing count; an absent key is added only
-     *  when capacity remains. Returns an unchanged copy when full. */
-    [[nodiscard]] constexpr auto conj(const value_type& entry) const noexcept -> Map {
-        return assoc(entry.key, entry.value);
-    }
-
-    [[nodiscard]] constexpr auto dissoc(const KeyType& key) const noexcept -> Map {
-        Map result = *this;
-        const auto idx = result.find_index(key);
-        if (idx < result.logical_size_) {
-            if (idx + 1U < result.logical_size_) {
-                result.entries_[idx] = result.entries_[result.logical_size_ - 1U];
-            }
-            --result.logical_size_;
-        }
-        return result;
-    }
-
-    [[nodiscard]] constexpr auto begin() const noexcept -> const value_type* {
-        return entries_.data();
-    }
-
-    [[nodiscard]] constexpr auto end() const noexcept -> const value_type* {
-        return entries_.data() + logical_size_;
-    }
-
-    [[nodiscard]] constexpr auto view() const noexcept -> std::span<const value_type> {
-        return {entries_.data(), logical_size_};
-    }
-
-    template <typename Key>
-        requires(!concepts::SafeImplicitConversion<KeyType, Key>)
-    auto contains(const Key& key) const -> bool = delete;
-
-    template <typename Key, typename Fallback = ValueType>
-        requires(!concepts::SafeImplicitConversion<KeyType, Key> ||
-                 !concepts::SafeImplicitConversion<ValueType, Fallback>)
-    auto operator()(const Key& key, const Fallback& fallback = Fallback{}) const -> ValueType = delete;
-
-    template <typename Key, typename Value>
-        requires(!concepts::SafeImplicitConversion<KeyType, Key> || !concepts::SafeImplicitConversion<ValueType, Value>)
-    auto can_assoc(const Key& key, const Value& value) const -> bool = delete;
-
-    template <typename Key, typename Value>
-        requires(!concepts::SafeImplicitConversion<KeyType, Key> || !concepts::SafeImplicitConversion<ValueType, Value>)
-    auto assoc(const Key& key, const Value& value) const -> Map = delete;
-
-    template <typename Entry>
-        requires(!std::same_as<std::remove_cvref_t<Entry>, value_type>)
-    auto can_conj(const Entry& entry) const -> bool = delete;
-
-    template <typename Entry>
-        requires(!std::same_as<std::remove_cvref_t<Entry>, value_type>)
-    auto conj(const Entry& entry) const -> Map = delete;
-
-    template <typename Key>
-        requires(!concepts::SafeImplicitConversion<KeyType, Key>)
-    auto dissoc(const Key& key) const -> Map = delete;
-
-  private:
-    [[nodiscard]] constexpr auto find_index(const KeyType& key) const noexcept -> std::size_t {
-        for (std::size_t i = 0; i < logical_size_; ++i) {
-            if (entries_[i].key == key) {
-                return i;
-            }
-        }
-        return logical_size_;
-    }
-
-    [[nodiscard]] constexpr auto matches_entry(const Map& other, std::size_t index) const noexcept -> bool {
-        const auto idx = other.find_index(entries_[index].key);
-        if (idx >= other.logical_size_) {
-            return false;
-        }
-        return entries_[index].value == other.entries_[idx].value;
-    }
-
-    [[nodiscard]] constexpr auto assoc_entry(const value_type& entry) const noexcept -> Map {
-        return assoc(entry.key, entry.value);
-    }
-
-    std::array<value_type, CapacityValue> entries_{};
-    std::size_t logical_size_{0};
-};
-
-template <typename KeyType, typename ValueType, typename... Rest>
-Map(MapEntry<KeyType, ValueType>, Rest...) -> Map<KeyType, ValueType, 1 + sizeof...(Rest)>;
-
-template <typename KeyType, typename ValueType, std::size_t Extent>
-    requires(Extent != std::dynamic_extent)
-Map(std::span<const MapEntry<KeyType, ValueType>, Extent>) -> Map<KeyType, ValueType, Extent>;
-
-template <typename KeyType, typename ValueType, std::size_t Extent>
-    requires(Extent != std::dynamic_extent)
-Map(std::span<MapEntry<KeyType, ValueType>, Extent>) -> Map<KeyType, ValueType, Extent>;
-
-namespace concepts_detail {
-
-struct DeducedHashMapKeyType {};
-struct DeducedHashMapValueType {};
-
-template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
-struct hash_map_factory_types {
-    using key_type = RequestedKeyType;
-    using value_type = RequestedValueType;
-};
-
-template <typename FirstKey, typename FirstValue, typename... Rest>
-struct hash_map_factory_types<DeducedHashMapKeyType, DeducedHashMapValueType, FirstKey, FirstValue, Rest...> {
-    using key_type = std::remove_cvref_t<FirstKey>;
-    using value_type = std::remove_cvref_t<FirstValue>;
-};
-
-template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
-using hash_map_factory_key_type_t = hash_map_factory_types<RequestedKeyType, RequestedValueType, Args...>::key_type;
-
-template <typename RequestedKeyType, typename RequestedValueType, typename... Args>
-using hash_map_factory_value_type_t = hash_map_factory_types<RequestedKeyType, RequestedValueType, Args...>::value_type;
-
-template <typename KeyType, typename ValueType, typename Tuple, std::size_t... PairIndices>
-[[nodiscard]] consteval auto
-hash_map_factory_pairs_are_nothrow([[maybe_unused]] std::index_sequence<PairIndices...> indices) noexcept -> bool {
-    return (concepts::NothrowElementConstruction<KeyType, std::tuple_element_t<2U * PairIndices, Tuple>> && ...) &&
-           (concepts::NothrowElementConstruction<ValueType, std::tuple_element_t<(2U * PairIndices) + 1U, Tuple>> &&
-            ...);
-}
-
-template <typename KeyType, typename ValueType, typename... Args>
-[[nodiscard]] consteval auto hash_map_factory_arguments_are_nothrow() noexcept -> bool {
-    return hash_map_factory_pairs_are_nothrow<KeyType, ValueType, std::tuple<Args...>>(
-        std::make_index_sequence<sizeof...(Args) / 2U>{});
-}
-
-template <typename KeyType, typename ValueType, typename... Args>
-concept HashMapFactoryPairArguments = sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
-                                      hash_map_factory_arguments_are_nothrow<KeyType, ValueType, Args...>();
-
-template <typename KeyType, typename ValueType>
-concept HashMapFactoryElementTypes = concepts::NothrowStableEqualityComparable<KeyType> &&
-                                     concepts::NothrowCollectionElement<ValueType> && !is_std_variant_v<KeyType>;
-
-template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
-concept HashMapFactoryCapacityArguments =
-    HashMapFactoryElementTypes<KeyType, ValueType> && Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
-    sizeof...(Args) % 2U == 0U && sizeof...(Args) / 2U <= Capacity &&
-    sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
-    (sizeof...(Args) == 0U || HashMapFactoryPairArguments<KeyType, ValueType, Args...>);
-
-template <typename KeyType, typename ValueType, std::size_t Capacity>
-[[nodiscard]] constexpr auto build_hash_map_factory_result(Map<KeyType, ValueType, Capacity> result) noexcept
-    -> Map<KeyType, ValueType, Capacity> {
-    return result;
-}
-
-template <typename KeyType, typename ValueType, std::size_t Capacity, typename KeyArgument, typename ValueArgument,
-          typename... Rest>
-[[nodiscard]] constexpr auto build_hash_map_factory_result(Map<KeyType, ValueType, Capacity> result, KeyArgument&& key,
-                                                           ValueArgument&& value, Rest&&... rest) noexcept
-    -> Map<KeyType, ValueType, Capacity> {
-    return build_hash_map_factory_result(
-        result.assoc(std::forward<KeyArgument>(key), std::forward<ValueArgument>(value)), std::forward<Rest>(rest)...);
-}
-
-} // namespace concepts_detail
-
-} // namespace cljonic
-
-namespace cljonic::core {
-
-/** \anchor HashMapFactory
- * Creates a bounded \ref Map "Map" from alternating key/value arguments.
- *
- * Deduced calls use the first pair's unqualified types and have capacity equal to their pair count. Explicit types use
- * \c hash_map<Key, Value>(...); explicit capacity uses \c hash_map<Key, Value, Capacity>(...), including for an empty
- * map.
- */
-template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
-          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
-    requires(
-        concepts_detail::HashMapFactoryElementTypes<
-            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
-        concepts_detail::HashMapFactoryPairArguments<
-            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...> &&
-        sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
-[[nodiscard]] constexpr auto hash_map(Args&&... args) noexcept
-    -> Map<concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-           concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>,
-           sizeof...(Args) / 2U> {
-    using KeyType = concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>;
-    using ValueType = concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>;
-    return concepts_detail::build_hash_map_factory_result<KeyType, ValueType, sizeof...(Args) / 2U>(
-        Map<KeyType, ValueType, sizeof...(Args) / 2U>{}, std::forward<Args>(args)...);
-}
-
-template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
-          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
-    requires(sizeof...(Args) == 0U || sizeof...(Args) % 2U != 0U)
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
-                  "cljonic::hash_map: empty calls require explicit key, value, and capacity types; nonempty calls "
-                  "require complete alternating key/value pairs.");
-}
-
-template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
-          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
-    requires(sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
-             !concepts_detail::HashMapFactoryElementTypes<
-                 concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-                 concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>>)
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
-                  "cljonic::hash_map: key and value types must satisfy Map element requirements.");
-}
-
-template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
-          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
-    requires(sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
-             concepts_detail::HashMapFactoryElementTypes<
-                 concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-                 concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
-             sizeof...(Args) / 2U > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
-                  "cljonic::hash_map: pair count exceeds CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
-}
-
-template <typename RequestedKeyType = concepts_detail::DeducedHashMapKeyType,
-          typename RequestedValueType = concepts_detail::DeducedHashMapValueType, typename... Args>
-    requires(
-        sizeof...(Args) > 0U && sizeof...(Args) % 2U == 0U &&
-        concepts_detail::HashMapFactoryElementTypes<
-            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>> &&
-        sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
-        !concepts_detail::HashMapFactoryPairArguments<
-            concepts_detail::hash_map_factory_key_type_t<RequestedKeyType, RequestedValueType, Args...>,
-            concepts_detail::hash_map_factory_value_type_t<RequestedKeyType, RequestedValueType, Args...>, Args...>)
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<RequestedKeyType, RequestedValueType, Args...>,
-                  "cljonic::hash_map: every key and value must safely construct its declared type without "
-                  "throwing.");
-}
-
-/** Creates a bounded Map with explicit capacity, including an empty Map. */
-template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
-    requires concepts_detail::HashMapFactoryCapacityArguments<KeyType, ValueType, Capacity, Args...>
-[[nodiscard]] constexpr auto hash_map(Args&&... args) noexcept -> Map<KeyType, ValueType, Capacity> {
-    return concepts_detail::build_hash_map_factory_result<KeyType, ValueType, Capacity>(
-        Map<KeyType, ValueType, Capacity>{}, std::forward<Args>(args)...);
-}
-
-template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
-    requires(!concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType>)
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
-                  "cljonic::hash_map: key and value types must satisfy Map element requirements.");
-}
-
-template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
-    requires(concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType> &&
-             Capacity > CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE)
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
-                  "cljonic::hash_map: capacity exceeds CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT.");
-}
-
-template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
-    requires(concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType> &&
-             Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE &&
-             (sizeof...(Args) % 2U != 0U || sizeof...(Args) / 2U > Capacity))
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
-                  "cljonic::hash_map: arguments must be complete key/value pairs and fit within the selected "
-                  "capacity.");
-}
-
-template <typename KeyType, typename ValueType, std::size_t Capacity, typename... Args>
-    requires(concepts_detail::HashMapFactoryElementTypes<KeyType, ValueType> &&
-             Capacity <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE && sizeof...(Args) % 2U == 0U &&
-             sizeof...(Args) / 2U <= Capacity &&
-             sizeof...(Args) / 2U <= CLJONIC_COLLECTION_MAXIMUM_ELEMENT_COUNT_VALUE && sizeof...(Args) > 0U &&
-             !concepts_detail::HashMapFactoryPairArguments<KeyType, ValueType, Args...>)
-constexpr auto hash_map([[maybe_unused]] Args&&... args) noexcept -> void {
-    static_assert(concepts_detail::dependent_false<KeyType, ValueType, Args...>,
-                  "cljonic::hash_map: every key and value must safely construct its declared type without "
-                  "throwing.");
-}
-
-} // namespace cljonic::core
-
-namespace cljonic::concepts_detail {
-
-template <typename KeyType, typename ValueType, std::size_t CapacityValue>
-struct collection_traits<Map<KeyType, ValueType, CapacityValue>> {
-    static constexpr bool is_cljonic_collection = true;
-    static constexpr collection_kind kind = collection_kind::map;
-};
-
-template <typename KeyType, typename ValueType, std::size_t CapacityValue>
-struct contains_floating_point<Map<KeyType, ValueType, CapacityValue>>
-    : std::bool_constant<contains_floating_point_v<KeyType> || contains_floating_point_v<ValueType>> {};
-
-template <typename KeyType, typename ValueType, std::size_t CapacityValue>
-struct contains_callable<Map<KeyType, ValueType, CapacityValue>>
-    : std::bool_constant<contains_callable_v<KeyType> || contains_callable_v<ValueType>> {};
-
-template <typename KeyType, typename ValueType, std::size_t CapacityValue>
-struct contains_standard_range<Map<KeyType, ValueType, CapacityValue>>
-    : std::bool_constant<contains_standard_range_v<KeyType> || contains_standard_range_v<ValueType>> {};
-
-// Nominal walker coverage (REQ-NUM-019): Map declares that the walkers reach both
-// its key and value types.
-template <typename KeyType, typename ValueType, std::size_t CapacityValue>
-struct walker_coverage<Map<KeyType, ValueType, CapacityValue>> {
-    static constexpr bool declared = true;
-};
-
-} // namespace cljonic::concepts_detail
-// End cljonic-collection-map.hpp
 // Begin cljonic-collection-queue.hpp
 #pragma once
 
