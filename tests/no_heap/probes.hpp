@@ -5,6 +5,7 @@ namespace cljonic::no_heap::probes {
 [[nodiscard]] auto vector_storage() noexcept -> bool;
 [[nodiscard]] auto vector_capacity() noexcept -> bool;
 [[nodiscard]] auto assoc_probe() noexcept -> bool;
+[[nodiscard]] auto assoc_in_probe() noexcept -> bool;
 [[nodiscard]] auto can_assoc_probe() noexcept -> bool;
 [[nodiscard]] auto can_conj_probe() noexcept -> bool;
 [[nodiscard]] auto character_is_valid_probe() noexcept -> bool;

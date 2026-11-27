@@ -3,7 +3,7 @@
 namespace {
 [[nodiscard]] auto no_heap_probe() noexcept -> bool {
     using namespace cljonic::no_heap::probes;
-    return implicit_conversions_probe() && vector_storage() && vector_capacity() && assoc_probe() &&
+    return implicit_conversions_probe() && vector_storage() && vector_capacity() && assoc_probe() && assoc_in_probe() &&
            can_assoc_probe() && can_conj_probe() && character_is_valid_probe() && concepts_probe() && cycle_probe() &&
            config_probe() && conj_probe() && contains_probe() && conversion_probe() && max_count_probe() &&
            arithmetic_probe() && core_probe() && count_probe() && disj_probe() && dissoc_probe() && fits_into_probe() &&
