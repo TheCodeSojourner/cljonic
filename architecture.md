@@ -502,6 +502,21 @@ The embedded-first policy keeps resource bounds, deterministic outcomes, and val
   | associative_operation(x) → classify_as(RequirementsBacked)
     ∧ trace_to(requirements/requirements-module-2.md ∧ requirements/requirements-module-3.md)
 
+λ S2_assoc_in_contract(x). assoc_in(root, path, value) ∧ can_assoc_in(root, path, value)
+  → require(exact_Map_or_Vector_root(x))
+  ∧ require(bounded_path_Vector_with_exact_keys_and_indexes(x))
+  ∧ require(intermediate_associative_Map_or_Vector_shape(x))
+  ∧ compose(assoc(x)) across(path_levels(x))
+  | missing(Map_key) ∧ intermediate_mapped_type_is_associative
+    → create(declared_default_intermediate_value(x))
+  | Vector(index) → existing_replace_or_next_append_only(x)
+  | runtime(path_failure ∨ capacity_failure) → return(original_root) for(assoc_in(x))
+    ∧ return(false) for(can_assoc_in(x))
+  | compile_time(unsupported_root ∨ path ∨ intermediate_shape ∨ final_value)
+    → targeted_diagnostic(`assoc_in` ∨ `can_assoc_in`)
+  | can_assoc_in(path) → cumulative_true_only_if_every_level_and_final_assoc_succeed(x)
+  | assoc_in ∧ can_assoc_in → constexpr ∧ noexcept ∧ non_allocating ∧ copy_on_modify(x)
+
 λ S2_dissoc_contract(x). dissoc(map, keys...) → require(CljonicMap(map))
   | zero_keys(x) → return(unchanged_map_copy(x))
   | keys(x) → require(SafeImplicitConversion(Map::key_type, each_key))

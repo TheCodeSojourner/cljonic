@@ -829,6 +829,13 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
 - **Examples:** `assoc(m, key, val)` updates an existing value or inserts a new pair when capacity remains; `assoc(v, i, value)` replaces an existing index or appends at `count(v)`; `assoc(s, i, ch)` applies the same index policy while preserving the null terminator; `assoc(m, k₁, v₁, k₂, v₂)` folds two associations into a new map, the last value winning for a repeated key.
 
+### AssocIn
+- **Definition:** The copy-on-associate free function for exact `Map` and `Vector` shapes. `assoc_in(collection, path, value)` follows a bounded `Vector` path of Map keys or Vector indexes, updates the root level for a one-element path or the final nested level for a longer path through `assoc`, and creates a declared intermediate Map or Vector only for a missing intermediate Map key. It leaves the source unchanged and returns the root collection type.
+- **Deprecated Synonyms:** nested assoc
+- **Related:** Associative, Assoc, CanAssocIn, CopyOnModifyCollection, Map, Vector
+- **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
+- **Examples:** `assoc_in(root_map, vector("a","b"),42)`, `assoc_in(root_vector, vector(1,0),42)`
+
 
 ### Dissoc
 - **Definition:** The primitive associative free function supported only for `Map`; zero keys return an unchanged copy, while one or more keys are removed left-to-right. Every key argument, in every variadic position, must satisfy SafeImplicitConversion to the Map's declared key type together with the operation-specific constraints. Present keys are removed via swap-and-remove; absent or repeated keys are no-ops.
@@ -1037,6 +1044,13 @@ The existing lowercase `repeat(value)` and `repeat(count, value)` factories are 
 - **Related:** Assoc, Associative, CapabilityPredicate, PreflightPredicate, FullState, Map, Vector, String
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
 - **Examples:** `can_assoc(m, k, v)` is true for an existing key or an insertable new key; `can_assoc(v, count(v), value)` is true only when capacity remains; `can_assoc(s, count(s), c)` is true only when capacity remains and `c` is a valid character.
+
+### CanAssocIn
+- **Definition:** The cumulative preflight for `assoc_in`. `can_assoc_in(collection, path, value)` verifies every Map and Vector level and the final association against the state produced by earlier levels, and returns false for a runtime-invalid path or capacity failure.
+- **Deprecated Synonyms:** can-assoc-in predicate
+- **Related:** AssocIn, Assoc, CanAssoc, CopyOnModifyCollection, Map, Vector
+- **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
+- **Examples:** `can_assoc_in(root_map, vector("a","b"),42)`
 
 
 ### CharacterIsValid
