@@ -1,5 +1,67 @@
 ## Current Session State
 
+- last_session_id: 44da7ff9-9951-4e77-8b0d-165c12d7aca9
+- current_timestamp: 2026-11-26T19:05:41.975-07:00
+- session_complete: true
+- recover: Completed the `assoc_in`/`can_assoc_in` API and Doxygen closeout. The public examples now use file-scope named types and `auto`, direct Map/Vector callable lookup, successful runtime Map/Vector replacement and append cases, and separated missing InnerMap/InnerVector examples. A malformed Doxygen edit introduced duplicated/truncated text and `=A` corruption; the source block was corrected and regenerated examples/extracted programs pass.
+- task: Complete and repair the `assoc_in` and `can_assoc_in` API/Doxygen closeout.
+- questions:
+  - No unresolved contract or Doxygen example question remains.
+  - No unresolved merge or index conflict remains.
+- decisions:
+  - `assoc_in` and `can_assoc_in` use a `Vector` path with exact Map-key or Vector-index elements.
+  - One path element addresses the root; additional elements address nested exact Map/Vector values.
+  - Missing intermediate Map keys create the declared InnerMap or InnerVector value.
+  - Invalid runtime Map keys, Vector indexes, and capacity outcomes preserve the source value and follow `can_assoc_in` false preflight.
+  - Doxygen examples use named file-scope aliases and `auto`; callable Map/Vector lookup replaces fallback-free `get` guidance.
+  - The malformed Doxygen block corruption was corrected rather than committed.
+- next:
+  1. Commit this Mementum closeout.
+  2. Continue project or API work only on explicit human direction.
+- validation:
+  - `make upsert-gate-fast`: PASS.
+  - `make coverage-cli`: PASS, 100.0% line coverage.
+  - `make no-heap`: PASS for modular and single-header probes.
+  - `make docs-examples`: PASS, 95 examples compiled.
+  - Extracted `assoc_in` and `can_assoc_in` examples: linked and exited successfully.
+  - Focused modular and single-header tests: PASS.
+  - Traceability and Allium checks: PASS.
+  - Source extraction contains no `=A` corruption or duplicated missing-key block text.
+
+- last_session_id: current
+- current_timestamp: 2026-11-25T14:43:36-07:00
+- session_complete: false
+- recover: Implemented the approved exact Map/Vector nested association slice for `assoc_in` and `can_assoc_in`; kept the worktree uncommitted and did not regenerate HTML.
+- task: Complete `assoc_in` and `can_assoc_in` across requirements, vocabulary, architecture, Allium, tests, probes, implementation, Doxygen examples, and integration.
+- questions:
+  - No unresolved contract question remains for exact nested Map/Vector shapes.
+  - HTML regeneration, Git staging, and commits remain human-owned.
+- decisions:
+  - `assoc_in(collection, path, value)` uses exactly one `Vector` path for Map keys and Vector indexes.
+  - The completed slice uses exact path element types for each level; mixed Variant path elements remain out of scope.
+  - Nested association is optional: one path element addresses and updates the root; additional elements descend into nested Map/Vector values.
+  - Missing intermediate Map keys create the declared intermediate Map or Vector value.
+  - Invalid runtime paths and capacity failures leave the root unchanged for `assoc_in` and return false for `can_assoc_in`.
+  - Unsupported compile-time roots, paths, intermediate shapes, or final values use targeted diagnostics.
+- next:
+  1. Human reviews the implementation and contract.
+  2. Human decides whether to stage and commit the changed source, generated header, tests, and Mementum state.
+  3. Regenerate HTML only at the human-owned final Git gate.
+- validation:
+  - Requirements structure: PASS, 380 clauses.
+  - Coverage: PASS, 100.0% line coverage for the repository source gate.
+  - Vocabulary structure: PASS, 222 terms.
+  - Allium check/analyse: PASS for `specs/collections/assoc-in.allium`.
+  - Focused trace: PASS, 16 obligations and 16 traces.
+  - Modular and single-header focused tests: PASS, 16 assertions in each binary.
+  - `assoc-in-compile-fail`: PASS.
+  - `make no-heap`: PASS for modular and single-header probes.
+  - `make docs-examples`: PASS, 95 examples compiled.
+  - Extracted `assoc-in` and `can-assoc-in` examples: linked and exited 0.
+  - `make upsert-gate-fast`: PASS.
+  - `make traceability-spec-to-code`: PASS.
+  - HTML docs: deferred.
+
 - last_session_id: 14156533-0783-4c48-857f-76b21b45d994
 - current_timestamp: 2026-11-25T14:17:56-07:00
 - session_complete: true
