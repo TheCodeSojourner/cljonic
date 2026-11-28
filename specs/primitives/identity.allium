@@ -1,0 +1,66 @@
+-- allium: 3
+
+entity Identity {
+    accepts_exactly_one_argument: Boolean
+    returns_exact_type_and_value: Boolean
+    supports_compile_time_evaluation: Boolean
+    is_nothrow: Boolean
+    is_non_mutating: Boolean
+    is_non_allocating: Boolean
+    has_no_rtti: Boolean
+    has_no_exceptions: Boolean
+    uses_single_threaded_execution: Boolean
+    is_referentially_transparent: Boolean
+    rejects_zero_and_multiple_arguments: Boolean
+    rejects_nothrow_copy_construction_violations: Boolean
+
+    invariant IdentityAcceptsExactlyOneArgument {
+        this.accepts_exactly_one_argument = true
+    }
+
+    invariant IdentityReturnsExactTypeAndValue {
+        this.returns_exact_type_and_value = true
+    }
+
+    invariant IdentitySupportsCompileTimeEvaluation {
+        this.supports_compile_time_evaluation = true
+    }
+
+    invariant IdentityIsNothrow {
+        this.is_nothrow = true
+    }
+
+    invariant IdentityIsNonMutating {
+        this.is_non_mutating = true
+    }
+
+    invariant IdentityIsNonAllocating {
+        this.is_non_allocating = true
+    }
+
+    invariant IdentityHasNoRtti {
+        this.has_no_rtti = true
+    }
+
+    invariant IdentityHasNoExceptions {
+        this.has_no_exceptions = true
+    }
+
+    invariant IdentityUsesSingleThreadedExecution {
+        this.uses_single_threaded_execution = true
+    }
+
+    invariant IdentityIsReferentiallyTransparent {
+        this.is_referentially_transparent = true
+    }
+
+    invariant IdentityRejectsZeroAndMultipleArguments {
+        this.rejects_zero_and_multiple_arguments = true
+    }
+
+    invariant IdentityRejectsNothrowCopyConstructionViolations {
+        this.rejects_nothrow_copy_construction_violations = true
+    }
+}
+
+actor IdentityOperator { identified_by: Identity }
