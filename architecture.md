@@ -1221,6 +1221,14 @@ concept SequenceableProducer =
   | set_algebra_identifier(x) → prepend(set_, snake_case(x)) when(x ∈ {union, intersection, difference})
   | set_relation_predicate(x) → preserve(is_subset ∨ is_superset)
 
+λ S2_identity_free_function(x).
+  identity(x) → public_free_function(cljonic::core) ∧ exact_one_argument(x)
+  | identity(x) → copy_without_mutation(x) ∧ preserve(exact_Cpp_type(x) ∧ exact_value(x))
+  | identity(x) → constexpr ∧ noexcept ∧ non_allocating ∧ referentially_transparent
+  | admit(identity) → require(nothrow_copy_constructible(x))
+  | reject(zero_arguments(identity) ∨ multiple_arguments(identity) ∨ throwing_copy(x))
+  → targeted_compile_time_diagnostic(x)
+
 λ concept_naming(x). CollectionConcept_names(x) → identify_nominal_identity(x)
   | CapabilityConcept_names(x) → identify_semantic_capability(x)
   | public_concept_names(x) → capability_oriented(x) ∧ reject(vague_names)
