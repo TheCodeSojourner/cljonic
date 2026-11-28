@@ -1,0 +1,86 @@
+-- allium: 3
+
+entity Comp {
+    accepts_zero_or_more_functions: Boolean
+    identity_behavior_for_zero_functions: Boolean
+    equivalent_callable_for_one_function: Boolean
+    invokes_multiple_functions_right_to_left: Boolean
+    checks_compatible_result_and_parameter_chain: Boolean
+    rejects_incompatible_chain: Boolean
+    rejects_throwing_copy: Boolean
+    rejects_throwing_invocation: Boolean
+    supports_compile_time_evaluation: Boolean
+    is_nothrow: Boolean
+    is_non_mutating: Boolean
+    is_non_allocating: Boolean
+    has_no_rtti: Boolean
+    has_no_exceptions: Boolean
+    uses_single_threaded_execution: Boolean
+    is_referentially_transparent: Boolean
+
+    invariant CompAcceptsZeroOrMoreFunctions {
+        this.accepts_zero_or_more_functions = true
+    }
+
+    invariant CompIdentityBehaviorForZeroFunctions {
+        this.identity_behavior_for_zero_functions = true
+    }
+
+    invariant CompEquivalentCallableForOneFunction {
+        this.equivalent_callable_for_one_function = true
+    }
+
+    invariant CompInvokesMultipleFunctionsRightToLeft {
+        this.invokes_multiple_functions_right_to_left = true
+    }
+
+    invariant CompChecksCompatibleResultAndParameterChain {
+        this.checks_compatible_result_and_parameter_chain = true
+    }
+
+    invariant CompRejectsIncompatibleChain {
+        this.rejects_incompatible_chain = true
+    }
+
+    invariant CompRejectsThrowingCopy {
+        this.rejects_throwing_copy = true
+    }
+
+    invariant CompRejectsThrowingInvocation {
+        this.rejects_throwing_invocation = true
+    }
+
+    invariant CompSupportsCompileTimeEvaluation {
+        this.supports_compile_time_evaluation = true
+    }
+
+    invariant CompIsNothrow {
+        this.is_nothrow = true
+    }
+
+    invariant CompIsNonMutating {
+        this.is_non_mutating = true
+    }
+
+    invariant CompIsNonAllocating {
+        this.is_non_allocating = true
+    }
+
+    invariant CompHasNoRtti {
+        this.has_no_rtti = true
+    }
+
+    invariant CompHasNoExceptions {
+        this.has_no_exceptions = true
+    }
+
+    invariant CompUsesSingleThreadedExecution {
+        this.uses_single_threaded_execution = true
+    }
+
+    invariant CompIsReferentiallyTransparent {
+        this.is_referentially_transparent = true
+    }
+}
+
+actor CompOperator { identified_by: Comp }
