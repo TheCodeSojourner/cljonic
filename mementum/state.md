@@ -1,5 +1,36 @@
 ## Current Session State
 
+- last_session_id: 4cce5d37-bb86-4cdc-a0f3-0c61bf5404fb
+- current_timestamp: 2026-11-27T19:11:16-07:00
+- session_complete: true
+- recover: Completed the Clojure-compatible `comp` callable-composition API across requirements, vocabulary, architecture, Allium, implementation, tests, diagnostics, no-heap probes, and Doxygen examples. The API is constexpr, non-allocating, non-mutating, and rejects incompatible or throwing call chains at compile time. The Doxygen program demonstrates scalar, collection, Map, Set, and Range inputs; mixed named C++ functions, capturing lambdas, and cljonic operations; and four complicated runtime pipelines. The no-heap source gate exposed and the closeout removed its comment-only source false positive.
+- task: Complete and refine the Clojure-compatible `comp(...)` API.
+- questions:
+  - No unresolved contract, implementation, diagnostic, traceability, no-heap, runtime-Doxygen, or Doxygen example question remains.
+  - HTML regeneration remains human-owned and deferred.
+- decisions:
+  - Promoted `REQ-FN-033` from deferred/non-binding to binding/active.
+  - Added the `Comp` vocabulary term and architecture callable-composition rule.
+  - Added `specs/primitives/comp.allium`, `src/cljonic-comp.hpp`, the public umbrella/single-header registration, dedicated traced tests, compile-failure cases, and a no-heap probe.
+  - Maximized `auto` in user-facing collection examples and used factories for capacity/type inference.
+  - Mixed named functions, cljonic operations, and lambdas in compile-time and runtime pipelines.
+  - Avoided collection or forbidden-allocator terms in src comment prose because `no-heap-src` is textual.
+- next:
+  1. Human reviews the completed `comp` API and worktree.
+  2. Human runs final Git execution and commits.
+- validation:
+  - Allium check/analyse: PASS.
+  - Requirements structure: PASS, 381 clauses.
+  - Vocabulary structure: PASS, 224 terms.
+  - Modular and single-header comp tests: PASS, 12 assertions in each binary.
+  - Focused trace: PASS, 17 obligations and 17 traces.
+  - Authoritative traceability: PASS.
+  - `comp` compile-failure diagnostics: PASS in modular and single-header forms.
+  - `make no-heap`: PASS in modular and single-header probes.
+  - `make docs-examples`: PASS, 97 examples compiled.
+  - Extracted comp example: linked and exited successfully.
+  - `make upsert-gate-fast`: PASS.
+
 - last_session_id: 027dd8da-4b7e-4164-bfff-8bd4b401d18e
 - current_timestamp: 2026-11-27T17:47:38-07:00
 - session_complete: true
