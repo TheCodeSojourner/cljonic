@@ -1229,6 +1229,14 @@ concept SequenceableProducer =
   | reject(zero_arguments(identity) ∨ multiple_arguments(identity) ∨ throwing_copy(x))
   → targeted_compile_time_diagnostic(x)
 
+λ S2_comp_callable_composition(x).
+  comp() → public_free_function(cljonic::core) ∧ identity_callable(x)
+  | comp(function) → equivalent_bounded_callable(function)
+  | comp(left, middle, right) → right_to_left_callable(left(middle(right(x))))
+  | compose(functions) → compile_time_chain_validation(functions) ∧ no_heap ∧ no_mutation
+  | reject(incompatible_parameter_or_result_chain(functions) ∨ throwing_copy(function) ∨ throwing_invocation(function))
+  → targeted_compile_time_diagnostic(comp)
+
 λ concept_naming(x). CollectionConcept_names(x) → identify_nominal_identity(x)
   | CapabilityConcept_names(x) → identify_semantic_capability(x)
   | public_concept_names(x) → capability_oriented(x) ∧ reject(vague_names)
