@@ -424,7 +424,15 @@ This module specifies the checked fixed-width `NumericPolicy`, scalar comparison
   ∧ ∀ such_function: remains an ordinary callable operation ∧ ¬∃ (transducer semantics ∨ runtime type dispatch ∨ hidden mutable caching ∨ implicit callback retention by collection results)
   {source: stakeholder_decided, decided_by: original_spec_author}
 
+λ REQ-FN-025A(x).
+  ∀ `identity(x)`: public free function accepts exactly one argument ∧ returns `x` unchanged while preserving its exact C++ type and value
+  ∧ ∀ `identity(x)`: is constexpr ∧ noexcept ∧ non-mutating ∧ non-allocating
+  ∧ ∀ (`identity()` ∨ `identity(x₁, x₂, …)`): rejected at compile time
+  ∧ ∀ `identity`: remains an ordinary callable operation ∧ ¬∃ (transducer semantics ∨ runtime type dispatch ∨ hidden mutable caching)
+  rationale: Clojure's `identity` function returns its argument unchanged
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-27, rationale_source: origin_artifact, rationale_approved_by: human, compound_by_design: true}
+
 ## Traceability and Related Requirements
 
-- **Downstream Artifact**: Numeric functions, checked arithmetic helpers, bitwise functions, and callable builder adapters (`partial`, `juxt`, `fnil`, `complement`, `apply`).
-- **Governed REQs**: `REQ-NUM-000`–`019`, `REQ-NUM-010A`–`010E`, `REQ-NUM-015A`–`015L`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`.
+- **Downstream Artifact**: Numeric functions, checked arithmetic helpers, bitwise functions, and callable builder adapters (`identity`, `partial`, `juxt`, `fnil`, `complement`, `apply`).
+- **Governed REQs**: `REQ-NUM-000`–`019`, `REQ-NUM-010A`–`010E`, `REQ-NUM-015A`–`015L`, `REQ-FN-002N`, `REQ-VAL-021`, `REQ-FN-025`–`025A`.
