@@ -179,6 +179,13 @@ the active higher-order algorithms.
 - **Examples:** `contains(xs, i)` and `fits_into(destination, producer)` are free-function forms of orthogonal operations.
 
 
+### Identity
+- **Definition:** The Clojure-compatible public `cljonic::core::identity(x)` free function that accepts exactly one argument and returns its exact C++ type and value unchanged. It is `constexpr`, `noexcept`, non-mutating, non-allocating, and referentially transparent; the argument must be nothrow copy constructible. Zero or multiple arguments and arguments without nothrow copy construction are rejected at compile time.
+- **Deprecated Synonyms:** identity function
+- **Related:** FreeFunction, NothrowCollectionElement
+- **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
+- **Examples:** `identity(42)` equals `42` with type `int`; `identity(vector(1, 2, 3))` returns the same `Vector<int, 3>` value.
+
 ### BoundedStorage
 - **Definition:** Storage with a finite, statically knowable bound that does not require dynamic allocation for supported operations.
 - **Deprecated Synonyms:** bounded storage, fixed storage
