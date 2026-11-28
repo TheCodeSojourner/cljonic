@@ -9,6 +9,35 @@ import re
 import subprocess
 
 PRIMITIVES = {
+    "comp": {
+        "diagnostic_anchor": "cljonic::comp:",
+        "diagnostic_cases": {
+            "throwing-copy": (
+                "struct Function { Function() noexcept = default; Function(const Function&) noexcept(false) {} "
+                "int operator()(int value) const noexcept { return value; } }; "
+                "(void)cljonic::core::comp(Function{});",
+                "nothrow copy constructible",
+            ),
+            "throwing-invocation": (
+                "(void)cljonic::core::comp([](int value) { return value; })(1);",
+                "noexcept-invocable",
+            ),
+            "incompatible-chain": (
+                "(void)cljonic::core::comp([](std::string) noexcept { return 1; }, "
+                "[](int value) noexcept { return value; })(1);",
+                "composed call chain must be compatible",
+            ),
+        },
+        "pass_cases": {
+            "identity": "(void)cljonic::core::comp()(42);",
+            "one": "(void)cljonic::core::comp([](int value) noexcept { return value + 1; })(5);",
+            "two": "(void)cljonic::core::comp([](int value) noexcept { return value + 1; }, "
+            "[](int value) noexcept { return value + 1; })(5);",
+            "three": "(void)cljonic::core::comp([](int value) noexcept { return value + 1; }, "
+            "[](int value) noexcept { return value + 1; }, "
+            "[](int value) noexcept { return value + 1; })(5);",
+        },
+    },
     "take_while": {
         "diagnostic_anchor": "cljonic::take_while:",
         "diagnostic_cases": {

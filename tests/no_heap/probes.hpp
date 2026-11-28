@@ -20,6 +20,7 @@ namespace cljonic::no_heap::probes {
 [[nodiscard]] auto max_count_probe() noexcept -> bool;
 [[nodiscard]] auto core_probe() noexcept -> bool;
 [[nodiscard]] auto count_probe() noexcept -> bool;
+[[nodiscard]] auto comp_probe() noexcept -> bool;
 [[nodiscard]] auto disj_probe() noexcept -> bool;
 [[nodiscard]] auto dissoc_probe() noexcept -> bool;
 [[nodiscard]] auto equal_probe() noexcept -> bool;
