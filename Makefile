@@ -30,6 +30,7 @@ COMPILE_FAIL_TARGETS = \
 	implicit-conversion-compile-fail \
 	range-compile-fail \
 	variant-compile-fail \
+	identity-compile-fail \
 	equal-compile-fail \
 	map-compile-fail \
 	reduce-compile-fail \
@@ -58,6 +59,7 @@ GIT_INDEPENDENT_CHECKS = lint-check complexity-cli header-guards diagnostic-cove
 .DEFAULT_GOAL := help
 
 .PHONY: compile-fail compile-fail-registry
+.PHONY: identity-compile-fail
 .PHONY: distclean
 .PHONY: _git-preflight _git-prepare _git-checks _git-sanitizer _git-coverage _git-no-heap _git-probe
 .PHONY: help all test clean configure coverage coverage-cli sanitizer sanitizer-cli complexity complexity-cli format format-doc-samples core-cheatsheet-format docs-examples lint no-heap-src single-threaded-src no-heap-symbols no-heap range-compile-fail variant-compile-fail equal-compile-fail map-compile-fail reduce-compile-fail filter-compile-fail not-equal-compile-fail assoc-compile-fail assoc-in-compile-fail can-assoc-compile-fail can-conj-compile-fail conj-compile-fail character-is-valid-compile-fail primitive-compile-fail source-construction-compile-fail producer-compile-fail ctad-compile-fail vector-factory-compile-fail hash-map-factory-compile-fail map-entry-factory-compile-fail hash-set-factory-compile-fail queue-factory-compile-fail string-factory-compile-fail header-guards diagnostic-coverage diagnostic-message-labels requirements-structure vocabulary-structure audit-scripts trace-id-check _traceability-obligation-ids-current _traceability-test-ids-current traceability-spec-to-code traceability-spec-to-code-update-snapshot traceability-category-report upsert-fast upsert-gate-fast upsert-gate upsert-gate-strict docs git validate cljonic cljonic-test
@@ -78,6 +80,7 @@ help:
 	@printf '%-12s %s\n' 'can-conj-compile-fail' 'Verify can_conj rejection diagnostics for unsupported collections and values'
 	@printf '%-12s %s\n' 'conj-compile-fail' 'Verify conj rejection diagnostics for unsupported collections and values'
 	@printf '%-12s %s\n' 'diagnostic-coverage' 'Verify every src/ public free-function header is classified as fallback, pending, or excluded (REQ-DIAG-009)'
+	@printf '%-12s %s\n' 'identity-compile-fail' 'Verify identity arity and copy-construction rejection diagnostics'
 	@printf '%-12s %s\n' 'diagnostic-message-labels' 'Verify every src/ diagnostic message opens with a cljonic::<entity>: label (REQ-DIAG-011)'
 	@printf '%-12s %s\n' 'requirements-structure' 'Audit requirement IDs, declared domains, attribution, and rationale provenance'
 	@printf '%-12s %s\n' 'vocabulary-structure' 'Audit term metadata and Related links in vocabulary.md'
@@ -251,6 +254,9 @@ conj-compile-fail: cljonic scripts/check-conj-compile-failures.py
 
 character-is-valid-compile-fail: cljonic scripts/check-character-is-valid-compile-failures.py
 	@python3 scripts/check-character-is-valid-compile-failures.py
+
+identity-compile-fail: cljonic scripts/check-identity-compile-failures.py
+	@python3 scripts/check-identity-compile-failures.py
 
 primitive-compile-fail: cljonic scripts/check-primitive-compile-failures.py
 	@python3 scripts/check-primitive-compile-failures.py $(if $(PRIMITIVE),--primitive "$(PRIMITIVE)",)
