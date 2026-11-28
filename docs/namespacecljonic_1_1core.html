@@ -759,6 +759,15 @@ requires (!concepts_detail::NextSequenceable&lt;C&gt;)</td></tr>
 <tr class="memitem:abea73f56c5de6669f7da8881b7b82cba" id="r_abea73f56c5de6669f7da8881b7b82cba"><td class="memTemplParams" colspan="2">template&lt;typename C&gt; <br />
 requires (!concepts_detail::NextSequenceable&lt;C&gt;)</td></tr>
 <tr class="memitem:abea73f56c5de6669f7da8881b7b82cba template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#abea73f56c5de6669f7da8881b7b82cba">has_rest</a> (const C &amp;value) noexcept -&gt; void</td></tr>
+<tr class="memitem:a572b6efbae8e3a5f51504d3715727731" id="r_a572b6efbae8e3a5f51504d3715727731"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; <br />
+requires std::is_nothrow_copy_constructible_v&lt;T&gt;</td></tr>
+<tr class="memitem:a572b6efbae8e3a5f51504d3715727731 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a572b6efbae8e3a5f51504d3715727731">identity</a> (const T &amp;value) noexcept -&gt; T</td></tr>
+<tr class="memitem:a83bcc71768b6409ea7c899cbd004fe76" id="r_a83bcc71768b6409ea7c899cbd004fe76"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; <br />
+requires (!std::is_nothrow_copy_constructible_v&lt;T&gt;)</td></tr>
+<tr class="memitem:a83bcc71768b6409ea7c899cbd004fe76 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a83bcc71768b6409ea7c899cbd004fe76">identity</a> (const T &amp;value) noexcept -&gt; void</td></tr>
+<tr class="memitem:aed5fe1687729ea128bfaaba43ad5af46" id="r_aed5fe1687729ea128bfaaba43ad5af46"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; <br />
+requires (sizeof...(Args) != 1U)</td></tr>
+<tr class="memitem:aed5fe1687729ea128bfaaba43ad5af46 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#aed5fe1687729ea128bfaaba43ad5af46">identity</a> (const Args &amp;... args) noexcept -&gt; void</td></tr>
 <tr class="memitem:a180fbef1f0faf6742a852760b557db7f" id="r_a180fbef1f0faf6742a852760b557db7f"><td class="memTemplParams" colspan="2">template&lt;typename Dest, typename Source&gt; <br />
 requires concepts_detail::MaterializableSource&lt;Dest, Source&gt;</td></tr>
 <tr class="memitem:a180fbef1f0faf6742a852760b557db7f template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a180fbef1f0faf6742a852760b557db7f">into</a> (const Dest &amp;destination, const Source &amp;source) noexcept -&gt; Dest</td></tr>
@@ -8000,6 +8009,119 @@ requires concepts_detail::HashSetFactoryCapacityArguments&lt;ElementType, Capaci
 <p>Creates a bounded <a class="el" href="classcljonic_1_1_set.html">Set</a> with an explicit capacity, including for an empty argument pack. </p>
 
 <p class="definition">Definition at line <a class="el" href="cljonic-collection-set_8hpp_source.html#l00505">505</a> of file <a class="el" href="cljonic-collection-set_8hpp_source.html">cljonic-collection-set.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aed5fe1687729ea128bfaaba43ad5af46" name="aed5fe1687729ea128bfaaba43ad5af46"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed5fe1687729ea128bfaaba43ad5af46">&#9670;&#160;</a></span>identity() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Args&gt; <br />
+requires (sizeof...(Args) != 1U)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::identity </td>
+          <td>(</td>
+          <td class="paramtype">const Args &amp;...</td>          <td class="paramname"><span class="paramname"><em>args</em></span></td><td>)</td>
+          <td> -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-identity_8hpp_source.html#l00053">53</a> of file <a class="el" href="cljonic-identity_8hpp_source.html">cljonic-identity.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a572b6efbae8e3a5f51504d3715727731" name="a572b6efbae8e3a5f51504d3715727731"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a572b6efbae8e3a5f51504d3715727731">&#9670;&#160;</a></span>identity() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; <br />
+requires std::is_nothrow_copy_constructible_v&lt;T&gt;</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::identity </td>
+          <td>(</td>
+          <td class="paramtype">const T &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
+          <td> -&gt; T</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="anchor" id="Identity"></a> The <b>identity</b> free function returns its argument unchanged.</p>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;cljonic.hpp&quot;</span></div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic.html">cljonic</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacecljonic_1_1core.html">cljonic::core</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> number = <a class="code hl_function" href="#a572b6efbae8e3a5f51504d3715727731">identity</a>(42);</div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> numbers = <a class="code hl_function" href="#a572b6efbae8e3a5f51504d3715727731">identity</a>(<a class="code hl_function" href="#a640db1afe4f1644b0ecd12a1b88f2e6a">vector</a>(1, 2, 3));</div>
+<div class="line">  <span class="keyword">static_assert</span>(number == 42);</div>
+<div class="line">  <span class="keyword">static_assert</span>(numbers(0) == 1);</div>
+<div class="line">  <span class="keyword">static_assert</span>(numbers(2) == 3);</div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> sc = <a class="code hl_function" href="#a572b6efbae8e3a5f51504d3715727731">identity</a>(<span class="keywordtype">string</span>(<span class="stringliteral">&quot;Hello&quot;</span>));</div>
+<div class="line">  <span class="keyword">static_assert</span>(<a class="code hl_function" href="#ab7b1359706179af076032e9dad458516">equal</a>(sc, <span class="keywordtype">string</span>(<span class="stringliteral">&quot;Hello&quot;</span>)));</div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_value = 7;</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span> runtime_result = <a class="code hl_function" href="#a572b6efbae8e3a5f51504d3715727731">identity</a>(runtime_value);</div>
+<div class="line"> </div>
+<div class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> rc = <a class="code hl_function" href="#a572b6efbae8e3a5f51504d3715727731">identity</a>(<span class="keywordtype">string</span>(<span class="stringliteral">&quot;Hello&quot;</span>));</div>
+<div class="line"> </div>
+<div class="line">  <span class="keywordflow">return</span> runtime_result == 7 &amp;&amp; <a class="code hl_function" href="#ab7b1359706179af076032e9dad458516">equal</a>(rc, <span class="keywordtype">string</span>(<span class="stringliteral">&quot;Hello&quot;</span>)) ? 0 : 1;</div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacecljonic_1_1core_html_a572b6efbae8e3a5f51504d3715727731"><div class="ttname"><a href="#a572b6efbae8e3a5f51504d3715727731">cljonic::core::identity</a></div><div class="ttdeci">constexpr auto identity(const T &amp;value) noexcept -&gt; T</div><div class="ttdef"><b>Definition</b> <a href="cljonic-identity_8hpp_source.html#l00040">cljonic-identity.hpp:40</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="cljonic-identity_8hpp_source.html#l00040">40</a> of file <a class="el" href="cljonic-identity_8hpp_source.html">cljonic-identity.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a83bcc71768b6409ea7c899cbd004fe76" name="a83bcc71768b6409ea7c899cbd004fe76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83bcc71768b6409ea7c899cbd004fe76">&#9670;&#160;</a></span>identity() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; <br />
+requires (!std::is_nothrow_copy_constructible_v&lt;T&gt;)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::identity </td>
+          <td>(</td>
+          <td class="paramtype">const T &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
+          <td> -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-identity_8hpp_source.html#l00046">46</a> of file <a class="el" href="cljonic-identity_8hpp_source.html">cljonic-identity.hpp</a>.</p>
 
 </div>
 </div>
