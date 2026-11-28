@@ -1,5 +1,36 @@
 ## Current Session State
 
+- last_session_id: 027dd8da-4b7e-4164-bfff-8bd4b401d18e
+- current_timestamp: 2026-11-27T17:47:38-07:00
+- session_complete: true
+- recover: Completed the `identity` free-function API across requirements, vocabulary, architecture, Allium, implementation, tests, compile-failure diagnostics, no-heap probes, and Doxygen examples. The API is `cljonic::core::identity(x)`, accepts exactly one nothrow-copy-constructible argument, returns the exact type and value unchanged, and is constexpr, noexcept, non-mutating, and non-allocating.
+- task: Complete and refine the Clojure-compatible `identity(x)` API.
+- questions:
+  - No unresolved contract, implementation, diagnostic, traceability, no-heap, or Doxygen example question remains.
+  - HTML regeneration remains human-owned and deferred.
+- decisions:
+  - Added `REQ-FN-025A` and the `Identity` vocabulary/architecture anchors.
+  - Added `specs/primitives/identity.allium` with 13 obligations and traced tests.
+  - Added `src/cljonic-identity.hpp`, umbrella and amalgamation registration, compile-failure coverage, a dedicated no-heap probe, and a runnable Doxygen example.
+  - The Doxygen example calls the public `vector` factory and names the integer `Vector` value `numbers`, not `text`.
+  - Runtime identity evidence uses plain `const auto` values and no `volatile` inputs.
+- next:
+  1. Commit this Mementum closeout.
+  2. Continue project or API work only on explicit human direction.
+- validation:
+  - Allium check and analyse: PASS.
+  - Requirements structure: PASS, 381 clauses.
+  - Vocabulary structure: PASS, 223 terms.
+  - Focused modular and single-header identity tests: PASS, 9 assertions in each binary.
+  - Focused trace: PASS, 13 obligations and 13 traces.
+  - Authoritative spec-to-code traceability: PASS.
+  - Identity compile-failure diagnostic cases: PASS in modular and single-header forms.
+  - `make no-heap`: PASS in modular and single-header probes.
+  - `make docs-examples`: PASS, 96 examples compiled.
+  - Extracted identity example: linked and exited successfully.
+  - `make upsert-gate-fast`: PASS.
+  - Working tree was clean before this Mementum state closeout.
+
 - last_session_id: 44da7ff9-9951-4e77-8b0d-165c12d7aca9
 - current_timestamp: 2026-11-26T19:05:41.975-07:00
 - session_complete: true
