@@ -2,13 +2,9 @@
 
 ## Purpose and Scope
 
-This module records higher-order sequence transformation requirements and specifies the collection-shaping/traversal inventory. The free-function API `comp` is explicitly deferred; this does not defer the `cljonic::Map` collection type or its existing operations. The `map`, `reduce`, `filter`, `filterv`, `take`, and `drop` free functions are binding under `REQ-FN-032`, `REQ-FN-034`, `REQ-FN-035`, `REQ-FN-036`, `REQ-FN-037`, and `REQ-FN-038`; `filterv` is an alias of `filter`.
+This module records higher-order sequence transformation requirements and specifies the collection-shaping/traversal inventory. The public `comp` free-function API is binding and active under `REQ-FN-033`. The `map`, `reduce`, `filter`, `filterv`, `take`, and `drop` free functions are binding under `REQ-FN-032`, `REQ-FN-034`, `REQ-FN-035`, `REQ-FN-036`, `REQ-FN-037`, and `REQ-FN-038`; `filterv` is an alias of `filter`.
 
 The `take_while` and `drop_while` producers are active under binding `REQ-FN-039` and `REQ-FN-040`, with shared integration under `REQ-FN-041`. The `take_last(count, source)` contract is binding under `REQ-FN-042`, `drop_last(count, source)` under `REQ-FN-043`, `butlast(source)` under `REQ-FN-044`, and `take_nth(n, source)` under `REQ-FN-045`; implementation, tests, and downstream specifications remain separate approval decisions. Each implementation was explicitly approved and independently verified; paired contract approval did not substitute for operation-level approval or verification.
-
-## Deferred Higher-Order Free Functions (Non-binding)
-
-> **Deferred future work — non-binding.** The public free function `comp` is not part of the current supported API. Its requirement below records intended future behavior only; the function is not implementation-ready until its lifecycle is approved and its behavioral specification, tests, and implementation are propagated. This deferral does not apply to `cljonic::Map` or existing Map operations, or to the multi-source `map`, `filter`, and `filterv` free functions, which are binding under `REQ-FN-032`, `REQ-FN-035`, and `REQ-FN-036`.
 
 ### Function Composition (`comp`) & Multi-Source `map`
 
@@ -28,14 +24,16 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
   {source: stakeholder_decided, decided_by: human, timestamp: 2026-10-31, rationale_source: origin_artifact}
 
 λ REQ-FN-033(x).
-  ∀ core free-function API inventory: includes `comp` as a deferred, non-binding entry ∧ listing does not establish supported behavior
+  ∀ core free-function API inventory: includes `comp` as a binding, active entry
   ∧ ∀ `comp`: accepts zero or more compatible element functions ∧ composes them into one callable value
-  ∧ ∀ zero functions: produce an identity callable ∧ ∀ one function: produces an equivalent callable
-  ∧ ∀ functions supplied as `comp(f, g, h, ...)`: compile-time checking verifies from right to left that each function accepts the return type of the function to its right ∧ the composed function has the rightmost function's input type and the leftmost function's return type
-  ∧ ∀ resulting_callable: applies the functions from right to left, representing `f(g(h(value)))` for three functions
+  ∧ ∀ zero functions: produces an identity callable whose result is the unchanged received argument
+  ∧ ∀ one function: produces an equivalent callable to that function
+  ∧ ∀ two or more functions supplied as `comp(f, g, h, ...)`: compile-time checking verifies from right to left that each function accepts the return type of the function to its right ∧ the composed callable accepts the rightmost function's input type and returns the leftmost function's result type
+  ∧ ∀ resulting callable: invokes functions from right to left ∧ for `comp(f, g, h)` the invocation is `f(g(h(value)))`
+  ∧ ∀ dynamic application context: a zero-length function sequence applied to `comp` produces the same identity callable produced by `comp()` ∧ a non-empty function sequence composes the supplied functions in the sequence's right-to-left Clojure-compatible order
   ∧ ∀ incompatible parameter ∧ return types: rejected at compile time ∧ ∀ context: ¬∃ transducer composition ∨ destination-independent collection-processing semantics
-  rationale: transducers and destination-independent processing sit outside the bounded, materialization-first model of the library
-  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-05, rationale_source: origin_artifact}
+  rationale: Clojure-compatible `comp` has identity behavior for no functions, preserves a single function, and composes multiple functions from right to left; transducers and destination-independent processing sit outside the bounded, materialization-first model of the library
+  {source: stakeholder_decided, decided_by: human, timestamp: 2026-11-27, rationale_source: origin_artifact, rationale_approved_by: human, compound_by_design: true}
 
 λ REQ-FN-034(x).
   ∀ `reduce`: accepts a reducing function followed by one cljonic source (the no-initial form) or by an initial value and one cljonic source (the explicit-initial form)
@@ -276,4 +274,4 @@ The `take_while` and `drop_while` producers are active under binding `REQ-FN-039
 ## Traceability and Related Requirements
 
 - **Downstream Artifact**: Free-function templates for sequence shaping, slicing, filtering, mapping, grouping, and ordering.
-- **Governed REQs**: `REQ-FN-032` (binding), `REQ-FN-033` (deferred), `REQ-FN-034` (binding), `REQ-FN-035` (binding), `REQ-FN-036` (binding alias), `REQ-FN-037` (binding), `REQ-FN-038` (binding), `REQ-FN-039` (binding, active), `REQ-FN-040` (binding, active), `REQ-FN-041` (binding integration contract), `REQ-FN-042` (binding; implementation approval separate), `REQ-FN-043` (binding; implementation approval separate), `REQ-FN-044` (binding; implementation approval separate), `REQ-FN-045` (binding; implementation approval separate), `REQ-FN-046` (binding; implementation approval separate), `REQ-SEQ-022`.
+- **Governed REQs**: `REQ-FN-032` (binding), `REQ-FN-033` (binding, active), `REQ-FN-034` (binding), `REQ-FN-035` (binding), `REQ-FN-036` (binding alias), `REQ-FN-037` (binding), `REQ-FN-038` (binding), `REQ-FN-039` (binding, active), `REQ-FN-040` (binding, active), `REQ-FN-041` (binding integration contract), `REQ-FN-042` (binding; implementation approval separate), `REQ-FN-043` (binding; implementation approval separate), `REQ-FN-044` (binding; implementation approval separate), `REQ-FN-045` (binding; implementation approval separate), `REQ-FN-046` (binding; implementation approval separate), `REQ-SEQ-022`.
