@@ -57,7 +57,7 @@
  *   \ref ExplicitConversions "can_to_short", \ref ExplicitConversions "can_to_size", \ref ExplicitConversions "can_to_uint",
  *   \ref ExplicitConversions "can_to_ulong", \ref ExplicitConversions "can_to_ulong_long",
  *   \ref ExplicitConversions "can_to_ushort", \ref CheckedArithmetic "can_unsigned_bit_shift_right",
- *   \ref CharacterIsValid "character_is_valid", comp, compare, complement, \ref Conj "conj", constantly,
+ *   \ref CharacterIsValid "character_is_valid", \ref Comp "comp", compare, complement, \ref Conj "conj", constantly,
  *   \ref Contains "contains", \ref Count "count", \ref Cycle "cycle"
  * - \ref Dec "dec", dedupe, deref, \ref Disj "disj", \ref Dissoc "dissoc", distinct,
  *   \ref Div "div", \ref Drop "drop", \ref DropLast "drop_last", \ref DropWhile "drop_while"
@@ -149,6 +149,7 @@
 #include <cljonic-collection-string.hpp>
 #include <cljonic-collection-variant.hpp>
 #include <cljonic-collection-vector.hpp>
+#include <cljonic-comp.hpp>
 #include <cljonic-concepts.hpp>
 #include <cljonic-conj.hpp>
 #include <cljonic-contains.hpp>
