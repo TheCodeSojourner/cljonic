@@ -186,6 +186,13 @@ the active higher-order algorithms.
 - **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
 - **Examples:** `identity(42)` equals `42` with type `int`; `identity(vector(1, 2, 3))` returns the same `Vector<int, 3>` value.
 
+### Comp
+- **Definition:** The Clojure-compatible public `cljonic::core::comp(...)` callable-composition free function. Zero functions produce an identity callable; one function produces an equivalent callable; two or more functions produce a bounded callable that invokes functions from right to left. The composed callable is `constexpr`, non-throwing, non-allocating, non-mutating, and referentially transparent where its copied functions and result types satisfy those properties. Incompatible parameter and return types are rejected at compile time.
+- **Deprecated Synonyms:** function composition, callable composition
+- **Related:** FreeFunction, Identity
+- **Usage:** Requirements, architecture, specification, implementation, tests, and documentation
+- **Examples:** `comp()` returns a callable that preserves `42`; `comp(inc, inc)(5)` returns `7`; `comp(f, g, h)(x)` invokes `f(g(h(x)))`.
+
 ### BoundedStorage
 - **Definition:** Storage with a finite, statically knowable bound that does not require dynamic allocation for supported operations.
 - **Deprecated Synonyms:** bounded storage, fixed storage
