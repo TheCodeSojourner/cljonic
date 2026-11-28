@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', codefold.init);
 <div class="header">
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">cljonic::core Namespace Reference</div></div>
@@ -111,8 +112,15 @@ document.addEventListener('DOMContentLoaded', codefold.init);
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:arithmetic_5Fdetail" id="r_arithmetic_5Fdetail"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core_1_1arithmetic__detail.html">arithmetic_detail</a></td></tr>
+<tr class="memitem:comp_5Fdetail" id="r_comp_5Fdetail"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core_1_1comp__detail.html">comp_detail</a></td></tr>
 <tr class="memitem:conversion" id="r_conversion"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core_1_1conversion.html">conversion</a></td></tr>
 <tr class="memitem:conversion_5Fdetail" id="r_conversion_5Fdetail"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespacecljonic_1_1core_1_1conversion__detail.html">conversion_detail</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:Composed" id="r_Composed"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="classcljonic_1_1core_1_1_composed.html">Composed</a></td></tr>
+<tr class="memitem:Composed_3C_20Function_20_3E" id="r_Composed_3C_20Function_20_3E"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="classcljonic_1_1core_1_1_composed_3_01_function_01_4.html">Composed&lt; Function &gt;</a></td></tr>
+<tr class="memitem:Composed_3C_20First_2C_20Second_2C_20Rest_2E_2E_2E_20_3E" id="r_Composed_3C_20First_2C_20Second_2C_20Rest_2E_2E_2E_20_3E"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="classcljonic_1_1core_1_1_composed_3_01_first_00_01_second_00_01_rest_8_8_8_01_4.html">Composed&lt; First, Second, Rest... &gt;</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -561,6 +569,21 @@ requires concepts_detail::VectorFactoryCapacityArguments&lt;ElementType, Capacit
 <tr class="memitem:a05e7337002de7b5e2f80afdca5625a70" id="r_a05e7337002de7b5e2f80afdca5625a70"><td class="memTemplParams" colspan="2">template&lt;typename ElementType, std::size_t Capacity, typename... Args&gt; <br />
 requires (!concepts_detail::VectorFactoryCapacityArguments&lt;ElementType, Capacity, Args...&gt;)</td></tr>
 <tr class="memitem:a05e7337002de7b5e2f80afdca5625a70 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a05e7337002de7b5e2f80afdca5625a70">vector</a> (Args &amp;&amp;... args) noexcept -&gt; void</td></tr>
+<tr class="memitem:ac7dd483df554609c5acd21458cf95820" id="r_ac7dd483df554609c5acd21458cf95820"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#ac7dd483df554609c5acd21458cf95820">comp</a> () noexcept -&gt; <a class="el" href="structcljonic_1_1core_1_1comp__detail_1_1_identity_callable.html">comp_detail::IdentityCallable</a></td></tr>
+<tr class="memitem:a1ec4b37f2b0b5cdf110ee7bb8e1e23c4" id="r_a1ec4b37f2b0b5cdf110ee7bb8e1e23c4"><td class="memTemplParams" colspan="2">template&lt;typename Function&gt; <br />
+requires (std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;Function&gt;&gt;)</td></tr>
+<tr class="memitem:a1ec4b37f2b0b5cdf110ee7bb8e1e23c4 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a1ec4b37f2b0b5cdf110ee7bb8e1e23c4">comp</a> (Function &amp;&amp;function) noexcept -&gt; <a class="el" href="classcljonic_1_1core_1_1_composed.html">Composed</a>&lt; std::decay_t&lt; Function &gt; &gt;</td></tr>
+<tr class="memitem:ad9ded979ae4b1440c2e32f9be2b78f48" id="r_ad9ded979ae4b1440c2e32f9be2b78f48"><td class="memTemplParams" colspan="2">template&lt;typename First, typename Second, typename... Rest&gt; <br />
+requires (std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;First&gt;&gt; &amp;&amp; std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;Second&gt;&gt; &amp;&amp;<br class="typebreak" />
+ (std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;Rest&gt;&gt; &amp;&amp; ...))</td></tr>
+<tr class="memitem:ad9ded979ae4b1440c2e32f9be2b78f48 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#ad9ded979ae4b1440c2e32f9be2b78f48">comp</a> (First &amp;&amp;first, Second &amp;&amp;second, Rest &amp;&amp;... rest) noexcept -&gt; <a class="el" href="classcljonic_1_1core_1_1_composed.html">Composed</a>&lt; std::decay_t&lt; First &gt;, std::decay_t&lt; Second &gt;, std::decay_t&lt; Rest &gt;... &gt;</td></tr>
+<tr class="memitem:a13730ee0c9c079de860cbc603611e2f4" id="r_a13730ee0c9c079de860cbc603611e2f4"><td class="memTemplParams" colspan="2">template&lt;typename Function&gt; <br />
+requires (!std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;Function&gt;&gt;)</td></tr>
+<tr class="memitem:a13730ee0c9c079de860cbc603611e2f4 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#a13730ee0c9c079de860cbc603611e2f4">comp</a> (Function &amp;&amp;function) noexcept -&gt; void</td></tr>
+<tr class="memitem:adf30c6008e64e758d19430cd7f2fc114" id="r_adf30c6008e64e758d19430cd7f2fc114"><td class="memTemplParams" colspan="2">template&lt;typename First, typename Second, typename... Rest&gt; <br />
+requires (!(std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;First&gt;&gt; &amp;&amp; std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;Second&gt;&gt; &amp;&amp;<br class="typebreak" />
+ (std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;Rest&gt;&gt; &amp;&amp; ...)))</td></tr>
+<tr class="memitem:adf30c6008e64e758d19430cd7f2fc114 template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#adf30c6008e64e758d19430cd7f2fc114">comp</a> (First &amp;&amp;first, Second &amp;&amp;second, Rest &amp;&amp;... rest) noexcept -&gt; void</td></tr>
 <tr class="memitem:aac371f0bb2b285efe2e02a8b4edb8bad" id="r_aac371f0bb2b285efe2e02a8b4edb8bad"><td class="memTemplParams" colspan="2">template&lt;typename C, typename T&gt; <br />
 requires concepts_detail::ConjValueAdmissible&lt;C, T&gt;</td></tr>
 <tr class="memitem:aac371f0bb2b285efe2e02a8b4edb8bad template"><td class="memItemLeft">constexpr auto&#160;</td><td class="memItemRight"><a class="el" href="#aac371f0bb2b285efe2e02a8b4edb8bad">conj</a> (const C &amp;collection, const T &amp;value) noexcept(noexcept(collection.conj(value))) -&gt; C</td></tr>
@@ -4267,6 +4290,173 @@ requires concepts_detail::CharacterValidityInput&lt;T&gt;</div>
 <div class="ttc" id="anamespacecljonic_1_1core_html_a267651509f7df0eabeb536c3cc5664ac"><div class="ttname"><a href="#a267651509f7df0eabeb536c3cc5664ac">cljonic::core::character_is_valid</a></div><div class="ttdeci">constexpr auto character_is_valid(T value) noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="cljonic-character-is-valid_8hpp_source.html#l00084">cljonic-character-is-valid.hpp:84</a></div></div>
 </div><!-- fragment --> 
 <p class="definition">Definition at line <a class="el" href="cljonic-character-is-valid_8hpp_source.html#l00084">84</a> of file <a class="el" href="cljonic-character-is-valid_8hpp_source.html">cljonic-character-is-valid.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ac7dd483df554609c5acd21458cf95820" name="ac7dd483df554609c5acd21458cf95820"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7dd483df554609c5acd21458cf95820">&#9670;&#160;</a></span>comp() <span class="overload">[1/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::comp </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> -&gt; <a class="el" href="structcljonic_1_1core_1_1comp__detail_1_1_identity_callable.html">comp_detail::IdentityCallable</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-comp_8hpp_source.html#l00295">295</a> of file <a class="el" href="cljonic-comp_8hpp_source.html">cljonic-comp.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ad9ded979ae4b1440c2e32f9be2b78f48" name="ad9ded979ae4b1440c2e32f9be2b78f48"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad9ded979ae4b1440c2e32f9be2b78f48">&#9670;&#160;</a></span>comp() <span class="overload">[2/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename First, typename Second, typename... Rest&gt; <br />
+requires (std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;First&gt;&gt; &amp;&amp; std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;Second&gt;&gt; &amp;&amp;<br class="typebreak" />
+ (std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;Rest&gt;&gt; &amp;&amp; ...))</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::comp </td>
+          <td>(</td>
+          <td class="paramtype">First &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>first</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Second &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>second</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Rest &amp;&amp;...</td>          <td class="paramname"><span class="paramname"><em>rest</em></span>&#160;) -&gt; <a class="el" href="classcljonic_1_1core_1_1_composed.html">Composed</a>&lt; std::decay_t&lt; First &gt;, std::decay_t&lt; Second &gt;, std::decay_t&lt; Rest &gt;... &gt;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-comp_8hpp_source.html#l00309">309</a> of file <a class="el" href="cljonic-comp_8hpp_source.html">cljonic-comp.hpp</a>.</p>
+
+</div>
+</div>
+<a id="adf30c6008e64e758d19430cd7f2fc114" name="adf30c6008e64e758d19430cd7f2fc114"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf30c6008e64e758d19430cd7f2fc114">&#9670;&#160;</a></span>comp() <span class="overload">[3/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename First, typename Second, typename... Rest&gt; <br />
+requires (!(std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;First&gt;&gt; &amp;&amp; std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;Second&gt;&gt; &amp;&amp;<br class="typebreak" />
+ (std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;Rest&gt;&gt; &amp;&amp; ...)))</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::comp </td>
+          <td>(</td>
+          <td class="paramtype">First &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>first</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Second &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>second</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Rest &amp;&amp;...</td>          <td class="paramname"><span class="paramname"><em>rest</em></span>&#160;) -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-comp_8hpp_source.html#l00326">326</a> of file <a class="el" href="cljonic-comp_8hpp_source.html">cljonic-comp.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a1ec4b37f2b0b5cdf110ee7bb8e1e23c4" name="a1ec4b37f2b0b5cdf110ee7bb8e1e23c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ec4b37f2b0b5cdf110ee7bb8e1e23c4">&#9670;&#160;</a></span>comp() <span class="overload">[4/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Function&gt; <br />
+requires (std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;Function&gt;&gt;)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::comp </td>
+          <td>(</td>
+          <td class="paramtype">Function &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>function</em></span></td><td>)</td>
+          <td> -&gt; <a class="el" href="classcljonic_1_1core_1_1_composed.html">Composed</a>&lt; std::decay_t&lt; Function &gt; &gt;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-comp_8hpp_source.html#l00301">301</a> of file <a class="el" href="cljonic-comp_8hpp_source.html">cljonic-comp.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a13730ee0c9c079de860cbc603611e2f4" name="a13730ee0c9c079de860cbc603611e2f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13730ee0c9c079de860cbc603611e2f4">&#9670;&#160;</a></span>comp() <span class="overload">[5/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Function&gt; <br />
+requires (!std::is_nothrow_copy_constructible_v&lt;std::decay_t&lt;Function&gt;&gt;)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto cljonic::core::comp </td>
+          <td>(</td>
+          <td class="paramtype">Function &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>function</em></span></td><td>)</td>
+          <td> -&gt; void</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cljonic-comp_8hpp_source.html#l00317">317</a> of file <a class="el" href="cljonic-comp_8hpp_source.html">cljonic-comp.hpp</a>.</p>
 
 </div>
 </div>

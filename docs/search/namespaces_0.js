@@ -6,8 +6,9 @@ var searchData=
   ['cljonic_3a_3aconcepts_5fdetail_3a_3aequal_5fwalk_5fdetail_3',['equal_walk_detail',['../namespacecljonic_1_1concepts__detail_1_1equal__walk__detail.html',1,'cljonic::concepts_detail']]],
   ['cljonic_3a_3acore_4',['core',['../namespacecljonic_1_1core.html',1,'cljonic']]],
   ['cljonic_3a_3acore_3a_3aarithmetic_5fdetail_5',['arithmetic_detail',['../namespacecljonic_1_1core_1_1arithmetic__detail.html',1,'cljonic::core']]],
-  ['cljonic_3a_3acore_3a_3aconversion_6',['conversion',['../namespacecljonic_1_1core_1_1conversion.html',1,'cljonic::core']]],
-  ['cljonic_3a_3acore_3a_3aconversion_5fdetail_7',['conversion_detail',['../namespacecljonic_1_1core_1_1conversion__detail.html',1,'cljonic::core']]],
-  ['cljonic_3a_3aequal_5fmatch_5fdetail_8',['equal_match_detail',['../namespacecljonic_1_1equal__match__detail.html',1,'cljonic']]],
-  ['cljonic_3a_3avariant_5fdetail_9',['variant_detail',['../namespacecljonic_1_1variant__detail.html',1,'cljonic']]]
+  ['cljonic_3a_3acore_3a_3acomp_5fdetail_6',['comp_detail',['../namespacecljonic_1_1core_1_1comp__detail.html',1,'cljonic::core']]],
+  ['cljonic_3a_3acore_3a_3aconversion_7',['conversion',['../namespacecljonic_1_1core_1_1conversion.html',1,'cljonic::core']]],
+  ['cljonic_3a_3acore_3a_3aconversion_5fdetail_8',['conversion_detail',['../namespacecljonic_1_1core_1_1conversion__detail.html',1,'cljonic::core']]],
+  ['cljonic_3a_3aequal_5fmatch_5fdetail_9',['equal_match_detail',['../namespacecljonic_1_1equal__match__detail.html',1,'cljonic']]],
+  ['cljonic_3a_3avariant_5fdetail_10',['variant_detail',['../namespacecljonic_1_1variant__detail.html',1,'cljonic']]]
 ];
